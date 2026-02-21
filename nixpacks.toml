@@ -1,0 +1,44 @@
+providers = []
+
+[phases.setup]
+aptPkgs = ["curl", "nginx"]
+
+[phases.install]
+cmds = [
+  "curl -fsSL https://deb.nodesource.com/setup_22.x | bash -",
+  "apt-get install -y nodejs",
+  "npm ci"
+]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[phases.setup-nginx]
+dependsOn = ["build"]
+cmds = [
+  "mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled",
+  '''cat > /etc/nginx/sites-available/default << 'EOF'
+server {
+    listen 8080;
+    server_name _;
+    root /app/dist/tsp-client-auth-poc/browser;
+    index index.html;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+    }
+
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+}
+EOF''',
+  "ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default"
+]
+
+[start]
+cmd = "nginx -g 'daemon off;'"
