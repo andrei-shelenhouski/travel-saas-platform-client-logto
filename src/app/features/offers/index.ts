@@ -1,0 +1,3 @@
+/**
+ * Offers feature.
+ */

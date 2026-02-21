@@ -12,7 +12,7 @@
             />
           } @else {
             <div
-              class="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-medium text-sm ring-2 ring-gray-200"
+              class="w-9 h-9 rounded-full bg-primary-100 flex items-center justify-center text-primary font-medium text-sm ring-2 ring-gray-200"
             >
               {{ (authService.userData()?.username ?? authService.userData()?.email ?? 'U').charAt(0).toUpperCase() }}
             </div>
@@ -22,7 +22,7 @@
           </span>
           <a
             routerLink="/"
-            class="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+            class="text-sm text-primary hover:text-primary-hover font-medium"
           >
             Home
           </a>

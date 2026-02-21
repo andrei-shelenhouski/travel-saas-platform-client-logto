@@ -5,4 +5,5 @@ export const environment = {
   resourceScope: 'access:resource',
   origin: 'http://localhost:4200',
   apiTarget: 'https://tsp.gugloplex.com',
+  baseUrl: 'http://localhost:3000',
 };

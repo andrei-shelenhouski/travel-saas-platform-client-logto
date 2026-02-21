@@ -1,0 +1,22 @@
+<div class="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+  <div class="w-full max-w-md rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+    <h1 class="text-xl font-semibold text-gray-900 mb-4">Select organization</h1>
+    @if (organizations().length === 0) {
+      <p class="text-gray-600">No organizations found.</p>
+    } @else {
+      <ul class="space-y-2">
+        @for (org of organizations(); track org.id) {
+          <li>
+            <button
+              type="button"
+              (click)="select(org)"
+              class="w-full rounded border border-gray-200 px-4 py-3 text-left text-gray-900 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
+            >
+              {{ org.name }}
+            </button>
+          </li>
+        }
+      </ul>
+    }
+  </div>
+</div>

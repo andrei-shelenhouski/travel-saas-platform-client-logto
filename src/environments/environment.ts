@@ -5,4 +5,5 @@ export const environment = {
   resourceScope: 'access:resource',
   origin: 'https://platform.gugloplex.com',
   apiTarget: 'https://tsp.gugloplex.com',
+  baseUrl: 'https://tsp.gugloplex.com',
 };

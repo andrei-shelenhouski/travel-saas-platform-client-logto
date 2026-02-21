@@ -1,3 +1,27 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import "tailwindcss";
+
+/*
+ * Brand design system (token-based)
+ * Primary: rgba(0, 140, 166, 1) = #008CA6
+ */
+@theme {
+  /* Primary scale */
+  --color-primary-50: #e6f6f8;
+  --color-primary-100: #b3e4eb;
+  --color-primary-200: #80d2de;
+  --color-primary-300: #4dc0d1;
+  --color-primary-400: #26b2c6;
+  --color-primary-500: #008ca6; /* Brand primary */
+  --color-primary-600: #00708a;
+  --color-primary-700: #00546e;
+  --color-primary-800: #003852;
+  --color-primary-900: #001c36;
+
+  /* Semantic primary tokens */
+  --color-primary: var(--color-primary-500);
+  --color-primary-hover: var(--color-primary-600);
+  --color-primary-muted: var(--color-primary-50);
+  --color-primary-foreground: #ffffff;
+}
