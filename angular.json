@@ -15,10 +15,6 @@
       "i18n": {
         "sourceLocale": "en-US",
         "locales": {
-          "en-US": {
-            "translation": "src/locale/en-US.json",
-            "subPath": "en-US"
-          },
           "ru-BY": {
             "translation": "src/locale/ru-BY.json",
             "subPath": "ru-BY"
