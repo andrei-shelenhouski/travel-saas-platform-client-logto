@@ -37,8 +37,8 @@ server {
     if ($accept_language ~ "^$") {
         set $accept_language "ru-BY";
     }
-    # Redirect "/" to Angular application in the preferred language of the browser
-    rewrite ^/$ /$accept_language permanent;
+    # Redirect any non-localized path to locale-prefixed URL (e.g. /callback, /foo → /ru-BY/callback, /ru-BY/foo)
+    rewrite ^/(?!en-US|ru-BY)(.*)$ /$accept_language/$1$is_args$args permanent;
 
     # Static assets first so they get long cache (must match before locale location)
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
