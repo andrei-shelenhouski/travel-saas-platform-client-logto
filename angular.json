@@ -12,6 +12,15 @@
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
+      "i18n": {
+        "sourceLocale": "en-US",
+        "locales": {
+          "ru-BY": {
+            "translation": "src/locale/ru-BY.json",
+            "subPath": "ru-BY"
+          }
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular/build:application",
@@ -29,7 +38,8 @@
             ],
             "polyfills": [
               "@angular/localize/init"
-            ]
+            ],
+            "localize": true
           },
           "configurations": {
             "production": {
@@ -75,6 +85,15 @@
         },
         "test": {
           "builder": "@angular/build:unit-test"
+        },
+        "extract-i18n": {
+          "builder": "@angular/build:extract-i18n",
+          "options": {
+            "buildTarget": "tsp-client-auth-poc:build",
+            "format": "json",
+            "outputPath": "src/locale",
+            "outFile": "en-US.json"
+          }
         }
       }
     }

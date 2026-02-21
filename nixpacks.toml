@@ -16,7 +16,14 @@ cmds = ["npm run build"]
 [phases.setup-nginx]
 dependsOn = ["build"]
 cmds = [
-  "mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled",
+  "mkdir -p /etc/nginx/sites-available /etc/nginx/sites-enabled /etc/nginx/conf.d",
+  '''cat > /etc/nginx/conf.d/accept_language.conf << 'MAPEOF'
+# Browser preferred language detection
+map $http_accept_language $accept_language {
+    ~*^ru ru-BY;
+    ~*^en "en";
+}
+MAPEOF''',
   '''cat > /etc/nginx/sites-available/default << 'EOF'
 server {
     listen 8080;
@@ -24,8 +31,24 @@ server {
     root /app/dist/tsp-client-auth-poc/browser;
     index index.html;
 
-    location / {
-        try_files $uri $uri/ /index.html;
+    # Fallback to Russian if no preference defined by browser
+    if ($accept_language ~ "^$") {
+        set $accept_language "ru-BY";
+    }
+    # English is served from root (no subpath)
+    if ($accept_language = "en") {
+        set $accept_language "";
+    }
+    # Redirect "/" to locale path when not English (avoid redirect loop for root)
+    if ($accept_language ~ "^.+$") {
+        rewrite ^/$ /$accept_language permanent;
+    }
+    # Everything under the Angular application: serve correct locale (en at root, ru-BY at /ru-BY)
+    location ~ ^/(ru-BY)?(/|$) {
+        if ($accept_language = "") {
+            try_files $uri /index.html?$args;
+        }
+        try_files $uri /$1/index.html?$args;
     }
 
     location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
