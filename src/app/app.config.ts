@@ -1,7 +1,7 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
-import { provideAuth } from 'angular-auth-oidc-client';
+import { provideAuth, withAppInitializerAuthCheck } from 'angular-auth-oidc-client';
 
 import { buildAngularAuthConfig, UserScope } from '@logto/angular';
 
@@ -12,8 +12,9 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes),
-    provideAuth({
-      config: buildAngularAuthConfig({
+    provideAuth(
+      {
+        config: buildAngularAuthConfig({
         endpoint: environment.endPoint,
         appId: environment.appId,
         scopes: [
@@ -31,6 +32,8 @@ export const appConfig: ApplicationConfig = {
         // See https://docs.logto.io/sdk/angular/ for more information
         // resource: 'https://default.logto.app/api'
       }),
-    }),
+    },
+      withAppInitializerAuthCheck()
+    ),
   ],
 };

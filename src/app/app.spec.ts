@@ -1,7 +1,9 @@
 import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 import { OidcSecurityService } from 'angular-auth-oidc-client';
 import { App } from './app';
+import { routes } from './app.routes';
 
 const mockOidcSecurityService = {
   checkAuth: () =>
@@ -20,6 +22,7 @@ describe('App', () => {
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [
+        provideRouter(routes),
         { provide: OidcSecurityService, useValue: mockOidcSecurityService },
       ],
     }).compileComponents();
@@ -31,12 +34,10 @@ describe('App', () => {
     expect(app).toBeTruthy();
   });
 
-  it('should render title', async () => {
+  it('should render router outlet', () => {
     const fixture = TestBed.createComponent(App);
-    await fixture.whenStable();
+    fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain(
-      '@logto/angular-sample'
-    );
+    expect(compiled.querySelector('router-outlet')).toBeTruthy();
   });
 });
