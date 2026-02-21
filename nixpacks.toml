@@ -28,6 +28,8 @@ MAPEOF''',
 server {
     listen 8080;
     server_name _;
+    absolute_redirect off;
+    port_in_redirect off;
     root /app/dist/tsp-client-auth-poc/browser;
     index index.html;
 
