@@ -1,0 +1,378 @@
+<div class="min-h-screen bg-white text-gray-900">
+  <!-- Navbar -->
+  <header
+    class="sticky top-0 z-50 border-b border-gray-200/80 bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/80"
+  >
+    <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-4 sm:px-6">
+      <a href="#" class="text-xl font-bold tracking-tight text-primary-600">Travel CRM</a>
+      <nav class="hidden items-center gap-8 md:flex">
+        <a href="#features" class="text-sm font-medium text-gray-600 hover:text-gray-900"
+          >Возможности</a
+        >
+        <a href="#how-it-works" class="text-sm font-medium text-gray-600 hover:text-gray-900"
+          >Как работает</a
+        >
+        <a href="#audience" class="text-sm font-medium text-gray-600 hover:text-gray-900"
+          >Для кого</a
+        >
+      </nav>
+      @if (authService.isAuthenticated()) {
+        <a
+          routerLink="/onboarding/check"
+          class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary-hover transition-colors"
+        >
+          В приложение
+        </a>
+      } @else {
+        <button
+          (click)="authService.signIn()"
+          class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary-hover transition-colors"
+        >
+          Войти
+        </button>
+      }
+    </div>
+  </header>
+
+  <main>
+    <!-- Section 1 — Hero (two-column, diagonal cut) -->
+    <section class="landing-section hero-two-col border-b border-gray-100 bg-white">
+      <div class="hero-grid">
+        <div class="hero-content">
+          <p class="hero-tagline">
+            <span class="hero-tagline-text">Всё для управления продажами туров в одном месте.</span>
+            <a href="#features" class="hero-tagline-link">Подробнее →</a>
+          </p>
+          <h1 class="hero-title">CRM для турагентов, которая наводит порядок в продажах</h1>
+          <p class="hero-subtitle">
+            Travel CRM объединяет заявки, предложения и сделки в единую систему. Вы контролируете
+            каждый этап — от первого обращения до повторной продажи.
+          </p>
+          <ul class="hero-bullets">
+            <li class="flex items-center gap-2">
+              <span class="text-primary">✓</span> Полная прозрачность воронки
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="text-primary">✓</span> Структурированные коммерческие предложения
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="text-primary">✓</span> Контроль оплат и маржи
+            </li>
+            <li class="flex items-center gap-2">
+              <span class="text-primary">✓</span> Автоматизация рутинных задач
+            </li>
+          </ul>
+          <div class="hero-ctas">
+            @if (authService.isAuthenticated()) {
+              <a routerLink="/onboarding/check" class="hero-cta-primary"> В приложение </a>
+            } @else {
+              <button (click)="authService.signIn()" class="hero-cta-primary">
+                Начать использовать
+              </button>
+            }
+            <a href="#problem" class="hero-cta-secondary">Запросить демо →</a>
+          </div>
+        </div>
+        <div class="hero-image-wrap">
+          <img
+            src="https://cdn.alphatour.by/atmosphere_kanifushi_041_52f2b43d08.jpg"
+            alt="Туризм и путешествия"
+            class="hero-image"
+          />
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2 — Проблема -->
+    <section id="problem" class="landing-section py-16 sm:py-20">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <h2 class="text-center text-3xl font-bold text-gray-900">Почему турагенты теряют деньги</h2>
+        <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <li class="rounded-xl border border-red-200 bg-red-50/50 p-6">
+            <h3 class="font-semibold text-gray-900">Потерянные заявки</h3>
+            <p class="mt-2 text-sm text-gray-600">
+              Обращения остаются в мессенджерах, звонках и таблицах.
+            </p>
+          </li>
+          <li class="rounded-xl border border-red-200 bg-red-50/50 p-6">
+            <h3 class="font-semibold text-gray-900">Хаос в коммуникации</h3>
+            <p class="mt-2 text-sm text-gray-600">История общения разбросана по разным каналам.</p>
+          </li>
+          <li class="rounded-xl border border-red-200 bg-red-50/50 p-6">
+            <h3 class="font-semibold text-gray-900">Отсутствие контроля оплат</h3>
+            <p class="mt-2 text-sm text-gray-600">
+              Депозиты и финальные платежи контролируются вручную.
+            </p>
+          </li>
+          <li class="rounded-xl border border-red-200 bg-red-50/50 p-6">
+            <h3 class="font-semibold text-gray-900">Непрозрачная воронка</h3>
+            <p class="mt-2 text-sm text-gray-600">
+              Сложно понять, где теряются клиенты и сколько сделок реально в работе.
+            </p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Section 3 — Решение -->
+    <section
+      id="solution"
+      class="landing-section border-t border-gray-100 bg-gray-50 py-16 sm:py-20"
+    >
+      <div class="mx-auto max-w-4xl px-4 text-center sm:px-6">
+        <h2 class="text-3xl font-bold text-gray-900">Одна система вместо таблиц и мессенджеров</h2>
+        <p class="mt-6 text-lg text-gray-600">
+          Travel CRM выстраивает процесс продажи тура по понятной модели:
+        </p>
+        <div
+          class="mt-8 flex flex-wrap items-center justify-center gap-2 text-lg font-medium text-gray-800 sm:gap-4"
+        >
+          <span>Лид</span>
+          <span class="text-primary">→</span>
+          <span>Заявка</span>
+          <span class="text-primary">→</span>
+          <span>Предложение</span>
+          <span class="text-primary">→</span>
+          <span>Сделка</span>
+          <span class="text-primary">→</span>
+          <span>Повторная продажа</span>
+        </div>
+        <p class="mt-8 text-gray-600">
+          Каждый этап фиксируется.<br />
+          Каждый статус контролируется.<br />
+          Каждая сделка измерима.
+        </p>
+      </div>
+    </section>
+
+    <!-- Section 4 — Как это работает -->
+    <section id="how-it-works" class="landing-section py-16 sm:py-20">
+      <div class="mx-auto max-w-3xl px-4 sm:px-6">
+        <h2 class="text-center text-3xl font-bold text-gray-900">Процесс в 4 шага</h2>
+        <ol class="mt-12 space-y-6">
+          <li class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+            <div class="flex gap-4">
+              <span
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground"
+                >1</span
+              >
+              <div>
+                <strong class="text-gray-900">Получаете заявку</strong>
+                <p class="mt-1 text-gray-600">Система фиксирует источник и создаёт лид.</p>
+              </div>
+            </div>
+          </li>
+          <li class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+            <div class="flex gap-4">
+              <span
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground"
+                >2</span
+              >
+              <div>
+                <strong class="text-gray-900">Формируете структурированную заявку</strong>
+                <p class="mt-1 text-gray-600">
+                  Параметры поездки, бюджет, предпочтения — всё в одной карточке.
+                </p>
+              </div>
+            </div>
+          </li>
+          <li class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+            <div class="flex gap-4">
+              <span
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground"
+                >3</span
+              >
+              <div>
+                <strong class="text-gray-900">Создаёте коммерческое предложение</strong>
+                <p class="mt-1 text-gray-600">Контроль версий, расчёт стоимости и маржи.</p>
+              </div>
+            </div>
+          </li>
+          <li class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+            <div class="flex gap-4">
+              <span
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-sm font-bold text-primary-foreground"
+                >4</span
+              >
+              <div>
+                <strong class="text-gray-900">Закрываете сделку</strong>
+                <p class="mt-1 text-gray-600">Контроль оплат, дедлайнов и завершения тура.</p>
+              </div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Section 5 — Возможности -->
+    <section
+      id="features"
+      class="landing-section border-t border-gray-100 bg-gray-50 py-16 sm:py-20"
+    >
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <h2 class="text-center text-3xl font-bold text-gray-900">Ключевые инструменты</h2>
+        <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <li class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <h3 class="text-lg font-semibold text-gray-900">Управление лидами</h3>
+            <p class="mt-2 text-gray-600">Фильтрация, статусы, ответственные менеджеры.</p>
+          </li>
+          <li class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <h3 class="text-lg font-semibold text-gray-900">Структурированные заявки</h3>
+            <p class="mt-2 text-gray-600">Чёткая фиксация параметров поездки.</p>
+          </li>
+          <li class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <h3 class="text-lg font-semibold text-gray-900">Конструктор предложений</h3>
+            <p class="mt-2 text-gray-600">Создание офферов с контролем статусов.</p>
+          </li>
+          <li class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <h3 class="text-lg font-semibold text-gray-900">Управление сделками</h3>
+            <p class="mt-2 text-gray-600">Этапы оплаты, документы, контроль выполнения.</p>
+          </li>
+          <li class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <h3 class="text-lg font-semibold text-gray-900">Автоматизация</h3>
+            <p class="mt-2 text-gray-600">Напоминания, задачи, follow-up.</p>
+          </li>
+          <li class="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
+            <h3 class="text-lg font-semibold text-gray-900">Аналитика</h3>
+            <p class="mt-2 text-gray-600">Конверсия, средний чек, длительность сделки.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Section 6 — Для кого -->
+    <section id="audience" class="landing-section py-16 sm:py-20">
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <h2 class="text-center text-3xl font-bold text-gray-900">Подходит для</h2>
+        <ul class="mt-10 flex flex-wrap justify-center gap-4 sm:gap-6">
+          <li
+            class="rounded-xl bg-white px-6 py-4 text-center font-medium text-gray-800 shadow-sm ring-1 ring-gray-200"
+          >
+            Независимых турагентов
+          </li>
+          <li
+            class="rounded-xl bg-white px-6 py-4 text-center font-medium text-gray-800 shadow-sm ring-1 ring-gray-200"
+          >
+            Небольших агентств
+          </li>
+          <li
+            class="rounded-xl bg-white px-6 py-4 text-center font-medium text-gray-800 shadow-sm ring-1 ring-gray-200"
+          >
+            Растущих команд продаж
+          </li>
+          <li
+            class="rounded-xl bg-white px-6 py-4 text-center font-medium text-gray-800 shadow-sm ring-1 ring-gray-200"
+          >
+            Онлайн-турагентств
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Section 7 — Результат -->
+    <section
+      id="results"
+      class="landing-section border-t border-gray-100 bg-gray-50 py-16 sm:py-20"
+    >
+      <div class="mx-auto max-w-6xl px-4 sm:px-6">
+        <h2 class="text-center text-3xl font-bold text-gray-900">Что вы получаете</h2>
+        <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          <li
+            class="rounded-xl border border-primary-200 bg-primary-50/50 py-5 text-center font-semibold text-gray-900"
+          >
+            Выше конверсию
+          </li>
+          <li
+            class="rounded-xl border border-primary-200 bg-primary-50/50 py-5 text-center font-semibold text-gray-900"
+          >
+            Меньше ручной работы
+          </li>
+          <li
+            class="rounded-xl border border-primary-200 bg-primary-50/50 py-5 text-center font-semibold text-gray-900"
+          >
+            Прозрачную воронку
+          </li>
+          <li
+            class="rounded-xl border border-primary-200 bg-primary-50/50 py-5 text-center font-semibold text-gray-900"
+          >
+            Контроль прибыли
+          </li>
+          <li
+            class="rounded-xl border border-primary-200 bg-primary-50/50 py-5 text-center font-semibold text-gray-900"
+          >
+            Готовность к масштабированию
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Section 8 — Технологии и безопасность -->
+    <section id="tech" class="landing-section py-16 sm:py-20">
+      <div class="mx-auto max-w-4xl px-4 sm:px-6">
+        <h2 class="text-center text-3xl font-bold text-gray-900">Надёжная облачная архитектура</h2>
+        <ul class="mt-10 grid gap-4 sm:grid-cols-2">
+          <li class="flex items-center gap-3 rounded-xl bg-gray-50 p-4 ring-1 ring-gray-200">
+            <span class="text-primary">✓</span> Без установки
+          </li>
+          <li class="flex items-center gap-3 rounded-xl bg-gray-50 p-4 ring-1 ring-gray-200">
+            <span class="text-primary">✓</span> Доступ из любого места
+          </li>
+          <li class="flex items-center gap-3 rounded-xl bg-gray-50 p-4 ring-1 ring-gray-200">
+            <span class="text-primary">✓</span> Защищённая авторизация
+          </li>
+          <li class="flex items-center gap-3 rounded-xl bg-gray-50 p-4 ring-1 ring-gray-200">
+            <span class="text-primary">✓</span> Ролевая модель доступа
+          </li>
+          <li
+            class="flex items-center gap-3 rounded-xl bg-gray-50 p-4 ring-1 ring-gray-200 sm:col-span-2 sm:justify-center"
+          >
+            <span class="text-primary">✓</span> Изолированные данные компаний
+          </li>
+        </ul>
+        <p class="mt-8 text-center text-gray-600">
+          Система построена как SaaS-платформа и готова к масштабированию.
+        </p>
+      </div>
+    </section>
+
+    <!-- Section 9 — Финальный CTA -->
+    <section
+      id="cta"
+      class="landing-section border-t border-gray-200 bg-primary-600 py-16 sm:py-24"
+    >
+      <div class="mx-auto max-w-2xl px-4 text-center sm:px-6">
+        <h2 class="text-3xl font-bold text-white">Готовы работать системно?</h2>
+        <p class="mt-4 text-lg text-primary-100">
+          Travel CRM помогает превратить поток заявок в управляемую прибыль.
+        </p>
+        @if (authService.isAuthenticated()) {
+          <a
+            routerLink="/onboarding/check"
+            class="mt-10 inline-flex rounded-full bg-white px-8 py-4 text-lg font-semibold text-primary-600 shadow-lg hover:bg-gray-100 transition-colors"
+          >
+            В приложение
+          </a>
+        } @else {
+          <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <button
+              (click)="authService.signIn()"
+              class="w-full rounded-full bg-white px-8 py-4 text-lg font-semibold text-primary-600 shadow-lg hover:bg-gray-100 transition-colors sm:w-auto"
+            >
+              Получить ранний доступ
+            </button>
+            <a
+              href="#"
+              class="w-full rounded-full border-2 border-white/60 bg-transparent px-8 py-4 text-center text-lg font-semibold text-white hover:bg-white/10 transition-colors sm:w-auto"
+            >
+              Запросить демонстрацию
+            </a>
+          </div>
+        }
+      </div>
+    </section>
+  </main>
+
+  <footer class="border-t border-gray-200 bg-gray-900 py-8 text-center text-sm text-gray-400">
+    <p>© Travel CRM</p>
+  </footer>
+</div>

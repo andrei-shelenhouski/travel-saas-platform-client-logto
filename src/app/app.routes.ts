@@ -4,6 +4,7 @@ import { authGuard } from './auth/auth.guard';
 import { appGuard } from './guards/app.guard';
 import { CallbackComponent } from './pages/callback/callback.component';
 import { HomeComponent } from './pages/home/home.component';
+import { LandingComponent } from './pages/landing/landing.component';
 import { OnboardingCheckComponent } from './features/onboarding/onboarding-check.component';
 import { CreateOrganizationComponent } from './features/onboarding/create-organization.component';
 import { SelectOrganizationComponent } from './features/onboarding/select-organization.component';
@@ -26,7 +27,8 @@ import { InvoicesListComponent } from './features/invoices/invoices-list.compone
 import { SettingsComponent } from './features/onboarding/settings.component';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent, pathMatch: 'full' },
+  { path: '', component: LandingComponent, pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
   { path: 'callback', component: CallbackComponent },
   {
     path: 'onboarding',
