@@ -3,11 +3,12 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { AuthService } from '../auth/auth.service';
 import { OrganizationStateService } from '../services/organization-state.service';
+import { ToastComponent } from '../shared/components/toast.component';
 
 @Component({
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [RouterLink, RouterLinkActive, RouterOutlet, ToastComponent],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css',
 })

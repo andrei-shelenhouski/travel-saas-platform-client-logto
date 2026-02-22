@@ -1,5 +1,6 @@
 /**
- * API types aligned with OpenAPI spec (GET /api/docs/json).
+ * API types aligned with OpenAPI spec.
+ * Source of truth: project root openapi.json (from http://localhost:3000/api/docs/json).
  * Backend: Travel SaaS API.
  */
 
@@ -81,8 +82,9 @@ export interface UpdateLeadStatusDto {
   status: LeadStatus;
 }
 
-// ----- Offers -----
+// ----- Offers (OpenAPI: paths + CreateOfferDto, UpdateOfferDto, UpdateOfferStatusDto) -----
 
+/** OpenAPI schema: CreateOfferDto. POST /api/offers (create or duplicate when duplicateFromId set). */
 export interface CreateOfferDto {
   requestId: string; // uuid
   title: string;
@@ -91,10 +93,57 @@ export interface CreateOfferDto {
   commission: number;
   finalPrice: number;
   currency: string;
+  /** When set, backend creates a copy of this offer. */
+  duplicateFromId?: string; // uuid
 }
 
-// ----- Bookings -----
+/** OpenAPI schema: UpdateOfferDto. PATCH /api/offers/{id} request body. */
+export interface UpdateOfferDto {
+  title?: string;
+  supplierTotal?: number;
+  markup?: number;
+  commission?: number;
+  finalPrice?: number;
+  currency?: string;
+}
 
+/** OpenAPI schema: UpdateOfferStatusDto. PATCH /api/offers/{id}/status request body. */
+export interface UpdateOfferStatusDto {
+  status: 'SENT' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED';
+}
+
+export const OfferStatus = {
+  DRAFT: 'DRAFT',
+  SENT: 'SENT',
+  ACCEPTED: 'ACCEPTED',
+  REJECTED: 'REJECTED',
+  EXPIRED: 'EXPIRED',
+} as const;
+export type OfferStatus = (typeof OfferStatus)[keyof typeof OfferStatus];
+
+/** Response shape for GET /api/offers and GET /api/offers/{id} (not in OpenAPI schemas). */
+export interface OfferResponseDto {
+  id: string;
+  organizationId: string;
+  requestId: string;
+  leadId?: string;
+  title: string;
+  status: OfferStatus;
+  supplierTotal: number;
+  markup: number;
+  commission: number;
+  finalPrice: number;
+  currency: string;
+  validUntil: string | null;
+  description: string | null;
+  createdAt: string;
+  updatedAt: string;
+  bookingId?: string | null;
+}
+
+// ----- Bookings (OpenAPI: CreateBookingDto) -----
+
+/** OpenAPI schema: CreateBookingDto. POST /api/bookings request body. */
 export interface CreateBookingDto {
   offerId: string; // uuid
 }
@@ -106,7 +155,7 @@ export interface CreateInvoiceDto {
   dueDate?: string;
 }
 
-// ----- Clients -----
+// ----- Clients (OpenAPI: GET/POST /api/clients, GET/PATCH/DELETE /api/clients/{id}) -----
 
 export interface CreateClientDto {
   type: ClientType;
@@ -115,7 +164,29 @@ export interface CreateClientDto {
   email?: string;
 }
 
-// ----- Requests -----
+/** OpenAPI schema: ClientResponseDto. */
+export interface ClientResponseDto {
+  id: string;
+  organizationId: string;
+  type: ClientType;
+  name: string;
+  phone: string | null;
+  email: string | null;
+  comment: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** OpenAPI schema: UpdateClientDto. PATCH /api/clients/{id} request body. */
+export interface UpdateClientDto {
+  type?: ClientType;
+  name?: string;
+  phone?: string;
+  email?: string;
+  comment?: string;
+}
+
+// ----- Requests (OpenAPI: GET/POST /api/requests, GET/PATCH/DELETE /api/requests/{id}, PATCH status) -----
 
 export interface CreateRequestDto {
   clientId: string; // uuid
@@ -126,4 +197,38 @@ export interface CreateRequestDto {
   adults: number;
   children?: number;
   comment?: string;
+}
+
+/** OpenAPI schema: RequestResponseDto. */
+export interface RequestResponseDto {
+  id: string;
+  organizationId: string;
+  clientId: string;
+  managerId: string;
+  destination: string;
+  startDate: string; // date-time
+  endDate: string; // date-time
+  adults: number;
+  children: number;
+  comment: string | null;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** OpenAPI schema: UpdateRequestDto. PATCH /api/requests/{id} request body. */
+export interface UpdateRequestDto {
+  clientId?: string;
+  managerId?: string;
+  destination?: string;
+  startDate?: string;
+  endDate?: string;
+  adults?: number;
+  children?: number;
+  comment?: string;
+}
+
+/** OpenAPI schema: UpdateRequestStatusDto. PATCH /api/requests/{id}/status request body. */
+export interface UpdateRequestStatusDto {
+  status: unknown;
 }

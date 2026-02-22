@@ -2,26 +2,26 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
-import { OffersListComponent } from './offers-list.component';
-import { OffersService } from '../../services/offers.service';
+import { ClientsListComponent } from './clients-list.component';
+import { ClientsService } from '../../services/clients.service';
 
-describe('OffersListComponent', () => {
-  let component: OffersListComponent;
-  let fixture: ComponentFixture<OffersListComponent>;
+describe('ClientsListComponent', () => {
+  let component: ClientsListComponent;
+  let fixture: ComponentFixture<ClientsListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [OffersListComponent],
+      imports: [ClientsListComponent],
       providers: [
         provideRouter([]),
         {
-          provide: OffersService,
+          provide: ClientsService,
           useValue: { getList: () => of([]) },
         },
       ],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(OffersListComponent);
+    fixture = TestBed.createComponent(ClientsListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

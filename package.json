@@ -6,7 +6,8 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "refresh-openapi": "curl -sS http://localhost:3000/api/docs/json -o openapi.json"
   },
   "prettier": {
     "printWidth": 100,

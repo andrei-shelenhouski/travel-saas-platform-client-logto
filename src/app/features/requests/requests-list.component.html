@@ -1,0 +1,72 @@
+<div class="space-y-4">
+  <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
+    <h1 class="text-xl font-semibold text-gray-900">Requests</h1>
+    <a
+      routerLink="/app/requests/new"
+      class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
+    >
+      Create request
+    </a>
+  </header>
+
+  @if (error()) {
+    <p class="text-sm text-red-600">{{ error() }}</p>
+  }
+
+  <div class="rounded-lg border border-gray-200 bg-white overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Destination</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Dates</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Adults</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        @if (loading()) {
+          <tr>
+            <td colspan="5" class="px-4 py-12 text-center text-gray-500">
+              <div class="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" aria-hidden="true"></div>
+            </td>
+          </tr>
+        } @else if (requests().length === 0) {
+          <tr>
+            <td colspan="5" class="px-4 py-12 text-center text-gray-500">
+              No requests yet.
+            </td>
+          </tr>
+        } @else {
+          @for (req of requests(); track req.id) {
+            <tr
+              class="cursor-pointer hover:bg-gray-50"
+              (click)="goToDetail(req)"
+            >
+              <td class="px-4 py-3 text-sm font-medium text-gray-900">
+                {{ req.destination }}
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-600">
+                {{ formatDate(req.startDate) }} – {{ formatDate(req.endDate) }}
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-600">
+                {{ req.adults }}
+                @if (req.children) {
+                  <span class="text-gray-500">/ {{ req.children }} children</span>
+                }
+              </td>
+              <td class="px-4 py-3">
+                <span class="inline-block rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800">
+                  {{ req.status }}
+                </span>
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-600">
+                {{ formatDate(req.createdAt) }}
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

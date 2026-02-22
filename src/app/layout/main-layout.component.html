@@ -9,11 +9,25 @@
         >Leads</a
       >
       <a
+        routerLink="/app/clients"
+        routerLinkActive="bg-primary-muted text-primary-700"
+        class="rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+        i18n
+        >Clients</a
+      >
+      <a
         routerLink="/app/offers"
         routerLinkActive="bg-primary-muted text-primary-700"
         class="rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         i18n
         >Offers</a
+      >
+      <a
+        routerLink="/app/requests"
+        routerLinkActive="bg-primary-muted text-primary-700"
+        class="rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+        i18n
+        >Requests</a
       >
       <a
         routerLink="/app/bookings"
@@ -68,4 +82,5 @@
       <router-outlet />
     </main>
   </div>
+  <app-toast />
 </div>

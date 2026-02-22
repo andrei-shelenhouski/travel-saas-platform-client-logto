@@ -1,5 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 import { LeadsService } from '../../services/leads.service';
 import type { LeadResponseDto } from '../../shared/models';
@@ -13,6 +13,7 @@ import type { LeadResponseDto } from '../../shared/models';
 })
 export class LeadsListComponent implements OnInit {
   private readonly leadsService = inject(LeadsService);
+  private readonly router = inject(Router);
 
   readonly leads = signal<LeadResponseDto[]>([]);
   readonly loading = signal(true);
@@ -32,5 +33,9 @@ export class LeadsListComponent implements OnInit {
       },
       complete: () => this.loading.set(false),
     });
+  }
+
+  goToDetail(lead: LeadResponseDto): void {
+    this.router.navigate(['/app/leads', lead.id]);
   }
 }
