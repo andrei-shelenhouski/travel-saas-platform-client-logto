@@ -1,7 +1,9 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { take } from 'rxjs';
 
+import { MeService } from '../../services/me.service';
 import { RequestsService } from '../../services/requests.service';
 import { ToastService } from '../../shared/services/toast.service';
 import type { CreateRequestDto } from '../../shared/models';
@@ -16,6 +18,7 @@ import type { CreateRequestDto } from '../../shared/models';
 export class CreateRequestComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly meService = inject(MeService);
   private readonly requestsService = inject(RequestsService);
   private readonly toast = inject(ToastService);
 
@@ -32,8 +35,17 @@ export class CreateRequestComponent implements OnInit {
   comment = '';
 
   ngOnInit(): void {
-    const id = this.route.snapshot.queryParamMap.get('clientId');
-    if (id) this.clientId = id;
+    const clientIdParam = this.route.snapshot.queryParamMap.get('clientId');
+    if (clientIdParam) this.clientId = clientIdParam;
+
+    const me = this.meService.getMeData();
+    if (me?.user?.id) {
+      this.managerId = me.user.id;
+    } else {
+      this.meService.getMe().pipe(take(1)).subscribe((res) => {
+        if (res?.user?.id) this.managerId = res.user.id;
+      });
+    }
   }
 
   onSubmit(): void {
