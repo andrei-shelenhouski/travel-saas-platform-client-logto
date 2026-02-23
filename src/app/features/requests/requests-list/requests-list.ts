@@ -1,5 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 import { RequestsService } from '../../../services/requests.service';
 import type { RequestResponseDto } from '../../../shared/models';
@@ -10,31 +12,22 @@ import type { RequestResponseDto } from '../../../shared/models';
   templateUrl: './requests-list.html',
   styleUrl: './requests-list.css',
 })
-export class RequestsListComponent implements OnInit {
+export class RequestsListComponent {
   private readonly requestsService = inject(RequestsService);
   private readonly router = inject(Router);
+  private readonly data = rxResource({
+    stream: () => this.requestsService.getList(),
+  });
 
-  readonly requests = signal<RequestResponseDto[]>([]);
-  readonly loading = signal(true);
-  readonly error = signal('');
-
-  ngOnInit(): void {
-    this.loadRequests();
-  }
-
-  private loadRequests(): void {
-    this.loading.set(true);
-    this.error.set('');
-    this.requestsService.getList().subscribe({
-      next: (res) => this.requests.set(res.data),
-      error: (err) => {
-        this.error.set(
-          err.error?.message ?? err.message ?? 'Failed to load requests'
-        );
-      },
-      complete: () => this.loading.set(false),
-    });
-  }
+  readonly requests = computed(() => this.data.value()?.data ?? []);
+  readonly loading = computed(() => this.data.isLoading());
+  readonly error = computed(() => {
+    const err = this.data.error();
+    if (err instanceof HttpErrorResponse) {
+      return err.error?.message ?? err.message ?? 'Failed to load requests';
+    }
+    return undefined;
+  });
 
   goToDetail(request: RequestResponseDto): void {
     this.router.navigate(['/app/requests', request.id]);

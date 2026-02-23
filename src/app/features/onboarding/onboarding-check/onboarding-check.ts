@@ -17,7 +17,7 @@ export class OnboardingCheckComponent implements OnInit {
   private readonly router = inject(Router);
 
   ngOnInit(): void {
-    let data = this.meService.getMeData();
+    const data = this.meService.getMeData();
     if (!data) {
       this.meService.getMe().pipe(take(1)).subscribe({
         next: () => this.runDecision(),

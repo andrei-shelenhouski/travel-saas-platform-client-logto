@@ -13,8 +13,8 @@ const mockOidcSecurityService = {
       accessToken: '',
       idToken: '',
     }),
-  authorize: () => {},
-  logoff: () => of(undefined),
+  authorize: vi.fn(),
+  logoff: vi.fn(),
 };
 
 describe('App', () => {

@@ -1,5 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 import { ClientsService } from '../../../services/clients.service';
 import type { ClientResponseDto } from '../../../shared/models';
@@ -16,32 +18,23 @@ const TYPE_LABEL: Record<string, string> = {
   templateUrl: './clients-list.html',
   styleUrl: './clients-list.css',
 })
-export class ClientsListComponent implements OnInit {
+export class ClientsListComponent {
   private readonly clientsService = inject(ClientsService);
   private readonly router = inject(Router);
+  private readonly data = rxResource({
+    stream: () => this.clientsService.getList(),
+  });
 
   readonly typeLabel = TYPE_LABEL;
-  readonly clients = signal<ClientResponseDto[]>([]);
-  readonly loading = signal(true);
-  readonly error = signal('');
-
-  ngOnInit(): void {
-    this.loadClients();
-  }
-
-  private loadClients(): void {
-    this.loading.set(true);
-    this.error.set('');
-    this.clientsService.getList().subscribe({
-      next: (res) => this.clients.set(res.data),
-      error: (err) => {
-        this.error.set(
-          err.error?.message ?? err.message ?? 'Failed to load clients'
-        );
-      },
-      complete: () => this.loading.set(false),
-    });
-  }
+  readonly clients = computed(() => this.data.value()?.data ?? []);
+  readonly loading = computed(() => this.data.isLoading());
+  readonly error = computed(() => {
+    const err = this.data.error();
+    if (err instanceof HttpErrorResponse) {
+      return err.error?.message ?? err.message ?? 'Failed to load clients';
+    }
+    return undefined;
+  });
 
   goToDetail(client: ClientResponseDto): void {
     this.router.navigate(['/app/clients', client.id]);

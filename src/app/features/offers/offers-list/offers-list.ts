@@ -1,5 +1,7 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 import { OffersService } from '../../../services/offers.service';
 import type { OfferResponseDto } from '../../../shared/models';
@@ -30,16 +32,25 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
   templateUrl: './offers-list.html',
   styleUrl: './offers-list.css',
 })
-export class OffersListComponent implements OnInit {
+export class OffersListComponent {
   private readonly offersService = inject(OffersService);
   private readonly router = inject(Router);
+  private readonly data = rxResource({
+    stream: () => this.offersService.getList(),
+  });
 
   readonly filterTabs = FILTER_TABS;
   readonly statusBadgeClass = STATUS_BADGE_CLASS;
 
-  readonly offers = signal<OfferResponseDto[]>([]);
-  readonly loading = signal(true);
-  readonly error = signal('');
+  readonly offers = computed(() => this.data.value()?.data ?? []);
+  readonly loading = computed(() => this.data.isLoading());
+  readonly error = computed(() => {
+    const err = this.data.error();
+    if (err instanceof HttpErrorResponse) {
+      return err.error?.message ?? err.message ?? 'Failed to load offers';
+    }
+    return undefined;
+  });
   readonly activeFilter = signal<FilterTab>('ALL');
 
   readonly filteredOffers = computed(() => {
@@ -48,24 +59,6 @@ export class OffersListComponent implements OnInit {
     if (filter === 'ALL') return list;
     return list.filter((o) => o.status === filter);
   });
-
-  ngOnInit(): void {
-    this.loadOffers();
-  }
-
-  private loadOffers(): void {
-    this.loading.set(true);
-    this.error.set('');
-    this.offersService.getList().subscribe({
-      next: (res) => this.offers.set(res.data),
-      error: (err) => {
-        this.error.set(
-          err.error?.message ?? err.message ?? 'Failed to load offers'
-        );
-      },
-      complete: () => this.loading.set(false),
-    });
-  }
 
   setFilter(value: FilterTab): void {
     this.activeFilter.set(value);

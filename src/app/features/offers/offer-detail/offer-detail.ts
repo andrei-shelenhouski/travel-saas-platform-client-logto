@@ -1,5 +1,8 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { Component, computed, effect, inject, signal } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { EMPTY } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 import { BookingsService } from '../../../services/bookings.service';
 import { OffersService } from '../../../services/offers.service';
@@ -35,15 +38,26 @@ const ACTION_LABELS: Record<OfferAction, string> = {
   templateUrl: './offer-detail.html',
   styleUrl: './offer-detail.css',
 })
-export class OfferDetailComponent implements OnInit {
+export class OfferDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly offersService = inject(OffersService);
   private readonly bookingsService = inject(BookingsService);
   private readonly toast = inject(ToastService);
 
-  readonly offer = signal<OfferResponseDto | null>(null);
-  readonly loading = signal(true);
+  private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
+
+  private readonly data = rxResource<OfferResponseDto, string | null>({
+    params: (): string | null => this.routeId() ?? null,
+    stream: ({ params }) => {
+      const id = params;
+      if (id == null) return EMPTY;
+      return this.offersService.getById(id);
+    },
+  });
+
+  readonly offer = computed(() => this.data.value() ?? null);
+  readonly loading = computed(() => this.data.isLoading());
   readonly actionLoading = signal(false);
   readonly confirmOpen = signal(false);
   readonly confirmPayload = signal<{
@@ -66,25 +80,12 @@ export class OfferDetailComponent implements OnInit {
 
   protected readonly ACTION_LABELS = ACTION_LABELS;
 
-  ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
-      this.toast.showError('Offer ID missing');
-      this.router.navigate(['/app/offers']);
-      return;
-    }
-    this.loadOffer(id);
-  }
-
-  private loadOffer(id: string): void {
-    this.loading.set(true);
-    this.offersService.getById(id).subscribe({
-      next: (data) => this.offer.set(data),
-      error: (err) => {
-        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to load offer');
+  constructor() {
+    effect(() => {
+      if (this.routeId() === null) {
+        this.toast.showError('Offer ID missing');
         this.router.navigate(['/app/offers']);
-      },
-      complete: () => this.loading.set(false),
+      }
     });
   }
 
@@ -124,7 +125,7 @@ export class OfferDetailComponent implements OnInit {
       this.bookingsService.create({ offerId: id }).subscribe({
         next: () => {
           this.toast.showSuccess('Booking created');
-          this.loadOffer(id);
+          this.data.reload();
         },
         error: (err) => {
           this.toast.showError(err.error?.message ?? err.message ?? 'Failed to create booking');
@@ -136,7 +137,9 @@ export class OfferDetailComponent implements OnInit {
 
     if (req) {
       req.subscribe({
-        next: (updated) => this.offer.set(updated),
+        next: (updated) => {
+          this.data.set(updated);
+        },
         error: (err) => {
           this.toast.showError(err.error?.message ?? err.message ?? 'Action failed');
         },

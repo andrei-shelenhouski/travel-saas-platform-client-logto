@@ -1,10 +1,12 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { EMPTY } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 import { ClientsService } from '../../../services/clients.service';
 import type { ClientResponseDto } from '../../../shared/models';
 import { ClientType } from '../../../shared/models';
-import { ToastService } from '../../../shared/services/toast.service';
 
 const TYPE_LABEL: Record<string, string> = {
   [ClientType.INDIVIDUAL]: 'Individual',
@@ -17,31 +19,33 @@ const TYPE_LABEL: Record<string, string> = {
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.css',
 })
-export class ClientDetailComponent implements OnInit {
+export class ClientDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly clientsService = inject(ClientsService);
-  private readonly toast = inject(ToastService);
+
+  private readonly routeId = toSignal(
+    this.route.paramMap.pipe(map((p) => p.get('id')))
+  );
+
+  private readonly data = rxResource<ClientResponseDto, string | null>({
+    params: (): string | null => this.routeId() ?? null,
+    stream: ({ params }) => {
+      const id = params;
+      if (id == null) return EMPTY;
+      return this.clientsService.getById(id);
+    },
+  });
 
   readonly typeLabel = TYPE_LABEL;
-  readonly client = signal<ClientResponseDto | null>(null);
-  readonly loading = signal(true);
+  readonly client = computed(() => this.data.value() ?? null);
+  readonly loading = computed(() => this.data.isLoading());
 
-  ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (!id) {
-      this.router.navigate(['/app/clients']);
-      return;
-    }
-    this.clientsService.getById(id).subscribe({
-      next: (data) => this.client.set(data),
-      error: (err) => {
-        this.toast.showError(
-          err.error?.message ?? err.message ?? 'Failed to load client'
-        );
+  constructor() {
+    effect(() => {
+      if (this.routeId() === null) {
         this.router.navigate(['/app/clients']);
-      },
-      complete: () => this.loading.set(false),
+      }
     });
   }
 

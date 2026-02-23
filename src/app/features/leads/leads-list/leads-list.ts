@@ -1,8 +1,10 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
 import { LeadsService } from '../../../services/leads.service';
 import type { LeadResponseDto } from '../../../shared/models';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-leads-list',
@@ -10,27 +12,24 @@ import type { LeadResponseDto } from '../../../shared/models';
   templateUrl: './leads-list.html',
   styleUrl: './leads-list.css',
 })
-export class LeadsListComponent implements OnInit {
+export class LeadsListComponent {
   private readonly leadsService = inject(LeadsService);
   private readonly router = inject(Router);
+  private readonly data = rxResource({
+    stream: () => this.leadsService.findAll(),
+  });
 
-  readonly leads = signal<LeadResponseDto[]>([]);
-  readonly loading = signal(true);
-  readonly error = signal('');
+  readonly leads = computed(() => this.data.value()?.data ?? []);
+  readonly loading = computed(() => this.data.isLoading());
+  readonly error = computed(() => {
+    const error = this.data.error();
 
-  ngOnInit(): void {
-    this.loading.set(true);
-    this.error.set('');
-    this.leadsService.findAll().subscribe({
-      next: (res) => this.leads.set(res.data),
-      error: (err) => {
-        this.error.set(
-          err.error?.message ?? err.message ?? 'Failed to load leads'
-        );
-      },
-      complete: () => this.loading.set(false),
-    });
-  }
+    if (error instanceof HttpErrorResponse) {
+      return error.error?.message ?? error.message ?? 'Failed to load leads';
+    }
+
+    return undefined;
+  });
 
   goToDetail(lead: LeadResponseDto): void {
     this.router.navigate(['/app/leads', lead.id]);
