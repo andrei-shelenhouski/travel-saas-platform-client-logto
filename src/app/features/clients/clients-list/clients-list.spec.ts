@@ -16,7 +16,7 @@ describe('ClientsListComponent', () => {
         provideRouter([]),
         {
           provide: ClientsService,
-          useValue: { getList: () => of([]) },
+          useValue: { getList: () => of({ data: [], total: 0, page: 1, limit: 20 }) },
         },
       ],
     }).compileComponents();

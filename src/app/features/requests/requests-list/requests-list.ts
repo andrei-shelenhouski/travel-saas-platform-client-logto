@@ -26,7 +26,7 @@ export class RequestsListComponent implements OnInit {
     this.loading.set(true);
     this.error.set('');
     this.requestsService.getList().subscribe({
-      next: (list) => this.requests.set(list),
+      next: (res) => this.requests.set(res.data),
       error: (err) => {
         this.error.set(
           err.error?.message ?? err.message ?? 'Failed to load requests'

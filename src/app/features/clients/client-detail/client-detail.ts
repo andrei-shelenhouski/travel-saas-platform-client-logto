@@ -6,7 +6,7 @@ import type { ClientResponseDto } from '../../../shared/models';
 import { ClientType } from '../../../shared/models';
 import { ToastService } from '../../../shared/services/toast.service';
 
-const TYPE_LABEL: Record<ClientType, string> = {
+const TYPE_LABEL: Record<string, string> = {
   [ClientType.INDIVIDUAL]: 'Individual',
   [ClientType.AGENT]: 'Agent',
 };

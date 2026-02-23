@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { LeadsService } from '../../../services/leads.service';
+import { ToastService } from '../../../shared/services/toast.service';
 import { LeadSource, type CreateLeadDto } from '../../../shared/models';
 
 const SOURCE_OPTIONS: { value: LeadSource; label: string }[] = [
@@ -22,6 +23,7 @@ const SOURCE_OPTIONS: { value: LeadSource; label: string }[] = [
 export class CreateLeadComponent {
   private readonly leadsService = inject(LeadsService);
   private readonly router = inject(Router);
+  private readonly toast = inject(ToastService);
 
   readonly sourceOptions = SOURCE_OPTIONS;
   source: LeadSource = LeadSource.OTHER;
@@ -45,7 +47,10 @@ export class CreateLeadComponent {
     if (this.notes.trim()) dto.notes = this.notes.trim();
 
     this.leadsService.create(dto).subscribe({
-      next: () => this.router.navigate(['/app/leads']),
+      next: () => {
+        this.toast.showSuccess('Lead created');
+        this.router.navigate(['/app/leads']);
+      },
       error: (err) => {
         this.error.set(
           err.error?.message ?? err.message ?? 'Failed to create lead'

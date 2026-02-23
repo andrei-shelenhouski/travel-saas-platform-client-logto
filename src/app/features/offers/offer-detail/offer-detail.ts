@@ -1,10 +1,4 @@
-import {
-  Component,
-  computed,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { BookingsService } from '../../../services/bookings.service';
@@ -12,10 +6,7 @@ import { OffersService } from '../../../services/offers.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import type { OfferResponseDto } from '../../../shared/models';
 import { OfferStatus } from '../../../shared/models';
-import {
-  type OfferAction,
-  getAllowedTransitions,
-} from '../offer-state-machine';
+import { type OfferAction, getAllowedTransitions } from '../offer-state-machine';
 import { OfferTimelineComponent } from '../offer-timeline/offer-timeline';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog.component';
 
@@ -40,11 +31,7 @@ const ACTION_LABELS: Record<OfferAction, string> = {
 
 @Component({
   selector: 'app-offer-detail',
-  imports: [
-    RouterLink,
-    OfferTimelineComponent,
-    ConfirmationDialogComponent,
-  ],
+  imports: [OfferTimelineComponent, ConfirmationDialogComponent],
   templateUrl: './offer-detail.html',
   styleUrl: './offer-detail.css',
 })
@@ -94,25 +81,16 @@ export class OfferDetailComponent implements OnInit {
     this.offersService.getById(id).subscribe({
       next: (data) => this.offer.set(data),
       error: (err) => {
-        this.toast.showError(
-          err.error?.message ?? err.message ?? 'Failed to load offer'
-        );
+        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to load offer');
         this.router.navigate(['/app/offers']);
       },
       complete: () => this.loading.set(false),
     });
   }
 
-  private runTransition(
-    id: string,
-    action: OfferAction,
-    newStatus?: OfferStatus
-  ): void {
+  private runTransition(id: string, action: OfferAction, newStatus?: OfferStatus): void {
     this.actionLoading.set(true);
-    const req =
-      newStatus != null
-        ? this.offersService.setStatus(id, newStatus)
-        : null;
+    const req = newStatus != null ? this.offersService.setStatus(id, newStatus) : null;
 
     if (action === 'DELETE') {
       this.offersService.delete(id).subscribe({
@@ -121,9 +99,7 @@ export class OfferDetailComponent implements OnInit {
           this.router.navigate(['/app/offers']);
         },
         error: (err) => {
-          this.toast.showError(
-            err.error?.message ?? err.message ?? 'Failed to delete offer'
-          );
+          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to delete offer');
         },
         complete: () => this.actionLoading.set(false),
       });
@@ -137,9 +113,7 @@ export class OfferDetailComponent implements OnInit {
           this.router.navigate(['/app/offers', created.id]);
         },
         error: (err) => {
-          this.toast.showError(
-            err.error?.message ?? err.message ?? 'Failed to duplicate offer'
-          );
+          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to duplicate offer');
         },
         complete: () => this.actionLoading.set(false),
       });
@@ -153,9 +127,7 @@ export class OfferDetailComponent implements OnInit {
           this.loadOffer(id);
         },
         error: (err) => {
-          this.toast.showError(
-            err.error?.message ?? err.message ?? 'Failed to create booking'
-          );
+          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to create booking');
         },
         complete: () => this.actionLoading.set(false),
       });
@@ -166,9 +138,7 @@ export class OfferDetailComponent implements OnInit {
       req.subscribe({
         next: (updated) => this.offer.set(updated),
         error: (err) => {
-          this.toast.showError(
-            err.error?.message ?? err.message ?? 'Action failed'
-          );
+          this.toast.showError(err.error?.message ?? err.message ?? 'Action failed');
         },
         complete: () => this.actionLoading.set(false),
       });

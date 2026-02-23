@@ -1,10 +1,11 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import type {
   CreateRequestDto,
+  PaginatedRequestResponseDto,
   RequestResponseDto,
   UpdateRequestDto,
   UpdateRequestStatusDto,
@@ -20,8 +21,11 @@ const REQUESTS_URL = `${environment.baseUrl}/api/requests`;
 export class RequestsService {
   private readonly http = inject(HttpClient);
 
-  getList(): Observable<RequestResponseDto[]> {
-    return this.http.get<RequestResponseDto[]>(REQUESTS_URL);
+  getList(params?: { page?: number; limit?: number }): Observable<PaginatedRequestResponseDto> {
+    let httpParams = new HttpParams();
+    if (params?.page != null) httpParams = httpParams.set('page', params.page);
+    if (params?.limit != null) httpParams = httpParams.set('limit', params.limit);
+    return this.http.get<PaginatedRequestResponseDto>(REQUESTS_URL, { params: httpParams });
   }
 
   getById(id: string): Observable<RequestResponseDto> {

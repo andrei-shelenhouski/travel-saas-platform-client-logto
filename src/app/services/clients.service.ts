@@ -1,11 +1,13 @@
 import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import type {
   ClientResponseDto,
+  ClientType,
   CreateClientDto,
+  PaginatedClientResponseDto,
   UpdateClientDto,
 } from '../shared/models';
 
@@ -18,8 +20,12 @@ const CLIENTS_URL = `${environment.baseUrl}/api/clients`;
 export class ClientsService {
   private readonly http = inject(HttpClient);
 
-  getList(): Observable<ClientResponseDto[]> {
-    return this.http.get<ClientResponseDto[]>(CLIENTS_URL);
+  getList(params?: { type?: ClientType; page?: number; limit?: number }): Observable<PaginatedClientResponseDto> {
+    let httpParams = new HttpParams();
+    if (params?.type != null) httpParams = httpParams.set('type', params.type);
+    if (params?.page != null) httpParams = httpParams.set('page', params.page);
+    if (params?.limit != null) httpParams = httpParams.set('limit', params.limit);
+    return this.http.get<PaginatedClientResponseDto>(CLIENTS_URL, { params: httpParams });
   }
 
   getById(id: string): Observable<ClientResponseDto> {

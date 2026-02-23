@@ -31,6 +31,15 @@ authentication already working
 
 ------------------------------------------------------------------------
 
+# State Management Strategy
+
+- **Approach:** Angular signals + injectable services; no global store (no NgRx).
+- **Auth state:** From OIDC (angular-auth-oidc-client); exposed via AuthService as signals.
+- **Organization state:** Single source of truth is OrganizationStateService; active org id/name in signals, persisted in localStorage. Never derived from token.
+- **Feature state:** Component-level signals and service calls; no shared feature stores. Each feature loads its own data via API services.
+
+------------------------------------------------------------------------
+
 # PHASE 1 --- Application Structure
 
 ## Folder Structure
@@ -40,6 +49,8 @@ Create clear feature-based structure:
 src/app/ core/ auth/ interceptors/ guards/ services/ features/
 onboarding/ leads/ offers/ bookings/ invoices/ shared/ components/
 models/ layout/
+
+**Note:** In this codebase, app-wide concerns live at app root (auth/, interceptors/, guards/, services/) instead of a core/ folder; both layouts are feature-based.
 
 ------------------------------------------------------------------------
 
@@ -166,8 +177,16 @@ Detail: - Mark as Paid
 
 # PHASE 11 --- Global Error Handling
 
-401 → logout + login 400 (org missing) → clear org + onboarding 403 →
-clear org + onboarding + message
+**Interceptor (errorHandlerInterceptor):**
+
+- 401 → clear org + me, sign out, sign in again (redirect to IdP).
+- 400/403 (org-related or 403) → clear org + me, redirect to /onboarding/check.
+- 5xx or network (no status) → show one generic toast (e.g. "Something went wrong. Please try again."), then rethrow so callers still receive the error.
+
+**Convention for feature code:**
+
+- **Lists/forms:** Prefer inline error message (e.g. `error()` signal) so the user sees context next to the action; optionally also show a toast for critical failures.
+- **Success:** After create/update/delete, show a success toast (ToastService.showSuccess) then navigate where appropriate. Keep behavior consistent across features (Leads, Clients, Requests, Offers).
 
 ------------------------------------------------------------------------
 

@@ -2,6 +2,11 @@
 
 This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.0.0.
 
+## Architecture
+
+- **State management:** Signals + injectable services (no NgRx). Auth via OIDC; organization state in `OrganizationStateService` with localStorage persistence. See `travel_saas_frontend_cursor_instructions.md` for full rules and phases.
+- **Error handling:** Global HTTP interceptor handles 401/403/400 (auth/org) and shows a generic toast for 5xx/network errors; features use inline errors and toasts per convention in the instructions doc.
+
 ## Development server
 
 To start a local development server, run:

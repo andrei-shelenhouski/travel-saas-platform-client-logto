@@ -22,9 +22,7 @@ export class LeadsListComponent implements OnInit {
     this.loading.set(true);
     this.error.set('');
     this.leadsService.findAll().subscribe({
-      next: (list) => {
-        this.leads.set(list);
-      },
+      next: (res) => this.leads.set(res.data),
       error: (err) => {
         this.error.set(
           err.error?.message ?? err.message ?? 'Failed to load leads'

@@ -32,16 +32,9 @@
         <tr>
           <td colspan="3" class="px-4 py-8 text-center text-gray-500">Loading…</td>
         </tr>
-      } @else if (leads().length === 0) {
-        <tr>
-          <td colspan="3" class="px-4 py-8 text-center text-gray-500">No leads yet.</td>
-        </tr>
       } @else {
         @for (lead of leads(); track lead.id) {
-          <tr
-            class="cursor-pointer hover:bg-gray-50"
-            (click)="goToDetail(lead)"
-          >
+          <tr class="cursor-pointer hover:bg-gray-50" (click)="goToDetail(lead)">
             <td class="px-4 py-3 text-sm text-gray-900">
               <span class="font-medium">{{ lead.contactName }}</span>
               @if (lead.contactEmail || lead.contactPhone) {
@@ -52,6 +45,10 @@
             </td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ lead.status }}</td>
             <td class="px-4 py-3 text-sm text-gray-600">{{ lead.notes ?? '—' }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="3" class="px-4 py-8 text-center text-gray-500">No leads yet.</td>
           </tr>
         }
       }

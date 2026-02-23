@@ -7,6 +7,7 @@ import type {
   CreateOfferDto,
   OfferResponseDto,
   OfferStatus,
+  PaginatedOfferResponseDto,
   UpdateOfferDto,
   UpdateOfferStatusDto,
 } from '../shared/models';
@@ -21,10 +22,12 @@ const OFFERS_URL = `${environment.baseUrl}/api/offers`;
 export class OffersService {
   private readonly http = inject(HttpClient);
 
-  getList(status?: OfferStatus): Observable<OfferResponseDto[]> {
-    let params = new HttpParams();
-    if (status) params = params.set('status', status);
-    return this.http.get<OfferResponseDto[]>(OFFERS_URL, { params });
+  getList(params?: { status?: OfferStatus; page?: number; limit?: number }): Observable<PaginatedOfferResponseDto> {
+    let httpParams = new HttpParams();
+    if (params?.status != null) httpParams = httpParams.set('status', params.status);
+    if (params?.page != null) httpParams = httpParams.set('page', params.page);
+    if (params?.limit != null) httpParams = httpParams.set('limit', params.limit);
+    return this.http.get<PaginatedOfferResponseDto>(OFFERS_URL, { params: httpParams });
   }
 
   getById(id: string): Observable<OfferResponseDto> {
@@ -53,8 +56,8 @@ export class OffersService {
     );
   }
 
-  delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${OFFERS_URL}/${id}`);
+  delete(id: string): Observable<OfferResponseDto> {
+    return this.http.delete<OfferResponseDto>(`${OFFERS_URL}/${id}`);
   }
 
   /** Duplicate an offer. POST /api/offers with CreateOfferDto { duplicateFromId }. */

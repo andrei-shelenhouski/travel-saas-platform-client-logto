@@ -27,9 +27,6 @@ export function buildOfferTimelineItems(offer: OfferResponseDto | null): Timelin
   if (offer.updatedAt && offer.updatedAt !== offer.createdAt) {
     items.push({ label: 'Status updated', date: formatDate(offer.updatedAt) });
   }
-  if (offer.bookingId) {
-    items.push({ label: 'Booking created', date: formatDate(offer.updatedAt) });
-  }
   return items;
 }
 

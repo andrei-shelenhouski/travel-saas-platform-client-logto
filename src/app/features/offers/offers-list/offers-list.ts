@@ -16,7 +16,7 @@ const FILTER_TABS: { value: FilterTab; label: string }[] = [
   { value: OfferStatus.EXPIRED, label: 'Expired' },
 ];
 
-const STATUS_BADGE_CLASS: Record<OfferStatus, string> = {
+const STATUS_BADGE_CLASS: Record<string, string> = {
   DRAFT: 'bg-gray-100 text-gray-800',
   SENT: 'bg-blue-100 text-blue-800',
   ACCEPTED: 'bg-green-100 text-green-800',
@@ -57,7 +57,7 @@ export class OffersListComponent implements OnInit {
     this.loading.set(true);
     this.error.set('');
     this.offersService.getList().subscribe({
-      next: (list) => this.offers.set(list),
+      next: (res) => this.offers.set(res.data),
       error: (err) => {
         this.error.set(
           err.error?.message ?? err.message ?? 'Failed to load offers'
@@ -83,6 +83,10 @@ export class OffersListComponent implements OnInit {
     } catch {
       return iso;
     }
+  }
+
+  getStatusBadgeClass(status: string): string {
+    return STATUS_BADGE_CLASS[status] ?? 'bg-gray-100 text-gray-500';
   }
 
   rowClass(offer: OfferResponseDto): string {

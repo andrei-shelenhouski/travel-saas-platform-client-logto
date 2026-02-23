@@ -48,13 +48,13 @@ export class OfferEditComponent implements OnInit {
         }
         this.offer.set(o);
         this.title = o.title;
-        this.supplierTotal = o.supplierTotal;
-        this.markup = o.markup;
-        this.commission = o.commission;
-        this.finalPrice = o.finalPrice;
+        this.supplierTotal = Number(o.supplierTotal) || 0;
+        this.markup = Number(o.markup) || 0;
+        this.commission = Number(o.commission) || 0;
+        this.finalPrice = Number(o.finalPrice) || 0;
         this.currency = o.currency;
-        this.validUntil = o.validUntil ?? '';
-        this.description = o.description ?? '';
+        this.validUntil = '';
+        this.description = '';
       },
       error: (err) => {
         this.toast.showError(

@@ -29,6 +29,14 @@ export const ClientType = {
 } as const;
 export type ClientType = (typeof ClientType)[keyof typeof ClientType];
 
+/** Generic paginated response. OpenAPI list endpoints return { data, total, page, limit }. */
+export interface PaginatedDto<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 // ----- /api/me (GET) – response not in OpenAPI; common shape -----
 
 export interface Organization {
@@ -68,14 +76,26 @@ export interface CreateLeadDto {
 export interface LeadResponseDto {
   id: string;
   organizationId: string;
-  source: string;
+  source: LeadSource | string;
   contactName: string;
   contactEmail: string | null;
   contactPhone: string | null;
   notes: string | null;
-  status: string;
+  status: LeadStatus | string;
   createdAt: string; // date-time
   updatedAt: string; // date-time
+}
+
+/** OpenAPI: GET /api/leads response. */
+export type PaginatedLeadResponseDto = PaginatedDto<LeadResponseDto>;
+
+/** OpenAPI schema: UpdateLeadDto. PATCH /api/leads/{id} request body. */
+export interface UpdateLeadDto {
+  source?: LeadSource;
+  contactName?: string;
+  contactEmail?: string;
+  contactPhone?: string;
+  notes?: string;
 }
 
 export interface UpdateLeadStatusDto {
@@ -86,15 +106,14 @@ export interface UpdateLeadStatusDto {
 
 /** OpenAPI schema: CreateOfferDto. POST /api/offers (create or duplicate when duplicateFromId set). */
 export interface CreateOfferDto {
-  requestId: string; // uuid
-  title: string;
-  supplierTotal: number;
-  markup: number;
-  commission: number;
-  finalPrice: number;
-  currency: string;
-  /** When set, backend creates a copy of this offer. */
   duplicateFromId?: string; // uuid
+  requestId?: string; // uuid
+  title?: string;
+  supplierTotal?: number;
+  markup?: number;
+  commission?: number;
+  finalPrice?: number;
+  currency?: string;
 }
 
 /** OpenAPI schema: UpdateOfferDto. PATCH /api/offers/{id} request body. */
@@ -121,25 +140,32 @@ export const OfferStatus = {
 } as const;
 export type OfferStatus = (typeof OfferStatus)[keyof typeof OfferStatus];
 
-/** Response shape for GET /api/offers and GET /api/offers/{id} (not in OpenAPI schemas). */
+/** OpenAPI: OfferResponseDto.source enum. */
+export const OfferSource = {
+  MANUAL: 'MANUAL',
+  OSTROVOK: 'OSTROVOK',
+} as const;
+export type OfferSource = (typeof OfferSource)[keyof typeof OfferSource];
+
+/** OpenAPI schema: OfferResponseDto. GET /api/offers, GET /api/offers/{id}. Amounts as string. */
 export interface OfferResponseDto {
   id: string;
   organizationId: string;
   requestId: string;
-  leadId?: string;
   title: string;
-  status: OfferStatus;
-  supplierTotal: number;
-  markup: number;
-  commission: number;
-  finalPrice: number;
+  source: OfferSource | string;
+  status: OfferStatus | string;
+  supplierTotal: string;
+  markup: string;
+  commission: string;
+  finalPrice: string;
   currency: string;
-  validUntil: string | null;
-  description: string | null;
   createdAt: string;
   updatedAt: string;
-  bookingId?: string | null;
 }
+
+/** OpenAPI: GET /api/offers response. */
+export type PaginatedOfferResponseDto = PaginatedDto<OfferResponseDto>;
 
 // ----- Bookings (OpenAPI: CreateBookingDto) -----
 
@@ -168,7 +194,7 @@ export interface CreateClientDto {
 export interface ClientResponseDto {
   id: string;
   organizationId: string;
-  type: ClientType;
+  type: ClientType | string;
   name: string;
   phone: string | null;
   email: string | null;
@@ -176,6 +202,9 @@ export interface ClientResponseDto {
   createdAt: string;
   updatedAt: string;
 }
+
+/** OpenAPI: GET /api/clients response. */
+export type PaginatedClientResponseDto = PaginatedDto<ClientResponseDto>;
 
 /** OpenAPI schema: UpdateClientDto. PATCH /api/clients/{id} request body. */
 export interface UpdateClientDto {
@@ -188,9 +217,18 @@ export interface UpdateClientDto {
 
 // ----- Requests (OpenAPI: GET/POST /api/requests, GET/PATCH/DELETE /api/requests/{id}, PATCH status) -----
 
+/** OpenAPI: RequestResponseDto.status and UpdateRequestStatusDto.status enum. */
+export const RequestStatus = {
+  NEW: 'NEW',
+  IN_PROGRESS: 'IN_PROGRESS',
+  OFFERED: 'OFFERED',
+  CLOSED: 'CLOSED',
+} as const;
+export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus];
+
 export interface CreateRequestDto {
   clientId: string; // uuid
-  managerId: string;
+  managerId: string; // uuid
   destination: string;
   startDate: string;
   endDate: string;
@@ -211,10 +249,13 @@ export interface RequestResponseDto {
   adults: number;
   children: number;
   comment: string | null;
-  status: string;
+  status: RequestStatus | string;
   createdAt: string;
   updatedAt: string;
 }
+
+/** OpenAPI: GET /api/requests response. */
+export type PaginatedRequestResponseDto = PaginatedDto<RequestResponseDto>;
 
 /** OpenAPI schema: UpdateRequestDto. PATCH /api/requests/{id} request body. */
 export interface UpdateRequestDto {
@@ -230,5 +271,5 @@ export interface UpdateRequestDto {
 
 /** OpenAPI schema: UpdateRequestStatusDto. PATCH /api/requests/{id}/status request body. */
 export interface UpdateRequestStatusDto {
-  status: unknown;
+  status: RequestStatus;
 }

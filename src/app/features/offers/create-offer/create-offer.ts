@@ -36,7 +36,7 @@ export class CreateOfferComponent implements OnInit {
 
   ngOnInit(): void {
     this.requestsService.getList().subscribe({
-      next: (list) => this.requests.set(list),
+      next: (res) => this.requests.set(res.data),
       error: () => this.requestsLoading.set(false),
       complete: () => this.requestsLoading.set(false),
     });

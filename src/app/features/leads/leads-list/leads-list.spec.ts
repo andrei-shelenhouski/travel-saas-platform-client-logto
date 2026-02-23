@@ -16,7 +16,7 @@ describe('LeadsListComponent', () => {
         provideRouter([]),
         {
           provide: LeadsService,
-          useValue: { findAll: () => of([]) },
+          useValue: { findAll: () => of({ data: [], total: 0, page: 1, limit: 20 }) },
         },
       ],
     }).compileComponents();

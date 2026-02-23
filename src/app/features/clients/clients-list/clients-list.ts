@@ -5,7 +5,7 @@ import { ClientsService } from '../../../services/clients.service';
 import type { ClientResponseDto } from '../../../shared/models';
 import { ClientType } from '../../../shared/models';
 
-const TYPE_LABEL: Record<ClientType, string> = {
+const TYPE_LABEL: Record<string, string> = {
   [ClientType.INDIVIDUAL]: 'Individual',
   [ClientType.AGENT]: 'Agent',
 };
@@ -33,7 +33,7 @@ export class ClientsListComponent implements OnInit {
     this.loading.set(true);
     this.error.set('');
     this.clientsService.getList().subscribe({
-      next: (list) => this.clients.set(list),
+      next: (res) => this.clients.set(res.data),
       error: (err) => {
         this.error.set(
           err.error?.message ?? err.message ?? 'Failed to load clients'
