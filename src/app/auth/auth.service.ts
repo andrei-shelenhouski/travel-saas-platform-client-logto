@@ -10,12 +10,8 @@ export class AuthService {
   private readonly checkAuth$ = this.oidcSecurityService.checkAuth();
   private readonly checkAuth = toSignal(this.checkAuth$);
 
-  readonly isAuthenticated = linkedSignal(
-    () => this.checkAuth()?.isAuthenticated ?? false
-  );
-  readonly userData = computed(
-    () => this.checkAuth()?.userData as UserInfoResponse | null
-  );
+  readonly isAuthenticated = linkedSignal(() => this.checkAuth()?.isAuthenticated ?? false);
+  readonly userData = computed(() => this.checkAuth()?.userData as UserInfoResponse | null);
   readonly idToken = computed(() => this.checkAuth()?.idToken ?? null);
   readonly accessToken = computed(() => this.checkAuth()?.accessToken ?? null);
 
@@ -26,6 +22,12 @@ export class AuthService {
   signOut(): void {
     this.oidcSecurityService.logoff().subscribe(() => {
       this.isAuthenticated.set(false);
+    });
+  }
+
+  refreshAuth(): void {
+    this.oidcSecurityService.checkAuth().subscribe(({ isAuthenticated }) => {
+      this.isAuthenticated.set(isAuthenticated);
     });
   }
 }
