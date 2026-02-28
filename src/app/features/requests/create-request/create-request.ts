@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { take } from 'rxjs';
@@ -20,6 +20,7 @@ export class CreateRequestComponent implements OnInit {
   private readonly meService = inject(MeService);
   private readonly requestsService = inject(RequestsService);
   private readonly toast = inject(ToastService);
+  private readonly cdr = inject(ChangeDetectorRef);
 
   readonly saving = signal(false);
   readonly error = signal('');
@@ -37,14 +38,24 @@ export class CreateRequestComponent implements OnInit {
     const clientIdParam = this.route.snapshot.queryParamMap.get('clientId');
     if (clientIdParam) this.clientId = clientIdParam;
 
-    const me = this.meService.getMeData();
-    if (me?.user?.id) {
-      this.managerId = me.user.id;
-    } else {
-      this.meService.getMe().pipe(take(1)).subscribe((res) => {
-        if (res?.user?.id) this.managerId = res.user.id;
-      });
+    // Pre-fill from cache if available (e.g. user came from onboarding)
+    const cached = this.meService.getMeData();
+    if (cached?.user?.id) {
+      this.managerId = cached.user.id;
     }
+
+    // Always fetch current user so managerId is set (cache is cleared after org selection)
+    this.meService
+      .getMe()
+      .pipe(take(1))
+      .subscribe({
+        next: (res) => {
+          if (res?.user?.id) {
+            this.managerId = res.user.id;
+            this.cdr.markForCheck();
+          }
+        },
+      });
   }
 
   onSubmit(): void {
@@ -75,9 +86,7 @@ export class CreateRequestComponent implements OnInit {
         this.router.navigate(['/app/requests', created.id]);
       },
       error: (err) => {
-        this.error.set(
-          err.error?.message ?? err.message ?? 'Failed to create request'
-        );
+        this.error.set(err.error?.message ?? err.message ?? 'Failed to create request');
       },
       complete: () => this.saving.set(false),
     });

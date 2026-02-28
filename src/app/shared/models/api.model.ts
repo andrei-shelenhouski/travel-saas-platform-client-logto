@@ -167,18 +167,79 @@ export interface OfferResponseDto {
 /** OpenAPI: GET /api/offers response. */
 export type PaginatedOfferResponseDto = PaginatedDto<OfferResponseDto>;
 
-// ----- Bookings (OpenAPI: CreateBookingDto) -----
+// ----- Bookings (OpenAPI: CreateBookingDto, BookingResponseDto, UpdateBookingDto) -----
 
 /** OpenAPI schema: CreateBookingDto. POST /api/bookings request body. */
 export interface CreateBookingDto {
   offerId: string; // uuid
 }
 
-// ----- Invoices -----
+/** OpenAPI: BookingResponseDto.status and UpdateBookingDto.status enum. */
+export const BookingStatus = {
+  CONFIRMED: 'CONFIRMED',
+  CANCELLED: 'CANCELLED',
+} as const;
+export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus];
+
+/** OpenAPI schema: BookingResponseDto. GET/POST/PATCH/DELETE /api/bookings. agreedPrice decimal as string. */
+export interface BookingResponseDto {
+  id: string;
+  organizationId: string;
+  offerId: string;
+  clientId: string;
+  agreedPrice: string;
+  currency: string;
+  status: BookingStatus | string;
+  createdAt: string; // date-time
+}
+
+/** OpenAPI: GET /api/bookings response. */
+export type PaginatedBookingResponseDto = PaginatedDto<BookingResponseDto>;
+
+/** OpenAPI schema: UpdateBookingDto. PATCH /api/bookings/{id} request body. */
+export interface UpdateBookingDto {
+  status?: BookingStatus;
+}
+
+// ----- Invoices (OpenAPI: CreateInvoiceDto, InvoiceResponseDto, UpdateInvoiceDto) -----
 
 export interface CreateInvoiceDto {
-  bookingId: string;
+  bookingId: string; // uuid
   dueDate?: string;
+}
+
+/** OpenAPI: InvoiceResponseDto.status and UpdateInvoiceDto.status enum. */
+export const InvoiceStatus = {
+  DRAFT: 'DRAFT',
+  SENT: 'SENT',
+  PAID: 'PAID',
+  CANCELLED: 'CANCELLED',
+} as const;
+export type InvoiceStatus = (typeof InvoiceStatus)[keyof typeof InvoiceStatus];
+
+/** OpenAPI schema: InvoiceResponseDto. Amount and dates as string; dueDate/pdfUrl nullable. */
+export interface InvoiceResponseDto {
+  id: string;
+  organizationId: string;
+  bookingId: string;
+  number: string;
+  issueDate: string; // date-time
+  dueDate: string | null;
+  amount: string; // decimal as string
+  currency: string;
+  status: InvoiceStatus | string;
+  pdfUrl: string | null;
+  createdAt: string; // date-time
+}
+
+/** OpenAPI: GET /api/invoices response. */
+export type PaginatedInvoiceResponseDto = PaginatedDto<InvoiceResponseDto>;
+
+/** OpenAPI schema: UpdateInvoiceDto. PATCH /api/invoices/{id} request body. */
+export interface UpdateInvoiceDto {
+  status?: InvoiceStatus;
+  dueDate?: string; // date-time
+  pdfUrl?: string;
 }
 
 // ----- Clients (OpenAPI: GET/POST /api/clients, GET/PATCH/DELETE /api/clients/{id}) -----

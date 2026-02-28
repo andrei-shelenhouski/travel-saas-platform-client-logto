@@ -123,9 +123,9 @@ export class OfferDetailComponent {
 
     if (action === 'CREATE_BOOKING') {
       this.bookingsService.create({ offerId: id }).subscribe({
-        next: () => {
+        next: (created) => {
           this.toast.showSuccess('Booking created');
-          this.data.reload();
+          this.router.navigate(['/app/bookings', created.id]);
         },
         error: (err) => {
           this.toast.showError(err.error?.message ?? err.message ?? 'Failed to create booking');

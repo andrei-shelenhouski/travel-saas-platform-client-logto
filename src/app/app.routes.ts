@@ -23,7 +23,10 @@ import { ClientsListComponent } from './features/clients/clients-list/clients-li
 import { CreateClientComponent } from './features/clients/create-client/create-client';
 import { ClientDetailComponent } from './features/clients/client-detail/client-detail';
 import { BookingsListComponent } from './features/bookings/bookings-list/bookings-list';
+import { BookingDetailComponent } from './features/bookings/booking-detail/booking-detail';
 import { InvoicesListComponent } from './features/invoices/invoices-list/invoices-list';
+import { InvoiceDetailComponent } from './features/invoices/invoice-detail/invoice-detail';
+import { CreateInvoiceComponent } from './features/invoices/create-invoice/create-invoice';
 import { SettingsComponent } from './features/onboarding/settings/settings';
 
 export const routes: Routes = [
@@ -59,7 +62,10 @@ export const routes: Routes = [
       { path: 'clients', component: ClientsListComponent },
       { path: 'clients/:id', component: ClientDetailComponent },
       { path: 'bookings', component: BookingsListComponent },
+      { path: 'bookings/:id', component: BookingDetailComponent },
+      { path: 'invoices/new', component: CreateInvoiceComponent },
       { path: 'invoices', component: InvoicesListComponent },
+      { path: 'invoices/:id', component: InvoiceDetailComponent },
       { path: 'settings', component: SettingsComponent },
     ],
   },
