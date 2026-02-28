@@ -4,7 +4,6 @@ import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
-import { BookingsService } from '../../../services/bookings.service';
 import { OffersService } from '../../../services/offers.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import type { OfferResponseDto } from '../../../shared/models';
@@ -28,7 +27,7 @@ const ACTION_LABELS: Record<OfferAction, string> = {
   REJECT: 'Reject',
   EXPIRE: 'Expire',
   DUPLICATE: 'Duplicate',
-  CREATE_BOOKING: 'Create booking',
+  CREATE_BOOKING: 'Convert to Booking',
   DELETE: 'Delete',
 };
 
@@ -42,7 +41,6 @@ export class OfferDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly offersService = inject(OffersService);
-  private readonly bookingsService = inject(BookingsService);
   private readonly toast = inject(ToastService);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
@@ -90,6 +88,10 @@ export class OfferDetailComponent {
   }
 
   private runTransition(id: string, action: OfferAction, newStatus?: OfferStatus): void {
+    const current = this.offer();
+    if (newStatus != null && current) {
+      this.data.set({ ...current, status: newStatus } as OfferResponseDto);
+    }
     this.actionLoading.set(true);
     const req = newStatus != null ? this.offersService.setStatus(id, newStatus) : null;
 
@@ -122,10 +124,10 @@ export class OfferDetailComponent {
     }
 
     if (action === 'CREATE_BOOKING') {
-      this.bookingsService.create({ offerId: id }).subscribe({
-        next: (created) => {
+      this.offersService.convertToBooking(id).subscribe({
+        next: (booking) => {
           this.toast.showSuccess('Booking created');
-          this.router.navigate(['/app/bookings', created.id]);
+          this.router.navigate(['/app/bookings', booking.id]);
         },
         error: (err) => {
           this.toast.showError(err.error?.message ?? err.message ?? 'Failed to create booking');
@@ -135,12 +137,13 @@ export class OfferDetailComponent {
       return;
     }
 
-    if (req) {
+    if (req && current) {
       req.subscribe({
         next: (updated) => {
           this.data.set(updated);
         },
         error: (err) => {
+          this.data.set(current);
           this.toast.showError(err.error?.message ?? err.message ?? 'Action failed');
         },
         complete: () => this.actionLoading.set(false),

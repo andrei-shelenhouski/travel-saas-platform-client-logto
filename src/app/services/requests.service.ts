@@ -21,6 +21,7 @@ const REQUESTS_URL = `${environment.baseUrl}/api/requests`;
 export class RequestsService {
   private readonly http = inject(HttpClient);
 
+  /** GET /api/requests. OpenAPI: no clientId filter; filter client-side if needed. */
   getList(params?: { page?: number; limit?: number }): Observable<PaginatedRequestResponseDto> {
     let httpParams = new HttpParams();
     if (params?.page != null) httpParams = httpParams.set('page', params.page);

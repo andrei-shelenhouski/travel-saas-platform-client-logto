@@ -10,11 +10,13 @@ import type {
   UpdateLeadDto,
   UpdateLeadStatusDto,
 } from '../shared/models';
+import type { ConvertLeadToClientResponseDto } from '../shared/models';
 
 const LEADS_URL = `${environment.baseUrl}/api/leads`;
 
 /**
- * Leads API. Aligned with openapi.json: GET/POST /api/leads, GET/PATCH/DELETE /api/leads/{id}, PATCH /api/leads/{id}/status.
+ * Leads API. Aligned with openapi.json: GET/POST /api/leads, GET/PATCH/DELETE /api/leads/{id},
+ * PATCH /api/leads/{id}/status, POST /api/leads/{id}/convert-to-client.
  * All methods require X-Organization-Id (set by orgAuthInterceptor).
  */
 @Injectable({ providedIn: 'root' })
@@ -46,5 +48,10 @@ export class LeadsService {
 
   delete(id: string): Observable<LeadResponseDto> {
     return this.http.delete<LeadResponseDto>(`${LEADS_URL}/${id}`);
+  }
+
+  /** Convert lead to client. POST /api/leads/{id}/convert-to-client. Returns created client and updated lead. */
+  convertToClient(id: string): Observable<ConvertLeadToClientResponseDto> {
+    return this.http.post<ConvertLeadToClientResponseDto>(`${LEADS_URL}/${id}/convert-to-client`, {});
   }
 }

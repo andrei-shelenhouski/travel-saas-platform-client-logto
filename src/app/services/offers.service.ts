@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import type {
+  BookingResponseDto,
   CreateOfferDto,
   OfferResponseDto,
   OfferStatus,
@@ -16,7 +17,8 @@ const OFFERS_URL = `${environment.baseUrl}/api/offers`;
 
 /**
  * Offers API. All methods require Authorization + X-Organization-Id (interceptor).
- * Aligned with openapi.json: GET/POST /api/offers, GET/PATCH/DELETE /api/offers/{id}, PATCH /api/offers/{id}/status.
+ * Aligned with openapi.json: GET/POST /api/offers, GET/PATCH/DELETE /api/offers/{id},
+ * PATCH /api/offers/{id}/status, POST /api/offers/{id}/convert-to-booking.
  */
 @Injectable({ providedIn: 'root' })
 export class OffersService {
@@ -65,5 +67,10 @@ export class OffersService {
     return this.http.post<OfferResponseDto>(OFFERS_URL, {
       duplicateFromId: offerId,
     } as CreateOfferDto);
+  }
+
+  /** Convert offer to booking. POST /api/offers/{id}/convert-to-booking. Returns created booking. */
+  convertToBooking(offerId: string): Observable<BookingResponseDto> {
+    return this.http.post<BookingResponseDto>(`${OFFERS_URL}/${offerId}/convert-to-booking`, {});
   }
 }

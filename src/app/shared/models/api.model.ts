@@ -102,6 +102,12 @@ export interface UpdateLeadStatusDto {
   status: LeadStatus;
 }
 
+/** Response for POST /api/leads/{id}/convert-to-client. */
+export interface ConvertLeadToClientResponseDto {
+  client: ClientResponseDto;
+  lead: LeadResponseDto;
+}
+
 // ----- Offers (OpenAPI: paths + CreateOfferDto, UpdateOfferDto, UpdateOfferStatusDto) -----
 
 /** OpenAPI schema: CreateOfferDto. POST /api/offers (create or duplicate when duplicateFromId set). */
@@ -191,6 +197,7 @@ export interface BookingResponseDto {
   currency: string;
   status: BookingStatus | string;
   createdAt: string; // date-time
+  updatedAt: string; // date-time
 }
 
 /** OpenAPI: GET /api/bookings response. */
@@ -333,4 +340,87 @@ export interface UpdateRequestDto {
 /** OpenAPI schema: UpdateRequestStatusDto. PATCH /api/requests/{id}/status request body. */
 export interface UpdateRequestStatusDto {
   status: RequestStatus;
+}
+
+// ----- Entity type (Activities, Comments, Tags) -----
+
+export const EntityType = {
+  Lead: 'Lead',
+  Client: 'Client',
+  Request: 'Request',
+  Offer: 'Offer',
+  Booking: 'Booking',
+} as const;
+export type EntityType = (typeof EntityType)[keyof typeof EntityType];
+
+// ----- Activities (POST/GET /api/activities, GET /api/activities/{id}) -----
+
+export interface CreateActivityDto {
+  entityType: EntityType;
+  entityId: string;
+  type: string;
+  payload?: Record<string, unknown>;
+}
+
+export interface ActivityResponseDto {
+  id: string;
+  organizationId: string;
+  entityType: string;
+  entityId: string;
+  type: string;
+  payload: Record<string, unknown> | null;
+  createdAt: string;
+}
+
+/** Response for GET /api/activities (findByEntity): items + pagination. */
+export interface ActivityListResponseDto {
+  items: ActivityResponseDto[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+// ----- Comments (POST/GET /api/comments, GET/DELETE /api/comments/{id}) -----
+
+export interface CreateCommentDto {
+  commentableType: EntityType;
+  commentableId: string;
+  body: string;
+}
+
+export interface CommentResponseDto {
+  id: string;
+  organizationId: string;
+  commentableType: string;
+  commentableId: string;
+  body: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Response for GET /api/comments (findByEntity). */
+export interface CommentListResponseDto {
+  items: CommentResponseDto[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+// ----- Tags (POST/GET /api/tags, GET/DELETE /api/tags/{id}, attach/detach) -----
+
+export interface CreateTagDto {
+  name: string;
+}
+
+export interface TagResponseDto {
+  id: string;
+  organizationId: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AttachTagDto {
+  entityType: EntityType;
+  entityId: string;
 }

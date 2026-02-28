@@ -4,13 +4,23 @@
       <div class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" aria-hidden="true"></div>
     </div>
   } @else {
-    @let l = lead();
+    @let l = displayLead();
     @if (l) {
       <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
         <div class="min-w-0">
           <h1 class="text-xl font-semibold text-gray-900">{{ l.contactName }}</h1>
           <p class="mt-1 text-sm text-gray-500">Lead</p>
         </div>
+        @if (l.status !== 'CONVERTED') {
+          <button
+            type="button"
+            (click)="convertToClient()"
+            [disabled]="convertLoading()"
+            class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+          >
+            {{ convertLoading() ? 'Converting…' : 'Convert to Client' }}
+          </button>
+        }
       </header>
 
       <div class="rounded-lg border border-gray-200 bg-white p-4">

@@ -48,24 +48,30 @@ export const routes: Routes = [
     canActivate: [appGuard],
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'leads' },
+      // Leads
       { path: 'leads/new', component: CreateLeadComponent },
       { path: 'leads/:id', component: LeadDetailComponent },
       { path: 'leads', component: LeadsListComponent },
-      { path: 'offers/new', component: CreateOfferComponent },
-      { path: 'offers', component: OffersListComponent },
-      { path: 'offers/:id', component: OfferDetailComponent },
-      { path: 'offers/:id/edit', component: OfferEditComponent },
-      { path: 'requests/new', component: CreateRequestComponent },
-      { path: 'requests', component: RequestsListComponent },
-      { path: 'requests/:id', component: RequestDetailComponent },
+      // Clients: /app/clients/:id
       { path: 'clients/new', component: CreateClientComponent },
-      { path: 'clients', component: ClientsListComponent },
       { path: 'clients/:id', component: ClientDetailComponent },
-      { path: 'bookings', component: BookingsListComponent },
+      { path: 'clients', component: ClientsListComponent },
+      // Requests: /app/requests/:id
+      { path: 'requests/new', component: CreateRequestComponent },
+      { path: 'requests/:id', component: RequestDetailComponent },
+      { path: 'requests', component: RequestsListComponent },
+      // Offers: /app/offers/:id (more specific first)
+      { path: 'offers/new', component: CreateOfferComponent },
+      { path: 'offers/:id/edit', component: OfferEditComponent },
+      { path: 'offers/:id', component: OfferDetailComponent },
+      { path: 'offers', component: OffersListComponent },
+      // Bookings: /app/bookings/:id
       { path: 'bookings/:id', component: BookingDetailComponent },
+      { path: 'bookings', component: BookingsListComponent },
+      // Invoices
       { path: 'invoices/new', component: CreateInvoiceComponent },
-      { path: 'invoices', component: InvoicesListComponent },
       { path: 'invoices/:id', component: InvoiceDetailComponent },
+      { path: 'invoices', component: InvoicesListComponent },
       { path: 'settings', component: SettingsComponent },
     ],
   },
