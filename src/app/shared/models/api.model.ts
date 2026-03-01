@@ -102,6 +102,12 @@ export interface UpdateOrganizationMemberRoleDto {
   role: OrgRole;
 }
 
+/** OpenAPI: AddOrganizationMemberDto. POST /api/organization-members body. User must already exist. */
+export interface AddOrganizationMemberDto {
+  email: string;
+  role: OrgRole;
+}
+
 // ----- Organizations -----
 
 export interface CreateOrganizationDto {

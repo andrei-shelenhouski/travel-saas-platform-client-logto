@@ -7,7 +7,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { OrganizationMembersService } from '../../../services/organization-members.service';
 import { PermissionService } from '../../../services/permission.service';
 import { ToastService } from '../../../shared/services/toast.service';
-import type { OrganizationMemberResponseDto } from '../../../shared/models';
+import type { AddOrganizationMemberDto, OrganizationMemberResponseDto } from '../../../shared/models';
 import { OrgRole } from '../../../shared/models';
 
 const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
@@ -48,6 +48,12 @@ export class UsersManagementComponent {
   /** Member id (organizationMember.id) currently updating role. */
   readonly updatingRoleId = signal<string | null>(null);
 
+  /** Add member form: email and role. */
+  readonly addEmail = signal('');
+  readonly addRole = signal<OrgRole>('MANAGER');
+  readonly addingMember = signal(false);
+  readonly addFormVisible = signal(false);
+
   constructor() {
     effect(() => {
       const value = this.data.value();
@@ -62,6 +68,44 @@ export class UsersManagementComponent {
 
   canChangeRole(member: OrganizationMemberResponseDto): boolean {
     return !this.isCurrentUser(member) && member.isActive;
+  }
+
+  toggleAddForm(): void {
+    this.addFormVisible.update((v) => !v);
+    if (!this.addFormVisible()) {
+      this.addEmail.set('');
+      this.addRole.set('MANAGER');
+    }
+  }
+
+  onAddMember(): void {
+    const email = this.addEmail().trim();
+    if (!email) {
+      this.toast.showError('Please enter an email address');
+      return;
+    }
+    const dto: AddOrganizationMemberDto = { email, role: this.addRole() };
+    this.addingMember.set(true);
+    this.membersService.addMember(dto).subscribe({
+      next: (member) => {
+        this.membersList.update((list) => [...list, member]);
+        this.addEmail.set('');
+        this.addRole.set('MANAGER');
+        this.addFormVisible.set(false);
+        this.toast.showSuccess(`${member.email} has been added to the organization`);
+      },
+      error: (err: HttpErrorResponse) => {
+        const status = err.status;
+        const msg =
+          status === 404
+            ? 'User with this email was not found. They must sign up first.'
+            : status === 409
+              ? 'This user is already a member of the organization.'
+              : err.error?.message ?? err.message ?? 'Failed to add member';
+        this.toast.showError(msg);
+      },
+      complete: () => this.addingMember.set(false),
+    });
   }
 
   onRoleChange(member: OrganizationMemberResponseDto, newRole: OrgRole): void {

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 
 import { environment } from '../../environments/environment';
 import type {
+  AddOrganizationMemberDto,
   OrganizationMemberResponseDto,
   UpdateOrganizationMemberRoleDto,
 } from '../shared/models';
@@ -21,6 +22,11 @@ export class OrganizationMembersService {
   /** GET /api/organization-members. List all active members with roles. */
   findAll(): Observable<OrganizationMemberResponseDto[]> {
     return this.http.get<OrganizationMemberResponseDto[]>(MEMBERS_URL);
+  }
+
+  /** POST /api/organization-members. Add existing user to organization by email. */
+  addMember(dto: AddOrganizationMemberDto): Observable<OrganizationMemberResponseDto> {
+    return this.http.post<OrganizationMemberResponseDto>(MEMBERS_URL, dto);
   }
 
   /** PATCH /api/organization-members/{id}/role. Update a member's role (id = organizationMember id). */
