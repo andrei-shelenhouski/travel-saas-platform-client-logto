@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 import { BookingsService } from '../../../services/bookings.service';
+import { PermissionService } from '../../../services/permission.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog.component';
 import type { BookingResponseDto } from '../../../shared/models';
@@ -28,6 +29,7 @@ export class BookingDetailComponent {
   private readonly router = inject(Router);
   private readonly bookingsService = inject(BookingsService);
   private readonly toast = inject(ToastService);
+  readonly permissions = inject(PermissionService);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
 

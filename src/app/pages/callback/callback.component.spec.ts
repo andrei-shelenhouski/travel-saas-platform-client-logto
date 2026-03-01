@@ -21,7 +21,7 @@ describe('CallbackComponent', () => {
             getAccessToken: () => of(null),
           },
         },
-        { provide: MeService, useValue: { getMe: () => of({}) } },
+        { provide: MeService, useValue: { getMe: () => of({ id: '', logtoId: '', createdAt: '', updatedAt: '', organizations: [] }) } },
         { provide: Router, useValue: { navigate: vi.fn() } },
       ],
     }).compileComponents();

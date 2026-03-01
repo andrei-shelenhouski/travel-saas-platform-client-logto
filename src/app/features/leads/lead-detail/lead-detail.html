@@ -11,7 +11,7 @@
           <h1 class="text-xl font-semibold text-gray-900">{{ l.contactName }}</h1>
           <p class="mt-1 text-sm text-gray-500">Lead</p>
         </div>
-        @if (l.status !== 'CONVERTED') {
+        @if (l.status !== 'CONVERTED' && permissions.canConvertLead()) {
           <button
             type="button"
             (click)="convertToClient()"

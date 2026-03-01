@@ -1,0 +1,93 @@
+<div class="space-y-4">
+  <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
+    <div>
+      <h1 class="text-xl font-semibold text-gray-900">User management</h1>
+      <p class="mt-1 text-sm text-gray-500">Manage organization members and roles.</p>
+    </div>
+    <a
+      routerLink="/app/dashboard"
+      class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+    >
+      Back to dashboard
+    </a>
+  </header>
+
+  @if (error()) {
+    <p class="text-sm text-red-600">{{ error() }}</p>
+  }
+
+  <div class="rounded-lg border border-gray-200 bg-white overflow-hidden">
+    @if (loading()) {
+      <div class="flex justify-center py-12">
+        <div class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" aria-hidden="true"></div>
+      </div>
+    } @else {
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Joined</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200">
+          @if (members().length === 0) {
+            <tr>
+              <td colspan="6" class="px-4 py-12 text-center text-gray-500">No members found.</td>
+            </tr>
+          } @else {
+            @for (member of members(); track member.id) {
+              <tr class="hover:bg-gray-50/50">
+                <td class="px-4 py-3 text-sm font-medium text-gray-900">
+                  {{ member.name || '—' }}
+                  @if (isCurrentUser(member)) {
+                    <span class="ml-1 text-xs text-gray-500">(you)</span>
+                  }
+                </td>
+                <td class="px-4 py-3 text-sm text-gray-600">{{ member.email || '—' }}</td>
+                <td class="px-4 py-3">
+                  @if (canChangeRole(member)) {
+                    <select
+                      [value]="member.role"
+                      (change)="onRoleChange(member, $any($event.target).value)"
+                      [disabled]="updatingRoleId() === member.id"
+                      class="rounded border border-gray-300 px-2 py-1 text-sm text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
+                    >
+                      @for (opt of roleOptions; track opt.value) {
+                        <option [value]="opt.value">{{ opt.label }}</option>
+                      }
+                    </select>
+                  } @else {
+                    <span
+                      class="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
+                      [class]="getRoleBadgeClass(member.role)"
+                    >
+                      {{ member.role }}
+                    </span>
+                  }
+                </td>
+                <td class="px-4 py-3">
+                  <span
+                    class="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
+                    [class]="member.isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'"
+                  >
+                    {{ member.isActive ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+                <td class="px-4 py-3 text-sm text-gray-600">{{ formatDate(member.createdAt) }}</td>
+                <td class="px-4 py-3">
+                  @if (updatingRoleId() === member.id) {
+                    <span class="text-xs text-gray-500">Updating…</span>
+                  }
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

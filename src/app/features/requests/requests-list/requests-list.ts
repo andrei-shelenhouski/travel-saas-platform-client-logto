@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
 
+import { PermissionService } from '../../../services/permission.service';
 import { RequestsService } from '../../../services/requests.service';
 import type { RequestResponseDto } from '../../../shared/models';
 
@@ -15,11 +16,18 @@ import type { RequestResponseDto } from '../../../shared/models';
 export class RequestsListComponent {
   private readonly requestsService = inject(RequestsService);
   private readonly router = inject(Router);
+  private readonly permissions = inject(PermissionService);
   private readonly data = rxResource({
     stream: () => this.requestsService.getList(),
   });
 
-  readonly requests = computed(() => this.data.value()?.data ?? []);
+  readonly requests = computed(() => {
+    const list = this.data.value()?.data ?? [];
+    if (!this.permissions.filterToOwnRecords()) return list;
+    const uid = this.permissions.currentUserId();
+    if (!uid) return list;
+    return list.filter((r) => r.managerId === uid);
+  });
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const err = this.data.error();

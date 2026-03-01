@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 import { LeadsService } from '../../../services/leads.service';
+import { PermissionService } from '../../../services/permission.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import type { LeadResponseDto } from '../../../shared/models';
 import { LeadStatus } from '../../../shared/models';
@@ -20,6 +21,7 @@ export class LeadDetailComponent {
   private readonly router = inject(Router);
   private readonly leadsService = inject(LeadsService);
   private readonly toast = inject(ToastService);
+  readonly permissions = inject(PermissionService);
 
   private readonly routeId = toSignal(
     this.route.paramMap.pipe(map((p) => p.get('id')))

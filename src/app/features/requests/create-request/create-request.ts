@@ -40,8 +40,8 @@ export class CreateRequestComponent implements OnInit {
 
     // Pre-fill from cache if available (e.g. user came from onboarding)
     const cached = this.meService.getMeData();
-    if (cached?.user?.id) {
-      this.managerId = cached.user.id;
+    if (cached?.id) {
+      this.managerId = cached.id;
     }
 
     // Always fetch current user so managerId is set (cache is cleared after org selection)
@@ -50,8 +50,8 @@ export class CreateRequestComponent implements OnInit {
       .pipe(take(1))
       .subscribe({
         next: (res) => {
-          if (res?.user?.id) {
-            this.managerId = res.user.id;
+          if (res?.id) {
+            this.managerId = res.id;
             this.cdr.markForCheck();
           }
         },

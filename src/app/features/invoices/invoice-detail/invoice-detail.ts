@@ -6,6 +6,7 @@ import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 import { InvoicesService } from '../../../services/invoices.service';
+import { PermissionService } from '../../../services/permission.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog.component';
 import type { InvoiceResponseDto } from '../../../shared/models';
@@ -36,6 +37,7 @@ export class InvoiceDetailComponent {
   private readonly router = inject(Router);
   private readonly invoicesService = inject(InvoicesService);
   private readonly toast = inject(ToastService);
+  readonly permissions = inject(PermissionService);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
 

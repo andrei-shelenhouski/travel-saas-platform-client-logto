@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 
 import { authGuard } from './auth/auth.guard';
 import { appGuard } from './guards/app.guard';
+import { adminGuard } from './guards/admin.guard';
 import { CallbackComponent } from './pages/callback/callback.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LandingComponent } from './pages/landing/landing.component';
@@ -31,6 +32,7 @@ import { InvoiceDetailComponent } from './features/invoices/invoice-detail/invoi
 import { CreateInvoiceComponent } from './features/invoices/create-invoice/create-invoice';
 import { SettingsComponent } from './features/onboarding/settings/settings';
 import { DashboardComponent } from './features/dashboard/dashboard';
+import { UsersManagementComponent } from './features/admin/users-management/users-management';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent, pathMatch: 'full' },
@@ -79,6 +81,7 @@ export const routes: Routes = [
       { path: 'invoices/:id', component: InvoiceDetailComponent },
       { path: 'invoices', component: InvoicesListComponent },
       { path: 'settings', component: SettingsComponent },
+      { path: 'admin/users', component: UsersManagementComponent, canActivate: [adminGuard] },
     ],
   },
   { path: '**', redirectTo: '' },

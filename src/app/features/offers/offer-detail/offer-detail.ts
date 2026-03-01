@@ -5,6 +5,7 @@ import { map } from 'rxjs/operators';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 import { OffersService } from '../../../services/offers.service';
+import { PermissionService } from '../../../services/permission.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import type { OfferResponseDto } from '../../../shared/models';
 import { OfferStatus } from '../../../shared/models';
@@ -43,6 +44,7 @@ export class OfferDetailComponent {
   private readonly router = inject(Router);
   private readonly offersService = inject(OffersService);
   private readonly toast = inject(ToastService);
+  private readonly permissions = inject(PermissionService);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
 
@@ -69,7 +71,12 @@ export class OfferDetailComponent {
 
   protected readonly allowedActions = computed(() => {
     const o = this.offer();
-    return o ? getAllowedTransitions(o.status as OfferStatus) : [];
+    if (!o) return [];
+    const actions = getAllowedTransitions(o.status as OfferStatus);
+    if (!this.permissions.canDeleteOffer() && actions.includes('DELETE')) {
+      return actions.filter((a) => a !== 'DELETE');
+    }
+    return actions;
   });
 
   protected readonly statusBadgeClass = computed(() => {

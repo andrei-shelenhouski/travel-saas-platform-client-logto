@@ -1,0 +1,104 @@
+import { Component, computed, effect, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
+import { rxResource } from '@angular/core/rxjs-interop';
+
+import { OrganizationMembersService } from '../../../services/organization-members.service';
+import { PermissionService } from '../../../services/permission.service';
+import { ToastService } from '../../../shared/services/toast.service';
+import type { OrganizationMemberResponseDto } from '../../../shared/models';
+import { OrgRole } from '../../../shared/models';
+
+const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
+  { value: 'ADMIN', label: 'Admin' },
+  { value: 'MANAGER', label: 'Manager' },
+  { value: 'AGENT', label: 'Agent' },
+];
+
+@Component({
+  selector: 'app-users-management',
+  standalone: true,
+  imports: [RouterLink, FormsModule],
+  templateUrl: './users-management.html',
+  styleUrl: './users-management.css',
+})
+export class UsersManagementComponent {
+  private readonly membersService = inject(OrganizationMembersService);
+  private readonly permissions = inject(PermissionService);
+  private readonly toast = inject(ToastService);
+
+  readonly roleOptions = ROLE_OPTIONS;
+  private readonly data = rxResource({
+    stream: () => this.membersService.findAll(),
+  });
+  /** Local list synced from API and updated optimistically when role changes. */
+  private readonly membersList = signal<OrganizationMemberResponseDto[]>([]);
+
+  readonly members = computed(() => this.membersList());
+  readonly loading = computed(() => this.data.isLoading());
+  readonly error = computed(() => {
+    const err = this.data.error();
+    if (err instanceof HttpErrorResponse) {
+      return err.error?.message ?? err.message ?? 'Failed to load members';
+    }
+    return undefined;
+  });
+
+  /** Member id (organizationMember.id) currently updating role. */
+  readonly updatingRoleId = signal<string | null>(null);
+
+  constructor() {
+    effect(() => {
+      const value = this.data.value();
+      if (value != null) this.membersList.set(value);
+    });
+  }
+
+  isCurrentUser(member: OrganizationMemberResponseDto): boolean {
+    const uid = this.permissions.currentUserId();
+    return uid != null && member.userId === uid;
+  }
+
+  canChangeRole(member: OrganizationMemberResponseDto): boolean {
+    return !this.isCurrentUser(member) && member.isActive;
+  }
+
+  onRoleChange(member: OrganizationMemberResponseDto, newRole: OrgRole): void {
+    if (newRole === (member.role as OrgRole) || !this.canChangeRole(member)) return;
+    this.updatingRoleId.set(member.id);
+    this.membersService.updateRole(member.id, { role: newRole }).subscribe({
+      next: (updated) => {
+        this.membersList.update((list) =>
+          list.map((m) => (m.id === updated.id ? updated : m))
+        );
+        this.toast.showSuccess(`Role updated to ${newRole}`);
+      },
+      error: (err) => {
+        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to update role');
+      },
+      complete: () => this.updatingRoleId.set(null),
+    });
+  }
+
+  getRoleBadgeClass(role: string): string {
+    switch (role) {
+      case 'ADMIN':
+        return 'bg-violet-100 text-violet-800';
+      case 'MANAGER':
+        return 'bg-sky-100 text-sky-800';
+      case 'AGENT':
+        return 'bg-amber-100 text-amber-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  }
+
+  formatDate(iso: string): string {
+    try {
+      return new Date(iso).toLocaleDateString(undefined, { dateStyle: 'medium' });
+    } catch {
+      return iso;
+    }
+  }
+}

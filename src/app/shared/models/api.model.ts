@@ -38,16 +38,68 @@ export interface PaginatedDto<T> {
   limit: number;
 }
 
-// ----- /api/me (GET) – response not in OpenAPI; common shape -----
+// ----- /api/me (GET) – OpenAPI: MeResponseDto -----
 
-export interface Organization {
+/** Role in organization (API enum). GET /api/me returns this per organization. */
+export const OrgRole = {
+  ADMIN: 'ADMIN',
+  MANAGER: 'MANAGER',
+  AGENT: 'AGENT',
+} as const;
+export type OrgRole = (typeof OrgRole)[keyof typeof OrgRole];
+
+/** OpenAPI: OrganizationWithRoleDto. Organization with current user's role. */
+export interface OrganizationWithRoleDto {
   id: string;
   name: string;
+  defaultCurrency: string;
+  invoicePrefix: string;
+  invoiceNextNumber: number;
+  createdAt: string;
+  updatedAt: string;
+  role: OrgRole;
 }
 
-export interface MeResponse {
-  user: { id: string; email?: string; name?: string };
-  organizations: Organization[];
+/** OpenAPI: MeResponseDto. GET /api/me response. */
+export interface MeResponseDto {
+  id: string;
+  logtoId: string;
+  email?: string;
+  name?: string;
+  picture?: string;
+  createdAt: string;
+  updatedAt: string;
+  organizations: OrganizationWithRoleDto[];
+}
+
+/** Legacy alias for components that only need id + name. */
+export type Organization = Pick<OrganizationWithRoleDto, 'id' | 'name'>;
+
+/** App-level role for RBAC (display). Maps from API OrgRole. */
+export const AppRole = {
+  Admin: 'Admin',
+  Manager: 'Manager',
+  Agent: 'Agent',
+} as const;
+export type AppRole = (typeof AppRole)[keyof typeof AppRole];
+
+// ----- Organization members (GET /api/organization-members, PATCH .../role) -----
+
+/** OpenAPI: OrganizationMemberResponseDto. Member of the current organization. */
+export interface OrganizationMemberResponseDto {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  role: OrgRole;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** OpenAPI: UpdateOrganizationMemberRoleDto. PATCH /api/organization-members/{id}/role body. */
+export interface UpdateOrganizationMemberRoleDto {
+  role: OrgRole;
 }
 
 // ----- Organizations -----

@@ -50,6 +50,15 @@
         i18n
         ><i class="pi pi-file"></i>Invoices</a
       >
+      @if (permissions.isAdmin()) {
+        <a
+          routerLink="/app/admin/users"
+          routerLinkActive="bg-primary-muted text-primary-700"
+          class="mt-4 flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+          i18n
+          ><i class="pi pi-users"></i>User management</a
+        >
+      }
       <a
         routerLink="/app/settings"
         routerLinkActive="bg-primary-muted text-primary-700"
@@ -77,6 +86,18 @@
           </div>
         }
         <span class="text-sm text-gray-600">{{ userDisplay }}</span>
+        <span
+          class="rounded-full px-2.5 py-0.5 text-xs font-medium"
+          [class]="
+            permissions.roleLabel() === 'Admin'
+              ? 'bg-violet-100 text-violet-800'
+              : permissions.roleLabel() === 'Agent'
+                ? 'bg-amber-100 text-amber-800'
+                : 'bg-sky-100 text-sky-800'
+          "
+        >
+          {{ permissions.roleLabel() }}
+        </span>
         <button
           type="button"
           (click)="logout()"

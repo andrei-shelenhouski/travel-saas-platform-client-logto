@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 import { RequestsListComponent } from './requests-list';
+import { PermissionService } from '../../../services/permission.service';
 import { RequestsService } from '../../../services/requests.service';
 
 describe('RequestsListComponent', () => {
@@ -17,6 +18,13 @@ describe('RequestsListComponent', () => {
         {
           provide: RequestsService,
           useValue: { getList: () => of({ data: [], total: 0, page: 1, limit: 20 }) },
+        },
+        {
+          provide: PermissionService,
+          useValue: {
+            filterToOwnRecords: () => false,
+            currentUserId: () => null,
+          },
         },
       ],
     }).compileComponents();
