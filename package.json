@@ -1,5 +1,5 @@
 {
-  "name": "tsp-client-auth-poc",
+  "name": "tsp-client-app",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
