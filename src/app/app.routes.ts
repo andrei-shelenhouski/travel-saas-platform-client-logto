@@ -10,9 +10,11 @@ import { CreateOrganizationComponent } from './features/onboarding/create-organi
 import { SelectOrganizationComponent } from './features/onboarding/select-organization/select-organization';
 import { MainLayoutComponent } from './layout/main-layout.component';
 import { LeadsListComponent } from './features/leads/leads-list/leads-list';
+import { LeadsKanbanComponent } from './features/leads/leads-kanban/leads-kanban';
 import { CreateLeadComponent } from './features/leads/create-lead/create-lead';
 import { LeadDetailComponent } from './features/leads/lead-detail/lead-detail';
 import { OffersListComponent } from './features/offers/offers-list/offers-list';
+import { OffersKanbanComponent } from './features/offers/offers-kanban/offers-kanban';
 import { CreateOfferComponent } from './features/offers/create-offer/create-offer';
 import { OfferDetailComponent } from './features/offers/offer-detail/offer-detail';
 import { OfferEditComponent } from './features/offers/offer-edit/offer-edit';
@@ -52,6 +54,7 @@ export const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       // Leads
       { path: 'leads/new', component: CreateLeadComponent },
+      { path: 'leads/kanban', component: LeadsKanbanComponent },
       { path: 'leads/:id', component: LeadDetailComponent },
       { path: 'leads', component: LeadsListComponent },
       // Clients: /app/clients/:id
@@ -64,6 +67,7 @@ export const routes: Routes = [
       { path: 'requests', component: RequestsListComponent },
       // Offers: /app/offers/:id (more specific first)
       { path: 'offers/new', component: CreateOfferComponent },
+      { path: 'offers/kanban', component: OffersKanbanComponent },
       { path: 'offers/:id/edit', component: OfferEditComponent },
       { path: 'offers/:id', component: OfferDetailComponent },
       { path: 'offers', component: OffersListComponent },

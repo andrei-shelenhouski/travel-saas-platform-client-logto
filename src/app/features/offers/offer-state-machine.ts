@@ -46,3 +46,24 @@ export function canEditOffer(status: OfferStatus): boolean {
 export function canCreateBooking(status: OfferStatus, hasBooking: boolean): boolean {
   return status === 'ACCEPTED' && !hasBooking;
 }
+
+/** Allowed target statuses for Kanban drag-and-drop (from current status). */
+export function getAllowedTargetStatuses(fromStatus: OfferStatus): OfferStatus[] {
+  switch (fromStatus) {
+    case 'DRAFT':
+      return ['SENT'];
+    case 'SENT':
+      return ['ACCEPTED', 'REJECTED', 'EXPIRED'];
+    case 'ACCEPTED':
+    case 'REJECTED':
+    case 'EXPIRED':
+      return [];
+    default:
+      return [];
+  }
+}
+
+/** Whether dragging from fromStatus to toStatus is a valid transition. */
+export function isAllowedOfferStatusTransition(fromStatus: string, toStatus: string): boolean {
+  return getAllowedTargetStatuses(fromStatus as OfferStatus).includes(toStatus as OfferStatus);
+}

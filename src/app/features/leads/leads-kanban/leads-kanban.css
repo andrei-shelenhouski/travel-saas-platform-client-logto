@@ -1,0 +1,17 @@
+.kanban-column {
+  max-height: calc(100vh - 12rem);
+}
+
+.kanban-card.cdk-drag-dragging {
+  opacity: 0.8;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.kanban-card.cdk-drag-placeholder {
+  opacity: 0.4;
+  border-style: dashed;
+}
+
+.cdk-drag-preview {
+  z-index: 1000;
+}

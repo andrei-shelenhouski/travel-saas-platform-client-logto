@@ -1,0 +1,95 @@
+<div class="space-y-4">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <h2 class="text-lg font-semibold text-gray-900">Leads · Kanban</h2>
+      <a
+        routerLink="/app/leads"
+        class="text-sm font-medium text-primary hover:underline"
+      >
+        List view
+      </a>
+    </div>
+    <div class="flex flex-wrap items-center gap-3">
+      <span class="text-sm text-gray-500">Columns:</span>
+      @for (s of [LeadStatus.NEW, LeadStatus.IN_PROGRESS, LeadStatus.LOST, LeadStatus.CONVERTED]; track s) {
+        <label class="inline-flex items-center gap-1.5 text-sm">
+          <input
+            type="checkbox"
+            [checked]="statusFilterChecked()[s] !== false"
+            (change)="setFilter(s, $any($event.target).checked)"
+            class="rounded border-gray-300"
+          />
+          <app-status-badge [status]="s" variant="lead" />
+        </label>
+      }
+    </div>
+    <a
+      routerLink="/app/leads/new"
+      class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
+    >
+      New lead
+    </a>
+  </div>
+
+  @if (error()) {
+    <p class="text-sm text-red-600">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="text-sm text-gray-500">Loading leads…</p>
+  } @else {
+    <div
+      class="flex gap-4 overflow-x-auto pb-2"
+      cdkDropListGroup
+    >
+      @for (column of columns(); track column.status) {
+        <div
+          class="kanban-column flex min-w-[280px] flex-1 flex-col rounded-lg border border-gray-200 bg-gray-50/80"
+          [id]="column.status"
+          cdkDropList
+          [cdkDropListData]="column.items"
+          [cdkDropListConnectedTo]="allListIds()"
+          (cdkDropListDropped)="onDrop($event, column.status)"
+        >
+          <div class="flex items-center justify-between border-b border-gray-200 bg-white px-3 py-2 rounded-t-lg">
+            <app-status-badge [status]="column.status" variant="lead" />
+            <span class="text-xs text-gray-500">{{ column.items.length }}</span>
+          </div>
+          <div class="flex-1 space-y-2 overflow-y-auto p-2 min-h-[120px]">
+            @for (lead of column.items; track lead.id) {
+              <div
+                class="kanban-card cursor-pointer rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition hover:shadow hover:border-primary-200"
+                role="button"
+                tabindex="0"
+                cdkDrag
+                [cdkDragData]="lead"
+                (click)="goToLead(lead)"
+                (keydown.enter)="goToLead(lead)"
+                (keydown.space)="goToLead(lead); $event.preventDefault()"
+              >
+                <div
+                  *cdkDragPreview
+                  class="flex flex-col gap-1 rounded-lg border-2 border-primary bg-white p-3 shadow-lg min-w-[240px]"
+                >
+                  <span class="font-medium text-gray-900">{{ lead.contactName }}</span>
+                  @if (lead.contactEmail || lead.contactPhone) {
+                    <span class="text-xs text-gray-500">{{ lead.contactEmail ?? lead.contactPhone }}</span>
+                  }
+                </div>
+                <div class="pointer-events-none">
+                  <span class="font-medium text-gray-900">{{ lead.contactName }}</span>
+                </div>
+                @if (lead.contactEmail || lead.contactPhone) {
+                  <p class="mt-0.5 text-xs text-gray-500 truncate">{{ lead.contactEmail ?? lead.contactPhone }}</p>
+                }
+                @if (lead.notes) {
+                  <p class="mt-1 text-xs text-gray-600 line-clamp-2">{{ lead.notes }}</p>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>
