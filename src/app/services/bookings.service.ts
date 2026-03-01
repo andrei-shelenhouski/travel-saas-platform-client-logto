@@ -9,12 +9,16 @@ import type {
   CreateBookingDto,
   PaginatedBookingResponseDto,
   UpdateBookingDto,
+  UpdateBookingStatusDto,
 } from '../shared/models';
 
 const BOOKINGS_URL = `${environment.baseUrl}/api/bookings`;
 
+const BOOKINGS_STATS_URL = `${environment.baseUrl}/api/bookings/stats`;
+
 /**
- * Bookings API. Aligned with openapi.json: GET/POST /api/bookings, GET/PATCH/DELETE /api/bookings/{id}.
+ * Bookings API. Aligned with openapi.json: GET/POST /api/bookings, GET/PATCH/DELETE /api/bookings/{id},
+ * GET /api/bookings/stats, PATCH /api/bookings/{id}/status.
  */
 @Injectable({ providedIn: 'root' })
 export class BookingsService {
@@ -32,12 +36,22 @@ export class BookingsService {
     return this.http.get<BookingResponseDto>(`${BOOKINGS_URL}/${id}`);
   }
 
+  /** GET /api/bookings/stats. Returns counts by status (e.g. { CONFIRMED: 10, CANCELLED: 2 }). */
+  getStatistics(): Observable<Record<string, number>> {
+    return this.http.get<Record<string, number>>(BOOKINGS_STATS_URL);
+  }
+
   create(dto: CreateBookingDto): Observable<BookingResponseDto> {
     return this.http.post<BookingResponseDto>(BOOKINGS_URL, dto);
   }
 
   update(id: string, dto: UpdateBookingDto): Observable<BookingResponseDto> {
     return this.http.patch<BookingResponseDto>(`${BOOKINGS_URL}/${id}`, dto);
+  }
+
+  /** PATCH /api/bookings/{id}/status. Use for status transitions. */
+  updateStatus(id: string, dto: UpdateBookingStatusDto): Observable<BookingResponseDto> {
+    return this.http.patch<BookingResponseDto>(`${BOOKINGS_URL}/${id}/status`, dto);
   }
 
   delete(id: string): Observable<BookingResponseDto> {

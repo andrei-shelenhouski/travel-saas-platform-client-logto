@@ -14,6 +14,7 @@ import type {
 } from '../shared/models';
 
 const OFFERS_URL = `${environment.baseUrl}/api/offers`;
+const OFFERS_STATS_URL = `${environment.baseUrl}/api/offers/stats`;
 
 /**
  * Offers API. All methods require Authorization + X-Organization-Id (interceptor).
@@ -34,6 +35,11 @@ export class OffersService {
 
   getById(id: string): Observable<OfferResponseDto> {
     return this.http.get<OfferResponseDto>(`${OFFERS_URL}/${id}`);
+  }
+
+  /** GET /api/offers/stats. Returns counts by status (DRAFT, SENT, ACCEPTED, REJECTED, EXPIRED). */
+  getStatistics(): Observable<Record<string, number>> {
+    return this.http.get<Record<string, number>>(OFFERS_STATS_URL);
   }
 
   create(dto: CreateOfferDto): Observable<OfferResponseDto> {

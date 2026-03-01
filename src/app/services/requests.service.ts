@@ -7,11 +7,13 @@ import type {
   CreateRequestDto,
   PaginatedRequestResponseDto,
   RequestResponseDto,
+  RequestStatus,
   UpdateRequestDto,
   UpdateRequestStatusDto,
 } from '../shared/models';
 
 const REQUESTS_URL = `${environment.baseUrl}/api/requests`;
+const REQUESTS_STATS_URL = `${environment.baseUrl}/api/requests/stats`;
 
 /**
  * Requests API. Aligned with openapi.json: GET/POST /api/requests,
@@ -21,12 +23,18 @@ const REQUESTS_URL = `${environment.baseUrl}/api/requests`;
 export class RequestsService {
   private readonly http = inject(HttpClient);
 
-  /** GET /api/requests. OpenAPI: no clientId filter; filter client-side if needed. */
-  getList(params?: { page?: number; limit?: number }): Observable<PaginatedRequestResponseDto> {
+  /** GET /api/requests. Optional status filter (NEW, IN_PROGRESS, OFFERED, CLOSED). */
+  getList(params?: { page?: number; limit?: number; status?: RequestStatus }): Observable<PaginatedRequestResponseDto> {
     let httpParams = new HttpParams();
     if (params?.page != null) httpParams = httpParams.set('page', params.page);
     if (params?.limit != null) httpParams = httpParams.set('limit', params.limit);
+    if (params?.status != null) httpParams = httpParams.set('status', params.status);
     return this.http.get<PaginatedRequestResponseDto>(REQUESTS_URL, { params: httpParams });
+  }
+
+  /** GET /api/requests/stats. Returns counts by status. */
+  getStatistics(): Observable<Record<string, number>> {
+    return this.http.get<Record<string, number>>(REQUESTS_STATS_URL);
   }
 
   getById(id: string): Observable<RequestResponseDto> {

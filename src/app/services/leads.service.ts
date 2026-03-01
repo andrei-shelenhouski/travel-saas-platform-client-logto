@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 import type {
   CreateLeadDto,
   LeadResponseDto,
+  LeadStatus,
   PaginatedLeadResponseDto,
   UpdateLeadDto,
   UpdateLeadStatusDto,
@@ -13,6 +14,7 @@ import type {
 import type { ConvertLeadToClientResponseDto } from '../shared/models';
 
 const LEADS_URL = `${environment.baseUrl}/api/leads`;
+const LEADS_STATS_URL = `${environment.baseUrl}/api/leads/stats`;
 
 /**
  * Leads API. Aligned with openapi.json: GET/POST /api/leads, GET/PATCH/DELETE /api/leads/{id},
@@ -23,11 +25,17 @@ const LEADS_URL = `${environment.baseUrl}/api/leads`;
 export class LeadsService {
   private readonly http = inject(HttpClient);
 
-  findAll(params?: { page?: number; limit?: number }): Observable<PaginatedLeadResponseDto> {
+  findAll(params?: { page?: number; limit?: number; status?: LeadStatus }): Observable<PaginatedLeadResponseDto> {
     let httpParams = new HttpParams();
     if (params?.page != null) httpParams = httpParams.set('page', params.page);
     if (params?.limit != null) httpParams = httpParams.set('limit', params.limit);
+    if (params?.status != null) httpParams = httpParams.set('status', params.status);
     return this.http.get<PaginatedLeadResponseDto>(LEADS_URL, { params: httpParams });
+  }
+
+  /** GET /api/leads/stats. Returns counts by status (e.g. { NEW: 5, IN_PROGRESS: 3, LOST: 1, CONVERTED: 2 }). */
+  getStatistics(): Observable<Record<string, number>> {
+    return this.http.get<Record<string, number>>(LEADS_STATS_URL);
   }
 
   findById(id: string): Observable<LeadResponseDto> {

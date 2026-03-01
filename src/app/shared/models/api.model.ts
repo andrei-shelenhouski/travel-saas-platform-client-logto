@@ -208,6 +208,11 @@ export interface UpdateBookingDto {
   status?: BookingStatus;
 }
 
+/** OpenAPI schema: UpdateBookingStatusDto. PATCH /api/bookings/{id}/status request body. */
+export interface UpdateBookingStatusDto {
+  status: BookingStatus;
+}
+
 // ----- Invoices (OpenAPI: CreateInvoiceDto, InvoiceResponseDto, UpdateInvoiceDto) -----
 
 export interface CreateInvoiceDto {

@@ -28,6 +28,7 @@ import { InvoicesListComponent } from './features/invoices/invoices-list/invoice
 import { InvoiceDetailComponent } from './features/invoices/invoice-detail/invoice-detail';
 import { CreateInvoiceComponent } from './features/invoices/create-invoice/create-invoice';
 import { SettingsComponent } from './features/onboarding/settings/settings';
+import { DashboardComponent } from './features/dashboard/dashboard';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent, pathMatch: 'full' },
@@ -47,7 +48,8 @@ export const routes: Routes = [
     component: MainLayoutComponent,
     canActivate: [appGuard],
     children: [
-      { path: '', pathMatch: 'full', redirectTo: 'leads' },
+      { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+      { path: 'dashboard', component: DashboardComponent },
       // Leads
       { path: 'leads/new', component: CreateLeadComponent },
       { path: 'leads/:id', component: LeadDetailComponent },
