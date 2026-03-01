@@ -23,7 +23,7 @@ const REQUESTS_STATS_URL = `${environment.baseUrl}/api/requests/stats`;
 export class RequestsService {
   private readonly http = inject(HttpClient);
 
-  /** GET /api/requests. Optional status filter (NEW, IN_PROGRESS, OFFERED, CLOSED). */
+  /** GET /api/requests. Optional status filter (DRAFT, IN_PROGRESS, WAITING_CLIENT, CLOSED). */
   getList(params?: { page?: number; limit?: number; status?: RequestStatus }): Observable<PaginatedRequestResponseDto> {
     let httpParams = new HttpParams();
     if (params?.page != null) httpParams = httpParams.set('page', params.page);

@@ -25,6 +25,7 @@ export function getAllowedTransitions(status: OfferStatus): OfferAction[] {
     case 'DRAFT':
       return [OfferAction.EDIT, OfferAction.SEND, OfferAction.DELETE];
     case 'SENT':
+    case 'VIEWED':
       return [OfferAction.ACCEPT, OfferAction.REJECT, OfferAction.EXPIRE];
     case 'ACCEPTED':
       return [OfferAction.CREATE_BOOKING, OfferAction.DUPLICATE];
@@ -53,6 +54,7 @@ export function getAllowedTargetStatuses(fromStatus: OfferStatus): OfferStatus[]
     case 'DRAFT':
       return ['SENT'];
     case 'SENT':
+    case 'VIEWED':
       return ['ACCEPTED', 'REJECTED', 'EXPIRED'];
     case 'ACCEPTED':
     case 'REJECTED':

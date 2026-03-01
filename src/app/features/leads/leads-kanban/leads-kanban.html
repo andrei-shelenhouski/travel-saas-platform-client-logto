@@ -11,7 +11,7 @@
     </div>
     <div class="flex flex-wrap items-center gap-3">
       <span class="text-sm text-gray-500">Columns:</span>
-      @for (s of [LeadStatus.NEW, LeadStatus.IN_PROGRESS, LeadStatus.LOST, LeadStatus.CONVERTED]; track s) {
+      @for (s of [LeadStatus.NEW, LeadStatus.CONTACTED, LeadStatus.QUALIFIED, LeadStatus.LOST, LeadStatus.CONVERTED]; track s) {
         <label class="inline-flex items-center gap-1.5 text-sm">
           <input
             type="checkbox"

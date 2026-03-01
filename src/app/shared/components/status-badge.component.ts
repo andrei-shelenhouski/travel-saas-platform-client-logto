@@ -4,7 +4,8 @@ export type StatusBadgeVariant = 'lead' | 'offer' | 'generic';
 
 const LEAD_STATUS_CLASS: Record<string, string> = {
   NEW: 'bg-blue-100 text-blue-800',
-  IN_PROGRESS: 'bg-amber-100 text-amber-800',
+  CONTACTED: 'bg-amber-100 text-amber-800',
+  QUALIFIED: 'bg-cyan-100 text-cyan-800',
   LOST: 'bg-red-100 text-red-800',
   CONVERTED: 'bg-green-100 text-green-800',
 };
@@ -12,6 +13,7 @@ const LEAD_STATUS_CLASS: Record<string, string> = {
 const OFFER_STATUS_CLASS: Record<string, string> = {
   DRAFT: 'bg-gray-100 text-gray-800',
   SENT: 'bg-blue-100 text-blue-800',
+  VIEWED: 'bg-sky-100 text-sky-800',
   ACCEPTED: 'bg-green-100 text-green-800',
   REJECTED: 'bg-red-100 text-red-800',
   EXPIRED: 'bg-gray-100 text-gray-500',

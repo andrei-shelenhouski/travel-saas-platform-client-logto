@@ -17,7 +17,8 @@ export type LeadSource = (typeof LeadSource)[keyof typeof LeadSource];
 
 export const LeadStatus = {
   NEW: 'NEW',
-  IN_PROGRESS: 'IN_PROGRESS',
+  CONTACTED: 'CONTACTED',
+  QUALIFIED: 'QUALIFIED',
   LOST: 'LOST',
   CONVERTED: 'CONVERTED',
 } as const;
@@ -134,12 +135,13 @@ export interface UpdateOfferDto {
 
 /** OpenAPI schema: UpdateOfferStatusDto. PATCH /api/offers/{id}/status request body. */
 export interface UpdateOfferStatusDto {
-  status: 'SENT' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED';
+  status: 'SENT' | 'VIEWED' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED';
 }
 
 export const OfferStatus = {
   DRAFT: 'DRAFT',
   SENT: 'SENT',
+  VIEWED: 'VIEWED',
   ACCEPTED: 'ACCEPTED',
   REJECTED: 'REJECTED',
   EXPIRED: 'EXPIRED',
@@ -180,9 +182,11 @@ export interface CreateBookingDto {
   offerId: string; // uuid
 }
 
-/** OpenAPI: BookingResponseDto.status and UpdateBookingDto.status enum. */
+/** OpenAPI: filter + UpdateBookingStatusDto use PENDING, CONFIRMED, PAID, CANCELLED; response may use CONFIRMED, CANCELLED. */
 export const BookingStatus = {
+  PENDING: 'PENDING',
   CONFIRMED: 'CONFIRMED',
+  PAID: 'PAID',
   CANCELLED: 'CANCELLED',
 } as const;
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus];
@@ -290,11 +294,11 @@ export interface UpdateClientDto {
 
 // ----- Requests (OpenAPI: GET/POST /api/requests, GET/PATCH/DELETE /api/requests/{id}, PATCH status) -----
 
-/** OpenAPI: RequestResponseDto.status and UpdateRequestStatusDto.status enum. */
+/** OpenAPI: filter + UpdateRequestStatusDto use DRAFT, IN_PROGRESS, WAITING_CLIENT, CLOSED. Response DTO may use NEW, IN_PROGRESS, OFFERED, CLOSED. */
 export const RequestStatus = {
-  NEW: 'NEW',
+  DRAFT: 'DRAFT',
   IN_PROGRESS: 'IN_PROGRESS',
-  OFFERED: 'OFFERED',
+  WAITING_CLIENT: 'WAITING_CLIENT',
   CLOSED: 'CLOSED',
 } as const;
 export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus];

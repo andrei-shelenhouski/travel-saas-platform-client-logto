@@ -13,6 +13,7 @@ const FILTER_TABS: { value: FilterTab; label: string }[] = [
   { value: 'ALL', label: 'All' },
   { value: OfferStatus.DRAFT, label: 'Draft' },
   { value: OfferStatus.SENT, label: 'Sent' },
+  { value: OfferStatus.VIEWED, label: 'Viewed' },
   { value: OfferStatus.ACCEPTED, label: 'Accepted' },
   { value: OfferStatus.REJECTED, label: 'Rejected' },
   { value: OfferStatus.EXPIRED, label: 'Expired' },
@@ -85,7 +86,7 @@ export class OffersListComponent {
   rowClass(offer: OfferResponseDto): string {
     const base =
       'cursor-pointer hover:bg-gray-50 transition-colors';
-    if (offer.status === OfferStatus.SENT) {
+    if (offer.status === OfferStatus.SENT || offer.status === OfferStatus.VIEWED) {
       return `${base} bg-blue-50/50`;
     }
     if (offer.status === OfferStatus.EXPIRED) {

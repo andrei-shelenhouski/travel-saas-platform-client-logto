@@ -33,7 +33,7 @@ export class LeadsService {
     return this.http.get<PaginatedLeadResponseDto>(LEADS_URL, { params: httpParams });
   }
 
-  /** GET /api/leads/stats. Returns counts by status (e.g. { NEW: 5, IN_PROGRESS: 3, LOST: 1, CONVERTED: 2 }). */
+  /** GET /api/leads/stats. Returns counts by status (e.g. { NEW: 5, CONTACTED: 3, QUALIFIED: 2, LOST: 1, CONVERTED: 2 }). */
   getStatistics(): Observable<Record<string, number>> {
     return this.http.get<Record<string, number>>(LEADS_STATS_URL);
   }

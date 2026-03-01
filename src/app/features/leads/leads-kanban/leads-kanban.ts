@@ -18,7 +18,8 @@ import { LeadStatus } from '../../../shared/models';
 
 const LEAD_STATUS_ORDER: string[] = [
   LeadStatus.NEW,
-  LeadStatus.IN_PROGRESS,
+  LeadStatus.CONTACTED,
+  LeadStatus.QUALIFIED,
   LeadStatus.LOST,
   LeadStatus.CONVERTED,
 ];

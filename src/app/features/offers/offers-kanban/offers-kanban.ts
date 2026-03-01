@@ -20,6 +20,7 @@ import { OfferStatus } from '../../../shared/models';
 const OFFER_STATUS_ORDER: string[] = [
   OfferStatus.DRAFT,
   OfferStatus.SENT,
+  OfferStatus.VIEWED,
   OfferStatus.ACCEPTED,
   OfferStatus.REJECTED,
   OfferStatus.EXPIRED,
