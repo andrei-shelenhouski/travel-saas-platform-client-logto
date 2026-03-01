@@ -9,7 +9,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "tsp-client-auth-poc": {
+    "tsp-client-app": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -37,6 +37,7 @@
               }
             ],
             "styles": [
+              "src/material-theme.scss",
               "src/styles.css"
             ],
             "polyfills": [
@@ -78,10 +79,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "tsp-client-auth-poc:build:production"
+              "buildTarget": "tsp-client-app:build:production"
             },
             "development": {
-              "buildTarget": "tsp-client-auth-poc:build:development"
+              "buildTarget": "tsp-client-app:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -92,7 +93,7 @@
         "extract-i18n": {
           "builder": "@angular/build:extract-i18n",
           "options": {
-            "buildTarget": "tsp-client-auth-poc:build",
+            "buildTarget": "tsp-client-app:build",
             "format": "json",
             "outputPath": "src/locale",
             "outFile": "en-US.json"

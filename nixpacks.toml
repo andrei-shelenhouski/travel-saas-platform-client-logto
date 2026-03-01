@@ -30,7 +30,7 @@ server {
     server_name _;
     absolute_redirect off;
     port_in_redirect off;
-    root /app/dist/tsp-client-auth-poc/browser;
+    root /app/dist/tsp-client-app/browser;
     index index.html;
 
     # Fallback to Russian if no preference defined by browser
