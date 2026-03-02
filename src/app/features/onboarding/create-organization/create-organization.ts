@@ -1,14 +1,16 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { take } from 'rxjs';
 
 import { OrganizationStateService } from '../../../services/organization-state.service';
 import { MeService } from '../../../services/me.service';
 import { OrganizationsService } from '../../../services/organizations.service';
+import { RoleService } from '../../../services/role.service';
 
 @Component({
   selector: 'app-create-organization',
-  imports: [FormsModule],
+  imports: [FormsModule, RouterLink],
   templateUrl: './create-organization.html',
   styleUrl: './create-organization.css',
 })
@@ -16,7 +18,14 @@ export class CreateOrganizationComponent {
   private readonly organizationsService = inject(OrganizationsService);
   private readonly orgState = inject(OrganizationStateService);
   private readonly meService = inject(MeService);
+  private readonly roleService = inject(RoleService);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
+  /** True when opened from app (add org) vs onboarding. */
+  get fromApp(): boolean {
+    return this.route.snapshot.data['fromApp'] === true;
+  }
 
   name = '';
   readonly loading = signal(false);
@@ -31,7 +40,16 @@ export class CreateOrganizationComponent {
         if (orgId) {
           this.orgState.setActiveOrganization(orgId, this.name.trim());
           this.meService.clearMeData();
-          this.router.navigate(['/app']);
+          if (this.fromApp) {
+            this.meService.getMe().pipe(take(1)).subscribe({
+              next: () => {
+                this.roleService.refreshRole();
+                this.router.navigate(['/app/dashboard']);
+              },
+            });
+          } else {
+            this.router.navigate(['/app/dashboard']);
+          }
         } else {
           this.error.set('Invalid response from server');
         }

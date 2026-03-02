@@ -81,6 +81,11 @@ export const routes: Routes = [
       { path: 'invoices/:id', component: InvoiceDetailComponent },
       { path: 'invoices', component: InvoicesListComponent },
       { path: 'settings', component: SettingsComponent },
+      {
+        path: 'organizations/new',
+        component: CreateOrganizationComponent,
+        data: { fromApp: true },
+      },
       { path: 'admin/users', component: UsersManagementComponent, canActivate: [adminGuard] },
     ],
   },

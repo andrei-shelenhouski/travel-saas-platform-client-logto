@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
@@ -7,6 +6,7 @@ import { CreateOrganizationComponent } from './create-organization';
 import { OrganizationsService } from '../../../services/organizations.service';
 import { OrganizationStateService } from '../../../services/organization-state.service';
 import { MeService } from '../../../services/me.service';
+import { RoleService } from '../../../services/role.service';
 
 describe('CreateOrganizationComponent', () => {
   let component: CreateOrganizationComponent;
@@ -27,8 +27,8 @@ describe('CreateOrganizationComponent', () => {
             setActiveOrganization: vi.fn(),
           },
         },
-        { provide: MeService, useValue: { clearMeData: vi.fn() } },
-        { provide: Router, useValue: { navigate: vi.fn() } },
+        { provide: MeService, useValue: { clearMeData: vi.fn(), getMe: () => of({}) } },
+        { provide: RoleService, useValue: { refreshRole: vi.fn() } },
       ],
     }).compileComponents();
 
