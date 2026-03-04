@@ -1,14 +1,21 @@
 {
   "hosting": {
-    "source": ".",
+    "public": "dist/tsp-client-auth-poc/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
     ],
-    "frameworksBackend": {
-      "region": "europe-west1"
-    }
+    "rewrites": [
+      {
+        "source": "/en/**",
+        "destination": "/en-US/index.html"
+      },
+      {
+        "source": "**",
+        "destination": "/ru-BY/index.html"
+      }
+    ]
   },
   "emulators": {
     "auth": {
