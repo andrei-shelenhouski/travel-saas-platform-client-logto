@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "public": "dist/tsp-client-auth-poc/browser",
+    "public": "dist/tsp-client-app/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
