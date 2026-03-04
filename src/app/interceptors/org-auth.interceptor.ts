@@ -1,11 +1,12 @@
 import { HttpHandlerFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { Auth, idToken } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
+
 import { switchMap, take, throwError } from 'rxjs';
 
-import { OrganizationStateService } from '../services/organization-state.service';
 import { environment } from '../../environments/environment';
+import { OrganizationStateService } from '../services/organization-state.service';
 
 const API_BASE = environment.baseUrl;
 const SKIP_ORG_PATTERNS = [
@@ -15,24 +16,15 @@ const SKIP_ORG_PATTERNS = [
 
 function shouldSkipOrgHeader(req: HttpRequest<unknown>): boolean {
   const url = req.url.replace(API_BASE, '') || req.url;
-  return SKIP_ORG_PATTERNS.some(
-    (p) => url.includes(p.url) && req.method === p.method
-  );
+  return SKIP_ORG_PATTERNS.some((p) => url.includes(p.url) && req.method === p.method);
 }
 
-/**
- * Uses OidcSecurityService directly to avoid NG0200 circular dependency
- * (AuthService → OidcSecurityService → HttpClient → this interceptor → AuthService).
- */
-export function orgAuthInterceptor(
-  req: HttpRequest<unknown>,
-  next: HttpHandlerFn
-) {
-  const oidc = inject(OidcSecurityService);
+export function orgAuthInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn) {
+  const auth = inject(Auth);
   const orgState = inject(OrganizationStateService);
   const router = inject(Router);
 
-  return oidc.getAccessToken().pipe(
+  return idToken(auth).pipe(
     take(1),
     switchMap((token) => {
       if (!token) {
@@ -54,6 +46,6 @@ export function orgAuthInterceptor(
       }
 
       return next(req.clone({ setHeaders }));
-    })
+    }),
   );
 }
