@@ -4,10 +4,12 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
 import { OrganizationStateService } from '../services/organization-state.service';
 
-export const appGuard: CanActivateFn = () => {
+export const appGuard: CanActivateFn = async () => {
   const auth = inject(AuthService);
   const orgState = inject(OrganizationStateService);
   const router = inject(Router);
+
+  await auth.whenReady();
 
   if (!auth.isAuthenticated()) {
     return router.createUrlTree(['/']);
