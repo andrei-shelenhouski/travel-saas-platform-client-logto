@@ -1,11 +1,11 @@
-import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable } from '@angular/core';
 
 import { AuthService } from '../auth/auth.service';
+import { OrgRole } from '../shared/models';
 import { MeService } from './me.service';
 import { OrganizationStateService } from './organization-state.service';
-import type { AppRole } from '../shared/models';
-import { OrgRole } from '../shared/models';
 
+import type { AppRole } from '../shared/models';
 function orgRoleToAppRole(role: string): AppRole | string {
   switch (role) {
     case OrgRole.ADMIN:
@@ -29,11 +29,7 @@ export class RoleService {
   private readonly authService = inject(AuthService);
   private readonly orgState = inject(OrganizationStateService);
 
-  /** Trigger re-read of role (e.g. after getMe() completes). */
-  private readonly refresh = signal(0);
-
   readonly role = computed<AppRole | string | null>(() => {
-    this.refresh();
     const me = this.meService.getMeData();
     const activeOrgId = this.orgState.getActiveOrganization();
     if (me?.organizations && activeOrgId) {
@@ -60,10 +56,5 @@ export class RoleService {
 
   isManager(): boolean {
     return this.roleOrDefault() === 'Manager';
-  }
-
-  /** Call after getMe() so role from API is picked up. */
-  refreshRole(): void {
-    this.refresh.update((n) => n + 1);
   }
 }

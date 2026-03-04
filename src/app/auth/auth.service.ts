@@ -2,12 +2,13 @@ import { computed, inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   Auth,
-  GoogleAuthProvider,
   getIdTokenResult,
+  GoogleAuthProvider,
   signInWithRedirect,
   signOut as firebaseSignOut,
   user,
 } from '@angular/fire/auth';
+
 import { catchError, from, of, switchMap } from 'rxjs';
 
 interface UserData {
@@ -27,7 +28,7 @@ export class AuthService {
   private readonly firebaseUser = toSignal(user(this.auth), { initialValue: null });
   private readonly firebaseIdTokenResult = toSignal(
     user(this.auth).pipe(
-      switchMap(u => (u ? from(getIdTokenResult(u)).pipe(catchError(() => of(null))) : of(null))),
+      switchMap((u) => (u ? from(getIdTokenResult(u)).pipe(catchError(() => of(null))) : of(null))),
     ),
     { initialValue: null },
   );
@@ -64,11 +65,6 @@ export class AuthService {
     return this.firebaseIdTokenResult()?.token ?? null;
   });
 
-  readonly accessToken = computed(() => {
-    if (!this.isAuthenticated()) return null;
-    return this.firebaseIdTokenResult()?.token ?? null;
-  });
-
   /** Resolves once Firebase has settled the initial auth state. */
   async whenReady(): Promise<void> {
     await this.auth.authStateReady();
@@ -81,11 +77,5 @@ export class AuthService {
 
   signOut(): void {
     void firebaseSignOut(this.auth);
-  }
-
-  refreshAuth(): void {
-    const currentUser = this.auth.currentUser;
-    if (!currentUser) return;
-    void currentUser.getIdToken(true);
   }
 }

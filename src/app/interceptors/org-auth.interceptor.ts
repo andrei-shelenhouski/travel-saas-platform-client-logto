@@ -9,14 +9,15 @@ import { environment } from '../../environments/environment';
 import { OrganizationStateService } from '../services/organization-state.service';
 
 const API_BASE = environment.baseUrl;
-const SKIP_ORG_PATTERNS = [
-  { url: '/api/me', method: 'GET' },
-  { url: '/api/organizations', method: 'POST' },
-];
 
+/** Routes that don't require the X-Organization-Id header. */
 function shouldSkipOrgHeader(req: HttpRequest<unknown>): boolean {
-  const url = req.url.replace(API_BASE, '') || req.url;
-  return SKIP_ORG_PATTERNS.some((p) => url.includes(p.url) && req.method === p.method);
+  const url = req.url.replace(API_BASE, '');
+  // Skip org header for these endpoints
+  return (
+    (url === '/api/me' && req.method === 'GET') ||
+    (url === '/api/organizations' && req.method === 'POST')
+  );
 }
 
 export function orgAuthInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn) {

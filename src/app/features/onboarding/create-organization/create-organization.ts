@@ -1,10 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
 import { take } from 'rxjs';
 
-import { OrganizationStateService } from '../../../services/organization-state.service';
 import { MeService } from '../../../services/me.service';
+import { OrganizationStateService } from '../../../services/organization-state.service';
 import { OrganizationsService } from '../../../services/organizations.service';
 import { RoleService } from '../../../services/role.service';
 
@@ -41,12 +42,15 @@ export class CreateOrganizationComponent {
           this.orgState.setActiveOrganization(orgId, this.name.trim());
           this.meService.clearMeData();
           if (this.fromApp) {
-            this.meService.getMe().pipe(take(1)).subscribe({
-              next: () => {
-                this.roleService.refreshRole();
-                this.router.navigate(['/app/dashboard']);
-              },
-            });
+            this.meService
+              .getMe()
+              .pipe(take(1))
+              .subscribe({
+                next: () => {
+                  // Role is now automatically updated via signal reactivity
+                  this.router.navigate(['/app/dashboard']);
+                },
+              });
           } else {
             this.router.navigate(['/app/dashboard']);
           }
@@ -55,9 +59,7 @@ export class CreateOrganizationComponent {
         }
       },
       error: (err) => {
-        this.error.set(
-          err.error?.message ?? err.message ?? 'Failed to create organization'
-        );
+        this.error.set(err.error?.message ?? err.message ?? 'Failed to create organization');
       },
       complete: () => this.loading.set(false),
     });

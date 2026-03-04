@@ -1,5 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+
 import { take } from 'rxjs';
 
 import { AuthService } from '../auth/auth.service';
@@ -8,6 +9,7 @@ import { OrganizationStateService } from '../services/organization-state.service
 import { PermissionService } from '../services/permission.service';
 import { RoleService } from '../services/role.service';
 import { ToastComponent } from '../shared/components/toast.component';
+
 import type { OrganizationWithRoleDto } from '../shared/models';
 
 @Component({
@@ -57,7 +59,9 @@ export class MainLayoutComponent implements OnInit {
         .getMe()
         .pipe(take(1))
         .subscribe({
-          next: () => this.roleService.refreshRole(),
+          next: () => {
+            // Role is now automatically updated via signal reactivity
+          },
         });
     }
   }
@@ -108,7 +112,9 @@ export class MainLayoutComponent implements OnInit {
         .getMe()
         .pipe(take(1))
         .subscribe({
-          next: () => this.roleService.refreshRole(),
+          next: () => {
+            // Role is now automatically updated via signal reactivity
+          },
         });
     });
   }

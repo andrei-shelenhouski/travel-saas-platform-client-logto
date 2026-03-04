@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 import { AuthService } from '../../auth/auth.service';
@@ -10,10 +10,6 @@ import { AuthService } from '../../auth/auth.service';
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.css',
 })
-export class LandingComponent implements OnInit {
+export class LandingComponent {
   protected readonly authService = inject(AuthService);
-
-  ngOnInit(): void {
-    this.authService.refreshAuth();
-  }
 }

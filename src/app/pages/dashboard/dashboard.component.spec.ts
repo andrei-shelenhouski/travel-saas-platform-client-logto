@@ -1,8 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { DashboardComponent } from './dashboard.component';
 import { AuthService } from '../../auth/auth.service';
+import { DashboardComponent } from './dashboard.component';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -17,7 +17,7 @@ describe('DashboardComponent', () => {
           provide: AuthService,
           useValue: {
             userData: () => null,
-            accessToken: () => null,
+            idToken: () => null,
             signOut: vi.fn(),
           },
         },

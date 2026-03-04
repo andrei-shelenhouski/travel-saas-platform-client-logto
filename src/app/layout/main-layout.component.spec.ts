@@ -1,12 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { MainLayoutComponent } from './main-layout.component';
 import { AuthService } from '../auth/auth.service';
 import { MeService } from '../services/me.service';
 import { OrganizationStateService } from '../services/organization-state.service';
 import { PermissionService } from '../services/permission.service';
 import { RoleService } from '../services/role.service';
+import { MainLayoutComponent } from './main-layout.component';
 
 const mockMeData = { id: '', logtoId: '', createdAt: '', updatedAt: '', organizations: [] };
 
@@ -50,7 +50,6 @@ describe('MainLayoutComponent', () => {
             isAdmin: () => false,
             isAgent: () => false,
             isManager: () => true,
-            refreshRole: vi.fn(),
           },
         },
         {
