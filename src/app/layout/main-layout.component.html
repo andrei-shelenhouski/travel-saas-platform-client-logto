@@ -86,11 +86,7 @@
           }
         </button>
         @if (orgSwitcherOpen()) {
-          <div
-            class="fixed inset-0 z-10"
-            (click)="closeOrgSwitcher()"
-            aria-hidden="true"
-          ></div>
+          <div class="fixed inset-0 z-10" (click)="closeOrgSwitcher()" aria-hidden="true"></div>
           <div
             class="absolute left-0 top-full z-20 mt-1 min-w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
             role="listbox"
@@ -126,20 +122,20 @@
         }
       </div>
       <div class="flex items-center gap-3">
-        @if (userPicture) {
+        @if (userPicture(); as userPicture) {
           <img
             [src]="userPicture"
-            [alt]="userDisplay"
+            [alt]="userDisplay()"
             class="h-9 w-9 rounded-full object-cover ring-2 ring-gray-200"
           />
         } @else {
           <div
             class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-100 text-sm font-medium text-primary ring-2 ring-gray-200"
           >
-            {{ userInitial }}
+            {{ userInitial() }}
           </div>
         }
-        <span class="text-sm text-gray-600">{{ userDisplay }}</span>
+        <span class="text-sm text-gray-600">{{ userDisplay() }}</span>
         <span
           class="rounded-full px-2.5 py-0.5 text-xs font-medium"
           [class]="
