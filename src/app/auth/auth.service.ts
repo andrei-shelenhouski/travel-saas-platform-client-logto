@@ -25,11 +25,6 @@ export class AuthService {
 
   readonly isAuthenticated = computed(() => !!this.firebaseUser());
 
-  readonly idToken = computed(() => {
-    if (!this.isAuthenticated()) return null;
-    return this.firebaseIdTokenResult()?.token ?? null;
-  });
-
   /** Resolves once Firebase has settled the initial auth state. */
   async whenReady(): Promise<void> {
     await this.auth.authStateReady();
