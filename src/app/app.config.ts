@@ -1,3 +1,4 @@
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import {
   ApplicationConfig,
   isDevMode,
@@ -5,11 +6,12 @@ import {
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
-import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { getAnalytics, provideAnalytics, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
+import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { initializeAppCheck, provideAppCheck, ReCaptchaEnterpriseProvider } from '@angular/fire/app-check';
+import { getAuth, provideAuth as provideAuth_alias } from '@angular/fire/auth';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeuix/themes/aura';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import {
   provideAuth,
@@ -17,12 +19,14 @@ import {
   StsConfigStaticLoader,
   withAppInitializerAuthCheck,
 } from 'angular-auth-oidc-client';
+import { providePrimeNG } from 'primeng/config';
 
 import { buildAngularAuthConfig, UserScope } from '@logto/angular';
+import Aura from '@primeuix/themes/aura';
 
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
-import { orgAuthInterceptor, errorHandlerInterceptor } from './interceptors/index';
+import { errorHandlerInterceptor, orgAuthInterceptor } from './interceptors/index';
 
 function authConfigLoaderFactory(localeId: string): StsConfigLoader {
   const isProduction = !isDevMode();
@@ -73,5 +77,15 @@ export const appConfig: ApplicationConfig = {
       },
       withAppInitializerAuthCheck(),
     ),
+    provideFirebaseApp(() => initializeApp(environment.firebaseOptions)),
+    provideAuth_alias(() => getAuth()),
+    provideAnalytics(() => getAnalytics()),
+    ScreenTrackingService,
+    UserTrackingService,
+    provideAppCheck(() => {
+      // TODO get a reCAPTCHA Enterprise here https://console.cloud.google.com/security/recaptcha?project=_
+      const provider = new ReCaptchaEnterpriseProvider(environment.reCaptchaKey);
+      return initializeAppCheck(undefined, { provider, isTokenAutoRefreshEnabled: true });
+    }),
   ],
 };
