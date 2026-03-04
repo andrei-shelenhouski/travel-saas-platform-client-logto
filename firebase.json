@@ -1,0 +1,29 @@
+{
+  "hosting": {
+    "public": "dist/tsp-client-app/browser",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "/en/**",
+        "destination": "/en-US/index.html"
+      },
+      {
+        "source": "**",
+        "destination": "/ru-BY/index.html"
+      }
+    ]
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
+  }
+}
