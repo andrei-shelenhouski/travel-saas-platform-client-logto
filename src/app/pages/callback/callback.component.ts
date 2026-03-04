@@ -1,7 +1,8 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { Auth, authState } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { EMPTY, filter, switchMap, take } from 'rxjs';
-import { OidcSecurityService } from 'angular-auth-oidc-client';
+
+import { EMPTY, switchMap, take } from 'rxjs';
 
 import { MeService } from '../../services/me.service';
 
@@ -12,26 +13,22 @@ import { MeService } from '../../services/me.service';
   styleUrl: './callback.component.css',
 })
 export class CallbackComponent implements OnInit {
-  private readonly oidcSecurityService = inject(OidcSecurityService);
+  private readonly auth = inject(Auth);
   private readonly meService = inject(MeService);
   private readonly router = inject(Router);
 
   ngOnInit(): void {
-    this.oidcSecurityService
-      .checkAuth()
+    authState(this.auth)
       .pipe(
         take(1),
-        switchMap(({ isAuthenticated }) => {
-          if (!isAuthenticated) {
+        switchMap((currentUser) => {
+          if (!currentUser) {
             this.router.navigate(['/']);
             return EMPTY;
           }
-          return this.oidcSecurityService.getAccessToken().pipe(
-            filter((token): token is string => !!token),
-            take(1),
-            switchMap(() => this.meService.getMe().pipe(take(1)))
-          );
-        })
+
+          return this.meService.getMe().pipe(take(1));
+        }),
       )
       .subscribe({
         next: () => this.router.navigate(['/onboarding/check']),
