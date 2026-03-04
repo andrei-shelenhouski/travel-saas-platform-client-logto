@@ -17,12 +17,11 @@ export class PermissionService {
   readonly isAdmin = computed(() => this.roleService.isAdmin());
   readonly isAgent = computed(() => this.roleService.isAgent());
 
-  /** Current user ID (from GET /api/me id, or token sub). Used for "own records" filter and managerId. */
+  /** Current user ID (from GET /api/me id). Used for "own records" filter and managerId. */
   readonly currentUserId = computed(() => {
     const me = this.meService.getMeData();
-    if (me?.id) return me.id;
-    const userData = this.authService.userData() as { sub?: string } | null;
-    return userData?.sub ?? null;
+
+    return me?.id;
   });
 
   /** Can convert lead to client. Admin + Manager only. */

@@ -32,24 +32,21 @@ export class MainLayoutComponent implements OnInit {
   readonly orgSwitcherLoading = signal(false);
 
   userDisplay = computed(() => {
-    const user = this.authService.userData();
+    const user = this.authService.firebaseUser();
     if (!user) return 'User';
-    const u = user as { name?: string; email?: string; username?: string };
-    return u.name ?? u.username ?? u.email ?? 'User';
+    return user.displayName ?? user.email ?? 'User';
   });
 
   userPicture = computed(() => {
-    const user = this.authService.userData();
+    const user = this.authService.firebaseUser();
     if (!user) return null;
-    const u = user as { picture?: string };
-    return u.picture ?? null;
+    return user.photoURL ?? null;
   });
 
   userInitial = computed(() => {
-    const user = this.authService.userData();
+    const user = this.authService.firebaseUser();
     if (!user) return 'U';
-    const u = user as { name?: string; username?: string; email?: string };
-    const raw = u.name ?? u.username ?? u.email ?? 'U';
+    const raw = user.displayName ?? user.email ?? 'U';
     return raw.charAt(0).toUpperCase();
   });
 

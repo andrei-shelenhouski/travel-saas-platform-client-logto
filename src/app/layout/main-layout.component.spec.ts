@@ -22,6 +22,7 @@ describe('MainLayoutComponent', () => {
         {
           provide: AuthService,
           useValue: {
+            firebaseUser: () => null,
             userData: () => null,
             signOut: vi.fn(),
           },
