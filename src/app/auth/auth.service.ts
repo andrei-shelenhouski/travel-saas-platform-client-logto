@@ -3,11 +3,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import {
   Auth,
   GoogleAuthProvider,
-  idToken,
+  getIdTokenResult,
   signInWithRedirect,
   signOut as firebaseSignOut,
   user,
 } from '@angular/fire/auth';
+import { catchError, from, of, switchMap } from 'rxjs';
 
 interface UserData {
   sub: string;
@@ -19,27 +20,17 @@ interface UserData {
   custom_data?: Record<string, unknown>;
 }
 
-function parseTokenPayload(token: string | null): Record<string, unknown> | null {
-  if (!token) return null;
-  const parts = token.split('.');
-  if (parts.length < 2) return null;
-
-  try {
-    const payload = atob(parts[1]);
-    const parsed = JSON.parse(payload) as unknown;
-    if (!parsed || typeof parsed !== 'object') return null;
-    return parsed as Record<string, unknown>;
-  } catch {
-    return null;
-  }
-}
-
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly auth = inject(Auth);
   private readonly provider = new GoogleAuthProvider();
   private readonly firebaseUser = toSignal(user(this.auth), { initialValue: null });
-  private readonly firebaseIdToken = toSignal(idToken(this.auth), { initialValue: null });
+  private readonly firebaseIdTokenResult = toSignal(
+    user(this.auth).pipe(
+      switchMap(u => (u ? from(getIdTokenResult(u)).pipe(catchError(() => of(null))) : of(null))),
+    ),
+    { initialValue: null },
+  );
 
   readonly isAuthenticated = computed(() => !!this.firebaseUser());
 
@@ -47,7 +38,7 @@ export class AuthService {
     const firebaseUser = this.firebaseUser();
     if (!firebaseUser) return null;
 
-    const claims = parseTokenPayload(this.firebaseIdToken());
+    const claims = this.firebaseIdTokenResult()?.claims;
     const customData = claims?.['custom_data'];
     const rolesClaim = claims?.['roles'];
     const roles = Array.isArray(rolesClaim)
@@ -70,12 +61,12 @@ export class AuthService {
 
   readonly idToken = computed(() => {
     if (!this.isAuthenticated()) return null;
-    return this.firebaseIdToken() ?? null;
+    return this.firebaseIdTokenResult()?.token ?? null;
   });
 
   readonly accessToken = computed(() => {
     if (!this.isAuthenticated()) return null;
-    return this.firebaseIdToken() ?? null;
+    return this.firebaseIdTokenResult()?.token ?? null;
   });
 
   signIn(): void {
