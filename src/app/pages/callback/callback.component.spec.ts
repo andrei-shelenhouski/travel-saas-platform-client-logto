@@ -21,7 +21,9 @@ describe('CallbackComponent', () => {
             authStateReady: () => Promise.resolve(),
             onAuthStateChanged: (cb: (u: User | null) => void) => {
               cb(null);
-              return () => {};
+              return () => {
+                /* empty */
+              };
             },
           },
         },
