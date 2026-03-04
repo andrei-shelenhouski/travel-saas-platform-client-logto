@@ -69,6 +69,11 @@ export class AuthService {
     return this.firebaseIdTokenResult()?.token ?? null;
   });
 
+  /** Resolves once Firebase has settled the initial auth state. */
+  async whenReady(): Promise<void> {
+    await this.auth.authStateReady();
+  }
+
   signIn(): void {
     this.provider.setCustomParameters({ prompt: 'select_account' });
     void signInWithRedirect(this.auth, this.provider);
