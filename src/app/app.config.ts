@@ -9,7 +9,7 @@ import {
 import { getAnalytics, provideAnalytics, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { initializeAppCheck, provideAppCheck, ReCaptchaEnterpriseProvider } from '@angular/fire/app-check';
-import { getAuth, provideAuth as provideAuth_alias } from '@angular/fire/auth';
+import { Auth, connectAuthEmulator, getAuth, provideAuth as provideAuth_alias } from '@angular/fire/auth';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 
@@ -27,6 +27,12 @@ import Aura from '@primeuix/themes/aura';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 import { errorHandlerInterceptor, orgAuthInterceptor } from './interceptors/index';
+
+const connectLocalAuthEmulator = (auth: Auth, host: string, port: number) => {
+  connectAuthEmulator(auth, `http://${host}:${port}`);
+};
+
+const EMULATORS_HOST = 'localhost';
 
 function authConfigLoaderFactory(localeId: string): StsConfigLoader {
   const isProduction = !isDevMode();
@@ -78,7 +84,15 @@ export const appConfig: ApplicationConfig = {
       withAppInitializerAuthCheck(),
     ),
     provideFirebaseApp(() => initializeApp(environment.firebaseOptions)),
-    provideAuth_alias(() => getAuth()),
+    provideAuth_alias(() => {
+      const auth = getAuth();
+
+      if (isDevMode()) {
+        connectLocalAuthEmulator(auth, EMULATORS_HOST, 9099);
+      }
+
+      return auth;
+    }),
     provideAnalytics(() => getAnalytics()),
     ScreenTrackingService,
     UserTrackingService,
