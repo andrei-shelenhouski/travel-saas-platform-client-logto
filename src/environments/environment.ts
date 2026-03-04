@@ -5,7 +5,7 @@ export const environment = {
     appId: '1:535055410790:web:2890c1ebae5327cd9c6fa7',
     storageBucket: 'travel-saas-platform-prod.firebasestorage.app',
     apiKey: 'AIzaSyANPUdnnqJ6MKsg5lTlxFtStkNMXK8exwE',
-    authDomain: 'travel-saas-platform-prod.firebaseapp.com',
+    authDomain: 'platform.gugloplex.com',
     messagingSenderId: '535055410790',
     measurementId: 'G-B1WXCRF3KF',
     projectNumber: '535055410790',
