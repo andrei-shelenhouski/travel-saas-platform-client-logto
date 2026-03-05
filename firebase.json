@@ -9,11 +9,11 @@
     "rewrites": [
       {
         "source": "/en/**",
-        "destination": "/en-US/index.html"
+        "destination": "/en/index.html"
       },
       {
         "source": "**",
-        "destination": "/ru-BY/index.html"
+        "destination": "/index.html"
       }
     ]
   },

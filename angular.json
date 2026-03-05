@@ -16,11 +16,14 @@
       "sourceRoot": "src",
       "prefix": "app",
       "i18n": {
-        "sourceLocale": "en-US",
+        "sourceLocale": {
+          "code": "en-US",
+          "subPath": "en"
+        },
         "locales": {
           "ru-BY": {
             "translation": "src/locale/ru-BY.json",
-            "subPath": "ru-BY"
+            "subPath": ""
           }
         }
       },
