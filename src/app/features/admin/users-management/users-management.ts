@@ -1,15 +1,19 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { FormsModule } from '@angular/forms';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 import { OrganizationMembersService } from '../../../services/organization-members.service';
 import { PermissionService } from '../../../services/permission.service';
-import { ToastService } from '../../../shared/services/toast.service';
-import type { AddOrganizationMemberDto, OrganizationMemberResponseDto } from '../../../shared/models';
 import { OrgRole } from '../../../shared/models';
+import { ToastService } from '../../../shared/services/toast.service';
 
+import type {
+  AddOrganizationMemberDto,
+  OrganizationMemberResponseDto,
+} from '../../../shared/models';
 const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
   { value: 'ADMIN', label: 'Admin' },
   { value: 'MANAGER', label: 'Manager' },
@@ -19,7 +23,7 @@ const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
 @Component({
   selector: 'app-users-management',
   standalone: true,
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, FormsModule, DatePipe],
   templateUrl: './users-management.html',
   styleUrl: './users-management.css',
 })
@@ -101,7 +105,7 @@ export class UsersManagementComponent {
             ? 'User with this email was not found. They must sign up first.'
             : status === 409
               ? 'This user is already a member of the organization.'
-              : err.error?.message ?? err.message ?? 'Failed to add member';
+              : (err.error?.message ?? err.message ?? 'Failed to add member');
         this.toast.showError(msg);
       },
       complete: () => this.addingMember.set(false),
@@ -113,9 +117,7 @@ export class UsersManagementComponent {
     this.updatingRoleId.set(member.id);
     this.membersService.updateRole(member.id, { role: newRole }).subscribe({
       next: (updated) => {
-        this.membersList.update((list) =>
-          list.map((m) => (m.id === updated.id ? updated : m))
-        );
+        this.membersList.update((list) => list.map((m) => (m.id === updated.id ? updated : m)));
         this.toast.showSuccess(`Role updated to ${newRole}`);
       },
       error: (err) => {
@@ -135,14 +137,6 @@ export class UsersManagementComponent {
         return 'bg-amber-100 text-amber-800';
       default:
         return 'bg-gray-100 text-gray-800';
-    }
-  }
-
-  formatDate(iso: string): string {
-    try {
-      return new Date(iso).toLocaleDateString(undefined, { dateStyle: 'medium' });
-    } catch {
-      return iso;
     }
   }
 }

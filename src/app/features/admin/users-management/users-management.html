@@ -161,7 +161,9 @@
                     {{ member.isActive ? 'Active' : 'Inactive' }}
                   </span>
                 </td>
-                <td class="px-4 py-3 text-sm text-gray-600">{{ formatDate(member.createdAt) }}</td>
+                <td class="px-4 py-3 text-sm text-gray-600">
+                  {{ member.createdAt | date: 'mediumDate' }}
+                </td>
                 <td class="px-4 py-3">
                   @if (updatingRoleId() === member.id) {
                     <span class="text-xs text-gray-500" i18n="@@updating">Updating…</span>
