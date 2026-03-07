@@ -1,92 +1,215 @@
 import { Routes } from '@angular/router';
 
 import { authGuard } from './auth/auth.guard';
-import { appGuard } from './guards/app.guard';
 import { adminGuard } from './guards/admin.guard';
-import { CallbackComponent } from './pages/callback/callback.component';
-import { HomeComponent } from './pages/home/home.component';
-import { LandingComponent } from './pages/landing/landing.component';
-import { OnboardingCheckComponent } from './features/onboarding/onboarding-check/onboarding-check';
-import { CreateOrganizationComponent } from './features/onboarding/create-organization/create-organization';
-import { SelectOrganizationComponent } from './features/onboarding/select-organization/select-organization';
-import { MainLayoutComponent } from './layout/main-layout.component';
-import { LeadsListComponent } from './features/leads/leads-list/leads-list';
-import { LeadsKanbanComponent } from './features/leads/leads-kanban/leads-kanban';
-import { CreateLeadComponent } from './features/leads/create-lead/create-lead';
-import { LeadDetailComponent } from './features/leads/lead-detail/lead-detail';
-import { OffersListComponent } from './features/offers/offers-list/offers-list';
-import { OffersKanbanComponent } from './features/offers/offers-kanban/offers-kanban';
-import { CreateOfferComponent } from './features/offers/create-offer/create-offer';
-import { OfferDetailComponent } from './features/offers/offer-detail/offer-detail';
-import { OfferEditComponent } from './features/offers/offer-edit/offer-edit';
-import { RequestsListComponent } from './features/requests/requests-list/requests-list';
-import { CreateRequestComponent } from './features/requests/create-request/create-request';
-import { RequestDetailComponent } from './features/requests/request-detail/request-detail';
-import { ClientsListComponent } from './features/clients/clients-list/clients-list';
-import { CreateClientComponent } from './features/clients/create-client/create-client';
-import { ClientDetailComponent } from './features/clients/client-detail/client-detail';
-import { BookingsListComponent } from './features/bookings/bookings-list/bookings-list';
-import { BookingDetailComponent } from './features/bookings/booking-detail/booking-detail';
-import { InvoicesListComponent } from './features/invoices/invoices-list/invoices-list';
-import { InvoiceDetailComponent } from './features/invoices/invoice-detail/invoice-detail';
-import { CreateInvoiceComponent } from './features/invoices/create-invoice/create-invoice';
-import { SettingsComponent } from './features/onboarding/settings/settings';
-import { DashboardComponent } from './features/dashboard/dashboard';
-import { UsersManagementComponent } from './features/admin/users-management/users-management';
+import { appGuard } from './guards/app.guard';
 
 export const routes: Routes = [
-  { path: '', component: LandingComponent, pathMatch: 'full' },
-  { path: 'home', component: HomeComponent },
-  { path: 'callback', component: CallbackComponent },
+  {
+    path: '',
+    pathMatch: 'full',
+    loadComponent: () =>
+      import('./pages/landing/landing.component').then((m) => m.LandingComponent),
+  },
+  {
+    path: 'home',
+    loadComponent: () => import('./pages/home/home.component').then((m) => m.HomeComponent),
+  },
+  {
+    path: 'callback',
+    loadComponent: () =>
+      import('./pages/callback/callback.component').then((m) => m.CallbackComponent),
+  },
   {
     path: 'onboarding',
     canActivate: [authGuard],
     children: [
-      { path: 'check', component: OnboardingCheckComponent },
-      { path: 'create-organization', component: CreateOrganizationComponent },
-      { path: 'select-organization', component: SelectOrganizationComponent },
+      {
+        path: 'check',
+        loadComponent: () =>
+          import('./features/onboarding/onboarding-check/onboarding-check').then(
+            (m) => m.OnboardingCheckComponent,
+          ),
+      },
+      {
+        path: 'create-organization',
+        loadComponent: () =>
+          import('./features/onboarding/create-organization/create-organization').then(
+            (m) => m.CreateOrganizationComponent,
+          ),
+      },
+      {
+        path: 'select-organization',
+        loadComponent: () =>
+          import('./features/onboarding/select-organization/select-organization').then(
+            (m) => m.SelectOrganizationComponent,
+          ),
+      },
     ],
   },
   {
     path: 'app',
-    component: MainLayoutComponent,
+    loadComponent: () =>
+      import('./layout/main-layout.component').then((m) => m.MainLayoutComponent),
     canActivate: [appGuard],
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
-      { path: 'dashboard', component: DashboardComponent },
+      {
+        path: 'dashboard',
+        loadComponent: () =>
+          import('./features/dashboard/dashboard').then((m) => m.DashboardComponent),
+      },
       // Leads
-      { path: 'leads/new', component: CreateLeadComponent },
-      { path: 'leads/kanban', component: LeadsKanbanComponent },
-      { path: 'leads/:id', component: LeadDetailComponent },
-      { path: 'leads', component: LeadsListComponent },
+      {
+        path: 'leads/new',
+        loadComponent: () =>
+          import('./features/leads/create-lead/create-lead').then((m) => m.CreateLeadComponent),
+      },
+      {
+        path: 'leads/kanban',
+        loadComponent: () =>
+          import('./features/leads/leads-kanban/leads-kanban').then((m) => m.LeadsKanbanComponent),
+      },
+      {
+        path: 'leads/:id',
+        loadComponent: () =>
+          import('./features/leads/lead-detail/lead-detail').then((m) => m.LeadDetailComponent),
+      },
+      {
+        path: 'leads',
+        loadComponent: () =>
+          import('./features/leads/leads-list/leads-list').then((m) => m.LeadsListComponent),
+      },
       // Clients: /app/clients/:id
-      { path: 'clients/new', component: CreateClientComponent },
-      { path: 'clients/:id', component: ClientDetailComponent },
-      { path: 'clients', component: ClientsListComponent },
+      {
+        path: 'clients/new',
+        loadComponent: () =>
+          import('./features/clients/create-client/create-client').then(
+            (m) => m.CreateClientComponent,
+          ),
+      },
+      {
+        path: 'clients/:id',
+        loadComponent: () =>
+          import('./features/clients/client-detail/client-detail').then(
+            (m) => m.ClientDetailComponent,
+          ),
+      },
+      {
+        path: 'clients',
+        loadComponent: () =>
+          import('./features/clients/clients-list/clients-list').then(
+            (m) => m.ClientsListComponent,
+          ),
+      },
       // Requests: /app/requests/:id
-      { path: 'requests/new', component: CreateRequestComponent },
-      { path: 'requests/:id', component: RequestDetailComponent },
-      { path: 'requests', component: RequestsListComponent },
+      {
+        path: 'requests/new',
+        loadComponent: () =>
+          import('./features/requests/create-request/create-request').then(
+            (m) => m.CreateRequestComponent,
+          ),
+      },
+      {
+        path: 'requests/:id',
+        loadComponent: () =>
+          import('./features/requests/request-detail/request-detail').then(
+            (m) => m.RequestDetailComponent,
+          ),
+      },
+      {
+        path: 'requests',
+        loadComponent: () =>
+          import('./features/requests/requests-list/requests-list').then(
+            (m) => m.RequestsListComponent,
+          ),
+      },
       // Offers: /app/offers/:id (more specific first)
-      { path: 'offers/new', component: CreateOfferComponent },
-      { path: 'offers/kanban', component: OffersKanbanComponent },
-      { path: 'offers/:id/edit', component: OfferEditComponent },
-      { path: 'offers/:id', component: OfferDetailComponent },
-      { path: 'offers', component: OffersListComponent },
+      {
+        path: 'offers/new',
+        loadComponent: () =>
+          import('./features/offers/create-offer/create-offer').then((m) => m.CreateOfferComponent),
+      },
+      {
+        path: 'offers/kanban',
+        loadComponent: () =>
+          import('./features/offers/offers-kanban/offers-kanban').then(
+            (m) => m.OffersKanbanComponent,
+          ),
+      },
+      {
+        path: 'offers/:id/edit',
+        loadComponent: () =>
+          import('./features/offers/offer-edit/offer-edit').then((m) => m.OfferEditComponent),
+      },
+      {
+        path: 'offers/:id',
+        loadComponent: () =>
+          import('./features/offers/offer-detail/offer-detail').then((m) => m.OfferDetailComponent),
+      },
+      {
+        path: 'offers',
+        loadComponent: () =>
+          import('./features/offers/offers-list/offers-list').then((m) => m.OffersListComponent),
+      },
       // Bookings: /app/bookings/:id
-      { path: 'bookings/:id', component: BookingDetailComponent },
-      { path: 'bookings', component: BookingsListComponent },
+      {
+        path: 'bookings/:id',
+        loadComponent: () =>
+          import('./features/bookings/booking-detail/booking-detail').then(
+            (m) => m.BookingDetailComponent,
+          ),
+      },
+      {
+        path: 'bookings',
+        loadComponent: () =>
+          import('./features/bookings/bookings-list/bookings-list').then(
+            (m) => m.BookingsListComponent,
+          ),
+      },
       // Invoices
-      { path: 'invoices/new', component: CreateInvoiceComponent },
-      { path: 'invoices/:id', component: InvoiceDetailComponent },
-      { path: 'invoices', component: InvoicesListComponent },
-      { path: 'settings', component: SettingsComponent },
+      {
+        path: 'invoices/new',
+        loadComponent: () =>
+          import('./features/invoices/create-invoice/create-invoice').then(
+            (m) => m.CreateInvoiceComponent,
+          ),
+      },
+      {
+        path: 'invoices/:id',
+        loadComponent: () =>
+          import('./features/invoices/invoice-detail/invoice-detail').then(
+            (m) => m.InvoiceDetailComponent,
+          ),
+      },
+      {
+        path: 'invoices',
+        loadComponent: () =>
+          import('./features/invoices/invoices-list/invoices-list').then(
+            (m) => m.InvoicesListComponent,
+          ),
+      },
+      {
+        path: 'settings',
+        loadComponent: () =>
+          import('./features/onboarding/settings/settings').then((m) => m.SettingsComponent),
+      },
       {
         path: 'organizations/new',
-        component: CreateOrganizationComponent,
+        loadComponent: () =>
+          import('./features/onboarding/create-organization/create-organization').then(
+            (m) => m.CreateOrganizationComponent,
+          ),
         data: { fromApp: true },
       },
-      { path: 'admin/users', component: UsersManagementComponent, canActivate: [adminGuard] },
+      {
+        path: 'admin/users',
+        loadComponent: () =>
+          import('./features/admin/users-management/users-management').then(
+            (m) => m.UsersManagementComponent,
+          ),
+        canActivate: [adminGuard],
+      },
     ],
   },
   { path: '**', redirectTo: '' },
