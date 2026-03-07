@@ -1,8 +1,9 @@
-import { Component, computed, inject } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
-import { forkJoin } from 'rxjs';
+import { Component, computed, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+
+import { forkJoin } from 'rxjs';
 
 import { BookingsService } from '../../services/bookings.service';
 import { LeadsService } from '../../services/leads.service';

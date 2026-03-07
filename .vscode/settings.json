@@ -1,0 +1,55 @@
+{
+  "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.type": "newLineEachExpressionAfterCountLimitExceptIfOnlyOne",
+  "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.count": 120,
+  "importSorter.importStringConfiguration.trailingComma": "multiLine",
+  "importSorter.generalConfiguration.sortOnBeforeSave": true,
+  "importSorter.sortConfiguration.customOrderingRules.rules": [
+    {
+      "regex": "^@angular|^@ng",
+      "orderLevel": 20,
+      "numberOfEmptyLinesAfterGroup": 1,
+      "type": "path"
+    },
+    {
+      "regex": "^[a-z]",
+      "orderLevel": 30,
+      "numberOfEmptyLinesAfterGroup": 1,
+      "type": "path"
+    },
+    {
+      "regex": "^[@]",
+      "orderLevel": 40,
+      "numberOfEmptyLinesAfterGroup": 1
+    },
+    {
+      "regex": "^[.]",
+      "orderLevel": 50,
+      "numberOfEmptyLinesAfterGroup": 0
+    }
+  ],
+  "importSorter.sortConfiguration.removeUnusedDefaultImports": true,
+  "importSorter.sortConfiguration.removeUnusedImports": true,
+  "importSorter.importStringConfiguration.tabSize": 2,
+  "terminal.integrated.fontFamily": "monospace",
+  "editor.tabSize": 2,
+  "editor.formatOnSave": true,
+  "[json]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "explorer.confirmDragAndDrop": false,
+  "[jsonc]": {
+    "editor.defaultFormatter": "vscode.json-language-features"
+  },
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "editor.suggestSelection": "first",
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true
+  },
+  "git.confirmSync": false,
+  "diffEditor.ignoreTrimWhitespace": false,
+  "editor.formatOnPaste": true
+}
