@@ -78,7 +78,7 @@
         @if (orgSwitcherOpen()) {
           <div class="fixed inset-0 z-10" (click)="closeOrgSwitcher()" aria-hidden="true"></div>
           <div
-            class="absolute left-0 top-full z-20 mt-1 min-w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
+            class="absolute left-0 top-full z-20 mt-1 min-w-55 rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
             role="listbox"
           >
             @for (org of organizations(); track org.id) {
