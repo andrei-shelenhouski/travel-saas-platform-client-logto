@@ -5,66 +5,57 @@
         routerLink="/app/dashboard"
         routerLinkActive="bg-primary-muted text-primary-700"
         class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        i18n
-        ><i class="pi pi-home"></i>Dashboard</a
+        ><i class="pi pi-home"></i><span i18n="@@dashboard">Dashboard</span></a
       >
       <a
         routerLink="/app/leads"
         routerLinkActive="bg-primary-muted text-primary-700"
         class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        i18n
-        ><i class="pi pi-bolt"></i>Leads</a
+        ><i class="pi pi-bolt"></i><span i18n="@@leads">Leads</span></a
       >
       <a
         routerLink="/app/clients"
         routerLinkActive="bg-primary-muted text-primary-700"
         class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        i18n
-        ><i class="pi pi-users"></i>Clients</a
+        ><i class="pi pi-users"></i><span i18n="@@clients">Clients</span></a
       >
       <a
         routerLink="/app/requests"
         routerLinkActive="bg-primary-muted text-primary-700"
         class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        i18n
-        ><i class="pi pi-inbox"></i>Requests</a
+        ><i class="pi pi-inbox"></i><span i18n="@@requests">Requests</span></a
       >
       <a
         routerLink="/app/offers"
         routerLinkActive="bg-primary-muted text-primary-700"
         class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        i18n
-        ><i class="pi pi-send"></i>Offers</a
+        ><i class="pi pi-send"></i><span i18n="@@offers">Offers</span></a
       >
       <a
         routerLink="/app/bookings"
         routerLinkActive="bg-primary-muted text-primary-700"
         class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        i18n
-        ><i class="pi pi-calendar"></i>Bookings</a
+        ><i class="pi pi-calendar"></i><span i18n="@@bookings">Bookings</span></a
       >
       <a
         routerLink="/app/invoices"
         routerLinkActive="bg-primary-muted text-primary-700"
         class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        i18n
-        ><i class="pi pi-file"></i>Invoices</a
+        ><i class="pi pi-file"></i><span i18n="@@invoices">Invoices</span></a
       >
       @if (permissions.isAdmin()) {
         <a
           routerLink="/app/admin/users"
           routerLinkActive="bg-primary-muted text-primary-700"
           class="mt-4 flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-          i18n
-          ><i class="pi pi-users"></i>User management</a
+          ><i class="pi pi-users"></i><span i18n="@@userManagement">User management</span></a
         >
       }
       <a
         routerLink="/app/settings"
         routerLinkActive="bg-primary-muted text-primary-700"
         class="mt-4 flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        i18n
-        ><i class="pi pi-cog"></i>Settings</a
+        ><i class="pi pi-cog"></i><span i18n="@@settings">Settings</span></a
       >
     </nav>
   </aside>
@@ -76,7 +67,6 @@
           (click)="openOrgSwitcher()"
           class="flex items-center gap-1.5 rounded px-2 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none"
           [disabled]="orgSwitcherLoading()"
-          i18n
         >
           <span>{{ activeOrgName }}</span>
           @if (orgSwitcherLoading()) {
@@ -107,16 +97,15 @@
               </button>
             }
             @if (organizations().length === 0 && !orgSwitcherLoading()) {
-              <p class="px-3 py-2 text-sm text-gray-500" i18n>No other organizations</p>
+              <p class="px-3 py-2 text-sm text-gray-500"><span>No other organizations</span></p>
             }
             <div class="border-t border-gray-100 my-1"></div>
             <a
               routerLink="/app/organizations/new"
               (click)="closeOrgSwitcher()"
               class="flex w-full items-center gap-2 px-3 py-2 text-sm text-primary-600 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
-              i18n
             >
-              <i class="pi pi-plus"></i>Add organization
+              <i class="pi pi-plus"></i><span i18n="@@addOrganization">Add organization</span>
             </a>
           </div>
         }
@@ -152,9 +141,8 @@
           type="button"
           (click)="logout()"
           class="flex items-center gap-2 rounded px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100"
-          i18n
         >
-          <i class="pi pi-sign-out"></i>Logout
+          <i class="pi pi-sign-out"></i><span i18n="@@logout">Logout</span>
         </button>
       </div>
     </header>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+  <file datatype="plaintext" original="ng2.template" source-language="en-US" target-language="ru-RU">
+    <body>
+      <trans-unit id="dashboard" datatype="html">
+        <source>Dashboard</source>
+        <target>Рабочий стол</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
+          <context context-type="linenumber">8,10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="leads" datatype="html">
+        <source>Leads</source>
+        <target>Обращения</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
+          <context context-type="linenumber">14,16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="clients" datatype="html">
+        <source>Clients</source>
+        <target>Клиенты</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
+          <context context-type="linenumber">20,22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requests" datatype="html">
+        <source>Requests</source>
+        <target>Запросы</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
+          <context context-type="linenumber">26,28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offers" datatype="html">
+        <source>Offers</source>
+        <target>Предложения</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
+          <context context-type="linenumber">32,34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookings" datatype="html">
+        <source>Bookings</source>
+        <target>Бронирование</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
+          <context context-type="linenumber">38,40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoices" datatype="html">
+        <source>Invoices</source>
+        <target>Счета</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
+          <context context-type="linenumber">44,46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="userManagement" datatype="html">
+        <source>User management</source>
+        <target>Управление пользователями</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
+          <context context-type="linenumber">51,54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="settings" datatype="html">
+        <source>Settings</source>
+        <target>Настройки</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
+          <context context-type="linenumber">58,60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="addOrganization" datatype="html">
+        <source>Add organization</source>
+        <target>Добавить организацию</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
+          <context context-type="linenumber">108,110</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="logout" datatype="html">
+        <source>Logout</source>
+        <target>Выйти</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
+          <context context-type="linenumber">145,146</context>
+        </context-group>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

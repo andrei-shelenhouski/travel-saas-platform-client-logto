@@ -22,7 +22,7 @@
         },
         "locales": {
           "ru-BY": {
-            "translation": "src/locale/ru-BY.json",
+            "translation": "src/locale/messages.ru.xlf",
             "subPath": ""
           }
         }
@@ -97,9 +97,9 @@
           "builder": "@angular/build:extract-i18n",
           "options": {
             "buildTarget": "tsp-client-app:build",
-            "format": "json",
+            "format": "xlf",
             "outputPath": "src/locale",
-            "outFile": "en-US.json"
+            "outFile": "messages.en.xlf"
           }
         },
         "lint": {
