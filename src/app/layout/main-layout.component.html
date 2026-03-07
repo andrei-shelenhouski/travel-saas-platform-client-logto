@@ -97,7 +97,9 @@
               </button>
             }
             @if (organizations().length === 0 && !orgSwitcherLoading()) {
-              <p class="px-3 py-2 text-sm text-gray-500"><span>No other organizations</span></p>
+              <p class="px-3 py-2 text-sm text-gray-500">
+                <span i18n="@@noOtherOrganizations">No other organizations</span>
+              </p>
             }
             <div class="border-t border-gray-100 my-1"></div>
             <a
