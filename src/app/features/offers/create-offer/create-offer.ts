@@ -1,6 +1,6 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 
 import { RequestsService } from '../../../services/requests.service';
 import { OffersService } from '../../../services/offers.service';
@@ -10,11 +10,12 @@ import type { RequestResponseDto } from '../../../shared/models';
 
 @Component({
   selector: 'app-create-offer',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './create-offer.html',
   styleUrl: './create-offer.css',
 })
 export class CreateOfferComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly requestsService = inject(RequestsService);
@@ -26,13 +27,15 @@ export class CreateOfferComponent implements OnInit {
   readonly saving = signal(false);
   readonly error = signal('');
 
-  selectedRequestId = '';
-  title = '';
-  supplierTotal = 0;
-  markup = 0;
-  commission = 0;
-  finalPrice = 0;
-  currency = 'EUR';
+  readonly form = this.fb.nonNullable.group({
+    selectedRequestId: ['', [Validators.required]],
+    title: [''],
+    supplierTotal: [0, [Validators.min(0)]],
+    markup: [0, [Validators.min(0)]],
+    commission: [0, [Validators.min(0)]],
+    finalPrice: [0, [Validators.min(0)]],
+    currency: ['EUR', [Validators.required]],
+  });
 
   ngOnInit(): void {
     this.requestsService.getList().subscribe({
@@ -41,25 +44,30 @@ export class CreateOfferComponent implements OnInit {
       complete: () => this.requestsLoading.set(false),
     });
     const requestId = this.route.snapshot.queryParamMap.get('requestId');
-    if (requestId) this.selectedRequestId = requestId;
+    if (requestId) this.form.controls.selectedRequestId.setValue(requestId);
   }
 
   onSubmit(): void {
-    if (!this.selectedRequestId?.trim()) {
-      this.error.set('Please select a request.');
+    this.error.set('');
+    this.form.markAllAsTouched();
+
+    if (this.form.invalid || this.saving()) {
       return;
     }
-    this.error.set('');
+
     this.saving.set(true);
+    const value = this.form.getRawValue();
+
     const dto: CreateOfferDto = {
-      requestId: this.selectedRequestId.trim(),
-      title: this.title.trim() || 'Offer',
-      supplierTotal: this.supplierTotal,
-      markup: this.markup,
-      commission: this.commission,
-      finalPrice: this.finalPrice,
-      currency: this.currency.trim(),
+      requestId: value.selectedRequestId.trim(),
+      title: value.title.trim() || 'Offer',
+      supplierTotal: value.supplierTotal,
+      markup: value.markup,
+      commission: value.commission,
+      finalPrice: value.finalPrice,
+      currency: value.currency.trim(),
     };
+
     this.offersService.create(dto).subscribe({
       next: (created) => {
         this.toast.showSuccess('Offer created');
