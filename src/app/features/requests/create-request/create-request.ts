@@ -1,6 +1,13 @@
 import { ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { take } from 'rxjs';
 
 import { MeService } from '../../../services/me.service';
@@ -8,13 +15,27 @@ import { RequestsService } from '../../../services/requests.service';
 import { ToastService } from '../../../shared/services/toast.service';
 import type { CreateRequestDto } from '../../../shared/models';
 
+const dateRangeValidator: ValidatorFn = (
+  control: AbstractControl
+): ValidationErrors | null => {
+  const startDate = control.get('startDate')?.value as string;
+  const endDate = control.get('endDate')?.value as string;
+
+  if (!startDate || !endDate) {
+    return null;
+  }
+
+  return startDate <= endDate ? null : { dateRange: true };
+};
+
 @Component({
   selector: 'app-create-request',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, ReactiveFormsModule],
   templateUrl: './create-request.html',
   styleUrl: './create-request.css',
 })
 export class CreateRequestComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly meService = inject(MeService);
@@ -25,33 +46,38 @@ export class CreateRequestComponent implements OnInit {
   readonly saving = signal(false);
   readonly error = signal('');
 
-  clientId = '';
-  managerId = '';
-  destination = '';
-  startDate = '';
-  endDate = '';
-  adults = 1;
-  children = 0;
-  comment = '';
+  readonly form = this.fb.nonNullable.group(
+    {
+      clientId: ['', [Validators.required]],
+      managerId: ['', [Validators.required]],
+      destination: ['', [Validators.required]],
+      startDate: ['', [Validators.required]],
+      endDate: ['', [Validators.required]],
+      adults: [1, [Validators.required, Validators.min(1)]],
+      children: [0, [Validators.min(0)]],
+      comment: [''],
+    },
+    { validators: dateRangeValidator }
+  );
 
   ngOnInit(): void {
     const clientIdParam = this.route.snapshot.queryParamMap.get('clientId');
-    if (clientIdParam) this.clientId = clientIdParam;
-
-    // Pre-fill from cache if available (e.g. user came from onboarding)
-    const cached = this.meService.getMeData();
-    if (cached?.id) {
-      this.managerId = cached.id;
+    if (clientIdParam) {
+      this.form.controls.clientId.setValue(clientIdParam);
     }
 
-    // Always fetch current user so managerId is set (cache is cleared after org selection)
+    const cached = this.meService.getMeData();
+    if (cached?.id) {
+      this.form.controls.managerId.setValue(cached.id);
+    }
+
     this.meService
       .getMe()
       .pipe(take(1))
       .subscribe({
         next: (res) => {
           if (res?.id) {
-            this.managerId = res.id;
+            this.form.controls.managerId.setValue(res.id);
             this.cdr.markForCheck();
           }
         },
@@ -60,25 +86,26 @@ export class CreateRequestComponent implements OnInit {
 
   onSubmit(): void {
     this.error.set('');
-    if (!this.clientId.trim() || !this.managerId.trim() || !this.destination.trim()) {
-      this.error.set('Client ID, Manager ID and Destination are required.');
+    this.form.markAllAsTouched();
+
+    if (this.form.invalid || this.saving()) {
       return;
     }
-    if (!this.startDate || !this.endDate) {
-      this.error.set('Start date and End date are required.');
-      return;
-    }
+
     this.saving.set(true);
+    const value = this.form.getRawValue();
+
     const dto: CreateRequestDto = {
-      clientId: this.clientId.trim(),
-      managerId: this.managerId.trim(),
-      destination: this.destination.trim(),
-      startDate: this.startDate,
-      endDate: this.endDate,
-      adults: Number(this.adults) || 1,
+      clientId: value.clientId.trim(),
+      managerId: value.managerId.trim(),
+      destination: value.destination.trim(),
+      startDate: value.startDate,
+      endDate: value.endDate,
+      adults: value.adults,
     };
-    if (Number(this.children) > 0) dto.children = Number(this.children);
-    if (this.comment.trim()) dto.comment = this.comment.trim();
+
+    if (value.children > 0) dto.children = value.children;
+    if (value.comment.trim()) dto.comment = value.comment.trim();
 
     this.requestsService.create(dto).subscribe({
       next: (created) => {
