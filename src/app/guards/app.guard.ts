@@ -8,14 +8,15 @@ export const appGuard: CanActivateFn = async () => {
   const auth = inject(AuthService);
   const orgState = inject(OrganizationStateService);
   const router = inject(Router);
+  const isAuthenticated = await auth.hasAuthenticatedUser();
 
-  await auth.whenReady();
-
-  if (!auth.isAuthenticated()) {
+  if (!isAuthenticated) {
     return router.createUrlTree(['/']);
   }
+
   if (!orgState.getActiveOrganization()) {
     return router.createUrlTree(['/onboarding/check']);
   }
+
   return true;
 };

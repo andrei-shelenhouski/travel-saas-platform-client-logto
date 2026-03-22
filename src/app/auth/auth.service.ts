@@ -30,12 +30,22 @@ export class AuthService {
     await this.auth.authStateReady();
   }
 
+  /**
+   * Waits for Firebase to finish restoring persisted auth, then returns whether a user is signed in.
+   * Route guards should use this instead of `whenReady()` + `isAuthenticated()`: the latter reads
+   * `toSignal(user(...))`, which can still be null for a tick after `authStateReady()` (zoneless CD).
+   */
+  async hasAuthenticatedUser(): Promise<boolean> {
+    await this.auth.authStateReady();
+    return this.auth.currentUser != null;
+  }
+
   signIn(): void {
     this.provider.setCustomParameters({ prompt: 'select_account' });
     void signInWithRedirect(this.auth, this.provider);
   }
 
-  signOut(): void {
-    void firebaseSignOut(this.auth);
+  signOut(): Promise<void> {
+    return firebaseSignOut(this.auth);
   }
 }

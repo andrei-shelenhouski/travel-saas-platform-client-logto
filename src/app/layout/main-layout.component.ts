@@ -120,8 +120,11 @@ export class MainLayoutComponent implements OnInit {
     this.orgSwitcherOpen.set(false);
   }
 
-  logout(): void {
+  async logout(): Promise<void> {
     this.orgState.clear();
-    this.authService.signOut();
+    this.meService.clearMeData();
+
+    await this.authService.signOut();
+    await this.router.navigateByUrl('/');
   }
 }
