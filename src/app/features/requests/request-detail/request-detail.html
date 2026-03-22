@@ -1,7 +1,7 @@
 <div class="space-y-4">
   @if (loading()) {
     <div class="flex justify-center py-12">
-      <div class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" aria-hidden="true"></div>
+      <div aria-hidden="true" class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
     </div>
   } @else {
     @let r = request();
@@ -12,9 +12,9 @@
           <p class="mt-1 text-sm text-gray-500">Travel request</p>
         </div>
         <button
+          class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
           type="button"
           (click)="createOffer()"
-          class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
         >
           Create offer
         </button>
@@ -62,8 +62,8 @@
 
       <div class="flex gap-3">
         <a
-          routerLink="/app/requests"
           class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          routerLink="/app/requests"
         >
           ← Back to requests
         </a>

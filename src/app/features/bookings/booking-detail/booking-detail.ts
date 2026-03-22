@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -19,6 +26,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
 };
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-booking-detail',
   imports: [RouterLink, ConfirmationDialogComponent],
   templateUrl: './booking-detail.html',
@@ -37,7 +45,9 @@ export class BookingDetailComponent {
     params: (): string | null => this.routeId() ?? null,
     stream: ({ params }) => {
       const id = params;
-      if (id == null) return EMPTY;
+      if (id === null) {
+        return EMPTY;
+      }
       return this.bookingsService.getById(id);
     },
   });
@@ -81,7 +91,9 @@ export class BookingDetailComponent {
 
   markCancelled(): void {
     const b = this.booking();
-    if (!b || this.actionLoading()) return;
+    if (!b || this.actionLoading()) {
+      return;
+    }
     this.confirmPayload.set({
       action: 'CANCEL_BOOKING',
       title: 'Cancel booking',
@@ -94,7 +106,9 @@ export class BookingDetailComponent {
 
   markConfirmed(): void {
     const b = this.booking();
-    if (!b || this.actionLoading()) return;
+    if (!b || this.actionLoading()) {
+      return;
+    }
     this.actionLoading.set(true);
     this.bookingsService.update(b.id, { status: BookingStatus.CONFIRMED }).subscribe({
       next: (updated) => this.data.set(updated),
@@ -105,7 +119,9 @@ export class BookingDetailComponent {
 
   deleteBooking(): void {
     const b = this.booking();
-    if (!b || this.actionLoading()) return;
+    if (!b || this.actionLoading()) {
+      return;
+    }
     this.confirmPayload.set({
       action: 'DELETE',
       title: 'Delete booking',
@@ -127,7 +143,8 @@ export class BookingDetailComponent {
     if (payload.action === 'CANCEL_BOOKING') {
       this.bookingsService.update(b.id, { status: BookingStatus.CANCELLED }).subscribe({
         next: (updated) => this.data.set(updated),
-        error: (err) => this.toast.showError(err.error?.message ?? err.message ?? 'Failed to update'),
+        error: (err) =>
+          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to update'),
         complete: () => {
           this.actionLoading.set(false);
           this.confirmOpen.set(false);
@@ -140,7 +157,8 @@ export class BookingDetailComponent {
           this.toast.showSuccess('Booking deleted');
           this.router.navigate(['/app/bookings']);
         },
-        error: (err) => this.toast.showError(err.error?.message ?? err.message ?? 'Failed to delete'),
+        error: (err) =>
+          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to delete'),
         complete: () => {
           this.actionLoading.set(false);
           this.confirmOpen.set(false);

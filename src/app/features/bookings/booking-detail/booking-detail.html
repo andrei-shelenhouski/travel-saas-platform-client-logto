@@ -1,7 +1,7 @@
 <div class="space-y-4">
   @if (loading()) {
     <div class="flex justify-center py-12">
-      <div class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" aria-hidden="true"></div>
+      <div aria-hidden="true" class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
     </div>
   } @else {
     @let b = booking();
@@ -19,30 +19,30 @@
         <div class="flex flex-wrap items-center gap-2">
           @if (b.status !== BookingStatus.CANCELLED) {
             <button
-              type="button"
-              (click)="markCancelled()"
-              [disabled]="actionLoading()"
               class="rounded border border-red-600 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
+              type="button"
+              [disabled]="actionLoading()"
+              (click)="markCancelled()"
             >
               Mark cancelled
             </button>
           }
           @if (b.status === BookingStatus.CANCELLED) {
             <button
-              type="button"
-              (click)="markConfirmed()"
-              [disabled]="actionLoading()"
               class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+              type="button"
+              [disabled]="actionLoading()"
+              (click)="markConfirmed()"
             >
               Mark confirmed
             </button>
           }
           @if (permissions.canDeleteBooking()) {
             <button
-              type="button"
-              (click)="deleteBooking()"
-              [disabled]="actionLoading()"
               class="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+              type="button"
+              [disabled]="actionLoading()"
+              (click)="deleteBooking()"
             >
               Delete
             </button>
@@ -74,8 +74,8 @@
 
       <div class="flex gap-3">
         <a
-          routerLink="/app/bookings"
           class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          routerLink="/app/bookings"
         >
           ← Back to bookings
         </a>
@@ -87,12 +87,12 @@
 </div>
 
 <app-confirmation-dialog
-  [open]="confirmOpen()"
-  [title]="confirmPayload()?.title ?? 'Confirm'"
-  [message]="confirmPayload()?.message ?? ''"
+  cancelLabel="Cancel"
   [confirmLabel]="confirmPayload()?.confirmLabel ?? 'Confirm'"
   [danger]="confirmPayload()?.danger ?? false"
-  cancelLabel="Cancel"
-  (confirm)="onConfirmDialogConfirm()"
+  [message]="confirmPayload()?.message ?? ''"
+  [open]="confirmOpen()"
+  [title]="confirmPayload()?.title ?? 'Confirm'"
   (cancel)="onConfirmDialogCancel()"
+  (confirm)="onConfirmDialogConfirm()"
 />

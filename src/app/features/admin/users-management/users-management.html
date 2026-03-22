@@ -8,16 +8,16 @@
     </div>
     <div class="flex items-center gap-2">
       <button
+        class="rounded border border-primary bg-primary px-4 py-2 text-sm font-medium text-white hover:opacity-90"
         type="button"
         (click)="toggleAddForm()"
-        class="rounded border border-primary bg-primary px-4 py-2 text-sm font-medium text-white hover:opacity-90"
       >
         {{ addFormVisible() ? 'Cancel' : 'Add member' }}
       </button>
       <a
-        routerLink="/app/dashboard"
         class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
         i18n="@@backToDashboard"
+        routerLink="/app/dashboard"
       >
         Back to dashboard
       </a>
@@ -33,32 +33,32 @@
       <div class="flex flex-wrap items-end gap-3">
         <div>
           <label
-            for="add-member-email"
             class="block text-xs font-medium text-gray-600 mb-1"
+            for="add-member-email"
             i18n="@@email"
             >Email</label
           >
           <input
+            class="rounded border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-w-55"
             id="add-member-email"
+            placeholder="colleague&#64;example.com"
             type="email"
             [value]="addEmail()"
             (input)="addEmail.set($any($event.target).value)"
-            placeholder="colleague&#64;example.com"
-            class="rounded border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-w-55"
           />
         </div>
         <div>
           <label
-            for="add-member-role"
             class="block text-xs font-medium text-gray-600 mb-1"
+            for="add-member-role"
             i18n="@@role"
             >Role</label
           >
           <select
+            class="rounded border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             id="add-member-role"
             [value]="addRole()"
             (change)="addRole.set($any($event.target).value)"
-            class="rounded border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
           >
             @for (opt of roleOptions; track opt.value) {
               <option [value]="opt.value">{{ opt.label }}</option>
@@ -66,10 +66,10 @@
           </select>
         </div>
         <button
-          type="button"
-          (click)="onAddMember()"
-          [disabled]="addingMember()"
           class="rounded border border-primary bg-primary px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
+          type="button"
+          [disabled]="addingMember()"
+          (click)="onAddMember()"
         >
           {{ addingMember() ? 'Adding…' : 'Add member' }}
         </button>
@@ -85,8 +85,8 @@
     @if (loading()) {
       <div class="flex justify-center py-12">
         <div
-          class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
           aria-hidden="true"
+          class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
         ></div>
       </div>
     } @else {
@@ -116,7 +116,7 @@
         <tbody class="divide-y divide-gray-200">
           @if (members().length === 0) {
             <tr>
-              <td colspan="6" class="px-4 py-12 text-center text-gray-500">
+              <td class="px-4 py-12 text-center text-gray-500" colspan="6">
                 <span i18n="@@noMembersFound">No members found.</span>
               </td>
             </tr>
@@ -133,10 +133,10 @@
                 <td class="px-4 py-3">
                   @if (canChangeRole(member)) {
                     <select
+                      class="rounded border border-gray-300 px-2 py-1 text-sm text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
+                      [disabled]="updatingRoleId() === member.id"
                       [value]="member.role"
                       (change)="onRoleChange(member, $any($event.target).value)"
-                      [disabled]="updatingRoleId() === member.id"
-                      class="rounded border border-gray-300 px-2 py-1 text-sm text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
                     >
                       @for (opt of roleOptions; track opt.value) {
                         <option [value]="opt.value">{{ opt.label }}</option>

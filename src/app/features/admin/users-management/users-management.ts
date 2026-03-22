@@ -1,6 +1,13 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -10,10 +17,7 @@ import { PermissionService } from '@app/services/permission.service';
 import { OrgRole } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
-import type {
-  AddOrganizationMemberDto,
-  OrganizationMemberResponseDto,
-} from '@app/shared/models';
+import type { AddOrganizationMemberDto, OrganizationMemberResponseDto } from '@app/shared/models';
 const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
   { value: 'ADMIN', label: 'Admin' },
   { value: 'MANAGER', label: 'Manager' },
@@ -21,6 +25,7 @@ const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
 ];
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-users-management',
   standalone: true,
   imports: [RouterLink, FormsModule, DatePipe],
@@ -61,13 +66,15 @@ export class UsersManagementComponent {
   constructor() {
     effect(() => {
       const value = this.data.value();
-      if (value != null) this.membersList.set(value);
+      if (value !== undefined && value !== null) {
+        this.membersList.set(value);
+      }
     });
   }
 
   isCurrentUser(member: OrganizationMemberResponseDto): boolean {
     const uid = this.permissions.currentUserId();
-    return uid != null && member.userId === uid;
+    return uid !== undefined && uid !== null && member.userId === uid;
   }
 
   canChangeRole(member: OrganizationMemberResponseDto): boolean {
@@ -113,7 +120,9 @@ export class UsersManagementComponent {
   }
 
   onRoleChange(member: OrganizationMemberResponseDto, newRole: OrgRole): void {
-    if (newRole === (member.role as OrgRole) || !this.canChangeRole(member)) return;
+    if (newRole === (member.role as OrgRole) || !this.canChangeRole(member)) {
+      return;
+    }
     this.updatingRoleId.set(member.id);
     this.membersService.updateRole(member.id, { role: newRole }).subscribe({
       next: (updated) => {

@@ -11,9 +11,7 @@ export class OrganizationStateService {
   private readonly activeOrganizationName = signal<string | null>(this.readNameFromStorage());
 
   /** Observable of current active organization id (null if none). */
-  readonly activeOrganization$: Observable<string | null> = toObservable(
-    this.activeOrganizationId
-  );
+  readonly activeOrganization$: Observable<string | null> = toObservable(this.activeOrganizationId);
 
   getActiveOrganization(): string | null {
     return this.activeOrganizationId();
@@ -27,8 +25,11 @@ export class OrganizationStateService {
     this.activeOrganizationId.set(orgId);
     this.activeOrganizationName.set(name ?? null);
     localStorage.setItem(STORAGE_KEY_ID, orgId);
-    if (name != null) localStorage.setItem(STORAGE_KEY_NAME, name);
-    else localStorage.removeItem(STORAGE_KEY_NAME);
+    if (name !== undefined) {
+      localStorage.setItem(STORAGE_KEY_NAME, name);
+    } else {
+      localStorage.removeItem(STORAGE_KEY_NAME);
+    }
   }
 
   clear(): void {
@@ -39,12 +40,16 @@ export class OrganizationStateService {
   }
 
   private readIdFromStorage(): string | null {
-    if (typeof localStorage === 'undefined') return null;
+    if (typeof localStorage === 'undefined') {
+      return null;
+    }
     return localStorage.getItem(STORAGE_KEY_ID);
   }
 
   private readNameFromStorage(): string | null {
-    if (typeof localStorage === 'undefined') return null;
+    if (typeof localStorage === 'undefined') {
+      return null;
+    }
     return localStorage.getItem(STORAGE_KEY_NAME);
   }
 }

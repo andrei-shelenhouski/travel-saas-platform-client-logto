@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -9,7 +16,7 @@ import { PermissionService } from '@app/services/permission.service';
 import { ToastService } from '@app/shared/services/toast.service';
 import type { OfferResponseDto } from '@app/shared/models';
 import { OfferStatus } from '@app/shared/models';
-import { type OfferAction, getAllowedTransitions } from '@app/features/offers/offer-state-machine';
+import { getAllowedTransitions, type OfferAction } from '@app/features/offers/offer-state-machine';
 import { OfferTimelineComponent } from '@app/features/offers/offer-timeline/offer-timeline';
 import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
 
@@ -34,6 +41,7 @@ const ACTION_LABELS: Record<OfferAction, string> = {
 };
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-offer-detail',
   imports: [OfferTimelineComponent, ConfirmationDialogComponent],
   templateUrl: './offer-detail.html',
@@ -52,7 +60,9 @@ export class OfferDetailComponent {
     params: (): string | null => this.routeId() ?? null,
     stream: ({ params }) => {
       const id = params;
-      if (id == null) return EMPTY;
+      if (id === null) {
+        return EMPTY;
+      }
       return this.offersService.getById(id);
     },
   });
@@ -71,7 +81,9 @@ export class OfferDetailComponent {
 
   protected readonly allowedActions = computed(() => {
     const o = this.offer();
-    if (!o) return [];
+    if (!o) {
+      return [];
+    }
     const actions = getAllowedTransitions(o.status as OfferStatus);
     if (!this.permissions.canDeleteOffer() && actions.includes('DELETE')) {
       return actions.filter((a) => a !== 'DELETE');
@@ -97,11 +109,11 @@ export class OfferDetailComponent {
 
   private runTransition(id: string, action: OfferAction, newStatus?: OfferStatus): void {
     const current = this.offer();
-    if (newStatus != null && current) {
+    if (newStatus !== undefined && current) {
       this.data.set({ ...current, status: newStatus } as OfferResponseDto);
     }
     this.actionLoading.set(true);
-    const req = newStatus != null ? this.offersService.setStatus(id, newStatus) : null;
+    const req = newStatus !== undefined ? this.offersService.setStatus(id, newStatus) : null;
 
     if (action === 'DELETE') {
       this.offersService.delete(id).subscribe({
@@ -163,7 +175,9 @@ export class OfferDetailComponent {
 
   protected onActionClick(action: OfferAction): void {
     const o = this.offer();
-    if (!o || this.actionLoading()) return;
+    if (!o || this.actionLoading()) {
+      return;
+    }
 
     if (action === 'REJECT' || action === 'EXPIRE' || action === 'DELETE') {
       const payloads = {
@@ -206,9 +220,13 @@ export class OfferDetailComponent {
       EXPIRE: OfferStatus.EXPIRED,
     };
     const newStatus = statusMap[action];
-    if (newStatus) this.runTransition(o.id, action, newStatus);
-    else if (action === 'DUPLICATE') this.runTransition(o.id, action);
-    else if (action === 'CREATE_BOOKING') this.runTransition(o.id, action);
+    if (newStatus) {
+      this.runTransition(o.id, action, newStatus);
+    } else if (action === 'DUPLICATE') {
+      this.runTransition(o.id, action);
+    } else if (action === 'CREATE_BOOKING') {
+      this.runTransition(o.id, action);
+    }
   }
 
   protected onConfirmDialogConfirm(): void {
@@ -235,7 +253,13 @@ export class OfferDetailComponent {
     this.confirmPayload.set(null);
   }
 
-  protected getConfirmConfig() {
+  protected getConfirmConfig(): {
+    open: boolean;
+    title: string;
+    message: string;
+    confirmLabel: string;
+    danger: boolean;
+  } {
     const p = this.confirmPayload();
     return {
       open: this.confirmOpen(),

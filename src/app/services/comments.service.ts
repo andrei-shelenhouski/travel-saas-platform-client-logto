@@ -33,8 +33,12 @@ export class CommentsService {
     let httpParams = new HttpParams()
       .set('commentableType', params.commentableType)
       .set('commentableId', params.commentableId);
-    if (params.page != null) httpParams = httpParams.set('page', params.page);
-    if (params.limit != null) httpParams = httpParams.set('limit', params.limit);
+    if (params.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+    if (params.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
+    }
     return this.http.get<CommentListResponseDto>(COMMENTS_URL, {
       params: httpParams,
     });

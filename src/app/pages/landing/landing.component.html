@@ -4,29 +4,30 @@
     class="sticky top-0 z-50 border-b border-gray-200/80 bg-white/95 backdrop-blur supports-backdrop-filter:bg-white/80"
   >
     <div class="mx-auto flex h-16 max-w-6xl items-center justify-between gap-6 px-4 sm:px-6">
-      <a href="#" class="text-xl font-bold tracking-tight text-primary-600">TravelOps</a>
+      <a class="text-xl font-bold tracking-tight text-primary-600" href="#">TravelOps</a>
       <nav class="hidden items-center gap-8 md:flex">
-        <a href="#features" class="text-sm font-medium text-gray-600 hover:text-gray-900"
+        <a class="text-sm font-medium text-gray-600 hover:text-gray-900" href="#features"
           >Возможности</a
         >
-        <a href="#how-it-works" class="text-sm font-medium text-gray-600 hover:text-gray-900"
+        <a class="text-sm font-medium text-gray-600 hover:text-gray-900" href="#how-it-works"
           >Как работает</a
         >
-        <a href="#audience" class="text-sm font-medium text-gray-600 hover:text-gray-900"
+        <a class="text-sm font-medium text-gray-600 hover:text-gray-900" href="#audience"
           >Для кого</a
         >
       </nav>
       @if (authService.isAuthenticated()) {
         <a
-          routerLink="/onboarding/check"
           class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary-hover transition-colors"
+          routerLink="/onboarding/check"
         >
           В приложение
         </a>
       } @else {
         <button
-          (click)="authService.signIn()"
           class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary-hover transition-colors"
+          type="button"
+          (click)="authService.signIn()"
         >
           Войти
         </button>
@@ -41,7 +42,7 @@
         <div class="hero-content">
           <p class="hero-tagline">
             <span class="hero-tagline-text">Всё для управления продажами туров в одном месте.</span>
-            <a href="#features" class="hero-tagline-link">Подробнее →</a>
+            <a class="hero-tagline-link" href="#features">Подробнее →</a>
           </p>
           <h1 class="hero-title">CRM для турагентов, которая наводит порядок в продажах</h1>
           <p class="hero-subtitle">
@@ -64,27 +65,27 @@
           </ul>
           <div class="hero-ctas">
             @if (authService.isAuthenticated()) {
-              <a routerLink="/onboarding/check" class="hero-cta-primary"> В приложение </a>
+              <a class="hero-cta-primary" routerLink="/onboarding/check"> В приложение </a>
             } @else {
-              <button (click)="authService.signIn()" class="hero-cta-primary">
+              <button class="hero-cta-primary" type="button" (click)="authService.signIn()">
                 Начать использовать
               </button>
             }
-            <a href="#problem" class="hero-cta-secondary">Запросить демо →</a>
+            <a class="hero-cta-secondary" href="#problem">Запросить демо →</a>
           </div>
         </div>
         <div class="hero-image-wrap">
           <img
-            src="https://cdn.alphatour.by/atmosphere_kanifushi_041_52f2b43d08.jpg"
             alt="Туризм и путешествия"
             class="hero-image"
+            src="https://cdn.alphatour.by/atmosphere_kanifushi_041_52f2b43d08.jpg"
           />
         </div>
       </div>
     </section>
 
     <!-- Section 2 — Проблема -->
-    <section id="problem" class="landing-section py-16 sm:py-20">
+    <section class="landing-section py-16 sm:py-20" id="problem">
       <div class="mx-auto max-w-6xl px-4 sm:px-6">
         <h2 class="text-center text-3xl font-bold text-gray-900">Почему турагенты теряют деньги</h2>
         <ul class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -116,8 +117,8 @@
 
     <!-- Section 3 — Решение -->
     <section
-      id="solution"
       class="landing-section border-t border-gray-100 bg-gray-50 py-16 sm:py-20"
+      id="solution"
     >
       <div class="mx-auto max-w-4xl px-4 text-center sm:px-6">
         <h2 class="text-3xl font-bold text-gray-900">Одна система вместо таблиц и мессенджеров</h2>
@@ -146,7 +147,7 @@
     </section>
 
     <!-- Section 4 — Как это работает -->
-    <section id="how-it-works" class="landing-section py-16 sm:py-20">
+    <section class="landing-section py-16 sm:py-20" id="how-it-works">
       <div class="mx-auto max-w-3xl px-4 sm:px-6">
         <h2 class="text-center text-3xl font-bold text-gray-900">Процесс в 4 шага</h2>
         <ol class="mt-12 space-y-6">
@@ -206,8 +207,8 @@
 
     <!-- Section 5 — Возможности -->
     <section
-      id="features"
       class="landing-section border-t border-gray-100 bg-gray-50 py-16 sm:py-20"
+      id="features"
     >
       <div class="mx-auto max-w-6xl px-4 sm:px-6">
         <h2 class="text-center text-3xl font-bold text-gray-900">Ключевые инструменты</h2>
@@ -241,7 +242,7 @@
     </section>
 
     <!-- Section 6 — Для кого -->
-    <section id="audience" class="landing-section py-16 sm:py-20">
+    <section class="landing-section py-16 sm:py-20" id="audience">
       <div class="mx-auto max-w-6xl px-4 sm:px-6">
         <h2 class="text-center text-3xl font-bold text-gray-900">Подходит для</h2>
         <ul class="mt-10 flex flex-wrap justify-center gap-4 sm:gap-6">
@@ -271,8 +272,8 @@
 
     <!-- Section 7 — Результат -->
     <section
-      id="results"
       class="landing-section border-t border-gray-100 bg-gray-50 py-16 sm:py-20"
+      id="results"
     >
       <div class="mx-auto max-w-6xl px-4 sm:px-6">
         <h2 class="text-center text-3xl font-bold text-gray-900">Что вы получаете</h2>
@@ -307,7 +308,7 @@
     </section>
 
     <!-- Section 8 — Технологии и безопасность -->
-    <section id="tech" class="landing-section py-16 sm:py-20">
+    <section class="landing-section py-16 sm:py-20" id="tech">
       <div class="mx-auto max-w-4xl px-4 sm:px-6">
         <h2 class="text-center text-3xl font-bold text-gray-900">Надёжная облачная архитектура</h2>
         <ul class="mt-10 grid gap-4 sm:grid-cols-2">
@@ -337,8 +338,8 @@
 
     <!-- Section 9 — Финальный CTA -->
     <section
-      id="cta"
       class="landing-section border-t border-gray-200 bg-primary-600 py-16 sm:py-24"
+      id="cta"
     >
       <div class="mx-auto max-w-2xl px-4 text-center sm:px-6">
         <h2 class="text-3xl font-bold text-white">Готовы работать системно?</h2>
@@ -347,22 +348,23 @@
         </p>
         @if (authService.isAuthenticated()) {
           <a
-            routerLink="/onboarding/check"
             class="mt-10 inline-flex rounded-full bg-white px-8 py-4 text-lg font-semibold text-primary-600 shadow-lg hover:bg-gray-100 transition-colors"
+            routerLink="/onboarding/check"
           >
             В приложение
           </a>
         } @else {
           <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <button
-              (click)="authService.signIn()"
               class="w-full rounded-full bg-white px-8 py-4 text-lg font-semibold text-primary-600 shadow-lg hover:bg-gray-100 transition-colors sm:w-auto"
+              type="button"
+              (click)="authService.signIn()"
             >
               Получить ранний доступ
             </button>
             <a
-              href="#"
               class="w-full rounded-full border-2 border-white/60 bg-transparent px-8 py-4 text-center text-lg font-semibold text-white hover:bg-white/10 transition-colors sm:w-auto"
+              href="#"
             >
               Запросить демонстрацию
             </a>

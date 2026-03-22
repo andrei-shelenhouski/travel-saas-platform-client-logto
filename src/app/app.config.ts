@@ -5,10 +5,24 @@ import {
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
-import { getAnalytics, provideAnalytics, ScreenTrackingService, UserTrackingService } from '@angular/fire/analytics';
+import {
+  getAnalytics,
+  provideAnalytics,
+  ScreenTrackingService,
+  UserTrackingService,
+} from '@angular/fire/analytics';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
-import { initializeAppCheck, provideAppCheck, ReCaptchaEnterpriseProvider } from '@angular/fire/app-check';
-import { Auth, connectAuthEmulator, getAuth, provideAuth as provideFirebaseAuth } from '@angular/fire/auth';
+import {
+  initializeAppCheck,
+  provideAppCheck,
+  ReCaptchaEnterpriseProvider,
+} from '@angular/fire/app-check';
+import {
+  Auth,
+  connectAuthEmulator,
+  getAuth,
+  provideAuth as provideFirebaseAuth,
+} from '@angular/fire/auth';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 
@@ -20,7 +34,7 @@ import { environment } from '@environments/environment';
 import { routes } from '@app/app.routes';
 import { errorHandlerInterceptor, orgAuthInterceptor } from '@app/interceptors/index';
 
-const connectLocalAuthEmulator = (auth: Auth, host: string, port: number) => {
+const connectLocalAuthEmulator = (auth: Auth, host: string, port: number): void => {
   connectAuthEmulator(auth, `http://${host}:${port}`);
 };
 

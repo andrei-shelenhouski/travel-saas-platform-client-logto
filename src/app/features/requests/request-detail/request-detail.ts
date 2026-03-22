@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -8,6 +8,7 @@ import { RequestsService } from '@app/services/requests.service';
 import type { RequestResponseDto } from '@app/shared/models';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-request-detail',
   imports: [RouterLink],
   templateUrl: './request-detail.html',
@@ -18,15 +19,15 @@ export class RequestDetailComponent {
   private readonly router = inject(Router);
   private readonly requestsService = inject(RequestsService);
 
-  private readonly routeId = toSignal(
-    this.route.paramMap.pipe(map((p) => p.get('id')))
-  );
+  private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
 
   private readonly data = rxResource<RequestResponseDto, string | null>({
     params: (): string | null => this.routeId() ?? null,
     stream: ({ params }) => {
       const id = params;
-      if (id == null) return EMPTY;
+      if (id === null) {
+        return EMPTY;
+      }
       return this.requestsService.getById(id);
     },
   });
@@ -44,7 +45,9 @@ export class RequestDetailComponent {
 
   createOffer(): void {
     const r = this.request();
-    if (!r) return;
+    if (!r) {
+      return;
+    }
     this.router.navigate(['/app/offers/new'], {
       queryParams: { requestId: r.id },
     });

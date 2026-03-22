@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -27,6 +34,7 @@ const STATUS_OPTIONS: { value: InvoiceStatus; label: string }[] = [
 ];
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-invoice-detail',
   imports: [RouterLink, FormsModule, ConfirmationDialogComponent],
   templateUrl: './invoice-detail.html',
@@ -45,7 +53,9 @@ export class InvoiceDetailComponent {
     params: (): string | null => this.routeId() ?? null,
     stream: ({ params }) => {
       const id = params;
-      if (id == null) return EMPTY;
+      if (id === null) {
+        return EMPTY;
+      }
       return this.invoicesService.getById(id);
     },
   });
@@ -57,7 +67,13 @@ export class InvoiceDetailComponent {
   readonly actionLoading = signal(false);
   readonly editing = signal(false);
   readonly confirmOpen = signal(false);
-  readonly confirmPayload = signal<{ action: 'DELETE'; title: string; message: string; confirmLabel: string; danger: boolean } | null>(null);
+  readonly confirmPayload = signal<{
+    action: 'DELETE';
+    title: string;
+    message: string;
+    confirmLabel: string;
+    danger: boolean;
+  } | null>(null);
 
   editStatus: InvoiceStatus = InvoiceStatus.DRAFT;
   editDueDate = '';
@@ -83,7 +99,9 @@ export class InvoiceDetailComponent {
   }
 
   formatDateOnly(iso: string | null): string {
-    if (!iso) return '—';
+    if (!iso) {
+      return '—';
+    }
     try {
       return new Date(iso).toISOString().slice(0, 10);
     } catch {
@@ -97,7 +115,9 @@ export class InvoiceDetailComponent {
 
   startEdit(): void {
     const inv = this.invoice();
-    if (!inv) return;
+    if (!inv) {
+      return;
+    }
     this.editStatus = (inv.status as InvoiceStatus) ?? InvoiceStatus.DRAFT;
     this.editDueDate = this.formatDateOnly(inv.dueDate);
     this.editPdfUrl = inv.pdfUrl ?? '';
@@ -110,13 +130,19 @@ export class InvoiceDetailComponent {
 
   saveEdit(): void {
     const inv = this.invoice();
-    if (!inv || this.actionLoading()) return;
+    if (!inv || this.actionLoading()) {
+      return;
+    }
     this.actionLoading.set(true);
     const dto: { status?: InvoiceStatus; dueDate?: string; pdfUrl?: string } = {
       status: this.editStatus,
     };
-    if (this.editDueDate.trim()) dto.dueDate = this.editDueDate.trim();
-    if (this.editPdfUrl.trim()) dto.pdfUrl = this.editPdfUrl.trim();
+    if (this.editDueDate.trim()) {
+      dto.dueDate = this.editDueDate.trim();
+    }
+    if (this.editPdfUrl.trim()) {
+      dto.pdfUrl = this.editPdfUrl.trim();
+    }
 
     this.invoicesService.update(inv.id, dto).subscribe({
       next: (updated) => {
@@ -130,7 +156,9 @@ export class InvoiceDetailComponent {
 
   deleteInvoice(): void {
     const inv = this.invoice();
-    if (!inv || this.actionLoading()) return;
+    if (!inv || this.actionLoading()) {
+      return;
+    }
     this.confirmPayload.set({
       action: 'DELETE',
       title: 'Delete invoice',

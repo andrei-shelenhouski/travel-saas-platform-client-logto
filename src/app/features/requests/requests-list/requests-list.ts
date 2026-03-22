@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -8,6 +8,7 @@ import { RequestsService } from '@app/services/requests.service';
 import type { RequestResponseDto } from '@app/shared/models';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-requests-list',
   imports: [RouterLink],
   templateUrl: './requests-list.html',
@@ -23,9 +24,13 @@ export class RequestsListComponent {
 
   readonly requests = computed(() => {
     const list = this.data.value()?.data ?? [];
-    if (!this.permissions.filterToOwnRecords()) return list;
+    if (!this.permissions.filterToOwnRecords()) {
+      return list;
+    }
     const uid = this.permissions.currentUserId();
-    if (!uid) return list;
+    if (!uid) {
+      return list;
+    }
     return list.filter((r) => r.managerId === uid);
   });
   readonly loading = computed(() => this.data.isLoading());

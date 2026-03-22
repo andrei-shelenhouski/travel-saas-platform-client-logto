@@ -3,8 +3,8 @@
     <div class="flex items-center gap-3">
       <h2 class="text-lg font-semibold text-gray-900">Offers · Kanban</h2>
       <a
-        routerLink="/app/offers"
         class="text-sm font-medium text-primary hover:underline"
+        routerLink="/app/offers"
       >
         List view
       </a>
@@ -14,18 +14,18 @@
       @for (s of [OfferStatus.DRAFT, OfferStatus.SENT, OfferStatus.VIEWED, OfferStatus.ACCEPTED, OfferStatus.REJECTED, OfferStatus.EXPIRED]; track s) {
         <label class="inline-flex items-center gap-1.5 text-sm">
           <input
+            class="rounded border-gray-300"
             type="checkbox"
             [checked]="statusFilterChecked()[s] !== false"
             (change)="setFilter(s, $any($event.target).checked)"
-            class="rounded border-gray-300"
           />
-          <app-status-badge [status]="s" variant="offer" />
+          <app-status-badge variant="offer" [status]="s" />
         </label>
       }
     </div>
     <a
-      routerLink="/app/offers/new"
       class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
+      routerLink="/app/offers/new"
     >
       New offer
     </a>
@@ -39,29 +39,29 @@
     <p class="text-sm text-gray-500">Loading offers…</p>
   } @else {
     <div
-      class="flex gap-4 overflow-x-auto pb-2"
       cdkDropListGroup
+      class="flex gap-4 overflow-x-auto pb-2"
     >
       @for (column of columns(); track column.status) {
         <div
-          class="kanban-column flex min-w-[280px] flex-1 flex-col rounded-lg border border-gray-200 bg-gray-50/80"
-          [id]="column.status"
           cdkDropList
-          [cdkDropListData]="column.items"
+          class="kanban-column flex min-w-[280px] flex-1 flex-col rounded-lg border border-gray-200 bg-gray-50/80"
           [cdkDropListConnectedTo]="allListIds()"
+          [cdkDropListData]="column.items"
+          [id]="column.status"
           (cdkDropListDropped)="onDrop($event, column.status)"
         >
           <div class="flex items-center justify-between border-b border-gray-200 bg-white px-3 py-2 rounded-t-lg">
-            <app-status-badge [status]="column.status" variant="offer" />
+            <app-status-badge variant="offer" [status]="column.status" />
             <span class="text-xs text-gray-500">{{ column.items.length }}</span>
           </div>
           <div class="flex-1 space-y-2 overflow-y-auto p-2 min-h-[120px]">
             @for (offer of column.items; track offer.id) {
               <div
+                cdkDrag
                 class="kanban-card cursor-pointer rounded-lg border border-gray-200 bg-white p-3 shadow-sm transition hover:shadow hover:border-primary-200"
                 role="button"
                 tabindex="0"
-                cdkDrag
                 [cdkDragData]="offer"
                 (click)="goToOffer(offer)"
                 (keydown.enter)="goToOffer(offer)"

@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
@@ -12,6 +12,7 @@ const TYPE_OPTIONS: { value: ClientType; label: string }[] = [
 ];
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-client',
   imports: [RouterLink, FormsModule],
   templateUrl: './create-client.html',
@@ -42,8 +43,12 @@ export class CreateClientComponent {
       type: this.type,
       name: this.name.trim(),
     };
-    if (this.phone.trim()) dto.phone = this.phone.trim();
-    if (this.email.trim()) dto.email = this.email.trim();
+    if (this.phone.trim()) {
+      dto.phone = this.phone.trim();
+    }
+    if (this.email.trim()) {
+      dto.email = this.email.trim();
+    }
 
     this.clientsService.create(dto).subscribe({
       next: (created) => {
@@ -51,9 +56,7 @@ export class CreateClientComponent {
         this.router.navigate(['/app/clients', created.id]);
       },
       error: (err) => {
-        this.error.set(
-          err.error?.message ?? err.message ?? 'Failed to create client'
-        );
+        this.error.set(err.error?.message ?? err.message ?? 'Failed to create client');
       },
       complete: () => this.saving.set(false),
     });

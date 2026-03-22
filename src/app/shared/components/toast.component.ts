@@ -1,14 +1,15 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ToastService } from '@app/shared/services/toast.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-toast',
   standalone: true,
   template: `
     @if (toastService.toast().visible) {
       <div
-        role="alert"
         class="fixed bottom-4 right-4 z-50 max-w-sm rounded-lg px-4 py-3 text-sm shadow-lg"
+        role="alert"
         [class]="
           toastService.toast().type === 'error'
             ? 'bg-red-600 text-white'

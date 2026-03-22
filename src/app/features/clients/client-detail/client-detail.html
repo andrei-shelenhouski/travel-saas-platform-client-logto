@@ -1,9 +1,10 @@
+<!-- eslint-disable @angular-eslint/template/cyclomatic-complexity -- tabbed layout with @switch -->
 <div class="space-y-4">
   @if (loading()) {
     <div class="flex justify-center py-12">
       <div
-        class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
         aria-hidden="true"
+        class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
       ></div>
     </div>
   } @else {
@@ -17,61 +18,61 @@
           <p class="mt-1 text-sm text-gray-500">{{ typeLabel[c.type] }} client</p>
         </div>
         <button
+          class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
           type="button"
           (click)="createRequest()"
-          class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
         >
           Create request
         </button>
       </header>
 
       <!-- Tabs -->
-      <nav class="flex gap-1 border-b border-gray-200" aria-label="Client sections">
+      <nav aria-label="Client sections" class="flex gap-1 border-b border-gray-200">
         <button
-          type="button"
-          (click)="setTab('overview')"
           class="rounded-t px-4 py-2 text-sm font-medium"
+          type="button"
+          [class.-mb-px]="activeTab() === 'overview'"
           [class.border-b-2]="activeTab() === 'overview'"
           [class.border-primary]="activeTab() === 'overview'"
-          [class.text-primary]="activeTab() === 'overview'"
           [class.text-gray-600]="activeTab() !== 'overview'"
-          [class.-mb-px]="activeTab() === 'overview'"
+          [class.text-primary]="activeTab() === 'overview'"
+          (click)="setTab('overview')"
         >
           Overview
         </button>
         <button
-          type="button"
-          (click)="setTab('requests')"
           class="rounded-t px-4 py-2 text-sm font-medium"
+          type="button"
+          [class.-mb-px]="activeTab() === 'requests'"
           [class.border-b-2]="activeTab() === 'requests'"
           [class.border-primary]="activeTab() === 'requests'"
-          [class.text-primary]="activeTab() === 'requests'"
           [class.text-gray-600]="activeTab() !== 'requests'"
-          [class.-mb-px]="activeTab() === 'requests'"
+          [class.text-primary]="activeTab() === 'requests'"
+          (click)="setTab('requests')"
         >
           Requests
         </button>
         <button
-          type="button"
-          (click)="setTab('activity')"
           class="rounded-t px-4 py-2 text-sm font-medium"
+          type="button"
+          [class.-mb-px]="activeTab() === 'activity'"
           [class.border-b-2]="activeTab() === 'activity'"
           [class.border-primary]="activeTab() === 'activity'"
-          [class.text-primary]="activeTab() === 'activity'"
           [class.text-gray-600]="activeTab() !== 'activity'"
-          [class.-mb-px]="activeTab() === 'activity'"
+          [class.text-primary]="activeTab() === 'activity'"
+          (click)="setTab('activity')"
         >
           Activity
         </button>
         <button
-          type="button"
-          (click)="setTab('comments')"
           class="rounded-t px-4 py-2 text-sm font-medium"
+          type="button"
+          [class.-mb-px]="activeTab() === 'comments'"
           [class.border-b-2]="activeTab() === 'comments'"
           [class.border-primary]="activeTab() === 'comments'"
-          [class.text-primary]="activeTab() === 'comments'"
           [class.text-gray-600]="activeTab() !== 'comments'"
-          [class.-mb-px]="activeTab() === 'comments'"
+          [class.text-primary]="activeTab() === 'comments'"
+          (click)="setTab('comments')"
         >
           Comments
         </button>
@@ -132,8 +133,8 @@
             @if (requestsLoading()) {
               <div class="flex justify-center py-12">
                 <div
-                  class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
                   aria-hidden="true"
+                  class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
                 ></div>
               </div>
             } @else if (requests().length === 0) {
@@ -142,9 +143,9 @@
               </p>
               <div class="px-4 pb-4">
                 <button
+                  class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
                   type="button"
                   (click)="createRequest()"
-                  class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
                 >
                   Create request
                 </button>
@@ -197,8 +198,8 @@
           @if (activitiesLoading()) {
             <div class="flex justify-center py-12">
               <div
-                class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
                 aria-hidden="true"
+                class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
               ></div>
             </div>
           } @else {
@@ -210,8 +211,8 @@
             @if (commentsLoading()) {
               <div class="flex justify-center py-12">
                 <div
-                  class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
                   aria-hidden="true"
+                  class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
                 ></div>
               </div>
             } @else {
@@ -227,8 +228,8 @@
 
       <div class="flex gap-3">
         <a
-          routerLink="/app/clients"
           class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          routerLink="/app/clients"
         >
           ← Back to clients
         </a>

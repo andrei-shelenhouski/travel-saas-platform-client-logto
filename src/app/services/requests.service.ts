@@ -24,11 +24,21 @@ export class RequestsService {
   private readonly http = inject(HttpClient);
 
   /** GET /api/requests. Optional status filter (DRAFT, IN_PROGRESS, WAITING_CLIENT, CLOSED). */
-  getList(params?: { page?: number; limit?: number; status?: RequestStatus }): Observable<PaginatedRequestResponseDto> {
+  getList(params?: {
+    page?: number;
+    limit?: number;
+    status?: RequestStatus;
+  }): Observable<PaginatedRequestResponseDto> {
     let httpParams = new HttpParams();
-    if (params?.page != null) httpParams = httpParams.set('page', params.page);
-    if (params?.limit != null) httpParams = httpParams.set('limit', params.limit);
-    if (params?.status != null) httpParams = httpParams.set('status', params.status);
+    if (params?.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
+    }
+    if (params?.status !== undefined) {
+      httpParams = httpParams.set('status', params.status);
+    }
     return this.http.get<PaginatedRequestResponseDto>(REQUESTS_URL, { params: httpParams });
   }
 
@@ -49,14 +59,8 @@ export class RequestsService {
     return this.http.patch<RequestResponseDto>(`${REQUESTS_URL}/${id}`, dto);
   }
 
-  updateStatus(
-    id: string,
-    dto: UpdateRequestStatusDto
-  ): Observable<RequestResponseDto> {
-    return this.http.patch<RequestResponseDto>(
-      `${REQUESTS_URL}/${id}/status`,
-      dto
-    );
+  updateStatus(id: string, dto: UpdateRequestStatusDto): Observable<RequestResponseDto> {
+    return this.http.patch<RequestResponseDto>(`${REQUESTS_URL}/${id}/status`, dto);
   }
 
   delete(id: string): Observable<RequestResponseDto> {

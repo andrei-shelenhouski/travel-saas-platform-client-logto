@@ -30,7 +30,10 @@ export class OrganizationMembersService {
   }
 
   /** PATCH /api/organization-members/{id}/role. Update a member's role (id = organizationMember id). */
-  updateRole(id: string, dto: UpdateOrganizationMemberRoleDto): Observable<OrganizationMemberResponseDto> {
+  updateRole(
+    id: string,
+    dto: UpdateOrganizationMemberRoleDto,
+  ): Observable<OrganizationMemberResponseDto> {
     return this.http.patch<OrganizationMemberResponseDto>(`${MEMBERS_URL}/${id}/role`, dto);
   }
 }

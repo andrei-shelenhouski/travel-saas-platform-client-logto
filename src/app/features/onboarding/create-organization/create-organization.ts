@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -10,6 +10,7 @@ import { OrganizationsService } from '@app/services/organizations.service';
 import { RoleService } from '@app/services/role.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-organization',
   imports: [FormsModule, RouterLink],
   templateUrl: './create-organization.html',

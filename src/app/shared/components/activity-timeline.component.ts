@@ -1,7 +1,8 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import type { ActivityTimelineItem } from '@app/shared/models/activity.model';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-activity-timeline',
   standalone: true,
   template: `
@@ -11,9 +12,9 @@ import type { ActivityTimelineItem } from '@app/shared/models/activity.model';
         @for (item of items(); track item.date + item.label + (item.id ?? '')) {
           <li class="flex gap-3">
             <span
+              aria-hidden="true"
               class="mt-1.5 h-2 w-2 shrink-0 rounded-full"
               [class]="dotClass(item)"
-              aria-hidden="true"
             ></span>
             <div class="min-w-0 flex-1">
               <p class="text-sm font-medium text-gray-900">{{ item.label }}</p>
@@ -29,9 +30,9 @@ import type { ActivityTimelineItem } from '@app/shared/models/activity.model';
 })
 export class ActivityTimelineComponent {
   /** Timeline title (e.g. "Activity") */
-  title = input<string>('Timeline');
+  readonly title = input<string>('Timeline');
   /** List of timeline items */
-  items = input<ActivityTimelineItem[]>([]);
+  readonly items = input<ActivityTimelineItem[]>([]);
 
   protected formatDate(iso: string): string {
     try {

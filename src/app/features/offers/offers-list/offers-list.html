@@ -3,15 +3,15 @@
     <div class="flex items-center gap-3">
       <h1 class="text-xl font-semibold text-gray-900">Offers</h1>
       <a
-        routerLink="/app/offers/kanban"
         class="text-sm font-medium text-primary hover:underline"
+        routerLink="/app/offers/kanban"
       >
         Kanban view
       </a>
     </div>
     <a
-      routerLink="/app/offers/new"
       class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
+      routerLink="/app/offers/new"
     >
       Create offer
     </a>
@@ -21,14 +21,14 @@
   <div class="flex flex-wrap gap-1 rounded-lg border border-gray-200 bg-gray-50/50 p-1">
     @for (tab of filterTabs; track tab.value) {
       <button
-        type="button"
-        (click)="setFilter(tab.value)"
         class="rounded-md px-3 py-2 text-sm font-medium transition-colors"
+        type="button"
         [class]="
           activeFilter() === tab.value
             ? 'bg-white text-gray-900 shadow-sm'
             : 'text-gray-600 hover:text-gray-900'
         "
+        (click)="setFilter(tab.value)"
       >
         {{ tab.label }}
       </button>
@@ -53,13 +53,13 @@
       <tbody class="divide-y divide-gray-200">
         @if (loading()) {
           <tr>
-            <td colspan="5" class="px-4 py-12 text-center text-gray-500">
-              <div class="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" aria-hidden="true"></div>
+            <td class="px-4 py-12 text-center text-gray-500" colspan="5">
+              <div aria-hidden="true" class="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
             </td>
           </tr>
         } @else if (filteredOffers().length === 0) {
           <tr>
-            <td colspan="5" class="px-4 py-12 text-center text-gray-500">
+            <td class="px-4 py-12 text-center text-gray-500" colspan="5">
               No offers found.
             </td>
           </tr>

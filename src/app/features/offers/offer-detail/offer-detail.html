@@ -1,7 +1,7 @@
 <div class="space-y-4">
   @if (loading()) {
     <div class="flex items-center justify-center py-12">
-      <div class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" aria-hidden="true"></div>
+      <div aria-hidden="true" class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
     </div>
   } @else {
     @let o = offer();
@@ -20,15 +20,15 @@
         <div class="flex flex-wrap items-center gap-2">
           @for (action of allowedActions(); track action) {
             <button
-              type="button"
-              (click)="onActionClick(action)"
-              [disabled]="actionLoading()"
               class="rounded px-4 py-2 text-sm font-medium disabled:opacity-50"
+              type="button"
               [class]="
                 action === 'REJECT' || action === 'EXPIRE' || action === 'DELETE'
                   ? 'bg-red-600 text-white hover:bg-red-700'
                   : 'bg-primary text-primary-foreground hover:bg-primary-hover'
               "
+              [disabled]="actionLoading()"
+              (click)="onActionClick(action)"
             >
               {{ ACTION_LABELS[action] }}
             </button>
@@ -60,12 +60,12 @@
 </div>
 
 <app-confirmation-dialog
-  [open]="confirmOpen()"
-  [title]="confirmPayload()?.title ?? 'Confirm'"
-  [message]="confirmPayload()?.message ?? ''"
+  cancelLabel="Cancel"
   [confirmLabel]="confirmPayload()?.confirmLabel ?? 'Confirm'"
   [danger]="confirmPayload()?.danger ?? false"
-  cancelLabel="Cancel"
-  (confirm)="onConfirmDialogConfirm()"
+  [message]="confirmPayload()?.message ?? ''"
+  [open]="confirmOpen()"
+  [title]="confirmPayload()?.title ?? 'Confirm'"
   (cancel)="onConfirmDialogCancel()"
+  (confirm)="onConfirmDialogConfirm()"
 />

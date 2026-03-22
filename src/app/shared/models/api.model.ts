@@ -31,12 +31,12 @@ export const ClientType = {
 export type ClientType = (typeof ClientType)[keyof typeof ClientType];
 
 /** Generic paginated response. OpenAPI list endpoints return { data, total, page, limit }. */
-export interface PaginatedDto<T> {
+export type PaginatedDto<T> = {
   data: T[];
   total: number;
   page: number;
   limit: number;
-}
+};
 
 // ----- /api/me (GET) – OpenAPI: MeResponseDto -----
 
@@ -49,7 +49,7 @@ export const OrgRole = {
 export type OrgRole = (typeof OrgRole)[keyof typeof OrgRole];
 
 /** OpenAPI: OrganizationWithRoleDto. Organization with current user's role. */
-export interface OrganizationWithRoleDto {
+export type OrganizationWithRoleDto = {
   id: string;
   name: string;
   defaultCurrency: string;
@@ -58,10 +58,10 @@ export interface OrganizationWithRoleDto {
   createdAt: string;
   updatedAt: string;
   role: OrgRole;
-}
+};
 
 /** OpenAPI: MeResponseDto. GET /api/me response. */
-export interface MeResponseDto {
+export type MeResponseDto = {
   id: string;
   logtoId: string;
   email?: string;
@@ -70,7 +70,7 @@ export interface MeResponseDto {
   createdAt: string;
   updatedAt: string;
   organizations: OrganizationWithRoleDto[];
-}
+};
 
 /** Legacy alias for components that only need id + name. */
 export type Organization = Pick<OrganizationWithRoleDto, 'id' | 'name'>;
@@ -86,7 +86,7 @@ export type AppRole = (typeof AppRole)[keyof typeof AppRole];
 // ----- Organization members (GET /api/organization-members, PATCH .../role) -----
 
 /** OpenAPI: OrganizationMemberResponseDto. Member of the current organization. */
-export interface OrganizationMemberResponseDto {
+export type OrganizationMemberResponseDto = {
   id: string;
   userId: string;
   name: string;
@@ -95,44 +95,44 @@ export interface OrganizationMemberResponseDto {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-}
+};
 
 /** OpenAPI: UpdateOrganizationMemberRoleDto. PATCH /api/organization-members/{id}/role body. */
-export interface UpdateOrganizationMemberRoleDto {
+export type UpdateOrganizationMemberRoleDto = {
   role: OrgRole;
-}
+};
 
 /** OpenAPI: AddOrganizationMemberDto. POST /api/organization-members body. User must already exist. */
-export interface AddOrganizationMemberDto {
+export type AddOrganizationMemberDto = {
   email: string;
   role: OrgRole;
-}
+};
 
 // ----- Organizations -----
 
-export interface CreateOrganizationDto {
+export type CreateOrganizationDto = {
   name: string;
   defaultCurrency?: string;
-}
+};
 
 /** Response shape for POST /api/organizations (not in OpenAPI). */
-export interface CreateOrganizationResponseDto {
+export type CreateOrganizationResponseDto = {
   id: string;
   organizationId?: string; // some backends return this
   name?: string;
-}
+};
 
 // ----- Leads -----
 
-export interface CreateLeadDto {
+export type CreateLeadDto = {
   source: LeadSource;
   contactName: string;
   contactEmail?: string;
   contactPhone?: string;
   notes?: string;
-}
+};
 
-export interface LeadResponseDto {
+export type LeadResponseDto = {
   id: string;
   organizationId: string;
   source: LeadSource | string;
@@ -143,34 +143,34 @@ export interface LeadResponseDto {
   status: LeadStatus | string;
   createdAt: string; // date-time
   updatedAt: string; // date-time
-}
+};
 
 /** OpenAPI: GET /api/leads response. */
 export type PaginatedLeadResponseDto = PaginatedDto<LeadResponseDto>;
 
 /** OpenAPI schema: UpdateLeadDto. PATCH /api/leads/{id} request body. */
-export interface UpdateLeadDto {
+export type UpdateLeadDto = {
   source?: LeadSource;
   contactName?: string;
   contactEmail?: string;
   contactPhone?: string;
   notes?: string;
-}
+};
 
-export interface UpdateLeadStatusDto {
+export type UpdateLeadStatusDto = {
   status: LeadStatus;
-}
+};
 
 /** Response for POST /api/leads/{id}/convert-to-client. */
-export interface ConvertLeadToClientResponseDto {
+export type ConvertLeadToClientResponseDto = {
   client: ClientResponseDto;
   lead: LeadResponseDto;
-}
+};
 
 // ----- Offers (OpenAPI: paths + CreateOfferDto, UpdateOfferDto, UpdateOfferStatusDto) -----
 
 /** OpenAPI schema: CreateOfferDto. POST /api/offers (create or duplicate when duplicateFromId set). */
-export interface CreateOfferDto {
+export type CreateOfferDto = {
   duplicateFromId?: string; // uuid
   requestId?: string; // uuid
   title?: string;
@@ -179,22 +179,22 @@ export interface CreateOfferDto {
   commission?: number;
   finalPrice?: number;
   currency?: string;
-}
+};
 
 /** OpenAPI schema: UpdateOfferDto. PATCH /api/offers/{id} request body. */
-export interface UpdateOfferDto {
+export type UpdateOfferDto = {
   title?: string;
   supplierTotal?: number;
   markup?: number;
   commission?: number;
   finalPrice?: number;
   currency?: string;
-}
+};
 
 /** OpenAPI schema: UpdateOfferStatusDto. PATCH /api/offers/{id}/status request body. */
-export interface UpdateOfferStatusDto {
+export type UpdateOfferStatusDto = {
   status: 'SENT' | 'VIEWED' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED';
-}
+};
 
 export const OfferStatus = {
   DRAFT: 'DRAFT',
@@ -214,7 +214,7 @@ export const OfferSource = {
 export type OfferSource = (typeof OfferSource)[keyof typeof OfferSource];
 
 /** OpenAPI schema: OfferResponseDto. GET /api/offers, GET /api/offers/{id}. Amounts as string. */
-export interface OfferResponseDto {
+export type OfferResponseDto = {
   id: string;
   organizationId: string;
   requestId: string;
@@ -228,7 +228,7 @@ export interface OfferResponseDto {
   currency: string;
   createdAt: string;
   updatedAt: string;
-}
+};
 
 /** OpenAPI: GET /api/offers response. */
 export type PaginatedOfferResponseDto = PaginatedDto<OfferResponseDto>;
@@ -236,9 +236,9 @@ export type PaginatedOfferResponseDto = PaginatedDto<OfferResponseDto>;
 // ----- Bookings (OpenAPI: CreateBookingDto, BookingResponseDto, UpdateBookingDto) -----
 
 /** OpenAPI schema: CreateBookingDto. POST /api/bookings request body. */
-export interface CreateBookingDto {
+export type CreateBookingDto = {
   offerId: string; // uuid
-}
+};
 
 /** OpenAPI: filter + UpdateBookingStatusDto use PENDING, CONFIRMED, PAID, CANCELLED; response may use CONFIRMED, CANCELLED. */
 export const BookingStatus = {
@@ -250,7 +250,7 @@ export const BookingStatus = {
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus];
 
 /** OpenAPI schema: BookingResponseDto. GET/POST/PATCH/DELETE /api/bookings. agreedPrice decimal as string. */
-export interface BookingResponseDto {
+export type BookingResponseDto = {
   id: string;
   organizationId: string;
   offerId: string;
@@ -260,27 +260,27 @@ export interface BookingResponseDto {
   status: BookingStatus | string;
   createdAt: string; // date-time
   updatedAt: string; // date-time
-}
+};
 
 /** OpenAPI: GET /api/bookings response. */
 export type PaginatedBookingResponseDto = PaginatedDto<BookingResponseDto>;
 
 /** OpenAPI schema: UpdateBookingDto. PATCH /api/bookings/{id} request body. */
-export interface UpdateBookingDto {
+export type UpdateBookingDto = {
   status?: BookingStatus;
-}
+};
 
 /** OpenAPI schema: UpdateBookingStatusDto. PATCH /api/bookings/{id}/status request body. */
-export interface UpdateBookingStatusDto {
+export type UpdateBookingStatusDto = {
   status: BookingStatus;
-}
+};
 
 // ----- Invoices (OpenAPI: CreateInvoiceDto, InvoiceResponseDto, UpdateInvoiceDto) -----
 
-export interface CreateInvoiceDto {
+export type CreateInvoiceDto = {
   bookingId: string; // uuid
   dueDate?: string;
-}
+};
 
 /** OpenAPI: InvoiceResponseDto.status and UpdateInvoiceDto.status enum. */
 export const InvoiceStatus = {
@@ -292,7 +292,7 @@ export const InvoiceStatus = {
 export type InvoiceStatus = (typeof InvoiceStatus)[keyof typeof InvoiceStatus];
 
 /** OpenAPI schema: InvoiceResponseDto. Amount and dates as string; dueDate/pdfUrl nullable. */
-export interface InvoiceResponseDto {
+export type InvoiceResponseDto = {
   id: string;
   organizationId: string;
   bookingId: string;
@@ -304,29 +304,29 @@ export interface InvoiceResponseDto {
   status: InvoiceStatus | string;
   pdfUrl: string | null;
   createdAt: string; // date-time
-}
+};
 
 /** OpenAPI: GET /api/invoices response. */
 export type PaginatedInvoiceResponseDto = PaginatedDto<InvoiceResponseDto>;
 
 /** OpenAPI schema: UpdateInvoiceDto. PATCH /api/invoices/{id} request body. */
-export interface UpdateInvoiceDto {
+export type UpdateInvoiceDto = {
   status?: InvoiceStatus;
   dueDate?: string; // date-time
   pdfUrl?: string;
-}
+};
 
 // ----- Clients (OpenAPI: GET/POST /api/clients, GET/PATCH/DELETE /api/clients/{id}) -----
 
-export interface CreateClientDto {
+export type CreateClientDto = {
   type: ClientType;
   name: string;
   phone?: string;
   email?: string;
-}
+};
 
 /** OpenAPI schema: ClientResponseDto. */
-export interface ClientResponseDto {
+export type ClientResponseDto = {
   id: string;
   organizationId: string;
   type: ClientType | string;
@@ -336,19 +336,19 @@ export interface ClientResponseDto {
   comment: string | null;
   createdAt: string;
   updatedAt: string;
-}
+};
 
 /** OpenAPI: GET /api/clients response. */
 export type PaginatedClientResponseDto = PaginatedDto<ClientResponseDto>;
 
 /** OpenAPI schema: UpdateClientDto. PATCH /api/clients/{id} request body. */
-export interface UpdateClientDto {
+export type UpdateClientDto = {
   type?: ClientType;
   name?: string;
   phone?: string;
   email?: string;
   comment?: string;
-}
+};
 
 // ----- Requests (OpenAPI: GET/POST /api/requests, GET/PATCH/DELETE /api/requests/{id}, PATCH status) -----
 
@@ -361,7 +361,7 @@ export const RequestStatus = {
 } as const;
 export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus];
 
-export interface CreateRequestDto {
+export type CreateRequestDto = {
   clientId: string; // uuid
   managerId: string; // uuid
   destination: string;
@@ -370,10 +370,10 @@ export interface CreateRequestDto {
   adults: number;
   children?: number;
   comment?: string;
-}
+};
 
 /** OpenAPI schema: RequestResponseDto. */
-export interface RequestResponseDto {
+export type RequestResponseDto = {
   id: string;
   organizationId: string;
   clientId: string;
@@ -387,13 +387,13 @@ export interface RequestResponseDto {
   status: RequestStatus | string;
   createdAt: string;
   updatedAt: string;
-}
+};
 
 /** OpenAPI: GET /api/requests response. */
 export type PaginatedRequestResponseDto = PaginatedDto<RequestResponseDto>;
 
 /** OpenAPI schema: UpdateRequestDto. PATCH /api/requests/{id} request body. */
-export interface UpdateRequestDto {
+export type UpdateRequestDto = {
   clientId?: string;
   managerId?: string;
   destination?: string;
@@ -402,12 +402,12 @@ export interface UpdateRequestDto {
   adults?: number;
   children?: number;
   comment?: string;
-}
+};
 
 /** OpenAPI schema: UpdateRequestStatusDto. PATCH /api/requests/{id}/status request body. */
-export interface UpdateRequestStatusDto {
+export type UpdateRequestStatusDto = {
   status: RequestStatus;
-}
+};
 
 // ----- Entity type (Activities, Comments, Tags) -----
 
@@ -422,14 +422,14 @@ export type EntityType = (typeof EntityType)[keyof typeof EntityType];
 
 // ----- Activities (POST/GET /api/activities, GET /api/activities/{id}) -----
 
-export interface CreateActivityDto {
+export type CreateActivityDto = {
   entityType: EntityType;
   entityId: string;
   type: string;
   payload?: Record<string, unknown>;
-}
+};
 
-export interface ActivityResponseDto {
+export type ActivityResponseDto = {
   id: string;
   organizationId: string;
   entityType: string;
@@ -437,25 +437,25 @@ export interface ActivityResponseDto {
   type: string;
   payload: Record<string, unknown> | null;
   createdAt: string;
-}
+};
 
 /** Response for GET /api/activities (findByEntity): items + pagination. */
-export interface ActivityListResponseDto {
+export type ActivityListResponseDto = {
   items: ActivityResponseDto[];
   total: number;
   page: number;
   limit: number;
-}
+};
 
 // ----- Comments (POST/GET /api/comments, GET/DELETE /api/comments/{id}) -----
 
-export interface CreateCommentDto {
+export type CreateCommentDto = {
   commentableType: EntityType;
   commentableId: string;
   body: string;
-}
+};
 
-export interface CommentResponseDto {
+export type CommentResponseDto = {
   id: string;
   organizationId: string;
   commentableType: string;
@@ -463,31 +463,31 @@ export interface CommentResponseDto {
   body: string;
   createdAt: string;
   updatedAt: string;
-}
+};
 
 /** Response for GET /api/comments (findByEntity). */
-export interface CommentListResponseDto {
+export type CommentListResponseDto = {
   items: CommentResponseDto[];
   total: number;
   page: number;
   limit: number;
-}
+};
 
 // ----- Tags (POST/GET /api/tags, GET/DELETE /api/tags/{id}, attach/detach) -----
 
-export interface CreateTagDto {
+export type CreateTagDto = {
   name: string;
-}
+};
 
-export interface TagResponseDto {
+export type TagResponseDto = {
   id: string;
   organizationId: string;
   name: string;
   createdAt: string;
   updatedAt: string;
-}
+};
 
-export interface AttachTagDto {
+export type AttachTagDto = {
   entityType: EntityType;
   entityId: string;
-}
+};

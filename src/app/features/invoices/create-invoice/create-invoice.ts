@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -10,6 +10,7 @@ import type { CreateInvoiceDto } from '@app/shared/models';
 import { BookingStatus } from '@app/shared/models';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-invoice',
   imports: [RouterLink, FormsModule],
   templateUrl: './create-invoice.html',
@@ -48,7 +49,9 @@ export class CreateInvoiceComponent {
     }
     this.saving.set(true);
     const dto: CreateInvoiceDto = { bookingId: bid };
-    if (this.dueDate.trim()) dto.dueDate = this.dueDate.trim();
+    if (this.dueDate.trim()) {
+      dto.dueDate = this.dueDate.trim();
+    }
 
     this.invoicesService.create(dto).subscribe({
       next: (created) => {

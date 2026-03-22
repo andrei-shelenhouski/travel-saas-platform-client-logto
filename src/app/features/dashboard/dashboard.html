@@ -1,3 +1,4 @@
+<!-- eslint-disable @angular-eslint/template/cyclomatic-complexity -- stats grid with nested @if/@for -->
 <div class="space-y-6">
   <div>
     <h1 class="text-2xl font-semibold text-gray-900">Dashboard</h1>
@@ -19,8 +20,8 @@
   } @else if (stats(); as s) {
     <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       <a
-        routerLink="/app/leads"
         class="group flex flex-col rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-primary-200 hover:shadow-md"
+        routerLink="/app/leads"
       >
         <div class="flex items-center gap-2 text-gray-500">
           <i class="pi pi-bolt text-lg"></i>
@@ -37,8 +38,8 @@
       </a>
 
       <a
-        routerLink="/app/requests"
         class="group flex flex-col rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-primary-200 hover:shadow-md"
+        routerLink="/app/requests"
       >
         <div class="flex items-center gap-2 text-gray-500">
           <i class="pi pi-inbox text-lg"></i>
@@ -55,8 +56,8 @@
       </a>
 
       <a
-        routerLink="/app/offers"
         class="group flex flex-col rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-primary-200 hover:shadow-md"
+        routerLink="/app/offers"
       >
         <div class="flex items-center gap-2 text-gray-500">
           <i class="pi pi-send text-lg"></i>
@@ -73,8 +74,8 @@
       </a>
 
       <a
-        routerLink="/app/bookings"
         class="group flex flex-col rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-primary-200 hover:shadow-md"
+        routerLink="/app/bookings"
       >
         <div class="flex items-center gap-2 text-gray-500">
           <i class="pi pi-calendar text-lg"></i>
@@ -93,22 +94,22 @@
 
     <div class="flex flex-wrap gap-3 pt-4">
       <a
-        routerLink="/app/leads/new"
         class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
+        routerLink="/app/leads/new"
       >
         <i class="pi pi-plus"></i>
         New lead
       </a>
       <a
-        routerLink="/app/clients/new"
         class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+        routerLink="/app/clients/new"
       >
         <i class="pi pi-user-plus"></i>
         New client
       </a>
       <a
-        routerLink="/app/requests/new"
         class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+        routerLink="/app/requests/new"
       >
         <i class="pi pi-inbox"></i>
         New request

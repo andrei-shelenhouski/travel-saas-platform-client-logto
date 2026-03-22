@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -28,6 +35,7 @@ const TYPE_LABEL: Record<string, string> = {
 type ClientTab = 'overview' | 'requests' | 'activity' | 'comments';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-client-detail',
   imports: [RouterLink, ActivityTimelineComponent, TagSelectorComponent, CommentComponent],
   templateUrl: './client-detail.html',
@@ -43,15 +51,15 @@ export class ClientDetailComponent {
   private readonly tagsService = inject(TagsService);
   private readonly toast = inject(ToastService);
 
-  private readonly routeId = toSignal(
-    this.route.paramMap.pipe(map((p) => p.get('id')))
-  );
+  private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
 
   private readonly data = rxResource<ClientResponseDto, string | null>({
     params: (): string | null => this.routeId() ?? null,
     stream: ({ params }) => {
       const id = params;
-      if (id == null) return EMPTY;
+      if (id === null) {
+        return EMPTY;
+      }
       return this.clientsService.getById(id);
     },
   });
@@ -59,9 +67,7 @@ export class ClientDetailComponent {
   private readonly requestsData = rxResource<RequestResponseDto[], string | null>({
     params: (): string | null => this.routeId() ?? null,
     stream: () => {
-      return this.requestsService.getList({ limit: 100 }).pipe(
-        map((res) => res.data)
-      );
+      return this.requestsService.getList({ limit: 100 }).pipe(map((res) => res.data));
     },
   });
 
@@ -71,7 +77,9 @@ export class ClientDetailComponent {
   private readonly activitiesData = rxResource({
     params: (): string | null => this.routeId() ?? null,
     stream: ({ params }) => {
-      if (params == null) return EMPTY;
+      if (params === null) {
+        return EMPTY;
+      }
       return this.activitiesService
         .findByEntity({
           entityType: EntityType.Client,
@@ -83,13 +91,12 @@ export class ClientDetailComponent {
   });
 
   private readonly commentsData = rxResource({
-    params: (): [string | null, number] => [
-      this.routeId() ?? null,
-      this.commentsVersion(),
-    ],
+    params: (): [string | null, number] => [this.routeId() ?? null, this.commentsVersion()],
     stream: ({ params }) => {
       const [clientId] = params;
-      if (clientId == null) return EMPTY;
+      if (clientId === null) {
+        return EMPTY;
+      }
       return this.commentsService
         .findByEntity({
           commentableType: EntityType.Client,
@@ -101,13 +108,12 @@ export class ClientDetailComponent {
   });
 
   private readonly entityTagsData = rxResource({
-    params: (): [string | null, number] => [
-      this.routeId() ?? null,
-      this.tagsVersion(),
-    ],
+    params: (): [string | null, number] => [this.routeId() ?? null, this.tagsVersion()],
     stream: ({ params }) => {
       const [clientId] = params;
-      if (clientId == null) return EMPTY;
+      if (clientId === null) {
+        return EMPTY;
+      }
       return this.tagsService.findAll({
         entityType: EntityType.Client,
         entityId: clientId,
@@ -121,7 +127,9 @@ export class ClientDetailComponent {
   readonly requests = computed(() => {
     const list = this.requestsData.value() ?? [];
     const clientId = this.client()?.id;
-    if (!clientId) return list;
+    if (!clientId) {
+      return list;
+    }
     return list.filter((r) => r.clientId === clientId);
   });
   readonly requestsLoading = computed(() => this.requestsData.isLoading());
@@ -148,9 +156,7 @@ export class ClientDetailComponent {
         type: 'created',
       });
     }
-    return list.sort(
-      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
+    return list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   });
 
   readonly clientComments = computed<CommentItem[]>(() => {
@@ -184,7 +190,9 @@ export class ClientDetailComponent {
 
   createRequest(): void {
     const c = this.client();
-    if (!c) return;
+    if (!c) {
+      return;
+    }
     this.router.navigate(['/app/requests/new'], {
       queryParams: { clientId: c.id },
     });
@@ -192,12 +200,16 @@ export class ClientDetailComponent {
 
   onTagsChange(tags: string[]): void {
     const c = this.client();
-    if (!c || this.tagsSaveLoading()) return;
+    if (!c || this.tagsSaveLoading()) {
+      return;
+    }
     const current = this.clientTags();
     const added = tags.filter((n) => !current.includes(n));
     const removed = current.filter((n) => !tags.includes(n));
     const entityTags = this.entityTags();
-    if (added.length === 0 && removed.length === 0) return;
+    if (added.length === 0 && removed.length === 0) {
+      return;
+    }
 
     this.tagsSaveLoading.set(true);
     const done = (): void => {
@@ -208,7 +220,9 @@ export class ClientDetailComponent {
     let pending = added.length + removed.length;
     const checkDone = (): void => {
       pending -= 1;
-      if (pending === 0) done();
+      if (pending === 0) {
+        done();
+      }
     };
 
     for (const name of added) {
@@ -219,8 +233,8 @@ export class ClientDetailComponent {
             this.tagsService.attach(tag.id, {
               entityType: EntityType.Client,
               entityId: c.id,
-            })
-          )
+            }),
+          ),
         )
         .subscribe({
           next: checkDone,
@@ -244,12 +258,16 @@ export class ClientDetailComponent {
         },
       });
     }
-    if (pending === 0) this.tagsSaveLoading.set(false);
+    if (pending === 0) {
+      this.tagsSaveLoading.set(false);
+    }
   }
 
   onAddComment(event: { text: string }): void {
     const c = this.client();
-    if (!c || !event.text.trim()) return;
+    if (!c || !event.text.trim()) {
+      return;
+    }
     this.commentsService
       .create({
         commentableType: EntityType.Client,

@@ -2,10 +2,10 @@ import { computed, inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
   Auth,
+  signOut as firebaseSignOut,
   getIdTokenResult,
   GoogleAuthProvider,
   signInWithRedirect,
-  signOut as firebaseSignOut,
   user,
 } from '@angular/fire/auth';
 
@@ -37,7 +37,7 @@ export class AuthService {
    */
   async hasAuthenticatedUser(): Promise<boolean> {
     await this.auth.authStateReady();
-    return this.auth.currentUser != null;
+    return this.auth.currentUser !== null;
   }
 
   signIn(): void {

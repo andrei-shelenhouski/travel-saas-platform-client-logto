@@ -1,9 +1,9 @@
-import { HttpHandlerFn, HttpRequest } from '@angular/common/http';
+import { HttpEvent, HttpHandlerFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Auth, idToken } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 
-import { switchMap, take, throwError } from 'rxjs';
+import { Observable, switchMap, take, throwError } from 'rxjs';
 
 import { environment } from '@environments/environment';
 import { OrganizationStateService } from '@app/services/organization-state.service';
@@ -20,7 +20,10 @@ function shouldSkipOrgHeader(req: HttpRequest<unknown>): boolean {
   );
 }
 
-export function orgAuthInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn) {
+export function orgAuthInterceptor(
+  req: HttpRequest<unknown>,
+  next: HttpHandlerFn,
+): Observable<HttpEvent<unknown>> {
   const auth = inject(Auth);
   const orgState = inject(OrganizationStateService);
   const router = inject(Router);

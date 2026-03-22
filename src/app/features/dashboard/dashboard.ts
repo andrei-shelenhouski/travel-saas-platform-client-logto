@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { Component, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
@@ -11,6 +11,7 @@ import { OffersService } from '@app/services/offers.service';
 import { RequestsService } from '@app/services/requests.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-dashboard',
   standalone: true,
   imports: [RouterLink],
@@ -43,10 +44,10 @@ export class DashboardComponent {
     return undefined;
   });
 
-  totalLeads = computed(() => sumValues(this.stats()?.leads));
-  totalRequests = computed(() => sumValues(this.stats()?.requests));
-  totalOffers = computed(() => sumValues(this.stats()?.offers));
-  totalBookings = computed(() => sumValues(this.stats()?.bookings));
+  readonly totalLeads = computed(() => sumValues(this.stats()?.leads));
+  readonly totalRequests = computed(() => sumValues(this.stats()?.requests));
+  readonly totalOffers = computed(() => sumValues(this.stats()?.offers));
+  readonly totalBookings = computed(() => sumValues(this.stats()?.bookings));
 
   /** Expose for template: status keys for breakdown. */
   objectKeys(rec: Record<string, number> | undefined): string[] {
@@ -55,6 +56,8 @@ export class DashboardComponent {
 }
 
 function sumValues(rec: Record<string, number> | undefined): number {
-  if (!rec) return 0;
+  if (!rec) {
+    return 0;
+  }
   return Object.values(rec).reduce((a, b) => a + b, 0);
 }

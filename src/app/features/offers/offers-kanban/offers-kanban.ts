@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   effect,
@@ -27,6 +28,7 @@ const OFFER_STATUS_ORDER: string[] = [
 ];
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-offers-kanban',
   standalone: true,
   imports: [DragDropModule, RouterLink, StatusBadgeComponent],
@@ -43,8 +45,7 @@ export class OffersKanbanComponent {
   readonly statusFilterChecked = signal<Record<string, boolean>>({});
 
   private readonly data = rxResource({
-    stream: () =>
-      this.offersService.getList({ page: 1, limit: 100 }),
+    stream: () => this.offersService.getList({ page: 1, limit: 100 }),
   });
 
   readonly loading = computed(() => this.data.isLoading());
@@ -70,14 +71,18 @@ export class OffersKanbanComponent {
   constructor() {
     effect(() => {
       const value = this.data.value();
-      if (!value?.data) return;
+      if (!value?.data) {
+        return;
+      }
       const byStatus: Record<string, OfferResponseDto[]> = {};
       for (const s of OFFER_STATUS_ORDER) {
         byStatus[s] = [];
       }
       for (const offer of value.data) {
         const s = offer.status as string;
-        if (!byStatus[s]) byStatus[s] = [];
+        if (!byStatus[s]) {
+          byStatus[s] = [];
+        }
         byStatus[s].push(offer);
       }
       this.itemsByStatus.set(byStatus);
@@ -94,9 +99,11 @@ export class OffersKanbanComponent {
     const current = this.visibleStatuses();
     if (checked) {
       if (!current.includes(status)) {
-        this.visibleStatuses.set([...current, status].sort(
-          (a, b) => OFFER_STATUS_ORDER.indexOf(a) - OFFER_STATUS_ORDER.indexOf(b)
-        ));
+        this.visibleStatuses.set(
+          [...current, status].sort(
+            (a, b) => OFFER_STATUS_ORDER.indexOf(a) - OFFER_STATUS_ORDER.indexOf(b),
+          ),
+        );
       }
     } else {
       this.visibleStatuses.set(current.filter((s) => s !== status));
@@ -105,12 +112,16 @@ export class OffersKanbanComponent {
   }
 
   onDrop(event: CdkDragDrop<OfferResponseDto[]>, targetStatus: string): void {
-    if (event.previousContainer === event.container) return;
+    if (event.previousContainer === event.container) {
+      return;
+    }
     const prevList = event.previousContainer.data;
     const currList = event.container.data;
     const offer = event.item.data as OfferResponseDto;
     const previousStatus = offer.status as string;
-    if (previousStatus === targetStatus) return;
+    if (previousStatus === targetStatus) {
+      return;
+    }
 
     if (!isAllowedOfferStatusTransition(previousStatus, targetStatus)) {
       this.toast.showError(`Invalid transition: ${previousStatus} → ${targetStatus}`);
@@ -121,23 +132,21 @@ export class OffersKanbanComponent {
     offer.status = targetStatus;
     this.itemsByStatus.update((m) => ({ ...m }));
 
-    this.offersService
-      .setStatus(offer.id, targetStatus as OfferStatus)
-      .subscribe({
-        next: (updated) => {
-          const idx = currList.findIndex((o) => o.id === updated.id);
-          if (idx !== -1) currList[idx] = updated;
-          this.itemsByStatus.update((m) => ({ ...m }));
-        },
-        error: (err: { error?: { message?: string }; message?: string }) => {
-          transferArrayItem(currList, prevList, event.currentIndex, event.previousIndex);
-          offer.status = previousStatus;
-          this.itemsByStatus.update((m) => ({ ...m }));
-          this.toast.showError(
-            err?.error?.message ?? err?.message ?? 'Invalid status transition'
-          );
-        },
-      });
+    this.offersService.setStatus(offer.id, targetStatus as OfferStatus).subscribe({
+      next: (updated) => {
+        const idx = currList.findIndex((o) => o.id === updated.id);
+        if (idx !== -1) {
+          currList[idx] = updated;
+        }
+        this.itemsByStatus.update((m) => ({ ...m }));
+      },
+      error: (err: { error?: { message?: string }; message?: string }) => {
+        transferArrayItem(currList, prevList, event.currentIndex, event.previousIndex);
+        offer.status = previousStatus;
+        this.itemsByStatus.update((m) => ({ ...m }));
+        this.toast.showError(err?.error?.message ?? err?.message ?? 'Invalid status transition');
+      },
+    });
   }
 
   goToOffer(offer: OfferResponseDto): void {

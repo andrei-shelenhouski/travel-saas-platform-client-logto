@@ -68,7 +68,9 @@ export const routes: Routes = [
       {
         path: 'leads/kanban',
         loadComponent: () =>
-          import('@app/features/leads/leads-kanban/leads-kanban').then((m) => m.LeadsKanbanComponent),
+          import('@app/features/leads/leads-kanban/leads-kanban').then(
+            (m) => m.LeadsKanbanComponent,
+          ),
       },
       {
         path: 'leads/:id',
@@ -128,7 +130,9 @@ export const routes: Routes = [
       {
         path: 'offers/new',
         loadComponent: () =>
-          import('@app/features/offers/create-offer/create-offer').then((m) => m.CreateOfferComponent),
+          import('@app/features/offers/create-offer/create-offer').then(
+            (m) => m.CreateOfferComponent,
+          ),
       },
       {
         path: 'offers/kanban',
@@ -145,7 +149,9 @@ export const routes: Routes = [
       {
         path: 'offers/:id',
         loadComponent: () =>
-          import('@app/features/offers/offer-detail/offer-detail').then((m) => m.OfferDetailComponent),
+          import('@app/features/offers/offer-detail/offer-detail').then(
+            (m) => m.OfferDetailComponent,
+          ),
       },
       {
         path: 'offers',

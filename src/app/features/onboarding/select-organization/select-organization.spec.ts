@@ -15,7 +15,16 @@ describe('SelectOrganizationComponent', () => {
       providers: [
         {
           provide: MeService,
-          useValue: { getMeData: () => ({ id: '', logtoId: '', createdAt: '', updatedAt: '', organizations: [] }), clearMeData: vi.fn() },
+          useValue: {
+            getMeData: () => ({
+              id: '',
+              logtoId: '',
+              createdAt: '',
+              updatedAt: '',
+              organizations: [],
+            }),
+            clearMeData: vi.fn(),
+          },
         },
         {
           provide: OrganizationStateService,

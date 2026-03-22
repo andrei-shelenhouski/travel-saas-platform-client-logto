@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
@@ -8,6 +8,7 @@ import type { OfferResponseDto, UpdateOfferDto } from '@app/shared/models';
 import { OfferStatus } from '@app/shared/models';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-offer-edit',
   imports: [RouterLink, FormsModule],
   templateUrl: './offer-edit.html',
@@ -57,9 +58,7 @@ export class OfferEditComponent implements OnInit {
         this.description = '';
       },
       error: (err) => {
-        this.toast.showError(
-          err.error?.message ?? err.message ?? 'Failed to load offer'
-        );
+        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to load offer');
         this.router.navigate(['/app/offers']);
       },
       complete: () => this.loading.set(false),
@@ -68,7 +67,9 @@ export class OfferEditComponent implements OnInit {
 
   onSubmit(): void {
     const o = this.offer();
-    if (!o || o.status !== OfferStatus.DRAFT || this.saving()) return;
+    if (!o || o.status !== OfferStatus.DRAFT || this.saving()) {
+      return;
+    }
 
     this.error.set('');
     this.saving.set(true);
@@ -89,9 +90,7 @@ export class OfferEditComponent implements OnInit {
         this.router.navigate(['/app/offers', o.id]);
       },
       error: (err) => {
-        this.error.set(
-          err.error?.message ?? err.message ?? 'Failed to update offer'
-        );
+        this.error.set(err.error?.message ?? err.message ?? 'Failed to update offer');
       },
       complete: () => this.saving.set(false),
     });

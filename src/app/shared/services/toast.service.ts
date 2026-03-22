@@ -2,11 +2,11 @@ import { Injectable, signal } from '@angular/core';
 
 export type ToastType = 'success' | 'error' | 'info';
 
-export interface ToastState {
+export type ToastState = {
   message: string;
   type: ToastType;
   visible: boolean;
-}
+};
 
 /**
  * Simple toast notifications. No global component required;

@@ -2,59 +2,59 @@
   <aside class="w-56 flex flex-col border-r border-gray-200 bg-white">
     <nav class="flex flex-1 flex-col gap-1 p-3">
       <a
+        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         routerLink="/app/dashboard"
         routerLinkActive="bg-primary-muted text-primary-700"
-        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         ><i class="pi pi-home"></i><span i18n="@@dashboard">Dashboard</span></a
       >
       <a
+        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         routerLink="/app/leads"
         routerLinkActive="bg-primary-muted text-primary-700"
-        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         ><i class="pi pi-bolt"></i><span i18n="@@leads">Leads</span></a
       >
       <a
+        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         routerLink="/app/clients"
         routerLinkActive="bg-primary-muted text-primary-700"
-        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         ><i class="pi pi-users"></i><span i18n="@@clients">Clients</span></a
       >
       <a
+        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         routerLink="/app/requests"
         routerLinkActive="bg-primary-muted text-primary-700"
-        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         ><i class="pi pi-inbox"></i><span i18n="@@requests">Requests</span></a
       >
       <a
+        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         routerLink="/app/offers"
         routerLinkActive="bg-primary-muted text-primary-700"
-        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         ><i class="pi pi-send"></i><span i18n="@@offers">Offers</span></a
       >
       <a
+        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         routerLink="/app/bookings"
         routerLinkActive="bg-primary-muted text-primary-700"
-        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         ><i class="pi pi-calendar"></i><span i18n="@@bookings">Bookings</span></a
       >
       <a
+        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         routerLink="/app/invoices"
         routerLinkActive="bg-primary-muted text-primary-700"
-        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         ><i class="pi pi-file"></i><span i18n="@@invoices">Invoices</span></a
       >
       @if (permissions.isAdmin()) {
         <a
+          class="mt-4 flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
           routerLink="/app/admin/users"
           routerLinkActive="bg-primary-muted text-primary-700"
-          class="mt-4 flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
           ><i class="pi pi-users"></i><span i18n="@@userManagement">User management</span></a
         >
       }
       <a
+        class="mt-4 flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         routerLink="/app/settings"
         routerLinkActive="bg-primary-muted text-primary-700"
-        class="mt-4 flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
         ><i class="pi pi-cog"></i><span i18n="@@settings">Settings</span></a
       >
     </nav>
@@ -63,10 +63,10 @@
     <header class="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4">
       <div class="relative">
         <button
-          type="button"
-          (click)="openOrgSwitcher()"
           class="flex items-center gap-1.5 rounded px-2 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none"
+          type="button"
           [disabled]="orgSwitcherLoading()"
+          (click)="openOrgSwitcher()"
         >
           <span>{{ activeOrgName }}</span>
           @if (orgSwitcherLoading()) {
@@ -76,19 +76,19 @@
           }
         </button>
         @if (orgSwitcherOpen()) {
-          <div class="fixed inset-0 z-10" (click)="closeOrgSwitcher()" aria-hidden="true"></div>
+          <div aria-hidden="true" class="fixed inset-0 z-10" (click)="closeOrgSwitcher()"></div>
           <div
             class="absolute left-0 top-full z-20 mt-1 min-w-55 rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
             role="listbox"
           >
             @for (org of organizations(); track org.id) {
               <button
-                type="button"
-                (click)="switchOrganization(org)"
                 class="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
-                [class.bg-primary-muted]="org.id === activeOrgId"
                 role="option"
+                type="button"
                 [attr.aria-selected]="org.id === activeOrgId"
+                [class.bg-primary-muted]="org.id === activeOrgId"
+                (click)="switchOrganization(org)"
               >
                 <span>{{ org.name }}</span>
                 @if (org.id === activeOrgId) {
@@ -103,9 +103,9 @@
             }
             <div class="border-t border-gray-100 my-1"></div>
             <a
+              class="flex w-full items-center gap-2 px-3 py-2 text-sm text-primary-600 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
               routerLink="/app/organizations/new"
               (click)="closeOrgSwitcher()"
-              class="flex w-full items-center gap-2 px-3 py-2 text-sm text-primary-600 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
             >
               <i class="pi pi-plus"></i><span i18n="@@addOrganization">Add organization</span>
             </a>
@@ -115,9 +115,9 @@
       <div class="flex items-center gap-3">
         @if (userPicture(); as userPicture) {
           <img
-            [src]="userPicture"
-            [alt]="userDisplay()"
             class="h-9 w-9 rounded-full object-cover ring-2 ring-gray-200"
+            [alt]="userDisplay()"
+            [src]="userPicture"
           />
         } @else {
           <div
@@ -140,9 +140,9 @@
           {{ permissions.roleLabel() }}
         </span>
         <button
+          class="flex items-center gap-2 rounded px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100"
           type="button"
           (click)="logout()"
-          class="flex items-center gap-2 rounded px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100"
         >
           <i class="pi pi-sign-out"></i><span i18n="@@logout">Logout</span>
         </button>

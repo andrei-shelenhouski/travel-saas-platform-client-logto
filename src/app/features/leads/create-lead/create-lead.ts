@@ -1,16 +1,16 @@
-import { Component, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
+  type AbstractControl,
   FormBuilder,
   ReactiveFormsModule,
-  Validators,
-  type AbstractControl,
   type ValidationErrors,
+  Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 
 import { LeadsService } from '@app/services/leads.service';
 import { ToastService } from '@app/shared/services/toast.service';
-import { LeadSource, type CreateLeadDto } from '@app/shared/models';
+import { type CreateLeadDto, LeadSource } from '@app/shared/models';
 
 function trimmedRequired(control: AbstractControl): ValidationErrors | null {
   const s = typeof control.value === 'string' ? control.value.trim() : '';
@@ -26,6 +26,7 @@ const SOURCE_OPTIONS: { value: LeadSource; label: string }[] = [
 ];
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-lead',
   imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './create-lead.html',

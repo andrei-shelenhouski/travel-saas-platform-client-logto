@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { Auth, authState } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 
@@ -7,6 +7,7 @@ import { EMPTY, switchMap, take } from 'rxjs';
 import { MeService } from '@app/services/me.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-callback',
   standalone: true,
   templateUrl: './callback.component.html',

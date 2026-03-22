@@ -24,11 +24,21 @@ const BOOKINGS_STATS_URL = `${environment.baseUrl}/api/bookings/stats`;
 export class BookingsService {
   private readonly http = inject(HttpClient);
 
-  getList(params?: { page?: number; limit?: number; status?: BookingStatus }): Observable<PaginatedBookingResponseDto> {
+  getList(params?: {
+    page?: number;
+    limit?: number;
+    status?: BookingStatus;
+  }): Observable<PaginatedBookingResponseDto> {
     let httpParams = new HttpParams();
-    if (params?.page != null) httpParams = httpParams.set('page', params.page);
-    if (params?.limit != null) httpParams = httpParams.set('limit', params.limit);
-    if (params?.status != null) httpParams = httpParams.set('status', params.status);
+    if (params?.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
+    }
+    if (params?.status !== undefined) {
+      httpParams = httpParams.set('status', params.status);
+    }
     return this.http.get<PaginatedBookingResponseDto>(BOOKINGS_URL, { params: httpParams });
   }
 

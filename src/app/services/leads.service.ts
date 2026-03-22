@@ -25,11 +25,21 @@ const LEADS_STATS_URL = `${environment.baseUrl}/api/leads/stats`;
 export class LeadsService {
   private readonly http = inject(HttpClient);
 
-  findAll(params?: { page?: number; limit?: number; status?: LeadStatus }): Observable<PaginatedLeadResponseDto> {
+  findAll(params?: {
+    page?: number;
+    limit?: number;
+    status?: LeadStatus;
+  }): Observable<PaginatedLeadResponseDto> {
     let httpParams = new HttpParams();
-    if (params?.page != null) httpParams = httpParams.set('page', params.page);
-    if (params?.limit != null) httpParams = httpParams.set('limit', params.limit);
-    if (params?.status != null) httpParams = httpParams.set('status', params.status);
+    if (params?.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
+    }
+    if (params?.status !== undefined) {
+      httpParams = httpParams.set('status', params.status);
+    }
     return this.http.get<PaginatedLeadResponseDto>(LEADS_URL, { params: httpParams });
   }
 
@@ -60,6 +70,9 @@ export class LeadsService {
 
   /** Convert lead to client. POST /api/leads/{id}/convert-to-client. Returns created client and updated lead. */
   convertToClient(id: string): Observable<ConvertLeadToClientResponseDto> {
-    return this.http.post<ConvertLeadToClientResponseDto>(`${LEADS_URL}/${id}/convert-to-client`, {});
+    return this.http.post<ConvertLeadToClientResponseDto>(
+      `${LEADS_URL}/${id}/convert-to-client`,
+      {},
+    );
   }
 }

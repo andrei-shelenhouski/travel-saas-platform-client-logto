@@ -1,10 +1,10 @@
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import type { OfferResponseDto } from '@app/shared/models';
 
-export interface TimelineItem {
+export type TimelineItem = {
   label: string;
   date: string;
-}
+};
 
 function formatDate(iso: string): string {
   try {
@@ -19,7 +19,9 @@ function formatDate(iso: string): string {
 }
 
 export function buildOfferTimelineItems(offer: OfferResponseDto | null): TimelineItem[] {
-  if (!offer) return [];
+  if (!offer) {
+    return [];
+  }
   const items: TimelineItem[] = [];
   if (offer.createdAt) {
     items.push({ label: 'Offer created', date: formatDate(offer.createdAt) });
@@ -31,6 +33,7 @@ export function buildOfferTimelineItems(offer: OfferResponseDto | null): Timelin
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-offer-timeline',
   template: `
     <div class="rounded-lg border border-gray-200 bg-white p-4">
@@ -39,8 +42,8 @@ export function buildOfferTimelineItems(offer: OfferResponseDto | null): Timelin
         @for (item of timelineItems(); track item.date + item.label) {
           <li class="flex gap-3">
             <span
-              class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-gray-400"
               aria-hidden="true"
+              class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-gray-400"
             ></span>
             <div class="min-w-0 flex-1">
               <p class="text-sm font-medium text-gray-900">{{ item.label }}</p>
@@ -53,9 +56,7 @@ export function buildOfferTimelineItems(offer: OfferResponseDto | null): Timelin
   `,
 })
 export class OfferTimelineComponent {
-  offer = input.required<OfferResponseDto | null>();
+  readonly offer = input.required<OfferResponseDto | null>();
 
-  protected readonly timelineItems = computed(() =>
-    buildOfferTimelineItems(this.offer())
-  );
+  protected readonly timelineItems = computed(() => buildOfferTimelineItems(this.offer()));
 }

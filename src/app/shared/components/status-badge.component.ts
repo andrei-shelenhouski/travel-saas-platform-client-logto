@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 export type StatusBadgeVariant = 'lead' | 'offer' | 'generic';
 
@@ -20,6 +20,7 @@ const OFFER_STATUS_CLASS: Record<string, string> = {
 };
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-status-badge',
   standalone: true,
   template: `
@@ -33,16 +34,22 @@ const OFFER_STATUS_CLASS: Record<string, string> = {
 })
 export class StatusBadgeComponent {
   /** Current status value (e.g. NEW, DRAFT). */
-  status = input<string | null | undefined>(null);
+  readonly status = input<string | null | undefined>(null);
   /** Which color set to use. */
-  variant = input<StatusBadgeVariant>('generic');
+  readonly variant = input<StatusBadgeVariant>('generic');
 
   badgeClass(): string {
     const v = this.variant();
     const s = this.status();
-    if (!s) return 'bg-gray-100 text-gray-500';
-    if (v === 'lead') return LEAD_STATUS_CLASS[s] ?? 'bg-gray-100 text-gray-600';
-    if (v === 'offer') return OFFER_STATUS_CLASS[s] ?? 'bg-gray-100 text-gray-600';
+    if (!s) {
+      return 'bg-gray-100 text-gray-500';
+    }
+    if (v === 'lead') {
+      return LEAD_STATUS_CLASS[s] ?? 'bg-gray-100 text-gray-600';
+    }
+    if (v === 'offer') {
+      return OFFER_STATUS_CLASS[s] ?? 'bg-gray-100 text-gray-600';
+    }
     return 'bg-gray-100 text-gray-600';
   }
 }

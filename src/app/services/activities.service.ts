@@ -33,8 +33,12 @@ export class ActivitiesService {
     let httpParams = new HttpParams()
       .set('entityType', params.entityType)
       .set('entityId', params.entityId);
-    if (params.page != null) httpParams = httpParams.set('page', params.page);
-    if (params.limit != null) httpParams = httpParams.set('limit', params.limit);
+    if (params.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+    if (params.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
+    }
     return this.http.get<ActivityListResponseDto>(ACTIVITIES_URL, {
       params: httpParams,
     });

@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { MeService } from '@app/services/me.service';
@@ -6,6 +6,7 @@ import { OrganizationStateService } from '@app/services/organization-state.servi
 import type { OrganizationWithRoleDto } from '@app/shared/models';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-select-organization',
   imports: [],
   templateUrl: './select-organization.html',
@@ -16,7 +17,8 @@ export class SelectOrganizationComponent {
   private readonly orgState = inject(OrganizationStateService);
   private readonly router = inject(Router);
 
-  organizations = () => this.meService.getMeData()?.organizations ?? ([] as OrganizationWithRoleDto[]);
+  organizations = (): OrganizationWithRoleDto[] =>
+    this.meService.getMeData()?.organizations ?? ([] as OrganizationWithRoleDto[]);
 
   select(org: OrganizationWithRoleDto): void {
     this.orgState.setActiveOrganization(org.id, org.name);

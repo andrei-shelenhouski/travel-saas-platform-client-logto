@@ -1,8 +1,9 @@
-import { Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import type { CommentItem } from '@app/shared/models/comment.model';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-comment',
   standalone: true,
   imports: [FormsModule],
@@ -15,26 +16,27 @@ import type { CommentItem } from '@app/shared/models/comment.model';
             <p class="text-sm text-gray-900">{{ c.text }}</p>
             <p class="mt-1 text-xs text-gray-500">{{ c.author }} · {{ formatDate(c.createdAt) }}</p>
           </li>
-        }
-        @empty {
+        } @empty {
           <p class="text-sm text-gray-500">No comments yet.</p>
         }
       </ul>
       @if (canAdd()) {
         <div class="flex gap-2">
           <input
+            class="min-w-0 flex-1 rounded border border-gray-300 px-3 py-2 text-sm
+              focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             type="text"
-            [placeholder]="placeholder()"
             [ngModel]="newComment()"
-            (ngModelChange)="newComment.set($event)"
+            [placeholder]="placeholder()"
             (keydown.enter)="submit(); $event.preventDefault()"
-            class="min-w-0 flex-1 rounded border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            (ngModelChange)="newComment.set($event)"
           />
           <button
+            class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground
+              hover:bg-primary-hover disabled:opacity-50"
             type="button"
-            (click)="submit()"
             [disabled]="!newComment().trim()"
-            class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+            (click)="submit()"
           >
             Add
           </button>
@@ -44,12 +46,12 @@ import type { CommentItem } from '@app/shared/models/comment.model';
   `,
 })
 export class CommentComponent {
-  title = input<string>('Comments');
-  comments = input<CommentItem[]>([]);
-  canAdd = input<boolean>(true);
-  placeholder = input<string>('Write a comment…');
+  readonly title = input<string>('Comments');
+  readonly comments = input<CommentItem[]>([]);
+  readonly canAdd = input<boolean>(true);
+  readonly placeholder = input<string>('Write a comment…');
 
-  addComment = output<{ text: string }>();
+  readonly addComment = output<{ text: string }>();
 
   protected readonly newComment = signal('');
 
@@ -66,7 +68,9 @@ export class CommentComponent {
 
   protected submit(): void {
     const text = this.newComment().trim();
-    if (!text) return;
+    if (!text) {
+      return;
+    }
     this.addComment.emit({ text });
     this.newComment.set('');
   }

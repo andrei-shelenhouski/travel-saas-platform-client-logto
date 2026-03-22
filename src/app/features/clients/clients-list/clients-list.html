@@ -2,8 +2,8 @@
   <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
     <h1 class="text-xl font-semibold text-gray-900">Clients</h1>
     <a
-      routerLink="/app/clients/new"
       class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
+      routerLink="/app/clients/new"
     >
       Create client
     </a>
@@ -27,13 +27,13 @@
       <tbody class="divide-y divide-gray-200">
         @if (loading()) {
           <tr>
-            <td colspan="5" class="px-4 py-12 text-center text-gray-500">
-              <div class="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" aria-hidden="true"></div>
+            <td class="px-4 py-12 text-center text-gray-500" colspan="5">
+              <div aria-hidden="true" class="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
             </td>
           </tr>
         } @else if (clients().length === 0) {
           <tr>
-            <td colspan="5" class="px-4 py-12 text-center text-gray-500">
+            <td class="px-4 py-12 text-center text-gray-500" colspan="5">
               No clients yet.
             </td>
           </tr>

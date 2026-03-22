@@ -20,11 +20,21 @@ const CLIENTS_URL = `${environment.baseUrl}/api/clients`;
 export class ClientsService {
   private readonly http = inject(HttpClient);
 
-  getList(params?: { type?: ClientType; page?: number; limit?: number }): Observable<PaginatedClientResponseDto> {
+  getList(params?: {
+    type?: ClientType;
+    page?: number;
+    limit?: number;
+  }): Observable<PaginatedClientResponseDto> {
     let httpParams = new HttpParams();
-    if (params?.type != null) httpParams = httpParams.set('type', params.type);
-    if (params?.page != null) httpParams = httpParams.set('page', params.page);
-    if (params?.limit != null) httpParams = httpParams.set('limit', params.limit);
+    if (params?.type !== undefined) {
+      httpParams = httpParams.set('type', params.type);
+    }
+    if (params?.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
+    }
     return this.http.get<PaginatedClientResponseDto>(CLIENTS_URL, { params: httpParams });
   }
 

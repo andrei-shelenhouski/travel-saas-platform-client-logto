@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { take } from 'rxjs';
 
@@ -6,6 +6,7 @@ import { MeService } from '@app/services/me.service';
 import { OrganizationStateService } from '@app/services/organization-state.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-onboarding-check',
   imports: [],
   templateUrl: './onboarding-check.html',
@@ -19,10 +20,13 @@ export class OnboardingCheckComponent implements OnInit {
   ngOnInit(): void {
     const data = this.meService.getMeData();
     if (!data) {
-      this.meService.getMe().pipe(take(1)).subscribe({
-        next: () => this.runDecision(),
-        error: () => this.router.navigate(['/']),
-      });
+      this.meService
+        .getMe()
+        .pipe(take(1))
+        .subscribe({
+          next: () => this.runDecision(),
+          error: () => this.router.navigate(['/']),
+        });
       return;
     }
     this.runDecision();

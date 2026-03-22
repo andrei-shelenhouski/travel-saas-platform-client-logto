@@ -20,11 +20,21 @@ const INVOICES_URL = `${environment.baseUrl}/api/invoices`;
 export class InvoicesService {
   private readonly http = inject(HttpClient);
 
-  getList(params?: { page?: number; limit?: number; status?: InvoiceStatus }): Observable<PaginatedInvoiceResponseDto> {
+  getList(params?: {
+    page?: number;
+    limit?: number;
+    status?: InvoiceStatus;
+  }): Observable<PaginatedInvoiceResponseDto> {
     let httpParams = new HttpParams();
-    if (params?.page != null) httpParams = httpParams.set('page', params.page);
-    if (params?.limit != null) httpParams = httpParams.set('limit', params.limit);
-    if (params?.status != null) httpParams = httpParams.set('status', params.status);
+    if (params?.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
+    }
+    if (params?.status !== undefined) {
+      httpParams = httpParams.set('status', params.status);
+    }
     return this.http.get<PaginatedInvoiceResponseDto>(INVOICES_URL, { params: httpParams });
   }
 

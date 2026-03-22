@@ -1,4 +1,11 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { take } from 'rxjs';
@@ -13,6 +20,7 @@ import { ToastComponent } from '@app/shared/components/toast.component';
 import type { OrganizationWithRoleDto } from '@app/shared/models';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-main-layout',
   standalone: true,
   imports: [RouterLink, RouterLinkActive, RouterOutlet, ToastComponent],
@@ -31,21 +39,27 @@ export class MainLayoutComponent implements OnInit {
   readonly organizations = signal<OrganizationWithRoleDto[]>([]);
   readonly orgSwitcherLoading = signal(false);
 
-  userDisplay = computed(() => {
+  readonly userDisplay = computed(() => {
     const user = this.authService.firebaseUser();
-    if (!user) return 'User';
+    if (!user) {
+      return 'User';
+    }
     return user.displayName ?? user.email ?? 'User';
   });
 
-  userPicture = computed(() => {
+  readonly userPicture = computed(() => {
     const user = this.authService.firebaseUser();
-    if (!user) return null;
+    if (!user) {
+      return null;
+    }
     return user.photoURL ?? null;
   });
 
-  userInitial = computed(() => {
+  readonly userInitial = computed(() => {
     const user = this.authService.firebaseUser();
-    if (!user) return 'U';
+    if (!user) {
+      return 'U';
+    }
     const raw = user.displayName ?? user.email ?? 'U';
     return raw.charAt(0).toUpperCase();
   });

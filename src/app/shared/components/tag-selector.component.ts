@@ -1,7 +1,8 @@
-import { Component, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-tag-selector',
   standalone: true,
   imports: [FormsModule],
@@ -9,7 +10,9 @@ import { FormsModule } from '@angular/forms';
     <div class="space-y-2">
       @if (label()) {
         @if (allowAdd()) {
-          <label for="tag-selector-input" class="block text-sm font-medium text-gray-700">{{ label() }}</label>
+          <label class="block text-sm font-medium text-gray-700" for="tag-selector-input">{{
+            label()
+          }}</label>
         } @else {
           <span class="block text-sm font-medium text-gray-700">{{ label() }}</span>
         }
@@ -22,10 +25,10 @@ import { FormsModule } from '@angular/forms';
             {{ tag }}
             @if (removable()) {
               <button
+                aria-label="Remove {{ tag }}"
+                class="rounded-full p-0.5 hover:bg-primary-200"
                 type="button"
                 (click)="removeTag(tag)"
-                class="rounded-full p-0.5 hover:bg-primary-200"
-                aria-label="Remove {{ tag }}"
               >
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -34,14 +37,15 @@ import { FormsModule } from '@angular/forms';
         }
         @if (allowAdd()) {
           <input
+            class="rounded border border-gray-300 px-2 py-1 text-sm
+              focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
             id="tag-selector-input"
             type="text"
-            [placeholder]="placeholder()"
             [ngModel]="inputValue()"
-            (ngModelChange)="inputValue.set($event)"
-            (keydown.enter)="addCurrent(); $event.preventDefault()"
+            [placeholder]="placeholder()"
             (blur)="addCurrent()"
-            class="rounded border border-gray-300 px-2 py-1 text-sm focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            (keydown.enter)="addCurrent(); $event.preventDefault()"
+            (ngModelChange)="inputValue.set($event)"
           />
         }
       </div>
@@ -50,9 +54,9 @@ import { FormsModule } from '@angular/forms';
           @for (opt of options(); track opt) {
             @if (!selected().includes(opt)) {
               <button
+                class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-50"
                 type="button"
                 (click)="toggleOption(opt)"
-                class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-50"
               >
                 + {{ opt }}
               </button>
@@ -64,30 +68,34 @@ import { FormsModule } from '@angular/forms';
   `,
 })
 export class TagSelectorComponent {
-  label = input<string>('');
+  readonly label = input<string>('');
   /** Predefined options to choose from (optional) */
-  options = input<string[]>([]);
+  readonly options = input<string[]>([]);
   /** Currently selected tags */
-  selected = input<string[]>([]);
+  readonly selected = input<string[]>([]);
   /** Allow free-text add (default true) */
-  allowAdd = input<boolean>(true);
+  readonly allowAdd = input<boolean>(true);
   /** Allow removing tags (default true) */
-  removable = input<boolean>(true);
-  placeholder = input<string>('Add tag…');
+  readonly removable = input<boolean>(true);
+  readonly placeholder = input<string>('Add tag…');
 
-  selectionChange = output<string[]>();
+  readonly selectionChange = output<string[]>();
 
   protected readonly inputValue = signal('');
 
   protected removeTag(tag: string): void {
-    if (!this.removable()) return;
+    if (!this.removable()) {
+      return;
+    }
     const next = this.selected().filter((t) => t !== tag);
     this.selectionChange.emit(next);
   }
 
   protected addCurrent(): void {
     const v = this.inputValue().trim();
-    if (!v || !this.allowAdd()) return;
+    if (!v || !this.allowAdd()) {
+      return;
+    }
     const current = this.selected();
     if (current.includes(v)) {
       this.inputValue.set('');

@@ -3,12 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
-import type {
-  AttachTagDto,
-  CreateTagDto,
-  EntityType,
-  TagResponseDto,
-} from '@app/shared/models';
+import type { AttachTagDto, CreateTagDto, EntityType, TagResponseDto } from '@app/shared/models';
 
 const TAGS_URL = `${environment.baseUrl}/api/tags`;
 
@@ -24,15 +19,14 @@ export class TagsService {
     return this.http.post<TagResponseDto>(TAGS_URL, dto);
   }
 
-  findAll(params?: {
-    entityType?: EntityType;
-    entityId?: string;
-  }): Observable<TagResponseDto[]> {
+  findAll(params?: { entityType?: EntityType; entityId?: string }): Observable<TagResponseDto[]> {
     let httpParams = new HttpParams();
-    if (params?.entityType != null)
+    if (params?.entityType !== undefined) {
       httpParams = httpParams.set('entityType', params.entityType);
-    if (params?.entityId != null)
+    }
+    if (params?.entityId !== undefined) {
       httpParams = httpParams.set('entityId', params.entityId);
+    }
     return this.http.get<TagResponseDto[]>(TAGS_URL, { params: httpParams });
   }
 
@@ -48,13 +42,7 @@ export class TagsService {
     return this.http.post<void>(`${TAGS_URL}/${tagId}/attach`, dto);
   }
 
-  detach(
-    tagId: string,
-    entityType: string,
-    entityId: string
-  ): Observable<void> {
-    return this.http.delete<void>(
-      `${TAGS_URL}/${tagId}/attach/${entityType}/${entityId}`
-    );
+  detach(tagId: string, entityType: string, entityId: string): Observable<void> {
+    return this.http.delete<void>(`${TAGS_URL}/${tagId}/attach/${entityType}/${entityId}`);
   }
 }

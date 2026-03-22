@@ -1,7 +1,7 @@
 <div class="space-y-4">
   @if (loading()) {
     <div class="flex justify-center py-12">
-      <div class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" aria-hidden="true"></div>
+      <div aria-hidden="true" class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
     </div>
   } @else {
     @let inv = invoice();
@@ -19,19 +19,19 @@
         @if (!editing()) {
           <div class="flex flex-wrap items-center gap-2">
             <button
-              type="button"
-              (click)="startEdit()"
-              [disabled]="actionLoading()"
               class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+              type="button"
+              [disabled]="actionLoading()"
+              (click)="startEdit()"
             >
               Edit
             </button>
             @if (permissions.canDeleteInvoice()) {
               <button
-                type="button"
-                (click)="deleteInvoice()"
-                [disabled]="actionLoading()"
                 class="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                type="button"
+                [disabled]="actionLoading()"
+                (click)="deleteInvoice()"
               >
                 Delete
               </button>
@@ -45,12 +45,12 @@
           <h2 class="text-sm font-semibold text-gray-900 mb-3">Edit invoice</h2>
           <div class="space-y-3 max-w-md">
             <div>
-              <label for="edit-status" class="block text-sm font-medium text-gray-700">Status</label>
+              <label class="block text-sm font-medium text-gray-700" for="edit-status">Status</label>
               <select
-                id="edit-status"
-                [(ngModel)]="editStatus"
-                name="editStatus"
                 class="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                id="edit-status"
+                name="editStatus"
+                [(ngModel)]="editStatus"
               >
                 @for (opt of statusOptions; track opt.value) {
                   <option [value]="opt.value">{{ opt.label }}</option>
@@ -58,40 +58,40 @@
               </select>
             </div>
             <div>
-              <label for="edit-dueDate" class="block text-sm font-medium text-gray-700">Due date</label>
+              <label class="block text-sm font-medium text-gray-700" for="edit-dueDate">Due date</label>
               <input
+                class="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 id="edit-dueDate"
+                name="editDueDate"
                 type="date"
                 [(ngModel)]="editDueDate"
-                name="editDueDate"
-                class="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               />
             </div>
             <div>
-              <label for="edit-pdfUrl" class="block text-sm font-medium text-gray-700">PDF URL</label>
+              <label class="block text-sm font-medium text-gray-700" for="edit-pdfUrl">PDF URL</label>
               <input
+                class="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
                 id="edit-pdfUrl"
+                name="editPdfUrl"
+                placeholder="https://..."
                 type="url"
                 [(ngModel)]="editPdfUrl"
-                name="editPdfUrl"
-                class="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                placeholder="https://..."
               />
             </div>
             <div class="flex gap-2 pt-2">
               <button
-                type="button"
-                (click)="saveEdit()"
-                [disabled]="actionLoading()"
                 class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+                type="button"
+                [disabled]="actionLoading()"
+                (click)="saveEdit()"
               >
                 {{ actionLoading() ? 'Saving…' : 'Save' }}
               </button>
               <button
-                type="button"
-                (click)="cancelEdit()"
-                [disabled]="actionLoading()"
                 class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                type="button"
+                [disabled]="actionLoading()"
+                (click)="cancelEdit()"
               >
                 Cancel
               </button>
@@ -127,10 +127,10 @@
                 <dt class="text-gray-500">PDF</dt>
                 <dd>
                   <a
-                    [href]="inv.pdfUrl"
-                    target="_blank"
-                    rel="noopener noreferrer"
                     class="text-primary hover:underline"
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    [href]="inv.pdfUrl"
                   >
                     Open PDF
                   </a>
@@ -147,8 +147,8 @@
 
       <div class="flex gap-3">
         <a
-          routerLink="/app/invoices"
           class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+          routerLink="/app/invoices"
         >
           ← Back to invoices
         </a>
@@ -160,12 +160,12 @@
 </div>
 
 <app-confirmation-dialog
-  [open]="confirmOpen()"
-  [title]="confirmPayload()?.title ?? 'Confirm'"
-  [message]="confirmPayload()?.message ?? ''"
+  cancelLabel="Cancel"
   [confirmLabel]="confirmPayload()?.confirmLabel ?? 'Confirm'"
   [danger]="confirmPayload()?.danger ?? false"
-  cancelLabel="Cancel"
-  (confirm)="onConfirmDialogConfirm()"
+  [message]="confirmPayload()?.message ?? ''"
+  [open]="confirmOpen()"
+  [title]="confirmPayload()?.title ?? 'Confirm'"
   (cancel)="onConfirmDialogCancel()"
+  (confirm)="onConfirmDialogConfirm()"
 />

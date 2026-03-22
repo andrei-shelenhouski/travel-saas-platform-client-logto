@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -11,6 +18,7 @@ import type { LeadResponseDto } from '@app/shared/models';
 import { LeadStatus } from '@app/shared/models';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-lead-detail',
   imports: [RouterLink],
   templateUrl: './lead-detail.html',
@@ -23,15 +31,15 @@ export class LeadDetailComponent {
   private readonly toast = inject(ToastService);
   readonly permissions = inject(PermissionService);
 
-  private readonly routeId = toSignal(
-    this.route.paramMap.pipe(map((p) => p.get('id')))
-  );
+  private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
 
   private readonly data = rxResource<LeadResponseDto, string | null>({
     params: (): string | null => this.routeId() ?? null,
     stream: ({ params }) => {
       const id = params;
-      if (id == null) return EMPTY;
+      if (id === null) {
+        return EMPTY;
+      }
       return this.leadsService.findById(id);
     },
   });
@@ -40,7 +48,9 @@ export class LeadDetailComponent {
   /** Optimistic: show CONVERTED while converting */
   readonly displayLead = computed(() => {
     const l = this.lead();
-    if (!l) return null;
+    if (!l) {
+      return null;
+    }
     if (this.convertLoading()) {
       return { ...l, status: LeadStatus.CONVERTED };
     }
@@ -59,7 +69,9 @@ export class LeadDetailComponent {
 
   convertToClient(): void {
     const l = this.lead();
-    if (!l || this.convertLoading()) return;
+    if (!l || this.convertLoading()) {
+      return;
+    }
     this.convertLoading.set(true);
     this.leadsService.convertToClient(l.id).subscribe({
       next: (res) => {

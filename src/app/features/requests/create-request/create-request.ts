@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { take } from 'rxjs';
@@ -9,6 +16,7 @@ import { ToastService } from '@app/shared/services/toast.service';
 import type { CreateRequestDto } from '@app/shared/models';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-request',
   imports: [RouterLink, FormsModule],
   templateUrl: './create-request.html',
@@ -36,7 +44,9 @@ export class CreateRequestComponent implements OnInit {
 
   ngOnInit(): void {
     const clientIdParam = this.route.snapshot.queryParamMap.get('clientId');
-    if (clientIdParam) this.clientId = clientIdParam;
+    if (clientIdParam) {
+      this.clientId = clientIdParam;
+    }
 
     // Pre-fill from cache if available (e.g. user came from onboarding)
     const cached = this.meService.getMeData();
@@ -77,8 +87,12 @@ export class CreateRequestComponent implements OnInit {
       endDate: this.endDate,
       adults: Number(this.adults) || 1,
     };
-    if (Number(this.children) > 0) dto.children = Number(this.children);
-    if (this.comment.trim()) dto.comment = this.comment.trim();
+    if (Number(this.children) > 0) {
+      dto.children = Number(this.children);
+    }
+    if (this.comment.trim()) {
+      dto.comment = this.comment.trim();
+    }
 
     this.requestsService.create(dto).subscribe({
       next: (created) => {

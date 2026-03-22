@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
@@ -9,6 +9,7 @@ import type { CreateOfferDto } from '@app/shared/models';
 import type { RequestResponseDto } from '@app/shared/models';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-offer',
   imports: [RouterLink, FormsModule],
   templateUrl: './create-offer.html',
@@ -41,7 +42,9 @@ export class CreateOfferComponent implements OnInit {
       complete: () => this.requestsLoading.set(false),
     });
     const requestId = this.route.snapshot.queryParamMap.get('requestId');
-    if (requestId) this.selectedRequestId = requestId;
+    if (requestId) {
+      this.selectedRequestId = requestId;
+    }
   }
 
   onSubmit(): void {
@@ -66,9 +69,7 @@ export class CreateOfferComponent implements OnInit {
         this.router.navigate(['/app/offers', created.id]);
       },
       error: (err) => {
-        this.error.set(
-          err.error?.message ?? err.message ?? 'Failed to create offer'
-        );
+        this.error.set(err.error?.message ?? err.message ?? 'Failed to create offer');
       },
       complete: () => this.saving.set(false),
     });

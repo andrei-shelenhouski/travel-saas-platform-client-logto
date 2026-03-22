@@ -25,11 +25,21 @@ const OFFERS_STATS_URL = `${environment.baseUrl}/api/offers/stats`;
 export class OffersService {
   private readonly http = inject(HttpClient);
 
-  getList(params?: { status?: OfferStatus; page?: number; limit?: number }): Observable<PaginatedOfferResponseDto> {
+  getList(params?: {
+    status?: OfferStatus;
+    page?: number;
+    limit?: number;
+  }): Observable<PaginatedOfferResponseDto> {
     let httpParams = new HttpParams();
-    if (params?.status != null) httpParams = httpParams.set('status', params.status);
-    if (params?.page != null) httpParams = httpParams.set('page', params.page);
-    if (params?.limit != null) httpParams = httpParams.set('limit', params.limit);
+    if (params?.status !== undefined) {
+      httpParams = httpParams.set('status', params.status);
+    }
+    if (params?.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
+    }
     return this.http.get<PaginatedOfferResponseDto>(OFFERS_URL, { params: httpParams });
   }
 
@@ -51,17 +61,11 @@ export class OffersService {
   }
 
   /** Transition offer status. PATCH /api/offers/{id}/status with UpdateOfferStatusDto. */
-  setStatus(
-    id: string,
-    status: OfferStatus
-  ): Observable<OfferResponseDto> {
+  setStatus(id: string, status: OfferStatus): Observable<OfferResponseDto> {
     const body: UpdateOfferStatusDto = {
       status: status as UpdateOfferStatusDto['status'],
     };
-    return this.http.patch<OfferResponseDto>(
-      `${OFFERS_URL}/${id}/status`,
-      body
-    );
+    return this.http.patch<OfferResponseDto>(`${OFFERS_URL}/${id}/status`, body);
   }
 
   delete(id: string): Observable<OfferResponseDto> {

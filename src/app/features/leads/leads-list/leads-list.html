@@ -2,22 +2,22 @@
   <div class="flex items-center gap-3">
     <h2 class="text-lg font-semibold text-gray-900">Leads</h2>
     <a
-      routerLink="/app/leads/kanban"
       class="text-sm font-medium text-primary hover:underline"
+      routerLink="/app/leads/kanban"
     >
       Kanban view
     </a>
   </div>
   <div class="flex gap-2">
     <a
-      routerLink="/app/offers/new"
       class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+      routerLink="/app/offers/new"
     >
       Create offer
     </a>
     <a
-      routerLink="/app/leads/new"
       class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
+      routerLink="/app/leads/new"
     >
       Create lead
     </a>
@@ -38,7 +38,7 @@
     <tbody class="divide-y divide-gray-200">
       @if (loading()) {
         <tr>
-          <td colspan="3" class="px-4 py-8 text-center text-gray-500">Loading…</td>
+          <td class="px-4 py-8 text-center text-gray-500" colspan="3">Loading…</td>
         </tr>
       } @else {
         @for (lead of leads(); track lead.id) {
@@ -56,7 +56,7 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="3" class="px-4 py-8 text-center text-gray-500">No leads yet.</td>
+            <td class="px-4 py-8 text-center text-gray-500" colspan="3">No leads yet.</td>
           </tr>
         }
       }

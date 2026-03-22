@@ -8,9 +8,9 @@
         @for (org of organizations(); track org.id) {
           <li>
             <button
+              class="w-full rounded border border-gray-200 px-4 py-3 text-left text-gray-900 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
               type="button"
               (click)="select(org)"
-              class="w-full rounded border border-gray-200 px-4 py-3 text-left text-gray-900 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
             >
               {{ org.name }}
             </button>

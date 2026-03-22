@@ -3,10 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
-import type {
-  CreateOrganizationDto,
-  CreateOrganizationResponseDto,
-} from '@app/shared/models';
+import type { CreateOrganizationDto, CreateOrganizationResponseDto } from '@app/shared/models';
 
 const ORGANIZATIONS_URL = `${environment.baseUrl}/api/organizations`;
 

@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -28,6 +28,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
 };
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-offers-list',
   imports: [RouterLink],
   templateUrl: './offers-list.html',
@@ -57,7 +58,9 @@ export class OffersListComponent {
   readonly filteredOffers = computed(() => {
     const list = this.offers();
     const filter = this.activeFilter();
-    if (filter === 'ALL') return list;
+    if (filter === 'ALL') {
+      return list;
+    }
     return list.filter((o) => o.status === filter);
   });
 
@@ -84,8 +87,7 @@ export class OffersListComponent {
   }
 
   rowClass(offer: OfferResponseDto): string {
-    const base =
-      'cursor-pointer hover:bg-gray-50 transition-colors';
+    const base = 'cursor-pointer hover:bg-gray-50 transition-colors';
     if (offer.status === OfferStatus.SENT || offer.status === OfferStatus.VIEWED) {
       return `${base} bg-blue-50/50`;
     }

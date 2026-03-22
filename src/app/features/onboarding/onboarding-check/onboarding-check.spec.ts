@@ -18,7 +18,8 @@ describe('OnboardingCheckComponent', () => {
           provide: MeService,
           useValue: {
             getMeData: () => null,
-            getMe: () => of({ id: '', logtoId: '', createdAt: '', updatedAt: '', organizations: [] }),
+            getMe: () =>
+              of({ id: '', logtoId: '', createdAt: '', updatedAt: '', organizations: [] }),
             clearMeData: vi.fn(),
           },
         },

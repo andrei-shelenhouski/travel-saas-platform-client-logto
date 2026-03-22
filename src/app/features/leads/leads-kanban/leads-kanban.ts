@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   effect,
@@ -25,6 +26,7 @@ const LEAD_STATUS_ORDER: string[] = [
 ];
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-leads-kanban',
   standalone: true,
   imports: [DragDropModule, RouterLink, StatusBadgeComponent],
@@ -43,8 +45,7 @@ export class LeadsKanbanComponent {
   readonly statusFilterChecked = signal<Record<string, boolean>>({});
 
   private readonly data = rxResource({
-    stream: () =>
-      this.leadsService.findAll({ page: 1, limit: 100 }),
+    stream: () => this.leadsService.findAll({ page: 1, limit: 100 }),
   });
 
   readonly loading = computed(() => this.data.isLoading());
@@ -71,14 +72,18 @@ export class LeadsKanbanComponent {
   constructor() {
     effect(() => {
       const value = this.data.value();
-      if (!value?.data) return;
+      if (!value?.data) {
+        return;
+      }
       const byStatus: Record<string, LeadResponseDto[]> = {};
       for (const s of LEAD_STATUS_ORDER) {
         byStatus[s] = [];
       }
       for (const lead of value.data) {
         const s = lead.status as string;
-        if (!byStatus[s]) byStatus[s] = [];
+        if (!byStatus[s]) {
+          byStatus[s] = [];
+        }
         byStatus[s].push(lead);
       }
       this.itemsByStatus.set(byStatus);
@@ -95,9 +100,11 @@ export class LeadsKanbanComponent {
     const current = this.visibleStatuses();
     if (checked) {
       if (!current.includes(status)) {
-        this.visibleStatuses.set([...current, status].sort(
-          (a, b) => LEAD_STATUS_ORDER.indexOf(a) - LEAD_STATUS_ORDER.indexOf(b)
-        ));
+        this.visibleStatuses.set(
+          [...current, status].sort(
+            (a, b) => LEAD_STATUS_ORDER.indexOf(a) - LEAD_STATUS_ORDER.indexOf(b),
+          ),
+        );
       }
     } else {
       this.visibleStatuses.set(current.filter((s) => s !== status));
@@ -106,34 +113,36 @@ export class LeadsKanbanComponent {
   }
 
   onDrop(event: CdkDragDrop<LeadResponseDto[]>, targetStatus: string): void {
-    if (event.previousContainer === event.container) return;
+    if (event.previousContainer === event.container) {
+      return;
+    }
     const prevList = event.previousContainer.data;
     const currList = event.container.data;
     const lead = event.item.data as LeadResponseDto;
     const previousStatus = lead.status as string;
-    if (previousStatus === targetStatus) return;
+    if (previousStatus === targetStatus) {
+      return;
+    }
 
     transferArrayItem(prevList, currList, event.previousIndex, event.currentIndex);
     lead.status = targetStatus;
     this.itemsByStatus.update((m) => ({ ...m }));
 
-    this.leadsService
-      .updateStatus(lead.id, { status: targetStatus as LeadStatus })
-      .subscribe({
-        next: (updated) => {
-          const idx = currList.findIndex((l) => l.id === updated.id);
-          if (idx !== -1) currList[idx] = updated;
-          this.itemsByStatus.update((m) => ({ ...m }));
-        },
-        error: (err: { error?: { message?: string }; message?: string }) => {
-          transferArrayItem(currList, prevList, event.currentIndex, event.previousIndex);
-          lead.status = previousStatus;
-          this.itemsByStatus.update((m) => ({ ...m }));
-          this.toast.showError(
-            err?.error?.message ?? err?.message ?? 'Invalid status transition'
-          );
-        },
-      });
+    this.leadsService.updateStatus(lead.id, { status: targetStatus as LeadStatus }).subscribe({
+      next: (updated) => {
+        const idx = currList.findIndex((l) => l.id === updated.id);
+        if (idx !== -1) {
+          currList[idx] = updated;
+        }
+        this.itemsByStatus.update((m) => ({ ...m }));
+      },
+      error: (err: { error?: { message?: string }; message?: string }) => {
+        transferArrayItem(currList, prevList, event.currentIndex, event.previousIndex);
+        lead.status = previousStatus;
+        this.itemsByStatus.update((m) => ({ ...m }));
+        this.toast.showError(err?.error?.message ?? err?.message ?? 'Invalid status transition');
+      },
+    });
   }
 
   goToLead(lead: LeadResponseDto): void {
