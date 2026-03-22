@@ -1,10 +1,21 @@
 import { Component, inject, signal } from '@angular/core';
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  Validators,
+  type AbstractControl,
+  type ValidationErrors,
+} from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 
 import { LeadsService } from '@app/services/leads.service';
 import { ToastService } from '@app/shared/services/toast.service';
 import { LeadSource, type CreateLeadDto } from '@app/shared/models';
+
+function trimmedRequired(control: AbstractControl): ValidationErrors | null {
+  const s = typeof control.value === 'string' ? control.value.trim() : '';
+  return s ? null : { required: true };
+}
 
 const SOURCE_OPTIONS: { value: LeadSource; label: string }[] = [
   { value: LeadSource.PHONE, label: 'Phone' },
@@ -16,35 +27,48 @@ const SOURCE_OPTIONS: { value: LeadSource; label: string }[] = [
 
 @Component({
   selector: 'app-create-lead',
-  imports: [FormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './create-lead.html',
   styleUrl: './create-lead.css',
 })
 export class CreateLeadComponent {
+  private readonly fb = inject(FormBuilder);
   private readonly leadsService = inject(LeadsService);
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
 
-  readonly sourceOptions = SOURCE_OPTIONS;
-  source: LeadSource = LeadSource.OTHER;
-  contactName = '';
-  contactEmail = '';
-  contactPhone = '';
-  notes = '';
+  protected readonly sourceOptions = SOURCE_OPTIONS;
+  protected readonly form = this.fb.nonNullable.group({
+    source: [LeadSource.OTHER],
+    contactName: ['', trimmedRequired],
+    contactEmail: ['', Validators.email],
+    contactPhone: ['', Validators.pattern(/^\+?\d{10,15}$/)],
+    notes: [''],
+  });
 
-  readonly loading = signal(false);
-  readonly error = signal('');
+  protected readonly loading = signal(false);
+  protected readonly error = signal('');
 
-  onSubmit(): void {
+  protected onSubmit(): void {
+    if (this.form.invalid) {
+      return;
+    }
     this.error.set('');
     this.loading.set(true);
+    const v = this.form.getRawValue();
     const dto: CreateLeadDto = {
-      source: this.source,
-      contactName: this.contactName.trim(),
+      source: v.source,
+      contactName: v.contactName.trim(),
     };
-    if (this.contactEmail.trim()) dto.contactEmail = this.contactEmail.trim();
-    if (this.contactPhone.trim()) dto.contactPhone = this.contactPhone.trim();
-    if (this.notes.trim()) dto.notes = this.notes.trim();
+    if (v.contactEmail.trim()) {
+      dto.contactEmail = v.contactEmail.trim();
+    }
+    if (v.contactPhone.trim()) {
+      dto.contactPhone = v.contactPhone.trim();
+    }
+    if (v.notes.trim()) {
+      dto.notes = v.notes.trim();
+    }
 
     this.leadsService.create(dto).subscribe({
       next: () => {
@@ -52,9 +76,7 @@ export class CreateLeadComponent {
         this.router.navigate(['/app/leads']);
       },
       error: (err) => {
-        this.error.set(
-          err.error?.message ?? err.message ?? 'Failed to create lead'
-        );
+        this.error.set(err.error?.message ?? err.message ?? 'Failed to create lead');
       },
       complete: () => this.loading.set(false),
     });
