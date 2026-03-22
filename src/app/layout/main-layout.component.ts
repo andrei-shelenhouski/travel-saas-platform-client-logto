@@ -41,26 +41,32 @@ export class MainLayoutComponent implements OnInit {
 
   readonly userDisplay = computed(() => {
     const user = this.authService.firebaseUser();
+
     if (!user) {
       return 'User';
     }
+
     return user.displayName ?? user.email ?? 'User';
   });
 
   readonly userPicture = computed(() => {
     const user = this.authService.firebaseUser();
+
     if (!user) {
       return null;
     }
+
     return user.photoURL ?? null;
   });
 
   readonly userInitial = computed(() => {
     const user = this.authService.firebaseUser();
+
     if (!user) {
       return 'U';
     }
     const raw = user.displayName ?? user.email ?? 'U';
+
     return raw.charAt(0).toUpperCase();
   });
 
@@ -88,12 +94,15 @@ export class MainLayoutComponent implements OnInit {
   openOrgSwitcher(): void {
     if (this.orgSwitcherOpen()) {
       this.orgSwitcherOpen.set(false);
+
       return;
     }
     const data = this.meService.getMeData();
+
     if (data?.organizations?.length) {
       this.organizations.set(data.organizations);
       this.orgSwitcherOpen.set(true);
+
       return;
     }
     this.orgSwitcherLoading.set(true);
@@ -113,6 +122,7 @@ export class MainLayoutComponent implements OnInit {
   switchOrganization(org: OrganizationWithRoleDto): void {
     if (org.id === this.activeOrgId) {
       this.orgSwitcherOpen.set(false);
+
       return;
     }
     this.orgState.setActiveOrganization(org.id, org.name);

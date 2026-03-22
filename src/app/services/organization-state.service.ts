@@ -25,6 +25,7 @@ export class OrganizationStateService {
     this.activeOrganizationId.set(orgId);
     this.activeOrganizationName.set(name ?? null);
     localStorage.setItem(STORAGE_KEY_ID, orgId);
+
     if (name !== undefined) {
       localStorage.setItem(STORAGE_KEY_NAME, name);
     } else {
@@ -43,6 +44,7 @@ export class OrganizationStateService {
     if (typeof localStorage === 'undefined') {
       return null;
     }
+
     return localStorage.getItem(STORAGE_KEY_ID);
   }
 
@@ -50,6 +52,7 @@ export class OrganizationStateService {
     if (typeof localStorage === 'undefined') {
       return null;
     }
+
     return localStorage.getItem(STORAGE_KEY_NAME);
   }
 }

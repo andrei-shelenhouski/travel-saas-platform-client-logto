@@ -30,15 +30,19 @@ export class RequestsService {
     status?: RequestStatus;
   }): Observable<PaginatedRequestResponseDto> {
     let httpParams = new HttpParams();
+
     if (params?.page !== undefined) {
       httpParams = httpParams.set('page', params.page);
     }
+
     if (params?.limit !== undefined) {
       httpParams = httpParams.set('limit', params.limit);
     }
+
     if (params?.status !== undefined) {
       httpParams = httpParams.set('status', params.status);
     }
+
     return this.http.get<PaginatedRequestResponseDto>(REQUESTS_URL, { params: httpParams });
   }
 

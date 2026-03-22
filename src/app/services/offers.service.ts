@@ -31,15 +31,19 @@ export class OffersService {
     limit?: number;
   }): Observable<PaginatedOfferResponseDto> {
     let httpParams = new HttpParams();
+
     if (params?.status !== undefined) {
       httpParams = httpParams.set('status', params.status);
     }
+
     if (params?.page !== undefined) {
       httpParams = httpParams.set('page', params.page);
     }
+
     if (params?.limit !== undefined) {
       httpParams = httpParams.set('limit', params.limit);
     }
+
     return this.http.get<PaginatedOfferResponseDto>(OFFERS_URL, { params: httpParams });
   }
 
@@ -65,6 +69,7 @@ export class OffersService {
     const body: UpdateOfferStatusDto = {
       status: status as UpdateOfferStatusDto['status'],
     };
+
     return this.http.patch<OfferResponseDto>(`${OFFERS_URL}/${id}/status`, body);
   }
 

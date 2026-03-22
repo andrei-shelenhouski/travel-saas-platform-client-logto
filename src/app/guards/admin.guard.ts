@@ -14,5 +14,6 @@ export const adminGuard: CanActivateFn = async () => {
   if (permissions.isAdmin()) {
     return true;
   }
+
   return router.createUrlTree(['/app/dashboard']);
 };

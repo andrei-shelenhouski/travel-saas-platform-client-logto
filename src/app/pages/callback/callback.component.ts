@@ -25,6 +25,7 @@ export class CallbackComponent implements OnInit {
         switchMap((currentUser) => {
           if (!currentUser) {
             this.router.navigate(['/']);
+
             return EMPTY;
           }
 

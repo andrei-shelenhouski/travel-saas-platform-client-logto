@@ -68,6 +68,7 @@ export class CommentComponent {
 
   protected submit(): void {
     const text = this.newComment().trim();
+
     if (!text) {
       return;
     }

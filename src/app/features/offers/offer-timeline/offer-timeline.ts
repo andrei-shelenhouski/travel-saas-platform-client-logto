@@ -9,6 +9,7 @@ export type TimelineItem = {
 function formatDate(iso: string): string {
   try {
     const d = new Date(iso);
+
     return d.toLocaleString(undefined, {
       dateStyle: 'medium',
       timeStyle: 'short',
@@ -23,12 +24,15 @@ export function buildOfferTimelineItems(offer: OfferResponseDto | null): Timelin
     return [];
   }
   const items: TimelineItem[] = [];
+
   if (offer.createdAt) {
     items.push({ label: 'Offer created', date: formatDate(offer.createdAt) });
   }
+
   if (offer.updatedAt && offer.updatedAt !== offer.createdAt) {
     items.push({ label: 'Status updated', date: formatDate(offer.updatedAt) });
   }
+
   return items;
 }
 

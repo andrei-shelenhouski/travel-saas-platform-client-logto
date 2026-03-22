@@ -25,9 +25,11 @@ export class RequestDetailComponent {
     params: (): string | null => this.routeId() ?? null,
     stream: ({ params }) => {
       const id = params;
+
       if (id === null) {
         return EMPTY;
       }
+
       return this.requestsService.getById(id);
     },
   });
@@ -45,6 +47,7 @@ export class RequestDetailComponent {
 
   createOffer(): void {
     const r = this.request();
+
     if (!r) {
       return;
     }

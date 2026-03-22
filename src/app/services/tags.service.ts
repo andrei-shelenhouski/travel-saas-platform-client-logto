@@ -21,12 +21,15 @@ export class TagsService {
 
   findAll(params?: { entityType?: EntityType; entityId?: string }): Observable<TagResponseDto[]> {
     let httpParams = new HttpParams();
+
     if (params?.entityType !== undefined) {
       httpParams = httpParams.set('entityType', params.entityType);
     }
+
     if (params?.entityId !== undefined) {
       httpParams = httpParams.set('entityId', params.entityId);
     }
+
     return this.http.get<TagResponseDto[]>(TAGS_URL, { params: httpParams });
   }
 

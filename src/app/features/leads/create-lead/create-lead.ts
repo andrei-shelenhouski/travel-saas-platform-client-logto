@@ -14,6 +14,7 @@ import { type CreateLeadDto, LeadSource } from '@app/shared/models';
 
 function trimmedRequired(control: AbstractControl): ValidationErrors | null {
   const s = typeof control.value === 'string' ? control.value.trim() : '';
+
   return s ? null : { required: true };
 }
 
@@ -54,19 +55,24 @@ export class CreateLeadComponent {
     if (this.form.invalid) {
       return;
     }
+
     this.error.set('');
     this.loading.set(true);
+
     const v = this.form.getRawValue();
     const dto: CreateLeadDto = {
       source: v.source,
       contactName: v.contactName.trim(),
     };
+
     if (v.contactEmail.trim()) {
       dto.contactEmail = v.contactEmail.trim();
     }
+
     if (v.contactPhone.trim()) {
       dto.contactPhone = v.contactPhone.trim();
     }
+
     if (v.notes.trim()) {
       dto.notes = v.notes.trim();
     }

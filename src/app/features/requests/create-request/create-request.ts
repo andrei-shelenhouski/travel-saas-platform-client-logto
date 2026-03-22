@@ -44,12 +44,14 @@ export class CreateRequestComponent implements OnInit {
 
   ngOnInit(): void {
     const clientIdParam = this.route.snapshot.queryParamMap.get('clientId');
+
     if (clientIdParam) {
       this.clientId = clientIdParam;
     }
 
     // Pre-fill from cache if available (e.g. user came from onboarding)
     const cached = this.meService.getMeData();
+
     if (cached?.id) {
       this.managerId = cached.id;
     }
@@ -70,12 +72,16 @@ export class CreateRequestComponent implements OnInit {
 
   onSubmit(): void {
     this.error.set('');
+
     if (!this.clientId.trim() || !this.managerId.trim() || !this.destination.trim()) {
       this.error.set('Client ID, Manager ID and Destination are required.');
+
       return;
     }
+
     if (!this.startDate || !this.endDate) {
       this.error.set('Start date and End date are required.');
+
       return;
     }
     this.saving.set(true);
@@ -87,9 +93,11 @@ export class CreateRequestComponent implements OnInit {
       endDate: this.endDate,
       adults: Number(this.adults) || 1,
     };
+
     if (Number(this.children) > 0) {
       dto.children = Number(this.children);
     }
+
     if (this.comment.trim()) {
       dto.comment = this.comment.trim();
     }

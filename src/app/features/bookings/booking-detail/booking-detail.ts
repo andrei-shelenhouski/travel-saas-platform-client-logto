@@ -45,9 +45,11 @@ export class BookingDetailComponent {
     params: (): string | null => this.routeId() ?? null,
     stream: ({ params }) => {
       const id = params;
+
       if (id === null) {
         return EMPTY;
       }
+
       return this.bookingsService.getById(id);
     },
   });
@@ -91,6 +93,7 @@ export class BookingDetailComponent {
 
   markCancelled(): void {
     const b = this.booking();
+
     if (!b || this.actionLoading()) {
       return;
     }
@@ -106,6 +109,7 @@ export class BookingDetailComponent {
 
   markConfirmed(): void {
     const b = this.booking();
+
     if (!b || this.actionLoading()) {
       return;
     }
@@ -119,6 +123,7 @@ export class BookingDetailComponent {
 
   deleteBooking(): void {
     const b = this.booking();
+
     if (!b || this.actionLoading()) {
       return;
     }
@@ -135,11 +140,14 @@ export class BookingDetailComponent {
   onConfirmDialogConfirm(): void {
     const payload = this.confirmPayload();
     const b = this.booking();
+
     if (!payload || !b) {
       this.confirmOpen.set(false);
+
       return;
     }
     this.actionLoading.set(true);
+
     if (payload.action === 'CANCEL_BOOKING') {
       this.bookingsService.update(b.id, { status: BookingStatus.CANCELLED }).subscribe({
         next: (updated) => this.data.set(updated),

@@ -24,21 +24,26 @@ export class RequestsListComponent {
 
   readonly requests = computed(() => {
     const list = this.data.value()?.data ?? [];
+
     if (!this.permissions.filterToOwnRecords()) {
       return list;
     }
     const uid = this.permissions.currentUserId();
+
     if (!uid) {
       return list;
     }
+
     return list.filter((r) => r.managerId === uid);
   });
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const err = this.data.error();
+
     if (err instanceof HttpErrorResponse) {
       return err.error?.message ?? err.message ?? 'Failed to load requests';
     }
+
     return undefined;
   });
 

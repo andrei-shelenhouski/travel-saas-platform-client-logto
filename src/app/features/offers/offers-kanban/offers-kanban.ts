@@ -51,15 +51,18 @@ export class OffersKanbanComponent {
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const err = this.data.error();
+
     if (err instanceof HttpErrorResponse) {
       return err.error?.message ?? err.message ?? 'Failed to load offers';
     }
+
     return undefined;
   });
 
   readonly columns = computed(() => {
     const visible = this.visibleStatuses();
     const byStatus = this.itemsByStatus();
+
     return visible.map((status) => ({
       status,
       items: byStatus[status] ?? [],
@@ -71,21 +74,25 @@ export class OffersKanbanComponent {
   constructor() {
     effect(() => {
       const value = this.data.value();
+
       if (!value?.data) {
         return;
       }
       const byStatus: Record<string, OfferResponseDto[]> = {};
+
       for (const s of OFFER_STATUS_ORDER) {
         byStatus[s] = [];
       }
       for (const offer of value.data) {
         const s = offer.status as string;
+
         if (!byStatus[s]) {
           byStatus[s] = [];
         }
         byStatus[s].push(offer);
       }
       this.itemsByStatus.set(byStatus);
+
       if (this.visibleStatuses().length === 0) {
         this.visibleStatuses.set([...OFFER_STATUS_ORDER]);
         const checked: Record<string, boolean> = {};
@@ -97,6 +104,7 @@ export class OffersKanbanComponent {
 
   setFilter(status: string, checked: boolean): void {
     const current = this.visibleStatuses();
+
     if (checked) {
       if (!current.includes(status)) {
         this.visibleStatuses.set(
@@ -119,12 +127,14 @@ export class OffersKanbanComponent {
     const currList = event.container.data;
     const offer = event.item.data as OfferResponseDto;
     const previousStatus = offer.status as string;
+
     if (previousStatus === targetStatus) {
       return;
     }
 
     if (!isAllowedOfferStatusTransition(previousStatus, targetStatus)) {
       this.toast.showError(`Invalid transition: ${previousStatus} → ${targetStatus}`);
+
       return;
     }
 
@@ -135,6 +145,7 @@ export class OffersKanbanComponent {
     this.offersService.setStatus(offer.id, targetStatus as OfferStatus).subscribe({
       next: (updated) => {
         const idx = currList.findIndex((o) => o.id === updated.id);
+
         if (idx !== -1) {
           currList[idx] = updated;
         }

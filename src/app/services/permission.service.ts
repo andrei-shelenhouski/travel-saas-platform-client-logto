@@ -27,30 +27,35 @@ export class PermissionService {
   /** Can convert lead to client. Admin + Manager only. */
   readonly canConvertLead = computed(() => {
     const r = this.roleService.roleOrDefault();
+
     return r === 'Admin' || r === 'Manager';
   });
 
   /** Can delete offers. Admin + Manager; Agent cannot. */
   readonly canDeleteOffer = computed(() => {
     const r = this.roleService.roleOrDefault();
+
     return r === 'Admin' || r === 'Manager';
   });
 
   /** Can delete leads. Admin + Manager; Agent cannot. */
   readonly canDeleteLead = computed(() => {
     const r = this.roleService.roleOrDefault();
+
     return r === 'Admin' || r === 'Manager';
   });
 
   /** Can delete bookings. Admin + Manager; Agent cannot. */
   readonly canDeleteBooking = computed(() => {
     const r = this.roleService.roleOrDefault();
+
     return r === 'Admin' || r === 'Manager';
   });
 
   /** Can delete invoices. Admin + Manager; Agent cannot. */
   readonly canDeleteInvoice = computed(() => {
     const r = this.roleService.roleOrDefault();
+
     return r === 'Admin' || r === 'Manager';
   });
 
@@ -59,6 +64,7 @@ export class PermissionService {
 
   readonly roleLabel = computed(() => {
     const r = this.roleService.roleOrDefault();
+
     return r === 'Admin' ? 'Admin' : r === 'Agent' ? 'Agent' : 'Manager';
   });
 }

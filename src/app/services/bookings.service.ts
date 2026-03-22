@@ -30,15 +30,19 @@ export class BookingsService {
     status?: BookingStatus;
   }): Observable<PaginatedBookingResponseDto> {
     let httpParams = new HttpParams();
+
     if (params?.page !== undefined) {
       httpParams = httpParams.set('page', params.page);
     }
+
     if (params?.limit !== undefined) {
       httpParams = httpParams.set('limit', params.limit);
     }
+
     if (params?.status !== undefined) {
       httpParams = httpParams.set('status', params.status);
     }
+
     return this.http.get<PaginatedBookingResponseDto>(BOOKINGS_URL, { params: httpParams });
   }
 

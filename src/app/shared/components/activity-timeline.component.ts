@@ -53,6 +53,7 @@ export class ActivityTimelineComponent {
       status: 'bg-amber-500',
       default: 'bg-gray-400',
     };
+
     return classes[t] ?? classes['default'];
   }
 }

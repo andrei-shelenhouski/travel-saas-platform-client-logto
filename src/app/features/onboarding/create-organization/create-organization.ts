@@ -39,9 +39,11 @@ export class CreateOrganizationComponent {
     this.organizationsService.create({ name: this.name.trim() }).subscribe({
       next: (data) => {
         const orgId = data.id ?? data.organizationId;
+
         if (orgId) {
           this.orgState.setActiveOrganization(orgId, this.name.trim());
           this.meService.clearMeData();
+
           if (this.fromApp) {
             this.meService
               .getMe()

@@ -81,6 +81,25 @@ const tsLintRulesBase = {
   'one-var': ['error', 'never'],
   'prefer-arrow-callback': 'error',
   'prefer-const': 'error',
+  /** Matches Cursor rules: separate control flow from declarations/actions; blank before `return` when something precedes it; sibling `if`/`switch`. */
+  'padding-line-between-statements': [
+    'error',
+    { blankLine: 'always', prev: '*', next: 'return' },
+    { blankLine: 'always', prev: ['const', 'let', 'var'], next: 'if' },
+    { blankLine: 'always', prev: ['const', 'let', 'var'], next: 'switch' },
+    { blankLine: 'always', prev: ['const', 'let', 'var'], next: 'for' },
+    { blankLine: 'always', prev: ['const', 'let', 'var'], next: 'while' },
+    { blankLine: 'always', prev: ['const', 'let', 'var'], next: 'do' },
+    { blankLine: 'always', prev: ['const', 'let', 'var'], next: 'try' },
+    { blankLine: 'always', prev: 'expression', next: 'if' },
+    { blankLine: 'always', prev: 'expression', next: 'switch' },
+    { blankLine: 'always', prev: 'expression', next: 'for' },
+    { blankLine: 'always', prev: 'expression', next: 'while' },
+    { blankLine: 'always', prev: 'expression', next: 'do' },
+    { blankLine: 'always', prev: 'expression', next: 'try' },
+    { blankLine: 'always', prev: 'if', next: 'if' },
+    { blankLine: 'always', prev: 'switch', next: 'switch' },
+  ],
   'sort-imports': [
     'error',
     {

@@ -57,9 +57,11 @@ export class ClientDetailComponent {
     params: (): string | null => this.routeId() ?? null,
     stream: ({ params }) => {
       const id = params;
+
       if (id === null) {
         return EMPTY;
       }
+
       return this.clientsService.getById(id);
     },
   });
@@ -80,6 +82,7 @@ export class ClientDetailComponent {
       if (params === null) {
         return EMPTY;
       }
+
       return this.activitiesService
         .findByEntity({
           entityType: EntityType.Client,
@@ -94,9 +97,11 @@ export class ClientDetailComponent {
     params: (): [string | null, number] => [this.routeId() ?? null, this.commentsVersion()],
     stream: ({ params }) => {
       const [clientId] = params;
+
       if (clientId === null) {
         return EMPTY;
       }
+
       return this.commentsService
         .findByEntity({
           commentableType: EntityType.Client,
@@ -111,9 +116,11 @@ export class ClientDetailComponent {
     params: (): [string | null, number] => [this.routeId() ?? null, this.tagsVersion()],
     stream: ({ params }) => {
       const [clientId] = params;
+
       if (clientId === null) {
         return EMPTY;
       }
+
       return this.tagsService.findAll({
         entityType: EntityType.Client,
         entityId: clientId,
@@ -127,9 +134,11 @@ export class ClientDetailComponent {
   readonly requests = computed(() => {
     const list = this.requestsData.value() ?? [];
     const clientId = this.client()?.id;
+
     if (!clientId) {
       return list;
     }
+
     return list.filter((r) => r.clientId === clientId);
   });
   readonly requestsLoading = computed(() => this.requestsData.isLoading());
@@ -149,6 +158,7 @@ export class ClientDetailComponent {
       date: a.createdAt,
       type: a.type === 'note' ? 'updated' : 'default',
     }));
+
     if (c?.createdAt) {
       list.push({
         label: 'Client created',
@@ -156,11 +166,13 @@ export class ClientDetailComponent {
         type: 'created',
       });
     }
+
     return list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   });
 
   readonly clientComments = computed<CommentItem[]>(() => {
     const items = this.commentsData.value() ?? [];
+
     return items.map((c) => ({
       id: c.id,
       author: '—',
@@ -171,6 +183,7 @@ export class ClientDetailComponent {
 
   readonly clientTags = computed<string[]>(() => {
     const tags = this.entityTagsData.value() ?? [];
+
     return tags.map((t) => t.name);
   });
 
@@ -190,6 +203,7 @@ export class ClientDetailComponent {
 
   createRequest(): void {
     const c = this.client();
+
     if (!c) {
       return;
     }
@@ -200,6 +214,7 @@ export class ClientDetailComponent {
 
   onTagsChange(tags: string[]): void {
     const c = this.client();
+
     if (!c || this.tagsSaveLoading()) {
       return;
     }
@@ -207,6 +222,7 @@ export class ClientDetailComponent {
     const added = tags.filter((n) => !current.includes(n));
     const removed = current.filter((n) => !tags.includes(n));
     const entityTags = this.entityTags();
+
     if (added.length === 0 && removed.length === 0) {
       return;
     }
@@ -220,6 +236,7 @@ export class ClientDetailComponent {
     let pending = added.length + removed.length;
     const checkDone = (): void => {
       pending -= 1;
+
       if (pending === 0) {
         done();
       }
@@ -246,6 +263,7 @@ export class ClientDetailComponent {
     }
     for (const name of removed) {
       const tag = entityTags.find((t) => t.name === name);
+
       if (!tag) {
         checkDone();
         continue;
@@ -265,6 +283,7 @@ export class ClientDetailComponent {
 
   onAddComment(event: { text: string }): void {
     const c = this.client();
+
     if (!c || !event.text.trim()) {
       return;
     }

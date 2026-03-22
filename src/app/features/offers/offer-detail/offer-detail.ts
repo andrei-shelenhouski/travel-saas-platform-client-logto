@@ -60,9 +60,11 @@ export class OfferDetailComponent {
     params: (): string | null => this.routeId() ?? null,
     stream: ({ params }) => {
       const id = params;
+
       if (id === null) {
         return EMPTY;
       }
+
       return this.offersService.getById(id);
     },
   });
@@ -81,18 +83,22 @@ export class OfferDetailComponent {
 
   protected readonly allowedActions = computed(() => {
     const o = this.offer();
+
     if (!o) {
       return [];
     }
     const actions = getAllowedTransitions(o.status as OfferStatus);
+
     if (!this.permissions.canDeleteOffer() && actions.includes('DELETE')) {
       return actions.filter((a) => a !== 'DELETE');
     }
+
     return actions;
   });
 
   protected readonly statusBadgeClass = computed(() => {
     const o = this.offer();
+
     return o ? STATUS_BADGE_CLASS[o.status as OfferStatus] : '';
   });
 
@@ -109,6 +115,7 @@ export class OfferDetailComponent {
 
   private runTransition(id: string, action: OfferAction, newStatus?: OfferStatus): void {
     const current = this.offer();
+
     if (newStatus !== undefined && current) {
       this.data.set({ ...current, status: newStatus } as OfferResponseDto);
     }
@@ -126,6 +133,7 @@ export class OfferDetailComponent {
         },
         complete: () => this.actionLoading.set(false),
       });
+
       return;
     }
 
@@ -140,6 +148,7 @@ export class OfferDetailComponent {
         },
         complete: () => this.actionLoading.set(false),
       });
+
       return;
     }
 
@@ -154,6 +163,7 @@ export class OfferDetailComponent {
         },
         complete: () => this.actionLoading.set(false),
       });
+
       return;
     }
 
@@ -175,6 +185,7 @@ export class OfferDetailComponent {
 
   protected onActionClick(action: OfferAction): void {
     const o = this.offer();
+
     if (!o || this.actionLoading()) {
       return;
     }
@@ -205,11 +216,13 @@ export class OfferDetailComponent {
       };
       this.confirmPayload.set(payloads[action]);
       this.confirmOpen.set(true);
+
       return;
     }
 
     if (action === 'EDIT') {
       this.router.navigate(['/app/offers', o.id, 'edit']);
+
       return;
     }
 
@@ -220,6 +233,7 @@ export class OfferDetailComponent {
       EXPIRE: OfferStatus.EXPIRED,
     };
     const newStatus = statusMap[action];
+
     if (newStatus) {
       this.runTransition(o.id, action, newStatus);
     } else if (action === 'DUPLICATE') {
@@ -232,13 +246,16 @@ export class OfferDetailComponent {
   protected onConfirmDialogConfirm(): void {
     const payload = this.confirmPayload();
     const o = this.offer();
+
     if (!payload || !o) {
       this.confirmOpen.set(false);
       this.confirmPayload.set(null);
+
       return;
     }
     this.confirmOpen.set(false);
     this.confirmPayload.set(null);
+
     if (payload.action === 'REJECT') {
       this.runTransition(o.id, 'REJECT', OfferStatus.REJECTED);
     } else if (payload.action === 'EXPIRE') {
@@ -261,6 +278,7 @@ export class OfferDetailComponent {
     danger: boolean;
   } {
     const p = this.confirmPayload();
+
     return {
       open: this.confirmOpen(),
       title: p?.title ?? 'Confirm',

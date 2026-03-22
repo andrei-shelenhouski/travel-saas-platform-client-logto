@@ -53,9 +53,11 @@ export class InvoiceDetailComponent {
     params: (): string | null => this.routeId() ?? null,
     stream: ({ params }) => {
       const id = params;
+
       if (id === null) {
         return EMPTY;
       }
+
       return this.invoicesService.getById(id);
     },
   });
@@ -115,6 +117,7 @@ export class InvoiceDetailComponent {
 
   startEdit(): void {
     const inv = this.invoice();
+
     if (!inv) {
       return;
     }
@@ -130,6 +133,7 @@ export class InvoiceDetailComponent {
 
   saveEdit(): void {
     const inv = this.invoice();
+
     if (!inv || this.actionLoading()) {
       return;
     }
@@ -137,9 +141,11 @@ export class InvoiceDetailComponent {
     const dto: { status?: InvoiceStatus; dueDate?: string; pdfUrl?: string } = {
       status: this.editStatus,
     };
+
     if (this.editDueDate.trim()) {
       dto.dueDate = this.editDueDate.trim();
     }
+
     if (this.editPdfUrl.trim()) {
       dto.pdfUrl = this.editPdfUrl.trim();
     }
@@ -156,6 +162,7 @@ export class InvoiceDetailComponent {
 
   deleteInvoice(): void {
     const inv = this.invoice();
+
     if (!inv || this.actionLoading()) {
       return;
     }
@@ -172,8 +179,10 @@ export class InvoiceDetailComponent {
   onConfirmDialogConfirm(): void {
     const payload = this.confirmPayload();
     const inv = this.invoice();
+
     if (!payload || !inv) {
       this.confirmOpen.set(false);
+
       return;
     }
     this.actionLoading.set(true);

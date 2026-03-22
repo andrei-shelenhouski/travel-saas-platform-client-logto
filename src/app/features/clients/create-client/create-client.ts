@@ -34,8 +34,10 @@ export class CreateClientComponent {
 
   onSubmit(): void {
     this.error.set('');
+
     if (!this.name.trim()) {
       this.error.set('Name is required.');
+
       return;
     }
     this.saving.set(true);
@@ -43,9 +45,11 @@ export class CreateClientComponent {
       type: this.type,
       name: this.name.trim(),
     };
+
     if (this.phone.trim()) {
       dto.phone = this.phone.trim();
     }
+
     if (this.email.trim()) {
       dto.email = this.email.trim();
     }

@@ -22,19 +22,24 @@ export function errorHandlerInterceptor(
   return next(req).pipe(
     catchError((err) => {
       const status = err.status ?? err.statusCode;
+
       if (status === 401) {
         // Token might have expired or been revoked, or user might have been deleted.
         return throwError(() => err);
       }
+
       if (status === 400 || status === 403) {
         const message = err.error?.message ?? err.message;
+
         if (message?.toLowerCase().includes('organization') || status === 403) {
           orgState.clear();
           meService.clearMeData();
           router.navigate(['/onboarding/check']);
         }
+
         return throwError(() => err);
       }
+
       // Global user feedback for server/network errors (5xx, 0, undefined)
       if (status === undefined || status === null || status >= 500) {
         const message = err.error?.message ?? err.message;
@@ -42,6 +47,7 @@ export function errorHandlerInterceptor(
           message && String(message).trim() ? String(message) : GENERIC_ERROR_MESSAGE,
         );
       }
+
       return throwError(() => err);
     }),
   );

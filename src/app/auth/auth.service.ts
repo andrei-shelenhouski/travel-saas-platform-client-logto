@@ -37,6 +37,7 @@ export class AuthService {
    */
   async hasAuthenticatedUser(): Promise<boolean> {
     await this.auth.authStateReady();
+
     return this.auth.currentUser !== null;
   }
 

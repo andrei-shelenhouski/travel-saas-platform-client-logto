@@ -26,15 +26,19 @@ export class ClientsService {
     limit?: number;
   }): Observable<PaginatedClientResponseDto> {
     let httpParams = new HttpParams();
+
     if (params?.type !== undefined) {
       httpParams = httpParams.set('type', params.type);
     }
+
     if (params?.page !== undefined) {
       httpParams = httpParams.set('page', params.page);
     }
+
     if (params?.limit !== undefined) {
       httpParams = httpParams.set('limit', params.limit);
     }
+
     return this.http.get<PaginatedClientResponseDto>(CLIENTS_URL, { params: httpParams });
   }
 

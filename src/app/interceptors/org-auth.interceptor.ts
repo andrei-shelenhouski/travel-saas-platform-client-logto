@@ -13,6 +13,7 @@ const API_BASE = environment.baseUrl;
 /** Routes that don't require the X-Organization-Id header. */
 function shouldSkipOrgHeader(req: HttpRequest<unknown>): boolean {
   const url = req.url.replace(API_BASE, '');
+
   // Skip org header for these endpoints
   return (
     (url === '/api/me' && req.method === 'GET') ||
@@ -42,8 +43,10 @@ export function orgAuthInterceptor(
 
       if (!skipOrg) {
         const orgId = orgState.getActiveOrganization();
+
         if (!orgId) {
           router.navigate(['/onboarding/check']);
+
           return throwError(() => new Error('No active organization'));
         }
         setHeaders['X-Organization-Id'] = orgId;

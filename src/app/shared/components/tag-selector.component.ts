@@ -93,12 +93,15 @@ export class TagSelectorComponent {
 
   protected addCurrent(): void {
     const v = this.inputValue().trim();
+
     if (!v || !this.allowAdd()) {
       return;
     }
     const current = this.selected();
+
     if (current.includes(v)) {
       this.inputValue.set('');
+
       return;
     }
     this.selectionChange.emit([...current, v]);
@@ -107,6 +110,7 @@ export class TagSelectorComponent {
 
   protected toggleOption(opt: string): void {
     const current = this.selected();
+
     if (current.includes(opt)) {
       this.selectionChange.emit(current.filter((t) => t !== opt));
     } else {

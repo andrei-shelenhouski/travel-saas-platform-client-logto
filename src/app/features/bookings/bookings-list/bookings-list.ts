@@ -52,9 +52,11 @@ export class BookingsListComponent {
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const err = this.data.error();
+
     if (err instanceof HttpErrorResponse) {
       return err.error?.message ?? err.message ?? 'Failed to load bookings';
     }
+
     return undefined;
   });
 

@@ -37,9 +37,11 @@ export class LeadDetailComponent {
     params: (): string | null => this.routeId() ?? null,
     stream: ({ params }) => {
       const id = params;
+
       if (id === null) {
         return EMPTY;
       }
+
       return this.leadsService.findById(id);
     },
   });
@@ -48,12 +50,15 @@ export class LeadDetailComponent {
   /** Optimistic: show CONVERTED while converting */
   readonly displayLead = computed(() => {
     const l = this.lead();
+
     if (!l) {
       return null;
     }
+
     if (this.convertLoading()) {
       return { ...l, status: LeadStatus.CONVERTED };
     }
+
     return l;
   });
   readonly loading = computed(() => this.data.isLoading());
@@ -69,6 +74,7 @@ export class LeadDetailComponent {
 
   convertToClient(): void {
     const l = this.lead();
+
     if (!l || this.convertLoading()) {
       return;
     }

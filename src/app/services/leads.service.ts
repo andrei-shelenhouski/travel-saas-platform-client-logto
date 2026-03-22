@@ -31,15 +31,19 @@ export class LeadsService {
     status?: LeadStatus;
   }): Observable<PaginatedLeadResponseDto> {
     let httpParams = new HttpParams();
+
     if (params?.page !== undefined) {
       httpParams = httpParams.set('page', params.page);
     }
+
     if (params?.limit !== undefined) {
       httpParams = httpParams.set('limit', params.limit);
     }
+
     if (params?.status !== undefined) {
       httpParams = httpParams.set('status', params.status);
     }
+
     return this.http.get<PaginatedLeadResponseDto>(LEADS_URL, { params: httpParams });
   }
 

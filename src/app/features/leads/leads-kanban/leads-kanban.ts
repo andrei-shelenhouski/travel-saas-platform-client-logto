@@ -51,9 +51,11 @@ export class LeadsKanbanComponent {
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const err = this.data.error();
+
     if (err instanceof HttpErrorResponse) {
       return err.error?.message ?? err.message ?? 'Failed to load leads';
     }
+
     return undefined;
   });
 
@@ -61,6 +63,7 @@ export class LeadsKanbanComponent {
   readonly columns = computed(() => {
     const visible = this.visibleStatuses();
     const byStatus = this.itemsByStatus();
+
     return visible.map((status) => ({
       status,
       items: byStatus[status] ?? [],
@@ -72,21 +75,25 @@ export class LeadsKanbanComponent {
   constructor() {
     effect(() => {
       const value = this.data.value();
+
       if (!value?.data) {
         return;
       }
       const byStatus: Record<string, LeadResponseDto[]> = {};
+
       for (const s of LEAD_STATUS_ORDER) {
         byStatus[s] = [];
       }
       for (const lead of value.data) {
         const s = lead.status as string;
+
         if (!byStatus[s]) {
           byStatus[s] = [];
         }
         byStatus[s].push(lead);
       }
       this.itemsByStatus.set(byStatus);
+
       if (this.visibleStatuses().length === 0) {
         this.visibleStatuses.set([...LEAD_STATUS_ORDER]);
         const checked: Record<string, boolean> = {};
@@ -98,6 +105,7 @@ export class LeadsKanbanComponent {
 
   setFilter(status: string, checked: boolean): void {
     const current = this.visibleStatuses();
+
     if (checked) {
       if (!current.includes(status)) {
         this.visibleStatuses.set(
@@ -120,6 +128,7 @@ export class LeadsKanbanComponent {
     const currList = event.container.data;
     const lead = event.item.data as LeadResponseDto;
     const previousStatus = lead.status as string;
+
     if (previousStatus === targetStatus) {
       return;
     }
@@ -131,6 +140,7 @@ export class LeadsKanbanComponent {
     this.leadsService.updateStatus(lead.id, { status: targetStatus as LeadStatus }).subscribe({
       next: (updated) => {
         const idx = currList.findIndex((l) => l.id === updated.id);
+
         if (idx !== -1) {
           currList[idx] = updated;
         }

@@ -38,9 +38,11 @@ export class DashboardComponent {
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const err = this.data.error();
+
     if (err instanceof HttpErrorResponse) {
       return err.error?.message ?? err.message ?? 'Failed to load dashboard';
     }
+
     return undefined;
   });
 
@@ -59,5 +61,6 @@ function sumValues(rec: Record<string, number> | undefined): number {
   if (!rec) {
     return 0;
   }
+
   return Object.values(rec).reduce((a, b) => a + b, 0);
 }

@@ -36,8 +36,10 @@ export class OfferEditComponent implements OnInit {
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
+
     if (!id) {
       this.router.navigate(['/app/offers']);
+
       return;
     }
     this.offersService.getById(id).subscribe({
@@ -45,6 +47,7 @@ export class OfferEditComponent implements OnInit {
         if (o.status !== OfferStatus.DRAFT) {
           this.toast.showError('Only draft offers can be edited.');
           this.router.navigate(['/app/offers', o.id]);
+
           return;
         }
         this.offer.set(o);
@@ -67,6 +70,7 @@ export class OfferEditComponent implements OnInit {
 
   onSubmit(): void {
     const o = this.offer();
+
     if (!o || o.status !== OfferStatus.DRAFT || this.saving()) {
       return;
     }

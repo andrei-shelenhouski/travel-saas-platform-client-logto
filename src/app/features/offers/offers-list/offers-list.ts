@@ -48,9 +48,11 @@ export class OffersListComponent {
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const err = this.data.error();
+
     if (err instanceof HttpErrorResponse) {
       return err.error?.message ?? err.message ?? 'Failed to load offers';
     }
+
     return undefined;
   });
   readonly activeFilter = signal<FilterTab>('ALL');
@@ -58,9 +60,11 @@ export class OffersListComponent {
   readonly filteredOffers = computed(() => {
     const list = this.offers();
     const filter = this.activeFilter();
+
     if (filter === 'ALL') {
       return list;
     }
+
     return list.filter((o) => o.status === filter);
   });
 
@@ -88,12 +92,15 @@ export class OffersListComponent {
 
   rowClass(offer: OfferResponseDto): string {
     const base = 'cursor-pointer hover:bg-gray-50 transition-colors';
+
     if (offer.status === OfferStatus.SENT || offer.status === OfferStatus.VIEWED) {
       return `${base} bg-blue-50/50`;
     }
+
     if (offer.status === OfferStatus.EXPIRED) {
       return `${base} bg-amber-50/50`;
     }
+
     return base;
   }
 }

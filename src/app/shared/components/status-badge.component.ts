@@ -41,15 +41,19 @@ export class StatusBadgeComponent {
   badgeClass(): string {
     const v = this.variant();
     const s = this.status();
+
     if (!s) {
       return 'bg-gray-100 text-gray-500';
     }
+
     if (v === 'lead') {
       return LEAD_STATUS_CLASS[s] ?? 'bg-gray-100 text-gray-600';
     }
+
     if (v === 'offer') {
       return OFFER_STATUS_CLASS[s] ?? 'bg-gray-100 text-gray-600';
     }
+
     return 'bg-gray-100 text-gray-600';
   }
 }

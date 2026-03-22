@@ -42,6 +42,7 @@ export class CreateOfferComponent implements OnInit {
       complete: () => this.requestsLoading.set(false),
     });
     const requestId = this.route.snapshot.queryParamMap.get('requestId');
+
     if (requestId) {
       this.selectedRequestId = requestId;
     }
@@ -50,6 +51,7 @@ export class CreateOfferComponent implements OnInit {
   onSubmit(): void {
     if (!this.selectedRequestId?.trim()) {
       this.error.set('Please select a request.');
+
       return;
     }
     this.error.set('');

@@ -19,6 +19,7 @@ export class OnboardingCheckComponent implements OnInit {
 
   ngOnInit(): void {
     const data = this.meService.getMeData();
+
     if (!data) {
       this.meService
         .getMe()
@@ -27,6 +28,7 @@ export class OnboardingCheckComponent implements OnInit {
           next: () => this.runDecision(),
           error: () => this.router.navigate(['/']),
         });
+
       return;
     }
     this.runDecision();
@@ -34,20 +36,25 @@ export class OnboardingCheckComponent implements OnInit {
 
   private runDecision(): void {
     const data = this.meService.getMeData();
+
     if (!data) {
       this.router.navigate(['/']);
+
       return;
     }
     const orgs = data.organizations ?? [];
 
     if (orgs.length === 0) {
       this.router.navigate(['/onboarding/create-organization']);
+
       return;
     }
+
     if (orgs.length === 1) {
       this.orgState.setActiveOrganization(orgs[0].id, orgs[0].name);
       this.meService.clearMeData();
       this.router.navigate(['/app']);
+
       return;
     }
     this.router.navigate(['/onboarding/select-organization']);

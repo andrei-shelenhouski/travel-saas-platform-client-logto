@@ -48,9 +48,11 @@ export class UsersManagementComponent {
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const err = this.data.error();
+
     if (err instanceof HttpErrorResponse) {
       return err.error?.message ?? err.message ?? 'Failed to load members';
     }
+
     return undefined;
   });
 
@@ -66,6 +68,7 @@ export class UsersManagementComponent {
   constructor() {
     effect(() => {
       const value = this.data.value();
+
       if (value !== undefined && value !== null) {
         this.membersList.set(value);
       }
@@ -74,6 +77,7 @@ export class UsersManagementComponent {
 
   isCurrentUser(member: OrganizationMemberResponseDto): boolean {
     const uid = this.permissions.currentUserId();
+
     return uid !== undefined && uid !== null && member.userId === uid;
   }
 
@@ -83,6 +87,7 @@ export class UsersManagementComponent {
 
   toggleAddForm(): void {
     this.addFormVisible.update((v) => !v);
+
     if (!this.addFormVisible()) {
       this.addEmail.set('');
       this.addRole.set('MANAGER');
@@ -91,8 +96,10 @@ export class UsersManagementComponent {
 
   onAddMember(): void {
     const email = this.addEmail().trim();
+
     if (!email) {
       this.toast.showError('Please enter an email address');
+
       return;
     }
     const dto: AddOrganizationMemberDto = { email, role: this.addRole() };

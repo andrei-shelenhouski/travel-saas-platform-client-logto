@@ -43,12 +43,15 @@ export class CreateInvoiceComponent {
   onSubmit(): void {
     this.error.set('');
     const bid = this.bookingId.trim();
+
     if (!bid) {
       this.error.set('Please select a booking.');
+
       return;
     }
     this.saving.set(true);
     const dto: CreateInvoiceDto = { bookingId: bid };
+
     if (this.dueDate.trim()) {
       dto.dueDate = this.dueDate.trim();
     }
