@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { EMPTY, switchMap, take } from 'rxjs';
 
-import { MeService } from '../../services/me.service';
+import { MeService } from '@app/services/me.service';
 
 @Component({
   selector: 'app-callback',

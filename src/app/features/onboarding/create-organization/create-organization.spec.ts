@@ -3,10 +3,10 @@ import { provideRouter } from '@angular/router';
 
 import { of } from 'rxjs';
 
-import { MeService } from '../../../services/me.service';
-import { OrganizationStateService } from '../../../services/organization-state.service';
-import { OrganizationsService } from '../../../services/organizations.service';
-import { RoleService } from '../../../services/role.service';
+import { MeService } from '@app/services/me.service';
+import { OrganizationStateService } from '@app/services/organization-state.service';
+import { OrganizationsService } from '@app/services/organizations.service';
+import { RoleService } from '@app/services/role.service';
 import { CreateOrganizationComponent } from './create-organization';
 
 describe('CreateOrganizationComponent', () => {

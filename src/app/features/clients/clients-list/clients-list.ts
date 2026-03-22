@@ -3,9 +3,9 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
 
-import { ClientsService } from '../../../services/clients.service';
-import type { ClientResponseDto } from '../../../shared/models';
-import { ClientType } from '../../../shared/models';
+import { ClientsService } from '@app/services/clients.service';
+import type { ClientResponseDto } from '@app/shared/models';
+import { ClientType } from '@app/shared/models';
 
 const TYPE_LABEL: Record<string, string> = {
   [ClientType.INDIVIDUAL]: 'Individual',

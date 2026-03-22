@@ -5,8 +5,8 @@ import { Router } from '@angular/router';
 
 import { switchMap, take, throwError } from 'rxjs';
 
-import { environment } from '../../environments/environment';
-import { OrganizationStateService } from '../services/organization-state.service';
+import { environment } from '@environments/environment';
+import { OrganizationStateService } from '@app/services/organization-state.service';
 
 const API_BASE = environment.baseUrl;
 

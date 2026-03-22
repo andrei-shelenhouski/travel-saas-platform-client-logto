@@ -10,12 +10,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { CdkDragDrop, DragDropModule, transferArrayItem } from '@angular/cdk/drag-drop';
 import { rxResource } from '@angular/core/rxjs-interop';
 
-import { OffersService } from '../../../services/offers.service';
-import { ToastService } from '../../../shared/services/toast.service';
-import { StatusBadgeComponent } from '../../../shared/components/status-badge.component';
-import { isAllowedOfferStatusTransition } from '../offer-state-machine';
-import type { OfferResponseDto } from '../../../shared/models';
-import { OfferStatus } from '../../../shared/models';
+import { OffersService } from '@app/services/offers.service';
+import { ToastService } from '@app/shared/services/toast.service';
+import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
+import { isAllowedOfferStatusTransition } from '@app/features/offers/offer-state-machine';
+import type { OfferResponseDto } from '@app/shared/models';
+import { OfferStatus } from '@app/shared/models';
 
 const OFFER_STATUS_ORDER: string[] = [
   OfferStatus.DRAFT,

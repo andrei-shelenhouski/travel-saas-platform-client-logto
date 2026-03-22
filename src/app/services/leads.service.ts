@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../environments/environment';
+import { environment } from '@environments/environment';
 import type {
   CreateLeadDto,
   LeadResponseDto,
@@ -10,8 +10,8 @@ import type {
   PaginatedLeadResponseDto,
   UpdateLeadDto,
   UpdateLeadStatusDto,
-} from '../shared/models';
-import type { ConvertLeadToClientResponseDto } from '../shared/models';
+} from '@app/shared/models';
+import type { ConvertLeadToClientResponseDto } from '@app/shared/models';
 
 const LEADS_URL = `${environment.baseUrl}/api/leads`;
 const LEADS_STATS_URL = `${environment.baseUrl}/api/leads/stats`;

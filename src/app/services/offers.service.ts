@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../environments/environment';
+import { environment } from '@environments/environment';
 import type {
   BookingResponseDto,
   CreateOfferDto,
@@ -11,7 +11,7 @@ import type {
   PaginatedOfferResponseDto,
   UpdateOfferDto,
   UpdateOfferStatusDto,
-} from '../shared/models';
+} from '@app/shared/models';
 
 const OFFERS_URL = `${environment.baseUrl}/api/offers`;
 const OFFERS_STATS_URL = `${environment.baseUrl}/api/offers/stats`;

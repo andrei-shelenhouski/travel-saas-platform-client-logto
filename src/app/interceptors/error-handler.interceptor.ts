@@ -4,9 +4,9 @@ import { Router } from '@angular/router';
 
 import { catchError, throwError } from 'rxjs';
 
-import { MeService } from '../services/me.service';
-import { OrganizationStateService } from '../services/organization-state.service';
-import { ToastService } from '../shared/services/toast.service';
+import { MeService } from '@app/services/me.service';
+import { OrganizationStateService } from '@app/services/organization-state.service';
+import { ToastService } from '@app/shared/services/toast.service';
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please try again.';
 

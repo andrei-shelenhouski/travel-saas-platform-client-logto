@@ -3,9 +3,9 @@ import { inject, Injectable, signal } from '@angular/core';
 
 import { Observable, tap } from 'rxjs';
 
-import { environment } from '../../environments/environment';
+import { environment } from '@environments/environment';
 
-import type { MeResponseDto } from '../shared/models';
+import type { MeResponseDto } from '@app/shared/models';
 
 const ME_URL = `${environment.baseUrl}/api/me`;
 

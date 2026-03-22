@@ -16,9 +16,9 @@ import { providePrimeNG } from 'primeng/config';
 
 import Aura from '@primeuix/themes/aura';
 
-import { environment } from '../environments/environment';
-import { routes } from './app.routes';
-import { errorHandlerInterceptor, orgAuthInterceptor } from './interceptors/index';
+import { environment } from '@environments/environment';
+import { routes } from '@app/app.routes';
+import { errorHandlerInterceptor, orgAuthInterceptor } from '@app/interceptors/index';
 
 const connectLocalAuthEmulator = (auth: Auth, host: string, port: number) => {
   connectAuthEmulator(auth, `http://${host}:${port}`);

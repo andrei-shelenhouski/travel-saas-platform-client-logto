@@ -3,9 +3,9 @@ import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
 
-import { BookingsService } from '../../../services/bookings.service';
-import type { BookingResponseDto } from '../../../shared/models';
-import { BookingStatus } from '../../../shared/models';
+import { BookingsService } from '@app/services/bookings.service';
+import type { BookingResponseDto } from '@app/shared/models';
+import { BookingStatus } from '@app/shared/models';
 
 type FilterTab = 'ALL' | BookingStatus;
 

@@ -2,9 +2,9 @@ import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { ClientsService } from '../../../services/clients.service';
-import { ToastService } from '../../../shared/services/toast.service';
-import { ClientType, type CreateClientDto } from '../../../shared/models';
+import { ClientsService } from '@app/services/clients.service';
+import { ToastService } from '@app/shared/services/toast.service';
+import { ClientType, type CreateClientDto } from '@app/shared/models';
 
 const TYPE_OPTIONS: { value: ClientType; label: string }[] = [
   { value: ClientType.INDIVIDUAL, label: 'Individual' },

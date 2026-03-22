@@ -4,11 +4,11 @@ import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
-import { LeadsService } from '../../../services/leads.service';
-import { PermissionService } from '../../../services/permission.service';
-import { ToastService } from '../../../shared/services/toast.service';
-import type { LeadResponseDto } from '../../../shared/models';
-import { LeadStatus } from '../../../shared/models';
+import { LeadsService } from '@app/services/leads.service';
+import { PermissionService } from '@app/services/permission.service';
+import { ToastService } from '@app/shared/services/toast.service';
+import type { LeadResponseDto } from '@app/shared/models';
+import { LeadStatus } from '@app/shared/models';
 
 @Component({
   selector: 'app-lead-detail',

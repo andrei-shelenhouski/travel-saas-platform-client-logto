@@ -1,5 +1,5 @@
 import { Component, computed, input } from '@angular/core';
-import type { OfferResponseDto } from '../../../shared/models';
+import type { OfferResponseDto } from '@app/shared/models';
 
 export interface TimelineItem {
   label: string;

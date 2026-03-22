@@ -3,14 +3,14 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 
 import { take } from 'rxjs';
 
-import { AuthService } from '../auth/auth.service';
-import { MeService } from '../services/me.service';
-import { OrganizationStateService } from '../services/organization-state.service';
-import { PermissionService } from '../services/permission.service';
-import { RoleService } from '../services/role.service';
-import { ToastComponent } from '../shared/components/toast.component';
+import { AuthService } from '@app/auth/auth.service';
+import { MeService } from '@app/services/me.service';
+import { OrganizationStateService } from '@app/services/organization-state.service';
+import { PermissionService } from '@app/services/permission.service';
+import { RoleService } from '@app/services/role.service';
+import { ToastComponent } from '@app/shared/components/toast.component';
 
-import type { OrganizationWithRoleDto } from '../shared/models';
+import type { OrganizationWithRoleDto } from '@app/shared/models';
 
 @Component({
   selector: 'app-main-layout',

@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 
 import { of } from 'rxjs';
 
-import { MeService } from '../../services/me.service';
+import { MeService } from '@app/services/me.service';
 import { CallbackComponent } from './callback.component';
 
 describe('CallbackComponent', () => {

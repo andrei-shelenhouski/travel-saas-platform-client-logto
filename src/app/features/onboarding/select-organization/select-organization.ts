@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { MeService } from '../../../services/me.service';
-import { OrganizationStateService } from '../../../services/organization-state.service';
-import type { OrganizationWithRoleDto } from '../../../shared/models';
+import { MeService } from '@app/services/me.service';
+import { OrganizationStateService } from '@app/services/organization-state.service';
+import type { OrganizationWithRoleDto } from '@app/shared/models';
 
 @Component({
   selector: 'app-select-organization',

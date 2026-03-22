@@ -3,8 +3,8 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 import { RequestsListComponent } from './requests-list';
-import { PermissionService } from '../../../services/permission.service';
-import { RequestsService } from '../../../services/requests.service';
+import { PermissionService } from '@app/services/permission.service';
+import { RequestsService } from '@app/services/requests.service';
 
 describe('RequestsListComponent', () => {
   let component: RequestsListComponent;

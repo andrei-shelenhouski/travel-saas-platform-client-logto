@@ -2,13 +2,13 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../environments/environment';
+import { environment } from '@environments/environment';
 import type {
   CommentListResponseDto,
   CommentResponseDto,
   CreateCommentDto,
   EntityType,
-} from '../shared/models';
+} from '@app/shared/models';
 
 const COMMENTS_URL = `${environment.baseUrl}/api/comments`;
 

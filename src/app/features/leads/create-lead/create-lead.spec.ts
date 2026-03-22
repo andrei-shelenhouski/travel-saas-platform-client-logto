@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 import { CreateLeadComponent } from './create-lead';
-import { LeadsService } from '../../../services/leads.service';
+import { LeadsService } from '@app/services/leads.service';
 
 describe('CreateLeadComponent', () => {
   let component: CreateLeadComponent;

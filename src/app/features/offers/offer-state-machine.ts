@@ -1,4 +1,4 @@
-import type { OfferStatus } from '../../shared/models';
+import type { OfferStatus } from '@app/shared/models';
 
 /**
  * Actions that can be performed on an offer.

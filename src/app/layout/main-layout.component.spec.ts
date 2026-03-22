@@ -1,11 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 
-import { AuthService } from '../auth/auth.service';
-import { MeService } from '../services/me.service';
-import { OrganizationStateService } from '../services/organization-state.service';
-import { PermissionService } from '../services/permission.service';
-import { RoleService } from '../services/role.service';
+import { AuthService } from '@app/auth/auth.service';
+import { MeService } from '@app/services/me.service';
+import { OrganizationStateService } from '@app/services/organization-state.service';
+import { PermissionService } from '@app/services/permission.service';
+import { RoleService } from '@app/services/role.service';
 import { MainLayoutComponent } from './main-layout.component';
 
 const mockMeData = { id: '', logtoId: '', createdAt: '', updatedAt: '', organizations: [] };

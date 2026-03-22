@@ -1,5 +1,5 @@
 import { Component, input } from '@angular/core';
-import type { ActivityTimelineItem } from '../models/activity.model';
+import type { ActivityTimelineItem } from '@app/shared/models/activity.model';
 
 @Component({
   selector: 'app-activity-timeline',

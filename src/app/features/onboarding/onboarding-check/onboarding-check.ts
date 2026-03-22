@@ -2,8 +2,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { take } from 'rxjs';
 
-import { MeService } from '../../../services/me.service';
-import { OrganizationStateService } from '../../../services/organization-state.service';
+import { MeService } from '@app/services/me.service';
+import { OrganizationStateService } from '@app/services/organization-state.service';
 
 @Component({
   selector: 'app-onboarding-check',

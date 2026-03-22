@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 import { InvoicesListComponent } from './invoices-list';
-import { InvoicesService } from '../../../services/invoices.service';
+import { InvoicesService } from '@app/services/invoices.service';
 
 describe('InvoicesListComponent', () => {
   let component: InvoicesListComponent;

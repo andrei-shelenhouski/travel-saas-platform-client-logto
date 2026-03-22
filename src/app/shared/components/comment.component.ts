@@ -1,6 +1,6 @@
 import { Component, input, output, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import type { CommentItem } from '../models/comment.model';
+import type { CommentItem } from '@app/shared/models/comment.model';
 
 @Component({
   selector: 'app-comment',

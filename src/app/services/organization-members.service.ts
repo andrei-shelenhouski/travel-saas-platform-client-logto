@@ -2,12 +2,12 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../environments/environment';
+import { environment } from '@environments/environment';
 import type {
   AddOrganizationMemberDto,
   OrganizationMemberResponseDto,
   UpdateOrganizationMemberRoleDto,
-} from '../shared/models';
+} from '@app/shared/models';
 
 const MEMBERS_URL = `${environment.baseUrl}/api/organization-members`;
 

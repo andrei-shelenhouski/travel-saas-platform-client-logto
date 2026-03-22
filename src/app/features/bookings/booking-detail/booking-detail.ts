@@ -4,12 +4,12 @@ import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
-import { BookingsService } from '../../../services/bookings.service';
-import { PermissionService } from '../../../services/permission.service';
-import { ToastService } from '../../../shared/services/toast.service';
-import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog.component';
-import type { BookingResponseDto } from '../../../shared/models';
-import { BookingStatus } from '../../../shared/models';
+import { BookingsService } from '@app/services/bookings.service';
+import { PermissionService } from '@app/services/permission.service';
+import { ToastService } from '@app/shared/services/toast.service';
+import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
+import type { BookingResponseDto } from '@app/shared/models';
+import { BookingStatus } from '@app/shared/models';
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
   PENDING: 'bg-amber-100 text-amber-800',

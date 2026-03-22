@@ -5,15 +5,15 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-import { OrganizationMembersService } from '../../../services/organization-members.service';
-import { PermissionService } from '../../../services/permission.service';
-import { OrgRole } from '../../../shared/models';
-import { ToastService } from '../../../shared/services/toast.service';
+import { OrganizationMembersService } from '@app/services/organization-members.service';
+import { PermissionService } from '@app/services/permission.service';
+import { OrgRole } from '@app/shared/models';
+import { ToastService } from '@app/shared/services/toast.service';
 
 import type {
   AddOrganizationMemberDto,
   OrganizationMemberResponseDto,
-} from '../../../shared/models';
+} from '@app/shared/models';
 const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
   { value: 'ADMIN', label: 'Admin' },
   { value: 'MANAGER', label: 'Manager' },

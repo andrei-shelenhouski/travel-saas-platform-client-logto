@@ -5,10 +5,10 @@ import { RouterLink } from '@angular/router';
 
 import { forkJoin } from 'rxjs';
 
-import { BookingsService } from '../../services/bookings.service';
-import { LeadsService } from '../../services/leads.service';
-import { OffersService } from '../../services/offers.service';
-import { RequestsService } from '../../services/requests.service';
+import { BookingsService } from '@app/services/bookings.service';
+import { LeadsService } from '@app/services/leads.service';
+import { OffersService } from '@app/services/offers.service';
+import { RequestsService } from '@app/services/requests.service';
 
 @Component({
   selector: 'app-dashboard',

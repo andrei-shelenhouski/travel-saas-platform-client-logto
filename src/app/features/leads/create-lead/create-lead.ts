@@ -2,9 +2,9 @@ import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { LeadsService } from '../../../services/leads.service';
-import { ToastService } from '../../../shared/services/toast.service';
-import { LeadSource, type CreateLeadDto } from '../../../shared/models';
+import { LeadsService } from '@app/services/leads.service';
+import { ToastService } from '@app/shared/services/toast.service';
+import { LeadSource, type CreateLeadDto } from '@app/shared/models';
 
 const SOURCE_OPTIONS: { value: LeadSource; label: string }[] = [
   { value: LeadSource.PHONE, label: 'Phone' },

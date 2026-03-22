@@ -3,11 +3,11 @@ import { Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { rxResource } from '@angular/core/rxjs-interop';
 
-import { BookingsService } from '../../../services/bookings.service';
-import { InvoicesService } from '../../../services/invoices.service';
-import { ToastService } from '../../../shared/services/toast.service';
-import type { CreateInvoiceDto } from '../../../shared/models';
-import { BookingStatus } from '../../../shared/models';
+import { BookingsService } from '@app/services/bookings.service';
+import { InvoicesService } from '@app/services/invoices.service';
+import { ToastService } from '@app/shared/services/toast.service';
+import type { CreateInvoiceDto } from '@app/shared/models';
+import { BookingStatus } from '@app/shared/models';
 
 @Component({
   selector: 'app-create-invoice',

@@ -3,9 +3,9 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
 
-import { PermissionService } from '../../../services/permission.service';
-import { RequestsService } from '../../../services/requests.service';
-import type { RequestResponseDto } from '../../../shared/models';
+import { PermissionService } from '@app/services/permission.service';
+import { RequestsService } from '@app/services/requests.service';
+import type { RequestResponseDto } from '@app/shared/models';
 
 @Component({
   selector: 'app-requests-list',

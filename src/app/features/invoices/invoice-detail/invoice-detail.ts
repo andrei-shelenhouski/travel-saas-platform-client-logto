@@ -5,12 +5,12 @@ import { map } from 'rxjs/operators';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
-import { InvoicesService } from '../../../services/invoices.service';
-import { PermissionService } from '../../../services/permission.service';
-import { ToastService } from '../../../shared/services/toast.service';
-import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog.component';
-import type { InvoiceResponseDto } from '../../../shared/models';
-import { InvoiceStatus } from '../../../shared/models';
+import { InvoicesService } from '@app/services/invoices.service';
+import { PermissionService } from '@app/services/permission.service';
+import { ToastService } from '@app/shared/services/toast.service';
+import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
+import type { InvoiceResponseDto } from '@app/shared/models';
+import { InvoiceStatus } from '@app/shared/models';
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
   DRAFT: 'bg-gray-100 text-gray-800',

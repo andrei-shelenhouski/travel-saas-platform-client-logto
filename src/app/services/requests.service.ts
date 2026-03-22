@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../environments/environment';
+import { environment } from '@environments/environment';
 import type {
   CreateRequestDto,
   PaginatedRequestResponseDto,
@@ -10,7 +10,7 @@ import type {
   RequestStatus,
   UpdateRequestDto,
   UpdateRequestStatusDto,
-} from '../shared/models';
+} from '@app/shared/models';
 
 const REQUESTS_URL = `${environment.baseUrl}/api/requests`;
 const REQUESTS_STATS_URL = `${environment.baseUrl}/api/requests/stats`;

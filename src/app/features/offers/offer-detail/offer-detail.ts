@@ -4,14 +4,14 @@ import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
-import { OffersService } from '../../../services/offers.service';
-import { PermissionService } from '../../../services/permission.service';
-import { ToastService } from '../../../shared/services/toast.service';
-import type { OfferResponseDto } from '../../../shared/models';
-import { OfferStatus } from '../../../shared/models';
-import { type OfferAction, getAllowedTransitions } from '../offer-state-machine';
-import { OfferTimelineComponent } from '../offer-timeline/offer-timeline';
-import { ConfirmationDialogComponent } from '../../../shared/components/confirmation-dialog.component';
+import { OffersService } from '@app/services/offers.service';
+import { PermissionService } from '@app/services/permission.service';
+import { ToastService } from '@app/shared/services/toast.service';
+import type { OfferResponseDto } from '@app/shared/models';
+import { OfferStatus } from '@app/shared/models';
+import { type OfferAction, getAllowedTransitions } from '@app/features/offers/offer-state-machine';
+import { OfferTimelineComponent } from '@app/features/offers/offer-timeline/offer-timeline';
+import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
 
 const STATUS_BADGE_CLASS: Record<OfferStatus, string> = {
   DRAFT: 'bg-gray-100 text-gray-800',

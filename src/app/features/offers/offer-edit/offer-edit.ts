@@ -2,10 +2,10 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { OffersService } from '../../../services/offers.service';
-import { ToastService } from '../../../shared/services/toast.service';
-import type { OfferResponseDto, UpdateOfferDto } from '../../../shared/models';
-import { OfferStatus } from '../../../shared/models';
+import { OffersService } from '@app/services/offers.service';
+import { ToastService } from '@app/shared/services/toast.service';
+import type { OfferResponseDto, UpdateOfferDto } from '@app/shared/models';
+import { OfferStatus } from '@app/shared/models';
 
 @Component({
   selector: 'app-offer-edit',

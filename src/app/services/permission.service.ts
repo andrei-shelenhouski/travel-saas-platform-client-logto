@@ -1,7 +1,7 @@
 import { computed, inject, Injectable } from '@angular/core';
 
-import { AuthService } from '../auth/auth.service';
-import { MeService } from '../services/me.service';
+import { AuthService } from '@app/auth/auth.service';
+import { MeService } from '@app/services/me.service';
 import { RoleService } from './role.service';
 
 /**

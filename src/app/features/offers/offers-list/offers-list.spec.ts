@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 import { OffersListComponent } from './offers-list';
-import { OffersService } from '../../../services/offers.service';
+import { OffersService } from '@app/services/offers.service';
 
 describe('OffersListComponent', () => {
   let component: OffersListComponent;

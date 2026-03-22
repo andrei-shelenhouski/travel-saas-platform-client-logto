@@ -3,9 +3,9 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
 
-import { OffersService } from '../../../services/offers.service';
-import type { OfferResponseDto } from '../../../shared/models';
-import { OfferStatus } from '../../../shared/models';
+import { OffersService } from '@app/services/offers.service';
+import type { OfferResponseDto } from '@app/shared/models';
+import { OfferStatus } from '@app/shared/models';
 
 type FilterTab = 'ALL' | OfferStatus;
 

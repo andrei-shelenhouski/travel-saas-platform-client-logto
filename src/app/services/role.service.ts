@@ -1,10 +1,10 @@
 import { computed, inject, Injectable } from '@angular/core';
 
-import { OrgRole } from '../shared/models';
+import { OrgRole } from '@app/shared/models';
 import { MeService } from './me.service';
 import { OrganizationStateService } from './organization-state.service';
 
-import type { AppRole } from '../shared/models';
+import type { AppRole } from '@app/shared/models';
 
 function orgRoleToAppRole(role: string): AppRole | string {
   switch (role) {

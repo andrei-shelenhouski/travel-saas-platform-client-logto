@@ -10,11 +10,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { CdkDragDrop, DragDropModule, transferArrayItem } from '@angular/cdk/drag-drop';
 import { rxResource } from '@angular/core/rxjs-interop';
 
-import { LeadsService } from '../../../services/leads.service';
-import { ToastService } from '../../../shared/services/toast.service';
-import { StatusBadgeComponent } from '../../../shared/components/status-badge.component';
-import type { LeadResponseDto } from '../../../shared/models';
-import { LeadStatus } from '../../../shared/models';
+import { LeadsService } from '@app/services/leads.service';
+import { ToastService } from '@app/shared/services/toast.service';
+import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
+import type { LeadResponseDto } from '@app/shared/models';
+import { LeadStatus } from '@app/shared/models';
 
 const LEAD_STATUS_ORDER: string[] = [
   LeadStatus.NEW,

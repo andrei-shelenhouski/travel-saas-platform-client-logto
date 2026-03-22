@@ -1,24 +1,24 @@
 import { Routes } from '@angular/router';
 
-import { authGuard } from './auth/auth.guard';
-import { adminGuard } from './guards/admin.guard';
-import { appGuard } from './guards/app.guard';
+import { authGuard } from '@app/auth/auth.guard';
+import { adminGuard } from '@app/guards/admin.guard';
+import { appGuard } from '@app/guards/app.guard';
 
 export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
     loadComponent: () =>
-      import('./pages/landing/landing.component').then((m) => m.LandingComponent),
+      import('@app/pages/landing/landing.component').then((m) => m.LandingComponent),
   },
   {
     path: 'home',
-    loadComponent: () => import('./pages/home/home.component').then((m) => m.HomeComponent),
+    loadComponent: () => import('@app/pages/home/home.component').then((m) => m.HomeComponent),
   },
   {
     path: 'callback',
     loadComponent: () =>
-      import('./pages/callback/callback.component').then((m) => m.CallbackComponent),
+      import('@app/pages/callback/callback.component').then((m) => m.CallbackComponent),
   },
   {
     path: 'onboarding',
@@ -27,21 +27,21 @@ export const routes: Routes = [
       {
         path: 'check',
         loadComponent: () =>
-          import('./features/onboarding/onboarding-check/onboarding-check').then(
+          import('@app/features/onboarding/onboarding-check/onboarding-check').then(
             (m) => m.OnboardingCheckComponent,
           ),
       },
       {
         path: 'create-organization',
         loadComponent: () =>
-          import('./features/onboarding/create-organization/create-organization').then(
+          import('@app/features/onboarding/create-organization/create-organization').then(
             (m) => m.CreateOrganizationComponent,
           ),
       },
       {
         path: 'select-organization',
         loadComponent: () =>
-          import('./features/onboarding/select-organization/select-organization').then(
+          import('@app/features/onboarding/select-organization/select-organization').then(
             (m) => m.SelectOrganizationComponent,
           ),
       },
@@ -50,55 +50,55 @@ export const routes: Routes = [
   {
     path: 'app',
     loadComponent: () =>
-      import('./layout/main-layout.component').then((m) => m.MainLayoutComponent),
+      import('@app/layout/main-layout.component').then((m) => m.MainLayoutComponent),
     canActivate: [appGuard],
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
         path: 'dashboard',
         loadComponent: () =>
-          import('./features/dashboard/dashboard').then((m) => m.DashboardComponent),
+          import('@app/features/dashboard/dashboard').then((m) => m.DashboardComponent),
       },
       // Leads
       {
         path: 'leads/new',
         loadComponent: () =>
-          import('./features/leads/create-lead/create-lead').then((m) => m.CreateLeadComponent),
+          import('@app/features/leads/create-lead/create-lead').then((m) => m.CreateLeadComponent),
       },
       {
         path: 'leads/kanban',
         loadComponent: () =>
-          import('./features/leads/leads-kanban/leads-kanban').then((m) => m.LeadsKanbanComponent),
+          import('@app/features/leads/leads-kanban/leads-kanban').then((m) => m.LeadsKanbanComponent),
       },
       {
         path: 'leads/:id',
         loadComponent: () =>
-          import('./features/leads/lead-detail/lead-detail').then((m) => m.LeadDetailComponent),
+          import('@app/features/leads/lead-detail/lead-detail').then((m) => m.LeadDetailComponent),
       },
       {
         path: 'leads',
         loadComponent: () =>
-          import('./features/leads/leads-list/leads-list').then((m) => m.LeadsListComponent),
+          import('@app/features/leads/leads-list/leads-list').then((m) => m.LeadsListComponent),
       },
       // Clients: /app/clients/:id
       {
         path: 'clients/new',
         loadComponent: () =>
-          import('./features/clients/create-client/create-client').then(
+          import('@app/features/clients/create-client/create-client').then(
             (m) => m.CreateClientComponent,
           ),
       },
       {
         path: 'clients/:id',
         loadComponent: () =>
-          import('./features/clients/client-detail/client-detail').then(
+          import('@app/features/clients/client-detail/client-detail').then(
             (m) => m.ClientDetailComponent,
           ),
       },
       {
         path: 'clients',
         loadComponent: () =>
-          import('./features/clients/clients-list/clients-list').then(
+          import('@app/features/clients/clients-list/clients-list').then(
             (m) => m.ClientsListComponent,
           ),
       },
@@ -106,21 +106,21 @@ export const routes: Routes = [
       {
         path: 'requests/new',
         loadComponent: () =>
-          import('./features/requests/create-request/create-request').then(
+          import('@app/features/requests/create-request/create-request').then(
             (m) => m.CreateRequestComponent,
           ),
       },
       {
         path: 'requests/:id',
         loadComponent: () =>
-          import('./features/requests/request-detail/request-detail').then(
+          import('@app/features/requests/request-detail/request-detail').then(
             (m) => m.RequestDetailComponent,
           ),
       },
       {
         path: 'requests',
         loadComponent: () =>
-          import('./features/requests/requests-list/requests-list').then(
+          import('@app/features/requests/requests-list/requests-list').then(
             (m) => m.RequestsListComponent,
           ),
       },
@@ -128,42 +128,42 @@ export const routes: Routes = [
       {
         path: 'offers/new',
         loadComponent: () =>
-          import('./features/offers/create-offer/create-offer').then((m) => m.CreateOfferComponent),
+          import('@app/features/offers/create-offer/create-offer').then((m) => m.CreateOfferComponent),
       },
       {
         path: 'offers/kanban',
         loadComponent: () =>
-          import('./features/offers/offers-kanban/offers-kanban').then(
+          import('@app/features/offers/offers-kanban/offers-kanban').then(
             (m) => m.OffersKanbanComponent,
           ),
       },
       {
         path: 'offers/:id/edit',
         loadComponent: () =>
-          import('./features/offers/offer-edit/offer-edit').then((m) => m.OfferEditComponent),
+          import('@app/features/offers/offer-edit/offer-edit').then((m) => m.OfferEditComponent),
       },
       {
         path: 'offers/:id',
         loadComponent: () =>
-          import('./features/offers/offer-detail/offer-detail').then((m) => m.OfferDetailComponent),
+          import('@app/features/offers/offer-detail/offer-detail').then((m) => m.OfferDetailComponent),
       },
       {
         path: 'offers',
         loadComponent: () =>
-          import('./features/offers/offers-list/offers-list').then((m) => m.OffersListComponent),
+          import('@app/features/offers/offers-list/offers-list').then((m) => m.OffersListComponent),
       },
       // Bookings: /app/bookings/:id
       {
         path: 'bookings/:id',
         loadComponent: () =>
-          import('./features/bookings/booking-detail/booking-detail').then(
+          import('@app/features/bookings/booking-detail/booking-detail').then(
             (m) => m.BookingDetailComponent,
           ),
       },
       {
         path: 'bookings',
         loadComponent: () =>
-          import('./features/bookings/bookings-list/bookings-list').then(
+          import('@app/features/bookings/bookings-list/bookings-list').then(
             (m) => m.BookingsListComponent,
           ),
       },
@@ -171,33 +171,33 @@ export const routes: Routes = [
       {
         path: 'invoices/new',
         loadComponent: () =>
-          import('./features/invoices/create-invoice/create-invoice').then(
+          import('@app/features/invoices/create-invoice/create-invoice').then(
             (m) => m.CreateInvoiceComponent,
           ),
       },
       {
         path: 'invoices/:id',
         loadComponent: () =>
-          import('./features/invoices/invoice-detail/invoice-detail').then(
+          import('@app/features/invoices/invoice-detail/invoice-detail').then(
             (m) => m.InvoiceDetailComponent,
           ),
       },
       {
         path: 'invoices',
         loadComponent: () =>
-          import('./features/invoices/invoices-list/invoices-list').then(
+          import('@app/features/invoices/invoices-list/invoices-list').then(
             (m) => m.InvoicesListComponent,
           ),
       },
       {
         path: 'settings',
         loadComponent: () =>
-          import('./features/onboarding/settings/settings').then((m) => m.SettingsComponent),
+          import('@app/features/onboarding/settings/settings').then((m) => m.SettingsComponent),
       },
       {
         path: 'organizations/new',
         loadComponent: () =>
-          import('./features/onboarding/create-organization/create-organization').then(
+          import('@app/features/onboarding/create-organization/create-organization').then(
             (m) => m.CreateOrganizationComponent,
           ),
         data: { fromApp: true },
@@ -205,7 +205,7 @@ export const routes: Routes = [
       {
         path: 'admin/users',
         loadComponent: () =>
-          import('./features/admin/users-management/users-management').then(
+          import('@app/features/admin/users-management/users-management').then(
             (m) => m.UsersManagementComponent,
           ),
         canActivate: [adminGuard],

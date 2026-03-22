@@ -4,8 +4,8 @@ import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
-import { RequestsService } from '../../../services/requests.service';
-import type { RequestResponseDto } from '../../../shared/models';
+import { RequestsService } from '@app/services/requests.service';
+import type { RequestResponseDto } from '@app/shared/models';
 
 @Component({
   selector: 'app-request-detail',

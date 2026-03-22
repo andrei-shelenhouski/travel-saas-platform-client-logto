@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-import { environment } from '../../environments/environment';
+import { environment } from '@environments/environment';
 import type {
   BookingResponseDto,
   BookingStatus,
@@ -10,7 +10,7 @@ import type {
   PaginatedBookingResponseDto,
   UpdateBookingDto,
   UpdateBookingStatusDto,
-} from '../shared/models';
+} from '@app/shared/models';
 
 const BOOKINGS_URL = `${environment.baseUrl}/api/bookings`;
 

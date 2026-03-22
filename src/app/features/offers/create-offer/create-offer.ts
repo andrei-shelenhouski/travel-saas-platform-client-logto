@@ -2,11 +2,11 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { RequestsService } from '../../../services/requests.service';
-import { OffersService } from '../../../services/offers.service';
-import { ToastService } from '../../../shared/services/toast.service';
-import type { CreateOfferDto } from '../../../shared/models';
-import type { RequestResponseDto } from '../../../shared/models';
+import { RequestsService } from '@app/services/requests.service';
+import { OffersService } from '@app/services/offers.service';
+import { ToastService } from '@app/shared/services/toast.service';
+import type { CreateOfferDto } from '@app/shared/models';
+import type { RequestResponseDto } from '@app/shared/models';
 
 @Component({
   selector: 'app-create-offer',

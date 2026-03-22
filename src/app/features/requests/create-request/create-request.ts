@@ -3,10 +3,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { take } from 'rxjs';
 
-import { MeService } from '../../../services/me.service';
-import { RequestsService } from '../../../services/requests.service';
-import { ToastService } from '../../../shared/services/toast.service';
-import type { CreateRequestDto } from '../../../shared/models';
+import { MeService } from '@app/services/me.service';
+import { RequestsService } from '@app/services/requests.service';
+import { ToastService } from '@app/shared/services/toast.service';
+import type { CreateRequestDto } from '@app/shared/models';
 
 @Component({
   selector: 'app-create-request',

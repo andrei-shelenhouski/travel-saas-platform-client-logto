@@ -1,8 +1,8 @@
 import { Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
-import { LeadsService } from '../../../services/leads.service';
-import type { LeadResponseDto } from '../../../shared/models';
+import { LeadsService } from '@app/services/leads.service';
+import type { LeadResponseDto } from '@app/shared/models';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 

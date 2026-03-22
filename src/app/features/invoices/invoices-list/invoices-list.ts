@@ -3,9 +3,9 @@ import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
 
-import { InvoicesService } from '../../../services/invoices.service';
-import type { InvoiceResponseDto } from '../../../shared/models';
-import { InvoiceStatus } from '../../../shared/models';
+import { InvoicesService } from '@app/services/invoices.service';
+import type { InvoiceResponseDto } from '@app/shared/models';
+import { InvoiceStatus } from '@app/shared/models';
 
 type FilterTab = 'ALL' | InvoiceStatus;
 

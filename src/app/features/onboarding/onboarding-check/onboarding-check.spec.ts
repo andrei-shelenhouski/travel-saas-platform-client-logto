@@ -3,8 +3,8 @@ import { Router } from '@angular/router';
 import { of } from 'rxjs';
 
 import { OnboardingCheckComponent } from './onboarding-check';
-import { MeService } from '../../../services/me.service';
-import { OrganizationStateService } from '../../../services/organization-state.service';
+import { MeService } from '@app/services/me.service';
+import { OrganizationStateService } from '@app/services/organization-state.service';
 
 describe('OnboardingCheckComponent', () => {
   let component: OnboardingCheckComponent;
