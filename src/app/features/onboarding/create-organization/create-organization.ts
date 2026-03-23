@@ -7,7 +7,6 @@ import { take } from 'rxjs';
 import { MeService } from '@app/services/me.service';
 import { OrganizationStateService } from '@app/services/organization-state.service';
 import { OrganizationsService } from '@app/services/organizations.service';
-import { RoleService } from '@app/services/role.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -20,7 +19,6 @@ export class CreateOrganizationComponent {
   private readonly organizationsService = inject(OrganizationsService);
   private readonly orgState = inject(OrganizationStateService);
   private readonly meService = inject(MeService);
-  private readonly roleService = inject(RoleService);
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
 
@@ -36,35 +34,35 @@ export class CreateOrganizationComponent {
   onSubmit(): void {
     this.error.set('');
     this.loading.set(true);
-    this.organizationsService.create({ name: this.name.trim() }).subscribe({
-      next: (data) => {
-        const orgId = data.id ?? data.organizationId;
+    const trimmedName = this.name.trim();
+    this.organizationsService.create({ name: trimmedName }).subscribe({
+      next: () => {
+        this.meService.clearMeData();
+        this.meService
+          .getMe()
+          .pipe(take(1))
+          .subscribe({
+            next: (me) => {
+              const org = me.organizations.find((o) => o.name === trimmedName);
 
-        if (orgId) {
-          this.orgState.setActiveOrganization(orgId, this.name.trim());
-          this.meService.clearMeData();
-
-          if (this.fromApp) {
-            this.meService
-              .getMe()
-              .pipe(take(1))
-              .subscribe({
-                next: () => {
-                  // Role is now automatically updated via signal reactivity
-                  this.router.navigate(['/app/dashboard']);
-                },
-              });
-          } else {
-            this.router.navigate(['/app/dashboard']);
-          }
-        } else {
-          this.error.set('Invalid response from server');
-        }
+              if (org) {
+                this.orgState.setActiveOrganization(org.id, org.name);
+                this.router.navigate(['/app/dashboard']);
+              } else {
+                this.error.set('Organization created but not found in profile. Try refreshing.');
+              }
+              this.loading.set(false);
+            },
+            error: (err) => {
+              this.error.set(err.error?.message ?? err.message ?? 'Failed to load profile');
+              this.loading.set(false);
+            },
+          });
       },
       error: (err) => {
         this.error.set(err.error?.message ?? err.message ?? 'Failed to create organization');
+        this.loading.set(false);
       },
-      complete: () => this.loading.set(false),
     });
   }
 }

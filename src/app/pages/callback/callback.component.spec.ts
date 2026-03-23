@@ -32,7 +32,14 @@ describe('CallbackComponent', () => {
           provide: MeService,
           useValue: {
             getMe: () =>
-              of({ id: '', logtoId: '', createdAt: '', updatedAt: '', organizations: [] }),
+              of({
+                id: '',
+                firebaseUid: '',
+                email: 'test@example.com',
+                createdAt: '',
+                updatedAt: '',
+                organizations: [],
+              }),
           },
         },
         { provide: Router, useValue: { navigate: vi.fn() } },

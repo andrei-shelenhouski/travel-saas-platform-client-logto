@@ -18,7 +18,8 @@ describe('SelectOrganizationComponent', () => {
           useValue: {
             getMeData: () => ({
               id: '',
-              logtoId: '',
+              firebaseUid: '',
+              email: 'test@example.com',
               createdAt: '',
               updatedAt: '',
               organizations: [],

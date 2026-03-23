@@ -51,7 +51,7 @@ export class OffersService {
     return this.http.get<OfferResponseDto>(`${OFFERS_URL}/${id}`);
   }
 
-  /** GET /api/offers/stats. Returns counts by status (DRAFT, SENT, ACCEPTED, REJECTED, EXPIRED). */
+  /** GET /api/offers/stats. Returns counts by status (incl. DRAFT, SENT, VIEWED, ACCEPTED, REJECTED, EXPIRED). */
   getStatistics(): Observable<Record<string, number>> {
     return this.http.get<Record<string, number>>(OFFERS_STATS_URL);
   }
@@ -65,10 +65,8 @@ export class OffersService {
   }
 
   /** Transition offer status. PATCH /api/offers/{id}/status with UpdateOfferStatusDto. */
-  setStatus(id: string, status: OfferStatus): Observable<OfferResponseDto> {
-    const body: UpdateOfferStatusDto = {
-      status: status as UpdateOfferStatusDto['status'],
-    };
+  setStatus(id: string, status: UpdateOfferStatusDto['status']): Observable<OfferResponseDto> {
+    const body: UpdateOfferStatusDto = { status };
 
     return this.http.patch<OfferResponseDto>(`${OFFERS_URL}/${id}/status`, body);
   }

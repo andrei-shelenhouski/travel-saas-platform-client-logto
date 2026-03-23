@@ -6,7 +6,6 @@ import { of } from 'rxjs';
 import { MeService } from '@app/services/me.service';
 import { OrganizationStateService } from '@app/services/organization-state.service';
 import { OrganizationsService } from '@app/services/organizations.service';
-import { RoleService } from '@app/services/role.service';
 import { CreateOrganizationComponent } from './create-organization';
 
 describe('CreateOrganizationComponent', () => {
@@ -20,7 +19,7 @@ describe('CreateOrganizationComponent', () => {
         provideRouter([]),
         {
           provide: OrganizationsService,
-          useValue: { create: () => of({ id: 'org-1' }) },
+          useValue: { create: () => of(undefined) },
         },
         {
           provide: OrganizationStateService,
@@ -28,8 +27,32 @@ describe('CreateOrganizationComponent', () => {
             setActiveOrganization: vi.fn(),
           },
         },
-        { provide: MeService, useValue: { clearMeData: vi.fn(), getMe: () => of({}) } },
-        { provide: RoleService, useValue: {} },
+        {
+          provide: MeService,
+          useValue: {
+            clearMeData: vi.fn(),
+            getMe: () =>
+              of({
+                id: '',
+                firebaseUid: '',
+                email: 'test@example.com',
+                createdAt: '',
+                updatedAt: '',
+                organizations: [
+                  {
+                    id: 'org-1',
+                    name: 'Acme',
+                    defaultCurrency: 'USD',
+                    invoicePrefix: 'INV',
+                    invoiceNextNumber: 1,
+                    createdAt: '',
+                    updatedAt: '',
+                    role: 'ADMIN',
+                  },
+                ],
+              }),
+          },
+        },
       ],
     }).compileComponents();
 

@@ -19,7 +19,14 @@ describe('OnboardingCheckComponent', () => {
           useValue: {
             getMeData: () => null,
             getMe: () =>
-              of({ id: '', logtoId: '', createdAt: '', updatedAt: '', organizations: [] }),
+              of({
+                id: '',
+                firebaseUid: '',
+                email: 'test@example.com',
+                createdAt: '',
+                updatedAt: '',
+                organizations: [],
+              }),
             clearMeData: vi.fn(),
           },
         },

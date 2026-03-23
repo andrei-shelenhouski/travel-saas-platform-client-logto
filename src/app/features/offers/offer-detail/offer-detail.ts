@@ -14,7 +14,7 @@ import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
 import { ToastService } from '@app/shared/services/toast.service';
-import type { OfferResponseDto } from '@app/shared/models';
+import type { OfferResponseDto, UpdateOfferStatusDto } from '@app/shared/models';
 import { OfferStatus } from '@app/shared/models';
 import { getAllowedTransitions, type OfferAction } from '@app/features/offers/offer-state-machine';
 import { OfferTimelineComponent } from '@app/features/offers/offer-timeline/offer-timeline';
@@ -113,7 +113,11 @@ export class OfferDetailComponent {
     });
   }
 
-  private runTransition(id: string, action: OfferAction, newStatus?: OfferStatus): void {
+  private runTransition(
+    id: string,
+    action: OfferAction,
+    newStatus?: UpdateOfferStatusDto['status'],
+  ): void {
     const current = this.offer();
 
     if (newStatus !== undefined && current) {
@@ -226,7 +230,7 @@ export class OfferDetailComponent {
       return;
     }
 
-    const statusMap: Partial<Record<OfferAction, OfferStatus>> = {
+    const statusMap: Partial<Record<OfferAction, UpdateOfferStatusDto['status']>> = {
       SEND: OfferStatus.SENT,
       ACCEPT: OfferStatus.ACCEPTED,
       REJECT: OfferStatus.REJECTED,

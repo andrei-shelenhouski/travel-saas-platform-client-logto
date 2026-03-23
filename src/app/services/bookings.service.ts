@@ -50,7 +50,7 @@ export class BookingsService {
     return this.http.get<BookingResponseDto>(`${BOOKINGS_URL}/${id}`);
   }
 
-  /** GET /api/bookings/stats. Returns counts by status (e.g. { CONFIRMED: 10, CANCELLED: 2 }). */
+  /** GET /api/bookings/stats. Returns counts by status (PENDING, CONFIRMED, PAID, CANCELLED per OpenAPI). */
   getStatistics(): Observable<Record<string, number>> {
     return this.http.get<Record<string, number>>(BOOKINGS_STATS_URL);
   }

@@ -51,7 +51,7 @@ export class CommentsService {
     return this.http.get<CommentResponseDto>(`${COMMENTS_URL}/${id}`);
   }
 
-  delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${COMMENTS_URL}/${id}`);
+  delete(id: string): Observable<CommentResponseDto> {
+    return this.http.delete<CommentResponseDto>(`${COMMENTS_URL}/${id}`);
   }
 }

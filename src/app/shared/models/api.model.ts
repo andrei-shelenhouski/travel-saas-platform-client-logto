@@ -1,6 +1,6 @@
 /**
  * API types aligned with OpenAPI spec.
- * Source of truth: project root openapi.json (from http://localhost:3000/api/docs/json).
+ * Source of truth: project root openapi.json.
  * Backend: Travel SaaS API.
  */
 
@@ -63,8 +63,8 @@ export type OrganizationWithRoleDto = {
 /** OpenAPI: MeResponseDto. GET /api/me response. */
 export type MeResponseDto = {
   id: string;
-  logtoId: string;
-  email?: string;
+  firebaseUid: string;
+  email: string;
   name?: string;
   picture?: string;
   createdAt: string;
@@ -113,13 +113,6 @@ export type AddOrganizationMemberDto = {
 export type CreateOrganizationDto = {
   name: string;
   defaultCurrency?: string;
-};
-
-/** Response shape for POST /api/organizations (not in OpenAPI). */
-export type CreateOrganizationResponseDto = {
-  id: string;
-  organizationId?: string; // some backends return this
-  name?: string;
 };
 
 // ----- Leads -----
@@ -249,6 +242,9 @@ export const BookingStatus = {
 } as const;
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus];
 
+/** OpenAPI schema: BookingResponseDto.status (list/filter still use full BookingStatus). */
+export type BookingRecordStatus = 'CONFIRMED' | 'CANCELLED';
+
 /** OpenAPI schema: BookingResponseDto. GET/POST/PATCH/DELETE /api/bookings. agreedPrice decimal as string. */
 export type BookingResponseDto = {
   id: string;
@@ -257,7 +253,7 @@ export type BookingResponseDto = {
   clientId: string;
   agreedPrice: string;
   currency: string;
-  status: BookingStatus | string;
+  status: BookingRecordStatus | string;
   createdAt: string; // date-time
   updatedAt: string; // date-time
 };
@@ -352,7 +348,7 @@ export type UpdateClientDto = {
 
 // ----- Requests (OpenAPI: GET/POST /api/requests, GET/PATCH/DELETE /api/requests/{id}, PATCH status) -----
 
-/** OpenAPI: filter + UpdateRequestStatusDto use DRAFT, IN_PROGRESS, WAITING_CLIENT, CLOSED. Response DTO may use NEW, IN_PROGRESS, OFFERED, CLOSED. */
+/** OpenAPI: GET /api/requests query + UpdateRequestStatusDto body. */
 export const RequestStatus = {
   DRAFT: 'DRAFT',
   IN_PROGRESS: 'IN_PROGRESS',
@@ -360,6 +356,16 @@ export const RequestStatus = {
   CLOSED: 'CLOSED',
 } as const;
 export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus];
+
+/** OpenAPI: RequestResponseDto.status on GET/PATCH responses. */
+export const RequestResponseStatus = {
+  NEW: 'NEW',
+  IN_PROGRESS: 'IN_PROGRESS',
+  OFFERED: 'OFFERED',
+  CLOSED: 'CLOSED',
+} as const;
+export type RequestResponseStatus =
+  (typeof RequestResponseStatus)[keyof typeof RequestResponseStatus];
 
 export type CreateRequestDto = {
   clientId: string; // uuid
@@ -384,7 +390,7 @@ export type RequestResponseDto = {
   adults: number;
   children: number;
   comment: string | null;
-  status: RequestStatus | string;
+  status: RequestResponseStatus | string;
   createdAt: string;
   updatedAt: string;
 };

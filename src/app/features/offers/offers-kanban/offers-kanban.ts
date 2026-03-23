@@ -15,7 +15,7 @@ import { OffersService } from '@app/services/offers.service';
 import { ToastService } from '@app/shared/services/toast.service';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import { isAllowedOfferStatusTransition } from '@app/features/offers/offer-state-machine';
-import type { OfferResponseDto } from '@app/shared/models';
+import type { OfferResponseDto, UpdateOfferStatusDto } from '@app/shared/models';
 import { OfferStatus } from '@app/shared/models';
 
 const OFFER_STATUS_ORDER: string[] = [
@@ -142,22 +142,24 @@ export class OffersKanbanComponent {
     offer.status = targetStatus;
     this.itemsByStatus.update((m) => ({ ...m }));
 
-    this.offersService.setStatus(offer.id, targetStatus as OfferStatus).subscribe({
-      next: (updated) => {
-        const idx = currList.findIndex((o) => o.id === updated.id);
+    this.offersService
+      .setStatus(offer.id, targetStatus as UpdateOfferStatusDto['status'])
+      .subscribe({
+        next: (updated) => {
+          const idx = currList.findIndex((o) => o.id === updated.id);
 
-        if (idx !== -1) {
-          currList[idx] = updated;
-        }
-        this.itemsByStatus.update((m) => ({ ...m }));
-      },
-      error: (err: { error?: { message?: string }; message?: string }) => {
-        transferArrayItem(currList, prevList, event.currentIndex, event.previousIndex);
-        offer.status = previousStatus;
-        this.itemsByStatus.update((m) => ({ ...m }));
-        this.toast.showError(err?.error?.message ?? err?.message ?? 'Invalid status transition');
-      },
-    });
+          if (idx !== -1) {
+            currList[idx] = updated;
+          }
+          this.itemsByStatus.update((m) => ({ ...m }));
+        },
+        error: (err: { error?: { message?: string }; message?: string }) => {
+          transferArrayItem(currList, prevList, event.currentIndex, event.previousIndex);
+          offer.status = previousStatus;
+          this.itemsByStatus.update((m) => ({ ...m }));
+          this.toast.showError(err?.error?.message ?? err?.message ?? 'Invalid status transition');
+        },
+      });
   }
 
   goToOffer(offer: OfferResponseDto): void {

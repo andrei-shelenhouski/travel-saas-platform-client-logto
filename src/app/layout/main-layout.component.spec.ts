@@ -8,7 +8,14 @@ import { PermissionService } from '@app/services/permission.service';
 import { RoleService } from '@app/services/role.service';
 import { MainLayoutComponent } from './main-layout.component';
 
-const mockMeData = { id: '', logtoId: '', createdAt: '', updatedAt: '', organizations: [] };
+const mockMeData = {
+  id: '',
+  firebaseUid: '',
+  email: 'test@example.com',
+  createdAt: '',
+  updatedAt: '',
+  organizations: [],
+};
 
 describe('MainLayoutComponent', () => {
   let component: MainLayoutComponent;
