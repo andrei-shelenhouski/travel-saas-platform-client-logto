@@ -24,7 +24,7 @@
         routerLink="/app/leads"
       >
         <div class="flex items-center gap-2 text-gray-500">
-          <i class="pi pi-bolt text-lg"></i>
+          <span aria-hidden="true" class="material-icons text-lg">flash_on</span>
           <span class="text-sm font-medium">Leads</span>
         </div>
         <p class="mt-2 text-2xl font-bold text-primary">{{ totalLeads() }}</p>
@@ -42,7 +42,7 @@
         routerLink="/app/requests"
       >
         <div class="flex items-center gap-2 text-gray-500">
-          <i class="pi pi-inbox text-lg"></i>
+          <span aria-hidden="true" class="material-icons text-lg">inbox</span>
           <span class="text-sm font-medium">Requests</span>
         </div>
         <p class="mt-2 text-2xl font-bold text-primary">{{ totalRequests() }}</p>
@@ -60,7 +60,7 @@
         routerLink="/app/offers"
       >
         <div class="flex items-center gap-2 text-gray-500">
-          <i class="pi pi-send text-lg"></i>
+          <span aria-hidden="true" class="material-icons text-lg">send</span>
           <span class="text-sm font-medium">Offers</span>
         </div>
         <p class="mt-2 text-2xl font-bold text-primary">{{ totalOffers() }}</p>
@@ -78,7 +78,7 @@
         routerLink="/app/bookings"
       >
         <div class="flex items-center gap-2 text-gray-500">
-          <i class="pi pi-calendar text-lg"></i>
+          <span aria-hidden="true" class="material-icons text-lg">event</span>
           <span class="text-sm font-medium">Bookings</span>
         </div>
         <p class="mt-2 text-2xl font-bold text-primary">{{ totalBookings() }}</p>
@@ -97,21 +97,21 @@
         class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
         routerLink="/app/leads/new"
       >
-        <i class="pi pi-plus"></i>
+        <span aria-hidden="true" class="material-icons text-base">add</span>
         New lead
       </a>
       <a
         class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
         routerLink="/app/clients/new"
       >
-        <i class="pi pi-user-plus"></i>
+        <span aria-hidden="true" class="material-icons text-base">person_add</span>
         New client
       </a>
       <a
         class="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
         routerLink="/app/requests/new"
       >
-        <i class="pi pi-inbox"></i>
+        <span aria-hidden="true" class="material-icons text-base">inbox</span>
         New request
       </a>
     </div>

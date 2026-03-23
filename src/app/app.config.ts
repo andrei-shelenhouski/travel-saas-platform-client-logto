@@ -26,10 +26,6 @@ import {
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 
-import { providePrimeNG } from 'primeng/config';
-
-import Aura from '@primeuix/themes/aura';
-
 import { environment } from '@environments/environment';
 import { routes } from '@app/app.routes';
 import { errorHandlerInterceptor, orgAuthInterceptor } from '@app/interceptors/index';
@@ -43,11 +39,6 @@ const EMULATORS_HOST = 'localhost';
 export const appConfig: ApplicationConfig = {
   providers: [
     provideAnimationsAsync(),
-    providePrimeNG({
-      theme: {
-        preset: Aura,
-      },
-    }),
     provideZonelessChangeDetection(),
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding()),

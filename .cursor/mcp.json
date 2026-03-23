@@ -1,12 +1,5 @@
 {
   "mcpServers": {
-    "primeng": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@primeng/mcp"
-      ]
-    },
     "angular-cli": {
       "command": "npx",
       "args": [
