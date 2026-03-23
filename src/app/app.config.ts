@@ -23,7 +23,6 @@ import {
   getAuth,
   provideAuth as provideFirebaseAuth,
 } from '@angular/fire/auth';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { environment } from '@environments/environment';
@@ -38,7 +37,6 @@ const EMULATORS_HOST = 'localhost';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideAnimationsAsync(),
     provideZonelessChangeDetection(),
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withComponentInputBinding()),
