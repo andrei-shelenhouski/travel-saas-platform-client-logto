@@ -1,12 +1,7 @@
 <div class="space-y-4">
   <header class="flex items-center justify-between border-b border-gray-200 pb-4">
     <h1 class="text-xl font-semibold text-gray-900">Create request</h1>
-    <a
-      class="rounded px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-      routerLink="/app/requests"
-    >
-      Cancel
-    </a>
+    <a mat-button routerLink="/app/requests">Cancel</a>
   </header>
 
   <p class="text-sm text-gray-600">Create a travel request linked to a client. You can then create an offer for this request.</p>
@@ -15,111 +10,83 @@
     <p class="text-sm text-red-600">{{ error() }}</p>
   }
 
-  <form class="max-w-xl space-y-4" (ngSubmit)="onSubmit()">
-    <div>
-      <label class="block text-sm font-medium text-gray-700" for="clientId">Client ID (UUID)</label>
+  <form class="max-w-xl flex flex-col gap-4" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-label>Client ID (UUID)</mat-label>
       <input
-        class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm font-mono"
+        class="font-mono"
+        formControlName="clientId"
         id="clientId"
-        name="clientId"
+        matInput
         placeholder="e.g. 550e8400-e29b-41d4-a716-446655440000"
-        required
         type="text"
-        [(ngModel)]="clientId"
       />
-    </div>
+      @if (form.controls.clientId.hasError('required') && form.controls.clientId.touched) {
+        <mat-error>Required</mat-error>
+      }
+    </mat-form-field>
 
-    <div>
-      <label class="block text-sm font-medium text-gray-700" for="managerId">Manager ID</label>
-      <input
-        class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
-        id="managerId"
-        name="managerId"
-        required
-        type="text"
-        [(ngModel)]="managerId"
-      />
-    </div>
+    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-label>Manager ID</mat-label>
+      <input formControlName="managerId" id="managerId" matInput type="text" />
+      @if (form.controls.managerId.hasError('required') && form.controls.managerId.touched) {
+        <mat-error>Required</mat-error>
+      }
+    </mat-form-field>
 
-    <div>
-      <label class="block text-sm font-medium text-gray-700" for="destination">Destination</label>
+    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-label>Destination</mat-label>
       <input
-        class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
+        formControlName="destination"
         id="destination"
-        name="destination"
+        matInput
         placeholder="e.g. Barcelona, Spain"
-        required
         type="text"
-        [(ngModel)]="destination"
       />
+      @if (form.controls.destination.hasError('required') && form.controls.destination.touched) {
+        <mat-error>Required</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Start date</mat-label>
+        <input formControlName="startDate" id="startDate" matInput type="date" />
+        @if (form.controls.startDate.hasError('required') && form.controls.startDate.touched) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>End date</mat-label>
+        <input formControlName="endDate" id="endDate" matInput type="date" />
+        @if (form.controls.endDate.hasError('required') && form.controls.endDate.touched) {
+          <mat-error>Required</mat-error>
+        }
+      </mat-form-field>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700" for="startDate">Start date</label>
-        <input
-          class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
-          id="startDate"
-          name="startDate"
-          required
-          type="date"
-          [(ngModel)]="startDate"
-        />
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700" for="endDate">End date</label>
-        <input
-          class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
-          id="endDate"
-          name="endDate"
-          required
-          type="date"
-          [(ngModel)]="endDate"
-        />
-      </div>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Adults</mat-label>
+        <input formControlName="adults" id="adults" matInput min="1" type="number" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Children</mat-label>
+        <input formControlName="children" id="children" matInput min="0" type="number" />
+      </mat-form-field>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700" for="adults">Adults</label>
-        <input
-          class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
-          id="adults"
-          min="1"
-          name="adults"
-          type="number"
-          [(ngModel)]="adults"
-        />
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700" for="children">Children</label>
-        <input
-          class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
-          id="children"
-          min="0"
-          name="children"
-          type="number"
-          [(ngModel)]="children"
-        />
-      </div>
-    </div>
+    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-label>Comment</mat-label>
+      <textarea formControlName="comment" id="comment" matInput rows="3"></textarea>
+    </mat-form-field>
 
-    <div>
-      <label class="block text-sm font-medium text-gray-700" for="comment">Comment</label>
-      <textarea
-        class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
-        id="comment"
-        name="comment"
-        rows="3"
-        [(ngModel)]="comment"
-      ></textarea>
-    </div>
-
-    <div class="flex gap-3 pt-2">
+    <div class="flex flex-wrap gap-3 pt-2">
       <button
-        class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+        color="primary"
+        mat-flat-button
         type="submit"
-        [disabled]="saving()"
+        [disabled]="saving() || form.invalid"
       >
         @if (saving()) {
           <span aria-hidden="true" class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
@@ -127,12 +94,7 @@
           Create request
         }
       </button>
-      <a
-        class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-        routerLink="/app/requests"
-      >
-        Cancel
-      </a>
+      <a mat-stroked-button routerLink="/app/requests">Cancel</a>
     </div>
   </form>
 </div>

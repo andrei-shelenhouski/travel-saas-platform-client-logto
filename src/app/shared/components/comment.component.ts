@@ -1,12 +1,14 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+
+import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import type { CommentItem } from '@app/shared/models/comment.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-comment',
   standalone: true,
-  imports: [FormsModule],
+  imports: [ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   template: `
     <div class="space-y-4">
       <h3 class="text-sm font-semibold text-gray-900">{{ title() }}</h3>
@@ -21,21 +23,21 @@ import type { CommentItem } from '@app/shared/models/comment.model';
         }
       </ul>
       @if (canAdd()) {
-        <div class="flex gap-2">
-          <input
-            class="min-w-0 flex-1 rounded border border-gray-300 px-3 py-2 text-sm
-              focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            type="text"
-            [ngModel]="newComment()"
-            [placeholder]="placeholder()"
-            (keydown.enter)="submit(); $event.preventDefault()"
-            (ngModelChange)="newComment.set($event)"
-          />
+        <div class="flex flex-wrap items-start gap-2">
+          <mat-form-field appearance="outline" class="min-w-0 flex-1" subscriptSizing="dynamic">
+            <input
+              matInput
+              type="text"
+              [formControl]="newComment"
+              [placeholder]="placeholder()"
+              (keydown.enter)="submit(); $event.preventDefault()"
+            />
+          </mat-form-field>
           <button
-            class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground
-              hover:bg-primary-hover disabled:opacity-50"
+            color="primary"
+            mat-flat-button
             type="button"
-            [disabled]="!newComment().trim()"
+            [disabled]="!newComment.value.trim()"
             (click)="submit()"
           >
             Add
@@ -53,7 +55,7 @@ export class CommentComponent {
 
   readonly addComment = output<{ text: string }>();
 
-  protected readonly newComment = signal('');
+  protected readonly newComment = new FormControl('', { nonNullable: true });
 
   protected formatDate(iso: string): string {
     try {
@@ -67,12 +69,12 @@ export class CommentComponent {
   }
 
   protected submit(): void {
-    const text = this.newComment().trim();
+    const text = this.newComment.value.trim();
 
     if (!text) {
       return;
     }
     this.addComment.emit({ text });
-    this.newComment.set('');
+    this.newComment.setValue('');
   }
 }

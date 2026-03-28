@@ -4,6 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 import { BookingsService } from '@app/services/bookings.service';
+import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
 import type { BookingResponseDto } from '@app/shared/models';
 import { BookingStatus } from '@app/shared/models';
 
@@ -27,7 +28,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-bookings-list',
-  imports: [],
+  imports: [...MAT_BUTTONS, ...MAT_BUTTON_TOGGLES],
   templateUrl: './bookings-list.html',
   styleUrl: './bookings-list.css',
 })

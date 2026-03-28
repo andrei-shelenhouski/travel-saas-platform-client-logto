@@ -11,11 +11,7 @@
           <h1 class="text-xl font-semibold text-gray-900">{{ r.destination }}</h1>
           <p class="mt-1 text-sm text-gray-500">Travel request</p>
         </div>
-        <button
-          class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
-          type="button"
-          (click)="createOffer()"
-        >
+        <button color="primary" mat-flat-button type="button" (click)="createOffer()">
           Create offer
         </button>
       </header>
@@ -61,12 +57,7 @@
       </div>
 
       <div class="flex gap-3">
-        <a
-          class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          routerLink="/app/requests"
-        >
-          ← Back to requests
-        </a>
+        <a mat-stroked-button routerLink="/app/requests">← Back to requests</a>
       </div>
     } @else {
       <p class="text-gray-500">Request not found.</p>

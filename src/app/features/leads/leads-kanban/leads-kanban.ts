@@ -12,6 +12,7 @@ import { CdkDragDrop, DragDropModule, transferArrayItem } from '@angular/cdk/dra
 import { rxResource } from '@angular/core/rxjs-interop';
 
 import { LeadsService } from '@app/services/leads.service';
+import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
 import { ToastService } from '@app/shared/services/toast.service';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import type { LeadResponseDto } from '@app/shared/models';
@@ -29,7 +30,13 @@ const LEAD_STATUS_ORDER: string[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-leads-kanban',
   standalone: true,
-  imports: [DragDropModule, RouterLink, StatusBadgeComponent],
+  imports: [
+    DragDropModule,
+    RouterLink,
+    StatusBadgeComponent,
+    ...MAT_BUTTONS,
+    ...MAT_BUTTON_TOGGLES,
+  ],
   templateUrl: './leads-kanban.html',
   styleUrl: './leads-kanban.css',
 })

@@ -7,20 +7,10 @@
       </p>
     </div>
     <div class="flex items-center gap-2">
-      <button
-        class="rounded border border-primary bg-primary px-4 py-2 text-sm font-medium text-white hover:opacity-90"
-        type="button"
-        (click)="toggleAddForm()"
-      >
+      <button color="primary" mat-flat-button type="button" (click)="toggleAddForm()">
         {{ addFormVisible() ? 'Cancel' : 'Add member' }}
       </button>
-      <a
-        class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-        i18n="@@backToDashboard"
-        routerLink="/app/dashboard"
-      >
-        Back to dashboard
-      </a>
+      <a i18n="@@backToDashboard" mat-stroked-button routerLink="/app/dashboard">Back to dashboard</a>
     </div>
   </header>
 
@@ -30,50 +20,43 @@
       <p class="text-xs text-gray-500 mb-3" i18n="@@inviteByEmailDescription">
         The user must already have an account. Enter their email and choose a role.
       </p>
-      <div class="flex flex-wrap items-end gap-3">
-        <div>
-          <label
-            class="block text-xs font-medium text-gray-600 mb-1"
-            for="add-member-email"
-            i18n="@@email"
-            >Email</label
-          >
+      <form class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end" [formGroup]="addMemberForm" (ngSubmit)="onAddMember()">
+        <mat-form-field appearance="outline" class="min-w-55 flex-1" subscriptSizing="dynamic">
+          <mat-label i18n="@@email">Email</mat-label>
           <input
-            class="rounded border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary min-w-55"
+            formControlName="email"
             id="add-member-email"
-            placeholder="colleague&#64;example.com"
+            matInput
+            placeholder="colleague@example.com"
             type="email"
-            [value]="addEmail()"
-            (input)="addEmail.set($any($event.target).value)"
           />
-        </div>
-        <div>
-          <label
-            class="block text-xs font-medium text-gray-600 mb-1"
-            for="add-member-role"
-            i18n="@@role"
-            >Role</label
-          >
-          <select
-            class="rounded border border-gray-300 px-3 py-2 text-sm text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            id="add-member-role"
-            [value]="addRole()"
-            (change)="addRole.set($any($event.target).value)"
-          >
+          @if (
+            addMemberForm.controls.email.hasError('required') &&
+            addMemberForm.controls.email.touched
+          ) {
+            <mat-error>Required</mat-error>
+          }
+          @if (addMemberForm.controls.email.hasError('email') && addMemberForm.controls.email.touched) {
+            <mat-error>Invalid email</mat-error>
+          }
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="min-w-36" subscriptSizing="dynamic">
+          <mat-label i18n="@@role">Role</mat-label>
+          <mat-select formControlName="role" id="add-member-role">
             @for (opt of roleOptions; track opt.value) {
-              <option [value]="opt.value">{{ opt.label }}</option>
+              <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
             }
-          </select>
-        </div>
+          </mat-select>
+        </mat-form-field>
         <button
-          class="rounded border border-primary bg-primary px-4 py-2 text-sm font-medium text-white hover:opacity-90 disabled:opacity-50"
-          type="button"
-          [disabled]="addingMember()"
-          (click)="onAddMember()"
+          color="primary"
+          mat-flat-button
+          type="submit"
+          [disabled]="addingMember() || addMemberForm.invalid"
         >
           {{ addingMember() ? 'Adding…' : 'Add member' }}
         </button>
-      </div>
+      </form>
     </div>
   }
 
@@ -132,16 +115,17 @@
                 <td class="px-4 py-3 text-sm text-gray-600">{{ member.email || '—' }}</td>
                 <td class="px-4 py-3">
                   @if (canChangeRole(member)) {
-                    <select
-                      class="rounded border border-gray-300 px-2 py-1 text-sm text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary disabled:opacity-50"
-                      [disabled]="updatingRoleId() === member.id"
-                      [value]="member.role"
-                      (change)="onRoleChange(member, $any($event.target).value)"
-                    >
-                      @for (opt of roleOptions; track opt.value) {
-                        <option [value]="opt.value">{{ opt.label }}</option>
-                      }
-                    </select>
+                    <mat-form-field appearance="outline" class="w-44" subscriptSizing="dynamic">
+                      <mat-select
+                        [disabled]="updatingRoleId() === member.id"
+                        [value]="member.role"
+                        (selectionChange)="onRoleChange(member, $event.value)"
+                      >
+                        @for (opt of roleOptions; track opt.value) {
+                          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                        }
+                      </mat-select>
+                    </mat-form-field>
                   } @else {
                     <span
                       class="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"

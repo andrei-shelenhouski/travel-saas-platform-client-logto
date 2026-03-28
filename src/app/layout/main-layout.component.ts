@@ -5,7 +5,9 @@ import {
   inject,
   OnInit,
   signal,
+  viewChild,
 } from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { take } from 'rxjs';
@@ -14,16 +16,55 @@ import { AuthService } from '@app/auth/auth.service';
 import { MeService } from '@app/services/me.service';
 import { OrganizationStateService } from '@app/services/organization-state.service';
 import { PermissionService } from '@app/services/permission.service';
-import { RoleService } from '@app/services/role.service';
 import { ToastComponent } from '@app/shared/components/toast.component';
+import { MAT_BUTTONS, MAT_MENU, MAT_NAV_LIST } from '@app/shared/material-imports';
 
 import type { OrganizationWithRoleDto } from '@app/shared/models';
+
+type MainNavLink = {
+  path: string;
+  icon: string;
+  label: string;
+  adminOnly?: boolean;
+  sectionMargin?: boolean;
+};
+
+const MAIN_NAV_LINKS: MainNavLink[] = [
+  { path: '/app/dashboard', icon: 'home', label: $localize`:@@dashboard:Dashboard` },
+  { path: '/app/leads', icon: 'flash_on', label: $localize`:@@leads:Leads` },
+  { path: '/app/clients', icon: 'group', label: $localize`:@@clients:Clients` },
+  { path: '/app/requests', icon: 'inbox', label: $localize`:@@requests:Requests` },
+  { path: '/app/offers', icon: 'send', label: $localize`:@@offers:Offers` },
+  { path: '/app/bookings', icon: 'event', label: $localize`:@@bookings:Bookings` },
+  { path: '/app/invoices', icon: 'description', label: $localize`:@@invoices:Invoices` },
+  {
+    path: '/app/admin/users',
+    icon: 'manage_accounts',
+    label: $localize`:@@userManagement:User management`,
+    adminOnly: true,
+    sectionMargin: true,
+  },
+  {
+    path: '/app/settings',
+    icon: 'settings',
+    label: $localize`:@@settings:Settings`,
+    sectionMargin: true,
+  },
+];
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-main-layout',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, RouterOutlet, ToastComponent],
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    RouterOutlet,
+    ToastComponent,
+    ...MAT_BUTTONS,
+    ...MAT_MENU,
+    ...MAT_NAV_LIST,
+  ],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.css',
 })
@@ -31,13 +72,20 @@ export class MainLayoutComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly orgState = inject(OrganizationStateService);
   private readonly meService = inject(MeService);
-  private readonly roleService = inject(RoleService);
   private readonly router = inject(Router);
   readonly permissions = inject(PermissionService);
 
-  readonly orgSwitcherOpen = signal(false);
+  readonly orgMenuTrigger = viewChild.required<MatMenuTrigger>('orgMenuTrigger');
+
+  readonly navLinks = computed(() =>
+    MAIN_NAV_LINKS.filter((link) => !link.adminOnly || this.permissions.isAdmin()),
+  );
+
   readonly organizations = signal<OrganizationWithRoleDto[]>([]);
   readonly orgSwitcherLoading = signal(false);
+
+  /** Bumped on org switch so the primary `router-outlet` remounts and reloads the current route. */
+  readonly outletReloadKey = signal(0);
 
   readonly userDisplay = computed(() => {
     const user = this.authService.firebaseUser();
@@ -91,17 +139,11 @@ export class MainLayoutComponent implements OnInit {
     return this.orgState.getActiveOrganization();
   }
 
-  openOrgSwitcher(): void {
-    if (this.orgSwitcherOpen()) {
-      this.orgSwitcherOpen.set(false);
-
-      return;
-    }
+  onOrgMenuOpened(): void {
     const data = this.meService.getMeData();
 
     if (data?.organizations?.length) {
       this.organizations.set(data.organizations);
-      this.orgSwitcherOpen.set(true);
 
       return;
     }
@@ -112,36 +154,26 @@ export class MainLayoutComponent implements OnInit {
       .subscribe({
         next: (res) => {
           this.organizations.set(res.organizations ?? []);
-          this.orgSwitcherOpen.set(true);
         },
-        error: () => this.orgSwitcherOpen.set(false),
+        error: () => this.orgMenuTrigger().closeMenu(),
         complete: () => this.orgSwitcherLoading.set(false),
       });
   }
 
   switchOrganization(org: OrganizationWithRoleDto): void {
     if (org.id === this.activeOrgId) {
-      this.orgSwitcherOpen.set(false);
-
       return;
     }
     this.orgState.setActiveOrganization(org.id, org.name);
-    this.meService.clearMeData();
-    this.orgSwitcherOpen.set(false);
-    this.router.navigate(['/app/dashboard']).then(() => {
-      this.meService
-        .getMe()
-        .pipe(take(1))
-        .subscribe({
-          next: () => {
-            // Role is now automatically updated via signal reactivity
-          },
-        });
-    });
-  }
-
-  closeOrgSwitcher(): void {
-    this.orgSwitcherOpen.set(false);
+    this.outletReloadKey.update((k) => k + 1);
+    this.meService
+      .getMe()
+      .pipe(take(1))
+      .subscribe({
+        next: () => {
+          // Role / me cache updated via MeService tap
+        },
+      });
   }
 
   async logout(): Promise<void> {

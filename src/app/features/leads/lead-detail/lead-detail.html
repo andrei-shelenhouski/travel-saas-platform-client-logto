@@ -13,7 +13,8 @@
         </div>
         @if (l.status !== 'CONVERTED' && permissions.canConvertLead()) {
           <button
-            class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+            color="primary"
+            mat-flat-button
             type="button"
             [disabled]="convertLoading()"
             (click)="convertToClient()"
@@ -56,12 +57,7 @@
       </div>
 
       <div class="flex gap-3">
-        <a
-          class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          routerLink="/app/leads"
-        >
-          ← Back to leads
-        </a>
+        <a mat-stroked-button routerLink="/app/leads">← Back to leads</a>
       </div>
     } @else {
       <p class="text-gray-500">Lead not found.</p>

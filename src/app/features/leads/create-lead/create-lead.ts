@@ -9,6 +9,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 
 import { LeadsService } from '@app/services/leads.service';
+import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ToastService } from '@app/shared/services/toast.service';
 import { type CreateLeadDto, LeadSource } from '@app/shared/models';
 
@@ -22,6 +23,8 @@ const SOURCE_OPTIONS: { value: LeadSource; label: string }[] = [
   { value: LeadSource.PHONE, label: 'Phone' },
   { value: LeadSource.EMAIL, label: 'Email' },
   { value: LeadSource.WHATSAPP, label: 'WhatsApp' },
+  { value: LeadSource.TELEGRAM, label: 'Telegram' },
+  { value: LeadSource.WEBSITE, label: 'Website' },
   { value: LeadSource.AGENT, label: 'Agent' },
   { value: LeadSource.OTHER, label: 'Other' },
 ];
@@ -29,7 +32,7 @@ const SOURCE_OPTIONS: { value: LeadSource; label: string }[] = [
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-lead',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, ...MAT_FORM_BUTTONS],
   templateUrl: './create-lead.html',
   styleUrl: './create-lead.css',
 })

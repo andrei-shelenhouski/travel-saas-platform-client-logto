@@ -1,13 +1,15 @@
 <div class="space-y-4">
   <div class="flex flex-wrap items-center justify-between gap-4">
-    <div class="flex items-center gap-3">
+    <div class="flex flex-wrap items-center gap-3">
       <h2 class="text-lg font-semibold text-gray-900">Leads · Kanban</h2>
-      <a
-        class="text-sm font-medium text-primary hover:underline"
-        routerLink="/app/leads"
+      <mat-button-toggle-group
+        appearance="standard"
+        hideSingleSelectionIndicator
+        value="kanban"
       >
-        List view
-      </a>
+        <mat-button-toggle routerLink="/app/leads" value="list">List</mat-button-toggle>
+        <mat-button-toggle routerLink="/app/leads/kanban" value="kanban">Kanban</mat-button-toggle>
+      </mat-button-toggle-group>
     </div>
     <div class="flex flex-wrap items-center gap-3">
       <span class="text-sm text-gray-500">Columns:</span>
@@ -23,12 +25,7 @@
         </label>
       }
     </div>
-    <a
-      class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
-      routerLink="/app/leads/new"
-    >
-      New lead
-    </a>
+    <a color="primary" mat-flat-button routerLink="/app/leads/new">New lead</a>
   </div>
 
   @if (error()) {

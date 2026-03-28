@@ -5,12 +5,13 @@ import { map } from 'rxjs/operators';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 import { RequestsService } from '@app/services/requests.service';
+import { MAT_BUTTONS } from '@app/shared/material-imports';
 import type { RequestResponseDto } from '@app/shared/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-request-detail',
-  imports: [RouterLink],
+  imports: [RouterLink, ...MAT_BUTTONS],
   templateUrl: './request-detail.html',
   styleUrl: './request-detail.css',
 })

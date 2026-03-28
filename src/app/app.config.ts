@@ -24,6 +24,7 @@ import {
   provideAuth as provideFirebaseAuth,
 } from '@angular/fire/auth';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
 
 import { environment } from '@environments/environment';
 import { routes } from '@app/app.routes';
@@ -60,5 +61,11 @@ export const appConfig: ApplicationConfig = {
 
       return initializeAppCheck(undefined, { provider, isTokenAutoRefreshEnabled: true });
     }),
+    {
+      provide: MAT_FORM_FIELD_DEFAULT_OPTIONS,
+      useValue: {
+        appearance: 'outline',
+      },
+    },
   ],
 };

@@ -13,54 +13,43 @@
   @if (bookingsLoading()) {
     <p class="text-sm text-gray-500">Loading bookings…</p>
   } @else {
-    <form class="space-y-4" (ngSubmit)="onSubmit()">
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1" for="bookingId">Booking</label>
-        <select
-          class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          id="bookingId"
-          name="bookingId"
-          required
-          [(ngModel)]="bookingId"
-        >
-          <option value="">Select a booking</option>
+    <form class="flex flex-col gap-4" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Booking</mat-label>
+        <mat-select formControlName="bookingId" id="bookingId">
+          <mat-option value="">Select a booking</mat-option>
           @for (b of bookings(); track b.id) {
-            <option [value]="b.id">
+            <mat-option [value]="b.id">
               {{ b.agreedPrice }} {{ b.currency }} – {{ formatDate(b.createdAt) }}
-            </option>
+            </mat-option>
           }
-        </select>
-        @if (bookings().length === 0) {
-          <p class="mt-1 text-xs text-amber-600">No confirmed bookings. Create a booking from an accepted offer first.</p>
+        </mat-select>
+        @if (form.controls.bookingId.hasError('required') && form.controls.bookingId.touched) {
+          <mat-error>Select a booking</mat-error>
         }
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1" for="dueDate">Due date (optional)</label>
-        <input
-          class="w-full rounded border border-gray-300 px-3 py-2 text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-          id="dueDate"
-          name="dueDate"
-          type="date"
-          [(ngModel)]="dueDate"
-        />
-      </div>
+        @if (bookings().length === 0) {
+          <mat-hint class="!text-amber-700"
+            >No confirmed bookings. Create a booking from an accepted offer first.</mat-hint
+          >
+        }
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Due date (optional)</mat-label>
+        <input formControlName="dueDate" id="dueDate" matInput type="date" />
+      </mat-form-field>
       @if (error()) {
         <p class="text-sm text-red-600">{{ error() }}</p>
       }
-      <div class="flex gap-3 pt-2">
+      <div class="flex flex-wrap gap-3 pt-2">
         <button
-          class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+          color="primary"
+          mat-flat-button
           type="submit"
-          [disabled]="saving() || !bookingId.trim() || bookings().length === 0"
+          [disabled]="saving() || form.invalid || bookings().length === 0"
         >
           {{ saving() ? 'Creating…' : 'Create invoice' }}
         </button>
-        <a
-          class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          routerLink="/app/invoices"
-        >
-          Cancel
-        </a>
+        <a mat-stroked-button routerLink="/app/invoices">Cancel</a>
       </div>
     </form>
   }

@@ -1,11 +1,13 @@
-import { ChangeDetectionStrategy, Component, input, output, signal } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+
+import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-tag-selector',
   standalone: true,
-  imports: [FormsModule],
+  imports: [ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   template: `
     <div class="space-y-2">
       @if (label()) {
@@ -26,7 +28,7 @@ import { FormsModule } from '@angular/forms';
             @if (removable()) {
               <button
                 aria-label="Remove {{ tag }}"
-                class="rounded-full p-0.5 hover:bg-primary-200"
+                mat-icon-button
                 type="button"
                 (click)="removeTag(tag)"
               >
@@ -36,28 +38,24 @@ import { FormsModule } from '@angular/forms';
           </span>
         }
         @if (allowAdd()) {
-          <input
-            class="rounded border border-gray-300 px-2 py-1 text-sm
-              focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-            id="tag-selector-input"
-            type="text"
-            [ngModel]="inputValue()"
-            [placeholder]="placeholder()"
-            (blur)="addCurrent()"
-            (keydown.enter)="addCurrent(); $event.preventDefault()"
-            (ngModelChange)="inputValue.set($event)"
-          />
+          <mat-form-field appearance="outline" class="min-w-40 flex-1" subscriptSizing="dynamic">
+            <input
+              id="tag-selector-input"
+              matInput
+              type="text"
+              [formControl]="inputControl"
+              [placeholder]="placeholder()"
+              (blur)="addCurrent()"
+              (keydown.enter)="addCurrent(); $event.preventDefault()"
+            />
+          </mat-form-field>
         }
       </div>
       @if (options().length > 0) {
         <div class="mt-1 flex flex-wrap gap-1">
           @for (opt of options(); track opt) {
             @if (!selected().includes(opt)) {
-              <button
-                class="rounded border border-gray-300 px-2 py-1 text-xs text-gray-700 hover:bg-gray-50"
-                type="button"
-                (click)="toggleOption(opt)"
-              >
+              <button mat-stroked-button type="button" (click)="toggleOption(opt)">
                 + {{ opt }}
               </button>
             }
@@ -81,7 +79,7 @@ export class TagSelectorComponent {
 
   readonly selectionChange = output<string[]>();
 
-  protected readonly inputValue = signal('');
+  protected readonly inputControl = new FormControl('', { nonNullable: true });
 
   protected removeTag(tag: string): void {
     if (!this.removable()) {
@@ -92,7 +90,7 @@ export class TagSelectorComponent {
   }
 
   protected addCurrent(): void {
-    const v = this.inputValue().trim();
+    const v = this.inputControl.value.trim();
 
     if (!v || !this.allowAdd()) {
       return;
@@ -100,12 +98,12 @@ export class TagSelectorComponent {
     const current = this.selected();
 
     if (current.includes(v)) {
-      this.inputValue.set('');
+      this.inputControl.setValue('');
 
       return;
     }
     this.selectionChange.emit([...current, v]);
-    this.inputValue.set('');
+    this.inputControl.setValue('');
   }
 
   protected toggleOption(opt: string): void {

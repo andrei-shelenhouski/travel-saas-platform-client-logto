@@ -6,16 +6,17 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
 
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
-import { ToastService } from '@app/shared/services/toast.service';
 import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
+import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+import { ToastService } from '@app/shared/services/toast.service';
 import type { InvoiceResponseDto } from '@app/shared/models';
 import { InvoiceStatus } from '@app/shared/models';
 
@@ -36,7 +37,7 @@ const STATUS_OPTIONS: { value: InvoiceStatus; label: string }[] = [
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-invoice-detail',
-  imports: [RouterLink, FormsModule, ConfirmationDialogComponent],
+  imports: [RouterLink, ReactiveFormsModule, ConfirmationDialogComponent, ...MAT_FORM_BUTTONS],
   templateUrl: './invoice-detail.html',
   styleUrl: './invoice-detail.css',
 })
@@ -45,6 +46,7 @@ export class InvoiceDetailComponent {
   private readonly router = inject(Router);
   private readonly invoicesService = inject(InvoicesService);
   private readonly toast = inject(ToastService);
+  private readonly fb = inject(FormBuilder);
   readonly permissions = inject(PermissionService);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
@@ -77,9 +79,11 @@ export class InvoiceDetailComponent {
     danger: boolean;
   } | null>(null);
 
-  editStatus: InvoiceStatus = InvoiceStatus.DRAFT;
-  editDueDate = '';
-  editPdfUrl = '';
+  readonly editForm = this.fb.nonNullable.group({
+    status: this.fb.nonNullable.control<InvoiceStatus>(InvoiceStatus.DRAFT),
+    dueDate: [''],
+    pdfUrl: [''],
+  });
 
   constructor() {
     effect(() => {
@@ -121,9 +125,11 @@ export class InvoiceDetailComponent {
     if (!inv) {
       return;
     }
-    this.editStatus = (inv.status as InvoiceStatus) ?? InvoiceStatus.DRAFT;
-    this.editDueDate = this.formatDateOnly(inv.dueDate);
-    this.editPdfUrl = inv.pdfUrl ?? '';
+    this.editForm.patchValue({
+      status: (inv.status as InvoiceStatus) ?? InvoiceStatus.DRAFT,
+      dueDate: this.formatDateOnly(inv.dueDate),
+      pdfUrl: inv.pdfUrl ?? '',
+    });
     this.editing.set(true);
   }
 
@@ -138,16 +144,17 @@ export class InvoiceDetailComponent {
       return;
     }
     this.actionLoading.set(true);
+    const v = this.editForm.getRawValue();
     const dto: { status?: InvoiceStatus; dueDate?: string; pdfUrl?: string } = {
-      status: this.editStatus,
+      status: v.status,
     };
 
-    if (this.editDueDate.trim()) {
-      dto.dueDate = this.editDueDate.trim();
+    if (v.dueDate.trim()) {
+      dto.dueDate = v.dueDate.trim();
     }
 
-    if (this.editPdfUrl.trim()) {
-      dto.pdfUrl = this.editPdfUrl.trim();
+    if (v.pdfUrl.trim()) {
+      dto.pdfUrl = v.pdfUrl.trim();
     }
 
     this.invoicesService.update(inv.id, dto).subscribe({

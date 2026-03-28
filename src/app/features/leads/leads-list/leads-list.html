@@ -1,26 +1,18 @@
 <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
-  <div class="flex items-center gap-3">
+  <div class="flex flex-wrap items-center gap-3">
     <h2 class="text-lg font-semibold text-gray-900">Leads</h2>
-    <a
-      class="text-sm font-medium text-primary hover:underline"
-      routerLink="/app/leads/kanban"
+    <mat-button-toggle-group
+      appearance="standard"
+      hideSingleSelectionIndicator
+      value="list"
     >
-      Kanban view
-    </a>
+      <mat-button-toggle routerLink="/app/leads" value="list">List</mat-button-toggle>
+      <mat-button-toggle routerLink="/app/leads/kanban" value="kanban">Kanban</mat-button-toggle>
+    </mat-button-toggle-group>
   </div>
   <div class="flex gap-2">
-    <a
-      class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-      routerLink="/app/offers/new"
-    >
-      Create offer
-    </a>
-    <a
-      class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
-      routerLink="/app/leads/new"
-    >
-      Create lead
-    </a>
+    <a mat-stroked-button routerLink="/app/offers/new">Create offer</a>
+    <a color="primary" mat-flat-button routerLink="/app/leads/new">Create lead</a>
   </div>
 </div>
 @if (error()) {

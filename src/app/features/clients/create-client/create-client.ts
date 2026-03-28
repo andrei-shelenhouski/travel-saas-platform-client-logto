@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 
 import { ClientsService } from '@app/services/clients.service';
+import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ClientType, type CreateClientDto } from '@app/shared/models';
 
@@ -14,7 +15,7 @@ const TYPE_OPTIONS: { value: ClientType; label: string }[] = [
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-client',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   templateUrl: './create-client.html',
   styleUrl: './create-client.css',
 })
@@ -22,36 +23,38 @@ export class CreateClientComponent {
   private readonly router = inject(Router);
   private readonly clientsService = inject(ClientsService);
   private readonly toast = inject(ToastService);
+  private readonly fb = inject(FormBuilder);
 
   readonly typeOptions = TYPE_OPTIONS;
   readonly saving = signal(false);
   readonly error = signal('');
 
-  type: ClientType = ClientType.INDIVIDUAL;
-  name = '';
-  phone = '';
-  email = '';
+  readonly form = this.fb.nonNullable.group({
+    type: [ClientType.INDIVIDUAL],
+    name: ['', Validators.required],
+    phone: [''],
+    email: ['', Validators.email],
+  });
 
   onSubmit(): void {
     this.error.set('');
 
-    if (!this.name.trim()) {
-      this.error.set('Name is required.');
-
+    if (this.form.invalid) {
       return;
     }
+    const v = this.form.getRawValue();
     this.saving.set(true);
     const dto: CreateClientDto = {
-      type: this.type,
-      name: this.name.trim(),
+      type: v.type,
+      name: v.name.trim(),
     };
 
-    if (this.phone.trim()) {
-      dto.phone = this.phone.trim();
+    if (v.phone.trim()) {
+      dto.phone = v.phone.trim();
     }
 
-    if (this.email.trim()) {
-      dto.email = this.email.trim();
+    if (v.email.trim()) {
+      dto.email = v.email.trim();
     }
 
     this.clientsService.create(dto).subscribe({

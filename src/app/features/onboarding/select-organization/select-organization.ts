@@ -4,11 +4,12 @@ import { Router } from '@angular/router';
 import { MeService } from '@app/services/me.service';
 import { OrganizationStateService } from '@app/services/organization-state.service';
 import type { OrganizationWithRoleDto } from '@app/shared/models';
+import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-select-organization',
-  imports: [],
+  imports: [...MAT_BUTTONS],
   templateUrl: './select-organization.html',
   styleUrl: './select-organization.css',
 })

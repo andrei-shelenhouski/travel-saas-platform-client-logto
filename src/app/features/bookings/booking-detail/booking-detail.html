@@ -19,7 +19,8 @@
         <div class="flex flex-wrap items-center gap-2">
           @if (b.status !== BookingStatus.CANCELLED) {
             <button
-              class="rounded border border-red-600 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 disabled:opacity-50"
+              color="warn"
+              mat-stroked-button
               type="button"
               [disabled]="actionLoading()"
               (click)="markCancelled()"
@@ -29,7 +30,8 @@
           }
           @if (b.status === BookingStatus.CANCELLED) {
             <button
-              class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+              color="primary"
+              mat-flat-button
               type="button"
               [disabled]="actionLoading()"
               (click)="markConfirmed()"
@@ -39,7 +41,8 @@
           }
           @if (permissions.canDeleteBooking()) {
             <button
-              class="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+              color="warn"
+              mat-flat-button
               type="button"
               [disabled]="actionLoading()"
               (click)="deleteBooking()"
@@ -73,12 +76,7 @@
       </div>
 
       <div class="flex gap-3">
-        <a
-          class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          routerLink="/app/bookings"
-        >
-          ← Back to bookings
-        </a>
+        <a mat-stroked-button routerLink="/app/bookings">← Back to bookings</a>
       </div>
     } @else {
       <p class="text-gray-500">Booking not found.</p>

@@ -1,5 +1,4 @@
-<!-- eslint-disable @angular-eslint/template/cyclomatic-complexity -- tabbed layout with @switch -->
-<div class="space-y-4">
+ <div class="space-y-4">
   @if (loading()) {
     <div class="flex justify-center py-12">
       <div
@@ -17,11 +16,7 @@
           <h1 class="text-xl font-semibold text-gray-900">{{ c.name }}</h1>
           <p class="mt-1 text-sm text-gray-500">{{ typeLabel[c.type] }} client</p>
         </div>
-        <button
-          class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
-          type="button"
-          (click)="createRequest()"
-        >
+        <button color="primary" mat-flat-button type="button" (click)="createRequest()">
           Create request
         </button>
       </header>
@@ -29,49 +24,37 @@
       <!-- Tabs -->
       <nav aria-label="Client sections" class="flex gap-1 border-b border-gray-200">
         <button
-          class="rounded-t px-4 py-2 text-sm font-medium"
+          class="client-tab"
+          mat-button
           type="button"
-          [class.-mb-px]="activeTab() === 'overview'"
-          [class.border-b-2]="activeTab() === 'overview'"
-          [class.border-primary]="activeTab() === 'overview'"
-          [class.text-gray-600]="activeTab() !== 'overview'"
-          [class.text-primary]="activeTab() === 'overview'"
+          [class.client-tab-active]="activeTab() === 'overview'"
           (click)="setTab('overview')"
         >
           Overview
         </button>
         <button
-          class="rounded-t px-4 py-2 text-sm font-medium"
+          class="client-tab"
+          mat-button
           type="button"
-          [class.-mb-px]="activeTab() === 'requests'"
-          [class.border-b-2]="activeTab() === 'requests'"
-          [class.border-primary]="activeTab() === 'requests'"
-          [class.text-gray-600]="activeTab() !== 'requests'"
-          [class.text-primary]="activeTab() === 'requests'"
+          [class.client-tab-active]="activeTab() === 'requests'"
           (click)="setTab('requests')"
         >
           Requests
         </button>
         <button
-          class="rounded-t px-4 py-2 text-sm font-medium"
+          class="client-tab"
+          mat-button
           type="button"
-          [class.-mb-px]="activeTab() === 'activity'"
-          [class.border-b-2]="activeTab() === 'activity'"
-          [class.border-primary]="activeTab() === 'activity'"
-          [class.text-gray-600]="activeTab() !== 'activity'"
-          [class.text-primary]="activeTab() === 'activity'"
+          [class.client-tab-active]="activeTab() === 'activity'"
           (click)="setTab('activity')"
         >
           Activity
         </button>
         <button
-          class="rounded-t px-4 py-2 text-sm font-medium"
+          class="client-tab"
+          mat-button
           type="button"
-          [class.-mb-px]="activeTab() === 'comments'"
-          [class.border-b-2]="activeTab() === 'comments'"
-          [class.border-primary]="activeTab() === 'comments'"
-          [class.text-gray-600]="activeTab() !== 'comments'"
-          [class.text-primary]="activeTab() === 'comments'"
+          [class.client-tab-active]="activeTab() === 'comments'"
           (click)="setTab('comments')"
         >
           Comments
@@ -142,11 +125,7 @@
                 No requests for this client.
               </p>
               <div class="px-4 pb-4">
-                <button
-                  class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
-                  type="button"
-                  (click)="createRequest()"
-                >
+                <button color="primary" mat-flat-button type="button" (click)="createRequest()">
                   Create request
                 </button>
               </div>
@@ -227,12 +206,7 @@
       }
 
       <div class="flex gap-3">
-        <a
-          class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          routerLink="/app/clients"
-        >
-          ← Back to clients
-        </a>
+        <a mat-stroked-button routerLink="/app/clients">← Back to clients</a>
       </div>
     } @else {
       <p class="text-gray-500">Client not found.</p>

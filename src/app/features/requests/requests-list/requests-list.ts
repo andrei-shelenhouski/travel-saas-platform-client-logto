@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+
+import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
 
@@ -10,7 +12,7 @@ import type { RequestResponseDto } from '@app/shared/models';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-requests-list',
-  imports: [RouterLink],
+  imports: [RouterLink, ...MAT_BUTTONS],
   templateUrl: './requests-list.html',
   styleUrl: './requests-list.css',
 })

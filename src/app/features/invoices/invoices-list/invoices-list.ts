@@ -4,6 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 import { InvoicesService } from '@app/services/invoices.service';
+import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
 import type { InvoiceResponseDto } from '@app/shared/models';
 import { InvoiceStatus } from '@app/shared/models';
 
@@ -27,7 +28,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-invoices-list',
-  imports: [RouterLink],
+  imports: [RouterLink, ...MAT_BUTTONS, ...MAT_BUTTON_TOGGLES],
   templateUrl: './invoices-list.html',
   styleUrl: './invoices-list.css',
 })

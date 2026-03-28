@@ -19,6 +19,7 @@ import { OfferStatus } from '@app/shared/models';
 import { getAllowedTransitions, type OfferAction } from '@app/features/offers/offer-state-machine';
 import { OfferTimelineComponent } from '@app/features/offers/offer-timeline/offer-timeline';
 import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
+import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 const STATUS_BADGE_CLASS: Record<OfferStatus, string> = {
   DRAFT: 'bg-gray-100 text-gray-800',
@@ -43,7 +44,7 @@ const ACTION_LABELS: Record<OfferAction, string> = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-offer-detail',
-  imports: [OfferTimelineComponent, ConfirmationDialogComponent],
+  imports: [OfferTimelineComponent, ConfirmationDialogComponent, ...MAT_BUTTONS],
   templateUrl: './offer-detail.html',
   styleUrl: './offer-detail.css',
 })
@@ -272,6 +273,10 @@ export class OfferDetailComponent {
   protected onConfirmDialogCancel(): void {
     this.confirmOpen.set(false);
     this.confirmPayload.set(null);
+  }
+
+  protected isDestructiveAction(action: OfferAction): boolean {
+    return action === 'REJECT' || action === 'EXPIRE' || action === 'DELETE';
   }
 
   protected getConfirmConfig(): {

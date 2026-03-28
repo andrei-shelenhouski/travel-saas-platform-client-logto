@@ -6,19 +6,20 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { take } from 'rxjs';
 
 import { MeService } from '@app/services/me.service';
 import { RequestsService } from '@app/services/requests.service';
+import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ToastService } from '@app/shared/services/toast.service';
 import type { CreateRequestDto } from '@app/shared/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-request',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   templateUrl: './create-request.html',
   styleUrl: './create-request.css',
 })
@@ -29,41 +30,42 @@ export class CreateRequestComponent implements OnInit {
   private readonly requestsService = inject(RequestsService);
   private readonly toast = inject(ToastService);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly fb = inject(FormBuilder);
 
   readonly saving = signal(false);
   readonly error = signal('');
 
-  clientId = '';
-  managerId = '';
-  destination = '';
-  startDate = '';
-  endDate = '';
-  adults = 1;
-  children = 0;
-  comment = '';
+  readonly form = this.fb.nonNullable.group({
+    clientId: ['', Validators.required],
+    managerId: ['', Validators.required],
+    destination: ['', Validators.required],
+    startDate: ['', Validators.required],
+    endDate: ['', Validators.required],
+    adults: [1, [Validators.required, Validators.min(1)]],
+    children: [0, [Validators.min(0)]],
+    comment: [''],
+  });
 
   ngOnInit(): void {
     const clientIdParam = this.route.snapshot.queryParamMap.get('clientId');
 
     if (clientIdParam) {
-      this.clientId = clientIdParam;
+      this.form.patchValue({ clientId: clientIdParam });
     }
 
-    // Pre-fill from cache if available (e.g. user came from onboarding)
     const cached = this.meService.getMeData();
 
     if (cached?.id) {
-      this.managerId = cached.id;
+      this.form.patchValue({ managerId: cached.id });
     }
 
-    // Always fetch current user so managerId is set (cache is cleared after org selection)
     this.meService
       .getMe()
       .pipe(take(1))
       .subscribe({
         next: (res) => {
           if (res?.id) {
-            this.managerId = res.id;
+            this.form.patchValue({ managerId: res.id });
             this.cdr.markForCheck();
           }
         },
@@ -73,33 +75,29 @@ export class CreateRequestComponent implements OnInit {
   onSubmit(): void {
     this.error.set('');
 
-    if (!this.clientId.trim() || !this.managerId.trim() || !this.destination.trim()) {
-      this.error.set('Client ID, Manager ID and Destination are required.');
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      this.error.set('Please fill in all required fields.');
 
       return;
     }
-
-    if (!this.startDate || !this.endDate) {
-      this.error.set('Start date and End date are required.');
-
-      return;
-    }
+    const v = this.form.getRawValue();
     this.saving.set(true);
     const dto: CreateRequestDto = {
-      clientId: this.clientId.trim(),
-      managerId: this.managerId.trim(),
-      destination: this.destination.trim(),
-      startDate: this.startDate,
-      endDate: this.endDate,
-      adults: Number(this.adults) || 1,
+      clientId: v.clientId.trim(),
+      managerId: v.managerId.trim(),
+      destination: v.destination.trim(),
+      startDate: v.startDate,
+      endDate: v.endDate,
+      adults: Number(v.adults) || 1,
     };
 
-    if (Number(this.children) > 0) {
-      dto.children = Number(this.children);
+    if (Number(v.children) > 0) {
+      dto.children = Number(v.children);
     }
 
-    if (this.comment.trim()) {
-      dto.comment = this.comment.trim();
+    if (v.comment.trim()) {
+      dto.comment = v.comment.trim();
     }
 
     this.requestsService.create(dto).subscribe({

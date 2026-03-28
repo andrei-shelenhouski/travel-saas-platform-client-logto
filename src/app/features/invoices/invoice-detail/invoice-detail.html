@@ -19,7 +19,8 @@
         @if (!editing()) {
           <div class="flex flex-wrap items-center gap-2">
             <button
-              class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+              color="primary"
+              mat-flat-button
               type="button"
               [disabled]="actionLoading()"
               (click)="startEdit()"
@@ -28,7 +29,8 @@
             </button>
             @if (permissions.canDeleteInvoice()) {
               <button
-                class="rounded bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:opacity-50"
+                color="warn"
+                mat-flat-button
                 type="button"
                 [disabled]="actionLoading()"
                 (click)="deleteInvoice()"
@@ -43,44 +45,33 @@
       @if (editing()) {
         <div class="rounded-lg border border-gray-200 bg-white p-4">
           <h2 class="text-sm font-semibold text-gray-900 mb-3">Edit invoice</h2>
-          <div class="space-y-3 max-w-md">
-            <div>
-              <label class="block text-sm font-medium text-gray-700" for="edit-status">Status</label>
-              <select
-                class="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                id="edit-status"
-                name="editStatus"
-                [(ngModel)]="editStatus"
-              >
+          <div class="flex max-w-md flex-col gap-3" [formGroup]="editForm">
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+              <mat-label>Status</mat-label>
+              <mat-select formControlName="status" id="edit-status">
                 @for (opt of statusOptions; track opt.value) {
-                  <option [value]="opt.value">{{ opt.label }}</option>
+                  <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
                 }
-              </select>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700" for="edit-dueDate">Due date</label>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+              <mat-label>Due date</mat-label>
+              <input formControlName="dueDate" id="edit-dueDate" matInput type="date" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+              <mat-label>PDF URL</mat-label>
               <input
-                class="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-                id="edit-dueDate"
-                name="editDueDate"
-                type="date"
-                [(ngModel)]="editDueDate"
-              />
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700" for="edit-pdfUrl">PDF URL</label>
-              <input
-                class="mt-1 w-full rounded border border-gray-300 px-3 py-2 text-gray-900 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                formControlName="pdfUrl"
                 id="edit-pdfUrl"
-                name="editPdfUrl"
+                matInput
                 placeholder="https://..."
                 type="url"
-                [(ngModel)]="editPdfUrl"
               />
-            </div>
-            <div class="flex gap-2 pt-2">
+            </mat-form-field>
+            <div class="flex flex-wrap gap-2 pt-2">
               <button
-                class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+                color="primary"
+                mat-flat-button
                 type="button"
                 [disabled]="actionLoading()"
                 (click)="saveEdit()"
@@ -88,7 +79,7 @@
                 {{ actionLoading() ? 'Saving…' : 'Save' }}
               </button>
               <button
-                class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                mat-stroked-button
                 type="button"
                 [disabled]="actionLoading()"
                 (click)="cancelEdit()"
@@ -146,12 +137,7 @@
       }
 
       <div class="flex gap-3">
-        <a
-          class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-          routerLink="/app/invoices"
-        >
-          ← Back to invoices
-        </a>
+        <a mat-stroked-button routerLink="/app/invoices">← Back to invoices</a>
       </div>
     } @else {
       <p class="text-gray-500">Invoice not found.</p>

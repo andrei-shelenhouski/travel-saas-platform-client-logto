@@ -1,82 +1,31 @@
 <div class="flex h-screen bg-gray-50">
-  <aside class="w-56 flex flex-col border-r border-gray-200 bg-white">
-    <nav class="flex flex-1 flex-col gap-1 p-3">
-      <a
-        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        routerLink="/app/dashboard"
-        routerLinkActive="bg-primary-muted text-primary-700"
-        ><span aria-hidden="true" class="material-icons text-lg leading-none">home</span
-        ><span i18n="@@dashboard">Dashboard</span></a
-      >
-      <a
-        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        routerLink="/app/leads"
-        routerLinkActive="bg-primary-muted text-primary-700"
-        ><span aria-hidden="true" class="material-icons text-lg leading-none">flash_on</span
-        ><span i18n="@@leads">Leads</span></a
-      >
-      <a
-        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        routerLink="/app/clients"
-        routerLinkActive="bg-primary-muted text-primary-700"
-        ><span aria-hidden="true" class="material-icons text-lg leading-none">group</span
-        ><span i18n="@@clients">Clients</span></a
-      >
-      <a
-        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        routerLink="/app/requests"
-        routerLinkActive="bg-primary-muted text-primary-700"
-        ><span aria-hidden="true" class="material-icons text-lg leading-none">inbox</span
-        ><span i18n="@@requests">Requests</span></a
-      >
-      <a
-        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        routerLink="/app/offers"
-        routerLinkActive="bg-primary-muted text-primary-700"
-        ><span aria-hidden="true" class="material-icons text-lg leading-none">send</span
-        ><span i18n="@@offers">Offers</span></a
-      >
-      <a
-        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        routerLink="/app/bookings"
-        routerLinkActive="bg-primary-muted text-primary-700"
-        ><span aria-hidden="true" class="material-icons text-lg leading-none">event</span
-        ><span i18n="@@bookings">Bookings</span></a
-      >
-      <a
-        class="flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        routerLink="/app/invoices"
-        routerLinkActive="bg-primary-muted text-primary-700"
-        ><span aria-hidden="true" class="material-icons text-lg leading-none">description</span
-        ><span i18n="@@invoices">Invoices</span></a
-      >
-      @if (permissions.isAdmin()) {
+  <aside class="flex w-56 flex-col border-r border-gray-200 bg-white px-2">
+    <mat-nav-list class="min-h-0 flex-1">
+      @for (link of navLinks(); track link.path) {
         <a
-          class="mt-4 flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-          routerLink="/app/admin/users"
-          routerLinkActive="bg-primary-muted text-primary-700"
-          ><span aria-hidden="true" class="material-icons text-lg leading-none"
-            >manage_accounts</span
-          ><span i18n="@@userManagement">User management</span></a
+          #rla="routerLinkActive"
+          mat-list-item
+          routerLinkActive
+          [activated]="rla.isActive"
+          [class.mt-4]="link.sectionMargin"
+          [routerLink]="link.path"
         >
+          <mat-icon fontSet="material-icons" matListItemIcon>{{ link.icon }}</mat-icon>
+          <span matListItemTitle>{{ link.label }}</span>
+        </a>
       }
-      <a
-        class="mt-4 flex items-center gap-2 rounded px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-        routerLink="/app/settings"
-        routerLinkActive="bg-primary-muted text-primary-700"
-        ><span aria-hidden="true" class="material-icons text-lg leading-none">settings</span
-        ><span i18n="@@settings">Settings</span></a
-      >
-    </nav>
+    </mat-nav-list>
   </aside>
-  <div class="flex flex-1 flex-col min-w-0">
+  <div class="flex min-w-0 flex-1 flex-col">
     <header class="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4">
-      <div class="relative">
+      <div>
         <button
-          class="flex items-center gap-1.5 rounded px-2 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none"
+          #orgMenuTrigger="matMenuTrigger"
+          class="flex items-center gap-1.5"
+          mat-button
           type="button"
-          [disabled]="orgSwitcherLoading()"
-          (click)="openOrgSwitcher()"
+          [matMenuTriggerFor]="orgMenu"
+          (menuOpened)="onOrgMenuOpened()"
         >
           <span>{{ activeOrgName }}</span>
           @if (orgSwitcherLoading()) {
@@ -89,45 +38,44 @@
             >
           }
         </button>
-        @if (orgSwitcherOpen()) {
-          <div aria-hidden="true" class="fixed inset-0 z-10" (click)="closeOrgSwitcher()"></div>
-          <div
-            class="absolute left-0 top-full z-20 mt-1 min-w-55 rounded-lg border border-gray-200 bg-white py-1 shadow-lg"
-            role="listbox"
-          >
+        <mat-menu #orgMenu="matMenu">
+          @if (orgSwitcherLoading()) {
+            <button disabled mat-menu-item type="button">
+              <span class="flex items-center gap-2">
+                <span aria-hidden="true" class="material-icons animate-spin text-base">sync</span>
+                <span i18n="@@loadingOrganizations">Loading organizations…</span>
+              </span>
+            </button>
+          } @else {
             @for (org of organizations(); track org.id) {
               <button
-                class="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
-                role="option"
+                mat-menu-item
                 type="button"
-                [attr.aria-selected]="org.id === activeOrgId"
                 [class.bg-primary-muted]="org.id === activeOrgId"
                 (click)="switchOrganization(org)"
               >
-                <span>{{ org.name }}</span>
-                @if (org.id === activeOrgId) {
-                  <span aria-hidden="true" class="material-icons text-base text-primary-600"
-                    >check</span
-                  >
-                }
+                <span class="flex w-full items-center justify-between gap-4">
+                  <span>{{ org.name }}</span>
+                  @if (org.id === activeOrgId) {
+                    <mat-icon class="!text-primary-600 shrink-0" fontSet="material-icons"
+                      >check</mat-icon
+                    >
+                  }
+                </span>
               </button>
             }
-            @if (organizations().length === 0 && !orgSwitcherLoading()) {
-              <p class="px-3 py-2 text-sm text-gray-500">
+            @if (organizations().length === 0) {
+              <button disabled mat-menu-item type="button">
                 <span i18n="@@noOtherOrganizations">No other organizations</span>
-              </p>
+              </button>
             }
-            <div class="border-t border-gray-100 my-1"></div>
-            <a
-              class="flex w-full items-center gap-2 px-3 py-2 text-sm text-primary-600 hover:bg-gray-50 focus:bg-gray-50 focus:outline-none"
-              routerLink="/app/organizations/new"
-              (click)="closeOrgSwitcher()"
-            >
-              <span aria-hidden="true" class="material-icons text-base">add</span
-              ><span i18n="@@addOrganization">Add organization</span>
-            </a>
-          </div>
-        }
+          }
+          <mat-divider />
+          <a mat-menu-item routerLink="/app/organizations/new">
+            <mat-icon fontSet="material-icons">add</mat-icon>
+            <span i18n="@@addOrganization">Add organization</span>
+          </a>
+        </mat-menu>
       </div>
       <div class="flex items-center gap-3">
         @if (userPicture(); as userPicture) {
@@ -156,18 +104,16 @@
         >
           {{ permissions.roleLabel() }}
         </span>
-        <button
-          class="flex items-center gap-2 rounded px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100"
-          type="button"
-          (click)="logout()"
-        >
+        <button class="flex items-center gap-2" mat-button type="button" (click)="logout()">
           <span aria-hidden="true" class="material-icons text-base">logout</span
           ><span i18n="@@logout">Logout</span>
         </button>
       </div>
     </header>
     <main class="flex-1 overflow-auto p-4">
-      <router-outlet />
+      @for (reloadKey of [outletReloadKey()]; track reloadKey) {
+        <router-outlet />
+      }
     </main>
   </div>
   <app-toast />

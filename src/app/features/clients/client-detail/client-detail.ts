@@ -25,6 +25,7 @@ import {
   CommentComponent,
   TagSelectorComponent,
 } from '@app/shared/components';
+import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ToastService } from '@app/shared/services/toast.service';
 
 const TYPE_LABEL: Record<string, string> = {
@@ -37,7 +38,13 @@ type ClientTab = 'overview' | 'requests' | 'activity' | 'comments';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-client-detail',
-  imports: [RouterLink, ActivityTimelineComponent, TagSelectorComponent, CommentComponent],
+  imports: [
+    RouterLink,
+    ActivityTimelineComponent,
+    TagSelectorComponent,
+    CommentComponent,
+    ...MAT_BUTTONS,
+  ],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.css',
 })

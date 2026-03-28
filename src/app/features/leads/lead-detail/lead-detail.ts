@@ -12,6 +12,7 @@ import { map } from 'rxjs/operators';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 import { LeadsService } from '@app/services/leads.service';
+import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { PermissionService } from '@app/services/permission.service';
 import { ToastService } from '@app/shared/services/toast.service';
 import type { LeadResponseDto } from '@app/shared/models';
@@ -20,7 +21,7 @@ import { LeadStatus } from '@app/shared/models';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-lead-detail',
-  imports: [RouterLink],
+  imports: [RouterLink, ...MAT_BUTTONS],
   templateUrl: './lead-detail.html',
   styleUrl: './lead-detail.css',
 })

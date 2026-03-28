@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+
+import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
 
@@ -15,7 +17,7 @@ const TYPE_LABEL: Record<string, string> = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-clients-list',
-  imports: [RouterLink],
+  imports: [RouterLink, ...MAT_BUTTONS],
   templateUrl: './clients-list.html',
   styleUrl: './clients-list.css',
 })

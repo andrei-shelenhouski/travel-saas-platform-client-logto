@@ -8,12 +8,13 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
+import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { OrgRole } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
@@ -28,7 +29,7 @@ const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-users-management',
   standalone: true,
-  imports: [RouterLink, FormsModule, DatePipe],
+  imports: [RouterLink, ReactiveFormsModule, DatePipe, ...MAT_FORM_BUTTONS],
   templateUrl: './users-management.html',
   styleUrl: './users-management.css',
 })
@@ -36,6 +37,7 @@ export class UsersManagementComponent {
   private readonly membersService = inject(OrganizationMembersService);
   private readonly permissions = inject(PermissionService);
   private readonly toast = inject(ToastService);
+  private readonly fb = inject(FormBuilder);
 
   readonly roleOptions = ROLE_OPTIONS;
   private readonly data = rxResource({
@@ -59,9 +61,11 @@ export class UsersManagementComponent {
   /** Member id (organizationMember.id) currently updating role. */
   readonly updatingRoleId = signal<string | null>(null);
 
-  /** Add member form: email and role. */
-  readonly addEmail = signal('');
-  readonly addRole = signal<OrgRole>('MANAGER');
+  readonly addMemberForm = this.fb.nonNullable.group({
+    email: ['', [Validators.required, Validators.email]],
+    role: ['MANAGER' as OrgRole],
+  });
+
   readonly addingMember = signal(false);
   readonly addFormVisible = signal(false);
 
@@ -89,26 +93,33 @@ export class UsersManagementComponent {
     this.addFormVisible.update((v) => !v);
 
     if (!this.addFormVisible()) {
-      this.addEmail.set('');
-      this.addRole.set('MANAGER');
+      this.addMemberForm.reset({
+        email: '',
+        role: 'MANAGER',
+      });
     }
   }
 
   onAddMember(): void {
-    const email = this.addEmail().trim();
+    if (this.addMemberForm.invalid) {
+      this.addMemberForm.markAllAsTouched();
 
-    if (!email) {
+      return;
+    }
+    const { email, role } = this.addMemberForm.getRawValue();
+    const trimmed = email.trim();
+
+    if (!trimmed) {
       this.toast.showError('Please enter an email address');
 
       return;
     }
-    const dto: AddOrganizationMemberDto = { email, role: this.addRole() };
+    const dto: AddOrganizationMemberDto = { email: trimmed, role };
     this.addingMember.set(true);
     this.membersService.addMember(dto).subscribe({
       next: (member) => {
         this.membersList.update((list) => [...list, member]);
-        this.addEmail.set('');
-        this.addRole.set('MANAGER');
+        this.addMemberForm.reset({ email: '', role: 'MANAGER' });
         this.addFormVisible.set(false);
         this.toast.showSuccess(`${member.email} has been added to the organization`);
       },

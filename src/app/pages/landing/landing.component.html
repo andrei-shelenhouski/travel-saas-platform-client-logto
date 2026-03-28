@@ -17,18 +17,9 @@
         >
       </nav>
       @if (authService.isAuthenticated()) {
-        <a
-          class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary-hover transition-colors"
-          routerLink="/onboarding/check"
-        >
-          В приложение
-        </a>
+        <a color="primary" mat-flat-button routerLink="/onboarding/check">В приложение</a>
       } @else {
-        <button
-          class="rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary-hover transition-colors"
-          type="button"
-          (click)="authService.signIn()"
-        >
+        <button color="primary" mat-flat-button type="button" (click)="authService.signIn()">
           Войти
         </button>
       }
@@ -65,9 +56,9 @@
           </ul>
           <div class="hero-ctas">
             @if (authService.isAuthenticated()) {
-              <a class="hero-cta-primary" routerLink="/onboarding/check"> В приложение </a>
+              <a color="primary" mat-flat-button routerLink="/onboarding/check">В приложение</a>
             } @else {
-              <button class="hero-cta-primary" type="button" (click)="authService.signIn()">
+              <button color="primary" mat-flat-button type="button" (click)="authService.signIn()">
                 Начать использовать
               </button>
             }
@@ -347,27 +338,21 @@
           TravelOps помогает превратить поток заявок в управляемую прибыль.
         </p>
         @if (authService.isAuthenticated()) {
-          <a
-            class="mt-10 inline-flex rounded-full bg-white px-8 py-4 text-lg font-semibold text-primary-600 shadow-lg hover:bg-gray-100 transition-colors"
-            routerLink="/onboarding/check"
-          >
+          <a class="mt-10" color="primary" mat-flat-button routerLink="/onboarding/check">
             В приложение
           </a>
         } @else {
           <div class="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
             <button
-              class="w-full rounded-full bg-white px-8 py-4 text-lg font-semibold text-primary-600 shadow-lg hover:bg-gray-100 transition-colors sm:w-auto"
+              class="w-full sm:w-auto"
+              color="primary"
+              mat-flat-button
               type="button"
               (click)="authService.signIn()"
             >
               Получить ранний доступ
             </button>
-            <a
-              class="w-full rounded-full border-2 border-white/60 bg-transparent px-8 py-4 text-center text-lg font-semibold text-white hover:bg-white/10 transition-colors sm:w-auto"
-              href="#"
-            >
-              Запросить демонстрацию
-            </a>
+            <a class="w-full sm:w-auto" href="#" mat-stroked-button>Запросить демонстрацию</a>
           </div>
         }
       </div>

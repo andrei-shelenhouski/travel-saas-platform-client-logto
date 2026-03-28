@@ -15,6 +15,7 @@ import { BookingsService } from '@app/services/bookings.service';
 import { PermissionService } from '@app/services/permission.service';
 import { ToastService } from '@app/shared/services/toast.service';
 import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
+import { MAT_BUTTONS } from '@app/shared/material-imports';
 import type { BookingResponseDto } from '@app/shared/models';
 import { BookingStatus } from '@app/shared/models';
 
@@ -28,7 +29,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-booking-detail',
-  imports: [RouterLink, ConfirmationDialogComponent],
+  imports: [RouterLink, ConfirmationDialogComponent, ...MAT_BUTTONS],
   templateUrl: './booking-detail.html',
   styleUrl: './booking-detail.css',
 })

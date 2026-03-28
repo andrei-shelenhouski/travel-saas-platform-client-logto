@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 import { BookingsService } from '@app/services/bookings.service';
 import { InvoicesService } from '@app/services/invoices.service';
+import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ToastService } from '@app/shared/services/toast.service';
 import type { CreateInvoiceDto } from '@app/shared/models';
 import { BookingStatus } from '@app/shared/models';
@@ -12,7 +13,7 @@ import { BookingStatus } from '@app/shared/models';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-invoice',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   templateUrl: './create-invoice.html',
   styleUrl: './create-invoice.css',
 })
@@ -21,12 +22,15 @@ export class CreateInvoiceComponent {
   private readonly bookingsService = inject(BookingsService);
   private readonly invoicesService = inject(InvoicesService);
   private readonly toast = inject(ToastService);
+  private readonly fb = inject(FormBuilder);
 
   readonly saving = signal(false);
   readonly error = signal('');
 
-  bookingId = '';
-  dueDate = '';
+  readonly form = this.fb.nonNullable.group({
+    bookingId: ['', Validators.required],
+    dueDate: [''],
+  });
 
   private readonly bookingsResource = rxResource({
     stream: () =>
@@ -42,7 +46,8 @@ export class CreateInvoiceComponent {
 
   onSubmit(): void {
     this.error.set('');
-    const bid = this.bookingId.trim();
+    const v = this.form.getRawValue();
+    const bid = v.bookingId.trim();
 
     if (!bid) {
       this.error.set('Please select a booking.');
@@ -52,8 +57,8 @@ export class CreateInvoiceComponent {
     this.saving.set(true);
     const dto: CreateInvoiceDto = { bookingId: bid };
 
-    if (this.dueDate.trim()) {
-      dto.dueDate = this.dueDate.trim();
+    if (v.dueDate.trim()) {
+      dto.dueDate = v.dueDate.trim();
     }
 
     this.invoicesService.create(dto).subscribe({

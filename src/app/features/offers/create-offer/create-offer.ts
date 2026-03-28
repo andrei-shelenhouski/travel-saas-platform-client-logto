@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { FormsModule } from '@angular/forms';
 
 import { RequestsService } from '@app/services/requests.service';
 import { OffersService } from '@app/services/offers.service';
+import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ToastService } from '@app/shared/services/toast.service';
 import type { CreateOfferDto } from '@app/shared/models';
 import type { RequestResponseDto } from '@app/shared/models';
@@ -11,7 +12,7 @@ import type { RequestResponseDto } from '@app/shared/models';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-offer',
-  imports: [RouterLink, FormsModule],
+  imports: [RouterLink, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   templateUrl: './create-offer.html',
   styleUrl: './create-offer.css',
 })
@@ -21,19 +22,22 @@ export class CreateOfferComponent implements OnInit {
   private readonly requestsService = inject(RequestsService);
   private readonly offersService = inject(OffersService);
   private readonly toast = inject(ToastService);
+  private readonly fb = inject(FormBuilder);
 
   readonly requests = signal<RequestResponseDto[]>([]);
   readonly requestsLoading = signal(true);
   readonly saving = signal(false);
   readonly error = signal('');
 
-  selectedRequestId = '';
-  title = '';
-  supplierTotal = 0;
-  markup = 0;
-  commission = 0;
-  finalPrice = 0;
-  currency = 'EUR';
+  readonly form = this.fb.nonNullable.group({
+    selectedRequestId: ['', Validators.required],
+    title: [''],
+    supplierTotal: [0],
+    markup: [0],
+    commission: [0],
+    finalPrice: [0],
+    currency: ['EUR'],
+  });
 
   ngOnInit(): void {
     this.requestsService.getList().subscribe({
@@ -44,26 +48,29 @@ export class CreateOfferComponent implements OnInit {
     const requestId = this.route.snapshot.queryParamMap.get('requestId');
 
     if (requestId) {
-      this.selectedRequestId = requestId;
+      this.form.patchValue({ selectedRequestId: requestId });
     }
   }
 
   onSubmit(): void {
-    if (!this.selectedRequestId?.trim()) {
+    const requestId = this.form.controls.selectedRequestId.value?.trim();
+
+    if (!requestId) {
       this.error.set('Please select a request.');
 
       return;
     }
     this.error.set('');
     this.saving.set(true);
+    const v = this.form.getRawValue();
     const dto: CreateOfferDto = {
-      requestId: this.selectedRequestId.trim(),
-      title: this.title.trim() || 'Offer',
-      supplierTotal: this.supplierTotal,
-      markup: this.markup,
-      commission: this.commission,
-      finalPrice: this.finalPrice,
-      currency: this.currency.trim(),
+      requestId,
+      title: v.title.trim() || 'Offer',
+      supplierTotal: v.supplierTotal,
+      markup: v.markup,
+      commission: v.commission,
+      finalPrice: v.finalPrice,
+      currency: v.currency.trim(),
     };
     this.offersService.create(dto).subscribe({
       next: (created) => {

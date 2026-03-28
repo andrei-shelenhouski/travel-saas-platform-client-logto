@@ -1,12 +1,7 @@
 <div class="space-y-4">
   <header class="flex items-center justify-between border-b border-gray-200 pb-4">
     <h1 class="text-xl font-semibold text-gray-900">Create offer</h1>
-    <a
-      class="rounded px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-      routerLink="/app/offers"
-    >
-      Cancel
-    </a>
+    <a mat-button routerLink="/app/offers">Cancel</a>
   </header>
 
   <p class="text-sm text-gray-600">Create an offer for a request (travel request). The offer will be created as draft.</p>
@@ -15,109 +10,76 @@
     <p class="text-sm text-red-600">{{ error() }}</p>
   }
 
-  <form class="max-w-xl space-y-4" (ngSubmit)="onSubmit()">
-    <div>
-      <label class="block text-sm font-medium text-gray-700" for="request">Request</label>
-      <select
-        class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
-        id="request"
-        name="selectedRequestId"
-        required
-        [(ngModel)]="selectedRequestId"
-      >
-        <option value="">Select a request…</option>
+  <form class="max-w-xl flex flex-col gap-4" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-label>Request</mat-label>
+      <mat-select formControlName="selectedRequestId" id="request">
+        <mat-option value="">Select a request…</mat-option>
         @for (req of requests(); track req.id) {
-          <option [value]="req.id">
+          <mat-option [value]="req.id">
             {{ req.destination }} — {{ req.startDate }} ({{ req.adults }} adults)
-          </option>
+          </mat-option>
         }
-      </select>
+      </mat-select>
+      @if (
+        form.controls.selectedRequestId.hasError('required') &&
+        form.controls.selectedRequestId.touched
+      ) {
+        <mat-error>Select a request</mat-error>
+      }
       @if (requestsLoading()) {
-        <p class="mt-1 text-xs text-gray-500">Loading requests…</p>
+        <mat-hint>Loading requests…</mat-hint>
       }
       @if (!requestsLoading() && requests().length === 0) {
-        <p class="mt-1 text-xs text-amber-600">No requests found. Create a request first (e.g. via API or requests screen).</p>
+        <mat-hint class="!text-amber-700"
+          >No requests found. Create a request first (e.g. via API or requests screen).</mat-hint
+        >
       }
-    </div>
+    </mat-form-field>
 
-    <div>
-      <label class="block text-sm font-medium text-gray-700" for="title">Title</label>
+    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-label>Title</mat-label>
       <input
-        class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
+        formControlName="title"
         id="title"
-        name="title"
+        matInput
         placeholder="e.g. Summer package 2025"
         type="text"
-        [(ngModel)]="title"
       />
+    </mat-form-field>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Final price</mat-label>
+        <input formControlName="finalPrice" id="finalPrice" matInput min="0" step="0.01" type="number" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Currency</mat-label>
+        <input formControlName="currency" id="currency" matInput type="text" />
+      </mat-form-field>
     </div>
 
-    <div class="grid grid-cols-2 gap-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700" for="finalPrice">Final price</label>
-        <input
-          class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
-          id="finalPrice"
-          min="0"
-          name="finalPrice"
-          step="0.01"
-          type="number"
-          [(ngModel)]="finalPrice"
-        />
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700" for="currency">Currency</label>
-        <input
-          class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
-          id="currency"
-          name="currency"
-          type="text"
-          [(ngModel)]="currency"
-        />
-      </div>
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Supplier total</mat-label>
+        <input formControlName="supplierTotal" id="supplierTotal" matInput step="0.01" type="number" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Markup</mat-label>
+        <input formControlName="markup" id="markup" matInput step="0.01" type="number" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Commission</mat-label>
+        <input formControlName="commission" id="commission" matInput step="0.01" type="number" />
+      </mat-form-field>
     </div>
 
-    <div class="grid grid-cols-3 gap-4">
-      <div>
-        <label class="block text-sm font-medium text-gray-700" for="supplierTotal">Supplier total</label>
-        <input
-          class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
-          id="supplierTotal"
-          name="supplierTotal"
-          step="0.01"
-          type="number"
-          [(ngModel)]="supplierTotal"
-        />
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700" for="markup">Markup</label>
-        <input
-          class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
-          id="markup"
-          name="markup"
-          step="0.01"
-          type="number"
-          [(ngModel)]="markup"
-        />
-      </div>
-      <div>
-        <label class="block text-sm font-medium text-gray-700" for="commission">Commission</label>
-        <input
-          class="mt-1 block w-full rounded border border-gray-300 px-3 py-2 text-sm"
-          id="commission"
-          name="commission"
-          step="0.01"
-          type="number"
-          [(ngModel)]="commission"
-        />
-      </div>
-    </div>
-
-    <div class="flex gap-3 pt-2">
+    <div class="flex flex-wrap gap-3 pt-2">
       <button
-        class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover disabled:opacity-50"
+        color="primary"
+        mat-flat-button
         type="submit"
-        [disabled]="saving() || !selectedRequestId"
+        [disabled]="saving() || form.invalid || requests().length === 0"
       >
         @if (saving()) {
           <span aria-hidden="true" class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
@@ -125,12 +87,7 @@
           Create offer
         }
       </button>
-      <a
-        class="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-        routerLink="/app/offers"
-      >
-        Cancel
-      </a>
+      <a mat-stroked-button routerLink="/app/offers">Cancel</a>
     </div>
   </form>
 </div>

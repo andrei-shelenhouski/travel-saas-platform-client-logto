@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
+import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
+
 import { LeadsService } from '@app/services/leads.service';
 import type { LeadResponseDto } from '@app/shared/models';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -9,7 +11,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-leads-list',
-  imports: [RouterLink],
+  imports: [RouterLink, ...MAT_BUTTONS, ...MAT_BUTTON_TOGGLES],
   templateUrl: './leads-list.html',
   styleUrl: './leads-list.css',
 })

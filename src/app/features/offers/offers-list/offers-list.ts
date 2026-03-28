@@ -4,6 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 import { OffersService } from '@app/services/offers.service';
+import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
 import type { OfferResponseDto } from '@app/shared/models';
 import { OfferStatus } from '@app/shared/models';
 
@@ -30,7 +31,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-offers-list',
-  imports: [RouterLink],
+  imports: [RouterLink, ...MAT_BUTTONS, ...MAT_BUTTON_TOGGLES],
   templateUrl: './offers-list.html',
   styleUrl: './offers-list.css',
 })

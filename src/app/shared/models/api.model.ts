@@ -6,10 +6,13 @@
 
 // ----- Enums (from API schema enums) -----
 
+/** CreateLeadDto / UpdateLeadDto source enum (OpenAPI). LeadResponseDto may return a subset. */
 export const LeadSource = {
   PHONE: 'PHONE',
   EMAIL: 'EMAIL',
   WHATSAPP: 'WHATSAPP',
+  TELEGRAM: 'TELEGRAM',
+  WEBSITE: 'WEBSITE',
   AGENT: 'AGENT',
   OTHER: 'OTHER',
 } as const;
@@ -189,6 +192,10 @@ export type UpdateOfferStatusDto = {
   status: 'SENT' | 'VIEWED' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED';
 };
 
+/**
+ * Full offer lifecycle + list filter values (OpenAPI query `status` includes VIEWED).
+ * OfferResponseDto.status does not include VIEWED — use OfferResponseStatus for GET bodies.
+ */
 export const OfferStatus = {
   DRAFT: 'DRAFT',
   SENT: 'SENT',
@@ -198,6 +205,9 @@ export const OfferStatus = {
   EXPIRED: 'EXPIRED',
 } as const;
 export type OfferStatus = (typeof OfferStatus)[keyof typeof OfferStatus];
+
+/** OpenAPI OfferResponseDto.status (GET responses — no VIEWED). */
+export type OfferResponseStatus = 'DRAFT' | 'SENT' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED';
 
 /** OpenAPI: OfferResponseDto.source enum. */
 export const OfferSource = {
@@ -213,7 +223,7 @@ export type OfferResponseDto = {
   requestId: string;
   title: string;
   source: OfferSource | string;
-  status: OfferStatus | string;
+  status: OfferResponseStatus | string;
   supplierTotal: string;
   markup: string;
   commission: string;

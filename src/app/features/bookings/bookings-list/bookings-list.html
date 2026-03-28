@@ -4,22 +4,17 @@
     <p class="text-sm text-gray-500 w-full">Created from accepted offers.</p>
   </header>
 
-  <div class="flex flex-wrap gap-1 rounded-lg border border-gray-200 bg-gray-50/50 p-1">
+  <mat-button-toggle-group
+    appearance="standard"
+    class="flex flex-wrap"
+    hideSingleSelectionIndicator
+    [value]="activeFilter()"
+    (change)="setFilter($event.value)"
+  >
     @for (tab of filterTabs; track tab.value) {
-      <button
-        class="rounded-md px-3 py-2 text-sm font-medium transition-colors"
-        type="button"
-        [class]="
-          activeFilter() === tab.value
-            ? 'bg-white text-gray-900 shadow-sm'
-            : 'text-gray-600 hover:text-gray-900'
-        "
-        (click)="setFilter(tab.value)"
-      >
-        {{ tab.label }}
-      </button>
+      <mat-button-toggle [value]="tab.value">{{ tab.label }}</mat-button-toggle>
     }
-  </div>
+  </mat-button-toggle-group>
 
   @if (error()) {
     <p class="text-sm text-red-600">{{ error() }}</p>

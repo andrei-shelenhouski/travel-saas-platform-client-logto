@@ -1,12 +1,7 @@
 <div class="space-y-4">
   <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
     <h1 class="text-xl font-semibold text-gray-900">Clients</h1>
-    <a
-      class="rounded bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary-hover"
-      routerLink="/app/clients/new"
-    >
-      Create client
-    </a>
+    <a color="primary" mat-flat-button routerLink="/app/clients/new">Create client</a>
   </header>
 
   @if (error()) {
