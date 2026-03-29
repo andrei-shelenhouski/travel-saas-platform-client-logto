@@ -1,5 +1,7 @@
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatChipEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { MatIconModule } from '@angular/material/icon';
 
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
@@ -7,50 +9,56 @@ import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-tag-selector',
   standalone: true,
-  imports: [ReactiveFormsModule, ...MAT_FORM_BUTTONS],
+  imports: [MatChipsModule, MatIconModule, ...MAT_FORM_BUTTONS],
   template: `
     <div class="space-y-2">
-      @if (label()) {
-        @if (allowAdd()) {
-          <label class="block text-sm font-medium text-gray-700" for="tag-selector-input">{{
-            label()
-          }}</label>
-        } @else {
-          <span class="block text-sm font-medium text-gray-700">{{ label() }}</span>
-        }
-      }
-      <div class="flex flex-wrap gap-2">
-        @for (tag of selected(); track tag) {
-          <span
-            class="inline-flex items-center gap-1 rounded-full bg-primary-100 px-3 py-1 text-sm text-primary-800"
-          >
-            {{ tag }}
-            @if (removable()) {
-              <button
-                aria-label="Remove {{ tag }}"
-                mat-icon-button
-                type="button"
-                (click)="removeTag(tag)"
+      @if (allowAdd()) {
+        <mat-form-field
+          appearance="outline"
+          class="tag-selector-field w-full"
+          subscriptSizing="dynamic"
+        >
+          @if (label()) {
+            <mat-label>{{ label() }}</mat-label>
+          }
+          <mat-chip-grid #chipGrid [attr.aria-label]="label() || 'Tags'" [disabled]="false">
+            @for (tag of selected(); track tag) {
+              <mat-chip-row
+                [attr.aria-label]="tag"
+                [removable]="removable()"
+                (removed)="onChipRemoved($event)"
               >
-                <span aria-hidden="true">&times;</span>
-              </button>
+                {{ tag }}
+                @if (removable()) {
+                  <button matChipRemove type="button" [attr.aria-label]="'Remove ' + tag">
+                    <mat-icon>cancel</mat-icon>
+                  </button>
+                }
+              </mat-chip-row>
             }
-          </span>
-        }
-        @if (allowAdd()) {
-          <mat-form-field appearance="outline" class="min-w-40 flex-1" subscriptSizing="dynamic">
             <input
               id="tag-selector-input"
               matInput
-              type="text"
-              [formControl]="inputControl"
+              [matChipInputAddOnBlur]="true"
+              [matChipInputFor]="chipGrid"
+              [matChipInputSeparatorKeyCodes]="separatorKeys"
               [placeholder]="placeholder()"
-              (blur)="addCurrent()"
-              (keydown.enter)="addCurrent(); $event.preventDefault()"
+              (matChipInputTokenEnd)="onInputTokenEnd($event)"
             />
-          </mat-form-field>
+          </mat-chip-grid>
+        </mat-form-field>
+      } @else {
+        @if (label()) {
+          <span class="block text-sm font-medium text-gray-700">{{ label() }}</span>
         }
-      </div>
+        <mat-chip-set [attr.aria-label]="label() || 'Tags'">
+          @for (tag of selected(); track tag) {
+            <mat-chip-row [attr.aria-label]="tag" [removable]="false">
+              {{ tag }}
+            </mat-chip-row>
+          }
+        </mat-chip-set>
+      }
       @if (options().length > 0) {
         <div class="mt-1 flex flex-wrap gap-1">
           @for (opt of options(); track opt) {
@@ -63,6 +71,13 @@ import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
         </div>
       }
     </div>
+  `,
+  styles: `
+    :host ::ng-deep .tag-selector-field .mat-mdc-form-field-infix {
+      padding-top: 8px;
+      padding-bottom: 8px;
+      min-height: 48px;
+    }
   `,
 })
 export class TagSelectorComponent {
@@ -79,31 +94,50 @@ export class TagSelectorComponent {
 
   readonly selectionChange = output<string[]>();
 
-  protected readonly inputControl = new FormControl('', { nonNullable: true });
+  /** Keys that finish the current token and add a chip (same as common tag UIs). */
+  protected readonly separatorKeys = [ENTER, COMMA] as const;
 
-  protected removeTag(tag: string): void {
-    if (!this.removable()) {
+  protected onInputTokenEnd(event: MatChipInputEvent): void {
+    if (!this.allowAdd()) {
+      event.chipInput.clear();
+
       return;
     }
-    const next = this.selected().filter((t) => t !== tag);
-    this.selectionChange.emit(next);
-  }
 
-  protected addCurrent(): void {
-    const v = this.inputControl.value.trim();
+    const v = event.value.trim();
 
-    if (!v || !this.allowAdd()) {
+    if (!v) {
+      event.chipInput.clear();
+
       return;
     }
+
     const current = this.selected();
 
     if (current.includes(v)) {
-      this.inputControl.setValue('');
+      event.chipInput.clear();
 
       return;
     }
+
     this.selectionChange.emit([...current, v]);
-    this.inputControl.setValue('');
+    event.chipInput.clear();
+  }
+
+  protected onChipRemoved(event: MatChipEvent): void {
+    if (!this.removable()) {
+      return;
+    }
+
+    const tag = String(event.chip.value ?? '').trim();
+
+    if (!tag) {
+      return;
+    }
+
+    const next = this.selected().filter((t) => t !== tag);
+
+    this.selectionChange.emit(next);
   }
 
   protected toggleOption(opt: string): void {

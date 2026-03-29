@@ -1,7 +1,7 @@
 <div class="space-y-4">
   <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
     <h1 class="text-xl font-semibold text-gray-900">Clients</h1>
-    <a color="primary" mat-flat-button routerLink="/app/clients/new">Create client</a>
+    <a color="primary" matButton="filled" routerLink="/app/clients/new">Create client</a>
   </header>
 
   @if (error()) {
@@ -23,21 +23,19 @@
         @if (loading()) {
           <tr>
             <td class="px-4 py-12 text-center text-gray-500" colspan="5">
-              <div aria-hidden="true" class="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+              <div
+                aria-hidden="true"
+                class="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+              ></div>
             </td>
           </tr>
         } @else if (clients().length === 0) {
           <tr>
-            <td class="px-4 py-12 text-center text-gray-500" colspan="5">
-              No clients yet.
-            </td>
+            <td class="px-4 py-12 text-center text-gray-500" colspan="5">No clients yet.</td>
           </tr>
         } @else {
           @for (client of clients(); track client.id) {
-            <tr
-              class="cursor-pointer hover:bg-gray-50"
-              (click)="goToDetail(client)"
-            >
+            <tr class="cursor-pointer hover:bg-gray-50" (click)="goToDetail(client)">
               <td class="px-4 py-3 text-sm font-medium text-gray-900">
                 {{ client.name }}
               </td>

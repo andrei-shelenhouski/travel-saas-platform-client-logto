@@ -4,6 +4,7 @@
 // Learn more about theming and how to use it for your application's
 // custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
+@use 'sass:map';
 @use 'theme-colors' as theme-colors;
 
 html {
@@ -16,6 +17,31 @@ html {
       ),
       typography: Manrope,
       density: 0,
+    )
+  );
+
+  @include mat.button-overrides(
+    (
+      filled-container-shape: 0.25rem,
+      outlined-container-shape: 0.25rem,
+      text-container-shape: 0.25rem,
+      tonal-container-shape: 0.25rem,
+      protected-container-shape: 0.25rem,
+    )
+  );
+
+  @include mat.button-toggle-overrides(
+    (
+      shape: 0.25rem,
+      divider-color: map.get(theme-colors.$primary-palette, neutral, 80),
+    )
+  );
+
+  @include mat.list-overrides(
+    (
+      active-indicator-shape: 0.25rem,
+      list-item-trailing-icon-color: var(--mat-sys-primary),
+      list-item-leading-icon-color: var(--mat-sys-primary),
     )
   );
 }

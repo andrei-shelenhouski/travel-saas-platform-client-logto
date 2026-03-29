@@ -1,4 +1,4 @@
- <div class="space-y-4">
+<div class="space-y-4">
   @if (loading()) {
     <div class="flex justify-center py-12">
       <div
@@ -206,7 +206,10 @@
       }
 
       <div class="flex gap-3">
-        <a mat-stroked-button routerLink="/app/clients">← Back to clients</a>
+        <a matButton="tonal" routerLink="/app/clients">
+          <span aria-hidden="true" class="material-icons text-base">chevron_left</span>
+          Back to clients
+        </a>
       </div>
     } @else {
       <p class="text-gray-500">Client not found.</p>
