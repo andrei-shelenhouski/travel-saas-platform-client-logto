@@ -29,7 +29,7 @@ export class ClientsListComponent {
   });
 
   readonly typeLabel = TYPE_LABEL;
-  readonly clients = computed(() => this.data.value()?.data ?? []);
+  readonly clients = computed(() => this.data.value()?.items ?? []);
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const err = this.data.error();

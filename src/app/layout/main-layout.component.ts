@@ -161,10 +161,10 @@ export class MainLayoutComponent implements OnInit {
   }
 
   switchOrganization(org: OrganizationWithRoleDto): void {
-    if (org.id === this.activeOrgId) {
+    if (org.organizationId === this.activeOrgId) {
       return;
     }
-    this.orgState.setActiveOrganization(org.id, org.name);
+    this.orgState.setActiveOrganization(org.organizationId, org.organizationName);
     this.outletReloadKey.update((k) => k + 1);
     this.meService
       .getMe()

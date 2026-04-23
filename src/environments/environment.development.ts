@@ -1,5 +1,5 @@
 export const environment = {
-  baseUrl: 'http://localhost:3000',
+  baseUrl: 'http://localhost:8080',
   firebaseOptions: {
     projectId: 'travel-saas-platform-prod',
     appId: '1:535055410790:web:2890c1ebae5327cd9c6fa7',

@@ -51,7 +51,7 @@ export class OnboardingCheckComponent implements OnInit {
     }
 
     if (orgs.length === 1) {
-      this.orgState.setActiveOrganization(orgs[0].id, orgs[0].name);
+      this.orgState.setActiveOrganization(orgs[0].organizationId, orgs[0].organizationName);
       this.meService.clearMeData();
       this.router.navigate(['/app']);
 

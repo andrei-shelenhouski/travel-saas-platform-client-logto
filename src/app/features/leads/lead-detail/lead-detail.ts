@@ -83,7 +83,7 @@ export class LeadDetailComponent {
     this.leadsService.convertToClient(l.id).subscribe({
       next: (res) => {
         this.toast.showSuccess('Lead converted to client');
-        this.router.navigate(['/app/clients', res.client.id]);
+        this.router.navigate(['/app/clients', res.convertedToClientId]);
       },
       error: (err) => {
         this.toast.showError(err.error?.message ?? err.message ?? 'Failed to convert lead');

@@ -45,7 +45,7 @@ export class OffersListComponent {
   readonly filterTabs = FILTER_TABS;
   readonly statusBadgeClass = STATUS_BADGE_CLASS;
 
-  readonly offers = computed(() => this.data.value()?.data ?? []);
+  readonly offers = computed(() => this.data.value()?.items ?? []);
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const err = this.data.error();

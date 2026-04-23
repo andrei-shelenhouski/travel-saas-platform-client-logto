@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -8,8 +7,8 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
 import { OrganizationMembersService } from '@app/services/organization-members.service';
@@ -29,7 +28,7 @@ const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-users-management',
   standalone: true,
-  imports: [RouterLink, ReactiveFormsModule, DatePipe, ...MAT_FORM_BUTTONS],
+  imports: [RouterLink, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   templateUrl: './users-management.html',
   styleUrl: './users-management.css',
 })
@@ -86,7 +85,7 @@ export class UsersManagementComponent {
   }
 
   canChangeRole(member: OrganizationMemberResponseDto): boolean {
-    return !this.isCurrentUser(member) && member.isActive;
+    return !this.isCurrentUser(member) && member.active;
   }
 
   toggleAddForm(): void {

@@ -82,7 +82,7 @@ export class OffersKanbanComponent {
     effect(() => {
       const value = this.data.value();
 
-      if (!value?.data) {
+      if (!value?.items) {
         return;
       }
       const byStatus: Record<string, OfferResponseDto[]> = {};
@@ -90,7 +90,7 @@ export class OffersKanbanComponent {
       for (const s of OFFER_STATUS_ORDER) {
         byStatus[s] = [];
       }
-      for (const offer of value.data) {
+      for (const offer of value.items) {
         const s = offer.status as string;
 
         if (!byStatus[s]) {

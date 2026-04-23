@@ -22,7 +22,7 @@ export class LeadsListComponent {
     stream: () => this.leadsService.findAll(),
   });
 
-  readonly leads = computed(() => this.data.value()?.data ?? []);
+  readonly leads = computed(() => this.data.value()?.items ?? []);
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const error = this.data.error();

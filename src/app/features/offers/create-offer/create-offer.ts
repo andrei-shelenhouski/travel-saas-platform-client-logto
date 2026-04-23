@@ -7,6 +7,7 @@ import { OffersService } from '@app/services/offers.service';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ToastService } from '@app/shared/services/toast.service';
 import type { CreateOfferDto } from '@app/shared/models';
+import { OfferSource } from '@app/shared/models';
 import type { RequestResponseDto } from '@app/shared/models';
 
 @Component({
@@ -41,7 +42,7 @@ export class CreateOfferComponent implements OnInit {
 
   ngOnInit(): void {
     this.requestsService.getList().subscribe({
-      next: (res) => this.requests.set(res.data),
+      next: (res) => this.requests.set(res.items),
       error: () => this.requestsLoading.set(false),
       complete: () => this.requestsLoading.set(false),
     });
@@ -66,6 +67,7 @@ export class CreateOfferComponent implements OnInit {
     const dto: CreateOfferDto = {
       requestId,
       title: v.title.trim() || 'Offer',
+      source: OfferSource.MANUAL,
       supplierTotal: v.supplierTotal,
       markup: v.markup,
       commission: v.commission,

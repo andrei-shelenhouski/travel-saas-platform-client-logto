@@ -25,7 +25,7 @@ export class RequestsListComponent {
   });
 
   readonly requests = computed(() => {
-    const list = this.data.value()?.data ?? [];
+    const list = this.data.value()?.items ?? [];
 
     if (!this.permissions.filterToOwnRecords()) {
       return list;

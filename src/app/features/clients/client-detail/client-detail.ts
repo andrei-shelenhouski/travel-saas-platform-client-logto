@@ -76,7 +76,7 @@ export class ClientDetailComponent {
   private readonly requestsData = rxResource<RequestResponseDto[], string | null>({
     params: (): string | null => this.routeId() ?? null,
     stream: () => {
-      return this.requestsService.getList({ limit: 100 }).pipe(map((res) => res.data));
+      return this.requestsService.getList({ limit: 100 }).pipe(map((res) => res.items));
     },
   });
 

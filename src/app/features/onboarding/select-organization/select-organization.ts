@@ -22,7 +22,7 @@ export class SelectOrganizationComponent {
     this.meService.getMeData()?.organizations ?? ([] as OrganizationWithRoleDto[]);
 
   select(org: OrganizationWithRoleDto): void {
-    this.orgState.setActiveOrganization(org.id, org.name);
+    this.orgState.setActiveOrganization(org.organizationId, org.organizationName);
     this.meService.clearMeData();
     this.router.navigate(['/app']);
   }

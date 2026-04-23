@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
 import type { AttachTagDto, CreateTagDto, EntityType, TagResponseDto } from '@app/shared/models';
@@ -30,7 +30,9 @@ export class TagsService {
       httpParams = httpParams.set('entityId', params.entityId);
     }
 
-    return this.http.get<TagResponseDto[]>(TAGS_URL, { params: httpParams });
+    return this.http.get<{ items: TagResponseDto[] }>(TAGS_URL, { params: httpParams }).pipe(
+      map((res) => res.items),
+    );
   }
 
   findById(id: string): Observable<TagResponseDto> {

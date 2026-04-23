@@ -47,16 +47,16 @@
               </span>
             </button>
           } @else {
-            @for (org of organizations(); track org.id) {
+            @for (org of organizations(); track org.organizationId) {
               <button
                 mat-menu-item
                 type="button"
-                [class.bg-primary-muted]="org.id === activeOrgId"
+                [class.bg-primary-muted]="org.organizationId === activeOrgId"
                 (click)="switchOrganization(org)"
               >
                 <span class="flex w-full items-center justify-between gap-4">
-                  <span>{{ org.name }}</span>
-                  @if (org.id === activeOrgId) {
+                  <span>{{ org.organizationName }}</span>
+                  @if (org.organizationId === activeOrgId) {
                     <mat-icon class="!text-primary-600 shrink-0" fontSet="material-icons"
                       >check</mat-icon
                     >

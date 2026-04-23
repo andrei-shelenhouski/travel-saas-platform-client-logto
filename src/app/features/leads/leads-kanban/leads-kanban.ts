@@ -83,7 +83,7 @@ export class LeadsKanbanComponent {
     effect(() => {
       const value = this.data.value();
 
-      if (!value?.data) {
+      if (!value?.items) {
         return;
       }
       const byStatus: Record<string, LeadResponseDto[]> = {};
@@ -91,7 +91,7 @@ export class LeadsKanbanComponent {
       for (const s of LEAD_STATUS_ORDER) {
         byStatus[s] = [];
       }
-      for (const lead of value.data) {
+      for (const lead of value.items) {
         const s = lead.status as string;
 
         if (!byStatus[s]) {

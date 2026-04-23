@@ -33,7 +33,7 @@ export class RoleService {
     const activeOrgId = this.orgState.getActiveOrganization();
 
     if (me?.organizations && activeOrgId) {
-      const org = me.organizations.find((o) => o.id === activeOrgId);
+      const org = me.organizations.find((o) => o.organizationId === activeOrgId);
 
       if (org?.role) {
         return orgRoleToAppRole(org.role);
