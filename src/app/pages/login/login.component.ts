@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, type OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
@@ -8,7 +8,6 @@ import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   imports: [MatProgressSpinnerModule, ...MAT_BUTTONS],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
@@ -23,10 +22,10 @@ export class LoginComponent implements OnInit {
 
   readonly errorMessage = signal<string | null>(null);
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
     this.title.setTitle('Sign In — TravelOps');
 
-    if (this.authService.isAuthenticated()) {
+    if (await this.authService.hasAuthenticatedUser()) {
       void this.router.navigate(['/onboarding/check']);
     }
   }
