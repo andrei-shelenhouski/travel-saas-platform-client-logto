@@ -47,6 +47,8 @@ export const OrgRole = {
   ADMIN: 'ADMIN',
   MANAGER: 'MANAGER',
   AGENT: 'AGENT',
+  SALES_AGENT: 'SALES_AGENT',
+  BACK_OFFICE: 'BACK_OFFICE',
 } as const;
 export type OrgRole = (typeof OrgRole)[keyof typeof OrgRole];
 
