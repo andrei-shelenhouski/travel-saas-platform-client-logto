@@ -6,13 +6,19 @@
           <span class="material-icons text-3xl text-primary-600">business</span>
         </div>
       </div>
-      <h1 class="text-2xl font-semibold text-gray-900" i18n="@@selectOrganizationTitle">Select Organization</h1>
+      <h1 class="text-2xl font-semibold text-gray-900" i18n="@@selectOrganizationTitle">
+        Select Organization
+      </h1>
       <p class="mt-2 text-sm text-gray-500" i18n="@@selectOrganizationSubtitle">
         You have access to multiple organizations. Select one to continue.
       </p>
     </div>
 
-    @if (organizations().length === 0) {
+    @if (isLoading()) {
+      <p class="text-center text-gray-600" i18n="@@loadingOrganizations">
+        Loading organizations...
+      </p>
+    } @else if (organizations().length === 0) {
       <p class="text-center text-gray-600" i18n="@@noOrganizationsFound">No organizations found.</p>
     } @else {
       <ul class="space-y-3" role="list">
@@ -25,8 +31,12 @@
             >
               <div class="flex items-center justify-between gap-4">
                 <div class="flex min-w-0 items-center gap-3">
-                  <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 group-hover:bg-primary-50">
-                    <span class="material-icons text-xl text-gray-500 group-hover:text-primary-600">business</span>
+                  <div
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 group-hover:bg-primary-50"
+                  >
+                    <span class="material-icons text-xl text-gray-500 group-hover:text-primary-600"
+                      >business</span
+                    >
                   </div>
                   <span class="truncate font-medium text-gray-900">{{ org.organizationName }}</span>
                 </div>
@@ -45,7 +55,9 @@
                   >
                     {{ roleLabel(org.role) }}
                   </span>
-                  <span class="material-icons text-base text-gray-400 group-hover:text-primary-500">arrow_forward_ios</span>
+                  <span class="material-icons text-base text-gray-400 group-hover:text-primary-500"
+                    >arrow_forward_ios</span
+                  >
                 </div>
               </div>
             </button>

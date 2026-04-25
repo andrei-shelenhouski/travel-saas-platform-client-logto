@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router } from '@angular/router';
 
+import { of, throwError } from 'rxjs';
+
 import { MeService } from '@app/services/me.service';
 import { OrganizationStateService } from '@app/services/organization-state.service';
 
@@ -26,7 +28,11 @@ const ORG_AGENT = {
 describe('SelectOrganizationComponent', () => {
   let component: SelectOrganizationComponent;
   let fixture: ComponentFixture<SelectOrganizationComponent>;
-  let mockMeService: { getMeData: ReturnType<typeof vi.fn>; clearMeData: ReturnType<typeof vi.fn> };
+  let mockMeService: {
+    getMeData: ReturnType<typeof vi.fn>;
+    getMe: ReturnType<typeof vi.fn>;
+    clearMeData: ReturnType<typeof vi.fn>;
+  };
   let mockOrgState: { setActiveOrganization: ReturnType<typeof vi.fn> };
   let mockRouter: { navigate: ReturnType<typeof vi.fn> };
 
@@ -39,6 +45,7 @@ describe('SelectOrganizationComponent', () => {
         active: true,
         organizations: [ORG_ADMIN, ORG_AGENT],
       }),
+      getMe: vi.fn().mockReturnValue(of({ organizations: [ORG_ADMIN, ORG_AGENT] })),
       clearMeData: vi.fn(),
     };
     mockOrgState = { setActiveOrganization: vi.fn() };
@@ -62,10 +69,32 @@ describe('SelectOrganizationComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should fetch me data when cache is empty', () => {
+    mockMeService.getMeData.mockReturnValue(null);
+
+    fixture = TestBed.createComponent(SelectOrganizationComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(mockMeService.getMe).toHaveBeenCalledTimes(1);
+  });
+
+  it('should redirect to onboarding check when me fetch fails', () => {
+    mockMeService.getMeData.mockReturnValue(null);
+    mockMeService.getMe.mockReturnValue(throwError(() => new Error('failed')));
+
+    fixture = TestBed.createComponent(SelectOrganizationComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/onboarding/check']);
+  });
+
   it('should display all organizations from meData', () => {
-    expect(component.organizations()).toHaveLength(2);
-    expect(component.organizations()[0].organizationName).toBe('Plus Tours');
-    expect(component.organizations()[1].organizationName).toBe('Alpha Travel');
+    const text = fixture.nativeElement.textContent as string;
+
+    expect(text).toContain('Plus Tours');
+    expect(text).toContain('Alpha Travel');
   });
 
   it('should return correct role labels', () => {
@@ -92,8 +121,13 @@ describe('SelectOrganizationComponent', () => {
       active: true,
       organizations: [],
     });
+
+    fixture = TestBed.createComponent(SelectOrganizationComponent);
+    component = fixture.componentInstance;
     fixture.detectChanges();
 
-    expect(component.organizations()).toHaveLength(0);
+    const text = fixture.nativeElement.textContent as string;
+
+    expect(text).toContain('No organizations found.');
   });
 });
