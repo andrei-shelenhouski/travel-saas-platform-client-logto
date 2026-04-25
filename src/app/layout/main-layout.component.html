@@ -34,77 +34,59 @@
   <mat-drawer-content>
     <div class="flex min-w-0 flex-1 flex-col">
       <header class="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4">
-        @if (hasMultipleOrgs()) {
-          <!-- Clickable org switcher for multi-org users -->
-          <button
-            #orgMenuTrigger="matMenuTrigger"
-            mat-button
-            type="button"
-            [matMenuTriggerFor]="orgMenu"
-            (menuOpened)="onOrgMenuOpened()"
-          >
-            <mat-icon>business</mat-icon>
-            <span>{{ activeOrgName }}</span>
-            <mat-icon iconPositionEnd>expand_more</mat-icon>
-          </button>
-          <mat-menu #orgMenu="matMenu">
-            @if (orgSwitcherLoading()) {
-              <button disabled mat-menu-item type="button">
-                <span class="flex items-center gap-2">
-                  <span aria-hidden="true" class="material-icons animate-spin text-base">sync</span>
-                  <span i18n="@@loadingOrganizations">Loading organizations…</span>
+        <button
+          #orgMenuTrigger="matMenuTrigger"
+          mat-button
+          type="button"
+          [matMenuTriggerFor]="orgMenu"
+          (menuOpened)="onOrgMenuOpened()"
+        >
+          <mat-icon>business</mat-icon>
+          <span>{{ activeOrgName }}</span>
+          <mat-icon iconPositionEnd>expand_more</mat-icon>
+        </button>
+        <mat-menu #orgMenu="matMenu">
+          @if (orgSwitcherLoading()) {
+            <button disabled mat-menu-item type="button">
+              <span class="flex items-center gap-2">
+                <span aria-hidden="true" class="material-icons animate-spin text-base">sync</span>
+                <span i18n="@@loadingOrganizations">Loading organizations…</span>
+              </span>
+            </button>
+          } @else {
+            @for (org of organizations(); track org.organizationId) {
+              <button
+                mat-menu-item
+                type="button"
+                [class.font-semibold]="org.organizationId === activeOrgId"
+                (click)="switchOrganization(org)"
+              >
+                <mat-icon>business</mat-icon>
+                <span class="flex w-full items-center justify-between gap-3">
+                  <span class="flex min-w-0 flex-col">
+                    <span class="truncate">{{ org.organizationName }}</span>
+                    <span class="text-xs text-gray-500">{{ orgRoleLabel(org.role) }}</span>
+                  </span>
+                  @if (org.organizationId === activeOrgId) {
+                    <mat-icon class="!text-primary-600 shrink-0" fontSet="material-icons"
+                      >check</mat-icon
+                    >
+                  }
                 </span>
               </button>
-            } @else {
-              @for (org of organizations(); track org.organizationId) {
-                <button
-                  mat-menu-item
-                  type="button"
-                  [class.font-semibold]="org.organizationId === activeOrgId"
-                  (click)="switchOrganization(org)"
-                >
-                  <mat-icon>business</mat-icon>
-                  <span class="flex w-full items-center justify-between gap-3">
-                    <span class="flex min-w-0 flex-col">
-                      <span class="truncate">{{ org.organizationName }}</span>
-                      <span class="text-xs text-gray-500">{{ orgRoleLabel(org.role) }}</span>
-                    </span>
-                    @if (org.organizationId === activeOrgId) {
-                      <mat-icon class="!text-primary-600 shrink-0" fontSet="material-icons"
-                        >check</mat-icon
-                      >
-                    }
-                  </span>
-                </button>
-              }
-              @if (organizations().length === 0) {
-                <button disabled mat-menu-item type="button">
-                  <span i18n="@@noOtherOrganizations">No other organizations</span>
-                </button>
-              }
             }
-            <mat-divider />
-            <a mat-menu-item routerLink="/app/organizations/new">
-              <mat-icon fontSet="material-icons">add</mat-icon>
-              <span i18n="@@addOrganization">Add organization</span>
-            </a>
-          </mat-menu>
-        } @else {
-          <!-- Display-only org block for single-org users -->
-          <div class="flex items-center gap-2 rounded-lg px-2 py-2">
-            <div
-              class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary-100"
-            >
-              <span aria-hidden="true" class="material-icons text-base text-primary-600"
-                >business</span
-              >
-            </div>
-            <div class="min-w-0 flex-1">
-              <p class="truncate text-xs font-semibold text-gray-900">{{ activeOrgName }}</p>
-              <p class="truncate text-xs text-gray-500">{{ activeOrgRoleLabel() }}</p>
-            </div>
-          </div>
-        }
+            @if (organizations().length === 0) {
+              <button disabled mat-menu-item type="button">
+                <span i18n="@@noOtherOrganizations">No other organizations</span>
+              </button>
+            }
+          }
+          <mat-divider />
+          <a mat-menu-item routerLink="/app/organizations/new">
+            <mat-icon fontSet="material-icons">add</mat-icon>
+            <span i18n="@@addOrganization">Add organization</span>
+          </a>
+        </mat-menu>
 
         <div class="flex items-center gap-3">
           @if (userPicture(); as userPicture) {

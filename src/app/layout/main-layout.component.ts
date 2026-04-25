@@ -118,13 +118,6 @@ export class MainLayoutComponent implements OnInit {
     return raw.charAt(0).toUpperCase();
   });
 
-  /** Whether the current user belongs to more than one organization. */
-  readonly hasMultipleOrgs = computed(() => {
-    const data = this.meService.getMeData();
-
-    return (data?.organizations?.length ?? 0) > 1;
-  });
-
   /** Active org role label (e.g. "Admin", "Sales Agent"). */
   readonly activeOrgRoleLabel = computed(() => {
     const rawRole = this.orgState.getActiveOrganizationRole();

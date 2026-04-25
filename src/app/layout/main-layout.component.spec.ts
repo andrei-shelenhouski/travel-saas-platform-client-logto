@@ -1,12 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
 
 import { AuthService } from '@app/auth/auth.service';
 import { MeService } from '@app/services/me.service';
 import { OrganizationStateService } from '@app/services/organization-state.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RoleService } from '@app/services/role.service';
+
 import { MainLayoutComponent } from './main-layout.component';
 
 const mockMeData = {
@@ -88,10 +89,6 @@ describe('MainLayoutComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-
-  it('should show single-org display (no switcher) when only 1 org', () => {
-    expect(component.hasMultipleOrgs()).toBe(false);
   });
 
   it('should show active org name', () => {
