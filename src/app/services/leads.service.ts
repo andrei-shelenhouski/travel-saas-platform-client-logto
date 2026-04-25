@@ -1,8 +1,10 @@
-import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+
 import type {
   CreateLeadDto,
   LeadResponseDto,
@@ -11,7 +13,6 @@ import type {
   UpdateLeadDto,
   UpdateLeadStatusDto,
 } from '@app/shared/models';
-import type { ConvertLeadToClientResponseDto } from '@app/shared/models';
 
 const LEADS_URL = `${environment.baseUrl}/api/leads`;
 const LEADS_STATS_URL = `${environment.baseUrl}/api/leads/stats`;
@@ -68,15 +69,12 @@ export class LeadsService {
     return this.http.patch<LeadResponseDto>(`${LEADS_URL}/${id}/status`, dto);
   }
 
-  delete(id: string): Observable<LeadResponseDto> {
-    return this.http.delete<LeadResponseDto>(`${LEADS_URL}/${id}`);
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${LEADS_URL}/${id}`);
   }
 
-  /** Convert lead to client. POST /api/leads/{id}/convert-to-client. Returns created client and updated lead. */
-  convertToClient(id: string): Observable<ConvertLeadToClientResponseDto> {
-    return this.http.post<ConvertLeadToClientResponseDto>(
-      `${LEADS_URL}/${id}/convert-to-client`,
-      {},
-    );
+  /** Convert lead to client. POST /api/leads/{id}/convert-to-client. Returns the updated lead with convertedToClientId set. */
+  convertToClient(id: string): Observable<LeadResponseDto> {
+    return this.http.post<LeadResponseDto>(`${LEADS_URL}/${id}/convert-to-client`, {});
   }
 }

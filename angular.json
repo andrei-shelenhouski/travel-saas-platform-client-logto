@@ -41,7 +41,7 @@
             ],
             "styles": [
               "src/material-theme.scss",
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "polyfills": [
               "@angular/localize/init"

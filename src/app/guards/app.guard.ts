@@ -11,7 +11,7 @@ export const appGuard: CanActivateFn = async () => {
   const isAuthenticated = await auth.hasAuthenticatedUser();
 
   if (!isAuthenticated) {
-    return router.createUrlTree(['/']);
+    return router.createUrlTree(['/login']);
   }
 
   if (!orgState.getActiveOrganization()) {

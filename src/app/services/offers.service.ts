@@ -1,10 +1,11 @@
-import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+
 import type {
-  BookingResponseDto,
   CreateOfferDto,
   OfferResponseDto,
   OfferStatus,
@@ -71,19 +72,16 @@ export class OffersService {
     return this.http.patch<OfferResponseDto>(`${OFFERS_URL}/${id}/status`, body);
   }
 
-  delete(id: string): Observable<OfferResponseDto> {
-    return this.http.delete<OfferResponseDto>(`${OFFERS_URL}/${id}`);
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${OFFERS_URL}/${id}`);
   }
 
-  /** Duplicate an offer. POST /api/offers with CreateOfferDto { duplicateFromId }. */
-  duplicate(offerId: string): Observable<OfferResponseDto> {
-    return this.http.post<OfferResponseDto>(OFFERS_URL, {
-      duplicateFromId: offerId,
-    } as CreateOfferDto);
-  }
-
-  /** Convert offer to booking. POST /api/offers/{id}/convert-to-booking. Returns created booking. */
-  convertToBooking(offerId: string): Observable<BookingResponseDto> {
-    return this.http.post<BookingResponseDto>(`${OFFERS_URL}/${offerId}/convert-to-booking`, {});
+  /** Convert offer to booking. POST /api/offers/{id}/convert-to-booking?clientId=. Returns updated offer. */
+  convertToBooking(offerId: string, clientId: string): Observable<OfferResponseDto> {
+    return this.http.post<OfferResponseDto>(
+      `${OFFERS_URL}/${offerId}/convert-to-booking`,
+      {},
+      { params: { clientId } },
+    );
   }
 }

@@ -31,7 +31,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
   selector: 'app-booking-detail',
   imports: [RouterLink, ConfirmationDialogComponent, ...MAT_BUTTONS],
   templateUrl: './booking-detail.html',
-  styleUrl: './booking-detail.css',
+  styleUrl: './booking-detail.scss',
 })
 export class BookingDetailComponent {
   private readonly route = inject(ActivatedRoute);
@@ -115,7 +115,7 @@ export class BookingDetailComponent {
       return;
     }
     this.actionLoading.set(true);
-    this.bookingsService.update(b.id, { status: BookingStatus.CONFIRMED }).subscribe({
+    this.bookingsService.updateStatus(b.id, { status: BookingStatus.CONFIRMED }).subscribe({
       next: (updated) => this.data.set(updated),
       error: (err) => this.toast.showError(err.error?.message ?? err.message ?? 'Failed to update'),
       complete: () => this.actionLoading.set(false),
@@ -150,7 +150,7 @@ export class BookingDetailComponent {
     this.actionLoading.set(true);
 
     if (payload.action === 'CANCEL_BOOKING') {
-      this.bookingsService.update(b.id, { status: BookingStatus.CANCELLED }).subscribe({
+      this.bookingsService.updateStatus(b.id, { status: BookingStatus.CANCELLED }).subscribe({
         next: (updated) => this.data.set(updated),
         error: (err) =>
           this.toast.showError(err.error?.message ?? err.message ?? 'Failed to update'),

@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+
 import { ToastService } from '@app/shared/services/toast.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-toast',
-  standalone: true,
   template: `
     @if (toastService.toast().visible) {
       <div

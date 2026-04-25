@@ -23,7 +23,7 @@ import { LeadStatus } from '@app/shared/models';
   selector: 'app-lead-detail',
   imports: [RouterLink, ...MAT_BUTTONS],
   templateUrl: './lead-detail.html',
-  styleUrl: './lead-detail.css',
+  styleUrl: './lead-detail.scss',
 })
 export class LeadDetailComponent {
   private readonly route = inject(ActivatedRoute);
@@ -83,7 +83,7 @@ export class LeadDetailComponent {
     this.leadsService.convertToClient(l.id).subscribe({
       next: (res) => {
         this.toast.showSuccess('Lead converted to client');
-        this.router.navigate(['/app/clients', res.client.id]);
+        this.router.navigate(['/app/clients', res.convertedToClientId]);
       },
       error: (err) => {
         this.toast.showError(err.error?.message ?? err.message ?? 'Failed to convert lead');

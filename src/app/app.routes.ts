@@ -48,6 +48,20 @@ export const routes: Routes = [
     ],
   },
   {
+    // Top-level /org-select alias (used by interceptor and issue spec)
+    path: 'org-select',
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        loadComponent: () =>
+          import('@app/features/onboarding/select-organization/select-organization').then(
+            (m) => m.SelectOrganizationComponent,
+          ),
+      },
+    ],
+  },
+  {
     path: 'app',
     loadComponent: () =>
       import('@app/layout/main-layout.component').then((m) => m.MainLayoutComponent),
@@ -217,6 +231,10 @@ export const routes: Routes = [
         canActivate: [adminGuard],
       },
     ],
+  },
+  {
+    path: 'login',
+    loadComponent: () => import('@app/pages/login/login.component').then((m) => m.LoginComponent),
   },
   { path: '**', redirectTo: '' },
 ];

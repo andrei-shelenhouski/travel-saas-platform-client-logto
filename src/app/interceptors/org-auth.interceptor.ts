@@ -45,7 +45,7 @@ export function orgAuthInterceptor(
         const orgId = orgState.getActiveOrganization();
 
         if (!orgId) {
-          router.navigate(['/onboarding/check']);
+          router.navigate(['/org-select']);
 
           return throwError(() => new Error('No active organization'));
         }

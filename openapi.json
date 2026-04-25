@@ -1,1 +1,3581 @@
-{"openapi":"3.0.0","paths":{"/api":{"get":{"operationId":"AppController_getHello","parameters":[],"responses":{"200":{"description":"Returns hello string"}},"summary":"Health check","tags":["health"]}},"/api/activities":{"post":{"operationId":"ActivitiesController_create","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateActivityDto"}}}},"responses":{"201":{"description":"Activity created","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ActivityResponseDto"}}}},"400":{"description":"Validation error or entity not found"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["activities"]},"get":{"operationId":"ActivitiesController_findByEntity","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"entityType","required":true,"in":"query","schema":{"enum":["Lead","Client","Request","Offer","Booking"],"type":"string"}},{"name":"entityId","required":true,"in":"query","schema":{"type":"string"}},{"name":"page","required":false,"in":"query","schema":{"type":"number"}},{"name":"limit","required":false,"in":"query","schema":{"type":"number"}}],"responses":{"200":{"description":"Activities for the given entity","content":{"application/json":{"schema":{"type":"object","properties":{"items":{"type":"array","items":{"$ref":"#/components/schemas/ActivityResponseDto"}},"total":{"type":"number"},"page":{"type":"number"},"limit":{"type":"number"}}}}}},"400":{"description":"Missing entityType/entityId"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["activities"]}},"/api/activities/{id}":{"get":{"operationId":"ActivitiesController_findById","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Activity found","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ActivityResponseDto"}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Activity not found"}},"security":[{"access-token":[]}],"tags":["activities"]}},"/api/bookings":{"post":{"operationId":"BookingsController_create","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateBookingDto"}}}},"responses":{"201":{"description":"Booking created","content":{"application/json":{"schema":{"$ref":"#/components/schemas/BookingResponseDto"}}}},"400":{"description":"Invalid body, offer not SENT/ACCEPTED, or booking already exists"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["bookings"]},"get":{"operationId":"BookingsController_findAll","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"page","required":false,"in":"query","description":"Page number","schema":{"minimum":1,"default":1,"type":"number"}},{"name":"limit","required":false,"in":"query","description":"Items per page","schema":{"minimum":1,"maximum":100,"default":20,"type":"number"}},{"name":"status","required":false,"in":"query","description":"Filter by booking status","schema":{"type":"string","enum":["PENDING","CONFIRMED","PAID","CANCELLED"]}}],"responses":{"200":{"description":"Paginated list of bookings","content":{"application/json":{"schema":{"$ref":"#/components/schemas/PaginatedBookingResponseDto"}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["bookings"]}},"/api/bookings/stats":{"get":{"operationId":"BookingsController_getStatistics","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}}],"responses":{"200":{"description":"Booking counts by status","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"number"},"example":{"PENDING":2,"CONFIRMED":8,"PAID":2,"CANCELLED":1}}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["bookings"]}},"/api/bookings/{id}":{"get":{"operationId":"BookingsController_findById","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Booking found","content":{"application/json":{"schema":{"$ref":"#/components/schemas/BookingResponseDto"}}}},"400":{"description":"Invalid UUID"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Booking not found"}},"security":[{"access-token":[]}],"tags":["bookings"]},"patch":{"operationId":"BookingsController_update","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateBookingDto"}}}},"responses":{"200":{"description":"Booking updated","content":{"application/json":{"schema":{"$ref":"#/components/schemas/BookingResponseDto"}}}},"400":{"description":"Invalid UUID or body"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Booking not found"}},"security":[{"access-token":[]}],"tags":["bookings"]},"delete":{"operationId":"BookingsController_remove","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Booking deleted","content":{"application/json":{"schema":{"$ref":"#/components/schemas/BookingResponseDto"}}}},"400":{"description":"Invalid UUID"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Booking not found"}},"security":[{"access-token":[]}],"tags":["bookings"]}},"/api/bookings/{id}/status":{"patch":{"operationId":"BookingsController_updateStatus","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateBookingStatusDto"}}}},"responses":{"200":{"description":"Booking status updated","content":{"application/json":{"schema":{"$ref":"#/components/schemas/BookingResponseDto"}}}},"400":{"description":"Invalid UUID, body, or invalid status transition"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Booking not found"}},"security":[{"access-token":[]}],"tags":["bookings"]}},"/api/clients":{"post":{"operationId":"ClientsController_create","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateClientDto"}}}},"responses":{"201":{"description":"Client created","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ClientResponseDto"}}}},"400":{"description":"Invalid body or validation error"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["clients"]},"get":{"operationId":"ClientsController_findAll","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"page","required":false,"in":"query","description":"Page number","schema":{"minimum":1,"default":1,"type":"number"}},{"name":"limit","required":false,"in":"query","description":"Items per page","schema":{"minimum":1,"maximum":100,"default":20,"type":"number"}},{"name":"type","required":false,"in":"query","description":"Filter by client type","schema":{"type":"string","enum":["INDIVIDUAL","AGENT"]}}],"responses":{"200":{"description":"Paginated list of clients","content":{"application/json":{"schema":{"$ref":"#/components/schemas/PaginatedClientResponseDto"}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["clients"]}},"/api/clients/{id}":{"get":{"operationId":"ClientsController_findById","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Client found","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ClientResponseDto"}}}},"400":{"description":"Invalid UUID"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Client not found"}},"security":[{"access-token":[]}],"tags":["clients"]},"patch":{"operationId":"ClientsController_update","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateClientDto"}}}},"responses":{"200":{"description":"Client updated","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ClientResponseDto"}}}},"400":{"description":"Invalid UUID or body"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Client not found"}},"security":[{"access-token":[]}],"tags":["clients"]},"delete":{"operationId":"ClientsController_remove","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Client soft-deleted","content":{"application/json":{"schema":{"$ref":"#/components/schemas/ClientResponseDto"}}}},"400":{"description":"Invalid UUID"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Client not found"}},"security":[{"access-token":[]}],"tags":["clients"]}},"/api/comments":{"post":{"operationId":"CommentsController_create","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateCommentDto"}}}},"responses":{"201":{"description":"Comment created","content":{"application/json":{"schema":{"$ref":"#/components/schemas/CommentResponseDto"}}}},"400":{"description":"Validation error or entity not found"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["comments"]},"get":{"operationId":"CommentsController_findByEntity","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"commentableType","required":true,"in":"query","schema":{"enum":["Lead","Client","Request","Offer","Booking"],"type":"string"}},{"name":"commentableId","required":true,"in":"query","schema":{"type":"string"}},{"name":"page","required":false,"in":"query","schema":{"type":"number"}},{"name":"limit","required":false,"in":"query","schema":{"type":"number"}}],"responses":{"200":{"description":"Comments for the given entity","content":{"application/json":{"schema":{"type":"object","properties":{"items":{"type":"array","items":{"$ref":"#/components/schemas/CommentResponseDto"}},"total":{"type":"number"},"page":{"type":"number"},"limit":{"type":"number"}}}}}},"400":{"description":"Missing commentableType/commentableId"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["comments"]}},"/api/comments/{id}":{"get":{"operationId":"CommentsController_findById","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Comment found","content":{"application/json":{"schema":{"$ref":"#/components/schemas/CommentResponseDto"}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Comment not found"}},"security":[{"access-token":[]}],"tags":["comments"]},"delete":{"operationId":"CommentsController_remove","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Comment soft-deleted","content":{"application/json":{"schema":{"$ref":"#/components/schemas/CommentResponseDto"}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Comment not found"}},"security":[{"access-token":[]}],"tags":["comments"]}},"/api/invoices":{"post":{"operationId":"InvoicesController_create","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateInvoiceDto"}}}},"responses":{"201":{"description":"Invoice created","content":{"application/json":{"schema":{"$ref":"#/components/schemas/InvoiceResponseDto"}}}},"400":{"description":"Invalid body or booking not confirmed"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["invoices"]},"get":{"operationId":"InvoicesController_findAll","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"page","required":false,"in":"query","description":"Page number","schema":{"minimum":1,"default":1,"type":"number"}},{"name":"limit","required":false,"in":"query","description":"Items per page","schema":{"minimum":1,"maximum":100,"default":20,"type":"number"}},{"name":"status","required":false,"in":"query","description":"Filter by invoice status","schema":{"type":"string","enum":["DRAFT","SENT","PAID","CANCELLED"]}}],"responses":{"200":{"description":"Paginated list of invoices","content":{"application/json":{"schema":{"$ref":"#/components/schemas/PaginatedInvoiceResponseDto"}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["invoices"]}},"/api/invoices/{id}":{"get":{"operationId":"InvoicesController_findById","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Invoice found","content":{"application/json":{"schema":{"$ref":"#/components/schemas/InvoiceResponseDto"}}}},"400":{"description":"Invalid UUID"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Invoice not found"}},"security":[{"access-token":[]}],"tags":["invoices"]},"patch":{"operationId":"InvoicesController_update","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateInvoiceDto"}}}},"responses":{"200":{"description":"Invoice updated","content":{"application/json":{"schema":{"$ref":"#/components/schemas/InvoiceResponseDto"}}}},"400":{"description":"Invalid UUID or body"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Invoice not found"}},"security":[{"access-token":[]}],"tags":["invoices"]},"delete":{"operationId":"InvoicesController_remove","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Invoice deleted","content":{"application/json":{"schema":{"$ref":"#/components/schemas/InvoiceResponseDto"}}}},"400":{"description":"Invalid UUID"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Invoice not found"}},"security":[{"access-token":[]}],"tags":["invoices"]}},"/api/leads":{"post":{"operationId":"LeadsController_create","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateLeadDto"}}}},"responses":{"201":{"description":"Lead created","content":{"application/json":{"schema":{"$ref":"#/components/schemas/LeadResponseDto"}}}},"400":{"description":"Invalid body or validation error"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["leads"]},"get":{"operationId":"LeadsController_findAll","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"page","required":false,"in":"query","description":"Page number","schema":{"minimum":1,"default":1,"type":"number"}},{"name":"limit","required":false,"in":"query","description":"Items per page","schema":{"minimum":1,"maximum":100,"default":20,"type":"number"}},{"name":"status","required":false,"in":"query","description":"Filter by lead status","schema":{"type":"string","enum":["NEW","CONTACTED","QUALIFIED","LOST","CONVERTED"]}}],"responses":{"200":{"description":"Paginated list of leads","content":{"application/json":{"schema":{"$ref":"#/components/schemas/PaginatedLeadResponseDto"}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["leads"]}},"/api/leads/stats":{"get":{"operationId":"LeadsController_getStatistics","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}}],"responses":{"200":{"description":"Lead counts by status","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"number"},"example":{"NEW":5,"CONTACTED":3,"QUALIFIED":2,"LOST":1,"CONVERTED":2}}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["leads"]}},"/api/leads/{id}":{"get":{"operationId":"LeadsController_findById","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Lead found","content":{"application/json":{"schema":{"$ref":"#/components/schemas/LeadResponseDto"}}}},"400":{"description":"Invalid UUID"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Lead not found"}},"security":[{"access-token":[]}],"tags":["leads"]},"patch":{"operationId":"LeadsController_update","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateLeadDto"}}}},"responses":{"200":{"description":"Lead updated","content":{"application/json":{"schema":{"$ref":"#/components/schemas/LeadResponseDto"}}}},"400":{"description":"Invalid UUID or body"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Lead not found"}},"security":[{"access-token":[]}],"tags":["leads"]},"delete":{"operationId":"LeadsController_remove","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Lead soft-deleted","content":{"application/json":{"schema":{"$ref":"#/components/schemas/LeadResponseDto"}}}},"400":{"description":"Invalid UUID"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Lead not found"}},"security":[{"access-token":[]}],"tags":["leads"]}},"/api/leads/{id}/status":{"patch":{"operationId":"LeadsController_updateStatus","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateLeadStatusDto"}}}},"responses":{"200":{"description":"Lead status updated","content":{"application/json":{"schema":{"$ref":"#/components/schemas/LeadResponseDto"}}}},"400":{"description":"Invalid UUID, body, or invalid status transition"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Lead not found"}},"security":[{"access-token":[]}],"tags":["leads"]}},"/api/leads/{id}/convert-to-client":{"post":{"operationId":"LeadsController_convertToClient","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"201":{"description":"Lead converted to client","content":{"application/json":{"schema":{"type":"object","properties":{"client":{"$ref":"#/components/schemas/ClientResponseDto"},"lead":{"$ref":"#/components/schemas/LeadResponseDto"}}}}}},"400":{"description":"Lead already converted"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Lead not found"}},"security":[{"access-token":[]}],"tags":["leads"]}},"/api/offers":{"get":{"operationId":"OffersController_findAll","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"page","required":false,"in":"query","description":"Page number","schema":{"minimum":1,"default":1,"type":"number"}},{"name":"limit","required":false,"in":"query","description":"Items per page","schema":{"minimum":1,"maximum":100,"default":20,"type":"number"}},{"name":"status","required":false,"in":"query","description":"Filter by offer status","schema":{"type":"string","enum":["DRAFT","SENT","VIEWED","ACCEPTED","REJECTED","EXPIRED"]}}],"responses":{"200":{"description":"Paginated list of offers","content":{"application/json":{"schema":{"$ref":"#/components/schemas/PaginatedOfferResponseDto"}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["offers"]},"post":{"operationId":"OffersController_create","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateOfferDto"}}}},"responses":{"201":{"description":"Offer created","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OfferResponseDto"}}}},"400":{"description":"Invalid body, validation error, or request not in org"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["offers"]}},"/api/offers/stats":{"get":{"operationId":"OffersController_getStatistics","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}}],"responses":{"200":{"description":"Offer counts by status","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"number"},"example":{"DRAFT":2,"SENT":3,"VIEWED":1,"ACCEPTED":1,"REJECTED":0,"EXPIRED":1}}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["offers"]}},"/api/offers/{id}":{"get":{"operationId":"OffersController_findById","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Offer found","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OfferResponseDto"}}}},"400":{"description":"Invalid UUID"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Offer not found"}},"security":[{"access-token":[]}],"tags":["offers"]},"patch":{"operationId":"OffersController_update","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateOfferDto"}}}},"responses":{"200":{"description":"Offer updated","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OfferResponseDto"}}}},"400":{"description":"Invalid UUID or body"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role, organization, or offer not in DRAFT"},"404":{"description":"Offer not found"}},"security":[{"access-token":[]}],"tags":["offers"]},"delete":{"operationId":"OffersController_remove","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Offer soft-deleted","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OfferResponseDto"}}}},"400":{"description":"Invalid UUID"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role, organization, or offer not in DRAFT"},"404":{"description":"Offer not found"}},"security":[{"access-token":[]}],"tags":["offers"]}},"/api/offers/{id}/convert-to-booking":{"post":{"operationId":"OffersController_convertToBooking","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"201":{"description":"Offer converted to booking","content":{"application/json":{"schema":{"$ref":"#/components/schemas/BookingResponseDto"}}}},"400":{"description":"Offer not SENT/VIEWED/ACCEPTED or booking already exists"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Offer not found"}},"security":[{"access-token":[]}],"tags":["offers"]}},"/api/offers/{id}/status":{"patch":{"operationId":"OffersController_updateStatus","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateOfferStatusDto"}}}},"responses":{"200":{"description":"Offer status updated","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OfferResponseDto"}}}},"400":{"description":"Invalid UUID, body, or invalid status transition"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Offer not found"}},"security":[{"access-token":[]}],"tags":["offers"]}},"/api/organization-members":{"post":{"description":"Adds an existing user to the current organization by email. User must already exist in the system. Requires ADMIN (MANAGE_USERS).","operationId":"OrganizationMembersController_addMember","parameters":[{"name":"X-Organization-Id","in":"header","description":"Organization whose members to list or manage","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/AddOrganizationMemberDto"}}}},"responses":{"200":{"description":"Created membership","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OrganizationMemberResponseDto"}}}},"201":{"description":"","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OrganizationMemberResponseDto"}}}},"400":{"description":"Invalid body (e.g. invalid email or role)"},"401":{"description":"Missing or invalid token"},"403":{"description":"Not a member of the organization or insufficient permission"},"404":{"description":"User with the given email not found"},"409":{"description":"User is already a member of this organization"}},"security":[{"access-token":[]}],"summary":"Add member to organization","tags":["organization-members"]},"get":{"description":"Returns all active members of the current organization with their roles. Requires ADMIN (MANAGE_USERS).","operationId":"OrganizationMembersController_findAll","parameters":[{"name":"X-Organization-Id","in":"header","description":"Organization whose members to list or manage","schema":{"type":"string"}}],"responses":{"200":{"description":"List of organization members","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/OrganizationMemberResponseDto"}}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Not a member of the organization or insufficient permission"}},"security":[{"access-token":[]}],"summary":"List organization members","tags":["organization-members"]}},"/api/organization-members/{id}/role":{"patch":{"description":"Updates a member's role in the current organization. Requires ADMIN (MANAGE_USERS).","operationId":"OrganizationMembersController_updateRole","parameters":[{"name":"X-Organization-Id","in":"header","description":"Organization whose members to list or manage","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateOrganizationMemberRoleDto"}}}},"responses":{"200":{"description":"Member with updated role","content":{"application/json":{"schema":{"$ref":"#/components/schemas/OrganizationMemberResponseDto"}}}},"400":{"description":"Invalid UUID or body"},"401":{"description":"Missing or invalid token"},"403":{"description":"Not a member of the organization or insufficient permission"},"404":{"description":"Organization member not found"}},"security":[{"access-token":[]}],"summary":"Update member role","tags":["organization-members"]}},"/api/organizations":{"post":{"description":"Creates a new organization and adds the current user as ADMIN. Does not require X-Organization-Id.","operationId":"OrganizationsController_create","parameters":[],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateOrganizationDto"}}}},"responses":{"201":{"description":"Organization created"},"401":{"description":"Missing or invalid Bearer token"}},"security":[{"access-token":[]}],"summary":"Create organization","tags":["organizations"]}},"/api/requests":{"post":{"operationId":"RequestsController_create","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateRequestDto"}}}},"responses":{"201":{"description":"Request created","content":{"application/json":{"schema":{"$ref":"#/components/schemas/RequestResponseDto"}}}},"400":{"description":"Invalid body or validation error"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role, organization, or client/manager not in org"}},"security":[{"access-token":[]}],"tags":["requests"]},"get":{"operationId":"RequestsController_findAll","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"page","required":false,"in":"query","description":"Page number","schema":{"minimum":1,"default":1,"type":"number"}},{"name":"limit","required":false,"in":"query","description":"Items per page","schema":{"minimum":1,"maximum":100,"default":20,"type":"number"}},{"name":"status","required":false,"in":"query","description":"Filter by request status","schema":{"type":"string","enum":["DRAFT","IN_PROGRESS","WAITING_CLIENT","CLOSED"]}}],"responses":{"200":{"description":"Paginated list of requests","content":{"application/json":{"schema":{"$ref":"#/components/schemas/PaginatedRequestResponseDto"}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["requests"]}},"/api/requests/stats":{"get":{"operationId":"RequestsController_getStatistics","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}}],"responses":{"200":{"description":"Request counts by status","content":{"application/json":{"schema":{"type":"object","additionalProperties":{"type":"number"},"example":{"DRAFT":2,"IN_PROGRESS":5,"WAITING_CLIENT":1,"CLOSED":3}}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["requests"]}},"/api/requests/{id}":{"get":{"operationId":"RequestsController_findById","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Request found","content":{"application/json":{"schema":{"$ref":"#/components/schemas/RequestResponseDto"}}}},"400":{"description":"Invalid UUID"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Request not found"}},"security":[{"access-token":[]}],"tags":["requests"]},"patch":{"operationId":"RequestsController_update","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateRequestDto"}}}},"responses":{"200":{"description":"Request updated","content":{"application/json":{"schema":{"$ref":"#/components/schemas/RequestResponseDto"}}}},"400":{"description":"Invalid UUID or body"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Request not found"}},"security":[{"access-token":[]}],"tags":["requests"]},"delete":{"operationId":"RequestsController_remove","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Request soft-deleted","content":{"application/json":{"schema":{"$ref":"#/components/schemas/RequestResponseDto"}}}},"400":{"description":"Invalid UUID"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Request not found"}},"security":[{"access-token":[]}],"tags":["requests"]}},"/api/requests/{id}/status":{"patch":{"operationId":"RequestsController_updateStatus","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UpdateRequestStatusDto"}}}},"responses":{"200":{"description":"Request status updated","content":{"application/json":{"schema":{"$ref":"#/components/schemas/RequestResponseDto"}}}},"400":{"description":"Invalid UUID, body, or invalid status transition"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Request not found"}},"security":[{"access-token":[]}],"tags":["requests"]}},"/api/tags":{"post":{"operationId":"TagsController_create","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/CreateTagDto"}}}},"responses":{"201":{"description":"Tag created","content":{"application/json":{"schema":{"$ref":"#/components/schemas/TagResponseDto"}}}},"400":{"description":"Validation error or duplicate name"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["tags"]},"get":{"operationId":"TagsController_findAll","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"entityType","required":false,"in":"query","schema":{"enum":["Lead","Client","Request","Offer","Booking"],"type":"string"}},{"name":"entityId","required":false,"in":"query","schema":{"type":"string"}}],"responses":{"200":{"description":"List of tags","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/TagResponseDto"}}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"}},"security":[{"access-token":[]}],"tags":["tags"]}},"/api/tags/{id}":{"get":{"operationId":"TagsController_findById","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Tag found","content":{"application/json":{"schema":{"$ref":"#/components/schemas/TagResponseDto"}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Tag not found"}},"security":[{"access-token":[]}],"tags":["tags"]},"delete":{"operationId":"TagsController_remove","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Tag soft-deleted","content":{"application/json":{"schema":{"$ref":"#/components/schemas/TagResponseDto"}}}},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Tag not found"}},"security":[{"access-token":[]}],"tags":["tags"]}},"/api/tags/{id}/attach":{"post":{"operationId":"TagsController_attach","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/AttachTagDto"}}}},"responses":{"200":{"description":"Tag attached to entity"},"201":{"description":""},"400":{"description":"Entity not found"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Tag not found"}},"security":[{"access-token":[]}],"tags":["tags"]}},"/api/tags/{id}/attach/{entityType}/{entityId}":{"delete":{"operationId":"TagsController_detach","parameters":[{"name":"X-Organization-Id","in":"header","description":"Selected organization ID for the request context","schema":{"type":"string"}},{"name":"id","required":true,"in":"path","schema":{"type":"string"}},{"name":"entityType","required":true,"in":"path","schema":{"type":"string"}},{"name":"entityId","required":true,"in":"path","schema":{"type":"string"}}],"responses":{"200":{"description":"Tag detached from entity"},"401":{"description":"Missing or invalid token"},"403":{"description":"Insufficient role or organization"},"404":{"description":"Tag not found"}},"security":[{"access-token":[]}],"tags":["tags"]}},"/api/me":{"get":{"description":"Returns the authenticated user profile and list of organizations with the user's role in each. Does not require X-Organization-Id. Creates user record on first login.","operationId":"UsersController_getMe","parameters":[],"responses":{"200":{"description":"User profile with organizations and role per organization","content":{"application/json":{"schema":{"$ref":"#/components/schemas/MeResponseDto"}}}},"400":{"description":"JWT payload missing subject (sub)"},"401":{"description":"Missing or invalid Bearer token"}},"security":[{"access-token":[]}],"summary":"Get current user profile","tags":["users"]}}},"info":{"title":"Travel SaaS API","description":"API for the Travel SaaS Platform.\n\n**Authentication**: All endpoints (except health) require a valid Firebase ID token in the Authorization header. Use the **Authorize** button to set the token.\n\n**Organization context**: Most endpoints require the `X-Organization-Id` header with an organization the user belongs to. GET /api/me does not require it.\n\n**RBAC**: Roles (ADMIN, MANAGER, AGENT) are per-organization. Permissions: VIEW_ALL, VIEW_OWN, CONVERT, DELETE, MANAGE_USERS. Agents see only their own records where applicable.","version":"1.0","contact":{}},"tags":[{"name":"health","description":"Health check (no auth)"},{"name":"users","description":"Current user profile (GET /me)"},{"name":"organization-members","description":"List and manage organization members (ADMIN)"},{"name":"organizations","description":"Organization creation"},{"name":"leads","description":"Lead management"},{"name":"clients","description":"Client management"},{"name":"requests","description":"Travel request management"},{"name":"offers","description":"Offer management"},{"name":"bookings","description":"Booking management"},{"name":"invoices","description":"Invoice management"},{"name":"activities","description":"Activity feed"},{"name":"comments","description":"Comments"},{"name":"tags","description":"Tags"}],"servers":[],"components":{"securitySchemes":{"access-token":{"scheme":"bearer","bearerFormat":"JWT","type":"http","name":"Authorization"}},"schemas":{"CreateActivityDto":{"type":"object","properties":{"entityType":{"type":"string","enum":["Lead","Client","Request","Offer","Booking"]},"entityId":{"type":"string","format":"uuid"},"type":{"type":"string","maxLength":80,"example":"note","description":"e.g. note, call, status_change"},"payload":{"type":"object","description":"Optional JSON payload"}},"required":["entityType","entityId","type"]},"ActivityResponseDto":{"type":"object","properties":{"id":{"type":"string","format":"uuid"},"organizationId":{"type":"string","format":"uuid"},"entityType":{"type":"string"},"entityId":{"type":"string","format":"uuid"},"type":{"type":"string"},"payload":{"type":"object","nullable":true},"createdAt":{"format":"date-time","type":"string"}},"required":["id","organizationId","entityType","entityId","type","payload","createdAt"]},"CreateBookingDto":{"type":"object","properties":{"offerId":{"type":"string","format":"uuid"}},"required":["offerId"]},"BookingResponseDto":{"type":"object","properties":{"id":{"type":"string","format":"uuid"},"organizationId":{"type":"string","format":"uuid"},"offerId":{"type":"string","format":"uuid"},"clientId":{"type":"string","format":"uuid"},"agreedPrice":{"type":"string","description":"Decimal as string"},"currency":{"type":"string"},"status":{"type":"string","enum":["CONFIRMED","CANCELLED"]},"createdAt":{"format":"date-time","type":"string"},"updatedAt":{"format":"date-time","type":"string"}},"required":["id","organizationId","offerId","clientId","agreedPrice","currency","status","createdAt","updatedAt"]},"PaginatedBookingResponseDto":{"type":"object","properties":{"data":{"type":"array","items":{"$ref":"#/components/schemas/BookingResponseDto"}},"total":{"type":"number","description":"Total number of items across all pages"},"page":{"type":"number","description":"Current page number"},"limit":{"type":"number","description":"Page size (items per page)"}},"required":["data","total","page","limit"]},"UpdateBookingStatusDto":{"type":"object","properties":{"status":{"type":"string","enum":["PENDING","CONFIRMED","PAID","CANCELLED"]}},"required":["status"]},"UpdateBookingDto":{"type":"object","properties":{"status":{"type":"string","enum":["PENDING","CONFIRMED","PAID","CANCELLED"]}}},"CreateClientDto":{"type":"object","properties":{"type":{"enum":["INDIVIDUAL","AGENT"],"type":"string"},"name":{"type":"string"},"phone":{"type":"string"},"email":{"type":"string"}},"required":["type","name"]},"ClientResponseDto":{"type":"object","properties":{"id":{"type":"string","format":"uuid"},"organizationId":{"type":"string","format":"uuid"},"type":{"type":"string","enum":["INDIVIDUAL","AGENT"]},"name":{"type":"string"},"phone":{"type":"string","nullable":true},"email":{"type":"string","nullable":true},"comment":{"type":"string","nullable":true},"createdAt":{"format":"date-time","type":"string"},"updatedAt":{"format":"date-time","type":"string"}},"required":["id","organizationId","type","name","phone","email","comment","createdAt","updatedAt"]},"PaginatedClientResponseDto":{"type":"object","properties":{"data":{"type":"array","items":{"$ref":"#/components/schemas/ClientResponseDto"}},"total":{"type":"number","description":"Total number of items across all pages"},"page":{"type":"number","description":"Current page number"},"limit":{"type":"number","description":"Page size (items per page)"}},"required":["data","total","page","limit"]},"UpdateClientDto":{"type":"object","properties":{"type":{"enum":["INDIVIDUAL","AGENT"],"type":"string"},"name":{"type":"string"},"phone":{"type":"string"},"email":{"type":"string"},"comment":{"type":"string"}}},"CreateCommentDto":{"type":"object","properties":{"commentableType":{"type":"string","enum":["Lead","Client","Request","Offer","Booking"]},"commentableId":{"type":"string","format":"uuid"},"body":{"type":"string","minLength":1,"maxLength":10000,"example":"Called back, client interested."}},"required":["commentableType","commentableId","body"]},"CommentResponseDto":{"type":"object","properties":{"id":{"type":"string","format":"uuid"},"organizationId":{"type":"string","format":"uuid"},"commentableType":{"type":"string"},"commentableId":{"type":"string","format":"uuid"},"body":{"type":"string"},"createdAt":{"format":"date-time","type":"string"},"updatedAt":{"format":"date-time","type":"string"}},"required":["id","organizationId","commentableType","commentableId","body","createdAt","updatedAt"]},"CreateInvoiceDto":{"type":"object","properties":{"bookingId":{"type":"string","format":"uuid"},"dueDate":{"type":"string"}},"required":["bookingId"]},"InvoiceResponseDto":{"type":"object","properties":{"id":{"type":"string","format":"uuid"},"organizationId":{"type":"string","format":"uuid"},"bookingId":{"type":"string","format":"uuid"},"number":{"type":"string"},"issueDate":{"format":"date-time","type":"string"},"dueDate":{"format":"date-time","type":"string","nullable":true},"amount":{"type":"string","description":"Decimal as string"},"currency":{"type":"string"},"status":{"type":"string","enum":["DRAFT","SENT","PAID","CANCELLED"]},"pdfUrl":{"type":"string","nullable":true},"createdAt":{"format":"date-time","type":"string"}},"required":["id","organizationId","bookingId","number","issueDate","dueDate","amount","currency","status","pdfUrl","createdAt"]},"PaginatedInvoiceResponseDto":{"type":"object","properties":{"data":{"type":"array","items":{"$ref":"#/components/schemas/InvoiceResponseDto"}},"total":{"type":"number","description":"Total number of items across all pages"},"page":{"type":"number","description":"Current page number"},"limit":{"type":"number","description":"Page size (items per page)"}},"required":["data","total","page","limit"]},"UpdateInvoiceDto":{"type":"object","properties":{"status":{"type":"string","enum":["DRAFT","SENT","PAID","CANCELLED"]},"dueDate":{"type":"string","format":"date-time"},"pdfUrl":{"type":"string"}}},"CreateLeadDto":{"type":"object","properties":{"source":{"enum":["PHONE","EMAIL","WHATSAPP","TELEGRAM","WEBSITE","AGENT","OTHER"],"type":"string"},"contactName":{"type":"string"},"contactEmail":{"type":"string"},"contactPhone":{"type":"string"},"notes":{"type":"string"}},"required":["source","contactName"]},"LeadResponseDto":{"type":"object","properties":{"id":{"type":"string","format":"uuid"},"organizationId":{"type":"string","format":"uuid"},"source":{"type":"string","enum":["PHONE","EMAIL","WHATSAPP","AGENT","OTHER"]},"contactName":{"type":"string"},"contactEmail":{"type":"string","nullable":true},"contactPhone":{"type":"string","nullable":true},"notes":{"type":"string","nullable":true},"status":{"type":"string","enum":["NEW","CONTACTED","QUALIFIED","LOST","CONVERTED"]},"createdAt":{"format":"date-time","type":"string"},"updatedAt":{"format":"date-time","type":"string"}},"required":["id","organizationId","source","contactName","contactEmail","contactPhone","notes","status","createdAt","updatedAt"]},"PaginatedLeadResponseDto":{"type":"object","properties":{"data":{"type":"array","items":{"$ref":"#/components/schemas/LeadResponseDto"}},"total":{"type":"number","description":"Total number of items across all pages"},"page":{"type":"number","description":"Current page number"},"limit":{"type":"number","description":"Page size (items per page)"}},"required":["data","total","page","limit"]},"UpdateLeadStatusDto":{"type":"object","properties":{"status":{"type":"string","enum":["NEW","CONTACTED","QUALIFIED","LOST","CONVERTED"]}},"required":["status"]},"UpdateLeadDto":{"type":"object","properties":{"source":{"enum":["PHONE","EMAIL","WHATSAPP","TELEGRAM","WEBSITE","AGENT","OTHER"],"type":"string"},"contactName":{"type":"string"},"contactEmail":{"type":"string"},"contactPhone":{"type":"string"},"notes":{"type":"string"}}},"OfferResponseDto":{"type":"object","properties":{"id":{"type":"string","format":"uuid"},"organizationId":{"type":"string","format":"uuid"},"requestId":{"type":"string","format":"uuid"},"title":{"type":"string"},"source":{"type":"string","enum":["MANUAL","OSTROVOK"]},"status":{"type":"string","enum":["DRAFT","SENT","ACCEPTED","REJECTED","EXPIRED"]},"supplierTotal":{"type":"string","description":"Decimal as string"},"markup":{"type":"string","description":"Decimal as string"},"commission":{"type":"string","description":"Decimal as string"},"finalPrice":{"type":"string","description":"Decimal as string"},"currency":{"type":"string"},"createdAt":{"format":"date-time","type":"string"},"updatedAt":{"format":"date-time","type":"string"}},"required":["id","organizationId","requestId","title","source","status","supplierTotal","markup","commission","finalPrice","currency","createdAt","updatedAt"]},"PaginatedOfferResponseDto":{"type":"object","properties":{"data":{"type":"array","items":{"$ref":"#/components/schemas/OfferResponseDto"}},"total":{"type":"number","description":"Total number of items across all pages"},"page":{"type":"number","description":"Current page number"},"limit":{"type":"number","description":"Page size (items per page)"}},"required":["data","total","page","limit"]},"CreateOfferDto":{"type":"object","properties":{"duplicateFromId":{"type":"string","format":"uuid","description":"Copy from existing offer (other fields optional)"},"requestId":{"type":"string","format":"uuid"},"title":{"type":"string"},"supplierTotal":{"type":"number"},"markup":{"type":"number"},"commission":{"type":"number"},"finalPrice":{"type":"number"},"currency":{"type":"string"}}},"UpdateOfferDto":{"type":"object","properties":{"title":{"type":"string"},"supplierTotal":{"type":"number"},"markup":{"type":"number"},"commission":{"type":"number"},"finalPrice":{"type":"number"},"currency":{"type":"string"}}},"UpdateOfferStatusDto":{"type":"object","properties":{"status":{"type":"string","enum":["SENT","VIEWED","ACCEPTED","REJECTED","EXPIRED"]}},"required":["status"]},"AddOrganizationMemberDto":{"type":"object","properties":{"email":{"type":"string","format":"email","example":"jane@example.com","description":"Email of the user to add (user must already exist in the system)"},"role":{"enum":["ADMIN","MANAGER","AGENT"],"type":"string","description":"Role to assign in this organization","default":"MANAGER"}},"required":["email","role"]},"OrganizationMemberResponseDto":{"type":"object","properties":{"id":{"type":"string","format":"uuid","description":"OrganizationMember record ID"},"userId":{"type":"string","format":"uuid","description":"User ID"},"name":{"type":"string","example":"Jane Doe"},"email":{"type":"string","example":"jane@example.com"},"role":{"type":"string","enum":["ADMIN","MANAGER","AGENT"],"description":"Role in this organization"},"isActive":{"type":"boolean","description":"Whether the membership is active"},"createdAt":{"type":"string","format":"date-time"},"updatedAt":{"type":"string","format":"date-time"}},"required":["id","userId","name","email","role","isActive","createdAt","updatedAt"]},"UpdateOrganizationMemberRoleDto":{"type":"object","properties":{"role":{"enum":["ADMIN","MANAGER","AGENT"],"type":"string","description":"New role for the member in this organization"}},"required":["role"]},"CreateOrganizationDto":{"type":"object","properties":{"name":{"type":"string","example":"Acme Travel"},"defaultCurrency":{"type":"string","example":"BYN"}},"required":["name"]},"CreateRequestDto":{"type":"object","properties":{"clientId":{"type":"string","format":"uuid"},"managerId":{"type":"string","format":"uuid","description":"User ID of the manager"},"destination":{"type":"string"},"startDate":{"type":"string","example":"2025-06-01"},"endDate":{"type":"string","example":"2025-06-15"},"adults":{"type":"number"},"children":{"type":"number","default":0},"comment":{"type":"string"}},"required":["clientId","managerId","destination","startDate","endDate","adults"]},"RequestResponseDto":{"type":"object","properties":{"id":{"type":"string","format":"uuid"},"organizationId":{"type":"string","format":"uuid"},"clientId":{"type":"string","format":"uuid"},"managerId":{"type":"string","format":"uuid"},"destination":{"type":"string"},"startDate":{"format":"date-time","type":"string"},"endDate":{"format":"date-time","type":"string"},"adults":{"type":"number"},"children":{"type":"number"},"comment":{"type":"string","nullable":true},"status":{"type":"string","enum":["NEW","IN_PROGRESS","OFFERED","CLOSED"]},"createdAt":{"format":"date-time","type":"string"},"updatedAt":{"format":"date-time","type":"string"}},"required":["id","organizationId","clientId","managerId","destination","startDate","endDate","adults","children","comment","status","createdAt","updatedAt"]},"PaginatedRequestResponseDto":{"type":"object","properties":{"data":{"type":"array","items":{"$ref":"#/components/schemas/RequestResponseDto"}},"total":{"type":"number","description":"Total number of items across all pages"},"page":{"type":"number","description":"Current page number"},"limit":{"type":"number","description":"Page size (items per page)"}},"required":["data","total","page","limit"]},"UpdateRequestDto":{"type":"object","properties":{"clientId":{"type":"string","format":"uuid"},"managerId":{"type":"string","format":"uuid"},"destination":{"type":"string"},"startDate":{"type":"string"},"endDate":{"type":"string"},"adults":{"type":"number"},"children":{"type":"number"},"comment":{"type":"string"}}},"UpdateRequestStatusDto":{"type":"object","properties":{"status":{"type":"string","enum":["DRAFT","IN_PROGRESS","WAITING_CLIENT","CLOSED"]}},"required":["status"]},"CreateTagDto":{"type":"object","properties":{"name":{"type":"string","minLength":1,"maxLength":100,"example":"vip"}},"required":["name"]},"TagResponseDto":{"type":"object","properties":{"id":{"type":"string","format":"uuid"},"organizationId":{"type":"string","format":"uuid"},"name":{"type":"string"},"createdAt":{"format":"date-time","type":"string"},"updatedAt":{"format":"date-time","type":"string"}},"required":["id","organizationId","name","createdAt","updatedAt"]},"AttachTagDto":{"type":"object","properties":{"entityType":{"type":"string","enum":["Lead","Client","Request","Offer","Booking"]},"entityId":{"type":"string","format":"uuid"}},"required":["entityType","entityId"]},"OrganizationWithRoleDto":{"type":"object","properties":{"id":{"type":"string","format":"uuid","description":"Organization ID"},"name":{"type":"string","example":"Acme Travel"},"defaultCurrency":{"type":"string","example":"BYN"},"invoicePrefix":{"type":"string","example":"INV"},"invoiceNextNumber":{"type":"number","example":1},"createdAt":{"type":"string","format":"date-time"},"updatedAt":{"type":"string","format":"date-time"},"role":{"type":"string","enum":["ADMIN","MANAGER","AGENT"],"description":"Current user role in this organization"}},"required":["id","name","defaultCurrency","invoicePrefix","invoiceNextNumber","createdAt","updatedAt","role"]},"MeResponseDto":{"type":"object","properties":{"id":{"type":"string","format":"uuid","description":"Internal user ID"},"firebaseUid":{"type":"string","description":"Firebase UID (subject) identifier"},"email":{"type":"string","example":"user@example.com"},"name":{"type":"string","example":"Jane Doe"},"picture":{"type":"string","description":"Avatar URL from Firebase Auth"},"createdAt":{"type":"string","format":"date-time"},"updatedAt":{"type":"string","format":"date-time"},"organizations":{"description":"Organizations the user belongs to, with role per organization","type":"array","items":{"$ref":"#/components/schemas/OrganizationWithRoleDto"}}},"required":["id","firebaseUid","email","createdAt","updatedAt","organizations"]}}}}
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "OpenAPI definition",
+    "version": "v0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "Generated server url"
+    }
+  ],
+  "paths": {
+    "/api/webhook-subscriptions": {
+      "get": {
+        "tags": [
+          "webhook-controller"
+        ],
+        "operationId": "list",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/WebhookSubscription"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "webhook-controller"
+        ],
+        "operationId": "create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateWebhookRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/WebhookSubscription"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tags": {
+      "get": {
+        "tags": [
+          "tag-controller"
+        ],
+        "operationId": "list_1",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PageQuery"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseTag"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "tag-controller"
+        ],
+        "operationId": "create_1",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tag"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tags/{id}/attach": {
+      "post": {
+        "tags": [
+          "tag-controller"
+        ],
+        "operationId": "attach",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/requests": {
+      "get": {
+        "tags": [
+          "travel-request-controller"
+        ],
+        "operationId": "list_2",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PageQuery"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "IN_PROGRESS",
+                "WAITING_CLIENT",
+                "CLOSED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseTravelRequestResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "travel-request-controller"
+        ],
+        "operationId": "create_2",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelRequestRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelRequestResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/organizations": {
+      "post": {
+        "tags": [
+          "organization-controller"
+        ],
+        "operationId": "create_3",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOrganizationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/organization-members": {
+      "get": {
+        "tags": [
+          "organization-controller"
+        ],
+        "operationId": "listMembers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/MemberResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "organization-controller"
+        ],
+        "operationId": "addMember",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddMemberRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/organization-api-keys": {
+      "get": {
+        "tags": [
+          "api-key-controller"
+        ],
+        "operationId": "list_3",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrganizationApiKey"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "api-key-controller"
+        ],
+        "operationId": "create_4",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateApiKeyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/offers": {
+      "get": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "list_4",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PageQuery"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "DRAFT",
+                "SENT",
+                "VIEWED",
+                "ACCEPTED",
+                "REJECTED",
+                "EXPIRED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseOfferResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "create_5",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateOfferRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/offers/{id}/convert-to-booking": {
+      "post": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "convertToBooking",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "clientId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leads": {
+      "get": {
+        "tags": [
+          "lead-controller"
+        ],
+        "operationId": "list_5",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/ListLeadsQuery"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseLeadResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "lead-controller"
+        ],
+        "operationId": "create_6",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLeadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leads/{id}/convert-to-client": {
+      "post": {
+        "tags": [
+          "lead-controller"
+        ],
+        "operationId": "convertToClient",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/invoices": {
+      "get": {
+        "tags": [
+          "invoice-controller"
+        ],
+        "operationId": "list_6",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PageQuery"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseInvoiceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "invoice-controller"
+        ],
+        "operationId": "create_7",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateInvoiceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/integrations/v1/requests": {
+      "post": {
+        "tags": [
+          "integration-incoming-controller"
+        ],
+        "operationId": "createRequest",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTravelRequestRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelRequestResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/integrations/v1/leads": {
+      "post": {
+        "tags": [
+          "integration-incoming-controller"
+        ],
+        "operationId": "createLead",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateLeadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/comments": {
+      "get": {
+        "tags": [
+          "comment-controller"
+        ],
+        "operationId": "list_7",
+        "parameters": [
+          {
+            "name": "commentableType",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "commentableId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PageQuery"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseComment"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "comment-controller"
+        ],
+        "operationId": "create_8",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Comment"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clients": {
+      "get": {
+        "tags": [
+          "client-controller"
+        ],
+        "operationId": "list_8",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PageQuery"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseClientResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "client-controller"
+        ],
+        "operationId": "create_9",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateClientRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings": {
+      "get": {
+        "tags": [
+          "booking-controller"
+        ],
+        "operationId": "list_9",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PageQuery"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "PENDING",
+                "CONFIRMED",
+                "PAID",
+                "CANCELLED"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseBookingResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "booking-controller"
+        ],
+        "operationId": "create_10",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBookingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/activities": {
+      "get": {
+        "tags": [
+          "activity-controller"
+        ],
+        "operationId": "list_10",
+        "parameters": [
+          {
+            "name": "entityType",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PageQuery"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseActivity"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "activity-controller"
+        ],
+        "operationId": "create_11",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": {}
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Activity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/requests/{id}": {
+      "get": {
+        "tags": [
+          "travel-request-controller"
+        ],
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelRequestResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "travel-request-controller"
+        ],
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "travel-request-controller"
+        ],
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelRequestRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelRequestResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/requests/{id}/status": {
+      "patch": {
+        "tags": [
+          "travel-request-controller"
+        ],
+        "operationId": "updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelRequestStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelRequestResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/organization-members/{id}/role": {
+      "patch": {
+        "tags": [
+          "organization-controller"
+        ],
+        "operationId": "updateRole",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateMemberRoleRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/MemberResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/offers/{id}": {
+      "get": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "findById_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOfferRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/offers/{id}/status": {
+      "patch": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "updateStatus_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOfferStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leads/{id}": {
+      "get": {
+        "tags": [
+          "lead-controller"
+        ],
+        "operationId": "findById_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "lead-controller"
+        ],
+        "operationId": "delete_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "lead-controller"
+        ],
+        "operationId": "update_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLeadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leads/{id}/status": {
+      "patch": {
+        "tags": [
+          "lead-controller"
+        ],
+        "operationId": "updateStatus_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLeadStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/invoices/{id}": {
+      "get": {
+        "tags": [
+          "invoice-controller"
+        ],
+        "operationId": "findById_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "invoice-controller"
+        ],
+        "operationId": "delete_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "invoice-controller"
+        ],
+        "operationId": "update_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateInvoiceRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/InvoiceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clients/{id}": {
+      "get": {
+        "tags": [
+          "client-controller"
+        ],
+        "operationId": "findById_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "client-controller"
+        ],
+        "operationId": "delete_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "client-controller"
+        ],
+        "operationId": "update_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateClientRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings/{id}": {
+      "get": {
+        "tags": [
+          "booking-controller"
+        ],
+        "operationId": "findById_5",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "booking-controller"
+        ],
+        "operationId": "delete_5",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "booking-controller"
+        ],
+        "operationId": "update_5",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBookingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/bookings/{id}/status": {
+      "patch": {
+        "tags": [
+          "booking-controller"
+        ],
+        "operationId": "updateStatus_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBookingStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/tags/{id}": {
+      "get": {
+        "tags": [
+          "tag-controller"
+        ],
+        "operationId": "findById_6",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tag"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "tag-controller"
+        ],
+        "operationId": "delete_6",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/requests/stats": {
+      "get": {
+        "tags": [
+          "travel-request-controller"
+        ],
+        "operationId": "stats",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/offers/stats": {
+      "get": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "stats_1",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/me": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "operationId": "me",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leads/stats": {
+      "get": {
+        "tags": [
+          "lead-controller"
+        ],
+        "operationId": "stats_2",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/comments/{id}": {
+      "get": {
+        "tags": [
+          "comment-controller"
+        ],
+        "operationId": "findById_7",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Comment"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "comment-controller"
+        ],
+        "operationId": "delete_7",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/bookings/stats": {
+      "get": {
+        "tags": [
+          "booking-controller"
+        ],
+        "operationId": "stats_3",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "integer",
+                    "format": "int64"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/activities/{id}": {
+      "get": {
+        "tags": [
+          "activity-controller"
+        ],
+        "operationId": "findById_8",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/Activity"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/webhook-subscriptions/{id}": {
+      "delete": {
+        "tags": [
+          "webhook-controller"
+        ],
+        "operationId": "delete_8",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/tags/{id}/attach/{entityType}/{entityId}": {
+      "delete": {
+        "tags": [
+          "tag-controller"
+        ],
+        "operationId": "detach",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "entityType",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "entityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/organization-api-keys/{id}": {
+      "delete": {
+        "tags": [
+          "api-key-controller"
+        ],
+        "operationId": "revoke",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateWebhookRequest": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "minLength": 1
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "events",
+          "url"
+        ]
+      },
+      "WebhookSubscription": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "url": {
+            "type": "string"
+          },
+          "signingSecret": {
+            "type": "string"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "updatedBy": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "CreateTravelRequestRequest": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "managerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "destination": {
+            "type": "string",
+            "minLength": 1
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "children": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "comment": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "clientId",
+          "destination",
+          "endDate",
+          "managerId",
+          "startDate"
+        ]
+      },
+      "TravelRequestResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clientId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "managerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "children": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "IN_PROGRESS",
+              "WAITING_CLIENT",
+              "CLOSED"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateOrganizationRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "defaultCurrency": {
+            "type": "string"
+          },
+          "invoicePrefix": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "OrganizationResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "defaultCurrency": {
+            "type": "string"
+          },
+          "invoicePrefix": {
+            "type": "string"
+          },
+          "invoiceNextNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AddMemberRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "MANAGER",
+              "AGENT"
+            ]
+          }
+        },
+        "required": [
+          "email",
+          "role"
+        ]
+      },
+      "MemberResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "MANAGER",
+              "AGENT"
+            ]
+          },
+          "active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CreateApiKeyRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "name",
+          "scopes"
+        ]
+      },
+      "CreateOfferRequest": {
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "MANUAL",
+              "OSTROVOK"
+            ]
+          },
+          "supplierTotal": {
+            "type": "number"
+          },
+          "markup": {
+            "type": "number"
+          },
+          "commission": {
+            "type": "number"
+          },
+          "finalPrice": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 1
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OfferItemRequest"
+            }
+          }
+        },
+        "required": [
+          "commission",
+          "currency",
+          "finalPrice",
+          "markup",
+          "requestId",
+          "source",
+          "supplierTotal",
+          "title"
+        ]
+      },
+      "OfferItemRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "HOTEL",
+              "FLIGHT",
+              "TRANSFER",
+              "INSURANCE",
+              "SERVICE"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "supplier": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "totalPrice": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 1
+          },
+          "comment": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "currency",
+          "name",
+          "totalPrice",
+          "type",
+          "unitPrice"
+        ]
+      },
+      "ItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "HOTEL",
+              "FLIGHT",
+              "TRANSFER",
+              "INSURANCE",
+              "SERVICE"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "supplier": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "totalPrice": {
+            "type": "number"
+          }
+        }
+      },
+      "OfferResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "MANUAL",
+              "OSTROVOK"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SENT",
+              "VIEWED",
+              "ACCEPTED",
+              "REJECTED",
+              "EXPIRED"
+            ]
+          },
+          "supplierTotal": {
+            "type": "number"
+          },
+          "markup": {
+            "type": "number"
+          },
+          "commission": {
+            "type": "number"
+          },
+          "finalPrice": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemDto"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateLeadRequest": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "PHONE",
+              "EMAIL",
+              "WHATSAPP",
+              "TELEGRAM",
+              "WEBSITE",
+              "AGENT",
+              "OTHER"
+            ]
+          },
+          "contactName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "contactEmail": {
+            "type": "string"
+          },
+          "contactPhone": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "contactName",
+          "source"
+        ]
+      },
+      "LeadResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "PHONE",
+              "EMAIL",
+              "WHATSAPP",
+              "TELEGRAM",
+              "WEBSITE",
+              "AGENT",
+              "OTHER"
+            ]
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactEmail": {
+            "type": "string"
+          },
+          "contactPhone": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "CONTACTED",
+              "QUALIFIED",
+              "LOST",
+              "CONVERTED"
+            ]
+          },
+          "convertedToClientId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateInvoiceRequest": {
+        "type": "object",
+        "properties": {
+          "bookingId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "issueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "amount",
+          "bookingId",
+          "currency",
+          "issueDate"
+        ]
+      },
+      "InvoiceResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "bookingId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "number": {
+            "type": "string"
+          },
+          "issueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SENT",
+              "PAID",
+              "CANCELLED"
+            ]
+          },
+          "pdfUrl": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "commentableType": {
+            "type": "string"
+          },
+          "commentableId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "body": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "deletedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "updatedBy": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "CreateClientRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "INDIVIDUAL",
+              "AGENT"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ]
+      },
+      "ClientResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "INDIVIDUAL",
+              "AGENT"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CreateBookingRequest": {
+        "type": "object",
+        "properties": {
+          "offerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clientId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "agreedPrice": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "agreedPrice",
+          "clientId",
+          "currency",
+          "offerId"
+        ]
+      },
+      "BookingResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "offerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clientId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "agreedPrice": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "CONFIRMED",
+              "PAID",
+              "CANCELLED"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "Activity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "entityType": {
+            "type": "string"
+          },
+          "entityId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string"
+          },
+          "payload": {
+            "type": "object",
+            "additionalProperties": {}
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "updatedBy": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "UpdateTravelRequestRequest": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "managerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "children": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "comment": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateTravelRequestStatusRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "IN_PROGRESS",
+              "WAITING_CLIENT",
+              "CLOSED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "UpdateMemberRoleRequest": {
+        "type": "object",
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "MANAGER",
+              "AGENT"
+            ]
+          }
+        },
+        "required": [
+          "role"
+        ]
+      },
+      "UpdateOfferRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "supplierTotal": {
+            "type": "number"
+          },
+          "markup": {
+            "type": "number"
+          },
+          "commission": {
+            "type": "number"
+          },
+          "finalPrice": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OfferItemRequest"
+            }
+          }
+        }
+      },
+      "UpdateOfferStatusRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SENT",
+              "VIEWED",
+              "ACCEPTED",
+              "REJECTED",
+              "EXPIRED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "UpdateLeadRequest": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "enum": [
+              "PHONE",
+              "EMAIL",
+              "WHATSAPP",
+              "TELEGRAM",
+              "WEBSITE",
+              "AGENT",
+              "OTHER"
+            ]
+          },
+          "contactName": {
+            "type": "string"
+          },
+          "contactEmail": {
+            "type": "string"
+          },
+          "contactPhone": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateLeadStatusRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "CONTACTED",
+              "QUALIFIED",
+              "LOST",
+              "CONVERTED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "UpdateInvoiceRequest": {
+        "type": "object",
+        "properties": {
+          "issueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "dueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SENT",
+              "PAID",
+              "CANCELLED"
+            ]
+          },
+          "pdfUrl": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateClientRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "INDIVIDUAL",
+              "AGENT"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateBookingRequest": {
+        "type": "object",
+        "properties": {
+          "agreedPrice": {
+            "type": "number"
+          },
+          "currency": {
+            "type": "string"
+          }
+        }
+      },
+      "UpdateBookingStatusRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "CONFIRMED",
+              "PAID",
+              "CANCELLED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "PageQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 100,
+            "minimum": 1
+          }
+        }
+      },
+      "PaginatedResponseTag": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PaginatedResponseTravelRequestResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelRequestResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "OrganizationApiKey": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "keyPrefix": {
+            "type": "string"
+          },
+          "keyHash": {
+            "type": "string"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastUsedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "revokedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "PaginatedResponseOfferResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OfferResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "OrgMembership": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "MANAGER",
+              "AGENT"
+            ]
+          }
+        }
+      },
+      "UserResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "firebaseUid": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "organizations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrgMembership"
+            }
+          }
+        }
+      },
+      "ListLeadsQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 100,
+            "minimum": 1
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "CONTACTED",
+              "QUALIFIED",
+              "LOST",
+              "CONVERTED"
+            ]
+          }
+        }
+      },
+      "PaginatedResponseLeadResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LeadResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PaginatedResponseInvoiceResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InvoiceResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PaginatedResponseComment": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Comment"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PaginatedResponseClientResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClientResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PaginatedResponseBookingResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BookingResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PaginatedResponseActivity": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Activity"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      }
+    }
+  }
+}

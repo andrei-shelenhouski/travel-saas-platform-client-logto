@@ -5,7 +5,6 @@ import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-confirmation-dialog',
-  standalone: true,
   imports: [...MAT_FORM_BUTTONS],
   template: `
     @if (open()) {

@@ -1,8 +1,10 @@
-import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+
 import type {
   BookingResponseDto,
   BookingStatus,
@@ -68,7 +70,7 @@ export class BookingsService {
     return this.http.patch<BookingResponseDto>(`${BOOKINGS_URL}/${id}/status`, dto);
   }
 
-  delete(id: string): Observable<BookingResponseDto> {
-    return this.http.delete<BookingResponseDto>(`${BOOKINGS_URL}/${id}`);
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${BOOKINGS_URL}/${id}`);
   }
 }

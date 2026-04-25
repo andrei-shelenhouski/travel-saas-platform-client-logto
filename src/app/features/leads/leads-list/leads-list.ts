@@ -13,7 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   selector: 'app-leads-list',
   imports: [RouterLink, ...MAT_BUTTONS, ...MAT_BUTTON_TOGGLES],
   templateUrl: './leads-list.html',
-  styleUrl: './leads-list.css',
+  styleUrl: './leads-list.scss',
 })
 export class LeadsListComponent {
   private readonly leadsService = inject(LeadsService);
@@ -22,7 +22,7 @@ export class LeadsListComponent {
     stream: () => this.leadsService.findAll(),
   });
 
-  readonly leads = computed(() => this.data.value()?.data ?? []);
+  readonly leads = computed(() => this.data.value()?.items ?? []);
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const error = this.data.error();

@@ -10,7 +10,7 @@ import { OrganizationStateService } from '@app/services/organization-state.servi
   selector: 'app-onboarding-check',
   imports: [],
   templateUrl: './onboarding-check.html',
-  styleUrl: './onboarding-check.css',
+  styleUrl: './onboarding-check.scss',
 })
 export class OnboardingCheckComponent implements OnInit {
   private readonly meService = inject(MeService);
@@ -51,7 +51,11 @@ export class OnboardingCheckComponent implements OnInit {
     }
 
     if (orgs.length === 1) {
-      this.orgState.setActiveOrganization(orgs[0].id, orgs[0].name);
+      this.orgState.setActiveOrganization(
+        orgs[0].organizationId,
+        orgs[0].organizationName,
+        orgs[0].role,
+      );
       this.meService.clearMeData();
       this.router.navigate(['/app']);
 

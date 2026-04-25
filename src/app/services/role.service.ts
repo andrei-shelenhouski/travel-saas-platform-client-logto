@@ -6,14 +6,35 @@ import { OrganizationStateService } from './organization-state.service';
 
 import type { AppRole } from '@app/shared/models';
 
-function orgRoleToAppRole(role: string): AppRole | string {
+export function orgRoleToAppRole(role: string): AppRole | string {
   switch (role) {
     case OrgRole.ADMIN:
       return 'Admin';
     case OrgRole.MANAGER:
       return 'Manager';
     case OrgRole.AGENT:
+    case OrgRole.SALES_AGENT:
       return 'Agent';
+    case OrgRole.BACK_OFFICE:
+      return 'Back Office';
+    default:
+      return role;
+  }
+}
+
+/** Human-readable label for display (e.g. in badges). Preserves all role distinctions. */
+export function orgRoleToLabel(role: string): string {
+  switch (role) {
+    case OrgRole.ADMIN:
+      return 'Admin';
+    case OrgRole.MANAGER:
+      return 'Manager';
+    case OrgRole.SALES_AGENT:
+      return 'Sales Agent';
+    case OrgRole.AGENT:
+      return 'Agent';
+    case OrgRole.BACK_OFFICE:
+      return 'Back Office';
     default:
       return role;
   }
@@ -33,14 +54,35 @@ export class RoleService {
     const activeOrgId = this.orgState.getActiveOrganization();
 
     if (me?.organizations && activeOrgId) {
-      const org = me.organizations.find((o) => o.id === activeOrgId);
+      const org = me.organizations.find((o) => o.organizationId === activeOrgId);
 
       if (org?.role) {
         return orgRoleToAppRole(org.role);
       }
     }
 
+    // Fallback to persisted role from localStorage (available before /api/me is fetched)
+    const persistedRole = this.orgState.getActiveOrganizationRole();
+
+    if (persistedRole) {
+      return orgRoleToAppRole(persistedRole);
+    }
+
     return null;
+  });
+
+  /** Raw API role string for the active org (used for display labels in org switcher). */
+  readonly rawRole = computed<string | null>(() => {
+    const me = this.meService.getMeData();
+    const activeOrgId = this.orgState.getActiveOrganization();
+
+    if (me?.organizations && activeOrgId) {
+      const org = me.organizations.find((o) => o.organizationId === activeOrgId);
+
+      return org?.role ?? null;
+    }
+
+    return this.orgState.getActiveOrganizationRole();
   });
 
   readonly roleOrDefault = computed<AppRole | string>(() => this.role() ?? 'Manager');

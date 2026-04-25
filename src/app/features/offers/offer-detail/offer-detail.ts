@@ -7,11 +7,12 @@ import {
   signal,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { EMPTY } from 'rxjs';
+import { EMPTY, switchMap } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 import { OffersService } from '@app/services/offers.service';
+import { RequestsService } from '@app/services/requests.service';
 import { PermissionService } from '@app/services/permission.service';
 import { ToastService } from '@app/shared/services/toast.service';
 import type { OfferResponseDto, UpdateOfferStatusDto } from '@app/shared/models';
@@ -36,8 +37,8 @@ const ACTION_LABELS: Record<OfferAction, string> = {
   ACCEPT: 'Accept',
   REJECT: 'Reject',
   EXPIRE: 'Expire',
-  DUPLICATE: 'Duplicate',
   CREATE_BOOKING: 'Convert to Booking',
+  DUPLICATE: 'Duplicate',
   DELETE: 'Delete',
 };
 
@@ -46,12 +47,13 @@ const ACTION_LABELS: Record<OfferAction, string> = {
   selector: 'app-offer-detail',
   imports: [OfferTimelineComponent, ConfirmationDialogComponent, ...MAT_BUTTONS],
   templateUrl: './offer-detail.html',
-  styleUrl: './offer-detail.css',
+  styleUrl: './offer-detail.scss',
 })
 export class OfferDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly offersService = inject(OffersService);
+  private readonly requestsService = inject(RequestsService);
   private readonly toast = inject(ToastService);
   private readonly permissions = inject(PermissionService);
 
@@ -142,32 +144,30 @@ export class OfferDetailComponent {
       return;
     }
 
-    if (action === 'DUPLICATE') {
-      this.offersService.duplicate(id).subscribe({
-        next: (created) => {
-          this.toast.showSuccess('Offer duplicated');
-          this.router.navigate(['/app/offers', created.id]);
-        },
-        error: (err) => {
-          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to duplicate offer');
-        },
-        complete: () => this.actionLoading.set(false),
-      });
-
-      return;
-    }
-
     if (action === 'CREATE_BOOKING') {
-      this.offersService.convertToBooking(id).subscribe({
-        next: (booking) => {
-          this.toast.showSuccess('Booking created');
-          this.router.navigate(['/app/bookings', booking.id]);
-        },
-        error: (err) => {
-          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to create booking');
-        },
-        complete: () => this.actionLoading.set(false),
-      });
+      const offer = this.offer();
+
+      if (!offer?.requestId) {
+        this.toast.showError('Offer has no associated request');
+        this.actionLoading.set(false);
+
+        return;
+      }
+
+      this.requestsService
+        .getById(offer.requestId)
+        .pipe(switchMap((req) => this.offersService.convertToBooking(id, req.clientId)))
+        .subscribe({
+          next: () => {
+            this.toast.showSuccess('Booking created');
+            this.router.navigate(['/app/bookings']);
+          },
+          error: (err) => {
+            this.toast.showError(err.error?.message ?? err.message ?? 'Failed to create booking');
+            this.actionLoading.set(false);
+          },
+          complete: () => this.actionLoading.set(false),
+        });
 
       return;
     }

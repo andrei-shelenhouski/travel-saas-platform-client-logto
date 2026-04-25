@@ -46,7 +46,7 @@ type ClientTab = 'overview' | 'requests' | 'activity' | 'comments';
     ...MAT_BUTTONS,
   ],
   templateUrl: './client-detail.html',
-  styleUrl: './client-detail.css',
+  styleUrl: './client-detail.scss',
 })
 export class ClientDetailComponent {
   private readonly route = inject(ActivatedRoute);
@@ -76,7 +76,7 @@ export class ClientDetailComponent {
   private readonly requestsData = rxResource<RequestResponseDto[], string | null>({
     params: (): string | null => this.routeId() ?? null,
     stream: () => {
-      return this.requestsService.getList({ limit: 100 }).pipe(map((res) => res.data));
+      return this.requestsService.getList({ limit: 100 }).pipe(map((res) => res.items));
     },
   });
 

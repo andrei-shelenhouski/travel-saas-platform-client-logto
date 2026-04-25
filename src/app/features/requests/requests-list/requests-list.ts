@@ -14,7 +14,7 @@ import type { RequestResponseDto } from '@app/shared/models';
   selector: 'app-requests-list',
   imports: [RouterLink, ...MAT_BUTTONS],
   templateUrl: './requests-list.html',
-  styleUrl: './requests-list.css',
+  styleUrl: './requests-list.scss',
 })
 export class RequestsListComponent {
   private readonly requestsService = inject(RequestsService);
@@ -25,7 +25,7 @@ export class RequestsListComponent {
   });
 
   readonly requests = computed(() => {
-    const list = this.data.value()?.data ?? [];
+    const list = this.data.value()?.items ?? [];
 
     if (!this.permissions.filterToOwnRecords()) {
       return list;

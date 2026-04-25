@@ -5,7 +5,7 @@ import {
   signOut as firebaseSignOut,
   getIdTokenResult,
   GoogleAuthProvider,
-  signInWithRedirect,
+  signInWithPopup,
   user,
 } from '@angular/fire/auth';
 
@@ -41,9 +41,9 @@ export class AuthService {
     return this.auth.currentUser !== null;
   }
 
-  signIn(): void {
+  async signIn(): Promise<void> {
     this.provider.setCustomParameters({ prompt: 'select_account' });
-    void signInWithRedirect(this.auth, this.provider);
+    await signInWithPopup(this.auth, this.provider);
   }
 
   signOut(): Promise<void> {

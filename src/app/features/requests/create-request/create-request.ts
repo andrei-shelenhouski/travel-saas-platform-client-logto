@@ -21,7 +21,7 @@ import type { CreateRequestDto } from '@app/shared/models';
   selector: 'app-create-request',
   imports: [RouterLink, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   templateUrl: './create-request.html',
-  styleUrl: './create-request.css',
+  styleUrl: './create-request.scss',
 })
 export class CreateRequestComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

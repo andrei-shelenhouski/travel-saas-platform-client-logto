@@ -30,7 +30,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
   selector: 'app-bookings-list',
   imports: [...MAT_BUTTONS, ...MAT_BUTTON_TOGGLES],
   templateUrl: './bookings-list.html',
-  styleUrl: './bookings-list.css',
+  styleUrl: './bookings-list.scss',
 })
 export class BookingsListComponent {
   private readonly bookingsService = inject(BookingsService);
@@ -49,7 +49,7 @@ export class BookingsListComponent {
 
   readonly filterTabs = FILTER_TABS;
   readonly statusBadgeClass = STATUS_BADGE_CLASS;
-  readonly bookings = computed(() => this.data.value()?.data ?? []);
+  readonly bookings = computed(() => this.data.value()?.items ?? []);
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const err = this.data.error();

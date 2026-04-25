@@ -15,7 +15,7 @@ import { BookingStatus } from '@app/shared/models';
   selector: 'app-create-invoice',
   imports: [RouterLink, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   templateUrl: './create-invoice.html',
-  styleUrl: './create-invoice.css',
+  styleUrl: './create-invoice.scss',
 })
 export class CreateInvoiceComponent {
   private readonly router = inject(Router);
@@ -29,6 +29,9 @@ export class CreateInvoiceComponent {
 
   readonly form = this.fb.nonNullable.group({
     bookingId: ['', Validators.required],
+    issueDate: [new Date().toISOString().slice(0, 10), Validators.required],
+    amount: [0, [Validators.required, Validators.min(0.01)]],
+    currency: ['USD', Validators.required],
     dueDate: [''],
   });
 
@@ -41,7 +44,7 @@ export class CreateInvoiceComponent {
       }),
   });
 
-  readonly bookings = computed(() => this.bookingsResource.value()?.data ?? []);
+  readonly bookings = computed(() => this.bookingsResource.value()?.items ?? []);
   readonly bookingsLoading = computed(() => this.bookingsResource.isLoading());
 
   onSubmit(): void {
@@ -55,7 +58,12 @@ export class CreateInvoiceComponent {
       return;
     }
     this.saving.set(true);
-    const dto: CreateInvoiceDto = { bookingId: bid };
+    const dto: CreateInvoiceDto = {
+      bookingId: bid,
+      issueDate: v.issueDate,
+      amount: v.amount,
+      currency: v.currency.trim(),
+    };
 
     if (v.dueDate.trim()) {
       dto.dueDate = v.dueDate.trim();

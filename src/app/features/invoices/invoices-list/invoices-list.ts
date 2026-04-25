@@ -30,7 +30,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
   selector: 'app-invoices-list',
   imports: [RouterLink, ...MAT_BUTTONS, ...MAT_BUTTON_TOGGLES],
   templateUrl: './invoices-list.html',
-  styleUrl: './invoices-list.css',
+  styleUrl: './invoices-list.scss',
 })
 export class InvoicesListComponent {
   private readonly invoicesService = inject(InvoicesService);
@@ -49,7 +49,7 @@ export class InvoicesListComponent {
 
   readonly filterTabs = FILTER_TABS;
   readonly statusBadgeClass = STATUS_BADGE_CLASS;
-  readonly invoices = computed(() => this.data.value()?.data ?? []);
+  readonly invoices = computed(() => this.data.value()?.items ?? []);
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const err = this.data.error();

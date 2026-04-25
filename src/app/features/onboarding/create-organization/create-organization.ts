@@ -14,7 +14,7 @@ import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
   selector: 'app-create-organization',
   imports: [ReactiveFormsModule, RouterLink, ...MAT_FORM_BUTTONS],
   templateUrl: './create-organization.html',
-  styleUrl: './create-organization.css',
+  styleUrl: './create-organization.scss',
 })
 export class CreateOrganizationComponent {
   private readonly organizationsService = inject(OrganizationsService);
@@ -51,10 +51,10 @@ export class CreateOrganizationComponent {
           .pipe(take(1))
           .subscribe({
             next: (me) => {
-              const org = me.organizations.find((o) => o.name === trimmedName);
+              const org = me.organizations.find((o) => o.organizationName === trimmedName);
 
               if (org) {
-                this.orgState.setActiveOrganization(org.id, org.name);
+                this.orgState.setActiveOrganization(org.organizationId, org.organizationName);
                 this.router.navigate(['/app/dashboard']);
               } else {
                 this.error.set('Organization created but not found in profile. Try refreshing.');

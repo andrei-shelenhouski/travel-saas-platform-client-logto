@@ -13,7 +13,7 @@ import type { RequestResponseDto } from '@app/shared/models';
   selector: 'app-request-detail',
   imports: [RouterLink, ...MAT_BUTTONS],
   templateUrl: './request-detail.html',
-  styleUrl: './request-detail.css',
+  styleUrl: './request-detail.scss',
 })
 export class RequestDetailComponent {
   private readonly route = inject(ActivatedRoute);

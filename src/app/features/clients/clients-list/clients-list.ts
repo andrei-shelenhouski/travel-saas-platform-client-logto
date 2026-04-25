@@ -19,7 +19,7 @@ const TYPE_LABEL: Record<string, string> = {
   selector: 'app-clients-list',
   imports: [RouterLink, ...MAT_BUTTONS],
   templateUrl: './clients-list.html',
-  styleUrl: './clients-list.css',
+  styleUrl: './clients-list.scss',
 })
 export class ClientsListComponent {
   private readonly clientsService = inject(ClientsService);
@@ -29,7 +29,7 @@ export class ClientsListComponent {
   });
 
   readonly typeLabel = TYPE_LABEL;
-  readonly clients = computed(() => this.data.value()?.data ?? []);
+  readonly clients = computed(() => this.data.value()?.items ?? []);
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const err = this.data.error();

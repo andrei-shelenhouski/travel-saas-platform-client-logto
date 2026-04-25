@@ -1,12 +1,11 @@
 /**
  * API types aligned with OpenAPI spec.
  * Source of truth: project root openapi.json.
- * Backend: Travel SaaS API.
+ * Backend: Travel SaaS API (Spring Boot).
  */
 
-// ----- Enums (from API schema enums) -----
+// ----- Enums -----
 
-/** CreateLeadDto / UpdateLeadDto source enum (OpenAPI). LeadResponseDto may return a subset. */
 export const LeadSource = {
   PHONE: 'PHONE',
   EMAIL: 'EMAIL',
@@ -33,46 +32,48 @@ export const ClientType = {
 } as const;
 export type ClientType = (typeof ClientType)[keyof typeof ClientType];
 
-/** Generic paginated response. OpenAPI list endpoints return { data, total, page, limit }. */
+/** Generic paginated response. All list endpoints return { items, total, page, limit }. */
 export type PaginatedDto<T> = {
-  data: T[];
+  items: T[];
   total: number;
   page: number;
   limit: number;
 };
 
-// ----- /api/me (GET) – OpenAPI: MeResponseDto -----
+// ----- /api/me (GET) – OpenAPI: UserResponse -----
 
-/** Role in organization (API enum). GET /api/me returns this per organization. */
+/** Role in organization (API enum). */
 export const OrgRole = {
   ADMIN: 'ADMIN',
   MANAGER: 'MANAGER',
   AGENT: 'AGENT',
+  // Backward-compatible roles accepted by some existing environments.
+  SALES_AGENT: 'SALES_AGENT',
+  BACK_OFFICE: 'BACK_OFFICE',
 } as const;
 export type OrgRole = (typeof OrgRole)[keyof typeof OrgRole];
 
-/** OpenAPI: OrganizationWithRoleDto. Organization with current user's role. */
+/** OpenAPI: OrgMembership. Organization membership entry in UserResponse. */
 export type OrganizationWithRoleDto = {
   id: string;
   name: string;
-  defaultCurrency: string;
-  invoicePrefix: string;
-  invoiceNextNumber: number;
-  createdAt: string;
-  updatedAt: string;
   role: OrgRole;
+  // Compatibility aliases for existing app code.
+  organizationId: string;
+  organizationName: string;
 };
 
-/** OpenAPI: MeResponseDto. GET /api/me response. */
+/** OpenAPI: UserResponse. GET /api/me response. */
 export type MeResponseDto = {
   id: string;
   firebaseUid: string;
   email: string;
-  name?: string;
-  picture?: string;
-  createdAt: string;
-  updatedAt: string;
+  fullName?: string;
   organizations: OrganizationWithRoleDto[];
+  // Legacy aliases used in parts of the current UI/tests.
+  name?: string;
+  createdAt?: string;
+  active?: boolean;
 };
 
 /** Legacy alias for components that only need id + name. */
@@ -86,26 +87,24 @@ export const AppRole = {
 } as const;
 export type AppRole = (typeof AppRole)[keyof typeof AppRole];
 
-// ----- Organization members (GET /api/organization-members, PATCH .../role) -----
+// ----- Organization members -----
 
-/** OpenAPI: OrganizationMemberResponseDto. Member of the current organization. */
+/** OpenAPI: MemberResponse. Member of the current organization. */
 export type OrganizationMemberResponseDto = {
   id: string;
   userId: string;
   name: string;
   email: string;
   role: OrgRole;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  active: boolean;
 };
 
-/** OpenAPI: UpdateOrganizationMemberRoleDto. PATCH /api/organization-members/{id}/role body. */
+/** OpenAPI: UpdateMemberRoleRequest. PATCH /api/organization-members/{id}/role body. */
 export type UpdateOrganizationMemberRoleDto = {
   role: OrgRole;
 };
 
-/** OpenAPI: AddOrganizationMemberDto. POST /api/organization-members body. User must already exist. */
+/** OpenAPI: AddMemberRequest. POST /api/organization-members body. */
 export type AddOrganizationMemberDto = {
   email: string;
   role: OrgRole;
@@ -116,6 +115,16 @@ export type AddOrganizationMemberDto = {
 export type CreateOrganizationDto = {
   name: string;
   defaultCurrency?: string;
+  invoicePrefix?: string;
+};
+
+export type OrganizationResponseDto = {
+  id: string;
+  name: string;
+  defaultCurrency?: string;
+  invoicePrefix?: string;
+  invoiceNextNumber?: number;
+  createdAt: string;
 };
 
 // ----- Leads -----
@@ -137,14 +146,13 @@ export type LeadResponseDto = {
   contactPhone: string | null;
   notes: string | null;
   status: LeadStatus | string;
-  createdAt: string; // date-time
-  updatedAt: string; // date-time
+  convertedToClientId: string | null;
+  createdAt: string;
+  updatedAt: string;
 };
 
-/** OpenAPI: GET /api/leads response. */
 export type PaginatedLeadResponseDto = PaginatedDto<LeadResponseDto>;
 
-/** OpenAPI schema: UpdateLeadDto. PATCH /api/leads/{id} request body. */
 export type UpdateLeadDto = {
   source?: LeadSource;
   contactName?: string;
@@ -157,45 +165,42 @@ export type UpdateLeadStatusDto = {
   status: LeadStatus;
 };
 
-/** Response for POST /api/leads/{id}/convert-to-client. */
-export type ConvertLeadToClientResponseDto = {
-  client: ClientResponseDto;
-  lead: LeadResponseDto;
+// ----- Offers -----
+
+export const OfferItemType = {
+  HOTEL: 'HOTEL',
+  FLIGHT: 'FLIGHT',
+  TRANSFER: 'TRANSFER',
+  INSURANCE: 'INSURANCE',
+  SERVICE: 'SERVICE',
+} as const;
+export type OfferItemType = (typeof OfferItemType)[keyof typeof OfferItemType];
+
+/** OpenAPI: OfferItemRequest. Offer line item in CreateOfferRequest / UpdateOfferRequest. */
+export type OfferItemRequest = {
+  type: OfferItemType;
+  name: string;
+  supplier?: string;
+  quantity?: number;
+  unitPrice: number;
+  totalPrice: number;
+  currency: string;
+  comment?: string;
 };
 
-// ----- Offers (OpenAPI: paths + CreateOfferDto, UpdateOfferDto, UpdateOfferStatusDto) -----
-
-/** OpenAPI schema: CreateOfferDto. POST /api/offers (create or duplicate when duplicateFromId set). */
-export type CreateOfferDto = {
-  duplicateFromId?: string; // uuid
-  requestId?: string; // uuid
-  title?: string;
-  supplierTotal?: number;
-  markup?: number;
-  commission?: number;
-  finalPrice?: number;
-  currency?: string;
+/** OpenAPI: ItemDto. Offer line item in OfferResponse. */
+export type OfferItemDto = {
+  id: string;
+  type: OfferItemType | string;
+  name: string;
+  supplier?: string;
+  currency: string;
+  comment?: string;
+  quantity?: number;
+  unitPrice: number;
+  totalPrice: number;
 };
 
-/** OpenAPI schema: UpdateOfferDto. PATCH /api/offers/{id} request body. */
-export type UpdateOfferDto = {
-  title?: string;
-  supplierTotal?: number;
-  markup?: number;
-  commission?: number;
-  finalPrice?: number;
-  currency?: string;
-};
-
-/** OpenAPI schema: UpdateOfferStatusDto. PATCH /api/offers/{id}/status request body. */
-export type UpdateOfferStatusDto = {
-  status: 'SENT' | 'VIEWED' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED';
-};
-
-/**
- * Full offer lifecycle + list filter values (OpenAPI query `status` includes VIEWED).
- * OfferResponseDto.status does not include VIEWED — use OfferResponseStatus for GET bodies.
- */
 export const OfferStatus = {
   DRAFT: 'DRAFT',
   SENT: 'SENT',
@@ -206,44 +211,63 @@ export const OfferStatus = {
 } as const;
 export type OfferStatus = (typeof OfferStatus)[keyof typeof OfferStatus];
 
-/** OpenAPI OfferResponseDto.status (GET responses — no VIEWED). */
-export type OfferResponseStatus = 'DRAFT' | 'SENT' | 'ACCEPTED' | 'REJECTED' | 'EXPIRED';
-
-/** OpenAPI: OfferResponseDto.source enum. */
 export const OfferSource = {
   MANUAL: 'MANUAL',
   OSTROVOK: 'OSTROVOK',
 } as const;
 export type OfferSource = (typeof OfferSource)[keyof typeof OfferSource];
 
-/** OpenAPI schema: OfferResponseDto. GET /api/offers, GET /api/offers/{id}. Amounts as string. */
+/** OpenAPI: CreateOfferRequest. POST /api/offers. */
+export type CreateOfferDto = {
+  requestId: string;
+  title: string;
+  source: OfferSource;
+  supplierTotal: number;
+  markup: number;
+  commission: number;
+  finalPrice: number;
+  currency: string;
+  items?: OfferItemRequest[];
+};
+
+/** OpenAPI: UpdateOfferRequest. PATCH /api/offers/{id}. */
+export type UpdateOfferDto = {
+  title?: string;
+  supplierTotal?: number;
+  markup?: number;
+  commission?: number;
+  finalPrice?: number;
+  currency?: string;
+  items?: OfferItemRequest[];
+};
+
+/** OpenAPI: UpdateOfferStatusRequest. PATCH /api/offers/{id}/status. */
+export type UpdateOfferStatusDto = {
+  status: OfferStatus;
+};
+
+/** OpenAPI: OfferResponse. GET/POST /api/offers, GET/PATCH /api/offers/{id}. Amounts as number. */
 export type OfferResponseDto = {
   id: string;
   organizationId: string;
   requestId: string;
   title: string;
   source: OfferSource | string;
-  status: OfferResponseStatus | string;
-  supplierTotal: string;
-  markup: string;
-  commission: string;
-  finalPrice: string;
+  status: OfferStatus | string;
+  supplierTotal: number;
+  markup: number;
+  commission: number;
+  finalPrice: number;
   currency: string;
+  items: OfferItemDto[];
   createdAt: string;
   updatedAt: string;
 };
 
-/** OpenAPI: GET /api/offers response. */
 export type PaginatedOfferResponseDto = PaginatedDto<OfferResponseDto>;
 
-// ----- Bookings (OpenAPI: CreateBookingDto, BookingResponseDto, UpdateBookingDto) -----
+// ----- Bookings -----
 
-/** OpenAPI schema: CreateBookingDto. POST /api/bookings request body. */
-export type CreateBookingDto = {
-  offerId: string; // uuid
-};
-
-/** OpenAPI: filter + UpdateBookingStatusDto use PENDING, CONFIRMED, PAID, CANCELLED; response may use CONFIRMED, CANCELLED. */
 export const BookingStatus = {
   PENDING: 'PENDING',
   CONFIRMED: 'CONFIRMED',
@@ -252,43 +276,51 @@ export const BookingStatus = {
 } as const;
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus];
 
-/** OpenAPI schema: BookingResponseDto.status (list/filter still use full BookingStatus). */
-export type BookingRecordStatus = 'CONFIRMED' | 'CANCELLED';
+/** OpenAPI: CreateBookingRequest. POST /api/bookings. */
+export type CreateBookingDto = {
+  offerId: string;
+  clientId: string;
+  agreedPrice: number;
+  currency: string;
+};
 
-/** OpenAPI schema: BookingResponseDto. GET/POST/PATCH/DELETE /api/bookings. agreedPrice decimal as string. */
+/** OpenAPI: UpdateBookingRequest. PATCH /api/bookings/{id}. */
+export type UpdateBookingDto = {
+  agreedPrice?: number;
+  currency?: string;
+};
+
+/** OpenAPI: UpdateBookingStatusRequest. PATCH /api/bookings/{id}/status. */
+export type UpdateBookingStatusDto = {
+  status: BookingStatus;
+};
+
+/** OpenAPI: BookingResponse. agreedPrice as number. */
 export type BookingResponseDto = {
   id: string;
   organizationId: string;
   offerId: string;
   clientId: string;
-  agreedPrice: string;
+  agreedPrice: number;
   currency: string;
-  status: BookingRecordStatus | string;
-  createdAt: string; // date-time
-  updatedAt: string; // date-time
+  status: BookingStatus | string;
+  createdAt: string;
+  updatedAt: string;
 };
 
-/** OpenAPI: GET /api/bookings response. */
 export type PaginatedBookingResponseDto = PaginatedDto<BookingResponseDto>;
 
-/** OpenAPI schema: UpdateBookingDto. PATCH /api/bookings/{id} request body. */
-export type UpdateBookingDto = {
-  status?: BookingStatus;
-};
+// ----- Invoices -----
 
-/** OpenAPI schema: UpdateBookingStatusDto. PATCH /api/bookings/{id}/status request body. */
-export type UpdateBookingStatusDto = {
-  status: BookingStatus;
-};
-
-// ----- Invoices (OpenAPI: CreateInvoiceDto, InvoiceResponseDto, UpdateInvoiceDto) -----
-
+/** OpenAPI: CreateInvoiceRequest. POST /api/invoices. */
 export type CreateInvoiceDto = {
-  bookingId: string; // uuid
+  bookingId: string;
+  issueDate: string;
+  amount: number;
+  currency: string;
   dueDate?: string;
 };
 
-/** OpenAPI: InvoiceResponseDto.status and UpdateInvoiceDto.status enum. */
 export const InvoiceStatus = {
   DRAFT: 'DRAFT',
   SENT: 'SENT',
@@ -297,41 +329,44 @@ export const InvoiceStatus = {
 } as const;
 export type InvoiceStatus = (typeof InvoiceStatus)[keyof typeof InvoiceStatus];
 
-/** OpenAPI schema: InvoiceResponseDto. Amount and dates as string; dueDate/pdfUrl nullable. */
+/** OpenAPI: InvoiceResponse. amount as number. */
 export type InvoiceResponseDto = {
   id: string;
   organizationId: string;
   bookingId: string;
   number: string;
-  issueDate: string; // date-time
+  issueDate: string;
   dueDate: string | null;
-  amount: string; // decimal as string
+  amount: number;
   currency: string;
   status: InvoiceStatus | string;
   pdfUrl: string | null;
-  createdAt: string; // date-time
+  createdAt: string;
+  updatedAt: string;
 };
 
-/** OpenAPI: GET /api/invoices response. */
 export type PaginatedInvoiceResponseDto = PaginatedDto<InvoiceResponseDto>;
 
-/** OpenAPI schema: UpdateInvoiceDto. PATCH /api/invoices/{id} request body. */
+/** OpenAPI: UpdateInvoiceRequest. PATCH /api/invoices/{id}. */
 export type UpdateInvoiceDto = {
+  issueDate?: string;
+  dueDate?: string;
+  amount?: number;
+  currency?: string;
   status?: InvoiceStatus;
-  dueDate?: string; // date-time
   pdfUrl?: string;
 };
 
-// ----- Clients (OpenAPI: GET/POST /api/clients, GET/PATCH/DELETE /api/clients/{id}) -----
+// ----- Clients -----
 
 export type CreateClientDto = {
   type: ClientType;
   name: string;
   phone?: string;
   email?: string;
+  comment?: string;
 };
 
-/** OpenAPI schema: ClientResponseDto. */
 export type ClientResponseDto = {
   id: string;
   organizationId: string;
@@ -344,10 +379,8 @@ export type ClientResponseDto = {
   updatedAt: string;
 };
 
-/** OpenAPI: GET /api/clients response. */
 export type PaginatedClientResponseDto = PaginatedDto<ClientResponseDto>;
 
-/** OpenAPI schema: UpdateClientDto. PATCH /api/clients/{id} request body. */
 export type UpdateClientDto = {
   type?: ClientType;
   name?: string;
@@ -356,9 +389,8 @@ export type UpdateClientDto = {
   comment?: string;
 };
 
-// ----- Requests (OpenAPI: GET/POST /api/requests, GET/PATCH/DELETE /api/requests/{id}, PATCH status) -----
+// ----- Requests -----
 
-/** OpenAPI: GET /api/requests query + UpdateRequestStatusDto body. */
 export const RequestStatus = {
   DRAFT: 'DRAFT',
   IN_PROGRESS: 'IN_PROGRESS',
@@ -367,19 +399,9 @@ export const RequestStatus = {
 } as const;
 export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus];
 
-/** OpenAPI: RequestResponseDto.status on GET/PATCH responses. */
-export const RequestResponseStatus = {
-  NEW: 'NEW',
-  IN_PROGRESS: 'IN_PROGRESS',
-  OFFERED: 'OFFERED',
-  CLOSED: 'CLOSED',
-} as const;
-export type RequestResponseStatus =
-  (typeof RequestResponseStatus)[keyof typeof RequestResponseStatus];
-
 export type CreateRequestDto = {
-  clientId: string; // uuid
-  managerId: string; // uuid
+  clientId: string;
+  managerId: string;
   destination: string;
   startDate: string;
   endDate: string;
@@ -388,27 +410,24 @@ export type CreateRequestDto = {
   comment?: string;
 };
 
-/** OpenAPI schema: RequestResponseDto. */
 export type RequestResponseDto = {
   id: string;
   organizationId: string;
   clientId: string;
   managerId: string;
   destination: string;
-  startDate: string; // date-time
-  endDate: string; // date-time
+  startDate: string;
+  endDate: string;
   adults: number;
   children: number;
   comment: string | null;
-  status: RequestResponseStatus | string;
+  status: RequestStatus | string;
   createdAt: string;
   updatedAt: string;
 };
 
-/** OpenAPI: GET /api/requests response. */
 export type PaginatedRequestResponseDto = PaginatedDto<RequestResponseDto>;
 
-/** OpenAPI schema: UpdateRequestDto. PATCH /api/requests/{id} request body. */
 export type UpdateRequestDto = {
   clientId?: string;
   managerId?: string;
@@ -420,7 +439,6 @@ export type UpdateRequestDto = {
   comment?: string;
 };
 
-/** OpenAPI schema: UpdateRequestStatusDto. PATCH /api/requests/{id}/status request body. */
 export type UpdateRequestStatusDto = {
   status: RequestStatus;
 };
@@ -436,7 +454,7 @@ export const EntityType = {
 } as const;
 export type EntityType = (typeof EntityType)[keyof typeof EntityType];
 
-// ----- Activities (POST/GET /api/activities, GET /api/activities/{id}) -----
+// ----- Activities -----
 
 export type CreateActivityDto = {
   entityType: EntityType;
@@ -453,17 +471,13 @@ export type ActivityResponseDto = {
   type: string;
   payload: Record<string, unknown> | null;
   createdAt: string;
+  createdBy: string;
+  updatedBy: string;
 };
 
-/** Response for GET /api/activities (findByEntity): items + pagination. */
-export type ActivityListResponseDto = {
-  items: ActivityResponseDto[];
-  total: number;
-  page: number;
-  limit: number;
-};
+export type ActivityListResponseDto = PaginatedDto<ActivityResponseDto>;
 
-// ----- Comments (POST/GET /api/comments, GET/DELETE /api/comments/{id}) -----
+// ----- Comments -----
 
 export type CreateCommentDto = {
   commentableType: EntityType;
@@ -479,17 +493,14 @@ export type CommentResponseDto = {
   body: string;
   createdAt: string;
   updatedAt: string;
+  deletedAt: string | null;
+  createdBy: string;
+  updatedBy: string;
 };
 
-/** Response for GET /api/comments (findByEntity). */
-export type CommentListResponseDto = {
-  items: CommentResponseDto[];
-  total: number;
-  page: number;
-  limit: number;
-};
+export type CommentListResponseDto = PaginatedDto<CommentResponseDto>;
 
-// ----- Tags (POST/GET /api/tags, GET/DELETE /api/tags/{id}, attach/detach) -----
+// ----- Tags -----
 
 export type CreateTagDto = {
   name: string;
@@ -501,9 +512,53 @@ export type TagResponseDto = {
   name: string;
   createdAt: string;
   updatedAt: string;
+  deletedAt: string | null;
+  createdBy: string;
+  updatedBy: string;
 };
+
+export type PaginatedTagResponseDto = PaginatedDto<TagResponseDto>;
 
 export type AttachTagDto = {
   entityType: EntityType;
   entityId: string;
+};
+
+// ----- Webhooks -----
+
+export type CreateWebhookRequest = {
+  url: string;
+  events: string[];
+};
+
+export type WebhookSubscription = {
+  id: string;
+  organizationId: string;
+  url: string;
+  signingSecret: string;
+  events: string[];
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  active: boolean;
+};
+
+// ----- API Keys -----
+
+export type CreateApiKeyRequest = {
+  name: string;
+  scopes: string[];
+};
+
+export type OrganizationApiKey = {
+  id: string;
+  organizationId: string;
+  name: string;
+  keyPrefix: string;
+  keyHash: string;
+  scopes: string[];
+  createdAt: string;
+  lastUsedAt: string | null;
+  revokedAt: string | null;
+  createdBy: string;
 };

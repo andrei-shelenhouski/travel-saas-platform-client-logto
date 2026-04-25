@@ -1,3 +1,5 @@
+import { CdkDragDrop, DragDropModule, transferArrayItem } from '@angular/cdk/drag-drop';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,19 +8,17 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
-import { CdkDragDrop, DragDropModule, transferArrayItem } from '@angular/cdk/drag-drop';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { Router, RouterLink } from '@angular/router';
 
-import { OffersService } from '@app/services/offers.service';
-import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
-import { ToastService } from '@app/shared/services/toast.service';
-import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import { isAllowedOfferStatusTransition } from '@app/features/offers/offer-state-machine';
-import type { OfferResponseDto, UpdateOfferStatusDto } from '@app/shared/models';
+import { OffersService } from '@app/services/offers.service';
+import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
+import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
 import { OfferStatus } from '@app/shared/models';
+import { ToastService } from '@app/shared/services/toast.service';
 
+import type { OfferResponseDto, UpdateOfferStatusDto } from '@app/shared/models';
 const OFFER_STATUS_ORDER: string[] = [
   OfferStatus.DRAFT,
   OfferStatus.SENT,
@@ -31,7 +31,6 @@ const OFFER_STATUS_ORDER: string[] = [
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-offers-kanban',
-  standalone: true,
   imports: [
     DragDropModule,
     RouterLink,
@@ -40,7 +39,7 @@ const OFFER_STATUS_ORDER: string[] = [
     ...MAT_BUTTON_TOGGLES,
   ],
   templateUrl: './offers-kanban.html',
-  styleUrl: './offers-kanban.css',
+  styleUrl: './offers-kanban.scss',
 })
 export class OffersKanbanComponent {
   private readonly offersService = inject(OffersService);
@@ -82,7 +81,7 @@ export class OffersKanbanComponent {
     effect(() => {
       const value = this.data.value();
 
-      if (!value?.data) {
+      if (!value?.items) {
         return;
       }
       const byStatus: Record<string, OfferResponseDto[]> = {};
@@ -90,7 +89,7 @@ export class OffersKanbanComponent {
       for (const s of OFFER_STATUS_ORDER) {
         byStatus[s] = [];
       }
-      for (const offer of value.data) {
+      for (const offer of value.items) {
         const s = offer.status as string;
 
         if (!byStatus[s]) {

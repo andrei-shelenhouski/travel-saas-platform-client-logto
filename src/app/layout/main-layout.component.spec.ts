@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 
 import { AuthService } from '@app/auth/auth.service';
@@ -6,14 +7,14 @@ import { MeService } from '@app/services/me.service';
 import { OrganizationStateService } from '@app/services/organization-state.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RoleService } from '@app/services/role.service';
+
 import { MainLayoutComponent } from './main-layout.component';
 
 const mockMeData = {
   id: '',
-  firebaseUid: '',
   email: 'test@example.com',
   createdAt: '',
-  updatedAt: '',
+  active: true,
   organizations: [],
 };
 
@@ -23,7 +24,7 @@ describe('MainLayoutComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MainLayoutComponent],
+      imports: [MainLayoutComponent, NoopAnimationsModule],
       providers: [
         provideRouter([]),
         {
@@ -38,7 +39,7 @@ describe('MainLayoutComponent', () => {
           provide: MeService,
           useValue: {
             getMeData: () => mockMeData,
-            getMe: () => vi.fn(),
+            getMe: () => ({ pipe: () => ({ subscribe: vi.fn() }) }),
             clearMeData: vi.fn(),
           },
         },
@@ -47,6 +48,8 @@ describe('MainLayoutComponent', () => {
           useValue: {
             getActiveOrganization: () => 'org-1',
             getActiveOrganizationName: () => 'Test Org',
+            getActiveOrganizationRole: () => 'ADMIN',
+            setActiveOrganization: vi.fn(),
             clear: vi.fn(),
           },
         },
@@ -55,6 +58,7 @@ describe('MainLayoutComponent', () => {
           useValue: {
             role: () => null,
             roleOrDefault: () => 'Manager',
+            rawRole: () => null,
             isAdmin: () => false,
             isAgent: () => false,
             isManager: () => true,
@@ -85,5 +89,13 @@ describe('MainLayoutComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should show active org name', () => {
+    expect(component.activeOrgName).toBe('Test Org');
+  });
+
+  it('should show "Admin" role label from persisted role', () => {
+    expect(component.activeOrgRoleLabel()).toBe('Admin');
   });
 });

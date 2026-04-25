@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+
 import type { ActivityTimelineItem } from '@app/shared/models/activity.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-activity-timeline',
-  standalone: true,
   template: `
     <div class="rounded-lg border border-gray-200 bg-white p-4">
       <h3 class="text-sm font-semibold text-gray-900">{{ title() }}</h3>
