@@ -31,7 +31,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
   selector: 'app-booking-detail',
   imports: [RouterLink, ConfirmationDialogComponent, ...MAT_BUTTONS],
   templateUrl: './booking-detail.html',
-  styleUrl: './booking-detail.css',
+  styleUrl: './booking-detail.scss',
 })
 export class BookingDetailComponent {
   private readonly route = inject(ActivatedRoute);

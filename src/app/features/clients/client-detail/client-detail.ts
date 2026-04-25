@@ -46,7 +46,7 @@ type ClientTab = 'overview' | 'requests' | 'activity' | 'comments';
     ...MAT_BUTTONS,
   ],
   templateUrl: './client-detail.html',
-  styleUrl: './client-detail.css',
+  styleUrl: './client-detail.scss',
 })
 export class ClientDetailComponent {
   private readonly route = inject(ActivatedRoute);

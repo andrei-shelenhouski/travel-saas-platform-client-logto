@@ -3371,11 +3371,11 @@
       "OrgMembership": {
         "type": "object",
         "properties": {
-          "organizationId": {
+          "id": {
             "type": "string",
             "format": "uuid"
           },
-          "organizationName": {
+          "name": {
             "type": "string"
           },
           "role": {
@@ -3395,10 +3395,13 @@
             "type": "string",
             "format": "uuid"
           },
-          "name": {
+          "firebaseUid": {
             "type": "string"
           },
           "email": {
+            "type": "string"
+          },
+          "fullName": {
             "type": "string"
           },
           "organizations": {
@@ -3406,13 +3409,6 @@
             "items": {
               "$ref": "#/components/schemas/OrgMembership"
             }
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "active": {
-            "type": "boolean"
           }
         }
       },

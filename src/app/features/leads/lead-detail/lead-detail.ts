@@ -23,7 +23,7 @@ import { LeadStatus } from '@app/shared/models';
   selector: 'app-lead-detail',
   imports: [RouterLink, ...MAT_BUTTONS],
   templateUrl: './lead-detail.html',
-  styleUrl: './lead-detail.css',
+  styleUrl: './lead-detail.scss',
 })
 export class LeadDetailComponent {
   private readonly route = inject(ActivatedRoute);

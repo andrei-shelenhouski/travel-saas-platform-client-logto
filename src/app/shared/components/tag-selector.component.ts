@@ -8,7 +8,6 @@ import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-tag-selector',
-  standalone: true,
   imports: [MatChipsModule, MatIconModule, ...MAT_FORM_BUTTONS],
   template: `
     <div class="space-y-2">

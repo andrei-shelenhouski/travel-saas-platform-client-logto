@@ -33,7 +33,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
   selector: 'app-offers-list',
   imports: [RouterLink, ...MAT_BUTTONS, ...MAT_BUTTON_TOGGLES],
   templateUrl: './offers-list.html',
-  styleUrl: './offers-list.css',
+  styleUrl: './offers-list.scss',
 })
 export class OffersListComponent {
   private readonly offersService = inject(OffersService);

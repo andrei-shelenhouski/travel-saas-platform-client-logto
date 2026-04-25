@@ -1,3 +1,5 @@
+import { CdkDragDrop, DragDropModule, transferArrayItem } from '@angular/cdk/drag-drop';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,18 +8,16 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
-import { CdkDragDrop, DragDropModule, transferArrayItem } from '@angular/cdk/drag-drop';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { Router, RouterLink } from '@angular/router';
 
 import { LeadsService } from '@app/services/leads.service';
-import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
-import { ToastService } from '@app/shared/services/toast.service';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
-import type { LeadResponseDto } from '@app/shared/models';
+import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
 import { LeadStatus } from '@app/shared/models';
+import { ToastService } from '@app/shared/services/toast.service';
 
+import type { LeadResponseDto } from '@app/shared/models';
 const LEAD_STATUS_ORDER: string[] = [
   LeadStatus.NEW,
   LeadStatus.CONTACTED,
@@ -29,7 +29,7 @@ const LEAD_STATUS_ORDER: string[] = [
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-leads-kanban',
-  standalone: true,
+
   imports: [
     DragDropModule,
     RouterLink,
@@ -38,7 +38,7 @@ const LEAD_STATUS_ORDER: string[] = [
     ...MAT_BUTTON_TOGGLES,
   ],
   templateUrl: './leads-kanban.html',
-  styleUrl: './leads-kanban.css',
+  styleUrl: './leads-kanban.scss',
 })
 export class LeadsKanbanComponent {
   private readonly leadsService = inject(LeadsService);

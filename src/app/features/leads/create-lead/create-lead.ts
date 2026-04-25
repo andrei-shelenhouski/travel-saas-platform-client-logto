@@ -34,7 +34,7 @@ const SOURCE_OPTIONS: { value: LeadSource; label: string }[] = [
   selector: 'app-create-lead',
   imports: [ReactiveFormsModule, RouterLink, ...MAT_FORM_BUTTONS],
   templateUrl: './create-lead.html',
-  styleUrl: './create-lead.css',
+  styleUrl: './create-lead.scss',
 })
 export class CreateLeadComponent {
   private readonly fb = inject(FormBuilder);

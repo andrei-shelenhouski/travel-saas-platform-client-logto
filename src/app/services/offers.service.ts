@@ -1,8 +1,10 @@
-import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+
 import type {
   CreateOfferDto,
   OfferResponseDto,
@@ -70,8 +72,8 @@ export class OffersService {
     return this.http.patch<OfferResponseDto>(`${OFFERS_URL}/${id}/status`, body);
   }
 
-  delete(id: string): Observable<OfferResponseDto> {
-    return this.http.delete<OfferResponseDto>(`${OFFERS_URL}/${id}`);
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${OFFERS_URL}/${id}`);
   }
 
   /** Convert offer to booking. POST /api/offers/{id}/convert-to-booking?clientId=. Returns updated offer. */

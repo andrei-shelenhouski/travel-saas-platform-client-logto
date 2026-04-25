@@ -4,10 +4,9 @@ import { Title } from '@angular/platform-browser';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-home',
-  standalone: true,
   imports: [],
   templateUrl: './home.component.html',
-  styleUrl: './home.component.css',
+  styleUrl: './home.component.scss',
 })
 export class HomeComponent {
   private readonly title = inject(Title);

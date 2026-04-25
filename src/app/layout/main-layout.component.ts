@@ -8,6 +8,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { MatMenuTrigger } from '@angular/material/menu';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 import { take } from 'rxjs';
@@ -16,7 +17,7 @@ import { AuthService } from '@app/auth/auth.service';
 import { MeService } from '@app/services/me.service';
 import { OrganizationStateService } from '@app/services/organization-state.service';
 import { PermissionService } from '@app/services/permission.service';
-import { ToastComponent } from '@app/shared/components/toast.component';
+import { orgRoleToLabel } from '@app/services/role.service';
 import { MAT_BUTTONS, MAT_MENU, MAT_NAV_LIST } from '@app/shared/material-imports';
 
 import type { OrganizationWithRoleDto } from '@app/shared/models';
@@ -31,11 +32,11 @@ type MainNavLink = {
 
 const MAIN_NAV_LINKS: MainNavLink[] = [
   { path: '/app/dashboard', icon: 'home', label: $localize`:@@dashboard:Dashboard` },
-  { path: '/app/leads', icon: 'flash_on', label: $localize`:@@leads:Leads` },
+  { path: '/app/leads', icon: 'inbox', label: $localize`:@@leads:Leads` },
   { path: '/app/clients', icon: 'group', label: $localize`:@@clients:Clients` },
-  { path: '/app/requests', icon: 'inbox', label: $localize`:@@requests:Requests` },
+  { path: '/app/requests', icon: 'flash_on', label: $localize`:@@requests:Requests` },
   { path: '/app/offers', icon: 'send', label: $localize`:@@offers:Offers` },
-  { path: '/app/bookings', icon: 'event', label: $localize`:@@bookings:Bookings` },
+  { path: '/app/bookings', icon: 'flight', label: $localize`:@@bookings:Bookings` },
   { path: '/app/invoices', icon: 'description', label: $localize`:@@invoices:Invoices` },
   {
     path: '/app/admin/users',
@@ -55,18 +56,17 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-main-layout',
-  standalone: true,
   imports: [
     RouterLink,
     RouterLinkActive,
     RouterOutlet,
-    ToastComponent,
     ...MAT_BUTTONS,
     ...MAT_MENU,
     ...MAT_NAV_LIST,
+    MatSidenavModule,
   ],
   templateUrl: './main-layout.component.html',
-  styleUrl: './main-layout.component.css',
+  styleUrl: './main-layout.component.scss',
 })
 export class MainLayoutComponent implements OnInit {
   private readonly authService = inject(AuthService);
@@ -118,6 +118,24 @@ export class MainLayoutComponent implements OnInit {
     return raw.charAt(0).toUpperCase();
   });
 
+  /** Whether the current user belongs to more than one organization. */
+  readonly hasMultipleOrgs = computed(() => {
+    const data = this.meService.getMeData();
+
+    return (data?.organizations?.length ?? 0) > 1;
+  });
+
+  /** Active org role label (e.g. "Admin", "Sales Agent"). */
+  readonly activeOrgRoleLabel = computed(() => {
+    const rawRole = this.orgState.getActiveOrganizationRole();
+
+    if (!rawRole) {
+      return this.permissions.roleLabel();
+    }
+
+    return orgRoleToLabel(rawRole);
+  });
+
   ngOnInit(): void {
     if (!this.meService.getMeData()) {
       this.meService
@@ -125,7 +143,7 @@ export class MainLayoutComponent implements OnInit {
         .pipe(take(1))
         .subscribe({
           next: () => {
-            // Role is now automatically updated via signal reactivity
+            // Role and meData are updated via signal reactivity inside MeService
           },
         });
     }
@@ -160,11 +178,17 @@ export class MainLayoutComponent implements OnInit {
       });
   }
 
+  orgRoleLabel(role: string): string {
+    return orgRoleToLabel(role);
+  }
+
   switchOrganization(org: OrganizationWithRoleDto): void {
     if (org.organizationId === this.activeOrgId) {
+      this.orgMenuTrigger().closeMenu();
+
       return;
     }
-    this.orgState.setActiveOrganization(org.organizationId, org.organizationName);
+    this.orgState.setActiveOrganization(org.organizationId, org.organizationName, org.role);
     this.outletReloadKey.update((k) => k + 1);
     this.meService
       .getMe()
@@ -174,6 +198,10 @@ export class MainLayoutComponent implements OnInit {
           // Role / me cache updated via MeService tap
         },
       });
+  }
+
+  navigateToOrgSelect(): void {
+    this.router.navigate(['/org-select']);
   }
 
   async logout(): Promise<void> {

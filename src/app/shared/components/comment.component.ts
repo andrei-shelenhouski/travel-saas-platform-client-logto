@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+
 import type { CommentItem } from '@app/shared/models/comment.model';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-comment',
-  standalone: true,
   imports: [ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   template: `
     <div class="space-y-4">

@@ -1,8 +1,10 @@
-import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+
 import type {
   CreateRequestDto,
   PaginatedRequestResponseDto,
@@ -67,7 +69,7 @@ export class RequestsService {
     return this.http.patch<RequestResponseDto>(`${REQUESTS_URL}/${id}/status`, dto);
   }
 
-  delete(id: string): Observable<RequestResponseDto> {
-    return this.http.delete<RequestResponseDto>(`${REQUESTS_URL}/${id}`);
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${REQUESTS_URL}/${id}`);
   }
 }

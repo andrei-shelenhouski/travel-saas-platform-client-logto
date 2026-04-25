@@ -30,7 +30,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
   selector: 'app-invoices-list',
   imports: [RouterLink, ...MAT_BUTTONS, ...MAT_BUTTON_TOGGLES],
   templateUrl: './invoices-list.html',
-  styleUrl: './invoices-list.css',
+  styleUrl: './invoices-list.scss',
 })
 export class InvoicesListComponent {
   private readonly invoicesService = inject(InvoicesService);

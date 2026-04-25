@@ -14,7 +14,7 @@ import type { RequestResponseDto } from '@app/shared/models';
   selector: 'app-requests-list',
   imports: [RouterLink, ...MAT_BUTTONS],
   templateUrl: './requests-list.html',
-  styleUrl: './requests-list.css',
+  styleUrl: './requests-list.scss',
 })
 export class RequestsListComponent {
   private readonly requestsService = inject(RequestsService);

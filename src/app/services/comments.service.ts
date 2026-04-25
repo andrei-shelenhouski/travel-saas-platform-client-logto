@@ -1,8 +1,10 @@
-import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+
 import type {
   CommentListResponseDto,
   CommentResponseDto,
@@ -51,7 +53,7 @@ export class CommentsService {
     return this.http.get<CommentResponseDto>(`${COMMENTS_URL}/${id}`);
   }
 
-  delete(id: string): Observable<CommentResponseDto> {
-    return this.http.delete<CommentResponseDto>(`${COMMENTS_URL}/${id}`);
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${COMMENTS_URL}/${id}`);
   }
 }

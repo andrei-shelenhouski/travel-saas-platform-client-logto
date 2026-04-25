@@ -8,10 +8,9 @@ import { MAT_BUTTONS } from '@app/shared/material-imports';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-landing',
-  standalone: true,
   imports: [RouterLink, ...MAT_BUTTONS],
   templateUrl: './landing.component.html',
-  styleUrl: './landing.component.css',
+  styleUrl: './landing.component.scss',
 })
 export class LandingComponent {
   protected readonly authService = inject(AuthService);

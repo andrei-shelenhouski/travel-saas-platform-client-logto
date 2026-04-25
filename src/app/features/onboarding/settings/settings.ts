@@ -5,6 +5,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
   selector: 'app-settings',
   imports: [],
   templateUrl: './settings.html',
-  styleUrl: './settings.css',
+  styleUrl: './settings.scss',
 })
 export class SettingsComponent {}

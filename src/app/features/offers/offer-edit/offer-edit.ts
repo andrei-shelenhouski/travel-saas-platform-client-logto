@@ -13,7 +13,7 @@ import { OfferStatus } from '@app/shared/models';
   selector: 'app-offer-edit',
   imports: [RouterLink, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   templateUrl: './offer-edit.html',
-  styleUrl: './offer-edit.css',
+  styleUrl: './offer-edit.scss',
 })
 export class OfferEditComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
