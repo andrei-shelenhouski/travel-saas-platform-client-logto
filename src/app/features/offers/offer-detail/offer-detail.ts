@@ -6,22 +6,23 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { EMPTY, switchMap } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
-import { OffersService } from '@app/services/offers.service';
-import { RequestsService } from '@app/services/requests.service';
-import { PermissionService } from '@app/services/permission.service';
-import { ToastService } from '@app/shared/services/toast.service';
-import type { OfferResponseDto, UpdateOfferStatusDto } from '@app/shared/models';
-import { OfferStatus } from '@app/shared/models';
-import { getAllowedTransitions, type OfferAction } from '@app/features/offers/offer-state-machine';
+import { getAllowedTransitions, OfferAction } from '@app/features/offers/offer-state-machine';
 import { OfferTimelineComponent } from '@app/features/offers/offer-timeline/offer-timeline';
+import { OffersService } from '@app/services/offers.service';
+import { PermissionService } from '@app/services/permission.service';
+import { RequestsService } from '@app/services/requests.service';
 import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
+import { OfferStatus } from '@app/shared/models';
+import { ToastService } from '@app/shared/services/toast.service';
 
+import type { OfferResponseDto, UpdateOfferStatusDto } from '@app/shared/models';
 const STATUS_BADGE_CLASS: Record<OfferStatus, string> = {
   DRAFT: 'bg-gray-100 text-gray-800',
   SENT: 'bg-blue-100 text-blue-800',
@@ -156,7 +157,7 @@ export class OfferDetailComponent {
 
       this.requestsService
         .getById(offer.requestId)
-        .pipe(switchMap((req) => this.offersService.convertToBooking(id, req.clientId)))
+        .pipe(switchMap((request) => this.offersService.convertToBooking(id, request.clientId)))
         .subscribe({
           next: () => {
             this.toast.showSuccess('Booking created');
