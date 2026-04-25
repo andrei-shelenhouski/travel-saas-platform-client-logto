@@ -15,7 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
   standalone: true,
   imports: [...MAT_BUTTONS, MatChipsModule, MatIconModule],
   templateUrl: './select-organization.html',
-  styleUrl: './select-organization.css',
+  styleUrl: './select-organization.scss',
 })
 export class SelectOrganizationComponent {
   private readonly meService = inject(MeService);

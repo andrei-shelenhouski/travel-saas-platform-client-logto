@@ -38,7 +38,7 @@ const LEAD_STATUS_ORDER: string[] = [
     ...MAT_BUTTON_TOGGLES,
   ],
   templateUrl: './leads-kanban.html',
-  styleUrl: './leads-kanban.css',
+  styleUrl: './leads-kanban.scss',
 })
 export class LeadsKanbanComponent {
   private readonly leadsService = inject(LeadsService);

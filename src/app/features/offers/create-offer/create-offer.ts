@@ -15,7 +15,7 @@ import type { RequestResponseDto } from '@app/shared/models';
   selector: 'app-create-offer',
   imports: [RouterLink, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   templateUrl: './create-offer.html',
-  styleUrl: './create-offer.css',
+  styleUrl: './create-offer.scss',
 })
 export class CreateOfferComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);

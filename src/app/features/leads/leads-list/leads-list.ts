@@ -13,7 +13,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   selector: 'app-leads-list',
   imports: [RouterLink, ...MAT_BUTTONS, ...MAT_BUTTON_TOGGLES],
   templateUrl: './leads-list.html',
-  styleUrl: './leads-list.css',
+  styleUrl: './leads-list.scss',
 })
 export class LeadsListComponent {
   private readonly leadsService = inject(LeadsService);

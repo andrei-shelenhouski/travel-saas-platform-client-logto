@@ -47,7 +47,7 @@ const ACTION_LABELS: Record<OfferAction, string> = {
   selector: 'app-offer-detail',
   imports: [OfferTimelineComponent, ConfirmationDialogComponent, ...MAT_BUTTONS],
   templateUrl: './offer-detail.html',
-  styleUrl: './offer-detail.css',
+  styleUrl: './offer-detail.scss',
 })
 export class OfferDetailComponent {
   private readonly route = inject(ActivatedRoute);

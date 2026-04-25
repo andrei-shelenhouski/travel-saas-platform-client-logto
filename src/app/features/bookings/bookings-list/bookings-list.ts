@@ -30,7 +30,7 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
   selector: 'app-bookings-list',
   imports: [...MAT_BUTTONS, ...MAT_BUTTON_TOGGLES],
   templateUrl: './bookings-list.html',
-  styleUrl: './bookings-list.css',
+  styleUrl: './bookings-list.scss',
 })
 export class BookingsListComponent {
   private readonly bookingsService = inject(BookingsService);

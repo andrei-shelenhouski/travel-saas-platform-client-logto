@@ -67,7 +67,7 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
     ...MAT_NAV_LIST,
   ],
   templateUrl: './main-layout.component.html',
-  styleUrl: './main-layout.component.css',
+  styleUrl: './main-layout.component.scss',
 })
 export class MainLayoutComponent implements OnInit {
   private readonly authService = inject(AuthService);

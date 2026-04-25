@@ -17,7 +17,7 @@ const TYPE_OPTIONS: { value: ClientType; label: string }[] = [
   selector: 'app-create-client',
   imports: [RouterLink, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   templateUrl: './create-client.html',
-  styleUrl: './create-client.css',
+  styleUrl: './create-client.scss',
 })
 export class CreateClientComponent {
   private readonly router = inject(Router);

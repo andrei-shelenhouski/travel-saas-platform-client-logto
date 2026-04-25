@@ -39,7 +39,7 @@ const STATUS_OPTIONS: { value: InvoiceStatus; label: string }[] = [
   selector: 'app-invoice-detail',
   imports: [RouterLink, ReactiveFormsModule, ConfirmationDialogComponent, ...MAT_FORM_BUTTONS],
   templateUrl: './invoice-detail.html',
-  styleUrl: './invoice-detail.css',
+  styleUrl: './invoice-detail.scss',
 })
 export class InvoiceDetailComponent {
   private readonly route = inject(ActivatedRoute);

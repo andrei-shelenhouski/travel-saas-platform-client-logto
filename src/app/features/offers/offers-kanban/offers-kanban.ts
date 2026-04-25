@@ -40,7 +40,7 @@ const OFFER_STATUS_ORDER: string[] = [
     ...MAT_BUTTON_TOGGLES,
   ],
   templateUrl: './offers-kanban.html',
-  styleUrl: './offers-kanban.css',
+  styleUrl: './offers-kanban.scss',
 })
 export class OffersKanbanComponent {
   private readonly offersService = inject(OffersService);

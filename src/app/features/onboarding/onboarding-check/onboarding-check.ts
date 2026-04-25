@@ -10,7 +10,7 @@ import { OrganizationStateService } from '@app/services/organization-state.servi
   selector: 'app-onboarding-check',
   imports: [],
   templateUrl: './onboarding-check.html',
-  styleUrl: './onboarding-check.css',
+  styleUrl: './onboarding-check.scss',
 })
 export class OnboardingCheckComponent implements OnInit {
   private readonly meService = inject(MeService);

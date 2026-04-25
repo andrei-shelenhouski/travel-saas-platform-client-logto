@@ -18,7 +18,7 @@ import { RequestsService } from '@app/services/requests.service';
   standalone: true,
   imports: [RouterLink, ...MAT_BUTTONS],
   templateUrl: './dashboard.html',
-  styleUrl: './dashboard.css',
+  styleUrl: './dashboard.scss',
 })
 export class DashboardComponent {
   private readonly leadsService = inject(LeadsService);

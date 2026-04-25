@@ -11,7 +11,7 @@ import { MeService } from '@app/services/me.service';
   selector: 'app-callback',
   standalone: true,
   templateUrl: './callback.component.html',
-  styleUrl: './callback.component.css',
+  styleUrl: './callback.component.scss',
 })
 export class CallbackComponent implements OnInit {
   private readonly auth = inject(Auth);

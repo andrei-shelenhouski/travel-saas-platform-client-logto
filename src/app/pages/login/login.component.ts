@@ -10,7 +10,7 @@ import { MAT_BUTTONS } from '@app/shared/material-imports';
   selector: 'app-login',
   imports: [MatProgressSpinnerModule, ...MAT_BUTTONS],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+  styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent implements OnInit {

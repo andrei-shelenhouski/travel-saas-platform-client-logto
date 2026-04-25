@@ -30,7 +30,7 @@ const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
   standalone: true,
   imports: [RouterLink, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   templateUrl: './users-management.html',
-  styleUrl: './users-management.css',
+  styleUrl: './users-management.scss',
 })
 export class UsersManagementComponent {
   private readonly membersService = inject(OrganizationMembersService);

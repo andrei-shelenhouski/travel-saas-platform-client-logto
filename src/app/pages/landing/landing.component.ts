@@ -11,7 +11,7 @@ import { MAT_BUTTONS } from '@app/shared/material-imports';
   standalone: true,
   imports: [RouterLink, ...MAT_BUTTONS],
   templateUrl: './landing.component.html',
-  styleUrl: './landing.component.css',
+  styleUrl: './landing.component.scss',
 })
 export class LandingComponent {
   protected readonly authService = inject(AuthService);

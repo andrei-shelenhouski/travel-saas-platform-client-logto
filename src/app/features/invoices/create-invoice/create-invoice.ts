@@ -15,7 +15,7 @@ import { BookingStatus } from '@app/shared/models';
   selector: 'app-create-invoice',
   imports: [RouterLink, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   templateUrl: './create-invoice.html',
-  styleUrl: './create-invoice.css',
+  styleUrl: './create-invoice.scss',
 })
 export class CreateInvoiceComponent {
   private readonly router = inject(Router);

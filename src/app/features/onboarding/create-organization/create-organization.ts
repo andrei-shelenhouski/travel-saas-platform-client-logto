@@ -14,7 +14,7 @@ import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
   selector: 'app-create-organization',
   imports: [ReactiveFormsModule, RouterLink, ...MAT_FORM_BUTTONS],
   templateUrl: './create-organization.html',
-  styleUrl: './create-organization.css',
+  styleUrl: './create-organization.scss',
 })
 export class CreateOrganizationComponent {
   private readonly organizationsService = inject(OrganizationsService);
