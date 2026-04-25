@@ -1,18 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { Router } from '@angular/router';
 
-import { SelectOrganizationComponent } from './select-organization';
 import { MeService } from '@app/services/me.service';
 import { OrganizationStateService } from '@app/services/organization-state.service';
 
+import { SelectOrganizationComponent } from './select-organization';
+
 const ORG_ADMIN = {
+  id: 'org-1',
+  name: 'Plus Tours',
   organizationId: 'org-1',
   organizationName: 'Plus Tours',
   role: 'ADMIN' as const,
 };
 
 const ORG_AGENT = {
+  id: 'org-2',
+  name: 'Alpha Travel',
   organizationId: 'org-2',
   organizationName: 'Alpha Travel',
   role: 'SALES_AGENT' as const,

@@ -1,8 +1,10 @@
-import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+
 import type {
   ClientResponseDto,
   ClientType,
@@ -54,7 +56,7 @@ export class ClientsService {
     return this.http.patch<ClientResponseDto>(`${CLIENTS_URL}/${id}`, dto);
   }
 
-  delete(id: string): Observable<ClientResponseDto> {
-    return this.http.delete<ClientResponseDto>(`${CLIENTS_URL}/${id}`);
+  delete(id: string): Observable<void> {
+    return this.http.delete<void>(`${CLIENTS_URL}/${id}`);
   }
 }

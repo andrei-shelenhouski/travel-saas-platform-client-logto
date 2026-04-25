@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 
-import { Observable, tap } from 'rxjs';
+import { map, Observable, tap } from 'rxjs';
 
 import { environment } from '@environments/environment';
 
@@ -20,6 +20,14 @@ export class MeService {
   /** Call GET /api/me (no org header). Stores result for onboarding and role. */
   getMe(): Observable<MeResponseDto> {
     return this.http.get<MeResponseDto>(ME_URL).pipe(
+      map((res) => ({
+        ...res,
+        organizations: (res.organizations ?? []).map((organization) => ({
+          ...organization,
+          organizationId: organization.id,
+          organizationName: organization.name,
+        })),
+      })),
       tap((res) => {
         this.meData.set(res);
       }),

@@ -47,6 +47,7 @@ export const OrgRole = {
   ADMIN: 'ADMIN',
   MANAGER: 'MANAGER',
   AGENT: 'AGENT',
+  // Backward-compatible roles accepted by some existing environments.
   SALES_AGENT: 'SALES_AGENT',
   BACK_OFFICE: 'BACK_OFFICE',
 } as const;
@@ -54,23 +55,29 @@ export type OrgRole = (typeof OrgRole)[keyof typeof OrgRole];
 
 /** OpenAPI: OrgMembership. Organization membership entry in UserResponse. */
 export type OrganizationWithRoleDto = {
+  id: string;
+  name: string;
+  role: OrgRole;
+  // Compatibility aliases for existing app code.
   organizationId: string;
   organizationName: string;
-  role: OrgRole;
 };
 
 /** OpenAPI: UserResponse. GET /api/me response. */
 export type MeResponseDto = {
   id: string;
-  name?: string;
+  firebaseUid: string;
   email: string;
+  fullName?: string;
   organizations: OrganizationWithRoleDto[];
-  createdAt: string;
-  active: boolean;
+  // Legacy aliases used in parts of the current UI/tests.
+  name?: string;
+  createdAt?: string;
+  active?: boolean;
 };
 
 /** Legacy alias for components that only need id + name. */
-export type Organization = Pick<OrganizationWithRoleDto, 'organizationId' | 'organizationName'>;
+export type Organization = Pick<OrganizationWithRoleDto, 'id' | 'name'>;
 
 /** App-level role for RBAC (display). Maps from API OrgRole. */
 export const AppRole = {
@@ -109,6 +116,15 @@ export type CreateOrganizationDto = {
   name: string;
   defaultCurrency?: string;
   invoicePrefix?: string;
+};
+
+export type OrganizationResponseDto = {
+  id: string;
+  name: string;
+  defaultCurrency?: string;
+  invoicePrefix?: string;
+  invoiceNextNumber?: number;
+  createdAt: string;
 };
 
 // ----- Leads -----
@@ -500,6 +516,8 @@ export type TagResponseDto = {
   createdBy: string;
   updatedBy: string;
 };
+
+export type PaginatedTagResponseDto = PaginatedDto<TagResponseDto>;
 
 export type AttachTagDto = {
   entityType: EntityType;
