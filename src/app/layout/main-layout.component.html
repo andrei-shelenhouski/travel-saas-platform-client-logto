@@ -1,79 +1,17 @@
-<div class="flex h-screen bg-gray-50">
-  <!-- Sidebar -->
-  <aside class="flex w-56 flex-col border-r border-gray-200 bg-white">
-    <!-- Org Switcher (top of sidebar, below logo placeholder, above nav links) -->
-    <div class="border-b border-gray-100 px-2 py-2">
-      @if (hasMultipleOrgs()) {
-        <!-- Clickable org switcher for multi-org users -->
-        <button
-          #orgMenuTrigger="matMenuTrigger"
-          class="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-left transition-colors hover:bg-gray-50"
-          mat-button
-          type="button"
-          [matMenuTriggerFor]="orgMenu"
-          (menuOpened)="onOrgMenuOpened()"
-        >
-          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary-100">
-            <span aria-hidden="true" class="material-icons text-base text-primary-600">business</span>
-          </div>
-          <div class="min-w-0 flex-1">
-            <p class="truncate text-xs font-semibold text-gray-900">{{ activeOrgName }}</p>
-            <p class="truncate text-xs text-gray-500">{{ activeOrgRoleLabel() }}</p>
-          </div>
-          <span aria-hidden="true" class="material-icons shrink-0 text-sm text-gray-400">unfold_more</span>
-        </button>
-        <mat-menu #orgMenu="matMenu">
-          @if (orgSwitcherLoading()) {
-            <button disabled mat-menu-item type="button">
-              <span class="flex items-center gap-2">
-                <span aria-hidden="true" class="material-icons animate-spin text-base">sync</span>
-                <span i18n="@@loadingOrganizations">Loading organizations…</span>
-              </span>
-            </button>
-          } @else {
-            @for (org of organizations(); track org.organizationId) {
-              <button
-                mat-menu-item
-                type="button"
-                [class.font-semibold]="org.organizationId === activeOrgId"
-                (click)="switchOrganization(org)"
-              >
-                <span class="flex w-full items-center justify-between gap-3">
-                  <span class="flex min-w-0 flex-col">
-                    <span class="truncate">{{ org.organizationName }}</span>
-                    <span class="text-xs text-gray-500">{{ orgRoleLabel(org.role) }}</span>
-                  </span>
-                  @if (org.organizationId === activeOrgId) {
-                    <mat-icon class="!text-primary-600 shrink-0" fontSet="material-icons">check</mat-icon>
-                  }
-                </span>
-              </button>
-            }
-            @if (organizations().length === 0) {
-              <button disabled mat-menu-item type="button">
-                <span i18n="@@noOtherOrganizations">No other organizations</span>
-              </button>
-            }
-          }
-          <mat-divider />
-          <a mat-menu-item routerLink="/app/organizations/new">
-            <mat-icon fontSet="material-icons">add</mat-icon>
-            <span i18n="@@addOrganization">Add organization</span>
-          </a>
-        </mat-menu>
-      } @else {
-        <!-- Display-only org block for single-org users -->
-        <div class="flex items-center gap-2 rounded-lg px-2 py-2">
-          <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary-100">
-            <span aria-hidden="true" class="material-icons text-base text-primary-600">business</span>
-          </div>
-          <div class="min-w-0 flex-1">
-            <p class="truncate text-xs font-semibold text-gray-900">{{ activeOrgName }}</p>
-            <p class="truncate text-xs text-gray-500">{{ activeOrgRoleLabel() }}</p>
-          </div>
-        </div>
-      }
+<mat-drawer-container class="h-screen w-screen">
+  <mat-drawer class="sidebar" mode="side" opened>
+    <div class="logo">
+      <span class="logo-icon">
+        <mat-icon aria-hidden="true">add</mat-icon>
+      </span>
+
+      <span class="logo-text">
+        <span class="logo-title">Plus</span>
+        <span class="logo-subtitle">TravelOps</span>
+      </span>
     </div>
+
+    <mat-divider></mat-divider>
 
     <!-- Navigation links -->
     <mat-nav-list class="min-h-0 flex-1 px-2">
@@ -91,49 +29,120 @@
         </a>
       }
     </mat-nav-list>
-  </aside>
+  </mat-drawer>
 
-  <!-- Main content area -->
-  <div class="flex min-w-0 flex-1 flex-col">
-    <header class="flex h-14 items-center justify-end border-b border-gray-200 bg-white px-4">
-      <div class="flex items-center gap-3">
-        @if (userPicture(); as userPicture) {
-          <img
-            class="h-9 w-9 rounded-full object-cover ring-2 ring-gray-200"
-            [alt]="userDisplay()"
-            [src]="userPicture"
-          />
-        } @else {
-          <div
-            class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-100 text-sm font-medium text-primary ring-2 ring-gray-200"
+  <mat-drawer-content>
+    <div class="flex min-w-0 flex-1 flex-col">
+      <header class="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4">
+        @if (hasMultipleOrgs()) {
+          <!-- Clickable org switcher for multi-org users -->
+          <button
+            #orgMenuTrigger="matMenuTrigger"
+            mat-button
+            type="button"
+            [matMenuTriggerFor]="orgMenu"
+            (menuOpened)="onOrgMenuOpened()"
           >
-            {{ userInitial() }}
+            <mat-icon>business</mat-icon>
+            <span>{{ activeOrgName }}</span>
+            <mat-icon iconPositionEnd>expand_more</mat-icon>
+          </button>
+          <mat-menu #orgMenu="matMenu">
+            @if (orgSwitcherLoading()) {
+              <button disabled mat-menu-item type="button">
+                <span class="flex items-center gap-2">
+                  <span aria-hidden="true" class="material-icons animate-spin text-base">sync</span>
+                  <span i18n="@@loadingOrganizations">Loading organizations…</span>
+                </span>
+              </button>
+            } @else {
+              @for (org of organizations(); track org.organizationId) {
+                <button
+                  mat-menu-item
+                  type="button"
+                  [class.font-semibold]="org.organizationId === activeOrgId"
+                  (click)="switchOrganization(org)"
+                >
+                  <mat-icon>business</mat-icon>
+                  <span class="flex w-full items-center justify-between gap-3">
+                    <span class="flex min-w-0 flex-col">
+                      <span class="truncate">{{ org.organizationName }}</span>
+                      <span class="text-xs text-gray-500">{{ orgRoleLabel(org.role) }}</span>
+                    </span>
+                    @if (org.organizationId === activeOrgId) {
+                      <mat-icon class="!text-primary-600 shrink-0" fontSet="material-icons"
+                        >check</mat-icon
+                      >
+                    }
+                  </span>
+                </button>
+              }
+              @if (organizations().length === 0) {
+                <button disabled mat-menu-item type="button">
+                  <span i18n="@@noOtherOrganizations">No other organizations</span>
+                </button>
+              }
+            }
+            <mat-divider />
+            <a mat-menu-item routerLink="/app/organizations/new">
+              <mat-icon fontSet="material-icons">add</mat-icon>
+              <span i18n="@@addOrganization">Add organization</span>
+            </a>
+          </mat-menu>
+        } @else {
+          <!-- Display-only org block for single-org users -->
+          <div class="flex items-center gap-2 rounded-lg px-2 py-2">
+            <div
+              class="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary-100"
+            >
+              <span aria-hidden="true" class="material-icons text-base text-primary-600"
+                >business</span
+              >
+            </div>
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-xs font-semibold text-gray-900">{{ activeOrgName }}</p>
+              <p class="truncate text-xs text-gray-500">{{ activeOrgRoleLabel() }}</p>
+            </div>
           </div>
         }
-        <span class="text-sm text-gray-600">{{ userDisplay() }}</span>
-        <span
-          class="rounded-full px-2.5 py-0.5 text-xs font-medium"
-          [class]="
-            permissions.roleLabel() === 'Admin'
-              ? 'bg-violet-100 text-violet-800'
-              : permissions.roleLabel() === 'Agent'
-                ? 'bg-amber-100 text-amber-800'
-                : 'bg-sky-100 text-sky-800'
-          "
-        >
-          {{ permissions.roleLabel() }}
-        </span>
-        <button class="flex items-center gap-2" mat-button type="button" (click)="logout()">
-          <span aria-hidden="true" class="material-icons text-base">logout</span
-          ><span i18n="@@logout">Logout</span>
-        </button>
-      </div>
-    </header>
-    <main class="flex-1 overflow-auto p-4">
-      @for (reloadKey of [outletReloadKey()]; track reloadKey) {
-        <router-outlet />
-      }
-    </main>
-  </div>
-  <app-toast />
-</div>
+
+        <div class="flex items-center gap-3">
+          @if (userPicture(); as userPicture) {
+            <img
+              class="h-9 w-9 rounded-full object-cover ring-2 ring-gray-200"
+              [alt]="userDisplay()"
+              [src]="userPicture"
+            />
+          } @else {
+            <div
+              class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-100 text-sm font-medium text-primary ring-2 ring-gray-200"
+            >
+              {{ userInitial() }}
+            </div>
+          }
+          <span class="text-sm text-gray-600">{{ userDisplay() }}</span>
+          <span
+            class="rounded-full px-2.5 py-0.5 text-xs font-medium"
+            [class]="
+              permissions.roleLabel() === 'Admin'
+                ? 'bg-violet-100 text-violet-800'
+                : permissions.roleLabel() === 'Agent'
+                  ? 'bg-amber-100 text-amber-800'
+                  : 'bg-sky-100 text-sky-800'
+            "
+          >
+            {{ permissions.roleLabel() }}
+          </span>
+          <button class="flex items-center gap-2" mat-button type="button" (click)="logout()">
+            <span aria-hidden="true" class="material-icons text-base">logout</span
+            ><span i18n="@@logout">Logout</span>
+          </button>
+        </div>
+      </header>
+      <main class="flex-1 overflow-auto p-4">
+        @for (reloadKey of [outletReloadKey()]; track reloadKey) {
+          <router-outlet />
+        }
+      </main></div
+  ></mat-drawer-content>
+</mat-drawer-container>

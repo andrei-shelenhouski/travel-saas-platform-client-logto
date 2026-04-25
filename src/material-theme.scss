@@ -9,13 +9,15 @@
 
 html {
   height: 100%;
+  font-family: 'Open Sans', sans-serif;
+
   @include mat.theme(
     (
       color: (
         primary: theme-colors.$primary-palette,
         tertiary: mat.$azure-palette,
       ),
-      typography: Manrope,
+      typography: 'Open Sans',
       density: 0,
     )
   );
@@ -39,9 +41,12 @@ html {
 
   @include mat.list-overrides(
     (
-      active-indicator-shape: 0.25rem,
-      list-item-trailing-icon-color: var(--mat-sys-primary),
-      list-item-leading-icon-color: var(--mat-sys-primary),
+      active-indicator-shape: 0,
+      list-item-label-text-weight: 300,
+      list-item-leading-icon-size: 20px,
+      list-item-label-text-size: 14px,
+      list-item-supporting-text-size: 12px,
+      list-item-trailing-supporting-text-size: 12px,
     )
   );
 }

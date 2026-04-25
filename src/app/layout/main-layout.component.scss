@@ -1,1 +1,62 @@
-/* Main layout component styles */
+@use '@angular/material' as mat;
+
+.sidebar {
+  color-scheme: dark;
+  width: 15rem;
+
+  @include mat.sidenav-overrides(
+    (
+      container-shape: 0,
+    )
+  );
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.95rem;
+    margin: 1.2rem 1rem 1rem;
+
+    .logo-icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.5rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(160deg, #0d6f84 0%, #044351 100%);
+      color: #f7fcff;
+
+      .mat-icon {
+        font-size: 2rem;
+        width: 2rem;
+        height: 2rem;
+      }
+    }
+
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+      padding-top: 0.25rem;
+    }
+
+    .logo-title {
+      color: #f8fafb;
+      font-family: 'Bodoni MT', 'Didot', 'Times New Roman', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      line-height: 0.9;
+      letter-spacing: 0.01em;
+    }
+
+    .logo-subtitle {
+      margin-top: 0.3rem;
+      color: #8f9da6;
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+  }
+}

@@ -3,19 +3,17 @@ import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/c
 import { rxResource } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 
-import { MAT_BUTTONS } from '@app/shared/material-imports';
-
 import { forkJoin } from 'rxjs';
 
 import { BookingsService } from '@app/services/bookings.service';
 import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { RequestsService } from '@app/services/requests.service';
+import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-dashboard',
-  standalone: true,
   imports: [RouterLink, ...MAT_BUTTONS],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',

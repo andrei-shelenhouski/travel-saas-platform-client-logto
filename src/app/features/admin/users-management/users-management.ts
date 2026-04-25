@@ -27,7 +27,7 @@ const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-users-management',
-  standalone: true,
+
   imports: [RouterLink, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   templateUrl: './users-management.html',
   styleUrl: './users-management.scss',

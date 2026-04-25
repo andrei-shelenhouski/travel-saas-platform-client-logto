@@ -22,7 +22,6 @@ const OFFER_STATUS_CLASS: Record<string, string> = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-status-badge',
-  standalone: true,
   template: `
     <span
       class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
