@@ -26,6 +26,7 @@ html {
     (
       filled-container-shape: 0.25rem,
       outlined-container-shape: 0.25rem,
+      outlined-outline-color: var(--mat-sys-primary),
       text-container-shape: 0.25rem,
       tonal-container-shape: 0.25rem,
       protected-container-shape: 0.25rem,
@@ -49,6 +50,26 @@ html {
       list-item-trailing-supporting-text-size: 12px,
     )
   );
+
+  @include mat.table-overrides(
+    (
+      background-color: #ffffff,
+      header-headline-size: 0.75rem,
+      header-container-height: 2rem,
+      row-item-outline-color: var(--mat-sys-outline-variant),
+    )
+  );
+
+  .table-header-row {
+    background-color: var(--mat-sys-surface-container);
+  }
+
+  .table-row {
+    &:hover {
+      background-color: var(--mat-sys-surface-container-high);
+      cursor: pointer;
+    }
+  }
 }
 
 body {

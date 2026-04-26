@@ -11,7 +11,6 @@ import type {
   RequestResponseDto,
   RequestStatus,
   UpdateRequestDto,
-  UpdateRequestStatusDto,
 } from '@app/shared/models';
 
 const REQUESTS_URL = `${environment.baseUrl}/api/requests`;
@@ -62,11 +61,7 @@ export class RequestsService {
   }
 
   update(id: string, dto: UpdateRequestDto): Observable<RequestResponseDto> {
-    return this.http.patch<RequestResponseDto>(`${REQUESTS_URL}/${id}`, dto);
-  }
-
-  updateStatus(id: string, dto: UpdateRequestStatusDto): Observable<RequestResponseDto> {
-    return this.http.patch<RequestResponseDto>(`${REQUESTS_URL}/${id}/status`, dto);
+    return this.http.put<RequestResponseDto>(`${REQUESTS_URL}/${id}`, dto);
   }
 
   delete(id: string): Observable<void> {

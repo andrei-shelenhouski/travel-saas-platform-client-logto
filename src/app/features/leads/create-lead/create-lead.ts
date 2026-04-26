@@ -64,8 +64,7 @@ export class CreateLeadComponent {
 
     const v = this.form.getRawValue();
     const dto: CreateLeadDto = {
-      source: v.source,
-      contactName: v.contactName.trim(),
+      clientName: v.contactName.trim(),
     };
 
     if (v.contactEmail.trim()) {

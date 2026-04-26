@@ -7,6 +7,7 @@
 // ----- Enums -----
 
 export const LeadSource = {
+  MANUAL: 'MANUAL',
   PHONE: 'PHONE',
   EMAIL: 'EMAIL',
   WHATSAPP: 'WHATSAPP',
@@ -19,15 +20,19 @@ export type LeadSource = (typeof LeadSource)[keyof typeof LeadSource];
 
 export const LeadStatus = {
   NEW: 'NEW',
-  CONTACTED: 'CONTACTED',
-  QUALIFIED: 'QUALIFIED',
+  ASSIGNED: 'ASSIGNED',
+  IN_PROGRESS: 'IN_PROGRESS',
+  OFFER_SENT: 'OFFER_SENT',
+  WON: 'WON',
   LOST: 'LOST',
-  CONVERTED: 'CONVERTED',
+  EXPIRED: 'EXPIRED',
 } as const;
 export type LeadStatus = (typeof LeadStatus)[keyof typeof LeadStatus];
 
 export const ClientType = {
   INDIVIDUAL: 'INDIVIDUAL',
+  COMPANY: 'COMPANY',
+  B2B_AGENT: 'B2B_AGENT',
   AGENT: 'AGENT',
 } as const;
 export type ClientType = (typeof ClientType)[keyof typeof ClientType];
@@ -130,22 +135,45 @@ export type OrganizationResponseDto = {
 // ----- Leads -----
 
 export type CreateLeadDto = {
-  source: LeadSource;
-  contactName: string;
-  contactEmail?: string;
+  clientId?: string;
+  clientType?: string;
+  clientName?: string;
   contactPhone?: string;
+  contactEmail?: string;
+  destination?: string;
+  departDateFrom?: string;
+  departDateTo?: string;
+  returnDateFrom?: string;
+  returnDateTo?: string;
+  adults?: number;
+  children?: number;
   notes?: string;
+  assignedAgentId?: string;
 };
 
 export type LeadResponseDto = {
   id: string;
-  organizationId: string;
+  number: string;
   source: LeadSource | string;
-  contactName: string;
-  contactEmail: string | null;
+  clientId: string | null;
+  clientName: string | null;
+  clientType: string | null;
   contactPhone: string | null;
+  contactEmail: string | null;
+  companyName: string | null;
+  destination: string | null;
+  departDateFrom: string | null;
+  departDateTo: string | null;
+  returnDateFrom: string | null;
+  returnDateTo: string | null;
+  adults: number | null;
+  children: number | null;
   notes: string | null;
+  assignedAgentId: string | null;
+  assignedAgentName: string | null;
   status: LeadStatus | string;
+  expiresAt: string | null;
+  createdById: string;
   convertedToClientId: string | null;
   createdAt: string;
   updatedAt: string;
@@ -154,15 +182,26 @@ export type LeadResponseDto = {
 export type PaginatedLeadResponseDto = PaginatedDto<LeadResponseDto>;
 
 export type UpdateLeadDto = {
-  source?: LeadSource;
-  contactName?: string;
-  contactEmail?: string;
-  contactPhone?: string;
+  destination?: string;
+  departDateFrom?: string;
+  departDateTo?: string;
+  returnDateFrom?: string;
+  returnDateTo?: string;
+  adults?: number;
+  children?: number;
   notes?: string;
+  contactPhone?: string;
+  contactEmail?: string;
 };
 
 export type UpdateLeadStatusDto = {
   status: LeadStatus;
+  reason?: string;
+};
+
+/** OpenAPI: AssignLeadRequest. PATCH /api/leads/{id}/assign body. */
+export type AssignLeadDto = {
+  agentId: string;
 };
 
 // ----- Offers -----
@@ -357,90 +396,153 @@ export type UpdateInvoiceDto = {
   pdfUrl?: string;
 };
 
-// ----- Clients -----
+// ----- Contacts -----
 
-export type CreateClientDto = {
-  type: ClientType;
-  name: string;
-  phone?: string;
-  email?: string;
-  comment?: string;
+/** OpenAPI: ContactResponse. Contact person for a client. */
+export type ContactResponseDto = {
+  id: string;
+  clientId: string;
+  fullName: string | null;
+  role: string | null;
+  email: string | null;
+  phone: string | null;
+  createdAt: string;
+  primary: boolean;
 };
 
+/** OpenAPI: CreateContactRequest. POST /api/clients/{id}/contacts body. */
+export type CreateContactDto = {
+  fullName: string;
+  role?: string;
+  email?: string;
+  phone?: string;
+  isPrimary?: boolean;
+};
+
+/** OpenAPI: UpdateContactRequest. PUT /api/clients/{id}/contacts/{contactId} body. */
+export type UpdateContactDto = {
+  fullName?: string;
+  role?: string;
+  email?: string;
+  phone?: string;
+  isPrimary?: boolean;
+};
+
+// ----- Clients -----
+
+/** OpenAPI: CreateClientRequest. POST /api/clients body. */
+export type CreateClientDto = {
+  type: ClientType;
+  fullName?: string;
+  email?: string;
+  phone?: string;
+  telegramHandle?: string;
+  notes?: string;
+  companyName?: string;
+  legalAddress?: string;
+  unp?: string;
+  okpo?: string;
+  iban?: string;
+  bankName?: string;
+  bik?: string;
+  commissionPct?: number;
+  dataConsentGiven: boolean;
+};
+
+/** OpenAPI: ClientResponse. */
 export type ClientResponseDto = {
   id: string;
   organizationId: string;
   type: ClientType | string;
-  name: string;
-  phone: string | null;
+  fullName: string | null;
   email: string | null;
-  comment: string | null;
+  phone: string | null;
+  telegramHandle: string | null;
+  notes: string | null;
+  companyName: string | null;
+  legalAddress: string | null;
+  unp: string | null;
+  okpo: string | null;
+  commissionPct: number | null;
+  iban: string | null;
+  bankName: string | null;
+  bik: string | null;
+  dataConsentGiven: boolean;
+  dataConsentDate: string | null;
   createdAt: string;
   updatedAt: string;
+  contacts: ContactResponseDto[];
 };
 
 export type PaginatedClientResponseDto = PaginatedDto<ClientResponseDto>;
 
+/** OpenAPI: UpdateClientRequest. PUT /api/clients/{id} body. */
 export type UpdateClientDto = {
-  type?: ClientType;
-  name?: string;
-  phone?: string;
+  fullName?: string;
   email?: string;
-  comment?: string;
+  phone?: string;
+  telegramHandle?: string;
+  notes?: string;
+  companyName?: string;
+  legalAddress?: string;
+  unp?: string;
+  okpo?: string;
+  iban?: string;
+  bankName?: string;
+  bik?: string;
 };
 
 // ----- Requests -----
 
 export const RequestStatus = {
-  DRAFT: 'DRAFT',
-  IN_PROGRESS: 'IN_PROGRESS',
-  WAITING_CLIENT: 'WAITING_CLIENT',
+  OPEN: 'OPEN',
+  QUOTED: 'QUOTED',
   CLOSED: 'CLOSED',
 } as const;
 export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus];
 
+/** OpenAPI: CreateTravelRequestRequest. POST /api/requests body. */
 export type CreateRequestDto = {
-  clientId: string;
-  managerId: string;
-  destination: string;
-  startDate: string;
-  endDate: string;
-  adults: number;
+  leadId: string;
+  destination?: string;
+  departDate?: string;
+  returnDate?: string;
+  adults?: number;
   children?: number;
-  comment?: string;
+  notes?: string;
+  managerId?: string;
 };
 
+/** OpenAPI: TravelRequestResponse. */
 export type RequestResponseDto = {
   id: string;
-  organizationId: string;
-  clientId: string;
-  managerId: string;
-  destination: string;
-  startDate: string;
-  endDate: string;
-  adults: number;
-  children: number;
-  comment: string | null;
+  leadId: string;
+  managerId: string | null;
+  managerName: string | null;
+  destination: string | null;
+  departDate: string | null;
+  returnDate: string | null;
+  adults: number | null;
+  children: number | null;
+  notes: string | null;
   status: RequestStatus | string;
+  offersCount: number;
+  createdById: string;
   createdAt: string;
   updatedAt: string;
 };
 
 export type PaginatedRequestResponseDto = PaginatedDto<RequestResponseDto>;
 
+/** OpenAPI: UpdateTravelRequestRequest. PUT /api/requests/{id} body. */
 export type UpdateRequestDto = {
-  clientId?: string;
-  managerId?: string;
   destination?: string;
-  startDate?: string;
-  endDate?: string;
+  departDate?: string;
+  returnDate?: string;
   adults?: number;
   children?: number;
-  comment?: string;
-};
-
-export type UpdateRequestStatusDto = {
-  status: RequestStatus;
+  notes?: string;
+  managerId?: string;
 };
 
 // ----- Entity type (Activities, Comments, Tags) -----

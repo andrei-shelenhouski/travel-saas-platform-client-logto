@@ -84,11 +84,11 @@ export class CreateRequestComponent implements OnInit {
     const v = this.form.getRawValue();
     this.saving.set(true);
     const dto: CreateRequestDto = {
-      clientId: v.clientId.trim(),
+      leadId: v.clientId.trim(),
       managerId: v.managerId.trim(),
       destination: v.destination.trim(),
-      startDate: v.startDate,
-      endDate: v.endDate,
+      departDate: v.startDate,
+      returnDate: v.endDate,
       adults: Number(v.adults) || 1,
     };
 
@@ -97,7 +97,7 @@ export class CreateRequestComponent implements OnInit {
     }
 
     if (v.comment.trim()) {
-      dto.comment = v.comment.trim();
+      dto.notes = v.comment.trim();
     }
 
     this.requestsService.create(dto).subscribe({

@@ -20,10 +20,12 @@ import { ToastService } from '@app/shared/services/toast.service';
 import type { LeadResponseDto } from '@app/shared/models';
 const LEAD_STATUS_ORDER: string[] = [
   LeadStatus.NEW,
-  LeadStatus.CONTACTED,
-  LeadStatus.QUALIFIED,
+  LeadStatus.ASSIGNED,
+  LeadStatus.IN_PROGRESS,
+  LeadStatus.OFFER_SENT,
+  LeadStatus.WON,
   LeadStatus.LOST,
-  LeadStatus.CONVERTED,
+  LeadStatus.EXPIRED,
 ];
 
 @Component({
