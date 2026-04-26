@@ -1,17 +1,11 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  OnInit,
-  inject,
-  output,
-} from '@angular/core';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, output } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
+
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
-import { MatIconModule } from '@angular/material/icon';
 import { ClientType } from '@app/shared/models';
 
 export type ClientFilterValue = {
@@ -49,17 +43,12 @@ export class ClientFilterBarComponent implements OnInit {
     this.form.valueChanges
       .pipe(
         debounceTime(300),
-        distinctUntilChanged(
-          (a, b) => a.type === b.type && a.search === b.search,
-        ),
+        distinctUntilChanged((a, b) => a.type === b.type && a.search === b.search),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((v) => {
-        const search = v.search ?? '';
-
-        if (search.length > 0 && search.length < 2) {
-          return;
-        }
+        const raw = v.search ?? '';
+        const search = raw.length > 0 && raw.length < 2 ? '' : raw;
 
         this.filterChange.emit({
           type: v.type ?? 'ALL',
