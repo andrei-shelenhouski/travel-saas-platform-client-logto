@@ -99,10 +99,7 @@ export class ClientsListComponent {
     this.currentPage.set(event.pageIndex);
   }
 
-  goToDetail(client: ClientResponseDto): void {
-    this.router.navigate(['/app/clients', client.id]);
-  }
-
+  // TODO: extract to a pipe
   displayName(client: ClientResponseDto): string {
     if (client.type === ClientType.INDIVIDUAL) {
       return client.fullName ?? '—';
@@ -111,6 +108,7 @@ export class ClientsListComponent {
     return client.companyName ?? client.fullName ?? '—';
   }
 
+  // TODO: extract to a pipe
   displaySubtitle(client: ClientResponseDto): string | null {
     if (client.type === ClientType.COMPANY || client.type === ClientType.B2B_AGENT) {
       return client.fullName ?? null;
