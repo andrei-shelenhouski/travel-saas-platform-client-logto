@@ -57,7 +57,11 @@ export class RequestDetailComponent {
     });
   }
 
-  formatDate(iso: string): string {
+  formatDate(iso: string | null): string {
+    if (!iso) {
+      return '—';
+    }
+
     try {
       return new Date(iso).toLocaleString(undefined, {
         dateStyle: 'medium',

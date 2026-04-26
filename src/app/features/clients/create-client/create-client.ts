@@ -50,6 +50,7 @@ export class CreateClientComponent {
       type: v.type,
       fullName: v.fullName.trim() || undefined,
       companyName: v.companyName.trim() || undefined,
+      dataConsentGiven: false,
     };
 
     if (v.phone.trim()) {

@@ -57,7 +57,7 @@ export class LeadDetailComponent {
     }
 
     if (this.convertLoading()) {
-      return { ...l, status: LeadStatus.CONVERTED };
+      return { ...l, status: LeadStatus.WON };
     }
 
     return l;

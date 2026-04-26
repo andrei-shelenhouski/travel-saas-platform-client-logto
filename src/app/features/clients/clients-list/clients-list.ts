@@ -54,17 +54,17 @@ export class ClientsListComponent {
     stream: ({ params }) => {
       const { filter, page } = params;
 
-      return this.clientsService.getPage({
+      return this.clientsService.getList({
         type: filter.type === 'ALL' ? undefined : (filter.type as ClientType),
         search: filter.search || undefined,
-        page,
-        size: PAGE_SIZE,
+        page: page + 1,
+        limit: PAGE_SIZE,
       });
     },
   });
 
-  readonly clients = computed(() => this.data.value()?.content ?? []);
-  readonly totalElements = computed(() => this.data.value()?.totalElements ?? 0);
+  readonly clients = computed(() => this.data.value()?.items ?? []);
+  readonly totalElements = computed(() => this.data.value()?.total ?? 0);
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const err = this.data.error();

@@ -25,7 +25,7 @@
           </div>
           <div>
             <dt class="text-gray-500">Dates</dt>
-            <dd class="text-gray-900">{{ formatDate(r.startDate) }} – {{ formatDate(r.endDate) }}</dd>
+            <dd class="text-gray-900">{{ formatDate(r.departDate) }} – {{ formatDate(r.returnDate) }}</dd>
           </div>
           <div>
             <dt class="text-gray-500">Adults / Children</dt>
@@ -39,15 +39,15 @@
               </span>
             </dd>
           </div>
-          @if (r.comment) {
+          @if (r.notes) {
             <div>
-              <dt class="text-gray-500">Comment</dt>
-              <dd class="whitespace-pre-wrap text-gray-900">{{ r.comment }}</dd>
+              <dt class="text-gray-500">Notes</dt>
+              <dd class="whitespace-pre-wrap text-gray-900">{{ r.notes }}</dd>
             </div>
           }
           <div>
-            <dt class="text-gray-500">Client ID</dt>
-            <dd class="font-mono text-xs text-gray-600">{{ r.clientId }}</dd>
+            <dt class="text-gray-500">Lead ID</dt>
+            <dd class="font-mono text-xs text-gray-600">{{ r.leadId }}</dd>
           </div>
           <div>
             <dt class="text-gray-500">Manager ID</dt>

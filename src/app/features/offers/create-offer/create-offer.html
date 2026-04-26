@@ -17,7 +17,7 @@
         <mat-option value="">Select a request…</mat-option>
         @for (req of requests(); track req.id) {
           <mat-option [value]="req.id">
-            {{ req.destination }} — {{ req.startDate }} ({{ req.adults }} adults)
+            {{ req.destination }} — {{ req.departDate }} ({{ req.adults }} adults)
           </mat-option>
         }
       </mat-select>

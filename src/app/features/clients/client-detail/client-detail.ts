@@ -139,16 +139,7 @@ export class ClientDetailComponent {
   readonly typeLabel = TYPE_LABEL;
   readonly client = computed(() => this.data.value() ?? null);
   readonly loading = computed(() => this.data.isLoading());
-  readonly requests = computed(() => {
-    const list = this.requestsData.value() ?? [];
-    const clientId = this.client()?.id;
-
-    if (!clientId) {
-      return list;
-    }
-
-    return list.filter((r) => r.clientId === clientId);
-  });
+  readonly requests = computed(() => this.requestsData.value() ?? []);
   readonly requestsLoading = computed(() => this.requestsData.isLoading());
   readonly activitiesLoading = computed(() => this.activitiesData.isLoading());
   readonly commentsLoading = computed(() => this.commentsData.isLoading());
@@ -315,7 +306,11 @@ export class ClientDetailComponent {
     this.router.navigate(['/app/requests', req.id]);
   }
 
-  formatDate(iso: string): string {
+  formatDate(iso: string | null): string {
+    if (!iso) {
+      return '—';
+    }
+
     try {
       return new Date(iso).toLocaleString(undefined, {
         dateStyle: 'medium',
@@ -326,7 +321,11 @@ export class ClientDetailComponent {
     }
   }
 
-  formatDateShort(iso: string): string {
+  formatDateShort(iso: string | null): string {
+    if (!iso) {
+      return '—';
+    }
+
     try {
       return new Date(iso).toLocaleDateString(undefined, { dateStyle: 'medium' });
     } catch {

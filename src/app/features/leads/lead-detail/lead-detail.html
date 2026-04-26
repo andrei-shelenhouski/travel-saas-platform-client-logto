@@ -8,7 +8,7 @@
     @if (l) {
       <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
         <div class="min-w-0">
-          <h1 class="text-xl font-semibold text-gray-900">{{ l.contactName }}</h1>
+          <h1 class="text-xl font-semibold text-gray-900">{{ l.clientName }}</h1>
           <p class="mt-1 text-sm text-gray-500">Lead</p>
         </div>
         @if (l.status !== 'CONVERTED' && permissions.canConvertLead()) {
