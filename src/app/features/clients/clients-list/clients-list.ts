@@ -1,6 +1,13 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -65,13 +72,20 @@ export class ClientsListComponent {
   readonly clients = computed(() => this.data.value()?.items ?? []);
   readonly totalElements = computed(() => this.data.value()?.total ?? 0);
   readonly loading = computed(() => this.data.isLoading());
+
+  private readonly redirectOnForbidden = effect(() => {
+    const err = this.data.error();
+
+    if (err instanceof HttpErrorResponse && err.status === 403) {
+      void this.router.navigate(['/app/dashboard']);
+    }
+  });
+
   readonly error = computed(() => {
     const err = this.data.error();
 
     if (err instanceof HttpErrorResponse) {
       if (err.status === 403) {
-        this.router.navigate(['/app/dashboard']);
-
         return undefined;
       }
 
