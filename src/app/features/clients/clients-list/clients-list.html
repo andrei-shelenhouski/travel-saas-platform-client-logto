@@ -1,60 +1,77 @@
 <div class="space-y-4">
   <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
     <h1 class="text-xl font-semibold text-gray-900">Clients</h1>
-    <a color="primary" matButton="filled" routerLink="/app/clients/new">Create client</a>
+    <a color="primary" mat-flat-button routerLink="/app/clients/new">
+      + New Client
+    </a>
   </header>
 
+  <app-client-filter-bar (filterChange)="onFilterChange($event)" />
+
   @if (error()) {
-    <p class="text-sm text-red-600">{{ error() }}</p>
+    <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
   }
 
   <div class="rounded-lg border border-gray-200 bg-white overflow-hidden">
-    <table class="min-w-full divide-y divide-gray-200">
+    <table class="min-w-full divide-y divide-gray-200" aria-label="Clients table">
       <thead class="bg-gray-50">
         <tr>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide" scope="col">Name</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide" scope="col">Type</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide" scope="col">Phone</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide" scope="col">Email</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide" scope="col">Created</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200">
         @if (loading()) {
           <tr>
-            <td class="px-4 py-12 text-center text-gray-500" colspan="5">
-              <div
-                aria-hidden="true"
-                class="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-              ></div>
+            <td class="px-4 py-12 text-center" colspan="5">
+              <mat-spinner aria-label="Loading clients" diameter="36" class="mx-auto" />
             </td>
           </tr>
         } @else if (clients().length === 0) {
           <tr>
-            <td class="px-4 py-12 text-center text-gray-500" colspan="5">No clients yet.</td>
+            <td class="px-4 py-12 text-center" colspan="5">
+              <p class="text-gray-500 mb-3">Нет клиентов. Добавьте первого клиента.</p>
+              <a color="primary" mat-stroked-button routerLink="/app/clients/new">
+                + New Client
+              </a>
+            </td>
           </tr>
         } @else {
           @for (client of clients(); track client.id) {
-            <tr class="cursor-pointer hover:bg-gray-50" (click)="goToDetail(client)">
-              <td class="px-4 py-3 text-sm font-medium text-gray-900">
-                {{ client.name }}
+            <tr
+              class="cursor-pointer hover:bg-gray-50 transition-colors"
+              (click)="goToDetail(client)"
+            >
+              <td class="px-4 py-3">
+                <span class="block text-sm font-semibold text-gray-900">{{ displayName(client) }}</span>
+                @if (displaySubtitle(client); as subtitle) {
+                  <span class="block text-xs text-gray-500">{{ subtitle }}</span>
+                }
               </td>
-              <td class="px-4 py-3 text-sm text-gray-600">
-                {{ typeLabel[client.type] }}
+              <td class="px-4 py-3">
+                <app-client-type-badge [type]="client.type" />
               </td>
-              <td class="px-4 py-3 text-sm text-gray-600">
-                {{ client.email ?? '—' }}
-              </td>
-              <td class="px-4 py-3 text-sm text-gray-600">
-                {{ client.phone ?? '—' }}
-              </td>
-              <td class="px-4 py-3 text-sm text-gray-600">
-                {{ formatDate(client.createdAt) }}
-              </td>
+              <td class="px-4 py-3 text-sm text-gray-600">{{ client.phone ?? '—' }}</td>
+              <td class="px-4 py-3 text-sm text-gray-600">{{ client.email ?? '—' }}</td>
+              <td class="px-4 py-3 text-sm text-gray-600">{{ formatDate(client.createdAt) }}</td>
             </tr>
           }
         }
       </tbody>
     </table>
   </div>
+
+  @if (totalElements() > pageSize) {
+    <mat-paginator
+      [length]="totalElements()"
+      [pageSize]="pageSize"
+      [pageIndex]="currentPage()"
+      [showFirstLastButtons]="true"
+      (page)="onPageChange($event)"
+      aria-label="Clients pagination"
+    />
+  }
 </div>

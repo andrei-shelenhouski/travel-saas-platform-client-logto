@@ -30,7 +30,8 @@ import { ToastService } from '@app/shared/services/toast.service';
 
 const TYPE_LABEL: Record<string, string> = {
   [ClientType.INDIVIDUAL]: 'Individual',
-  [ClientType.AGENT]: 'Agent',
+  [ClientType.COMPANY]: 'Company',
+  [ClientType.B2B_AGENT]: 'B2B Agent',
 };
 
 type ClientTab = 'overview' | 'requests' | 'activity' | 'comments';

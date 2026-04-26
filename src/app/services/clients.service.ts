@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 
 import type {
+  ClientPageDto,
   ClientResponseDto,
   ClientType,
   CreateClientDto,
@@ -15,12 +16,36 @@ import type {
 
 const CLIENTS_URL = `${environment.baseUrl}/api/clients`;
 
-/**
- * Clients API. Aligned with openapi.json: GET/POST /api/clients, GET/PATCH/DELETE /api/clients/{id}.
- */
 @Injectable({ providedIn: 'root' })
 export class ClientsService {
   private readonly http = inject(HttpClient);
+
+  getPage(params?: {
+    type?: ClientType;
+    search?: string;
+    page?: number;
+    size?: number;
+  }): Observable<ClientPageDto> {
+    let httpParams = new HttpParams();
+
+    if (params?.type !== undefined) {
+      httpParams = httpParams.set('type', params.type);
+    }
+
+    if (params?.search !== undefined && params.search.length >= 2) {
+      httpParams = httpParams.set('search', params.search);
+    }
+
+    if (params?.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+
+    if (params?.size !== undefined) {
+      httpParams = httpParams.set('size', params.size);
+    }
+
+    return this.http.get<ClientPageDto>(CLIENTS_URL, { params: httpParams });
+  }
 
   getList(params?: {
     type?: ClientType;

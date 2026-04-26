@@ -18,11 +18,15 @@
       </mat-select>
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-      <mat-label>Name</mat-label>
-      <input formControlName="name" id="name" matInput placeholder="Client name" type="text" />
-      @if (form.controls.name.hasError('required') && form.controls.name.touched) {
-        <mat-error>Name is required</mat-error>
+      <mat-label>Full Name</mat-label>
+      <input formControlName="fullName" id="fullName" matInput placeholder="Full name" type="text" />
+      @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
+        <mat-error>Full name is required</mat-error>
       }
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-label>Company Name</mat-label>
+      <input formControlName="companyName" id="companyName" matInput placeholder="Company name" type="text" />
     </mat-form-field>
     <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
       <mat-label>Email</mat-label>

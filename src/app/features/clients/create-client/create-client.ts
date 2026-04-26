@@ -9,7 +9,8 @@ import { ClientType, type CreateClientDto } from '@app/shared/models';
 
 const TYPE_OPTIONS: { value: ClientType; label: string }[] = [
   { value: ClientType.INDIVIDUAL, label: 'Individual' },
-  { value: ClientType.AGENT, label: 'Agent' },
+  { value: ClientType.COMPANY, label: 'Company' },
+  { value: ClientType.B2B_AGENT, label: 'B2B Agent' },
 ];
 
 @Component({
@@ -31,7 +32,8 @@ export class CreateClientComponent {
 
   readonly form = this.fb.nonNullable.group({
     type: [ClientType.INDIVIDUAL],
-    name: ['', Validators.required],
+    fullName: ['', Validators.required],
+    companyName: [''],
     phone: [''],
     email: ['', Validators.email],
   });
@@ -46,7 +48,8 @@ export class CreateClientComponent {
     this.saving.set(true);
     const dto: CreateClientDto = {
       type: v.type,
-      name: v.name.trim(),
+      fullName: v.fullName.trim() || undefined,
+      companyName: v.companyName.trim() || undefined,
     };
 
     if (v.phone.trim()) {

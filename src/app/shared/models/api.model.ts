@@ -28,7 +28,8 @@ export type LeadStatus = (typeof LeadStatus)[keyof typeof LeadStatus];
 
 export const ClientType = {
   INDIVIDUAL: 'INDIVIDUAL',
-  AGENT: 'AGENT',
+  COMPANY: 'COMPANY',
+  B2B_AGENT: 'B2B_AGENT',
 } as const;
 export type ClientType = (typeof ClientType)[keyof typeof ClientType];
 
@@ -361,7 +362,8 @@ export type UpdateInvoiceDto = {
 
 export type CreateClientDto = {
   type: ClientType;
-  name: string;
+  fullName?: string;
+  companyName?: string;
   phone?: string;
   email?: string;
   comment?: string;
@@ -371,7 +373,8 @@ export type ClientResponseDto = {
   id: string;
   organizationId: string;
   type: ClientType | string;
-  name: string;
+  fullName: string | null;
+  companyName: string | null;
   phone: string | null;
   email: string | null;
   comment: string | null;
@@ -379,11 +382,18 @@ export type ClientResponseDto = {
   updatedAt: string;
 };
 
+export type ClientPageDto = {
+  content: ClientResponseDto[];
+  totalElements: number;
+  totalPages: number;
+};
+
 export type PaginatedClientResponseDto = PaginatedDto<ClientResponseDto>;
 
 export type UpdateClientDto = {
   type?: ClientType;
-  name?: string;
+  fullName?: string;
+  companyName?: string;
   phone?: string;
   email?: string;
   comment?: string;
