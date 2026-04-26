@@ -6,18 +6,19 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 import { LeadsService } from '@app/services/leads.service';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { PermissionService } from '@app/services/permission.service';
-import { ToastService } from '@app/shared/services/toast.service';
-import type { LeadResponseDto } from '@app/shared/models';
+import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { LeadStatus } from '@app/shared/models';
+import { ToastService } from '@app/shared/services/toast.service';
 
+import type { LeadResponseDto } from '@app/shared/models';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-lead-detail',
@@ -48,7 +49,7 @@ export class LeadDetailComponent {
   });
 
   readonly lead = computed(() => this.data.value() ?? null);
-  /** Optimistic: show CONVERTED while converting */
+  /** Optimistic: show WON while converting */
   readonly displayLead = computed(() => {
     const l = this.lead();
 
