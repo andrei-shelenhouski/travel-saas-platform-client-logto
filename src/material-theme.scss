@@ -67,6 +67,7 @@ html {
   .table-row {
     &:hover {
       background-color: var(--mat-sys-surface-container-high);
+      cursor: pointer;
     }
   }
 }

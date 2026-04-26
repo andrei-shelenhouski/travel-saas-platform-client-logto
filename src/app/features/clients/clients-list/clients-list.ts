@@ -1,3 +1,4 @@
+import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -5,7 +6,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { ClientsService } from '@app/services/clients.service';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
@@ -15,7 +16,6 @@ import { ClientFilterBarComponent, ClientFilterValue } from './client-filter-bar
 import { ClientTypeBadgeComponent } from './client-type-badge/client-type-badge';
 
 import type { ClientResponseDto } from '@app/shared/models';
-
 const PAGE_SIZE = 20;
 
 @Component({
@@ -30,6 +30,7 @@ const PAGE_SIZE = 20;
     ClientFilterBarComponent,
     ClientTypeBadgeComponent,
     MatIcon,
+    DatePipe,
   ],
   templateUrl: './clients-list.html',
   styleUrl: './clients-list.scss',
@@ -37,6 +38,7 @@ const PAGE_SIZE = 20;
 export class ClientsListComponent {
   private readonly clientsService = inject(ClientsService);
   private readonly router = inject(Router);
+  private readonly activatedRoute = inject(ActivatedRoute);
 
   readonly pageSize = PAGE_SIZE;
 
@@ -117,11 +119,7 @@ export class ClientsListComponent {
     return null;
   }
 
-  formatDate(iso: string): string {
-    try {
-      return new Date(iso).toLocaleDateString('ru-RU', { dateStyle: 'medium' });
-    } catch {
-      return iso;
-    }
+  navigateToClient(id: string): void {
+    this.router.navigate([id], { relativeTo: this.activatedRoute });
   }
 }
