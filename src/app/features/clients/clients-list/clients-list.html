@@ -1,7 +1,10 @@
 <div class="space-y-4">
   <header class="flex flex-wrap items-center justify-between gap-4 pb-2">
     <h1 class="text-xl font-semibold text-gray-900">Clients</h1>
-    <a color="primary" mat-flat-button routerLink="/app/clients/new"> + New Client </a>
+    <a color="primary" mat-flat-button routerLink="/app/clients/new">
+      <mat-icon>add</mat-icon>
+      New Client
+    </a>
   </header>
 
   <app-client-filter-bar class="m-4" (filterChange)="onFilterChange($event)" />
@@ -10,80 +13,76 @@
     <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
   }
 
-  <div class="rounded-lg border border-gray-200 bg-white overflow-hidden">
-    <table aria-label="Clients table" class="min-w-full divide-y divide-gray-200">
-      <thead class="bg-gray-50">
-        <tr>
-          <th
-            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide"
-            scope="col"
-          >
-            Name
-          </th>
-          <th
-            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide"
-            scope="col"
-          >
-            Type
-          </th>
-          <th
-            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide"
-            scope="col"
-          >
-            Phone
-          </th>
-          <th
-            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide"
-            scope="col"
-          >
-            Email
-          </th>
-          <th
-            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide"
-            scope="col"
-          >
-            Created
-          </th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-200">
-        @if (loading()) {
-          <tr>
-            <td class="px-4 py-12 text-center" colspan="5">
-              <mat-spinner aria-label="Loading clients" class="mx-auto" diameter="36" />
-            </td>
-          </tr>
-        } @else if (clients().length === 0) {
-          <tr>
-            <td class="px-4 py-12 text-center" colspan="5">
-              <p class="text-gray-500 mb-3">Нет клиентов. Добавьте первого клиента.</p>
-              <a color="primary" mat-stroked-button routerLink="/app/clients/new"> + New Client </a>
-            </td>
-          </tr>
-        } @else {
-          @for (client of clients(); track client.id) {
-            <tr
-              class="cursor-pointer hover:bg-gray-50 transition-colors"
-              (click)="goToDetail(client)"
-            >
-              <td class="px-4 py-3">
-                <span class="block text-sm font-semibold text-gray-900">{{
-                  displayName(client)
-                }}</span>
-                @if (displaySubtitle(client); as subtitle) {
-                  <span class="block text-xs text-gray-500">{{ subtitle }}</span>
-                }
-              </td>
-              <td class="px-4 py-3">
-                <app-client-type-badge [type]="client.type" />
-              </td>
-              <td class="px-4 py-3 text-sm text-gray-600">{{ client.phone ?? '—' }}</td>
-              <td class="px-4 py-3 text-sm text-gray-600">{{ client.email ?? '—' }}</td>
-              <td class="px-4 py-3 text-sm text-gray-600">{{ formatDate(client.createdAt) }}</td>
-            </tr>
+  <div class="table-wrap overflow-scroll">
+    <table mat-table [dataSource]="clients()" [multiTemplateDataRows]="true">
+      <ng-container matColumnDef="name">
+        <th *matHeaderCellDef mat-header-cell>Name</th>
+        <td *matCellDef="let element" mat-cell>
+          <span class="block text-sm font-semibold">{{ displayName(element) }}</span>
+          @if (displaySubtitle(element); as subtitle) {
+            <span class="block text-xs text-gray-500">{{ subtitle }}</span>
           }
-        }
-      </tbody>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <th *matHeaderCellDef mat-header-cell>Type</th>
+        <td *matCellDef="let element" mat-cell>
+          <app-client-type-badge [type]="element.type" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="phone">
+        <th *matHeaderCellDef mat-header-cell>Phone</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.phone ?? '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th *matHeaderCellDef mat-header-cell>Email</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.email ?? '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <th *matHeaderCellDef mat-header-cell>Created At</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ formatDate(element.createdAt) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="updatedAt">
+        <th *matHeaderCellDef mat-header-cell>Updated At</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ formatDate(element.updatedAt) }}
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="displayedColumns" class="table-header-row" mat-header-row></tr>
+      <tr *matRowDef="let row; columns: displayedColumns" class="table-row" mat-row></tr>
+      <tr *matNoDataRow>
+        <td [attr.colspan]="displayedColumns.length">
+          <div class="m-10 align-middle text-center">
+            @if (loading()) {
+              <p class="pb-4">Loading clients...</p>
+              <mat-spinner aria-label="Loading clients" class="mx-auto" diameter="36" />
+            } @else {
+              <p>Ooooops, no clients found. Try adjusting your filters.</p>
+
+              <span class="or-divider">or</span>
+
+              <div>
+                <a color="primary" matButton="outlined" routerLink="/app/clients/new">
+                  <mat-icon>add</mat-icon>
+                  New Client
+                </a>
+              </div>
+            }
+          </div>
+        </td>
+      </tr>
     </table>
   </div>
 

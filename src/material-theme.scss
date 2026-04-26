@@ -50,6 +50,25 @@ html {
       list-item-trailing-supporting-text-size: 12px,
     )
   );
+
+  @include mat.table-overrides(
+    (
+      background-color: #ffffff,
+      header-headline-size: 0.75rem,
+      header-container-height: 2rem,
+      row-item-outline-color: var(--mat-sys-outline-variant),
+    )
+  );
+
+  .table-header-row {
+    background-color: var(--mat-sys-surface-container);
+  }
+
+  .table-row {
+    &:hover {
+      background-color: var(--mat-sys-surface-container-high);
+    }
+  }
 }
 
 body {

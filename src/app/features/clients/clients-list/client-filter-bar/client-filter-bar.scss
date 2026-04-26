@@ -10,7 +10,7 @@
   @include mat.form-field-overrides(
     (
       state-layer-color: #ffffff,
-      outlined-outline-color: var(--mat-sys-primary),
+      outlined-outline-color: var(--mat-sys-outline-variant),
       container-text-size: 0.875rem,
       outlined-caret-color: var(--mat-sys-primary),
     )

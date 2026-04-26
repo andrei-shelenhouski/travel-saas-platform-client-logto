@@ -1,25 +1,20 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { Router, RouterLink } from '@angular/router';
 
 import { ClientsService } from '@app/services/clients.service';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
-import type { ClientResponseDto } from '@app/shared/models';
 import { ClientType } from '@app/shared/models';
-import {
-  ClientFilterBarComponent,
-  type ClientFilterValue,
-} from './client-filter-bar/client-filter-bar';
+
+import { ClientFilterBarComponent, ClientFilterValue } from './client-filter-bar/client-filter-bar';
 import { ClientTypeBadgeComponent } from './client-type-badge/client-type-badge';
+
+import type { ClientResponseDto } from '@app/shared/models';
 
 const PAGE_SIZE = 20;
 
@@ -31,8 +26,10 @@ const PAGE_SIZE = 20;
     ...MAT_BUTTONS,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatTableModule,
     ClientFilterBarComponent,
     ClientTypeBadgeComponent,
+    MatIcon,
   ],
   templateUrl: './clients-list.html',
   styleUrl: './clients-list.scss',
@@ -82,6 +79,15 @@ export class ClientsListComponent {
     return undefined;
   });
 
+  protected readonly displayedColumns: (keyof (ClientResponseDto & { name: string }))[] = [
+    'name',
+    'type',
+    'phone',
+    'email',
+    'createdAt',
+    'updatedAt',
+  ];
+
   onFilterChange(value: ClientFilterValue): void {
     this.activeFilter.set(value);
     this.currentPage.set(0);
@@ -104,10 +110,7 @@ export class ClientsListComponent {
   }
 
   displaySubtitle(client: ClientResponseDto): string | null {
-    if (
-      client.type === ClientType.COMPANY ||
-      client.type === ClientType.B2B_AGENT
-    ) {
+    if (client.type === ClientType.COMPANY || client.type === ClientType.B2B_AGENT) {
       return client.fullName ?? null;
     }
 
