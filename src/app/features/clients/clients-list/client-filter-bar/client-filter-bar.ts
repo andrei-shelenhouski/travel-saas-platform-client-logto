@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, output } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, effect, inject, output } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -24,11 +24,11 @@ const TYPE_OPTIONS: { value: ClientType | 'ALL'; label: string }[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-client-filter-bar',
   imports: [ReactiveFormsModule, ...MAT_FORM_BUTTONS, MatIconModule],
+  styleUrl: './client-filter-bar.scss',
   templateUrl: './client-filter-bar.html',
 })
-export class ClientFilterBarComponent implements OnInit {
+export class ClientFilterBarComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly destroyRef = inject(DestroyRef);
 
   readonly filterChange = output<ClientFilterValue>();
 
@@ -39,22 +39,27 @@ export class ClientFilterBarComponent implements OnInit {
     search: this.fb.nonNullable.control(''),
   });
 
-  ngOnInit(): void {
-    this.form.valueChanges
-      .pipe(
-        debounceTime(300),
-        distinctUntilChanged((a, b) => a.type === b.type && a.search === b.search),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe((v) => {
-        const raw = v.search ?? '';
-        const search = raw.length > 0 && raw.length < 2 ? '' : raw;
+  private readonly formValueChanges$ = this.form.valueChanges.pipe(
+    debounceTime(300),
+    distinctUntilChanged((a, b) => a.type === b.type && a.search === b.search),
+  );
 
-        this.filterChange.emit({
-          type: v.type ?? 'ALL',
-          search,
-        });
+  private readonly formValue = toSignal(this.formValueChanges$, {
+    initialValue: this.form.value,
+  });
+
+  constructor() {
+    effect(() => {
+      const formValue = this.formValue();
+
+      const raw = formValue.search ?? '';
+      const search = raw.length > 0 && raw.length < 2 ? '' : raw;
+
+      this.filterChange.emit({
+        type: formValue.type ?? 'ALL',
+        search,
       });
+    });
   }
 
   clearSearch(): void {

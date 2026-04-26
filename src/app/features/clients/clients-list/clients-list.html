@@ -1,12 +1,10 @@
 <div class="space-y-4">
-  <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
+  <header class="flex flex-wrap items-center justify-between gap-4 pb-2">
     <h1 class="text-xl font-semibold text-gray-900">Clients</h1>
-    <a color="primary" mat-flat-button routerLink="/app/clients/new">
-      + New Client
-    </a>
+    <a color="primary" mat-flat-button routerLink="/app/clients/new"> + New Client </a>
   </header>
 
-  <app-client-filter-bar (filterChange)="onFilterChange($event)" />
+  <app-client-filter-bar class="m-4" (filterChange)="onFilterChange($event)" />
 
   @if (error()) {
     <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
@@ -16,11 +14,36 @@
     <table aria-label="Clients table" class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide" scope="col">Name</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide" scope="col">Type</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide" scope="col">Phone</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide" scope="col">Email</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide" scope="col">Created</th>
+          <th
+            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide"
+            scope="col"
+          >
+            Name
+          </th>
+          <th
+            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide"
+            scope="col"
+          >
+            Type
+          </th>
+          <th
+            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide"
+            scope="col"
+          >
+            Phone
+          </th>
+          <th
+            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide"
+            scope="col"
+          >
+            Email
+          </th>
+          <th
+            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wide"
+            scope="col"
+          >
+            Created
+          </th>
         </tr>
       </thead>
       <tbody class="divide-y divide-gray-200">
@@ -34,9 +57,7 @@
           <tr>
             <td class="px-4 py-12 text-center" colspan="5">
               <p class="text-gray-500 mb-3">Нет клиентов. Добавьте первого клиента.</p>
-              <a color="primary" mat-stroked-button routerLink="/app/clients/new">
-                + New Client
-              </a>
+              <a color="primary" mat-stroked-button routerLink="/app/clients/new"> + New Client </a>
             </td>
           </tr>
         } @else {
@@ -46,7 +67,9 @@
               (click)="goToDetail(client)"
             >
               <td class="px-4 py-3">
-                <span class="block text-sm font-semibold text-gray-900">{{ displayName(client) }}</span>
+                <span class="block text-sm font-semibold text-gray-900">{{
+                  displayName(client)
+                }}</span>
                 @if (displaySubtitle(client); as subtitle) {
                   <span class="block text-xs text-gray-500">{{ subtitle }}</span>
                 }
