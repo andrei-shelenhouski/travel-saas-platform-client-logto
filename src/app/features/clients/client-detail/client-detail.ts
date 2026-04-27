@@ -6,28 +6,30 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
 import { EMPTY } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 import { ActivitiesService } from '@app/services/activities.service';
 import { ClientsService } from '@app/services/clients.service';
 import { CommentsService } from '@app/services/comments.service';
 import { RequestsService } from '@app/services/requests.service';
 import { TagsService } from '@app/services/tags.service';
-import type { ClientResponseDto, RequestResponseDto } from '@app/shared/models';
-import { ClientType, EntityType } from '@app/shared/models';
-import type { ActivityTimelineItem } from '@app/shared/models';
-import type { CommentItem } from '@app/shared/models';
 import {
   ActivityTimelineComponent,
   CommentComponent,
   TagSelectorComponent,
 } from '@app/shared/components';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
+import { ClientType, EntityType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
+import type { ClientResponseDto, RequestResponseDto } from '@app/shared/models';
+import type { ActivityTimelineItem } from '@app/shared/models';
+import type { CommentItem } from '@app/shared/models';
 const TYPE_LABEL: Record<string, string> = {
   [ClientType.INDIVIDUAL]: 'Individual',
   [ClientType.COMPANY]: 'Company',
@@ -45,12 +47,16 @@ type ClientTab = 'overview' | 'requests' | 'activity' | 'comments';
     TagSelectorComponent,
     CommentComponent,
     ...MAT_BUTTONS,
+    PageHeading,
   ],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
+  host: {
+    class: 'pv-4',
+  },
 })
 export class ClientDetailComponent {
-  private readonly route = inject(ActivatedRoute);
+  protected readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly clientsService = inject(ClientsService);
   private readonly requestsService = inject(RequestsService);

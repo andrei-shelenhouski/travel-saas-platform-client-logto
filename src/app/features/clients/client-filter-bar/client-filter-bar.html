@@ -1,6 +1,7 @@
 <form class="client-filter-bar__form" [formGroup]="form">
   <mat-form-field subscriptSizing="dynamic">
     <mat-label>Search</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
     <input autocomplete="off" formControlName="search" matInput placeholder="Name, phone, email…" />
     @if (form.controls.search.value) {
       <button

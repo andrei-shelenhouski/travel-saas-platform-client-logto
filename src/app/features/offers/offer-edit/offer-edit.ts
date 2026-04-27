@@ -4,10 +4,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { OffersService } from '@app/services/offers.service';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
-import { ToastService } from '@app/shared/services/toast.service';
-import type { OfferResponseDto, UpdateOfferDto } from '@app/shared/models';
 import { OfferStatus } from '@app/shared/models';
+import { ToastService } from '@app/shared/services/toast.service';
 
+import type { OfferResponseDto, UpdateOfferDto } from '@app/shared/models';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-offer-edit',
@@ -28,11 +28,16 @@ export class OfferEditComponent implements OnInit {
   readonly error = signal('');
 
   readonly form = this.fb.nonNullable.group({
-    title: ['', Validators.required],
-    finalPrice: [0],
-    currency: [''],
-    validUntil: [''],
-    description: [''],
+    language: ['en', Validators.required],
+    currency: ['', Validators.required],
+    destination: [''],
+    departureCity: [''],
+    departDate: [''],
+    returnDate: [''],
+    adults: [0],
+    children: [0],
+    validityDate: [''],
+    internalNotes: [''],
   });
 
   ngOnInit(): void {
@@ -53,11 +58,16 @@ export class OfferEditComponent implements OnInit {
         }
         this.offer.set(o);
         this.form.patchValue({
-          title: o.title,
-          finalPrice: Number(o.finalPrice) || 0,
-          currency: o.currency,
-          validUntil: '',
-          description: '',
+          language: o.language ?? 'en',
+          currency: o.currency ?? '',
+          destination: o.destination ?? '',
+          departureCity: o.departureCity ?? '',
+          departDate: o.departDate ?? '',
+          returnDate: o.returnDate ?? '',
+          adults: o.adults ?? 0,
+          children: o.children ?? 0,
+          validityDate: o.validityDate ?? '',
+          internalNotes: o.internalNotes ?? '',
         });
       },
       error: (err) => {
@@ -79,12 +89,16 @@ export class OfferEditComponent implements OnInit {
     this.saving.set(true);
     const v = this.form.getRawValue();
     const dto: UpdateOfferDto = {
-      title: v.title.trim(),
-      supplierTotal: Number(o.supplierTotal) || 0,
-      markup: Number(o.markup) || 0,
-      commission: Number(o.commission) || 0,
-      finalPrice: v.finalPrice,
+      language: v.language,
       currency: v.currency.trim(),
+      ...(v.destination?.trim() && { destination: v.destination.trim() }),
+      ...(v.departureCity?.trim() && { departureCity: v.departureCity.trim() }),
+      ...(v.departDate && { departDate: v.departDate }),
+      ...(v.returnDate && { returnDate: v.returnDate }),
+      ...(v.adults > 0 && { adults: v.adults }),
+      children: v.children,
+      ...(v.validityDate && { validityDate: v.validityDate }),
+      ...(v.internalNotes?.trim() && { internalNotes: v.internalNotes.trim() }),
     };
 
     this.offersService.update(o.id, dto).subscribe({
@@ -95,6 +109,7 @@ export class OfferEditComponent implements OnInit {
       },
       error: (err) => {
         this.error.set(err.error?.message ?? err.message ?? 'Failed to update offer');
+        this.saving.set(false);
       },
       complete: () => this.saving.set(false),
     });

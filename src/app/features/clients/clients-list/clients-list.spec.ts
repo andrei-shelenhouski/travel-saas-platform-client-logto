@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { provideRouter } from '@angular/router';
+import { provideRouter, Router } from '@angular/router';
 
 import { of } from 'rxjs';
+import { vi } from 'vitest';
 
 import { ClientsService } from '@app/services/clients.service';
 import { ClientType } from '@app/shared/models';
@@ -123,5 +124,15 @@ describe('ClientsListComponent', () => {
     component.onFilterChange({ type: ClientType.INDIVIDUAL, search: '' });
 
     expect(component.currentPage()).toBe(0);
+  });
+
+  it('navigates to dedicated client create page', async () => {
+    await createComponent();
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    component.navigateToCreateClient();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/app/clients/new']);
   });
 });

@@ -15,8 +15,8 @@
     </div>
 
     @if (isLoading()) {
-      <p class="text-center text-gray-600" i18n="@@loadingOrganizations">
-        Loading organizations...
+      <p class="text-center text-gray-600">
+        <span i18n="@@loadingOrganizations">Loading organizations…</span>
       </p>
     } @else if (organizations().length === 0) {
       <p class="text-center text-gray-600" i18n="@@noOrganizationsFound">No organizations found.</p>

@@ -68,13 +68,13 @@
                   *cdkDragPreview
                   class="flex flex-col gap-1 rounded-lg border-2 border-primary bg-white p-3 shadow-lg min-w-[260px]"
                 >
-                  <span class="font-medium text-gray-900">{{ offer.title }}</span>
-                  <span class="text-xs text-gray-500">{{ offer.finalPrice }} {{ offer.currency }}</span>
+                  <span class="font-medium text-gray-900">{{ offer.destination || ('#' + offer.number) || '—' }}</span>
+                  <span class="text-xs text-gray-500">{{ offer.total }} {{ offer.currency }}</span>
                 </div>
                 <div class="pointer-events-none">
-                  <span class="font-medium text-gray-900">{{ offer.title }}</span>
+                  <span class="font-medium text-gray-900">{{ offer.destination || ('#' + offer.number) || '—' }}</span>
                 </div>
-                <p class="mt-0.5 text-xs text-gray-600">{{ offer.finalPrice }} {{ offer.currency }}</p>
+                <p class="mt-0.5 text-xs text-gray-600">{{ offer.total }} {{ offer.currency }}</p>
                 <p class="text-xs text-gray-500">{{ formatDate(offer.updatedAt) }}</p>
               </div>
             }

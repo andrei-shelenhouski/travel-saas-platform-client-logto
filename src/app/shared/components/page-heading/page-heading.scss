@@ -1,0 +1,34 @@
+.title-and-type {
+  position: relative;
+  overflow: hidden;
+  padding: 0.75rem 10rem 0.75rem 1rem;
+  clip-path: polygon(0 0, 88% 0, 100% 100%, 0 100%);
+  background: linear-gradient(
+    135deg,
+    var(--mat-sys-primary) 0%,
+    color-mix(in oklab, var(--mat-sys-primary) 72%, black) 100%
+  );
+}
+
+.title-and-type h1 {
+  color: color-mix(in oklab, white 94%, var(--mat-sys-primary));
+}
+
+.title-and-type p {
+  color: color-mix(in oklab, white 78%, var(--mat-sys-primary));
+}
+
+.actions {
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  height: 100%;
+  align-items: center;
+  justify-content: flex-end;
+  display: flex;
+  padding-right: 1rem;
+  gap: 1rem;
+}
+
+:host {
+  display: grid;
+  grid-template-columns: auto 1fr;
+}

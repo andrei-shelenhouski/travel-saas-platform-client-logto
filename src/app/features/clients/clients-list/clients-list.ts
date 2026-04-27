@@ -13,14 +13,18 @@ import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { ClientsService } from '@app/services/clients.service';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
 
-import { ClientFilterBarComponent, ClientFilterValue } from './client-filter-bar/client-filter-bar';
-import { ClientTypeBadgeComponent } from './client-type-badge/client-type-badge';
+import {
+  ClientFilterBarComponent,
+  ClientFilterValue,
+} from '../client-filter-bar/client-filter-bar';
+import { ClientTypeBadgeComponent } from '../client-type-badge/client-type-badge';
 
 import type { ClientResponseDto } from '@app/shared/models';
 const PAGE_SIZE = 20;
@@ -29,7 +33,6 @@ const PAGE_SIZE = 20;
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-clients-list',
   imports: [
-    RouterLink,
     ...MAT_BUTTONS,
     MatPaginatorModule,
     MatProgressSpinnerModule,
@@ -38,9 +41,13 @@ const PAGE_SIZE = 20;
     ClientTypeBadgeComponent,
     MatIcon,
     DatePipe,
+    PageHeading,
   ],
   templateUrl: './clients-list.html',
   styleUrl: './clients-list.scss',
+  host: {
+    class: 'flex flex-col h-full',
+  },
 })
 export class ClientsListComponent {
   private readonly clientsService = inject(ClientsService);
@@ -133,5 +140,9 @@ export class ClientsListComponent {
 
   navigateToClient(id: string): void {
     this.router.navigate([id], { relativeTo: this.activatedRoute });
+  }
+
+  navigateToCreateClient(): void {
+    this.router.navigate(['/app/clients/new']);
   }
 }

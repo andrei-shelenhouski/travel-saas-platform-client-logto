@@ -136,12 +136,189 @@
         }
       }
     },
+    "/api/offers/{id}": {
+      "get": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "findById_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOfferRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/offers/{id}/status": {
+      "put": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOfferStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/leads/{id}": {
       "get": {
         "tags": [
           "lead-controller"
         ],
-        "operationId": "findById_1",
+        "operationId": "findById_2",
         "parameters": [
           {
             "name": "id",
@@ -181,7 +358,7 @@
         "tags": [
           "lead-controller"
         ],
-        "operationId": "update_1",
+        "operationId": "update_2",
         "parameters": [
           {
             "name": "id",
@@ -231,7 +408,7 @@
         "tags": [
           "lead-controller"
         ],
-        "operationId": "delete_1",
+        "operationId": "delete_2",
         "parameters": [
           {
             "name": "id",
@@ -266,7 +443,7 @@
         "tags": [
           "lead-controller"
         ],
-        "operationId": "updateStatus",
+        "operationId": "updateStatus_1",
         "parameters": [
           {
             "name": "id",
@@ -318,7 +495,7 @@
         "tags": [
           "client-controller"
         ],
-        "operationId": "findById_2",
+        "operationId": "findById_3",
         "parameters": [
           {
             "name": "id",
@@ -358,7 +535,7 @@
         "tags": [
           "client-controller"
         ],
-        "operationId": "update_2",
+        "operationId": "update_3",
         "parameters": [
           {
             "name": "id",
@@ -408,7 +585,7 @@
         "tags": [
           "client-controller"
         ],
-        "operationId": "delete_2",
+        "operationId": "delete_3",
         "parameters": [
           {
             "name": "id",
@@ -1047,6 +1224,24 @@
             }
           },
           {
+            "name": "requestId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "leadId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
             "name": "status",
             "in": "query",
             "required": false,
@@ -1060,6 +1255,15 @@
                 "REJECTED",
                 "EXPIRED"
               ]
+            }
+          },
+          {
+            "name": "agentId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
@@ -1127,25 +1331,16 @@
         }
       }
     },
-    "/api/offers/{id}/convert-to-booking": {
+    "/api/offers/{id}/revise": {
       "post": {
         "tags": [
           "offer-controller"
         ],
-        "operationId": "convertToBooking",
+        "operationId": "revise",
         "parameters": [
           {
             "name": "id",
             "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          },
-          {
-            "name": "clientId",
-            "in": "query",
             "required": true,
             "schema": {
               "type": "string",
@@ -1165,8 +1360,8 @@
               }
             }
           },
-          "200": {
-            "description": "OK",
+          "201": {
+            "description": "Created",
             "content": {
               "*/*": {
                 "schema": {
@@ -1938,183 +2133,6 @@
         }
       }
     },
-    "/api/offers/{id}": {
-      "get": {
-        "tags": [
-          "offer-controller"
-        ],
-        "operationId": "findById_3",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {}
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/OfferResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "offer-controller"
-        ],
-        "operationId": "delete_3",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {}
-                }
-              }
-            }
-          },
-          "204": {
-            "description": "No Content"
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "offer-controller"
-        ],
-        "operationId": "update_3",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateOfferRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {}
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/OfferResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/offers/{id}/status": {
-      "patch": {
-        "tags": [
-          "offer-controller"
-        ],
-        "operationId": "updateStatus_1",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateOfferStatusRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {}
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/OfferResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/leads/{id}/assign": {
       "patch": {
         "tags": [
@@ -2617,6 +2635,49 @@
                     "type": "integer",
                     "format": "int64"
                   }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/offers/{id}/pdf": {
+      "get": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "pdf",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
                 }
               }
             }
@@ -3248,6 +3309,332 @@
             "format": "date-time"
           }
         }
+      },
+      "AccommodationRequest": {
+        "type": "object",
+        "properties": {
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "hotelName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "roomType": {
+            "type": "string"
+          },
+          "mealPlan": {
+            "type": "string"
+          },
+          "checkinDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "checkoutDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "unitPrice": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "checkinDate",
+          "checkoutDate",
+          "hotelName",
+          "unitPrice"
+        ]
+      },
+      "ServiceItemRequest": {
+        "type": "object",
+        "properties": {
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "serviceType": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "unitPrice": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "serviceType",
+          "unitPrice"
+        ]
+      },
+      "UpdateOfferRequest": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string"
+          },
+          "validityDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "departureCity": {
+            "type": "string"
+          },
+          "departDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "children": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "discountPct": {
+            "type": "number"
+          },
+          "discountAmount": {
+            "type": "number"
+          },
+          "internalNotes": {
+            "type": "string"
+          },
+          "accommodations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccommodationRequest"
+            }
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceItemRequest"
+            }
+          }
+        }
+      },
+      "AccommodationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hotelName": {
+            "type": "string"
+          },
+          "roomType": {
+            "type": "string"
+          },
+          "mealPlan": {
+            "type": "string"
+          },
+          "checkinDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "checkoutDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        }
+      },
+      "OfferResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "leadId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "previousVersionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "number": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SENT",
+              "VIEWED",
+              "ACCEPTED",
+              "REJECTED",
+              "EXPIRED"
+            ]
+          },
+          "language": {
+            "type": "string"
+          },
+          "offerDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "validityDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "departDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "departureCity": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "internalNotes": {
+            "type": "string"
+          },
+          "adults": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "children": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "subtotal": {
+            "type": "number"
+          },
+          "discountAmount": {
+            "type": "number"
+          },
+          "discountPct": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "accommodations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccommodationDto"
+            }
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceItemDto"
+            }
+          },
+          "createdById": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ServiceItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "serviceType": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        }
+      },
+      "UpdateOfferStatusRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SENT",
+              "VIEWED",
+              "ACCEPTED",
+              "REJECTED",
+              "EXPIRED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
       },
       "UpdateLeadRequest": {
         "type": "object",
@@ -3887,205 +4274,69 @@
             "type": "string",
             "format": "uuid"
           },
-          "title": {
+          "language": {
             "type": "string",
             "minLength": 1
           },
-          "source": {
+          "validityDate": {
             "type": "string",
-            "enum": [
-              "MANUAL",
-              "OSTROVOK"
-            ]
+            "format": "date"
           },
-          "supplierTotal": {
-            "type": "number"
-          },
-          "markup": {
-            "type": "number"
-          },
-          "commission": {
-            "type": "number"
-          },
-          "finalPrice": {
-            "type": "number"
-          },
-          "currency": {
-            "type": "string",
-            "minLength": 1
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/OfferItemRequest"
-            }
-          }
-        },
-        "required": [
-          "commission",
-          "currency",
-          "finalPrice",
-          "markup",
-          "requestId",
-          "source",
-          "supplierTotal",
-          "title"
-        ]
-      },
-      "OfferItemRequest": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "HOTEL",
-              "FLIGHT",
-              "TRANSFER",
-              "INSURANCE",
-              "SERVICE"
-            ]
-          },
-          "name": {
-            "type": "string",
-            "minLength": 1
-          },
-          "supplier": {
+          "destination": {
             "type": "string"
           },
-          "quantity": {
+          "departureCity": {
+            "type": "string"
+          },
+          "departDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
             "type": "integer",
             "format": "int32",
             "minimum": 1
           },
-          "unitPrice": {
-            "type": "number"
-          },
-          "totalPrice": {
-            "type": "number"
+          "children": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
           },
           "currency": {
             "type": "string",
             "minLength": 1
           },
-          "comment": {
+          "discountPct": {
+            "type": "number"
+          },
+          "discountAmount": {
+            "type": "number"
+          },
+          "internalNotes": {
             "type": "string"
+          },
+          "accommodations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccommodationRequest"
+            }
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceItemRequest"
+            }
           }
         },
         "required": [
           "currency",
-          "name",
-          "totalPrice",
-          "type",
-          "unitPrice"
+          "language",
+          "requestId"
         ]
-      },
-      "ItemDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "HOTEL",
-              "FLIGHT",
-              "TRANSFER",
-              "INSURANCE",
-              "SERVICE"
-            ]
-          },
-          "name": {
-            "type": "string"
-          },
-          "supplier": {
-            "type": "string"
-          },
-          "currency": {
-            "type": "string"
-          },
-          "comment": {
-            "type": "string"
-          },
-          "quantity": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "unitPrice": {
-            "type": "number"
-          },
-          "totalPrice": {
-            "type": "number"
-          }
-        }
-      },
-      "OfferResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "organizationId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "requestId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "title": {
-            "type": "string"
-          },
-          "source": {
-            "type": "string",
-            "enum": [
-              "MANUAL",
-              "OSTROVOK"
-            ]
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "DRAFT",
-              "SENT",
-              "VIEWED",
-              "ACCEPTED",
-              "REJECTED",
-              "EXPIRED"
-            ]
-          },
-          "supplierTotal": {
-            "type": "number"
-          },
-          "markup": {
-            "type": "number"
-          },
-          "commission": {
-            "type": "number"
-          },
-          "finalPrice": {
-            "type": "number"
-          },
-          "currency": {
-            "type": "string"
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ItemDto"
-            }
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
       },
       "CreateLeadRequest": {
         "type": "object",
@@ -4504,54 +4755,6 @@
         },
         "required": [
           "role"
-        ]
-      },
-      "UpdateOfferRequest": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string"
-          },
-          "supplierTotal": {
-            "type": "number"
-          },
-          "markup": {
-            "type": "number"
-          },
-          "commission": {
-            "type": "number"
-          },
-          "finalPrice": {
-            "type": "number"
-          },
-          "currency": {
-            "type": "string"
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/OfferItemRequest"
-            }
-          }
-        }
-      },
-      "UpdateOfferStatusRequest": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string",
-            "enum": [
-              "DRAFT",
-              "SENT",
-              "VIEWED",
-              "ACCEPTED",
-              "REJECTED",
-              "EXPIRED"
-            ]
-          }
-        },
-        "required": [
-          "status"
         ]
       },
       "AssignLeadRequest": {

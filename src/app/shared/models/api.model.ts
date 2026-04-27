@@ -206,38 +206,48 @@ export type AssignLeadDto = {
 
 // ----- Offers -----
 
-export const OfferItemType = {
-  HOTEL: 'HOTEL',
-  FLIGHT: 'FLIGHT',
-  TRANSFER: 'TRANSFER',
-  INSURANCE: 'INSURANCE',
-  SERVICE: 'SERVICE',
-} as const;
-export type OfferItemType = (typeof OfferItemType)[keyof typeof OfferItemType];
-
-/** OpenAPI: OfferItemRequest. Offer line item in CreateOfferRequest / UpdateOfferRequest. */
-export type OfferItemRequest = {
-  type: OfferItemType;
-  name: string;
-  supplier?: string;
-  quantity?: number;
+/** OpenAPI: AccommodationRequest. Accommodation line item in CreateOfferRequest / UpdateOfferRequest. */
+export type AccommodationRequest = {
+  sortOrder?: number;
+  hotelName: string;
+  roomType?: string;
+  mealPlan?: string;
+  checkinDate: string;
+  checkoutDate: string;
   unitPrice: number;
-  totalPrice: number;
-  currency: string;
-  comment?: string;
 };
 
-/** OpenAPI: ItemDto. Offer line item in OfferResponse. */
-export type OfferItemDto = {
-  id: string;
-  type: OfferItemType | string;
-  name: string;
-  supplier?: string;
-  currency: string;
-  comment?: string;
+/** OpenAPI: ServiceItemRequest. Service line item in CreateOfferRequest / UpdateOfferRequest. */
+export type ServiceItemRequest = {
+  sortOrder?: number;
+  serviceType: string;
+  description?: string;
   quantity?: number;
   unitPrice: number;
-  totalPrice: number;
+};
+
+/** OpenAPI: AccommodationDto. Accommodation line item in OfferResponse. */
+export type AccommodationDto = {
+  id?: string;
+  sortOrder?: number;
+  hotelName?: string;
+  roomType?: string;
+  mealPlan?: string;
+  checkinDate?: string;
+  checkoutDate?: string;
+  unitPrice?: number;
+  total?: number;
+};
+
+/** OpenAPI: ServiceItemDto. Service line item in OfferResponse. */
+export type ServiceItemDto = {
+  id?: string;
+  sortOrder?: number;
+  quantity?: number;
+  serviceType?: string;
+  description?: string;
+  unitPrice?: number;
+  total?: number;
 };
 
 export const OfferStatus = {
@@ -250,55 +260,76 @@ export const OfferStatus = {
 } as const;
 export type OfferStatus = (typeof OfferStatus)[keyof typeof OfferStatus];
 
-export const OfferSource = {
-  MANUAL: 'MANUAL',
-  OSTROVOK: 'OSTROVOK',
-} as const;
-export type OfferSource = (typeof OfferSource)[keyof typeof OfferSource];
-
 /** OpenAPI: CreateOfferRequest. POST /api/offers. */
 export type CreateOfferDto = {
   requestId: string;
-  title: string;
-  source: OfferSource;
-  supplierTotal: number;
-  markup: number;
-  commission: number;
-  finalPrice: number;
+  language: string;
+  validityDate?: string;
+  destination?: string;
+  departureCity?: string;
+  departDate?: string;
+  returnDate?: string;
+  adults?: number;
+  children?: number;
   currency: string;
-  items?: OfferItemRequest[];
+  discountPct?: number;
+  discountAmount?: number;
+  internalNotes?: string;
+  accommodations?: AccommodationRequest[];
+  services?: ServiceItemRequest[];
 };
 
-/** OpenAPI: UpdateOfferRequest. PATCH /api/offers/{id}. */
+/** OpenAPI: UpdateOfferRequest. PUT /api/offers/{id}. */
 export type UpdateOfferDto = {
-  title?: string;
-  supplierTotal?: number;
-  markup?: number;
-  commission?: number;
-  finalPrice?: number;
+  language?: string;
+  validityDate?: string;
+  destination?: string;
+  departureCity?: string;
+  departDate?: string;
+  returnDate?: string;
+  adults?: number;
+  children?: number;
   currency?: string;
-  items?: OfferItemRequest[];
+  discountPct?: number;
+  discountAmount?: number;
+  internalNotes?: string;
+  accommodations?: AccommodationRequest[];
+  services?: ServiceItemRequest[];
 };
 
-/** OpenAPI: UpdateOfferStatusRequest. PATCH /api/offers/{id}/status. */
+/** OpenAPI: UpdateOfferStatusRequest. PUT /api/offers/{id}/status. */
 export type UpdateOfferStatusDto = {
   status: OfferStatus;
 };
 
-/** OpenAPI: OfferResponse. GET/POST /api/offers, GET/PATCH /api/offers/{id}. Amounts as number. */
+/** OpenAPI: OfferResponse. GET/POST /api/offers, GET/PUT /api/offers/{id}. */
 export type OfferResponseDto = {
   id: string;
-  organizationId: string;
-  requestId: string;
-  title: string;
-  source: OfferSource | string;
+  organizationId?: string;
+  requestId?: string;
+  leadId?: string;
+  previousVersionId?: string;
+  number?: string;
+  version?: number;
   status: OfferStatus | string;
-  supplierTotal: number;
-  markup: number;
-  commission: number;
-  finalPrice: number;
-  currency: string;
-  items: OfferItemDto[];
+  language?: string;
+  offerDate?: string;
+  validityDate?: string;
+  departDate?: string;
+  returnDate?: string;
+  destination?: string;
+  departureCity?: string;
+  currency?: string;
+  internalNotes?: string;
+  adults?: number;
+  children?: number;
+  subtotal?: number;
+  discountAmount?: number;
+  discountPct?: number;
+  total?: number;
+  accommodations?: AccommodationDto[];
+  services?: ServiceItemDto[];
+  createdById?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -433,7 +464,7 @@ export type UpdateContactDto = {
 /** OpenAPI: CreateClientRequest. POST /api/clients body. */
 export type CreateClientDto = {
   type: ClientType;
-  fullName?: string;
+  fullName: string;
   email?: string;
   phone?: string;
   telegramHandle?: string;

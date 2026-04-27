@@ -9,7 +9,7 @@
 
 html {
   height: 100%;
-  font-family: 'Open Sans', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 
   @include mat.theme(
     (
@@ -17,7 +17,7 @@ html {
         primary: theme-colors.$primary-palette,
         tertiary: mat.$azure-palette,
       ),
-      typography: 'Open Sans',
+      typography: 'Montserrat',
       density: 0,
     )
   );
@@ -70,6 +70,18 @@ html {
       cursor: pointer;
     }
   }
+
+  @include mat.form-field-density(-4);
+
+  @include mat.form-field-overrides(
+    (
+      state-layer-color: #ffffff,
+      outlined-outline-color: var(--mat-sys-outline-variant),
+      container-text-size: 0.875rem,
+      outlined-caret-color: var(--mat-sys-primary),
+      container-text-line-height: 1.5rem,
+    )
+  );
 }
 
 body {

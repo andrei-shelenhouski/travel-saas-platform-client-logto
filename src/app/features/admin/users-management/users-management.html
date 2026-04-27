@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="p-4">
   <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
     <div>
       <h1 class="text-xl font-semibold text-gray-900" i18n="@@userManagement">User management</h1>
@@ -10,7 +10,9 @@
       <button color="primary" mat-flat-button type="button" (click)="toggleAddForm()">
         {{ addFormVisible() ? 'Cancel' : 'Add member' }}
       </button>
-      <a i18n="@@backToDashboard" mat-stroked-button routerLink="/app/dashboard">Back to dashboard</a>
+      <a i18n="@@backToDashboard" mat-stroked-button routerLink="/app/dashboard"
+        >Back to dashboard</a
+      >
     </div>
   </header>
 
@@ -20,7 +22,11 @@
       <p class="text-xs text-gray-500 mb-3" i18n="@@inviteByEmailDescription">
         The user must already have an account. Enter their email and choose a role.
       </p>
-      <form class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end" [formGroup]="addMemberForm" (ngSubmit)="onAddMember()">
+      <form
+        class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end"
+        [formGroup]="addMemberForm"
+        (ngSubmit)="onAddMember()"
+      >
         <mat-form-field appearance="outline" class="min-w-55 flex-1" subscriptSizing="dynamic">
           <mat-label i18n="@@email">Email</mat-label>
           <input
@@ -36,7 +42,9 @@
           ) {
             <mat-error>Required</mat-error>
           }
-          @if (addMemberForm.controls.email.hasError('email') && addMemberForm.controls.email.touched) {
+          @if (
+            addMemberForm.controls.email.hasError('email') && addMemberForm.controls.email.touched
+          ) {
             <mat-error>Invalid email</mat-error>
           }
         </mat-form-field>

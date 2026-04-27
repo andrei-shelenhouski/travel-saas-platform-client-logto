@@ -1,0 +1,9 @@
+<app-client-form
+  [initialClient]="client()"
+  [loading]="loading()"
+  [mode]="'edit'"
+  [saving]="saving()"
+  [submitError]="submitError()"
+  (cancelled)="cancel()"
+  (updateSubmitted)="onUpdateSubmitted($event)"
+/>
