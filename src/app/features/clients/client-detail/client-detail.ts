@@ -22,6 +22,7 @@ import {
   CommentComponent,
   TagSelectorComponent,
 } from '@app/shared/components';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ClientType, EntityType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
@@ -46,15 +47,16 @@ type ClientTab = 'overview' | 'requests' | 'activity' | 'comments';
     TagSelectorComponent,
     CommentComponent,
     ...MAT_BUTTONS,
+    PageHeading,
   ],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
   host: {
-    class: 'p-4',
+    class: 'pv-4',
   },
 })
 export class ClientDetailComponent {
-  private readonly route = inject(ActivatedRoute);
+  protected readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly clientsService = inject(ClientsService);
   private readonly requestsService = inject(RequestsService);

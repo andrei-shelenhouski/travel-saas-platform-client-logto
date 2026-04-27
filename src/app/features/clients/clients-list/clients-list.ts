@@ -12,21 +12,21 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { ClientsService } from '@app/services/clients.service';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
 
-import { CreateClientComponent } from '../create-client/create-client';
-import { ClientFilterBarComponent, ClientFilterValue } from './client-filter-bar/client-filter-bar';
-import { ClientTypeBadgeComponent } from './client-type-badge/client-type-badge';
+import {
+  ClientFilterBarComponent,
+  ClientFilterValue,
+} from '../client-filter-bar/client-filter-bar';
+import { ClientTypeBadgeComponent } from '../client-type-badge/client-type-badge';
 
-import type { ClientResponseDto, CreateClientDto } from '@app/shared/models';
-
+import type { ClientResponseDto } from '@app/shared/models';
 const PAGE_SIZE = 20;
 
 @Component({
@@ -36,31 +36,28 @@ const PAGE_SIZE = 20;
     ...MAT_BUTTONS,
     MatPaginatorModule,
     MatProgressSpinnerModule,
-    MatSidenavModule,
     MatTableModule,
     ClientFilterBarComponent,
     ClientTypeBadgeComponent,
     MatIcon,
     DatePipe,
-    CreateClientComponent,
+    PageHeading,
   ],
   templateUrl: './clients-list.html',
   styleUrl: './clients-list.scss',
   host: {
-    class: 'flex h-full',
+    class: 'flex flex-col h-full',
   },
 })
 export class ClientsListComponent {
   private readonly clientsService = inject(ClientsService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly snackBar = inject(MatSnackBar);
 
   readonly pageSize = PAGE_SIZE;
 
   readonly activeFilter = signal<ClientFilterValue>({ type: 'ALL', search: '' });
   readonly currentPage = signal(0);
-  readonly createDrawerOpened = signal(false);
 
   private readonly data = rxResource({
     params: () => ({
@@ -145,32 +142,7 @@ export class ClientsListComponent {
     this.router.navigate([id], { relativeTo: this.activatedRoute });
   }
 
-  openCreateClientDrawer(): void {
-    this.createDrawerOpened.set(true);
-  }
-
-  closeCreateClientDrawer(): void {
-    this.createDrawerOpened.set(false);
-  }
-
-  onCreateClientSubmitted(dto: CreateClientDto): void {
-    this.closeCreateClientDrawer();
-    this.sendAddClientRequest(dto);
-  }
-
-  private sendAddClientRequest(dto: CreateClientDto): void {
-    this.clientsService.create(dto).subscribe({
-      next: (created) => {
-        this.snackBar.open('Client created', 'Close', { duration: 3000 });
-        this.router.navigate([created.id], { relativeTo: this.activatedRoute });
-      },
-      error: (err) => {
-        this.snackBar.open(
-          err.error?.message ?? err.message ?? 'Failed to create client',
-          'Close',
-          { duration: 5000 },
-        );
-      },
-    });
+  navigateToCreateClient(): void {
+    this.router.navigate(['/app/clients/new']);
   }
 }

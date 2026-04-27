@@ -64,9 +64,36 @@ Separate control-flow structures with one blank line: put a blank line between *
 - Use the async pipe to handle observables
 - Do not assume globals like (`new Date()`) are available.
 - Do not write arrow functions in templates (they are not supported).
+- For event handlers, prefer method references (e.g. `(click)="onClick()"`) over inline statements (e.g. `(click)="count++"`), especially when the handler logic is more than a simple one-liner. This keeps templates cleaner and allows for better separation of concerns.
+- For class and style bindings, prefer using the `class` and `style` bindings with object syntax (e.g. `[class.active]="isActive"`) instead of `ngClass` and `ngStyle` directives, as they are more performant and easier to read.
+- Never use inline templates in components that have more than a few lines of HTML. For larger templates, always use an external template file to keep the component code clean and maintainable.
 
 ## Services
 
 - Design services around a single responsibility
 - Use the `providedIn: 'root'` option for singleton services
 - Use the `inject()` function instead of constructor injection
+
+## Testing Best Practices
+
+- Use Vitest for all tests in this workspace.
+- Co-locate tests with source files using `*.spec.ts` naming.
+- For every non-trivial behavior change, add or update tests that validate the user-visible outcome.
+- Prefer deterministic tests: avoid timers, random values, and network calls unless explicitly mocked.
+- Do not add or keep focused/disabled tests (`fit`, `fdescribe`, `it.only`, `describe.only`, `it.skip`, `describe.skip`).
+- Keep each test focused on one behavior and use clear Arrange-Act-Assert structure.
+- Mock external boundaries (HTTP, Firebase, browser APIs, time) instead of mocking internal implementation details.
+- Prefer testing public APIs and rendered behavior rather than private methods or internal state.
+- When fixing bugs, write or update a regression test first when feasible, then implement the fix.
+
+### Angular Testing
+
+- Use Angular testing utilities with Vitest-compatible patterns.
+- For components, assert behavior from the template/DOM and user interactions.
+- For services, test observable/signal outputs and side effects through public methods.
+- In zoneless flows, explicitly trigger change detection when needed in tests instead of relying on Zone.js behavior.
+
+### PR Readiness
+
+- Before finishing a task, run relevant tests for touched areas.
+- If full test execution is too expensive, run targeted tests first and clearly report what was or was not executed.

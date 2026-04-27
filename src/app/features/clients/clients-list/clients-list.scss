@@ -1,20 +1,3 @@
-@use '@angular/material' as mat;
-
-.clients-drawer-container {
-  flex: 1;
-}
-
-.clients-create-drawer {
-  width: min(100vw, 720px);
-  padding: 1rem;
-
-  @include mat.sidenav-overrides(
-    (
-      container-shape: 0.5rem,
-    )
-  );
-}
-
 .table-wrap {
   width: 100%;
   overflow-x: auto;

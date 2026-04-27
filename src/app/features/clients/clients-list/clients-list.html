@@ -1,138 +1,116 @@
-<mat-drawer-container autosize class="clients-drawer-container">
-  <mat-drawer
-    class="clients-create-drawer"
-    mode="over"
-    position="end"
-    [opened]="createDrawerOpened()"
-    (closedStart)="closeCreateClientDrawer()"
-  >
-    <app-create-client
-      (cancelled)="closeCreateClientDrawer()"
-      (submitted)="onCreateClientSubmitted($event)"
-    ></app-create-client>
-  </mat-drawer>
+<app-page-heading title="Clients" i18n-title="@@clientsListTitle">
+  <button color="primary" mat-flat-button type="button" (click)="navigateToCreateClient()">
+    <mat-icon>add</mat-icon>
+    <span i18n="@@clientsListNewClientCta">New Client</span>
+  </button>
+</app-page-heading>
 
-  <mat-drawer-content>
-    <div class="p-4">
-      <div class="heading flex flex-wrap items-center justify-between gap-4 pb-2">
-        <h1 class="text-xl font-semibold text-gray-900" i18n="@@clientsListTitle">Clients</h1>
-        <button color="primary" mat-flat-button type="button" (click)="openCreateClientDrawer()">
-          <mat-icon>add</mat-icon>
-          <span i18n="@@clientsListNewClientCta">New Client</span>
-        </button>
-      </div>
+<div class="p-4">
+  <app-client-filter-bar class="m-4" (filterChange)="onFilterChange($event)" />
 
-      <app-client-filter-bar class="m-4" (filterChange)="onFilterChange($event)" />
+  @if (error()) {
+    <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
+  }
 
-      @if (error()) {
-        <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
-      }
+  <div class="table-wrap overflow-scroll">
+    <table mat-table [dataSource]="clients()" [multiTemplateDataRows]="true">
+      <ng-container matColumnDef="name">
+        <th *matHeaderCellDef i18n="@@clientsListHeaderName" mat-header-cell>Name</th>
+        <td *matCellDef="let element" mat-cell>
+          <span class="block text-sm font-semibold">{{ displayName(element) }}</span>
+          @if (displaySubtitle(element); as subtitle) {
+            <span class="block text-xs text-gray-500">{{ subtitle }}</span>
+          }
+        </td>
+      </ng-container>
 
-      <div class="table-wrap overflow-scroll">
-        <table mat-table [dataSource]="clients()" [multiTemplateDataRows]="true">
-          <ng-container matColumnDef="name">
-            <th *matHeaderCellDef i18n="@@clientsListHeaderName" mat-header-cell>Name</th>
-            <td *matCellDef="let element" mat-cell>
-              <span class="block text-sm font-semibold">{{ displayName(element) }}</span>
-              @if (displaySubtitle(element); as subtitle) {
-                <span class="block text-xs text-gray-500">{{ subtitle }}</span>
-              }
-            </td>
-          </ng-container>
+      <ng-container matColumnDef="type">
+        <th *matHeaderCellDef i18n="@@clientsListHeaderType" mat-header-cell>Type</th>
+        <td *matCellDef="let element" mat-cell>
+          <app-client-type-badge [type]="element.type" />
+        </td>
+      </ng-container>
 
-          <ng-container matColumnDef="type">
-            <th *matHeaderCellDef i18n="@@clientsListHeaderType" mat-header-cell>Type</th>
-            <td *matCellDef="let element" mat-cell>
-              <app-client-type-badge [type]="element.type" />
-            </td>
-          </ng-container>
+      <ng-container matColumnDef="phone">
+        <th *matHeaderCellDef i18n="@@clientsListHeaderPhone" mat-header-cell>Phone</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.phone ?? '—' }}
+        </td>
+      </ng-container>
 
-          <ng-container matColumnDef="phone">
-            <th *matHeaderCellDef i18n="@@clientsListHeaderPhone" mat-header-cell>Phone</th>
-            <td *matCellDef="let element" mat-cell>
-              {{ element.phone ?? '—' }}
-            </td>
-          </ng-container>
+      <ng-container matColumnDef="email">
+        <th *matHeaderCellDef i18n="@@clientsListHeaderEmail" mat-header-cell>Email</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.email ?? '—' }}
+        </td>
+      </ng-container>
 
-          <ng-container matColumnDef="email">
-            <th *matHeaderCellDef i18n="@@clientsListHeaderEmail" mat-header-cell>Email</th>
-            <td *matCellDef="let element" mat-cell>
-              {{ element.email ?? '—' }}
-            </td>
-          </ng-container>
+      <ng-container matColumnDef="createdAt">
+        <th *matHeaderCellDef i18n="@@clientsListHeaderCreatedAt" mat-header-cell>Created At</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.createdAt | date: 'dd MMM yyyy' }}
+        </td>
+      </ng-container>
 
-          <ng-container matColumnDef="createdAt">
-            <th *matHeaderCellDef i18n="@@clientsListHeaderCreatedAt" mat-header-cell>
-              Created At
-            </th>
-            <td *matCellDef="let element" mat-cell>
-              {{ element.createdAt | date: 'dd MMM yyyy' }}
-            </td>
-          </ng-container>
+      <ng-container matColumnDef="updatedAt">
+        <th *matHeaderCellDef i18n="@@clientsListHeaderUpdatedAt" mat-header-cell>Updated At</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.updatedAt | date: 'dd MMM yyyy' }}
+        </td>
+      </ng-container>
 
-          <ng-container matColumnDef="updatedAt">
-            <th *matHeaderCellDef i18n="@@clientsListHeaderUpdatedAt" mat-header-cell>
-              Updated At
-            </th>
-            <td *matCellDef="let element" mat-cell>
-              {{ element.updatedAt | date: 'dd MMM yyyy' }}
-            </td>
-          </ng-container>
+      <tr *matHeaderRowDef="displayedColumns" class="table-header-row" mat-header-row></tr>
+      <tr
+        *matRowDef="let row; columns: displayedColumns"
+        class="table-row"
+        mat-row
+        (click)="navigateToClient(row.id)"
+      ></tr>
+      <tr *matNoDataRow>
+        <td [attr.colspan]="displayedColumns.length">
+          <div class="m-10 align-middle text-center">
+            @if (loading()) {
+              <p class="pb-4" i18n="@@clientsListLoading">Loading clients...</p>
+              <mat-spinner
+                aria-label="Loading clients"
+                i18n-aria-label="@@clientsListLoadingAriaLabel"
+                class="mx-auto"
+                diameter="36"
+              />
+            } @else {
+              <p i18n="@@clientsListNoData">
+                Ooooops, no clients found. Try adjusting your filters.
+              </p>
 
-          <tr *matHeaderRowDef="displayedColumns" class="table-header-row" mat-header-row></tr>
-          <tr
-            *matRowDef="let row; columns: displayedColumns"
-            class="table-row"
-            mat-row
-            (click)="navigateToClient(row.id)"
-          ></tr>
-          <tr *matNoDataRow>
-            <td [attr.colspan]="displayedColumns.length">
-              <div class="m-10 align-middle text-center">
-                @if (loading()) {
-                  <p class="pb-4" i18n="@@clientsListLoading">Loading clients...</p>
-                  <mat-spinner
-                    aria-label="Loading clients"
-                    i18n-aria-label="@@clientsListLoadingAriaLabel"
-                    class="mx-auto"
-                    diameter="36"
-                  />
-                } @else {
-                  <p i18n="@@clientsListNoData">
-                    Ooooops, no clients found. Try adjusting your filters.
-                  </p>
+              <span class="or-divider" i18n="@@clientsListOrDivider">or</span>
 
-                  <span class="or-divider" i18n="@@clientsListOrDivider">or</span>
-
-                  <div>
-                    <button
-                      color="primary"
-                      matButton="outlined"
-                      type="button"
-                      (click)="openCreateClientDrawer()"
-                    >
-                      <mat-icon>add</mat-icon>
-                      <span i18n="@@clientsListNewClientCta">New Client</span>
-                    </button>
-                  </div>
-                }
+              <div>
+                <button
+                  color="primary"
+                  matButton="outlined"
+                  type="button"
+                  (click)="navigateToCreateClient()"
+                >
+                  <mat-icon>add</mat-icon>
+                  <span i18n="@@clientsListNewClientCta">New Client</span>
+                </button>
               </div>
-            </td>
-          </tr>
-        </table>
-      </div>
+            }
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
 
-      @if (totalElements() > pageSize) {
-        <mat-paginator
-          aria-label="Clients pagination"
-          i18n-aria-label="@@clientsListPaginatorAriaLabel"
-          [length]="totalElements()"
-          [pageIndex]="currentPage()"
-          [pageSize]="pageSize"
-          [showFirstLastButtons]="true"
-          (page)="onPageChange($event)"
-        />
-      }
-    </div>
-  </mat-drawer-content>
-</mat-drawer-container>
+  @if (totalElements() > pageSize) {
+    <mat-paginator
+      aria-label="Clients pagination"
+      i18n-aria-label="@@clientsListPaginatorAriaLabel"
+      [length]="totalElements()"
+      [pageIndex]="currentPage()"
+      [pageSize]="pageSize"
+      [showFirstLastButtons]="true"
+      (page)="onPageChange($event)"
+    />
+  }
+</div>
