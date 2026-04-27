@@ -28,6 +28,7 @@ import { ClientFilterBarComponent, ClientFilterValue } from './client-filter-bar
 import { ClientTypeBadgeComponent } from './client-type-badge/client-type-badge';
 
 import type { ClientResponseDto, CreateClientDto } from '@app/shared/models';
+
 const PAGE_SIZE = 20;
 
 @Component({

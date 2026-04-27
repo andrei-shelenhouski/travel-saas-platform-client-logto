@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  signal,
+  untracked,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -15,12 +23,7 @@ type TypeOption = {
 };
 
 const TYPE_OPTIONS: TypeOption[] = [
-  {
-    value: ClientType.INDIVIDUAL,
-    label: 'Individual',
-    subLabel: 'Private client',
-    icon: 'person',
-  },
+  { value: ClientType.INDIVIDUAL, label: 'Individual', subLabel: 'Private client', icon: 'person' },
   { value: ClientType.COMPANY, label: 'Company', subLabel: 'Legal entity', icon: 'business' },
   {
     value: ClientType.B2B_AGENT,
@@ -53,43 +56,54 @@ export class CreateClientComponent {
 
   readonly form = this.fb.nonNullable.group({
     fullName: ['', Validators.required],
-    phone: ['', Validators.required],
+    phone: [''],
     email: ['', Validators.email],
     telegramHandle: [''],
-    legalAddress: [''],
     notes: [''],
     dataConsentGiven: [false],
+    dataConsentDate: [''],
     companyName: [''],
-    unp: [''],
-    commissionPct: [''],
+    legalAddress: [''],
+    unp: ['', Validators.pattern(/^\d{9}$/)],
+    okpo: [''],
+    iban: [''],
+    bankName: [''],
+    bik: [''],
+  });
+
+  readonly commissionPctCtrl = this.fb.control<number | null>({ value: null, disabled: true });
+
+  readonly consentGiven = toSignal(this.form.controls.dataConsentGiven.valueChanges, {
+    initialValue: false,
+  });
+
+  private readonly _autoConsentDate = effect(() => {
+    const checked = this.consentGiven();
+    untracked(() => {
+      if (checked && !this.form.controls.dataConsentDate.value) {
+        this.form.controls.dataConsentDate.setValue(new Date().toISOString().slice(0, 10));
+      }
+    });
   });
 
   selectType(type: ClientType): void {
     this.selectedType.set(type);
-    this.updateValidators(type);
+    this.updateCompanyValidators(type);
   }
 
-  private updateValidators(type: ClientType): void {
-    const { fullName, phone, companyName, unp, legalAddress } = this.form.controls;
+  private updateCompanyValidators(type: ClientType): void {
+    const { companyName, legalAddress } = this.form.controls;
+    const isCompanyType = type === ClientType.COMPANY || type === ClientType.B2B_AGENT;
 
-    if (type === ClientType.INDIVIDUAL) {
-      fullName.setValidators(Validators.required);
-      phone.setValidators(Validators.required);
-      companyName.clearValidators();
-      unp.clearValidators();
-      legalAddress.clearValidators();
-    } else {
-      fullName.setValidators(Validators.required);
-      phone.setValidators(Validators.required);
+    if (isCompanyType) {
       companyName.setValidators(Validators.required);
-      unp.setValidators(Validators.required);
       legalAddress.setValidators(Validators.required);
+    } else {
+      companyName.clearValidators();
+      legalAddress.clearValidators();
     }
 
-    fullName.updateValueAndValidity({ emitEvent: false });
-    phone.updateValueAndValidity({ emitEvent: false });
     companyName.updateValueAndValidity({ emitEvent: false });
-    unp.updateValueAndValidity({ emitEvent: false });
     legalAddress.updateValueAndValidity({ emitEvent: false });
   }
 
@@ -100,12 +114,14 @@ export class CreateClientComponent {
       return;
     }
 
-    const v = this.form.getRawValue();
     const type = this.selectedType();
 
     if (!type) {
       return;
     }
+
+    const v = this.form.getRawValue();
+    const isCompanyType = type === ClientType.COMPANY || type === ClientType.B2B_AGENT;
 
     const dto: CreateClientDto = {
       type,
@@ -113,38 +129,44 @@ export class CreateClientComponent {
       dataConsentGiven: v.dataConsentGiven,
     };
 
-    if (type === ClientType.INDIVIDUAL) {
-      if (v.phone.trim()) {
-        dto.phone = v.phone.trim();
-      }
-
-      if (v.email.trim()) {
-        dto.email = v.email.trim();
-      }
-
-      if (v.telegramHandle.trim()) {
-        dto.telegramHandle = v.telegramHandle.trim();
-      }
-
-      if (v.legalAddress.trim()) {
-        dto.legalAddress = v.legalAddress.trim();
-      }
-
-      if (v.notes.trim()) {
-        dto.notes = v.notes.trim();
-      }
-    } else {
-      dto.companyName = v.companyName.trim();
-      dto.unp = v.unp.trim();
+    if (v.phone.trim()) {
       dto.phone = v.phone.trim();
+    }
+
+    if (v.email.trim()) {
+      dto.email = v.email.trim();
+    }
+
+    if (v.telegramHandle.trim()) {
+      dto.telegramHandle = v.telegramHandle.trim();
+    }
+
+    if (v.notes.trim()) {
+      dto.notes = v.notes.trim();
+    }
+
+    if (isCompanyType) {
+      dto.companyName = v.companyName.trim();
       dto.legalAddress = v.legalAddress.trim();
 
-      if (v.email.trim()) {
-        dto.email = v.email.trim();
+      if (v.unp.trim()) {
+        dto.unp = v.unp.trim();
       }
 
-      if (type === ClientType.B2B_AGENT && v.commissionPct.trim()) {
-        dto.commissionPct = parseFloat(v.commissionPct);
+      if (v.okpo.trim()) {
+        dto.okpo = v.okpo.trim();
+      }
+
+      if (v.iban.trim()) {
+        dto.iban = v.iban.trim();
+      }
+
+      if (v.bankName.trim()) {
+        dto.bankName = v.bankName.trim();
+      }
+
+      if (v.bik.trim()) {
+        dto.bik = v.bik.trim();
       }
     }
 

@@ -2,7 +2,7 @@
 
 <mat-dialog-content>
   <div class="mb-5 flex flex-col gap-2">
-    <div>Select client type:</div>
+    <div class="text-sm text-gray-500" i18n="@@createClientSelectTypeLabel">Select client type:</div>
     <div class="grid grid-cols-3 gap-3">
       @for (opt of typeOptions; track opt.value) {
         <button
@@ -19,138 +19,142 @@
     </div>
   </div>
 
-  @if (selectedType(); as selectedType) {
+  @if (selectedType(); as type) {
     <form class="flex flex-col gap-4" [formGroup]="form">
-      @if (selectedType === ClientType.INDIVIDUAL) {
+
+      @if (type === ClientType.INDIVIDUAL) {
         <mat-form-field class="w-full" subscriptSizing="dynamic">
-          <mat-label>Full name</mat-label>
+          <mat-label i18n="@@createClientFullNameLabel">Full name</mat-label>
           <input formControlName="fullName" matInput type="text" />
           @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
-            <mat-error>Full name is required</mat-error>
+            <mat-error i18n="@@createClientFullNameRequired">Full name is required</mat-error>
           }
         </mat-form-field>
+      }
 
-        <div class="grid grid-cols-2 gap-3">
-          <mat-form-field class="w-full" subscriptSizing="dynamic">
-            <mat-label>Phone</mat-label>
-            <input formControlName="phone" matInput type="tel" />
-            @if (form.controls.phone.hasError('required') && form.controls.phone.touched) {
-              <mat-error>Phone is required</mat-error>
-            }
-          </mat-form-field>
-          <mat-form-field class="w-full" subscriptSizing="dynamic">
-            <mat-label>Email</mat-label>
-            <input formControlName="email" matInput type="email" />
-            @if (form.controls.email.hasError('email') && form.controls.email.touched) {
-              <mat-error>Enter a valid email</mat-error>
-            }
-          </mat-form-field>
-        </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <mat-form-field class="w-full" subscriptSizing="dynamic">
-            <mat-label>Telegram</mat-label>
-            <input formControlName="telegramHandle" matInput type="text" />
-          </mat-form-field>
-          <mat-form-field class="w-full" subscriptSizing="dynamic">
-            <mat-label>Address</mat-label>
-            <input formControlName="legalAddress" matInput type="text" />
-          </mat-form-field>
-        </div>
-
+      @if (type === ClientType.COMPANY || type === ClientType.B2B_AGENT) {
         <mat-form-field class="w-full" subscriptSizing="dynamic">
-          <mat-label>Notes</mat-label>
-          <textarea formControlName="notes" matInput rows="3"></textarea>
-        </mat-form-field>
-
-        <mat-checkbox color="primary" formControlName="dataConsentGiven">
-          Consent for personal data processing has been obtained
-        </mat-checkbox>
-      } @else {
-        <mat-form-field class="w-full" subscriptSizing="dynamic">
-          <mat-label>Company name</mat-label>
+          <mat-label i18n="@@createClientCompanyNameLabel">Company name</mat-label>
           <input formControlName="companyName" matInput type="text" />
           @if (
             form.controls.companyName.hasError('required') && form.controls.companyName.touched
           ) {
-            <mat-error>Company name is required</mat-error>
+            <mat-error i18n="@@createClientCompanyNameRequired">Company name is required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field class="w-full" subscriptSizing="dynamic">
+          <mat-label i18n="@@createClientLegalAddressLabel">Legal address</mat-label>
+          <input formControlName="legalAddress" matInput type="text" />
+          @if (
+            form.controls.legalAddress.hasError('required') && form.controls.legalAddress.touched
+          ) {
+            <mat-error i18n="@@createClientLegalAddressRequired">Legal address is required</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field class="w-full" subscriptSizing="dynamic">
+          <mat-label i18n="@@createClientContactPersonLabel">Contact person</mat-label>
+          <input formControlName="fullName" matInput type="text" />
+          @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
+            <mat-error i18n="@@createClientContactPersonRequired">Contact person is required</mat-error>
           }
         </mat-form-field>
 
         <div class="grid grid-cols-2 gap-3">
           <mat-form-field class="w-full" subscriptSizing="dynamic">
-            <mat-label>UNP</mat-label>
+            <mat-label i18n="@@createClientUnpLabel">UNP</mat-label>
             <input formControlName="unp" matInput type="text" />
-            @if (form.controls.unp.hasError('required') && form.controls.unp.touched) {
-              <mat-error>UNP is required</mat-error>
+            <mat-hint i18n="@@createClientUnpHint">9 digits</mat-hint>
+            @if (form.controls.unp.hasError('pattern') && form.controls.unp.touched) {
+              <mat-error i18n="@@createClientUnpError">UNP must be 9 digits</mat-error>
             }
           </mat-form-field>
           <mat-form-field class="w-full" subscriptSizing="dynamic">
-            <mat-label>Phone</mat-label>
-            <input formControlName="phone" matInput type="tel" />
-            @if (form.controls.phone.hasError('required') && form.controls.phone.touched) {
-              <mat-error>Phone is required</mat-error>
-            }
+            <mat-label i18n="@@createClientOkpoLabel">OKPO</mat-label>
+            <input formControlName="okpo" matInput type="text" />
+          </mat-form-field>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <mat-form-field class="w-full" subscriptSizing="dynamic">
+            <mat-label i18n="@@createClientIbanLabel">IBAN</mat-label>
+            <input formControlName="iban" matInput type="text" />
+          </mat-form-field>
+          <mat-form-field class="w-full" subscriptSizing="dynamic">
+            <mat-label i18n="@@createClientBankNameLabel">Bank name</mat-label>
+            <input formControlName="bankName" matInput type="text" />
           </mat-form-field>
         </div>
 
         <mat-form-field class="w-full" subscriptSizing="dynamic">
-          <mat-label>Legal address</mat-label>
-          <input formControlName="legalAddress" matInput type="text" />
-          @if (
-            form.controls.legalAddress.hasError('required') && form.controls.legalAddress.touched
-          ) {
-            <mat-error>Legal address is required</mat-error>
-          }
+          <mat-label i18n="@@createClientBikLabel">BIK</mat-label>
+          <input formControlName="bik" matInput type="text" />
         </mat-form-field>
+      }
 
+      @if (type === ClientType.B2B_AGENT) {
+        <mat-form-field class="w-48" subscriptSizing="dynamic">
+          <mat-label i18n="@@createClientCommissionLabel">Agent commission, %</mat-label>
+          <input matInput type="number" [formControl]="commissionPctCtrl" />
+          <mat-hint i18n="@@createClientCommissionHint">Reference value</mat-hint>
+        </mat-form-field>
+      }
+
+      <div class="grid grid-cols-2 gap-3">
         <mat-form-field class="w-full" subscriptSizing="dynamic">
-          <mat-label>Contact person full name</mat-label>
-          <input formControlName="fullName" matInput type="text" />
-          @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
-            <mat-error>Contact person full name is required</mat-error>
+          <mat-label i18n="@@createClientPhoneLabel">Phone</mat-label>
+          <input formControlName="phone" matInput type="tel" />
+        </mat-form-field>
+        <mat-form-field class="w-full" subscriptSizing="dynamic">
+          <mat-label i18n="@@createClientEmailLabel">Email</mat-label>
+          <input formControlName="email" matInput type="email" />
+          @if (form.controls.email.hasError('email') && form.controls.email.touched) {
+            <mat-error i18n="@@createClientEmailError">Enter a valid email</mat-error>
           }
         </mat-form-field>
+      </div>
 
-        @if (selectedType === ClientType.B2B_AGENT) {
-          <div class="grid grid-cols-2 gap-3">
-            <mat-form-field class="w-full" subscriptSizing="dynamic">
-              <mat-label>Email</mat-label>
-              <input formControlName="email" matInput type="email" />
-              @if (form.controls.email.hasError('email') && form.controls.email.touched) {
-                <mat-error>Enter a valid email</mat-error>
-              }
-            </mat-form-field>
-            <mat-form-field class="w-full" subscriptSizing="dynamic">
-              <mat-label>Commission (%)</mat-label>
-              <input formControlName="commissionPct" matInput max="100" min="0" type="number" />
-            </mat-form-field>
-          </div>
-        } @else {
-          <mat-form-field class="w-full" subscriptSizing="dynamic">
-            <mat-label>Email</mat-label>
-            <input formControlName="email" matInput type="email" />
-            @if (form.controls.email.hasError('email') && form.controls.email.touched) {
-              <mat-error>Enter a valid email</mat-error>
-            }
+      <mat-form-field class="w-full" subscriptSizing="dynamic">
+        <mat-label i18n="@@createClientTelegramLabel">Telegram</mat-label>
+        <input
+          formControlName="telegramHandle"
+          matInput
+          i18n-placeholder="@@createClientTelegramPlaceholder"
+          placeholder="@username"
+          type="text"
+        />
+      </mat-form-field>
+
+      <mat-form-field class="w-full" subscriptSizing="dynamic">
+        <mat-label i18n="@@createClientNotesLabel">Notes</mat-label>
+        <textarea formControlName="notes" matInput rows="3"></textarea>
+      </mat-form-field>
+
+      <div class="flex flex-col gap-3">
+        <mat-checkbox formControlName="dataConsentGiven">
+          <span i18n="@@createClientDataConsentLabel">Personal data processing consent</span>
+        </mat-checkbox>
+        @if (consentGiven()) {
+          <mat-form-field class="w-48" subscriptSizing="dynamic">
+            <mat-label i18n="@@createClientConsentDateLabel">Consent date</mat-label>
+            <input formControlName="dataConsentDate" matInput type="date" />
           </mat-form-field>
         }
+      </div>
 
-        <div>
-          <button class="!pl-0" color="primary" mat-button type="button">+ Add contact</button>
-        </div>
-      }
     </form>
   }
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button mat-dialog-close matButton type="button">Cancel</button>
+  <button i18n="@@createClientCancelBtn" mat-dialog-close matButton type="button">Cancel</button>
   <button
     cdkFocusInitial
+    i18n="@@createClientSubmitBtn"
     matButton
     type="button"
-    [disabled]="form.invalid"
+    [disabled]="form.invalid || !selectedType()"
     (click)="createClient()"
   >
     Create client
