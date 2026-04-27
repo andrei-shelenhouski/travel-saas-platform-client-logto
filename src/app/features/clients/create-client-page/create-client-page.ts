@@ -39,7 +39,7 @@ export class CreateClientPageComponent {
     this.clientsService.create(dto).subscribe({
       next: (created) => {
         this.snackBar.open('Client created', 'Close', { duration: 3000 });
-        void this.router.navigate([created.id], { relativeTo: this.activatedRoute });
+        void this.router.navigate(['..', created.id], { relativeTo: this.activatedRoute });
       },
       error: (err) => {
         this.submitError.set(err.error?.message ?? err.message ?? 'Failed to create client');
