@@ -4,10 +4,12 @@ export type StatusBadgeVariant = 'lead' | 'offer' | 'generic';
 
 const LEAD_STATUS_CLASS: Record<string, string> = {
   NEW: 'bg-blue-100 text-blue-800',
-  CONTACTED: 'bg-amber-100 text-amber-800',
-  QUALIFIED: 'bg-cyan-100 text-cyan-800',
+  ASSIGNED: 'bg-amber-100 text-amber-800',
+  IN_PROGRESS: 'bg-cyan-100 text-cyan-800',
+  OFFER_SENT: 'bg-purple-100 text-purple-800',
+  WON: 'bg-green-100 text-green-800',
   LOST: 'bg-red-100 text-red-800',
-  CONVERTED: 'bg-green-100 text-green-800',
+  EXPIRED: 'bg-gray-100 text-gray-500',
 };
 
 const OFFER_STATUS_CLASS: Record<string, string> = {

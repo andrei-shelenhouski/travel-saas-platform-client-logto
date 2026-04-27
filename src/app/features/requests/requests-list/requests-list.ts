@@ -53,7 +53,11 @@ export class RequestsListComponent {
     this.router.navigate(['/app/requests', request.id]);
   }
 
-  formatDate(iso: string): string {
+  formatDate(iso: string | null): string {
+    if (!iso) {
+      return '—';
+    }
+
     try {
       return new Date(iso).toLocaleDateString(undefined, {
         dateStyle: 'medium',

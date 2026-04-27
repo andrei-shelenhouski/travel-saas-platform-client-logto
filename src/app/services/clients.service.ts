@@ -8,22 +8,25 @@ import { environment } from '@environments/environment';
 import type {
   ClientResponseDto,
   ClientType,
+  ContactResponseDto,
   CreateClientDto,
+  CreateContactDto,
   PaginatedClientResponseDto,
+  PaginatedInvoiceResponseDto,
+  PaginatedLeadResponseDto,
   UpdateClientDto,
+  UpdateContactDto,
 } from '@app/shared/models';
 
 const CLIENTS_URL = `${environment.baseUrl}/api/clients`;
 
-/**
- * Clients API. Aligned with openapi.json: GET/POST /api/clients, GET/PATCH/DELETE /api/clients/{id}.
- */
 @Injectable({ providedIn: 'root' })
 export class ClientsService {
   private readonly http = inject(HttpClient);
 
   getList(params?: {
     type?: ClientType;
+    search?: string;
     page?: number;
     limit?: number;
   }): Observable<PaginatedClientResponseDto> {
@@ -31,6 +34,10 @@ export class ClientsService {
 
     if (params?.type !== undefined) {
       httpParams = httpParams.set('type', params.type);
+    }
+
+    if (params?.search !== undefined && params.search.length >= 2) {
+      httpParams = httpParams.set('search', params.search);
     }
 
     if (params?.page !== undefined) {
@@ -53,10 +60,50 @@ export class ClientsService {
   }
 
   update(id: string, dto: UpdateClientDto): Observable<ClientResponseDto> {
-    return this.http.patch<ClientResponseDto>(`${CLIENTS_URL}/${id}`, dto);
+    return this.http.put<ClientResponseDto>(`${CLIENTS_URL}/${id}`, dto);
   }
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${CLIENTS_URL}/${id}`);
+  }
+
+  createContact(clientId: string, dto: CreateContactDto): Observable<ContactResponseDto> {
+    return this.http.post<ContactResponseDto>(`${CLIENTS_URL}/${clientId}/contacts`, dto);
+  }
+
+  updateContact(clientId: string, contactId: string, dto: UpdateContactDto): Observable<ContactResponseDto> {
+    return this.http.put<ContactResponseDto>(`${CLIENTS_URL}/${clientId}/contacts/${contactId}`, dto);
+  }
+
+  deleteContact(clientId: string, contactId: string): Observable<void> {
+    return this.http.delete<void>(`${CLIENTS_URL}/${clientId}/contacts/${contactId}`);
+  }
+
+  getLeads(clientId: string, params?: { page?: number; limit?: number }): Observable<PaginatedLeadResponseDto> {
+    let httpParams = new HttpParams();
+
+    if (params?.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
+    }
+
+    return this.http.get<PaginatedLeadResponseDto>(`${CLIENTS_URL}/${clientId}/leads`, { params: httpParams });
+  }
+
+  getInvoices(clientId: string, params?: { page?: number; limit?: number }): Observable<PaginatedInvoiceResponseDto> {
+    let httpParams = new HttpParams();
+
+    if (params?.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
+    }
+
+    return this.http.get<PaginatedInvoiceResponseDto>(`${CLIENTS_URL}/${clientId}/invoices`, { params: httpParams });
   }
 }

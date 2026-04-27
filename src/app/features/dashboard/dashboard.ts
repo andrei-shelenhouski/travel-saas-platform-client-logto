@@ -17,6 +17,9 @@ import { MAT_BUTTONS } from '@app/shared/material-imports';
   imports: [RouterLink, ...MAT_BUTTONS],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
+  host: {
+    class: 'p-4',
+  },
 })
 export class DashboardComponent {
   private readonly leadsService = inject(LeadsService);

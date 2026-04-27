@@ -4,7 +4,7 @@
     <a mat-button routerLink="/app/offers">Cancel</a>
   </header>
 
-  <p class="text-sm text-gray-600">Create an offer for a request (travel request). The offer will be created as draft.</p>
+  <p class="text-sm text-gray-600">Create an offer for a request. The offer will be created as draft.</p>
 
   @if (error()) {
     <p class="text-sm text-red-600">{{ error() }}</p>
@@ -17,7 +17,7 @@
         <mat-option value="">Select a request…</mat-option>
         @for (req of requests(); track req.id) {
           <mat-option [value]="req.id">
-            {{ req.destination }} — {{ req.startDate }} ({{ req.adults }} adults)
+            {{ req.destination }} — {{ req.departDate }} ({{ req.adults }} adults)
           </mat-option>
         }
       </mat-select>
@@ -31,27 +31,19 @@
         <mat-hint>Loading requests…</mat-hint>
       }
       @if (!requestsLoading() && requests().length === 0) {
-        <mat-hint class="!text-amber-700"
-          >No requests found. Create a request first (e.g. via API or requests screen).</mat-hint
-        >
+        <mat-hint class="!text-amber-700">No requests found. Create a request first.</mat-hint>
       }
-    </mat-form-field>
-
-    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-      <mat-label>Title</mat-label>
-      <input
-        formControlName="title"
-        id="title"
-        matInput
-        placeholder="e.g. Summer package 2025"
-        type="text"
-      />
     </mat-form-field>
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Final price</mat-label>
-        <input formControlName="finalPrice" id="finalPrice" matInput min="0" step="0.01" type="number" />
+        <mat-label>Language</mat-label>
+        <mat-select formControlName="language" id="language">
+          <mat-option value="en">English</mat-option>
+          <mat-option value="ru">Russian</mat-option>
+          <mat-option value="de">German</mat-option>
+          <mat-option value="pl">Polish</mat-option>
+        </mat-select>
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
         <mat-label>Currency</mat-label>
@@ -59,20 +51,47 @@
       </mat-form-field>
     </div>
 
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Supplier total</mat-label>
-        <input formControlName="supplierTotal" id="supplierTotal" matInput step="0.01" type="number" />
+        <mat-label>Destination</mat-label>
+        <input formControlName="destination" id="destination" matInput type="text" />
       </mat-form-field>
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Markup</mat-label>
-        <input formControlName="markup" id="markup" matInput step="0.01" type="number" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Commission</mat-label>
-        <input formControlName="commission" id="commission" matInput step="0.01" type="number" />
+        <mat-label>Departure city</mat-label>
+        <input formControlName="departureCity" id="departureCity" matInput type="text" />
       </mat-form-field>
     </div>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Depart date</mat-label>
+        <input formControlName="departDate" id="departDate" matInput type="date" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Return date</mat-label>
+        <input formControlName="returnDate" id="returnDate" matInput type="date" />
+      </mat-form-field>
+    </div>
+
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Adults</mat-label>
+        <input formControlName="adults" id="adults" matInput min="0" type="number" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Children</mat-label>
+        <input formControlName="children" id="children" matInput min="0" type="number" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Valid until</mat-label>
+        <input formControlName="validityDate" id="validityDate" matInput type="date" />
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-label>Internal notes</mat-label>
+      <textarea formControlName="internalNotes" id="internalNotes" matInput rows="3"></textarea>
+    </mat-form-field>
 
     <div class="flex flex-wrap gap-3 pt-2">
       <button

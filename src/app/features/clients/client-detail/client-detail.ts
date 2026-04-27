@@ -6,31 +6,34 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
 import { EMPTY } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 import { ActivitiesService } from '@app/services/activities.service';
 import { ClientsService } from '@app/services/clients.service';
 import { CommentsService } from '@app/services/comments.service';
 import { RequestsService } from '@app/services/requests.service';
 import { TagsService } from '@app/services/tags.service';
-import type { ClientResponseDto, RequestResponseDto } from '@app/shared/models';
-import { ClientType, EntityType } from '@app/shared/models';
-import type { ActivityTimelineItem } from '@app/shared/models';
-import type { CommentItem } from '@app/shared/models';
 import {
   ActivityTimelineComponent,
   CommentComponent,
   TagSelectorComponent,
 } from '@app/shared/components';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
+import { ClientType, EntityType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
+import type { ClientResponseDto, RequestResponseDto } from '@app/shared/models';
+import type { ActivityTimelineItem } from '@app/shared/models';
+import type { CommentItem } from '@app/shared/models';
 const TYPE_LABEL: Record<string, string> = {
   [ClientType.INDIVIDUAL]: 'Individual',
-  [ClientType.AGENT]: 'Agent',
+  [ClientType.COMPANY]: 'Company',
+  [ClientType.B2B_AGENT]: 'B2B Agent',
 };
 
 type ClientTab = 'overview' | 'requests' | 'activity' | 'comments';
@@ -44,12 +47,16 @@ type ClientTab = 'overview' | 'requests' | 'activity' | 'comments';
     TagSelectorComponent,
     CommentComponent,
     ...MAT_BUTTONS,
+    PageHeading,
   ],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
+  host: {
+    class: 'pv-4',
+  },
 })
 export class ClientDetailComponent {
-  private readonly route = inject(ActivatedRoute);
+  protected readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly clientsService = inject(ClientsService);
   private readonly requestsService = inject(RequestsService);
@@ -138,16 +145,7 @@ export class ClientDetailComponent {
   readonly typeLabel = TYPE_LABEL;
   readonly client = computed(() => this.data.value() ?? null);
   readonly loading = computed(() => this.data.isLoading());
-  readonly requests = computed(() => {
-    const list = this.requestsData.value() ?? [];
-    const clientId = this.client()?.id;
-
-    if (!clientId) {
-      return list;
-    }
-
-    return list.filter((r) => r.clientId === clientId);
-  });
+  readonly requests = computed(() => this.requestsData.value() ?? []);
   readonly requestsLoading = computed(() => this.requestsData.isLoading());
   readonly activitiesLoading = computed(() => this.activitiesData.isLoading());
   readonly commentsLoading = computed(() => this.commentsData.isLoading());
@@ -314,7 +312,11 @@ export class ClientDetailComponent {
     this.router.navigate(['/app/requests', req.id]);
   }
 
-  formatDate(iso: string): string {
+  formatDate(iso: string | null): string {
+    if (!iso) {
+      return '—';
+    }
+
     try {
       return new Date(iso).toLocaleString(undefined, {
         dateStyle: 'medium',
@@ -325,7 +327,11 @@ export class ClientDetailComponent {
     }
   }
 
-  formatDateShort(iso: string): string {
+  formatDateShort(iso: string | null): string {
+    if (!iso) {
+      return '—';
+    }
+
     try {
       return new Date(iso).toLocaleDateString(undefined, { dateStyle: 'medium' });
     } catch {

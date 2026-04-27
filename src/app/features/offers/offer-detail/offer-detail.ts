@@ -14,6 +14,8 @@ import { map } from 'rxjs/operators';
 
 import { getAllowedTransitions, OfferAction } from '@app/features/offers/offer-state-machine';
 import { OfferTimelineComponent } from '@app/features/offers/offer-timeline/offer-timeline';
+import { BookingsService } from '@app/services/bookings.service';
+import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
@@ -54,6 +56,8 @@ export class OfferDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly offersService = inject(OffersService);
+  private readonly bookingsService = inject(BookingsService);
+  private readonly leadsService = inject(LeadsService);
   private readonly requestsService = inject(RequestsService);
   private readonly toast = inject(ToastService);
   private readonly permissions = inject(PermissionService);
@@ -155,9 +159,32 @@ export class OfferDetailComponent {
         return;
       }
 
+      if (offer.total === undefined || offer.total === null) {
+        this.toast.showError('Offer total is required to create a booking');
+        this.actionLoading.set(false);
+
+        return;
+      }
+
+      const agreedPrice = offer.total;
+
       this.requestsService
         .getById(offer.requestId)
-        .pipe(switchMap((request) => this.offersService.convertToBooking(id, request.clientId)))
+        .pipe(
+          switchMap((request) => this.leadsService.findById(request.leadId)),
+          switchMap((lead) => {
+            if (!lead.clientId) {
+              throw new Error('Lead has no associated client');
+            }
+
+            return this.bookingsService.create({
+              offerId: id,
+              clientId: lead.clientId,
+              agreedPrice,
+              currency: offer.currency ?? 'EUR',
+            });
+          }),
+        )
         .subscribe({
           next: () => {
             this.toast.showSuccess('Booking created');

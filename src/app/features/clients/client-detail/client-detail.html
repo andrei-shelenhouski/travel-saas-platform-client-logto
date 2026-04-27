@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div>
   @if (loading()) {
     <div class="flex justify-center py-12">
       <div
@@ -9,17 +9,14 @@
   } @else {
     @let c = client();
     @if (c) {
-      <header
-        class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4"
-      >
-        <div class="min-w-0">
-          <h1 class="text-xl font-semibold text-gray-900">{{ c.name }}</h1>
-          <p class="mt-1 text-sm text-gray-500">{{ typeLabel[c.type] }} client</p>
-        </div>
-        <button color="primary" mat-flat-button type="button" (click)="createRequest()">
-          Create request
-        </button>
-      </header>
+      <app-page-heading [subtitle]="typeLabel[c.type]" [title]="c.companyName ?? c.fullName">
+        <a matButton routerLink="/app/clients">
+          <span aria-hidden="true" class="material-icons text-base">chevron_left</span>
+          <span>Back to clients</span>
+        </a>
+        <a matButton [relativeTo]="route" [routerLink]="['edit']">Edit client</a>
+        <button matButton="filled" type="button" (click)="createRequest()">Create request</button>
+      </app-page-heading>
 
       <!-- Tabs -->
       <nav aria-label="Client sections" class="flex gap-1 border-b border-gray-200">
@@ -83,10 +80,10 @@
                   <dd class="text-gray-900">{{ c.phone }}</dd>
                 </div>
               }
-              @if (c.comment) {
+              @if (c.notes) {
                 <div>
-                  <dt class="text-gray-500">Comment</dt>
-                  <dd class="whitespace-pre-wrap text-gray-900">{{ c.comment }}</dd>
+                  <dt class="text-gray-500">Notes</dt>
+                  <dd class="whitespace-pre-wrap text-gray-900">{{ c.notes }}</dd>
                 </div>
               }
               <div>
@@ -154,7 +151,8 @@
                         {{ req.destination }}
                       </td>
                       <td class="px-4 py-3 text-sm text-gray-600">
-                        {{ formatDateShort(req.startDate) }} – {{ formatDateShort(req.endDate) }}
+                        {{ formatDateShort(req.departDate) }} –
+                        {{ formatDateShort(req.returnDate) }}
                       </td>
                       <td class="px-4 py-3">
                         <span
@@ -204,13 +202,6 @@
           </div>
         }
       }
-
-      <div class="flex gap-3">
-        <a matButton="tonal" routerLink="/app/clients">
-          <span aria-hidden="true" class="material-icons text-base">chevron_left</span>
-          Back to clients
-        </a>
-      </div>
     } @else {
       <p class="text-gray-500">Client not found.</p>
     }

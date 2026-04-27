@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="p-4">
   <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
     <h1 class="text-xl font-semibold text-gray-900">Bookings</h1>
     <p class="text-sm text-gray-500 w-full">Created from accepted offers.</p>
@@ -24,7 +24,9 @@
     <table class="min-w-full divide-y divide-gray-200">
       <thead class="bg-gray-50">
         <tr>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Offer / Client</th>
+          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+            Offer / Client
+          </th>
           <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Price</th>
           <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
           <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
@@ -34,7 +36,10 @@
         @if (loading()) {
           <tr>
             <td class="px-4 py-12 text-center text-gray-500" colspan="4">
-              <div aria-hidden="true" class="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+              <div
+                aria-hidden="true"
+                class="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+              ></div>
             </td>
           </tr>
         } @else if (bookings().length === 0) {
@@ -45,12 +50,11 @@
           </tr>
         } @else {
           @for (b of bookings(); track b.id) {
-            <tr
-              class="cursor-pointer hover:bg-gray-50"
-              (click)="goToDetail(b)"
-            >
+            <tr class="cursor-pointer hover:bg-gray-50" (click)="goToDetail(b)">
               <td class="px-4 py-3 text-sm">
-                <span class="font-mono text-xs text-gray-500">Offer {{ b.offerId.slice(0, 8) }}…</span>
+                <span class="font-mono text-xs text-gray-500"
+                  >Offer {{ b.offerId.slice(0, 8) }}…</span
+                >
                 <span class="block text-gray-900">Client {{ b.clientId.slice(0, 8) }}…</span>
               </td>
               <td class="px-4 py-3 text-sm font-medium text-gray-900">

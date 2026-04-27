@@ -1,0 +1,11 @@
+@use '@angular/material' as mat;
+
+.client-filter-bar__form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+
+  > * {
+    width: 100%;
+  }
+}

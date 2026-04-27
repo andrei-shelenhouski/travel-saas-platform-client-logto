@@ -71,13 +71,6 @@ import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
       }
     </div>
   `,
-  styles: `
-    :host ::ng-deep .tag-selector-field .mat-mdc-form-field-infix {
-      padding-top: 8px;
-      padding-bottom: 8px;
-      min-height: 48px;
-    }
-  `,
 })
 export class TagSelectorComponent {
   readonly label = input<string>('');

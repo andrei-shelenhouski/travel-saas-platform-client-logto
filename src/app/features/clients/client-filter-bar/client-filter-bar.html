@@ -1,0 +1,27 @@
+<form class="client-filter-bar__form" [formGroup]="form">
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>Search</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
+    <input autocomplete="off" formControlName="search" matInput placeholder="Name, phone, email…" />
+    @if (form.controls.search.value) {
+      <button
+        aria-label="Clear search"
+        mat-icon-button
+        matSuffix
+        type="button"
+        (click)="clearSearch()"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    }
+  </mat-form-field>
+
+  <mat-form-field subscriptSizing="dynamic">
+    <mat-label>Type</mat-label>
+    <mat-select formControlName="type">
+      @for (opt of typeOptions; track opt.value) {
+        <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+</form>

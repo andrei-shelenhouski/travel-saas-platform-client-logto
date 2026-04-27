@@ -11,6 +11,713 @@
     }
   ],
   "paths": {
+    "/api/requests/{id}": {
+      "get": {
+        "tags": [
+          "travel-request-controller"
+        ],
+        "operationId": "findById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelRequestResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "travel-request-controller"
+        ],
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateTravelRequestRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TravelRequestResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "travel-request-controller"
+        ],
+        "operationId": "delete",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/offers/{id}": {
+      "get": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "findById_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "update_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOfferRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "delete_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/offers/{id}/status": {
+      "put": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOfferStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OfferResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leads/{id}": {
+      "get": {
+        "tags": [
+          "lead-controller"
+        ],
+        "operationId": "findById_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "lead-controller"
+        ],
+        "operationId": "update_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLeadRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "lead-controller"
+        ],
+        "operationId": "delete_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/leads/{id}/status": {
+      "put": {
+        "tags": [
+          "lead-controller"
+        ],
+        "operationId": "updateStatus_1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateLeadStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clients/{id}": {
+      "get": {
+        "tags": [
+          "client-controller"
+        ],
+        "operationId": "findById_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "client-controller"
+        ],
+        "operationId": "update_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateClientRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "client-controller"
+        ],
+        "operationId": "delete_3",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/clients/{id}/contacts/{contactId}": {
+      "put": {
+        "tags": [
+          "client-controller"
+        ],
+        "operationId": "updateContact",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "contactId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateContactRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "client-controller"
+        ],
+        "operationId": "deleteContact",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "contactId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
     "/api/webhook-subscriptions": {
       "get": {
         "tags": [
@@ -18,6 +725,17 @@
         ],
         "operationId": "list",
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -49,6 +767,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -79,6 +808,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -110,6 +850,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -154,6 +905,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "204": {
             "description": "No Content"
           }
@@ -176,21 +938,36 @@
             }
           },
           {
-            "name": "status",
+            "name": "leadId",
             "in": "query",
             "required": false,
             "schema": {
               "type": "string",
-              "enum": [
-                "DRAFT",
-                "IN_PROGRESS",
-                "WAITING_CLIENT",
-                "CLOSED"
-              ]
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "managerId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
             }
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -219,6 +996,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -249,6 +1037,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -269,6 +1068,17 @@
         ],
         "operationId": "listMembers",
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -300,6 +1110,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -320,6 +1141,17 @@
         ],
         "operationId": "list_3",
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -351,6 +1183,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -381,6 +1224,24 @@
             }
           },
           {
+            "name": "requestId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "leadId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
             "name": "status",
             "in": "query",
             "required": false,
@@ -395,9 +1256,29 @@
                 "EXPIRED"
               ]
             }
+          },
+          {
+            "name": "agentId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -426,6 +1307,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -439,12 +1331,12 @@
         }
       }
     },
-    "/api/offers/{id}/convert-to-booking": {
+    "/api/offers/{id}/revise": {
       "post": {
         "tags": [
           "offer-controller"
         ],
-        "operationId": "convertToBooking",
+        "operationId": "revise",
         "parameters": [
           {
             "name": "id",
@@ -454,20 +1346,22 @@
               "type": "string",
               "format": "uuid"
             }
-          },
-          {
-            "name": "clientId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
           }
         ],
         "responses": {
-          "200": {
-            "description": "OK",
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
             "content": {
               "*/*": {
                 "schema": {
@@ -496,6 +1390,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -524,6 +1429,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -555,6 +1471,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -585,6 +1512,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -613,6 +1551,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -643,6 +1592,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -673,6 +1633,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -720,6 +1691,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -751,6 +1733,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -776,11 +1769,22 @@
             "in": "query",
             "required": true,
             "schema": {
-              "$ref": "#/components/schemas/PageQuery"
+              "$ref": "#/components/schemas/ListClientsQuery"
             }
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -809,12 +1813,75 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/ClientResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clients/{id}/contacts": {
+      "post": {
+        "tags": [
+          "client-controller"
+        ],
+        "operationId": "createContact",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateContactRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ContactResponse"
                 }
               }
             }
@@ -853,6 +1920,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -881,6 +1959,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -928,6 +2017,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -957,145 +2057,23 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "201": {
             "description": "Created",
             "content": {
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/Activity"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/requests/{id}": {
-      "get": {
-        "tags": [
-          "travel-request-controller"
-        ],
-        "operationId": "findById",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/TravelRequestResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "travel-request-controller"
-        ],
-        "operationId": "delete",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "travel-request-controller"
-        ],
-        "operationId": "update",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTravelRequestRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/TravelRequestResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/requests/{id}/status": {
-      "patch": {
-        "tags": [
-          "travel-request-controller"
-        ],
-        "operationId": "updateStatus",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateTravelRequestStatusRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/TravelRequestResponse"
                 }
               }
             }
@@ -1131,6 +2109,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -1144,63 +2133,12 @@
         }
       }
     },
-    "/api/offers/{id}": {
-      "get": {
-        "tags": [
-          "offer-controller"
-        ],
-        "operationId": "findById_1",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/OfferResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "offer-controller"
-        ],
-        "operationId": "delete_1",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        }
-      },
+    "/api/leads/{id}/assign": {
       "patch": {
         "tags": [
-          "offer-controller"
+          "lead-controller"
         ],
-        "operationId": "update_1",
+        "operationId": "assign",
         "parameters": [
           {
             "name": "id",
@@ -1216,187 +2154,24 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UpdateOfferRequest"
+                "$ref": "#/components/schemas/AssignLeadRequest"
               }
             }
           },
           "required": true
         },
         "responses": {
-          "200": {
-            "description": "OK",
+          "409": {
+            "description": "Conflict",
             "content": {
               "*/*": {
                 "schema": {
-                  "$ref": "#/components/schemas/OfferResponse"
+                  "type": "object",
+                  "additionalProperties": {}
                 }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/offers/{id}/status": {
-      "patch": {
-        "tags": [
-          "offer-controller"
-        ],
-        "operationId": "updateStatus_1",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateOfferStatusRequest"
               }
             }
           },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/OfferResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/leads/{id}": {
-      "get": {
-        "tags": [
-          "lead-controller"
-        ],
-        "operationId": "findById_2",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LeadResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "lead-controller"
-        ],
-        "operationId": "delete_2",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "lead-controller"
-        ],
-        "operationId": "update_2",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateLeadRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/LeadResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/leads/{id}/status": {
-      "patch": {
-        "tags": [
-          "lead-controller"
-        ],
-        "operationId": "updateStatus_2",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateLeadStatusRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
           "200": {
             "description": "OK",
             "content": {
@@ -1415,7 +2190,7 @@
         "tags": [
           "invoice-controller"
         ],
-        "operationId": "findById_3",
+        "operationId": "findById_4",
         "parameters": [
           {
             "name": "id",
@@ -1428,6 +2203,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -1444,7 +2230,7 @@
         "tags": [
           "invoice-controller"
         ],
-        "operationId": "delete_3",
+        "operationId": "delete_4",
         "parameters": [
           {
             "name": "id",
@@ -1457,6 +2243,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "204": {
             "description": "No Content"
           }
@@ -1466,7 +2263,7 @@
         "tags": [
           "invoice-controller"
         ],
-        "operationId": "update_3",
+        "operationId": "update_4",
         "parameters": [
           {
             "name": "id",
@@ -1489,104 +2286,23 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/InvoiceResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/clients/{id}": {
-      "get": {
-        "tags": [
-          "client-controller"
-        ],
-        "operationId": "findById_4",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ClientResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "client-controller"
-        ],
-        "operationId": "delete_4",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "client-controller"
-        ],
-        "operationId": "update_4",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateClientRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ClientResponse"
                 }
               }
             }
@@ -1612,6 +2328,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -1641,6 +2368,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "204": {
             "description": "No Content"
           }
@@ -1673,6 +2411,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -1691,7 +2440,7 @@
         "tags": [
           "booking-controller"
         ],
-        "operationId": "updateStatus_3",
+        "operationId": "updateStatus_2",
         "parameters": [
           {
             "name": "id",
@@ -1714,6 +2463,17 @@
           "required": true
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -1745,6 +2505,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -1774,8 +2545,64 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "204": {
             "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/requests/{id}/offers": {
+      "get": {
+        "tags": [
+          "travel-request-controller"
+        ],
+        "operationId": "getOffers",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OfferResponse"
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -1787,6 +2614,17 @@
         ],
         "operationId": "stats",
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -1804,6 +2642,49 @@
         }
       }
     },
+    "/api/offers/{id}/pdf": {
+      "get": {
+        "tags": [
+          "offer-controller"
+        ],
+        "operationId": "pdf",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/offers/stats": {
       "get": {
         "tags": [
@@ -1811,6 +2692,17 @@
         ],
         "operationId": "stats_1",
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -1835,12 +2727,73 @@
         ],
         "operationId": "me",
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/UserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leads/{id}/activity": {
+      "get": {
+        "tags": [
+          "lead-controller"
+        ],
+        "operationId": "getActivity",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PageQuery"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseActivity"
                 }
               }
             }
@@ -1855,6 +2808,17 @@
         ],
         "operationId": "stats_2",
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -1890,6 +2854,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -1919,8 +2894,119 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "204": {
             "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/clients/{id}/leads": {
+      "get": {
+        "tags": [
+          "client-controller"
+        ],
+        "operationId": "leads",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PageQuery"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseLeadResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/clients/{id}/invoices": {
+      "get": {
+        "tags": [
+          "client-controller"
+        ],
+        "operationId": "invoices",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PageQuery"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseInvoiceResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -1932,6 +3018,17 @@
         ],
         "operationId": "stats_3",
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -1967,6 +3064,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -1998,6 +3106,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "204": {
             "description": "No Content"
           }
@@ -2039,6 +3158,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "204": {
             "description": "No Content"
           }
@@ -2063,6 +3193,17 @@
           }
         ],
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "204": {
             "description": "No Content"
           }
@@ -2072,6 +3213,809 @@
   },
   "components": {
     "schemas": {
+      "UpdateTravelRequestRequest": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string"
+          },
+          "departDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "children": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "managerId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      },
+      "TravelRequestResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "leadId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "managerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "managerName": {
+            "type": "string"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "departDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "children": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "QUOTED",
+              "CLOSED"
+            ]
+          },
+          "offersCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdById": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "AccommodationRequest": {
+        "type": "object",
+        "properties": {
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "hotelName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "roomType": {
+            "type": "string"
+          },
+          "mealPlan": {
+            "type": "string"
+          },
+          "checkinDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "checkoutDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "unitPrice": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "checkinDate",
+          "checkoutDate",
+          "hotelName",
+          "unitPrice"
+        ]
+      },
+      "ServiceItemRequest": {
+        "type": "object",
+        "properties": {
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "serviceType": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "unitPrice": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "serviceType",
+          "unitPrice"
+        ]
+      },
+      "UpdateOfferRequest": {
+        "type": "object",
+        "properties": {
+          "language": {
+            "type": "string"
+          },
+          "validityDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "departureCity": {
+            "type": "string"
+          },
+          "departDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "children": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "discountPct": {
+            "type": "number"
+          },
+          "discountAmount": {
+            "type": "number"
+          },
+          "internalNotes": {
+            "type": "string"
+          },
+          "accommodations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccommodationRequest"
+            }
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceItemRequest"
+            }
+          }
+        }
+      },
+      "AccommodationDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hotelName": {
+            "type": "string"
+          },
+          "roomType": {
+            "type": "string"
+          },
+          "mealPlan": {
+            "type": "string"
+          },
+          "checkinDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "checkoutDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        }
+      },
+      "OfferResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "requestId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "leadId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "previousVersionId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "number": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SENT",
+              "VIEWED",
+              "ACCEPTED",
+              "REJECTED",
+              "EXPIRED"
+            ]
+          },
+          "language": {
+            "type": "string"
+          },
+          "offerDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "validityDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "departDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "departureCity": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "internalNotes": {
+            "type": "string"
+          },
+          "adults": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "children": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "subtotal": {
+            "type": "number"
+          },
+          "discountAmount": {
+            "type": "number"
+          },
+          "discountPct": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "accommodations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccommodationDto"
+            }
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceItemDto"
+            }
+          },
+          "createdById": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ServiceItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sortOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "serviceType": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          }
+        }
+      },
+      "UpdateOfferStatusRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SENT",
+              "VIEWED",
+              "ACCEPTED",
+              "REJECTED",
+              "EXPIRED"
+            ]
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "UpdateLeadRequest": {
+        "type": "object",
+        "properties": {
+          "destination": {
+            "type": "string"
+          },
+          "departDateFrom": {
+            "type": "string",
+            "format": "date"
+          },
+          "departDateTo": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDateFrom": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDateTo": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "children": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "contactPhone": {
+            "type": "string"
+          },
+          "contactEmail": {
+            "type": "string"
+          }
+        }
+      },
+      "LeadResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "number": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "MANUAL",
+              "PHONE",
+              "EMAIL",
+              "WHATSAPP",
+              "TELEGRAM",
+              "WEBSITE",
+              "AGENT",
+              "OTHER"
+            ]
+          },
+          "clientId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clientName": {
+            "type": "string"
+          },
+          "clientType": {
+            "type": "string"
+          },
+          "contactPhone": {
+            "type": "string"
+          },
+          "contactEmail": {
+            "type": "string"
+          },
+          "companyName": {
+            "type": "string"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "departDateFrom": {
+            "type": "string",
+            "format": "date"
+          },
+          "departDateTo": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDateFrom": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDateTo": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "children": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "assignedAgentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "assignedAgentName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "ASSIGNED",
+              "IN_PROGRESS",
+              "OFFER_SENT",
+              "WON",
+              "LOST",
+              "EXPIRED"
+            ]
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdById": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "convertedToClientId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UpdateLeadStatusRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "NEW",
+              "ASSIGNED",
+              "IN_PROGRESS",
+              "OFFER_SENT",
+              "WON",
+              "LOST",
+              "EXPIRED"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "UpdateClientRequest": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 0
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 30,
+            "minLength": 0
+          },
+          "telegramHandle": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 0
+          },
+          "notes": {
+            "type": "string"
+          },
+          "companyName": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 0
+          },
+          "legalAddress": {
+            "type": "string"
+          },
+          "unp": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "okpo": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "iban": {
+            "type": "string",
+            "maxLength": 34,
+            "minLength": 0
+          },
+          "bankName": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "bik": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          }
+        }
+      },
+      "ClientResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "INDIVIDUAL",
+              "COMPANY",
+              "B2B_AGENT",
+              "AGENT"
+            ]
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "telegramHandle": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "companyName": {
+            "type": "string"
+          },
+          "legalAddress": {
+            "type": "string"
+          },
+          "unp": {
+            "type": "string"
+          },
+          "okpo": {
+            "type": "string"
+          },
+          "commissionPct": {
+            "type": "number"
+          },
+          "iban": {
+            "type": "string"
+          },
+          "bankName": {
+            "type": "string"
+          },
+          "bik": {
+            "type": "string"
+          },
+          "dataConsentGiven": {
+            "type": "boolean"
+          },
+          "dataConsentDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "contacts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContactResponse"
+            }
+          }
+        }
+      },
+      "ContactResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clientId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "primary": {
+            "type": "boolean"
+          }
+        }
+      },
+      "UpdateContactRequest": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 0
+          },
+          "role": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 0
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 30,
+            "minLength": 0
+          },
+          "isPrimary": {
+            "type": "boolean"
+          }
+        }
+      },
       "CreateWebhookRequest": {
         "type": "object",
         "properties": {
@@ -2171,23 +4115,18 @@
       "CreateTravelRequestRequest": {
         "type": "object",
         "properties": {
-          "clientId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "managerId": {
+          "leadId": {
             "type": "string",
             "format": "uuid"
           },
           "destination": {
-            "type": "string",
-            "minLength": 1
+            "type": "string"
           },
-          "startDate": {
+          "departDate": {
             "type": "string",
             "format": "date"
           },
-          "endDate": {
+          "returnDate": {
             "type": "string",
             "format": "date"
           },
@@ -2201,77 +4140,17 @@
             "format": "int32",
             "minimum": 0
           },
-          "comment": {
+          "notes": {
             "type": "string"
-          }
-        },
-        "required": [
-          "clientId",
-          "destination",
-          "endDate",
-          "managerId",
-          "startDate"
-        ]
-      },
-      "TravelRequestResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "organizationId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "clientId": {
-            "type": "string",
-            "format": "uuid"
           },
           "managerId": {
             "type": "string",
             "format": "uuid"
-          },
-          "destination": {
-            "type": "string"
-          },
-          "startDate": {
-            "type": "string",
-            "format": "date"
-          },
-          "endDate": {
-            "type": "string",
-            "format": "date"
-          },
-          "adults": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "children": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "comment": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "DRAFT",
-              "IN_PROGRESS",
-              "WAITING_CLIENT",
-              "CLOSED"
-            ]
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
           }
-        }
+        },
+        "required": [
+          "leadId"
+        ]
       },
       "CreateOrganizationRequest": {
         "type": "object",
@@ -2395,296 +4274,122 @@
             "type": "string",
             "format": "uuid"
           },
-          "title": {
+          "language": {
             "type": "string",
             "minLength": 1
           },
-          "source": {
+          "validityDate": {
             "type": "string",
-            "enum": [
-              "MANUAL",
-              "OSTROVOK"
-            ]
+            "format": "date"
           },
-          "supplierTotal": {
-            "type": "number"
-          },
-          "markup": {
-            "type": "number"
-          },
-          "commission": {
-            "type": "number"
-          },
-          "finalPrice": {
-            "type": "number"
-          },
-          "currency": {
-            "type": "string",
-            "minLength": 1
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/OfferItemRequest"
-            }
-          }
-        },
-        "required": [
-          "commission",
-          "currency",
-          "finalPrice",
-          "markup",
-          "requestId",
-          "source",
-          "supplierTotal",
-          "title"
-        ]
-      },
-      "OfferItemRequest": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "HOTEL",
-              "FLIGHT",
-              "TRANSFER",
-              "INSURANCE",
-              "SERVICE"
-            ]
-          },
-          "name": {
-            "type": "string",
-            "minLength": 1
-          },
-          "supplier": {
+          "destination": {
             "type": "string"
           },
-          "quantity": {
+          "departureCity": {
+            "type": "string"
+          },
+          "departDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
             "type": "integer",
             "format": "int32",
             "minimum": 1
           },
-          "unitPrice": {
-            "type": "number"
-          },
-          "totalPrice": {
-            "type": "number"
+          "children": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
           },
           "currency": {
             "type": "string",
             "minLength": 1
           },
-          "comment": {
+          "discountPct": {
+            "type": "number"
+          },
+          "discountAmount": {
+            "type": "number"
+          },
+          "internalNotes": {
             "type": "string"
+          },
+          "accommodations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AccommodationRequest"
+            }
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceItemRequest"
+            }
           }
         },
         "required": [
           "currency",
-          "name",
-          "totalPrice",
-          "type",
-          "unitPrice"
+          "language",
+          "requestId"
         ]
-      },
-      "ItemDto": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "HOTEL",
-              "FLIGHT",
-              "TRANSFER",
-              "INSURANCE",
-              "SERVICE"
-            ]
-          },
-          "name": {
-            "type": "string"
-          },
-          "supplier": {
-            "type": "string"
-          },
-          "currency": {
-            "type": "string"
-          },
-          "comment": {
-            "type": "string"
-          },
-          "quantity": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "unitPrice": {
-            "type": "number"
-          },
-          "totalPrice": {
-            "type": "number"
-          }
-        }
-      },
-      "OfferResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "organizationId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "requestId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "title": {
-            "type": "string"
-          },
-          "source": {
-            "type": "string",
-            "enum": [
-              "MANUAL",
-              "OSTROVOK"
-            ]
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "DRAFT",
-              "SENT",
-              "VIEWED",
-              "ACCEPTED",
-              "REJECTED",
-              "EXPIRED"
-            ]
-          },
-          "supplierTotal": {
-            "type": "number"
-          },
-          "markup": {
-            "type": "number"
-          },
-          "commission": {
-            "type": "number"
-          },
-          "finalPrice": {
-            "type": "number"
-          },
-          "currency": {
-            "type": "string"
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ItemDto"
-            }
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
       },
       "CreateLeadRequest": {
         "type": "object",
         "properties": {
-          "source": {
+          "clientId": {
             "type": "string",
-            "enum": [
-              "PHONE",
-              "EMAIL",
-              "WHATSAPP",
-              "TELEGRAM",
-              "WEBSITE",
-              "AGENT",
-              "OTHER"
-            ]
+            "format": "uuid"
           },
-          "contactName": {
-            "type": "string",
-            "minLength": 1
+          "clientType": {
+            "type": "string"
           },
-          "contactEmail": {
+          "clientName": {
             "type": "string"
           },
           "contactPhone": {
             "type": "string"
           },
-          "notes": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "contactName",
-          "source"
-        ]
-      },
-      "LeadResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "organizationId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "source": {
-            "type": "string",
-            "enum": [
-              "PHONE",
-              "EMAIL",
-              "WHATSAPP",
-              "TELEGRAM",
-              "WEBSITE",
-              "AGENT",
-              "OTHER"
-            ]
-          },
-          "contactName": {
-            "type": "string"
-          },
           "contactEmail": {
             "type": "string"
           },
-          "contactPhone": {
+          "destination": {
             "type": "string"
+          },
+          "departDateFrom": {
+            "type": "string",
+            "format": "date"
+          },
+          "departDateTo": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDateFrom": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDateTo": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "children": {
+            "type": "integer",
+            "format": "int32"
           },
           "notes": {
             "type": "string"
           },
-          "status": {
-            "type": "string",
-            "enum": [
-              "NEW",
-              "CONTACTED",
-              "QUALIFIED",
-              "LOST",
-              "CONVERTED"
-            ]
-          },
-          "convertedToClientId": {
+          "assignedAgentId": {
             "type": "string",
             "format": "uuid"
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
           }
         }
       },
@@ -2822,67 +4527,110 @@
             "type": "string",
             "enum": [
               "INDIVIDUAL",
+              "COMPANY",
+              "B2B_AGENT",
               "AGENT"
             ]
           },
-          "name": {
+          "fullName": {
             "type": "string",
-            "minLength": 1
-          },
-          "phone": {
-            "type": "string"
+            "maxLength": 200,
+            "minLength": 0
           },
           "email": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 30,
+            "minLength": 0
+          },
+          "telegramHandle": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 0
+          },
+          "notes": {
             "type": "string"
           },
-          "comment": {
+          "companyName": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 0
+          },
+          "legalAddress": {
             "type": "string"
+          },
+          "unp": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "okpo": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "iban": {
+            "type": "string",
+            "maxLength": 34,
+            "minLength": 0
+          },
+          "bankName": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "bik": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "commissionPct": {
+            "type": "number"
+          },
+          "dataConsentGiven": {
+            "type": "boolean"
           }
         },
         "required": [
-          "name",
+          "dataConsentGiven",
+          "fullName",
           "type"
         ]
       },
-      "ClientResponse": {
+      "CreateContactRequest": {
         "type": "object",
         "properties": {
-          "id": {
+          "fullName": {
             "type": "string",
-            "format": "uuid"
+            "maxLength": 200,
+            "minLength": 0
           },
-          "organizationId": {
+          "role": {
             "type": "string",
-            "format": "uuid"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "INDIVIDUAL",
-              "AGENT"
-            ]
-          },
-          "name": {
-            "type": "string"
-          },
-          "phone": {
-            "type": "string"
+            "maxLength": 80,
+            "minLength": 0
           },
           "email": {
-            "type": "string"
-          },
-          "comment": {
-            "type": "string"
-          },
-          "createdAt": {
             "type": "string",
-            "format": "date-time"
+            "maxLength": 120,
+            "minLength": 0
           },
-          "updatedAt": {
+          "phone": {
             "type": "string",
-            "format": "date-time"
+            "maxLength": 30,
+            "minLength": 0
+          },
+          "isPrimary": {
+            "type": "boolean"
           }
-        }
+        },
+        "required": [
+          "fullName"
+        ]
       },
       "CreateBookingRequest": {
         "type": "object",
@@ -2993,58 +4741,6 @@
           }
         }
       },
-      "UpdateTravelRequestRequest": {
-        "type": "object",
-        "properties": {
-          "clientId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "managerId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "destination": {
-            "type": "string"
-          },
-          "startDate": {
-            "type": "string",
-            "format": "date"
-          },
-          "endDate": {
-            "type": "string",
-            "format": "date"
-          },
-          "adults": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "children": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "comment": {
-            "type": "string"
-          }
-        }
-      },
-      "UpdateTravelRequestStatusRequest": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string",
-            "enum": [
-              "DRAFT",
-              "IN_PROGRESS",
-              "WAITING_CLIENT",
-              "CLOSED"
-            ]
-          }
-        },
-        "required": [
-          "status"
-        ]
-      },
       "UpdateMemberRoleRequest": {
         "type": "object",
         "properties": {
@@ -3061,99 +4757,16 @@
           "role"
         ]
       },
-      "UpdateOfferRequest": {
+      "AssignLeadRequest": {
         "type": "object",
         "properties": {
-          "title": {
-            "type": "string"
-          },
-          "supplierTotal": {
-            "type": "number"
-          },
-          "markup": {
-            "type": "number"
-          },
-          "commission": {
-            "type": "number"
-          },
-          "finalPrice": {
-            "type": "number"
-          },
-          "currency": {
-            "type": "string"
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/OfferItemRequest"
-            }
-          }
-        }
-      },
-      "UpdateOfferStatusRequest": {
-        "type": "object",
-        "properties": {
-          "status": {
+          "agentId": {
             "type": "string",
-            "enum": [
-              "DRAFT",
-              "SENT",
-              "VIEWED",
-              "ACCEPTED",
-              "REJECTED",
-              "EXPIRED"
-            ]
+            "format": "uuid"
           }
         },
         "required": [
-          "status"
-        ]
-      },
-      "UpdateLeadRequest": {
-        "type": "object",
-        "properties": {
-          "source": {
-            "type": "string",
-            "enum": [
-              "PHONE",
-              "EMAIL",
-              "WHATSAPP",
-              "TELEGRAM",
-              "WEBSITE",
-              "AGENT",
-              "OTHER"
-            ]
-          },
-          "contactName": {
-            "type": "string"
-          },
-          "contactEmail": {
-            "type": "string"
-          },
-          "contactPhone": {
-            "type": "string"
-          },
-          "notes": {
-            "type": "string"
-          }
-        }
-      },
-      "UpdateLeadStatusRequest": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string",
-            "enum": [
-              "NEW",
-              "CONTACTED",
-              "QUALIFIED",
-              "LOST",
-              "CONVERTED"
-            ]
-          }
-        },
-        "required": [
-          "status"
+          "agentId"
         ]
       },
       "UpdateInvoiceRequest": {
@@ -3183,30 +4796,6 @@
             ]
           },
           "pdfUrl": {
-            "type": "string"
-          }
-        }
-      },
-      "UpdateClientRequest": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": [
-              "INDIVIDUAL",
-              "AGENT"
-            ]
-          },
-          "name": {
-            "type": "string"
-          },
-          "phone": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "comment": {
             "type": "string"
           }
         }
@@ -3430,11 +5019,44 @@
             "type": "string",
             "enum": [
               "NEW",
-              "CONTACTED",
-              "QUALIFIED",
+              "ASSIGNED",
+              "IN_PROGRESS",
+              "OFFER_SENT",
+              "WON",
               "LOST",
-              "CONVERTED"
+              "EXPIRED"
             ]
+          },
+          "agentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clientType": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "MANUAL",
+              "PHONE",
+              "EMAIL",
+              "WHATSAPP",
+              "TELEGRAM",
+              "WEBSITE",
+              "AGENT",
+              "OTHER"
+            ]
+          },
+          "dateFrom": {
+            "type": "string",
+            "format": "date"
+          },
+          "dateTo": {
+            "type": "string",
+            "format": "date"
+          },
+          "search": {
+            "type": "string"
           }
         }
       },
@@ -3445,6 +5067,29 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/LeadResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "PaginatedResponseActivity": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Activity"
             }
           },
           "total": {
@@ -3507,6 +5152,39 @@
           }
         }
       },
+      "ListClientsQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 100,
+            "minimum": 1
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "INDIVIDUAL",
+              "COMPANY",
+              "B2B_AGENT",
+              "AGENT"
+            ]
+          },
+          "search": {
+            "type": "string"
+          },
+          "size": {
+            "type": "integer",
+            "format": "int32",
+            "writeOnly": true
+          }
+        }
+      },
       "PaginatedResponseClientResponse": {
         "type": "object",
         "properties": {
@@ -3537,29 +5215,6 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/BookingResponse"
-            }
-          },
-          "total": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "page": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "limit": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "PaginatedResponseActivity": {
-        "type": "object",
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Activity"
             }
           },
           "total": {

@@ -100,8 +100,15 @@ export const routes: Routes = [
       {
         path: 'clients/new',
         loadComponent: () =>
-          import('@app/features/clients/create-client/create-client').then(
-            (m) => m.CreateClientComponent,
+          import('@app/features/clients/create-client-page/create-client-page').then(
+            (m) => m.CreateClientPageComponent,
+          ),
+      },
+      {
+        path: 'clients/:id/edit',
+        loadComponent: () =>
+          import('@app/features/clients/edit-client-page/edit-client-page').then(
+            (m) => m.EditClientPageComponent,
           ),
       },
       {

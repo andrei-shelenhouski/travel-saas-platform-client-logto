@@ -17,11 +17,6 @@ import type {
 const OFFERS_URL = `${environment.baseUrl}/api/offers`;
 const OFFERS_STATS_URL = `${environment.baseUrl}/api/offers/stats`;
 
-/**
- * Offers API. All methods require Authorization + X-Organization-Id (interceptor).
- * Aligned with openapi.json: GET/POST /api/offers, GET/PATCH/DELETE /api/offers/{id},
- * PATCH /api/offers/{id}/status, POST /api/offers/{id}/convert-to-booking.
- */
 @Injectable({ providedIn: 'root' })
 export class OffersService {
   private readonly http = inject(HttpClient);
@@ -52,7 +47,7 @@ export class OffersService {
     return this.http.get<OfferResponseDto>(`${OFFERS_URL}/${id}`);
   }
 
-  /** GET /api/offers/stats. Returns counts by status (incl. DRAFT, SENT, VIEWED, ACCEPTED, REJECTED, EXPIRED). */
+  /** GET /api/offers/stats. Returns counts by status. */
   getStatistics(): Observable<Record<string, number>> {
     return this.http.get<Record<string, number>>(OFFERS_STATS_URL);
   }
@@ -61,27 +56,29 @@ export class OffersService {
     return this.http.post<OfferResponseDto>(OFFERS_URL, dto);
   }
 
+  /** PUT /api/offers/{id}. */
   update(id: string, dto: UpdateOfferDto): Observable<OfferResponseDto> {
-    return this.http.patch<OfferResponseDto>(`${OFFERS_URL}/${id}`, dto);
+    return this.http.put<OfferResponseDto>(`${OFFERS_URL}/${id}`, dto);
   }
 
-  /** Transition offer status. PATCH /api/offers/{id}/status with UpdateOfferStatusDto. */
+  /** PUT /api/offers/{id}/status. */
   setStatus(id: string, status: UpdateOfferStatusDto['status']): Observable<OfferResponseDto> {
     const body: UpdateOfferStatusDto = { status };
 
-    return this.http.patch<OfferResponseDto>(`${OFFERS_URL}/${id}/status`, body);
+    return this.http.put<OfferResponseDto>(`${OFFERS_URL}/${id}/status`, body);
   }
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${OFFERS_URL}/${id}`);
   }
 
-  /** Convert offer to booking. POST /api/offers/{id}/convert-to-booking?clientId=. Returns updated offer. */
-  convertToBooking(offerId: string, clientId: string): Observable<OfferResponseDto> {
-    return this.http.post<OfferResponseDto>(
-      `${OFFERS_URL}/${offerId}/convert-to-booking`,
-      {},
-      { params: { clientId } },
-    );
+  /** POST /api/offers/{id}/revise. Creates a new draft revision of the offer. */
+  revise(id: string): Observable<OfferResponseDto> {
+    return this.http.post<OfferResponseDto>(`${OFFERS_URL}/${id}/revise`, {});
+  }
+
+  /** GET /api/offers/{id}/pdf. Returns the offer PDF as a Blob. */
+  getPdf(id: string): Observable<Blob> {
+    return this.http.get(`${OFFERS_URL}/${id}/pdf`, { responseType: 'blob' });
   }
 }

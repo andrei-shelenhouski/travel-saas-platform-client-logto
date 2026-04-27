@@ -1,0 +1,7 @@
+<app-client-form
+  [mode]="'create'"
+  [saving]="saving()"
+  [submitError]="submitError()"
+  (cancelled)="cancel()"
+  (createSubmitted)="onCreateSubmitted($event)"
+/>
