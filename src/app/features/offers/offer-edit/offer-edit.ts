@@ -4,10 +4,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { OffersService } from '@app/services/offers.service';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
-import { ToastService } from '@app/shared/services/toast.service';
-import type { OfferResponseDto, UpdateOfferDto } from '@app/shared/models';
 import { OfferStatus } from '@app/shared/models';
+import { ToastService } from '@app/shared/services/toast.service';
 
+import type { OfferResponseDto, UpdateOfferDto } from '@app/shared/models';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-offer-edit',
@@ -96,7 +96,7 @@ export class OfferEditComponent implements OnInit {
       ...(v.departDate && { departDate: v.departDate }),
       ...(v.returnDate && { returnDate: v.returnDate }),
       ...(v.adults > 0 && { adults: v.adults }),
-      ...(v.children > 0 && { children: v.children }),
+      children: v.children,
       ...(v.validityDate && { validityDate: v.validityDate }),
       ...(v.internalNotes?.trim() && { internalNotes: v.internalNotes.trim() }),
     };
