@@ -116,7 +116,9 @@ describe('CreateClientPageComponent', () => {
 
     expect(clientsService.create).toHaveBeenCalledWith(dto);
     expect(snackBar.open).toHaveBeenCalledWith('Client created', 'Close', { duration: 3000 });
-    expect(navigateSpy).toHaveBeenCalledWith(['client-99'], { relativeTo: expect.any(Object) });
+    expect(navigateSpy).toHaveBeenCalledWith(['..', 'client-99'], {
+      relativeTo: expect.any(Object),
+    });
     expect(component.saving()).toBe(false);
   });
 
