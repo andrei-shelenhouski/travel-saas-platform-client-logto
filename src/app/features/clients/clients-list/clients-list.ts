@@ -9,15 +9,13 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import { take } from 'rxjs';
 
 import { ClientsService } from '@app/services/clients.service';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
@@ -38,26 +36,31 @@ const PAGE_SIZE = 20;
     ...MAT_BUTTONS,
     MatPaginatorModule,
     MatProgressSpinnerModule,
+    MatSidenavModule,
     MatTableModule,
     ClientFilterBarComponent,
     ClientTypeBadgeComponent,
     MatIcon,
     DatePipe,
+    CreateClientComponent,
   ],
   templateUrl: './clients-list.html',
   styleUrl: './clients-list.scss',
+  host: {
+    class: 'flex h-full',
+  },
 })
 export class ClientsListComponent {
   private readonly clientsService = inject(ClientsService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
 
   readonly pageSize = PAGE_SIZE;
 
   readonly activeFilter = signal<ClientFilterValue>({ type: 'ALL', search: '' });
   readonly currentPage = signal(0);
+  readonly createDrawerOpened = signal(false);
 
   private readonly data = rxResource({
     params: () => ({
@@ -142,19 +145,17 @@ export class ClientsListComponent {
     this.router.navigate([id], { relativeTo: this.activatedRoute });
   }
 
-  addClient(): void {
-    const dialog = this.dialog.open<CreateClientComponent>(CreateClientComponent, {
-      width: '600px',
-    });
+  openCreateClientDrawer(): void {
+    this.createDrawerOpened.set(true);
+  }
 
-    dialog
-      .afterClosed()
-      .pipe(take(1))
-      .subscribe((result) => {
-        if (result) {
-          this.sendAddClientRequest(result);
-        }
-      });
+  closeCreateClientDrawer(): void {
+    this.createDrawerOpened.set(false);
+  }
+
+  onCreateClientSubmitted(dto: CreateClientDto): void {
+    this.closeCreateClientDrawer();
+    this.sendAddClientRequest(dto);
   }
 
   private sendAddClientRequest(dto: CreateClientDto): void {

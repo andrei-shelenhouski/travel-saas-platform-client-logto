@@ -1,27 +1,26 @@
-<h2 i18n="@@createClientDialogTitle" mat-dialog-title>Create client</h2>
+<h2 class="mb-4 text-xl font-semibold text-gray-900" i18n="@@createClientDialogTitle">
+  Create client
+</h2>
 
-<mat-dialog-content>
-  <div class="mb-5 flex flex-col gap-2">
-    <div class="text-sm text-gray-500" i18n="@@createClientSelectTypeLabel">Select client type:</div>
-    <div class="grid grid-cols-3 gap-3">
-      @for (opt of typeOptions; track opt.value) {
-        <button
-          class="type-card"
-          type="button"
-          [class.selected]="selectedType() === opt.value"
-          (click)="selectType(opt.value)"
-        >
-          <mat-icon>{{ opt.icon }}</mat-icon>
-          <span class="type-card-label">{{ opt.label }}</span>
-          <span class="type-card-sublabel">{{ opt.subLabel }}</span>
-        </button>
-      }
-    </div>
+<div class="mb-5 flex flex-1 flex-col gap-4">
+  <div class="text-sm text-gray-500" i18n="@@createClientSelectTypeLabel">Select client type:</div>
+  <div class="grid grid-cols-3 gap-3">
+    @for (opt of typeOptions; track opt.value) {
+      <button
+        class="type-card"
+        type="button"
+        [class.selected]="selectedType() === opt.value"
+        (click)="selectType(opt.value)"
+      >
+        <mat-icon>{{ opt.icon }}</mat-icon>
+        <span class="type-card-label">{{ opt.label }}</span>
+        <span class="type-card-sublabel">{{ opt.subLabel }}</span>
+      </button>
+    }
   </div>
 
   @if (selectedType(); as type) {
     <form class="flex flex-col gap-4" [formGroup]="form">
-
       @if (type === ClientType.INDIVIDUAL) {
         <mat-form-field class="w-full" subscriptSizing="dynamic">
           <mat-label i18n="@@createClientFullNameLabel">Full name</mat-label>
@@ -49,7 +48,9 @@
           @if (
             form.controls.legalAddress.hasError('required') && form.controls.legalAddress.touched
           ) {
-            <mat-error i18n="@@createClientLegalAddressRequired">Legal address is required</mat-error>
+            <mat-error i18n="@@createClientLegalAddressRequired"
+              >Legal address is required</mat-error
+            >
           }
         </mat-form-field>
 
@@ -57,7 +58,9 @@
           <mat-label i18n="@@createClientContactPersonLabel">Contact person</mat-label>
           <input formControlName="fullName" matInput type="text" />
           @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
-            <mat-error i18n="@@createClientContactPersonRequired">Contact person is required</mat-error>
+            <mat-error i18n="@@createClientContactPersonRequired"
+              >Contact person is required</mat-error
+            >
           }
         </mat-form-field>
 
@@ -120,8 +123,8 @@
         <input
           formControlName="telegramHandle"
           matInput
-          i18n-placeholder="@@createClientTelegramPlaceholder"
           placeholder="@username"
+          i18n-placeholder="@@createClientTelegramPlaceholder"
           type="text"
         />
       </mat-form-field>
@@ -142,21 +145,22 @@
           </mat-form-field>
         }
       </div>
-
     </form>
   }
-</mat-dialog-content>
+</div>
 
-<mat-dialog-actions>
-  <button i18n="@@createClientCancelBtn" mat-dialog-close matButton type="button">Cancel</button>
+<div class="mt-6 mb-3 flex justify-end gap-2">
+  <button i18n="@@createClientCancelBtn" matButton type="button" (click)="cancelCreateClient()">
+    Cancel
+  </button>
   <button
     cdkFocusInitial
     i18n="@@createClientSubmitBtn"
-    matButton
+    matButton="filled"
     type="button"
     [disabled]="form.invalid || !selectedType()"
     (click)="createClient()"
   >
     Create client
   </button>
-</mat-dialog-actions>
+</div>

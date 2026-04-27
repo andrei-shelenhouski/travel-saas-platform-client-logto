@@ -1,53 +1,55 @@
-<div class="flex flex-wrap items-center justify-between gap-4 mb-4">
-  <div class="flex flex-wrap items-center gap-3">
-    <h2 class="text-lg font-semibold text-gray-900">Leads</h2>
-    <mat-button-toggle-group appearance="standard" hideSingleSelectionIndicator value="list">
-      <mat-button-toggle routerLink="/app/leads" value="list">List</mat-button-toggle>
-      <mat-button-toggle routerLink="/app/leads/kanban" value="kanban">Kanban</mat-button-toggle>
-    </mat-button-toggle-group>
+<div class="p-4">
+  <div class="flex flex-wrap items-center justify-between gap-4 mb-4">
+    <div class="flex flex-wrap items-center gap-3">
+      <h2 class="text-lg font-semibold text-gray-900">Leads</h2>
+      <mat-button-toggle-group appearance="standard" hideSingleSelectionIndicator value="list">
+        <mat-button-toggle routerLink="/app/leads" value="list">List</mat-button-toggle>
+        <mat-button-toggle routerLink="/app/leads/kanban" value="kanban">Kanban</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+    <div class="flex gap-2">
+      <a matButton="tonal" routerLink="/app/offers/new">Create offer</a>
+      <a color="primary" matButton="filled" routerLink="/app/leads/new">Create lead</a>
+    </div>
   </div>
-  <div class="flex gap-2">
-    <a matButton="tonal" routerLink="/app/offers/new">Create offer</a>
-    <a color="primary" matButton="filled" routerLink="/app/leads/new">Create lead</a>
-  </div>
-</div>
-@if (error()) {
-  <p class="mb-4 text-sm text-red-600">{{ error() }}</p>
-}
-<div class="rounded border border-gray-200 bg-white overflow-hidden">
-  <table class="min-w-full divide-y divide-gray-200">
-    <thead class="bg-gray-50">
-      <tr>
-        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Contact</th>
-        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Notes</th>
-      </tr>
-    </thead>
-    <tbody class="divide-y divide-gray-200">
-      @if (loading()) {
+  @if (error()) {
+    <p class="mb-4 text-sm text-red-600">{{ error() }}</p>
+  }
+  <div class="rounded border border-gray-200 bg-white overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
         <tr>
-          <td class="px-4 py-8 text-center text-gray-500" colspan="3">Loading…</td>
+          <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Contact</th>
+          <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
+          <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Notes</th>
         </tr>
-      } @else {
-        @for (lead of leads(); track lead.id) {
-          <tr class="cursor-pointer hover:bg-gray-50" (click)="goToDetail(lead)">
-            <td class="px-4 py-3 text-sm text-gray-900">
-              <span class="font-medium">{{ lead.clientName }}</span>
-              @if (lead.contactEmail || lead.contactPhone) {
-                <span class="block text-gray-500 text-xs mt-0.5">
-                  {{ lead.contactEmail ?? lead.contactPhone }}
-                </span>
-              }
-            </td>
-            <td class="px-4 py-3 text-sm text-gray-600">{{ lead.status }}</td>
-            <td class="px-4 py-3 text-sm text-gray-600">{{ lead.notes ?? '—' }}</td>
-          </tr>
-        } @empty {
+      </thead>
+      <tbody class="divide-y divide-gray-200">
+        @if (loading()) {
           <tr>
-            <td class="px-4 py-8 text-center text-gray-500" colspan="3">No leads yet.</td>
+            <td class="px-4 py-8 text-center text-gray-500" colspan="3">Loading…</td>
           </tr>
+        } @else {
+          @for (lead of leads(); track lead.id) {
+            <tr class="cursor-pointer hover:bg-gray-50" (click)="goToDetail(lead)">
+              <td class="px-4 py-3 text-sm text-gray-900">
+                <span class="font-medium">{{ lead.clientName }}</span>
+                @if (lead.contactEmail || lead.contactPhone) {
+                  <span class="block text-gray-500 text-xs mt-0.5">
+                    {{ lead.contactEmail ?? lead.contactPhone }}
+                  </span>
+                }
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-600">{{ lead.status }}</td>
+              <td class="px-4 py-3 text-sm text-gray-600">{{ lead.notes ?? '—' }}</td>
+            </tr>
+          } @empty {
+            <tr>
+              <td class="px-4 py-8 text-center text-gray-500" colspan="3">No leads yet.</td>
+            </tr>
+          }
         }
-      }
-    </tbody>
-  </table>
+      </tbody>
+    </table>
+  </div>
 </div>

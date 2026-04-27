@@ -30,7 +30,7 @@
   </mat-drawer>
 
   <mat-drawer-content>
-    <div class="flex min-w-0 flex-1 flex-col">
+    <div class="flex h-full flex-col">
       <header class="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4">
         <button
           #orgMenuTrigger="matMenuTrigger"
@@ -119,7 +119,7 @@
           </button>
         </div>
       </header>
-      <main class="flex-1 overflow-auto p-4">
+      <main class="flex flex-col flex-1 overflow-auto">
         @for (reloadKey of [outletReloadKey()]; track reloadKey) {
           <router-outlet />
         }

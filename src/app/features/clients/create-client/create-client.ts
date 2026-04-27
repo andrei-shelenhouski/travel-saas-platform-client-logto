@@ -3,13 +3,13 @@ import {
   Component,
   effect,
   inject,
+  output,
   signal,
   untracked,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
@@ -36,19 +36,18 @@ const TYPE_OPTIONS: TypeOption[] = [
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-client',
-  imports: [
-    MatCheckboxModule,
-    MatDialogModule,
-    MatIconModule,
-    ReactiveFormsModule,
-    ...MAT_FORM_BUTTONS,
-  ],
+  imports: [MatCheckboxModule, MatIconModule, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
   templateUrl: './create-client.html',
   styleUrl: './create-client.scss',
+  host: {
+    class: 'flex flex-col h-full',
+  },
 })
 export class CreateClientComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly dialogRef = inject(MatDialogRef<CreateClientComponent>);
+
+  readonly cancelled = output<void>();
+  readonly submitted = output<CreateClientDto>();
 
   readonly ClientType = ClientType;
   readonly typeOptions = TYPE_OPTIONS;
@@ -60,8 +59,8 @@ export class CreateClientComponent {
     email: ['', Validators.email],
     telegramHandle: [''],
     notes: [''],
-    dataConsentGiven: [false],
-    dataConsentDate: [''],
+    dataConsentGiven: [false, Validators.requiredTrue],
+    dataConsentDate: ['', Validators.required],
     companyName: [''],
     legalAddress: [''],
     unp: ['', Validators.pattern(/^\d{9}$/)],
@@ -105,6 +104,10 @@ export class CreateClientComponent {
 
     companyName.updateValueAndValidity({ emitEvent: false });
     legalAddress.updateValueAndValidity({ emitEvent: false });
+  }
+
+  cancelCreateClient(): void {
+    this.cancelled.emit();
   }
 
   createClient(): void {
@@ -170,6 +173,6 @@ export class CreateClientComponent {
       }
     }
 
-    this.dialogRef.close(dto);
+    this.submitted.emit(dto);
   }
 }
