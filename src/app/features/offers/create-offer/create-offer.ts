@@ -6,9 +6,7 @@ import { RequestsService } from '@app/services/requests.service';
 import { OffersService } from '@app/services/offers.service';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ToastService } from '@app/shared/services/toast.service';
-import type { CreateOfferDto } from '@app/shared/models';
-import { OfferSource } from '@app/shared/models';
-import type { RequestResponseDto } from '@app/shared/models';
+import type { CreateOfferDto, RequestResponseDto } from '@app/shared/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -32,12 +30,16 @@ export class CreateOfferComponent implements OnInit {
 
   readonly form = this.fb.nonNullable.group({
     selectedRequestId: ['', Validators.required],
-    title: [''],
-    supplierTotal: [0],
-    markup: [0],
-    commission: [0],
-    finalPrice: [0],
-    currency: ['EUR'],
+    language: ['en', Validators.required],
+    currency: ['EUR', Validators.required],
+    destination: [''],
+    departureCity: [''],
+    departDate: [''],
+    returnDate: [''],
+    adults: [1],
+    children: [0],
+    validityDate: [''],
+    internalNotes: [''],
   });
 
   ngOnInit(): void {
@@ -66,13 +68,16 @@ export class CreateOfferComponent implements OnInit {
     const v = this.form.getRawValue();
     const dto: CreateOfferDto = {
       requestId,
-      title: v.title.trim() || 'Offer',
-      source: OfferSource.MANUAL,
-      supplierTotal: v.supplierTotal,
-      markup: v.markup,
-      commission: v.commission,
-      finalPrice: v.finalPrice,
+      language: v.language,
       currency: v.currency.trim(),
+      ...(v.destination?.trim() && { destination: v.destination.trim() }),
+      ...(v.departureCity?.trim() && { departureCity: v.departureCity.trim() }),
+      ...(v.departDate && { departDate: v.departDate }),
+      ...(v.returnDate && { returnDate: v.returnDate }),
+      ...(v.adults > 0 && { adults: v.adults }),
+      ...(v.children > 0 && { children: v.children }),
+      ...(v.validityDate && { validityDate: v.validityDate }),
+      ...(v.internalNotes?.trim() && { internalNotes: v.internalNotes.trim() }),
     };
     this.offersService.create(dto).subscribe({
       next: (created) => {
@@ -81,6 +86,7 @@ export class CreateOfferComponent implements OnInit {
       },
       error: (err) => {
         this.error.set(err.error?.message ?? err.message ?? 'Failed to create offer');
+        this.saving.set(false);
       },
       complete: () => this.saving.set(false),
     });

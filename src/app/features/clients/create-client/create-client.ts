@@ -48,7 +48,7 @@ export class CreateClientComponent {
     this.saving.set(true);
     const dto: CreateClientDto = {
       type: v.type,
-      fullName: v.fullName.trim() || undefined,
+      fullName: v.fullName.trim(),
       companyName: v.companyName.trim() || undefined,
       dataConsentGiven: false,
     };

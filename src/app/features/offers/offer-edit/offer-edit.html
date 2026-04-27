@@ -13,31 +13,67 @@
       <p class="text-sm text-red-600">{{ error() }}</p>
     }
     <form class="max-w-xl flex flex-col gap-4" [formGroup]="form" (ngSubmit)="onSubmit()">
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Title</mat-label>
-        <input formControlName="title" id="title" matInput required type="text" />
-        @if (form.controls.title.hasError('required') && form.controls.title.touched) {
-          <mat-error>Required</mat-error>
-        }
-      </mat-form-field>
       <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-          <mat-label>Final price</mat-label>
-          <input formControlName="finalPrice" id="finalPrice" matInput step="0.01" type="number" />
+          <mat-label>Language</mat-label>
+          <mat-select formControlName="language" id="language">
+            <mat-option value="en">English</mat-option>
+            <mat-option value="ru">Russian</mat-option>
+            <mat-option value="de">German</mat-option>
+            <mat-option value="pl">Polish</mat-option>
+          </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
           <mat-label>Currency</mat-label>
-          <input formControlName="currency" id="currency" matInput type="text" />
+          <input formControlName="currency" id="currency" matInput required type="text" />
+          @if (form.controls.currency.hasError('required') && form.controls.currency.touched) {
+            <mat-error>Required</mat-error>
+          }
         </mat-form-field>
       </div>
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-label>Destination</mat-label>
+          <input formControlName="destination" id="destination" matInput type="text" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-label>Departure city</mat-label>
+          <input formControlName="departureCity" id="departureCity" matInput type="text" />
+        </mat-form-field>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-label>Depart date</mat-label>
+          <input formControlName="departDate" id="departDate" matInput type="date" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-label>Return date</mat-label>
+          <input formControlName="returnDate" id="returnDate" matInput type="date" />
+        </mat-form-field>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-label>Adults</mat-label>
+          <input formControlName="adults" id="adults" matInput min="0" type="number" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-label>Children</mat-label>
+          <input formControlName="children" id="children" matInput min="0" type="number" />
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-label>Valid until</mat-label>
+          <input formControlName="validityDate" id="validityDate" matInput type="date" />
+        </mat-form-field>
+      </div>
+
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Valid until</mat-label>
-        <input formControlName="validUntil" id="validUntil" matInput type="date" />
+        <mat-label>Internal notes</mat-label>
+        <textarea formControlName="internalNotes" id="internalNotes" matInput rows="4"></textarea>
       </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Description</mat-label>
-        <textarea formControlName="description" id="description" matInput rows="4"></textarea>
-      </mat-form-field>
+
       <div class="flex flex-wrap gap-3">
         <button color="primary" mat-flat-button type="submit" [disabled]="saving() || form.invalid">
           @if (saving()) {

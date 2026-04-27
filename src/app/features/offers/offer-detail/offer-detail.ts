@@ -14,6 +14,7 @@ import { map } from 'rxjs/operators';
 
 import { getAllowedTransitions, OfferAction } from '@app/features/offers/offer-state-machine';
 import { OfferTimelineComponent } from '@app/features/offers/offer-timeline/offer-timeline';
+import { BookingsService } from '@app/services/bookings.service';
 import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
@@ -55,6 +56,7 @@ export class OfferDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly offersService = inject(OffersService);
+  private readonly bookingsService = inject(BookingsService);
   private readonly leadsService = inject(LeadsService);
   private readonly requestsService = inject(RequestsService);
   private readonly toast = inject(ToastService);
@@ -166,7 +168,12 @@ export class OfferDetailComponent {
               throw new Error('Lead has no associated client');
             }
 
-            return this.offersService.convertToBooking(id, lead.clientId);
+            return this.bookingsService.create({
+              offerId: id,
+              clientId: lead.clientId,
+              agreedPrice: offer.total ?? 0,
+              currency: offer.currency ?? 'EUR',
+            });
           }),
         )
         .subscribe({
