@@ -1,10 +1,10 @@
 <div class="space-y-4">
   <header class="flex flex-wrap items-center justify-between gap-4 pb-2">
     <h1 class="text-xl font-semibold text-gray-900" i18n="@@clientsListTitle">Clients</h1>
-    <a color="primary" mat-flat-button routerLink="/app/clients/new">
+    <button color="primary" mat-flat-button type="button" (click)="addClient()">
       <mat-icon>add</mat-icon>
       <span i18n="@@clientsListNewClientCta">New Client</span>
-    </a>
+    </button>
   </header>
 
   <app-client-filter-bar class="m-4" (filterChange)="onFilterChange($event)" />
@@ -79,15 +79,17 @@
                 diameter="36"
               />
             } @else {
-              <p i18n="@@clientsListNoData">Ooooops, no clients found. Try adjusting your filters.</p>
+              <p i18n="@@clientsListNoData">
+                Ooooops, no clients found. Try adjusting your filters.
+              </p>
 
               <span class="or-divider" i18n="@@clientsListOrDivider">or</span>
 
               <div>
-                <a color="primary" matButton="outlined" routerLink="/app/clients/new">
+                <button color="primary" matButton="outlined" type="button" (click)="addClient()">
                   <mat-icon>add</mat-icon>
                   <span i18n="@@clientsListNewClientCta">New Client</span>
-                </a>
+                </button>
               </div>
             }
           </div>

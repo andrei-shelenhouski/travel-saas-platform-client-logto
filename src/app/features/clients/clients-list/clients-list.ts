@@ -9,27 +9,31 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+
+import { take } from 'rxjs';
 
 import { ClientsService } from '@app/services/clients.service';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
 
+import { CreateClientComponent } from '../create-client/create-client';
 import { ClientFilterBarComponent, ClientFilterValue } from './client-filter-bar/client-filter-bar';
 import { ClientTypeBadgeComponent } from './client-type-badge/client-type-badge';
 
-import type { ClientResponseDto } from '@app/shared/models';
+import type { ClientResponseDto, CreateClientDto } from '@app/shared/models';
 const PAGE_SIZE = 20;
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-clients-list',
   imports: [
-    RouterLink,
     ...MAT_BUTTONS,
     MatPaginatorModule,
     MatProgressSpinnerModule,
@@ -46,6 +50,8 @@ export class ClientsListComponent {
   private readonly clientsService = inject(ClientsService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
 
   readonly pageSize = PAGE_SIZE;
 
@@ -133,5 +139,36 @@ export class ClientsListComponent {
 
   navigateToClient(id: string): void {
     this.router.navigate([id], { relativeTo: this.activatedRoute });
+  }
+
+  addClient(): void {
+    const dialog = this.dialog.open<CreateClientComponent>(CreateClientComponent, {
+      width: '600px',
+    });
+
+    dialog
+      .afterClosed()
+      .pipe(take(1))
+      .subscribe((result) => {
+        if (result) {
+          this.sendAddClientRequest(result);
+        }
+      });
+  }
+
+  private sendAddClientRequest(dto: CreateClientDto): void {
+    this.clientsService.create(dto).subscribe({
+      next: (created) => {
+        this.snackBar.open('Client created', 'Close', { duration: 3000 });
+        this.router.navigate([created.id], { relativeTo: this.activatedRoute });
+      },
+      error: (err) => {
+        this.snackBar.open(
+          err.error?.message ?? err.message ?? 'Failed to create client',
+          'Close',
+          { duration: 5000 },
+        );
+      },
+    });
   }
 }

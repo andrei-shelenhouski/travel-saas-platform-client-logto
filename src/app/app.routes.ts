@@ -98,13 +98,6 @@ export const routes: Routes = [
       },
       // Clients: /app/clients/:id
       {
-        path: 'clients/new',
-        loadComponent: () =>
-          import('@app/features/clients/create-client/create-client').then(
-            (m) => m.CreateClientComponent,
-          ),
-      },
-      {
         path: 'clients/:id',
         loadComponent: () =>
           import('@app/features/clients/client-detail/client-detail').then(
