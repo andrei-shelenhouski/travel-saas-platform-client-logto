@@ -1,16 +1,45 @@
-<app-page-heading title="Leads">
-  <a matButton="filled" routerLink="/app/leads/new">Create lead</a>
-  <mat-button-toggle-group appearance="standard" hideSingleSelectionIndicator value="list">
-    <mat-button-toggle routerLink="/app/leads" value="list">
+<app-page-heading title="Leads" i18n-title="@@leadsListHeadingTitle">
+  <a matButton="filled" routerLink="/app/leads/new">
+    <mat-icon>add</mat-icon>
+    <span i18n="@@leadsListNewLeadCta">New lead</span>
+  </a>
+  <mat-button-toggle-group appearance="standard" hideSingleSelectionIndicator value="table">
+    <mat-button-toggle routerLink="/app/leads" value="table" (click)="setPreferredView('table')">
       <mat-icon>list</mat-icon>
     </mat-button-toggle>
-    <mat-button-toggle routerLink="/app/leads/kanban" value="kanban">
+    <mat-button-toggle
+      routerLink="/app/leads/kanban"
+      value="kanban"
+      (click)="setPreferredView('kanban')"
+    >
       <mat-icon>view_kanban</mat-icon>
     </mat-button-toggle>
   </mat-button-toggle-group>
 </app-page-heading>
 
-<div class="p-4">
+<div class="space-y-4 p-4">
+  <app-leads-list-filter-bar
+    [agentOptions]="agentOptions()"
+    [clientTypeFilter]="clientTypeFilter()"
+    [clientTypeOptions]="clientTypeOptions"
+    [dateFromFilter]="dateFromFilter()"
+    [dateToFilter]="dateToFilter()"
+    [searchControl]="searchControl"
+    [selectedAgentId]="selectedAgentId()"
+    [showAgentFilter]="showAgentFilter()"
+    [statusFilter]="statusFilter()"
+    [statusOptions]="statusOptions"
+    (agentFilterChange)="onAgentFilterChange($event)"
+    (clientTypeFilterChange)="onClientTypeFilterChange($event)"
+    (dateFromChange)="onDateFromChange($event)"
+    (dateToChange)="onDateToChange($event)"
+    (statusFilterChange)="onStatusFilterChange($event)"
+  />
+
+  <p class="text-sm text-gray-600" i18n="@@leadsTotalCountLabel">
+    Total: {{ totalElements() }} leads
+  </p>
+
   @if (error()) {
     <p class="mb-4 text-sm text-red-600">{{ error() }}</p>
   }
@@ -18,7 +47,7 @@
   <div class="table-wrap overflow-scroll">
     <table mat-table [dataSource]="leads()" [multiTemplateDataRows]="true">
       <ng-container matColumnDef="name">
-        <th *matHeaderCellDef i18n="@@clientsListHeaderName" mat-header-cell>Name</th>
+        <th *matHeaderCellDef i18n="@@leadsListColumnClient" mat-header-cell>Client</th>
         <td *matCellDef="let element" mat-cell>
           @if (element.companyName) {
             <span class="block text-sm font-semibold">{{ element.companyName }}</span>
@@ -30,11 +59,60 @@
       </ng-container>
 
       <ng-container matColumnDef="number">
-        <th *matHeaderCellDef i18n="@@clientsListHeaderNumber" mat-header-cell>Number</th>
+        <th *matHeaderCellDef i18n="@@leadsListColumnLeadNumber" mat-header-cell>Lead&nbsp;#</th>
         <td *matCellDef="let element" mat-cell>
           <span class="block text-sm font-semibold">
             {{ element.number }}
           </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="clientType">
+        <th *matHeaderCellDef i18n="@@leadsListColumnType" mat-header-cell>Type</th>
+        <td *matCellDef="let element" mat-cell>
+          <app-client-type-badge [type]="element.clientType" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="destination">
+        <th *matHeaderCellDef i18n="@@leadsListColumnDestination" mat-header-cell>Destination</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.destination ?? '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="dates">
+        <th *matHeaderCellDef i18n="@@leadsListColumnDates" mat-header-cell>Dates</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ getTravelDatesLabel(element) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th *matHeaderCellDef i18n="@@leadsListColumnStatus" mat-header-cell>Status</th>
+        <td *matCellDef="let element" mat-cell>
+          <app-status-badge variant="lead" [status]="element.status" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="assignedAgentName">
+        <th *matHeaderCellDef i18n="@@leadsListColumnAgent" mat-header-cell>Agent</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.assignedAgentName ?? '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <th *matHeaderCellDef i18n="@@leadsListColumnCreated" mat-header-cell>Created</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.createdAt | date: 'dd MMM yyyy' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="updatedAt">
+        <th *matHeaderCellDef i18n="@@clientsListHeaderUpdatedAt" mat-header-cell>Updated</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.updatedAt | date: 'dd MMM yyyy' }}
         </td>
       </ng-container>
 
@@ -52,38 +130,10 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="clientType">
-        <th *matHeaderCellDef i18n="@@clientsListHeaderType" mat-header-cell>Type</th>
-        <td *matCellDef="let element" mat-cell>
-          <app-client-type-badge [type]="element.clientType" />
-        </td>
-      </ng-container>
-
       <ng-container matColumnDef="source">
         <th *matHeaderCellDef i18n="@@clientsListHeaderSource" mat-header-cell>Source</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.source ?? '—' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <th *matHeaderCellDef i18n="@@clientsListHeaderStatus" mat-header-cell>Status</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.status ?? '—' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="createdAt">
-        <th *matHeaderCellDef i18n="@@clientsListHeaderCreatedAt" mat-header-cell>Created At</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.createdAt | date: 'dd MMM yyyy' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="updatedAt">
-        <th *matHeaderCellDef i18n="@@clientsListHeaderUpdatedAt" mat-header-cell>Updated At</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.updatedAt | date: 'dd MMM yyyy' }}
         </td>
       </ng-container>
 
@@ -98,31 +148,15 @@
         <td [attr.colspan]="displayedColumns.length">
           <div class="m-10 align-middle text-center">
             @if (loading()) {
-              <p class="pb-4" i18n="@@clientsListLoading">Loading clients...</p>
+              <p class="pb-4" i18n="@@leadsListLoading">Loading leads...</p>
               <mat-spinner
-                aria-label="Loading clients"
-                i18n-aria-label="@@clientsListLoadingAriaLabel"
+                aria-label="Loading leads"
+                i18n-aria-label="@@leadsListLoadingAriaLabel"
                 class="mx-auto"
                 diameter="36"
               />
             } @else {
-              <p i18n="@@clientsListNoData">
-                Ooooops, no clients found. Try adjusting your filters.
-              </p>
-
-              <span class="or-divider" i18n="@@clientsListOrDivider">or</span>
-
-              <div>
-                <button
-                  color="primary"
-                  matButton="outlined"
-                  type="button"
-                  (click)="navigateToLead('new')"
-                >
-                  <mat-icon>add</mat-icon>
-                  <span i18n="@@clientsListNewClientCta">New Client</span>
-                </button>
-              </div>
+              <p i18n="@@leadsListEmptyState">No leads found for the current filters</p>
             }
           </div>
         </td>
@@ -132,8 +166,8 @@
 
   @if (totalElements() > pageSize) {
     <mat-paginator
-      aria-label="Clients pagination"
-      i18n-aria-label="@@clientsListPaginatorAriaLabel"
+      aria-label="Leads pagination"
+      i18n-aria-label="@@leadsListPaginatorAriaLabel"
       [length]="totalElements()"
       [pageIndex]="currentPage()"
       [pageSize]="pageSize"
