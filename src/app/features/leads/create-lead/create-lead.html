@@ -1,84 +1,263 @@
 <div class="mb-4">
-  <a
-    class="text-sm font-medium text-gray-600 hover:text-gray-900"
-    routerLink="/app/leads"
-  >
+  <a class="text-sm font-medium text-gray-600 hover:text-gray-900" i18n routerLink="/app/leads">
     ← Back to leads
   </a>
 </div>
-<div class="max-w-lg rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-  <h1 class="text-xl font-semibold text-gray-900 mb-4">Create lead</h1>
-  <form class="flex flex-col gap-4" [formGroup]="form" (ngSubmit)="onSubmit()">
-    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-      <mat-label>Source</mat-label>
-      <mat-select formControlName="source" id="source">
-        @for (opt of sourceOptions; track opt.value) {
-          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+
+<div class="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+  <h1 class="mb-4 text-xl font-semibold text-gray-900" i18n>New lead</h1>
+
+  @if (error()) {
+    <p class="mb-4 text-sm text-red-600">{{ error() }}</p>
+  }
+
+  <form class="grid grid-cols-1 gap-4 lg:grid-cols-2" [formGroup]="form" (ngSubmit)="onSubmit()">
+    @if (!isNewClientMode()) {
+      <mat-form-field appearance="outline" class="lg:col-span-1" subscriptSizing="dynamic">
+        <mat-label i18n>Client search</mat-label>
+        <input
+          matInput
+          placeholder="Type name, phone, or email"
+          i18n-placeholder
+          type="text"
+          [formControl]="clientSearch"
+          [matAutocomplete]="clientAutocomplete"
+        />
+        @if (loadingClients()) {
+          <mat-spinner diameter="18" matSuffix></mat-spinner>
         }
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-      <mat-label>Contact name</mat-label>
+        <mat-hint i18n>Minimum 2 characters</mat-hint>
+      </mat-form-field>
+    } @else {
+      <div
+        class="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700 lg:col-span-1"
+        i18n
+      >
+        New client mode is enabled.
+      </div>
+    }
+
+    <div class="flex items-center lg:justify-end">
+      @if (!isNewClientMode()) {
+        <button
+          i18n
+          mat-stroked-button
+          type="button"
+          [disabled]="loading()"
+          (click)="enableNewClientMode()"
+        >
+          New client
+        </button>
+      } @else {
+        <button
+          i18n
+          mat-stroked-button
+          type="button"
+          [disabled]="loading()"
+          (click)="disableNewClientMode()"
+        >
+          Use existing client
+        </button>
+      }
+    </div>
+
+    <mat-autocomplete
+      #clientAutocomplete="matAutocomplete"
+      [displayWith]="clientDisplayFn"
+      (optionSelected)="onAutocompleteSelected($event)"
+    >
+      @for (client of clientOptions(); track client.id) {
+        <mat-option [value]="client">
+          {{ client.fullName ?? 'Unnamed client' }}
+          <span class="ml-2 text-xs text-gray-500">{{ client.phone || client.email || '' }}</span>
+        </mat-option>
+      }
+
+      @if (noClientsFound()) {
+        <mat-option i18n value="create-new">Client not found. Create new?</mat-option>
+      }
+    </mat-autocomplete>
+
+    <mat-form-field appearance="outline" class="lg:col-span-1" subscriptSizing="dynamic">
+      <mat-label i18n>Client name</mat-label>
       <input
-        formControlName="contactName"
-        id="contactName"
+        formControlName="clientName"
+        id="clientName"
         matInput
-        placeholder="John Doe"
         type="text"
+        [readonly]="contactLocked()"
       />
-      @if (form.controls.contactName.hasError('required') && form.controls.contactName.touched) {
-        <mat-error>Required</mat-error>
+      @if (contactLocked()) {
+        <button
+          aria-label="Unlock client fields"
+          i18n-aria-label
+          mat-icon-button
+          matSuffix
+          type="button"
+          [disabled]="loading()"
+          (click)="unlockContactEditing()"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+      }
+      @if (form.controls.clientName.hasError('required') && form.controls.clientName.touched) {
+        <mat-error i18n>Client name is required</mat-error>
+      }
+      @if (hasServerError('clientName')) {
+        <mat-error>{{ serverErrorText('clientName') }}</mat-error>
       }
     </mat-form-field>
-    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-      <mat-label>Email</mat-label>
-      <input
-        formControlName="contactEmail"
-        id="contactEmail"
-        matInput
-        placeholder="john@example.com"
-        type="email"
-      />
-      @if (form.controls.contactEmail.hasError('email') && form.controls.contactEmail.touched) {
-        <mat-error>Invalid email</mat-error>
-      }
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-      <mat-label>Phone</mat-label>
+
+    <mat-form-field appearance="outline" class="lg:col-span-1" subscriptSizing="dynamic">
+      <mat-label i18n>Phone</mat-label>
       <input
         formControlName="contactPhone"
         id="contactPhone"
         matInput
-        placeholder="+1 234 567 8900"
+        placeholder="+375291234567"
+        i18n-placeholder
         type="tel"
+        [readonly]="contactLocked()"
       />
       @if (form.controls.contactPhone.hasError('pattern') && form.controls.contactPhone.touched) {
-        <mat-error>Enter a valid phone number</mat-error>
+        <mat-error i18n>Enter a valid phone number</mat-error>
+      }
+      @if (form.hasError('phoneOrEmailRequired') && form.controls.contactPhone.touched) {
+        <mat-error i18n>Phone or email is required</mat-error>
+      }
+      @if (hasServerError('contactPhone')) {
+        <mat-error>{{ serverErrorText('contactPhone') }}</mat-error>
       }
     </mat-form-field>
-    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-      <mat-label>Notes</mat-label>
-      <textarea
-        formControlName="notes"
-        id="notes"
+
+    <mat-form-field appearance="outline" class="lg:col-span-1" subscriptSizing="dynamic">
+      <mat-label i18n>Email</mat-label>
+      <input
+        formControlName="contactEmail"
+        id="contactEmail"
         matInput
-        placeholder="Optional notes about the lead"
-        rows="3"
-      ></textarea>
+        placeholder="client@example.com"
+        i18n-placeholder
+        type="email"
+        [readonly]="contactLocked()"
+      />
+      @if (form.controls.contactEmail.hasError('email') && form.controls.contactEmail.touched) {
+        <mat-error i18n>Enter a valid email</mat-error>
+      }
+      @if (form.hasError('phoneOrEmailRequired') && form.controls.contactEmail.touched) {
+        <mat-error i18n>Phone or email is required</mat-error>
+      }
+      @if (hasServerError('contactEmail')) {
+        <mat-error>{{ serverErrorText('contactEmail') }}</mat-error>
+      }
     </mat-form-field>
-    @if (error()) {
-      <p class="text-sm text-red-600">{{ error() }}</p>
+
+    <mat-form-field appearance="outline" class="lg:col-span-2" subscriptSizing="dynamic">
+      <mat-label i18n>Destination</mat-label>
+      <input formControlName="destination" id="destination" matInput type="text" />
+      @if (form.controls.destination.hasError('required') && form.controls.destination.touched) {
+        <mat-error i18n>Destination is required</mat-error>
+      }
+      @if (hasServerError('destination')) {
+        <mat-error>{{ serverErrorText('destination') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label i18n>Departure from</mat-label>
+      <input formControlName="departDateFrom" id="departDateFrom" matInput type="date" />
+      @if (hasServerError('departDateFrom')) {
+        <mat-error>{{ serverErrorText('departDateFrom') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label i18n>Departure to</mat-label>
+      <input formControlName="departDateTo" id="departDateTo" matInput type="date" />
+      @if (form.hasError('departDateRangeInvalid') && form.controls.departDateTo.touched) {
+        <mat-error i18n>Departure to must be on or after departure from</mat-error>
+      }
+      @if (hasServerError('departDateTo')) {
+        <mat-error>{{ serverErrorText('departDateTo') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label i18n>Return from</mat-label>
+      <input formControlName="returnDateFrom" id="returnDateFrom" matInput type="date" />
+      @if (form.hasError('returnBeforeDepart') && form.controls.returnDateFrom.touched) {
+        <mat-error i18n>Return date must be on or after departure date</mat-error>
+      }
+      @if (hasServerError('returnDateFrom')) {
+        <mat-error>{{ serverErrorText('returnDateFrom') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label i18n>Return to</mat-label>
+      <input formControlName="returnDateTo" id="returnDateTo" matInput type="date" />
+      @if (hasServerError('returnDateTo')) {
+        <mat-error>{{ serverErrorText('returnDateTo') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label i18n>Adults</mat-label>
+      <input formControlName="adults" id="adults" matInput min="1" type="number" />
+      @if (form.controls.adults.hasError('min') && form.controls.adults.touched) {
+        <mat-error i18n>Adults must be at least 1</mat-error>
+      }
+      @if (hasServerError('adults')) {
+        <mat-error>{{ serverErrorText('adults') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label i18n>Children</mat-label>
+      <input formControlName="children" id="children" matInput min="0" type="number" />
+      @if (form.controls.children.hasError('min') && form.controls.children.touched) {
+        <mat-error i18n>Children cannot be negative</mat-error>
+      }
+      @if (hasServerError('children')) {
+        <mat-error>{{ serverErrorText('children') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="lg:col-span-2" subscriptSizing="dynamic">
+      <mat-label i18n>Notes</mat-label>
+      <textarea formControlName="notes" id="notes" matInput rows="3"></textarea>
+      @if (hasServerError('notes')) {
+        <mat-error>{{ serverErrorText('notes') }}</mat-error>
+      }
+    </mat-form-field>
+
+    @if (showAssignAgent()) {
+      <mat-form-field appearance="outline" class="lg:col-span-2" subscriptSizing="dynamic">
+        <mat-label i18n>Assign to</mat-label>
+        <mat-select formControlName="assignedAgentId" id="assignedAgentId">
+          <mat-option i18n value="">Unassigned</mat-option>
+          @for (agent of agentOptions(); track agent.id) {
+            <mat-option [value]="agent.id">{{ agent.name }}</mat-option>
+          }
+        </mat-select>
+        @if (hasServerError('assignedAgentId')) {
+          <mat-error>{{ serverErrorText('assignedAgentId') }}</mat-error>
+        }
+      </mat-form-field>
     }
-    <div class="flex flex-wrap gap-3 pt-2">
-      <button
-        color="primary"
-        mat-flat-button
-        type="submit"
-        [disabled]="loading() || form.invalid"
-      >
-        {{ loading() ? 'Creating…' : 'Create lead' }}
+
+    <div class="flex flex-wrap gap-3 pt-2 lg:col-span-2">
+      <a i18n mat-stroked-button routerLink="/app/leads" [attr.aria-disabled]="loading()">Cancel</a>
+      <button color="primary" mat-flat-button type="submit" [disabled]="loading()">
+        @if (loading()) {
+          <span class="inline-flex items-center gap-2">
+            <mat-spinner diameter="16"></mat-spinner>
+            <span i18n>Saving...</span>
+          </span>
+        } @else {
+          <span i18n>Save</span>
+        }
       </button>
-      <a mat-stroked-button routerLink="/app/leads">Cancel</a>
     </div>
   </form>
 </div>
