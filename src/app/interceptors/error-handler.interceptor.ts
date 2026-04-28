@@ -24,17 +24,25 @@ export function errorHandlerInterceptor(
       const status = err.status ?? err.statusCode;
 
       if (status === 401) {
-        // Token might have expired or been revoked, or user might have been deleted.
+        // Token might have expired or been revoked.
+        void router.navigate(['/login']);
+
         return throwError(() => err);
       }
 
       if (status === 400 || status === 403) {
         const message = err.error?.message ?? err.message;
 
-        if (message?.toLowerCase().includes('organization') || status === 403) {
+        if (status === 403 && req.url.includes('/api/leads')) {
+          void router.navigate(['/app/dashboard']);
+
+          return throwError(() => err);
+        }
+
+        if (message?.toLowerCase().includes('organization')) {
           orgState.clear();
           meService.clearMeData();
-          router.navigate(['/onboarding/check']);
+          void router.navigate(['/onboarding/check']);
         }
 
         return throwError(() => err);
