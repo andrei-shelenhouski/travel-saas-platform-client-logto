@@ -1,17 +1,11 @@
-<div class="space-y-4">
-  <header class="flex items-center justify-between border-b border-gray-200 pb-4">
-    <h1 class="text-xl font-semibold text-gray-900">
-      @if (isEditMode()) {
-        <span>Edit client</span>
-      } @else {
-        <span>Create client</span>
-      }
-    </h1>
-    <button mat-button type="button" (click)="cancel()">
-      <span i18n="@@createClientCancelBtn">Cancel</span>
-    </button>
-  </header>
+<app-page-heading [title]="isEditMode() ? 'Edit client' : 'Create client'">
+  <button mat-button type="button" (click)="cancel()">
+    <span aria-hidden="true" class="material-icons text-base">chevron_left</span>
+    <span>Back to clients</span>
+  </button>
+</app-page-heading>
 
+<div class="p-4">
   @if (loading()) {
     <div class="flex justify-center py-12">
       <div
