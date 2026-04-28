@@ -9,7 +9,6 @@ import type {
   CreateRequestDto,
   PaginatedRequestResponseDto,
   RequestResponseDto,
-  RequestStatus,
   UpdateRequestDto,
 } from '@app/shared/models';
 
@@ -18,17 +17,18 @@ const REQUESTS_STATS_URL = `${environment.baseUrl}/api/requests/stats`;
 
 /**
  * Requests API. Aligned with openapi.json: GET/POST /api/requests,
- * GET/PATCH/DELETE /api/requests/{id}, PATCH /api/requests/{id}/status.
+ * GET/PUT/DELETE /api/requests/{id}, GET /api/requests/stats.
  */
 @Injectable({ providedIn: 'root' })
 export class RequestsService {
   private readonly http = inject(HttpClient);
 
-  /** GET /api/requests. Optional status filter (DRAFT, IN_PROGRESS, WAITING_CLIENT, CLOSED). */
+  /** GET /api/requests. Optional filters: leadId, managerId. */
   getList(params?: {
     page?: number;
     limit?: number;
-    status?: RequestStatus;
+    leadId?: string;
+    managerId?: string;
   }): Observable<PaginatedRequestResponseDto> {
     let httpParams = new HttpParams();
 
@@ -40,8 +40,12 @@ export class RequestsService {
       httpParams = httpParams.set('limit', params.limit);
     }
 
-    if (params?.status !== undefined) {
-      httpParams = httpParams.set('status', params.status);
+    if (params?.leadId !== undefined) {
+      httpParams = httpParams.set('leadId', params.leadId);
+    }
+
+    if (params?.managerId !== undefined) {
+      httpParams = httpParams.set('managerId', params.managerId);
     }
 
     return this.http.get<PaginatedRequestResponseDto>(REQUESTS_URL, { params: httpParams });

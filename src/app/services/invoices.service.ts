@@ -8,7 +8,6 @@ import { environment } from '@environments/environment';
 import type {
   CreateInvoiceDto,
   InvoiceResponseDto,
-  InvoiceStatus,
   PaginatedInvoiceResponseDto,
   UpdateInvoiceDto,
 } from '@app/shared/models';
@@ -22,11 +21,7 @@ const INVOICES_URL = `${environment.baseUrl}/api/invoices`;
 export class InvoicesService {
   private readonly http = inject(HttpClient);
 
-  getList(params?: {
-    page?: number;
-    limit?: number;
-    status?: InvoiceStatus;
-  }): Observable<PaginatedInvoiceResponseDto> {
+  getList(params?: { page?: number; limit?: number }): Observable<PaginatedInvoiceResponseDto> {
     let httpParams = new HttpParams();
 
     if (params?.page !== undefined) {
@@ -35,10 +30,6 @@ export class InvoicesService {
 
     if (params?.limit !== undefined) {
       httpParams = httpParams.set('limit', params.limit);
-    }
-
-    if (params?.status !== undefined) {
-      httpParams = httpParams.set('status', params.status);
     }
 
     return this.http.get<PaginatedInvoiceResponseDto>(INVOICES_URL, { params: httpParams });

@@ -1,13 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { Router, RouterLink } from '@angular/router';
 
 import { InvoicesService } from '@app/services/invoices.service';
 import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
-import type { InvoiceResponseDto } from '@app/shared/models';
 import { InvoiceStatus } from '@app/shared/models';
 
+import type { InvoiceResponseDto } from '@app/shared/models';
 type FilterTab = 'ALL' | InvoiceStatus;
 
 const FILTER_TABS: { value: FilterTab; label: string }[] = [
@@ -38,18 +38,25 @@ export class InvoicesListComponent {
 
   readonly activeFilter = signal<FilterTab>('ALL');
   private readonly data = rxResource({
-    params: () => ({ status: this.activeFilter() === 'ALL' ? undefined : this.activeFilter() }),
-    stream: ({ params }) =>
+    stream: () =>
       this.invoicesService.getList({
         page: 1,
         limit: 50,
-        status: params.status as InvoiceStatus | undefined,
       }),
   });
 
   readonly filterTabs = FILTER_TABS;
   readonly statusBadgeClass = STATUS_BADGE_CLASS;
-  readonly invoices = computed(() => this.data.value()?.items ?? []);
+  readonly invoices = computed(() => {
+    const items = this.data.value()?.items ?? [];
+    const filter = this.activeFilter();
+
+    if (filter === 'ALL') {
+      return items;
+    }
+
+    return items.filter((invoice) => invoice.status === filter);
+  });
   readonly loading = computed(() => this.data.isLoading());
   readonly error = computed(() => {
     const err = this.data.error();

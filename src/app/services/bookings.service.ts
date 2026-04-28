@@ -19,8 +19,8 @@ const BOOKINGS_URL = `${environment.baseUrl}/api/bookings`;
 const BOOKINGS_STATS_URL = `${environment.baseUrl}/api/bookings/stats`;
 
 /**
- * Bookings API. Aligned with openapi.json: GET/POST /api/bookings, GET/PATCH/DELETE /api/bookings/{id},
- * GET /api/bookings/stats, PATCH /api/bookings/{id}/status.
+ * Bookings API. Aligned with openapi.json: GET/POST /api/bookings, GET/PUT/DELETE /api/bookings/{id},
+ * GET /api/bookings/stats, PUT /api/bookings/{id}/status.
  */
 @Injectable({ providedIn: 'root' })
 export class BookingsService {
@@ -30,6 +30,9 @@ export class BookingsService {
     page?: number;
     limit?: number;
     status?: BookingStatus;
+    assignedBackofficeId?: string;
+    departDateFrom?: string;
+    departDateTo?: string;
   }): Observable<PaginatedBookingResponseDto> {
     let httpParams = new HttpParams();
 
@@ -43,6 +46,18 @@ export class BookingsService {
 
     if (params?.status !== undefined) {
       httpParams = httpParams.set('status', params.status);
+    }
+
+    if (params?.assignedBackofficeId !== undefined) {
+      httpParams = httpParams.set('assignedBackofficeId', params.assignedBackofficeId);
+    }
+
+    if (params?.departDateFrom !== undefined) {
+      httpParams = httpParams.set('departDateFrom', params.departDateFrom);
+    }
+
+    if (params?.departDateTo !== undefined) {
+      httpParams = httpParams.set('departDateTo', params.departDateTo);
     }
 
     return this.http.get<PaginatedBookingResponseDto>(BOOKINGS_URL, { params: httpParams });
@@ -62,12 +77,12 @@ export class BookingsService {
   }
 
   update(id: string, dto: UpdateBookingDto): Observable<BookingResponseDto> {
-    return this.http.patch<BookingResponseDto>(`${BOOKINGS_URL}/${id}`, dto);
+    return this.http.put<BookingResponseDto>(`${BOOKINGS_URL}/${id}`, dto);
   }
 
-  /** PATCH /api/bookings/{id}/status. Use for status transitions. */
+  /** PUT /api/bookings/{id}/status. Use for status transitions. */
   updateStatus(id: string, dto: UpdateBookingStatusDto): Observable<BookingResponseDto> {
-    return this.http.patch<BookingResponseDto>(`${BOOKINGS_URL}/${id}/status`, dto);
+    return this.http.put<BookingResponseDto>(`${BOOKINGS_URL}/${id}/status`, dto);
   }
 
   delete(id: string): Observable<void> {

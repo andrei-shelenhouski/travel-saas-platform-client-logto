@@ -23,6 +23,9 @@ export class OffersService {
 
   getList(params?: {
     status?: OfferStatus;
+    requestId?: string;
+    leadId?: string;
+    agentId?: string;
     page?: number;
     limit?: number;
   }): Observable<PaginatedOfferResponseDto> {
@@ -30,6 +33,18 @@ export class OffersService {
 
     if (params?.status !== undefined) {
       httpParams = httpParams.set('status', params.status);
+    }
+
+    if (params?.requestId !== undefined) {
+      httpParams = httpParams.set('requestId', params.requestId);
+    }
+
+    if (params?.leadId !== undefined) {
+      httpParams = httpParams.set('leadId', params.leadId);
+    }
+
+    if (params?.agentId !== undefined) {
+      httpParams = httpParams.set('agentId', params.agentId);
     }
 
     if (params?.page !== undefined) {
