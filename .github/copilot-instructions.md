@@ -65,6 +65,10 @@ Separate control-flow structures with one blank line: put a blank line between *
 - Keep templates simple and avoid complex logic
 - Use native control flow (`@if`, `@for`, `@switch`) instead of `*ngIf`, `*ngFor`, `*ngSwitch`
 - Use the async pipe to handle observables
+- Never use Russian language in source code strings (labels, messages, placeholders, hints, errors, and similar UI text)
+- Russian translations are allowed only in localization files such as `src/locale/messages.ru.xlf`
+- Add i18n attributes for user-visible template strings
+- After adding or changing translatable strings, run `ng extract-i18n` and then add dedicated translations to `src/locale/messages.ru.xlf`
 - Do not assume globals like (`new Date()`) are available.
 - Do not write arrow functions in templates (they are not supported).
 - For event handlers, prefer method references (e.g. `(click)="onClick()"`) over inline statements (e.g. `(click)="count++"`), especially when the handler logic is more than a simple one-liner. This keeps templates cleaner and allows for better separation of concerns.
