@@ -62,6 +62,20 @@ export const routes: Routes = [
     ],
   },
   {
+    path: 'leads/new',
+    redirectTo: 'app/leads/new',
+    pathMatch: 'full',
+  },
+  {
+    path: 'leads/:id',
+    redirectTo: 'app/leads/:id',
+  },
+  {
+    path: 'leads',
+    redirectTo: 'app/leads',
+    pathMatch: 'full',
+  },
+  {
     path: 'app',
     loadComponent: () =>
       import('@app/layout/main-layout.component').then((m) => m.MainLayoutComponent),
