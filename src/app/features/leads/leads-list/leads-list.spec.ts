@@ -17,7 +17,7 @@ describe('LeadsListComponent', () => {
   let fixture: ComponentFixture<LeadsListComponent>;
 
   beforeEach(async () => {
-    localStorage.setItem('leads.view', 'table');
+    localStorage.setItem('leads_view', 'table');
 
     await TestBed.configureTestingModule({
       imports: [LeadsListComponent],

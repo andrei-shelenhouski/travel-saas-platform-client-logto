@@ -71,15 +71,25 @@ export class ClientsService {
     return this.http.post<ContactResponseDto>(`${CLIENTS_URL}/${clientId}/contacts`, dto);
   }
 
-  updateContact(clientId: string, contactId: string, dto: UpdateContactDto): Observable<ContactResponseDto> {
-    return this.http.put<ContactResponseDto>(`${CLIENTS_URL}/${clientId}/contacts/${contactId}`, dto);
+  updateContact(
+    clientId: string,
+    contactId: string,
+    dto: UpdateContactDto,
+  ): Observable<ContactResponseDto> {
+    return this.http.put<ContactResponseDto>(
+      `${CLIENTS_URL}/${clientId}/contacts/${contactId}`,
+      dto,
+    );
   }
 
   deleteContact(clientId: string, contactId: string): Observable<void> {
     return this.http.delete<void>(`${CLIENTS_URL}/${clientId}/contacts/${contactId}`);
   }
 
-  getLeads(clientId: string, params?: { page?: number; limit?: number }): Observable<PaginatedLeadResponseDto> {
+  getLeads(
+    clientId: string,
+    params?: { page?: number; limit?: number },
+  ): Observable<PaginatedLeadResponseDto> {
     let httpParams = new HttpParams();
 
     if (params?.page !== undefined) {
@@ -90,10 +100,15 @@ export class ClientsService {
       httpParams = httpParams.set('limit', params.limit);
     }
 
-    return this.http.get<PaginatedLeadResponseDto>(`${CLIENTS_URL}/${clientId}/leads`, { params: httpParams });
+    return this.http.get<PaginatedLeadResponseDto>(`${CLIENTS_URL}/${clientId}/leads`, {
+      params: httpParams,
+    });
   }
 
-  getInvoices(clientId: string, params?: { page?: number; limit?: number }): Observable<PaginatedInvoiceResponseDto> {
+  getInvoices(
+    clientId: string,
+    params?: { page?: number; limit?: number },
+  ): Observable<PaginatedInvoiceResponseDto> {
     let httpParams = new HttpParams();
 
     if (params?.page !== undefined) {
@@ -104,6 +119,8 @@ export class ClientsService {
       httpParams = httpParams.set('limit', params.limit);
     }
 
-    return this.http.get<PaginatedInvoiceResponseDto>(`${CLIENTS_URL}/${clientId}/invoices`, { params: httpParams });
+    return this.http.get<PaginatedInvoiceResponseDto>(`${CLIENTS_URL}/${clientId}/invoices`, {
+      params: httpParams,
+    });
   }
 }

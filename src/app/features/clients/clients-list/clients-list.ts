@@ -1,6 +1,13 @@
 import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -13,7 +20,10 @@ import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
 
-import { ClientFilterBarComponent, ClientFilterValue } from '../client-filter-bar/client-filter-bar';
+import {
+  ClientFilterBarComponent,
+  ClientFilterValue,
+} from '../client-filter-bar/client-filter-bar';
 import { ClientTypeBadgeComponent } from '../client-type-badge/client-type-badge';
 
 import type { ClientResponseDto } from '@app/shared/models';
