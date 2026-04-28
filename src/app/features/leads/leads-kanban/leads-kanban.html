@@ -1,13 +1,25 @@
+<app-page-heading title="Leads · Kanban" i18n-title="@@leadsKanbanTitle">
+  <a matButton="filled" routerLink="/app/leads/new">
+    <mat-icon>add</mat-icon>
+    <span i18n="@@leadsListNewLeadCta">New lead</span>
+  </a>
+  <mat-button-toggle-group appearance="standard" hideSingleSelectionIndicator value="kanban">
+    <mat-button-toggle routerLink="/app/leads" value="table" (click)="setPreferredView('table')">
+      <mat-icon>list</mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle
+      routerLink="/app/leads/kanban"
+      value="kanban"
+      (click)="setPreferredView('kanban')"
+    >
+      <mat-icon>view_kanban</mat-icon>
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+</app-page-heading>
+
 <div class="p-4">
   <div class="flex flex-wrap items-center justify-between gap-4">
-    <div class="flex flex-wrap items-center gap-3">
-      <h2 class="text-lg font-semibold text-gray-900">Leads · Kanban</h2>
-      <mat-button-toggle-group appearance="standard" hideSingleSelectionIndicator value="kanban">
-        <mat-button-toggle routerLink="/app/leads" value="list">List</mat-button-toggle>
-        <mat-button-toggle routerLink="/app/leads/kanban" value="kanban">Kanban</mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
-    <div class="flex flex-wrap items-center gap-3">
+    <div class="flex flex-wrap items-center gap-3 mb-4">
       <span class="text-sm text-gray-500">Columns:</span>
       @for (
         s of [
@@ -32,7 +44,6 @@
         </label>
       }
     </div>
-    <a color="primary" mat-flat-button routerLink="/app/leads/new">New lead</a>
   </div>
 
   @if (error()) {

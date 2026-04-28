@@ -9,9 +9,11 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
 
 import { LeadsService } from '@app/services/leads.service';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
 import { LeadStatus } from '@app/shared/models';
@@ -27,6 +29,7 @@ const LEAD_STATUS_ORDER: string[] = [
   LeadStatus.LOST,
   LeadStatus.EXPIRED,
 ];
+const LEADS_VIEW_STORAGE_KEY = 'leads.view';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -36,8 +39,10 @@ const LEAD_STATUS_ORDER: string[] = [
     DragDropModule,
     RouterLink,
     StatusBadgeComponent,
+    MatIconModule,
     ...MAT_BUTTONS,
     ...MAT_BUTTON_TOGGLES,
+    PageHeading,
   ],
   templateUrl: './leads-kanban.html',
   styleUrl: './leads-kanban.scss',
@@ -170,6 +175,10 @@ export class LeadsKanbanComponent {
 
   getStatusLabel(s: string): string {
     return s.replace(/_/g, ' ');
+  }
+
+  setPreferredView(view: 'table' | 'kanban'): void {
+    localStorage.setItem(LEADS_VIEW_STORAGE_KEY, view);
   }
 
   protected readonly LeadStatus = LeadStatus;
