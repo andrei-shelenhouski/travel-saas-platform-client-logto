@@ -339,41 +339,73 @@ export type PaginatedOfferResponseDto = PaginatedDto<OfferResponseDto>;
 // ----- Bookings -----
 
 export const BookingStatus = {
-  PENDING: 'PENDING',
+  PENDING_CONFIRMATION: 'PENDING_CONFIRMATION',
   CONFIRMED: 'CONFIRMED',
-  PAID: 'PAID',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
   CANCELLED: 'CANCELLED',
+  // Backward-compatible aliases used in existing UI code.
+  PENDING: 'PENDING_CONFIRMATION',
+  PAID: 'COMPLETED',
 } as const;
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus];
 
 /** OpenAPI: CreateBookingRequest. POST /api/bookings. */
 export type CreateBookingDto = {
-  offerId: string;
+  offerId?: string;
+  leadId?: string;
   clientId: string;
-  agreedPrice: number;
-  currency: string;
+  destination?: string;
+  departDate?: string;
+  returnDate?: string;
+  adults?: number;
+  children?: number;
+  accommodationDetails?: Record<string, unknown>[];
+  assignedBackofficeId?: string;
+  internalNotes?: string;
 };
 
-/** OpenAPI: UpdateBookingRequest. PATCH /api/bookings/{id}. */
+/** OpenAPI: UpdateBookingRequest. PUT /api/bookings/{id}. */
 export type UpdateBookingDto = {
-  agreedPrice?: number;
-  currency?: string;
+  supplierConfirmationNumber?: string;
+  internalNotes?: string;
+  assignedBackofficeId?: string;
+  accommodationDetails?: Record<string, unknown>[];
+  destination?: string;
+  departDate?: string;
+  returnDate?: string;
 };
 
-/** OpenAPI: UpdateBookingStatusRequest. PATCH /api/bookings/{id}/status. */
+/** OpenAPI: UpdateBookingStatusRequest. PUT /api/bookings/{id}/status. */
 export type UpdateBookingStatusDto = {
   status: BookingStatus;
+  reason?: string;
 };
 
-/** OpenAPI: BookingResponse. agreedPrice as number. */
+/** OpenAPI: BookingResponse. */
 export type BookingResponseDto = {
   id: string;
   organizationId: string;
+  number?: string;
   offerId: string;
+  leadId?: string;
   clientId: string;
-  agreedPrice: number;
-  currency: string;
+  clientSnapshot?: Record<string, unknown>;
+  destination?: string;
+  departDate?: string;
+  returnDate?: string;
+  adults?: number;
+  children?: number;
+  accommodationDetails?: Record<string, unknown>[];
+  supplierConfirmationNumber?: string;
+  assignedBackofficeId?: string;
+  assignedBackofficeName?: string;
   status: BookingStatus | string;
+  cancellationReason?: string;
+  internalNotes?: string;
+  invoicesCount?: number;
+  documentsCount?: number;
+  createdById?: string;
   createdAt: string;
   updatedAt: string;
 };

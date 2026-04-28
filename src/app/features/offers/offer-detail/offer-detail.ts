@@ -159,15 +159,6 @@ export class OfferDetailComponent {
         return;
       }
 
-      if (offer.total === undefined || offer.total === null) {
-        this.toast.showError('Offer total is required to create a booking');
-        this.actionLoading.set(false);
-
-        return;
-      }
-
-      const agreedPrice = offer.total;
-
       this.requestsService
         .getById(offer.requestId)
         .pipe(
@@ -179,9 +170,14 @@ export class OfferDetailComponent {
 
             return this.bookingsService.create({
               offerId: id,
+              leadId: lead.id,
               clientId: lead.clientId,
-              agreedPrice,
-              currency: offer.currency ?? 'EUR',
+              destination: offer.destination,
+              departDate: offer.departDate,
+              returnDate: offer.returnDate,
+              adults: offer.adults,
+              children: offer.children,
+              internalNotes: offer.internalNotes,
             });
           }),
         )
