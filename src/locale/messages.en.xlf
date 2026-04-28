@@ -433,8 +433,8 @@
           <context context-type="linenumber">41,45</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="leadsKanbanFirst200Banner" datatype="html">
-        <source>Showing only first 200 leads.</source>
+      <trans-unit id="leadsKanbanFirst100Banner" datatype="html">
+        <source>Showing only first 100 leads.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/leads-kanban/leads-kanban.html</context>
           <context context-type="linenumber">47,52</context>

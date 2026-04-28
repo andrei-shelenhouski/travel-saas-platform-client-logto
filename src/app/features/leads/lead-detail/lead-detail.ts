@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -5,38 +6,110 @@ import {
   effect,
   inject,
   signal,
+  TemplateRef,
+  viewChild,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { EMPTY } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { EMPTY, forkJoin, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
+import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
+import { ActivitiesService } from '@app/services/activities.service';
 import { LeadsService } from '@app/services/leads.service';
+import { OffersService } from '@app/services/offers.service';
+import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
+import { RequestsService } from '@app/services/requests.service';
+import { RoleService } from '@app/services/role.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
-import { LeadStatus } from '@app/shared/models';
+import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
+import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+import { EntityType, LeadStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
-import type { LeadResponseDto } from '@app/shared/models';
+import type {
+  ActivityListResponseDto,
+  ActivityResponseDto,
+  LeadResponseDto,
+  OfferResponseDto,
+  RequestResponseDto,
+} from '@app/shared/models';
+
+type LeadAction = 'assign' | 'to_in_progress' | 'to_offer_sent' | 'mark_lost';
+
+type LeadWithBooking = LeadResponseDto & {
+  bookingId?: string | null;
+  bookingNumber?: string | null;
+  booking?: { id?: string | null; number?: string | null } | null;
+};
+
+type LeadDetailLoadData = {
+  lead: LeadResponseDto;
+  requests: RequestResponseDto[];
+  offers: OfferResponseDto[];
+  activities: ActivityListResponseDto;
+};
+
+const SALES_ROLES = new Set(['AGENT', 'SALES_AGENT', 'ADMIN']);
+const TERMINAL_STATUSES = new Set<string>([LeadStatus.WON, LeadStatus.LOST, LeadStatus.EXPIRED]);
+const ACTIVITY_PAGE_SIZE = 20;
+
+const ACTION_LABELS: Record<LeadAction, string> = {
+  assign: 'Assign',
+  to_in_progress: 'In progress',
+  to_offer_sent: 'Offer sent',
+  mark_lost: 'Lost',
+};
+
+const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
+  to_in_progress: LeadStatus.IN_PROGRESS,
+  to_offer_sent: LeadStatus.OFFER_SENT,
+  mark_lost: LeadStatus.LOST,
+};
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-lead-detail',
-  imports: [RouterLink, ...MAT_BUTTONS, PageHeading],
+  imports: [
+    RouterLink,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatIconModule,
+    ...MAT_BUTTONS,
+    ...MAT_FORM_BUTTONS,
+    StatusBadgeComponent,
+    ClientTypeBadgeComponent,
+    PageHeading,
+  ],
   templateUrl: './lead-detail.html',
   styleUrl: './lead-detail.scss',
 })
 export class LeadDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly formBuilder = inject(FormBuilder);
+  private readonly dialog = inject(MatDialog);
   private readonly leadsService = inject(LeadsService);
+  private readonly requestsService = inject(RequestsService);
+  private readonly offersService = inject(OffersService);
+  private readonly activitiesService = inject(ActivitiesService);
+  private readonly membersService = inject(OrganizationMembersService);
+  private readonly roleService = inject(RoleService);
   private readonly toast = inject(ToastService);
-  readonly permissions = inject(PermissionService);
+
+  protected readonly permissions = inject(PermissionService);
+
+  protected readonly assignDialogTemplate = viewChild<TemplateRef<unknown>>('assignDialogTemplate');
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
+  private readonly travelDetailsData = signal<LeadResponseDto | null>(null);
 
-  private readonly data = rxResource<LeadResponseDto, string | null>({
+  private readonly data = rxResource<LeadDetailLoadData, string | null>({
     params: (): string | null => this.routeId() ?? null,
     stream: ({ params }) => {
       const id = params;
@@ -45,52 +118,573 @@ export class LeadDetailComponent {
         return EMPTY;
       }
 
-      return this.leadsService.findById(id);
+      return forkJoin({
+        lead: this.leadsService.findById(id),
+        requests: this.requestsService
+          .getList({ leadId: id, limit: 100 })
+          .pipe(map((res) => res.items)),
+        offers: this.offersService
+          .getList({ leadId: id, limit: 100 })
+          .pipe(map((res) => res.items)),
+        activities: this.activitiesService.findByEntity({
+          entityType: EntityType.Lead,
+          entityId: id,
+          page: 1,
+          limit: ACTIVITY_PAGE_SIZE,
+        }),
+      });
     },
   });
 
-  readonly lead = computed(() => this.data.value() ?? null);
-  /** Optimistic: show WON while converting */
-  readonly displayLead = computed(() => {
+  private readonly membersData = rxResource({
+    stream: () => {
+      return this.membersService
+        .findAll()
+        .pipe(
+          map((items) => items.filter((member) => member.active && SALES_ROLES.has(member.role))),
+        );
+    },
+  });
+
+  protected readonly lead = computed(
+    () => this.travelDetailsData() ?? this.data.value()?.lead ?? null,
+  );
+  protected readonly requests = computed(() => this.data.value()?.requests ?? []);
+  protected readonly offers = computed(() => this.data.value()?.offers ?? []);
+  protected readonly loading = computed(() => this.data.isLoading());
+  protected readonly error = computed(() => this.data.error());
+
+  protected readonly canReassign = computed(() => {
+    return this.roleService.isAdmin() || this.roleService.isManager();
+  });
+
+  protected readonly visibleActions = computed<LeadAction[]>(() => {
     const l = this.lead();
 
     if (!l) {
+      return [];
+    }
+
+    return this.getAvailableActions(l.status).filter((action) => {
+      if (action === 'assign') {
+        return this.canReassign();
+      }
+
+      return true;
+    });
+  });
+
+  protected readonly isTerminalLead = computed(() => {
+    const l = this.lead();
+
+    return l ? this.isTerminalStatus(l.status) : true;
+  });
+
+  protected readonly showAddTravelRequest = computed(() => !this.isTerminalLead());
+
+  protected readonly offersByRequest = computed(() => {
+    const mapByRequest = new Map<string, OfferResponseDto[]>();
+
+    for (const offer of this.offers()) {
+      const requestId = offer.requestId;
+
+      if (!requestId) {
+        continue;
+      }
+
+      const list = mapByRequest.get(requestId) ?? [];
+
+      list.push(offer);
+      mapByRequest.set(requestId, list);
+    }
+
+    return mapByRequest;
+  });
+
+  protected readonly bookingInfo = computed(() => {
+    const lead = this.lead() as LeadWithBooking | null;
+
+    if (!lead || lead.status !== LeadStatus.WON) {
       return null;
     }
 
-    if (this.convertLoading()) {
-      return { ...l, status: LeadStatus.WON };
+    if (lead.bookingId) {
+      return {
+        id: lead.bookingId,
+        number: lead.bookingNumber ?? 'Booking',
+      };
     }
 
-    return l;
+    if (lead.booking?.id) {
+      return {
+        id: lead.booking.id,
+        number: lead.booking.number ?? 'Booking',
+      };
+    }
+
+    return null;
   });
-  readonly loading = computed(() => this.data.isLoading());
-  readonly convertLoading = signal(false);
+
+  protected readonly activityItems = signal<ActivityResponseDto[]>([]);
+  protected readonly activityTotal = signal(0);
+  protected readonly activityPage = signal(1);
+  protected readonly loadingMoreActivity = signal(false);
+
+  protected readonly canLoadMoreActivity = computed(() => {
+    return this.activityItems().length < this.activityTotal();
+  });
+
+  protected readonly statusActionLoading = signal<LeadAction | null>(null);
+  protected readonly assignLoading = signal(false);
+  protected readonly savingTravelDetails = signal(false);
+  protected readonly editingTravelDetails = signal(false);
+  protected readonly selectedAgentId = signal('');
+  protected readonly assignSearch = signal('');
+
+  protected readonly travelForm = this.formBuilder.group({
+    destination: this.formBuilder.control<string>(''),
+    departDateFrom: this.formBuilder.control<string>(''),
+    departDateTo: this.formBuilder.control<string>(''),
+    returnDateFrom: this.formBuilder.control<string>(''),
+    returnDateTo: this.formBuilder.control<string>(''),
+    adults: this.formBuilder.control<number | null>(null),
+    children: this.formBuilder.control<number | null>(null),
+    notes: this.formBuilder.control<string>(''),
+  });
+
+  protected readonly filteredAgents = computed(() => {
+    const query = this.assignSearch().trim().toLowerCase();
+    const items = this.membersData.value() ?? [];
+
+    if (!query) {
+      return items;
+    }
+
+    return items.filter((item) => {
+      const inName = item.name.toLowerCase().includes(query);
+      const inEmail = item.email.toLowerCase().includes(query);
+
+      return inName || inEmail;
+    });
+  });
 
   constructor() {
     effect(() => {
       if (this.routeId() === null) {
-        this.router.navigate(['/app/leads']);
+        void this.router.navigate(['/app/leads']);
       }
+    });
+
+    effect(() => {
+      const value = this.data.value();
+
+      if (!value) {
+        return;
+      }
+
+      this.travelDetailsData.set(value.lead);
+      this.activityPage.set(1);
+      this.activityTotal.set(value.activities.total ?? value.activities.items.length);
+
+      const ordered = [...value.activities.items].sort((left, right) => {
+        return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
+      });
+
+      this.activityItems.set(ordered);
+      this.patchTravelForm(value.lead);
+      this.editingTravelDetails.set(false);
     });
   }
 
-  convertToClient(): void {
-    const l = this.lead();
+  protected getActionLabel(action: LeadAction): string {
+    return ACTION_LABELS[action];
+  }
 
-    if (!l || this.convertLoading()) {
+  protected getAvailableActions(status: string): LeadAction[] {
+    switch (status) {
+      case LeadStatus.NEW:
+        return ['assign', 'to_in_progress', 'mark_lost'];
+      case LeadStatus.ASSIGNED:
+        return ['to_in_progress', 'mark_lost'];
+      case LeadStatus.IN_PROGRESS:
+        return ['to_offer_sent', 'mark_lost'];
+      case LeadStatus.OFFER_SENT:
+        return ['mark_lost'];
+      default:
+        return [];
+    }
+  }
+
+  protected isActionBusy(action: LeadAction): boolean {
+    return this.statusActionLoading() === action;
+  }
+
+  protected applyAction(action: LeadAction): void {
+    const lead = this.lead();
+
+    if (!lead) {
       return;
     }
-    this.convertLoading.set(true);
-    this.leadsService.convertToClient(l.id).subscribe({
-      next: (res) => {
-        this.toast.showSuccess('Lead converted to client');
-        this.router.navigate(['/app/clients', res.convertedToClientId]);
+
+    if (action === 'assign') {
+      this.openAssignDialog();
+
+      return;
+    }
+
+    const targetStatus = ACTION_TARGET_STATUS[action];
+
+    if (!targetStatus) {
+      return;
+    }
+
+    this.statusActionLoading.set(action);
+    this.leadsService.updateStatus(lead.id, { status: targetStatus }).subscribe({
+      next: (updated) => {
+        this.travelDetailsData.set(updated);
+        this.toast.showSuccess('Lead status was updated');
       },
-      error: (err) => {
-        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to convert lead');
+      error: (err: unknown) => {
+        this.toast.showError(this.getErrorMessage(err, 'Failed to update status'));
       },
-      complete: () => this.convertLoading.set(false),
+      complete: () => {
+        this.statusActionLoading.set(null);
+      },
     });
+  }
+
+  protected openAssignDialog(): void {
+    const lead = this.lead();
+    const template = this.assignDialogTemplate();
+
+    if (!lead || !template || this.assignLoading()) {
+      return;
+    }
+
+    this.selectedAgentId.set(lead.assignedAgentId ?? '');
+    this.assignSearch.set('');
+    this.dialog.open(template, { width: '480px' });
+  }
+
+  protected closeAssignDialog(): void {
+    this.dialog.closeAll();
+  }
+
+  protected confirmAssign(): void {
+    const lead = this.lead();
+    const agentId = this.selectedAgentId();
+
+    if (!lead || !agentId || this.assignLoading()) {
+      return;
+    }
+
+    this.assignLoading.set(true);
+    this.leadsService.assign(lead.id, { agentId }).subscribe({
+      next: (updated) => {
+        this.travelDetailsData.set(updated);
+        this.toast.showSuccess('Lead was reassigned');
+        this.closeAssignDialog();
+      },
+      error: (err: unknown) => {
+        this.toast.showError(this.getErrorMessage(err, 'Failed to assign lead'));
+      },
+      complete: () => {
+        this.assignLoading.set(false);
+      },
+    });
+  }
+
+  protected isSelectedAgent(agentId: string): boolean {
+    return this.selectedAgentId() === agentId;
+  }
+
+  protected selectAgent(agentId: string): void {
+    this.selectedAgentId.set(agentId);
+  }
+
+  protected updateAssignSearch(value: string): void {
+    this.assignSearch.set(value);
+  }
+
+  protected startEditTravelDetails(): void {
+    const lead = this.lead();
+
+    if (!lead || this.isTerminalStatus(lead.status)) {
+      return;
+    }
+
+    this.patchTravelForm(lead);
+    this.editingTravelDetails.set(true);
+  }
+
+  protected cancelEditTravelDetails(): void {
+    const lead = this.lead();
+
+    if (lead) {
+      this.patchTravelForm(lead);
+    }
+
+    this.editingTravelDetails.set(false);
+  }
+
+  protected saveTravelDetails(): void {
+    const lead = this.lead();
+
+    if (!lead || this.savingTravelDetails() || this.isTerminalStatus(lead.status)) {
+      return;
+    }
+
+    this.savingTravelDetails.set(true);
+    this.leadsService
+      .update(lead.id, {
+        destination: this.normalizeText(this.travelForm.controls.destination.value),
+        departDateFrom: this.normalizeText(this.travelForm.controls.departDateFrom.value),
+        departDateTo: this.normalizeText(this.travelForm.controls.departDateTo.value),
+        returnDateFrom: this.normalizeText(this.travelForm.controls.returnDateFrom.value),
+        returnDateTo: this.normalizeText(this.travelForm.controls.returnDateTo.value),
+        adults: this.travelForm.controls.adults.value ?? undefined,
+        children: this.travelForm.controls.children.value ?? undefined,
+        notes: this.normalizeText(this.travelForm.controls.notes.value),
+      })
+      .subscribe({
+        next: (updated) => {
+          this.travelDetailsData.set(updated);
+          this.patchTravelForm(updated);
+          this.editingTravelDetails.set(false);
+          this.toast.showSuccess('Travel details were updated');
+        },
+        error: (err: unknown) => {
+          this.toast.showError(this.getErrorMessage(err, 'Failed to update travel details'));
+        },
+        complete: () => {
+          this.savingTravelDetails.set(false);
+        },
+      });
+  }
+
+  protected createTravelRequest(): void {
+    const lead = this.lead();
+
+    if (!lead) {
+      return;
+    }
+
+    void this.router.navigate(['/app/requests/new'], {
+      queryParams: { leadId: lead.id },
+    });
+  }
+
+  protected loadMoreActivity(): void {
+    const lead = this.lead();
+
+    if (!lead || this.loadingMoreActivity() || !this.canLoadMoreActivity()) {
+      return;
+    }
+
+    const nextPage = this.activityPage() + 1;
+
+    this.loadingMoreActivity.set(true);
+    this.activitiesService
+      .findByEntity({
+        entityType: EntityType.Lead,
+        entityId: lead.id,
+        page: nextPage,
+        limit: ACTIVITY_PAGE_SIZE,
+      })
+      .pipe(
+        catchError((err) => {
+          this.toast.showError(this.getErrorMessage(err, 'Failed to load activity'));
+
+          return of({
+            items: [],
+            total: this.activityTotal(),
+            page: nextPage,
+            limit: ACTIVITY_PAGE_SIZE,
+          });
+        }),
+      )
+      .subscribe((res) => {
+        this.activityPage.set(nextPage);
+        this.activityTotal.set(res.total ?? this.activityTotal());
+
+        const merged = [...this.activityItems(), ...res.items];
+        const ordered = merged.sort((left, right) => {
+          return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
+        });
+
+        this.activityItems.set(ordered);
+        this.loadingMoreActivity.set(false);
+      });
+  }
+
+  protected goBackToLeads(): void {
+    void this.router.navigate(['/app/leads']);
+  }
+
+  protected getErrorStatus(): number | null {
+    const err = this.error();
+
+    if (err instanceof HttpErrorResponse) {
+      return err.status;
+    }
+
+    return null;
+  }
+
+  protected getOffersForRequest(requestId: string): OfferResponseDto[] {
+    return this.offersByRequest().get(requestId) ?? [];
+  }
+
+  protected getAgentInitials(name: string | null): string {
+    if (!name) {
+      return 'NA';
+    }
+
+    const parts = name
+      .trim()
+      .split(/\s+/)
+      .filter((part) => part.length > 0)
+      .slice(0, 2);
+
+    if (parts.length === 0) {
+      return 'NA';
+    }
+
+    return parts.map((part) => part[0]?.toUpperCase() ?? '').join('');
+  }
+
+  protected formatDateRange(
+    from: string | null | undefined,
+    to: string | null | undefined,
+  ): string {
+    const fromText = this.formatDateShort(from ?? null);
+    const toText = this.formatDateShort(to ?? null);
+
+    if (fromText === '—' && toText === '—') {
+      return '—';
+    }
+
+    if (fromText !== '—' && toText !== '—') {
+      return `${fromText} - ${toText}`;
+    }
+
+    return fromText !== '—' ? fromText : toText;
+  }
+
+  protected formatDateShort(iso: string | null): string {
+    if (!iso) {
+      return '—';
+    }
+
+    try {
+      return new Date(iso).toLocaleDateString(undefined, {
+        dateStyle: 'medium',
+      });
+    } catch {
+      return iso;
+    }
+  }
+
+  protected formatDateTime(iso: string | null): string {
+    if (!iso) {
+      return '—';
+    }
+
+    try {
+      return new Date(iso).toLocaleString(undefined, {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      });
+    } catch {
+      return iso;
+    }
+  }
+
+  protected getActivityIcon(type: string): string {
+    const normalized = type.toLowerCase();
+
+    if (normalized.includes('create')) {
+      return 'add_circle';
+    }
+
+    if (normalized.includes('status')) {
+      return 'flag';
+    }
+
+    if (normalized.includes('assign')) {
+      return 'person_add';
+    }
+
+    if (normalized.includes('offer')) {
+      return 'description';
+    }
+
+    return 'history';
+  }
+
+  protected getActivityLabel(type: string): string {
+    return type
+      .replace(/_/g, ' ')
+      .toLowerCase()
+      .replace(/\b\w/g, (value) => value.toUpperCase());
+  }
+
+  protected getActivityActor(item: ActivityResponseDto): string {
+    const payload = item.payload;
+    const actorName =
+      payload && typeof payload['actorName'] === 'string' ? payload['actorName'] : null;
+
+    if (actorName) {
+      return actorName;
+    }
+
+    return item.createdBy || 'System action';
+  }
+
+  private isTerminalStatus(status: string): boolean {
+    return TERMINAL_STATUSES.has(status);
+  }
+
+  private patchTravelForm(lead: LeadResponseDto): void {
+    this.travelForm.patchValue({
+      destination: lead.destination ?? '',
+      departDateFrom: this.asDateInputValue(lead.departDateFrom),
+      departDateTo: this.asDateInputValue(lead.departDateTo),
+      returnDateFrom: this.asDateInputValue(lead.returnDateFrom),
+      returnDateTo: this.asDateInputValue(lead.returnDateTo),
+      adults: lead.adults,
+      children: lead.children,
+      notes: lead.notes ?? '',
+    });
+  }
+
+  private asDateInputValue(value: string | null): string {
+    if (!value) {
+      return '';
+    }
+
+    return value.slice(0, 10);
+  }
+
+  private normalizeText(value: string | null | undefined): string | undefined {
+    const trimmed = value?.trim();
+
+    return trimmed ? trimmed : undefined;
+  }
+
+  private getErrorMessage(err: unknown, fallback: string): string {
+    if (err instanceof HttpErrorResponse) {
+      return err.error?.message ?? err.message ?? fallback;
+    }
+
+    if (typeof err === 'object' && err !== null && 'message' in err) {
+      const message = (err as { message?: string }).message;
+
+      if (message) {
+        return message;
+      }
+    }
+
+    return fallback;
   }
 }
