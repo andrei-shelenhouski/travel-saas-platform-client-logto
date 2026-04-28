@@ -1,9 +1,6 @@
-<div class="space-y-6">
-  <div>
-    <h1 class="text-2xl font-semibold text-gray-900">Dashboard</h1>
-    <p class="mt-1 text-sm text-gray-500">Overview of your organization</p>
-  </div>
+<app-page-heading subtitle="Overview of your organization" title="Dashboard"></app-page-heading>
 
+<div class="p-4">
   @if (error()) {
     <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
       {{ error() }}
