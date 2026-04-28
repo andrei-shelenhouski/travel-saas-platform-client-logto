@@ -2,10 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 
 import { ClientType } from '@app/shared/models';
 
-const BADGE_CONFIG: Record<
-  string,
-  { label: string; classes: string }
-> = {
+const BADGE_CONFIG: Record<string, { label: string; classes: string }> = {
   [ClientType.INDIVIDUAL]: {
     label: 'Individual',
     classes: 'bg-blue-100 text-blue-800',
@@ -29,7 +26,8 @@ const FALLBACK = { label: '—', classes: 'bg-gray-100 text-gray-600' };
     <span
       class="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
       [class]="config().classes"
-    >{{ config().label }}</span>
+      >{{ config().label }}</span
+    >
   `,
 })
 export class ClientTypeBadgeComponent {

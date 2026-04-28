@@ -36,7 +36,7 @@ import type {
   OrganizationMemberResponseDto,
 } from '@app/shared/models';
 const PAGE_SIZE = 20;
-const LEADS_VIEW_STORAGE_KEY = 'leads.view';
+const LEADS_VIEW_STORAGE_KEY = 'leads_view';
 
 type LeadStatusOption = {
   value: LeadStatus;

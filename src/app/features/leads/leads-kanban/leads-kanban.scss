@@ -2,9 +2,18 @@
   max-height: calc(100vh - 12rem);
 }
 
+.kanban-column.cdk-drop-list-disabled {
+  background: rgba(248, 250, 252, 0.9);
+}
+
 .kanban-card.cdk-drag-dragging {
   opacity: 0.8;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.kanban-card.cdk-drag-disabled {
+  cursor: default;
+  opacity: 0.75;
 }
 
 .kanban-card.cdk-drag-placeholder {

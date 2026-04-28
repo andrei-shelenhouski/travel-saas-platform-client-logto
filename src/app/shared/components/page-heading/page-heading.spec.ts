@@ -1,12 +1,13 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PageHeading } from './page-heading';
 
 @Component({
   imports: [PageHeading],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <app-page-heading [title]="title" [subtitle]="subtitle">
+    <app-page-heading [subtitle]="subtitle" [title]="title">
       <button type="button">Create</button>
     </app-page-heading>
   `,
