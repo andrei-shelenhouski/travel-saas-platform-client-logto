@@ -930,9 +930,9 @@
         <source>Status filter is disabled in Kanban view.</source>
         <target>Фильтр статуса отключен в режиме Kanban.</target>
       </trans-unit>
-      <trans-unit id="leadsKanbanFirst200Banner" datatype="html">
-        <source>Showing only first 200 leads.</source>
-        <target>Показаны первые 200 лидов.</target>
+      <trans-unit id="leadsKanbanFirst100Banner" datatype="html">
+        <source>Showing only first 100 leads.</source>
+        <target>Показаны первые 100 лидов.</target>
       </trans-unit>
       <trans-unit id="leadsKanbanCardDestinationLabel" datatype="html">
         <source>Destination:</source>
