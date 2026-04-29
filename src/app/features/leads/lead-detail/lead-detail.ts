@@ -23,7 +23,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EMPTY, forkJoin, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, finalize, map } from 'rxjs/operators';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
 import { ActivitiesService } from '@app/services/activities.service';
@@ -578,6 +578,11 @@ export class LeadDetailComponent {
         notes: this.normalizeText(value.notes),
         managerId: this.normalizeText(value.managerId),
       })
+      .pipe(
+        finalize(() => {
+          this.savingRequest.set(false);
+        }),
+      )
       .subscribe({
         next: (created) => {
           this.requestsData.update((items) => [created, ...items]);
@@ -595,9 +600,6 @@ export class LeadDetailComponent {
         },
         error: (err: unknown) => {
           this.toast.showError(this.getErrorMessage(err, 'Failed to create travel request'));
-        },
-        complete: () => {
-          this.savingRequest.set(false);
         },
       });
   }
@@ -656,6 +658,11 @@ export class LeadDetailComponent {
         notes: this.normalizeText(value.notes),
         managerId: this.normalizeText(value.managerId),
       })
+      .pipe(
+        finalize(() => {
+          this.updatingRequest.set(false);
+        }),
+      )
       .subscribe({
         next: (updated) => {
           this.requestsData.update((items) => {
@@ -672,9 +679,6 @@ export class LeadDetailComponent {
         },
         error: (err: unknown) => {
           this.toast.showError(this.getErrorMessage(err, 'Failed to update travel request'));
-        },
-        complete: () => {
-          this.updatingRequest.set(false);
         },
       });
   }

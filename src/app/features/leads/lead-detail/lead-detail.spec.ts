@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
 import { ActivitiesService } from '@app/services/activities.service';
@@ -201,6 +201,64 @@ describe('LeadDetailComponent', () => {
 
     expect(api.canCreateOfferForRequest('CLOSED')).toBe(false);
     expect(api.canCreateOfferForRequest('OPEN')).toBe(true);
+  });
+
+  it('resets savingRequest after create error so user can retry', () => {
+    requestsServiceMock.create.mockImplementationOnce(() => {
+      return throwError(() => new Error('create failed'));
+    });
+
+    const api = component as unknown as {
+      createTravelRequest: () => void;
+      saveTravelRequest: () => void;
+      addRequestForm: {
+        controls: {
+          destination: { setValue: (value: string) => void };
+          departDate: { setValue: (value: string) => void };
+          returnDate: { setValue: (value: string) => void };
+        };
+      };
+      savingRequest: () => boolean;
+    };
+
+    api.createTravelRequest();
+    api.addRequestForm.controls.destination.setValue('Paris');
+    api.addRequestForm.controls.departDate.setValue('2026-09-02');
+    api.addRequestForm.controls.returnDate.setValue('2026-09-09');
+    api.saveTravelRequest();
+
+    expect(api.savingRequest()).toBe(false);
+
+    api.saveTravelRequest();
+
+    expect(requestsServiceMock.create).toHaveBeenCalledTimes(2);
+  });
+
+  it('resets updatingRequest after update error so user can retry', () => {
+    requestsServiceMock.update.mockImplementationOnce(() => {
+      return throwError(() => new Error('update failed'));
+    });
+
+    const api = component as unknown as {
+      editTravelRequest: (request: { id: string; destination: string }) => void;
+      saveEditedTravelRequest: (id: string) => void;
+      editRequestForm: {
+        controls: {
+          destination: { setValue: (value: string) => void };
+        };
+      };
+      updatingRequest: () => boolean;
+    };
+
+    api.editTravelRequest({ id: 'request-1', destination: 'Turkey' });
+    api.editRequestForm.controls.destination.setValue('Retry destination');
+    api.saveEditedTravelRequest('request-1');
+
+    expect(api.updatingRequest()).toBe(false);
+
+    api.saveEditedTravelRequest('request-1');
+
+    expect(requestsServiceMock.update).toHaveBeenCalledTimes(2);
   });
 });
 
