@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { authGuard } from '@app/auth/auth.guard';
 import { adminGuard } from '@app/guards/admin.guard';
 import { appGuard } from '@app/guards/app.guard';
+import { pendingChangesGuard } from '@app/guards/pending-changes.guard';
 
 export const routes: Routes = [
   {
@@ -164,6 +165,7 @@ export const routes: Routes = [
       // Offers: /app/offers/:id (more specific first)
       {
         path: 'offers/new',
+        canDeactivate: [pendingChangesGuard],
         loadComponent: () =>
           import('@app/features/offers/create-offer/create-offer').then(
             (m) => m.CreateOfferComponent,
@@ -178,6 +180,7 @@ export const routes: Routes = [
       },
       {
         path: 'offers/:id/edit',
+        canDeactivate: [pendingChangesGuard],
         loadComponent: () =>
           import('@app/features/offers/offer-edit/offer-edit').then((m) => m.OfferEditComponent),
       },

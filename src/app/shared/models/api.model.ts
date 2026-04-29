@@ -127,9 +127,88 @@ export type OrganizationResponseDto = {
   id: string;
   name: string;
   defaultCurrency?: string;
+  offerValidityDays?: number;
   invoicePrefix?: string;
   invoiceNextNumber?: number;
   createdAt: string;
+};
+
+/** OpenAPI: UpdateOrganizationSettingsRequest.defaultCurrency pattern. */
+export const OrganizationCurrency = {
+  BYN: 'BYN',
+  USD: 'USD',
+  EUR: 'EUR',
+} as const;
+export type OrganizationCurrency = (typeof OrganizationCurrency)[keyof typeof OrganizationCurrency];
+
+/** OpenAPI: UpdateOrganizationSettingsRequest.defaultLanguage pattern. */
+export const OrganizationLanguage = {
+  RU: 'RU',
+  EN: 'EN',
+} as const;
+export type OrganizationLanguage = (typeof OrganizationLanguage)[keyof typeof OrganizationLanguage];
+
+/** OpenAPI: UpdateOrganizationSettingsRequest.agentAssignmentRule pattern. */
+export const AgentAssignmentRule = {
+  MANUAL: 'MANUAL',
+  ROUND_ROBIN: 'ROUND_ROBIN',
+} as const;
+export type AgentAssignmentRule = (typeof AgentAssignmentRule)[keyof typeof AgentAssignmentRule];
+
+/** OpenAPI: UpdateOrganizationSettingsRequest. PUT /api/settings/organization body. */
+export type UpdateOrganizationSettingsDto = {
+  name: string;
+  defaultCurrency: OrganizationCurrency;
+  defaultLanguage: OrganizationLanguage;
+  legalName?: string;
+  legalAddress?: string;
+  unp?: string;
+  okpo?: string;
+  directorName?: string;
+  directorTitle?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  iban?: string;
+  bankName?: string;
+  bik?: string;
+  offerNumberPrefix?: string;
+  invoicePrefix?: string;
+  offerValidityDays?: number;
+  leadExpiryDays?: number;
+  defaultPaymentTerms?: string;
+  defaultCommissionPct?: number;
+  agentAssignmentRule?: AgentAssignmentRule;
+};
+
+/** OpenAPI: OrganizationSettingsResponse. GET/PUT /api/settings/organization response. */
+export type OrganizationSettingsResponseDto = {
+  id?: string;
+  name?: string;
+  legalName?: string;
+  legalAddress?: string;
+  unp?: string;
+  okpo?: string;
+  directorName?: string;
+  directorTitle?: string;
+  logoUrl?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  iban?: string;
+  bankName?: string;
+  bik?: string;
+  defaultCurrency?: OrganizationCurrency;
+  defaultLanguage?: OrganizationLanguage;
+  offerNumberPrefix?: string;
+  invoicePrefix?: string;
+  offerValidityDays?: number;
+  leadExpiryDays?: number;
+  defaultPaymentTerms?: string;
+  defaultCommissionPct?: number;
+  agentAssignmentRule?: AgentAssignmentRule;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 // ----- Leads -----

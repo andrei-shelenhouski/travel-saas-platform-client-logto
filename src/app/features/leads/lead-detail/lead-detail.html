@@ -414,8 +414,8 @@
                         @for (offer of getOffersForRequest(request.id); track offer.id) {
                           <a
                             class="offer-chip"
-                            [routerLink]="['/app/offers', offer.id]"
                             [attr.title]="getOfferTooltip(offer)"
+                            [routerLink]="['/app/offers', offer.id]"
                           >
                             <span>{{ offer.number ?? offer.id }}</span>
                             <span
