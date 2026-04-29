@@ -221,27 +221,228 @@
               }
             </div>
 
+            @if (showAddRequestForm()) {
+              <form
+                class="request-form"
+                [formGroup]="addRequestForm"
+                (ngSubmit)="saveTravelRequest()"
+              >
+                <div class="request-form-grid">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Destination</mat-label>
+                    <input formControlName="destination" matInput />
+                    @if (
+                      addRequestForm.controls.destination.invalid &&
+                      (addRequestForm.controls.destination.dirty ||
+                        addRequestForm.controls.destination.touched)
+                    ) {
+                      <mat-error>Destination is required.</mat-error>
+                    }
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Assign manager</mat-label>
+                    <mat-select formControlName="managerId">
+                      <mat-option value="">No manager</mat-option>
+                      @for (agent of filteredAgents(); track agent.id) {
+                        <mat-option [value]="agent.userId">{{ agent.name }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Departure date</mat-label>
+                    <input formControlName="departDate" matInput type="date" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Return date</mat-label>
+                    <input formControlName="returnDate" matInput type="date" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Adults</mat-label>
+                    <input formControlName="adults" matInput min="0" type="number" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Children</mat-label>
+                    <input formControlName="children" matInput min="0" type="number" />
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="request-form-notes">
+                    <mat-label>Notes</mat-label>
+                    <textarea formControlName="notes" matInput rows="3"></textarea>
+                  </mat-form-field>
+                </div>
+
+                @if (canShowDateRangeError('add')) {
+                  <p class="request-form-error">Return date must be on or after departure date.</p>
+                }
+
+                <div class="travel-form-actions">
+                  <button mat-button type="button" (click)="cancelAddTravelRequest()">
+                    Cancel
+                  </button>
+                  <button
+                    color="primary"
+                    mat-flat-button
+                    type="submit"
+                    [disabled]="savingRequest()"
+                  >
+                    Add
+                  </button>
+                </div>
+              </form>
+            }
+
             @if (requests().length === 0) {
               <p class="text-sm text-gray-500">No travel requests yet.</p>
             } @else {
               <div class="requests-grid">
                 @for (request of requests(); track request.id) {
                   <article class="request-card">
-                    <p class="request-destination">{{ request.destination ?? '—' }}</p>
-                    <p class="request-dates">
-                      {{ formatDateRange(request.departDate, request.returnDate) }}
-                    </p>
-                    <p class="request-offers-count">Offers: {{ request.offersCount }}</p>
+                    @if (isEditingRequest(request.id)) {
+                      <form
+                        class="request-form"
+                        [formGroup]="editRequestForm"
+                        (ngSubmit)="saveEditedTravelRequest(request.id)"
+                      >
+                        <div class="request-form-grid">
+                          <mat-form-field appearance="outline">
+                            <mat-label>Destination</mat-label>
+                            <input formControlName="destination" matInput />
+                            @if (
+                              editRequestForm.controls.destination.invalid &&
+                              (editRequestForm.controls.destination.dirty ||
+                                editRequestForm.controls.destination.touched)
+                            ) {
+                              <mat-error>Destination is required.</mat-error>
+                            }
+                          </mat-form-field>
 
-                    <div class="offer-chip-list">
-                      @for (offer of getOffersForRequest(request.id); track offer.id) {
-                        <a class="offer-chip" [routerLink]="['/app/offers', offer.id]">
-                          {{ offer.number ?? offer.id }}
-                        </a>
-                      } @empty {
-                        <span class="text-xs text-gray-500">No offers</span>
+                          <mat-form-field appearance="outline">
+                            <mat-label>Assign manager</mat-label>
+                            <mat-select formControlName="managerId">
+                              <mat-option value="">No manager</mat-option>
+                              @for (agent of filteredAgents(); track agent.id) {
+                                <mat-option [value]="agent.userId">{{ agent.name }}</mat-option>
+                              }
+                            </mat-select>
+                          </mat-form-field>
+
+                          <mat-form-field appearance="outline">
+                            <mat-label>Departure date</mat-label>
+                            <input formControlName="departDate" matInput type="date" />
+                          </mat-form-field>
+
+                          <mat-form-field appearance="outline">
+                            <mat-label>Return date</mat-label>
+                            <input formControlName="returnDate" matInput type="date" />
+                          </mat-form-field>
+
+                          <mat-form-field appearance="outline">
+                            <mat-label>Adults</mat-label>
+                            <input formControlName="adults" matInput min="0" type="number" />
+                          </mat-form-field>
+
+                          <mat-form-field appearance="outline">
+                            <mat-label>Children</mat-label>
+                            <input formControlName="children" matInput min="0" type="number" />
+                          </mat-form-field>
+
+                          <mat-form-field appearance="outline" class="request-form-notes">
+                            <mat-label>Notes</mat-label>
+                            <textarea formControlName="notes" matInput rows="3"></textarea>
+                          </mat-form-field>
+                        </div>
+
+                        @if (canShowDateRangeError('edit')) {
+                          <p class="request-form-error">
+                            Return date must be on or after departure date.
+                          </p>
+                        }
+
+                        <div class="travel-form-actions">
+                          <button mat-button type="button" (click)="cancelEditTravelRequest()">
+                            Cancel
+                          </button>
+                          <button
+                            color="primary"
+                            mat-flat-button
+                            type="submit"
+                            [disabled]="updatingRequest()"
+                          >
+                            Save
+                          </button>
+                        </div>
+                      </form>
+                    } @else {
+                      <div class="request-header">
+                        <p class="request-destination">{{ request.destination ?? '—' }}</p>
+                        <button
+                          aria-label="Edit travel request"
+                          mat-icon-button
+                          type="button"
+                          (click)="editTravelRequest(request)"
+                        >
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                      </div>
+
+                      <div class="request-meta-row">
+                        <span
+                          class="request-status-chip"
+                          [class]="getRequestStatusClass(request.status)"
+                        >
+                          {{ getRequestStatusLabel(request.status) }}
+                        </span>
+                        <p class="request-meta-text">Offers: {{ request.offersCount }}</p>
+                      </div>
+
+                      <p class="request-dates">
+                        {{ formatDateRange(request.departDate, request.returnDate) }}
+                      </p>
+                      <p class="request-offers-count">
+                        Adults/Children: {{ request.adults ?? 0 }}/{{ request.children ?? 0 }}
+                      </p>
+                      @if (request.managerName) {
+                        <p class="request-offers-count">Manager: {{ request.managerName }}</p>
                       }
-                    </div>
+
+                      <div class="offer-chip-list">
+                        @for (offer of getOffersForRequest(request.id); track offer.id) {
+                          <a
+                            class="offer-chip"
+                            [routerLink]="['/app/offers', offer.id]"
+                            [attr.title]="getOfferTooltip(offer)"
+                          >
+                            <span>{{ offer.number ?? offer.id }}</span>
+                            <span
+                              class="offer-status-chip"
+                              [class]="getOfferStatusClass(offer.status)"
+                            >
+                              {{ offer.status }}
+                            </span>
+                          </a>
+                        } @empty {
+                          <span class="text-xs text-gray-500">No offers</span>
+                        }
+                      </div>
+
+                      @if (canCreateOfferForRequest(request.status)) {
+                        <div class="request-actions">
+                          <button
+                            color="primary"
+                            mat-stroked-button
+                            type="button"
+                            (click)="openNewOffer(request.id)"
+                          >
+                            + New offer
+                          </button>
+                        </div>
+                      }
+                    }
                   </article>
                 }
               </div>

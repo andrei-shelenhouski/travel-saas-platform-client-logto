@@ -10,7 +10,14 @@ import {
   viewChild,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -55,9 +62,18 @@ type LeadDetailLoadData = {
   activities: ActivityListResponseDto;
 };
 
-const SALES_ROLES = new Set(['AGENT', 'SALES_AGENT', 'ADMIN']);
+const SALES_ROLES = new Set(['AGENT', 'SALES_AGENT', 'ADMIN', 'MANAGER']);
 const TERMINAL_STATUSES = new Set<string>([LeadStatus.WON, LeadStatus.LOST, LeadStatus.EXPIRED]);
+const REQUEST_TERMINAL_STATUSES = new Set<string>(['CLOSED']);
 const ACTIVITY_PAGE_SIZE = 20;
+const OFFER_STATUS_CLASS: Record<string, string> = {
+  DRAFT: 'offer-status-draft',
+  SENT: 'offer-status-sent',
+  VIEWED: 'offer-status-viewed',
+  ACCEPTED: 'offer-status-accepted',
+  REJECTED: 'offer-status-rejected',
+  EXPIRED: 'offer-status-expired',
+};
 
 const ACTION_LABELS: Record<LeadAction, string> = {
   assign: 'Assign',
@@ -108,6 +124,7 @@ export class LeadDetailComponent {
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
   private readonly travelDetailsData = signal<LeadResponseDto | null>(null);
+  private readonly requestsData = signal<RequestResponseDto[]>([]);
 
   private readonly data = rxResource<LeadDetailLoadData, string | null>({
     params: (): string | null => this.routeId() ?? null,
@@ -149,7 +166,15 @@ export class LeadDetailComponent {
   protected readonly lead = computed(
     () => this.travelDetailsData() ?? this.data.value()?.lead ?? null,
   );
-  protected readonly requests = computed(() => this.data.value()?.requests ?? []);
+  protected readonly requests = computed(() => {
+    const local = this.requestsData();
+
+    if (local.length > 0) {
+      return local;
+    }
+
+    return this.data.value()?.requests ?? [];
+  });
   protected readonly offers = computed(() => this.data.value()?.offers ?? []);
   protected readonly loading = computed(() => this.data.isLoading());
   protected readonly error = computed(() => this.data.error());
@@ -238,6 +263,10 @@ export class LeadDetailComponent {
   protected readonly assignLoading = signal(false);
   protected readonly savingTravelDetails = signal(false);
   protected readonly editingTravelDetails = signal(false);
+  protected readonly showAddRequestForm = signal(false);
+  protected readonly savingRequest = signal(false);
+  protected readonly editingRequestId = signal<string | null>(null);
+  protected readonly updatingRequest = signal(false);
   protected readonly selectedAgentId = signal('');
   protected readonly assignSearch = signal('');
 
@@ -251,6 +280,48 @@ export class LeadDetailComponent {
     children: this.formBuilder.control<number | null>(null),
     notes: this.formBuilder.control<string>(''),
   });
+
+  protected readonly addRequestForm = this.formBuilder.group(
+    {
+      destination: this.formBuilder.control<string>('', {
+        validators: [Validators.required],
+      }),
+      departDate: this.formBuilder.control<string>(''),
+      returnDate: this.formBuilder.control<string>(''),
+      adults: this.formBuilder.control<number | null>(1, {
+        validators: [Validators.min(0)],
+      }),
+      children: this.formBuilder.control<number | null>(0, {
+        validators: [Validators.min(0)],
+      }),
+      notes: this.formBuilder.control<string>(''),
+      managerId: this.formBuilder.control<string>(''),
+    },
+    {
+      validators: [this.returnDateAfterDepartDateValidator()],
+    },
+  );
+
+  protected readonly editRequestForm = this.formBuilder.group(
+    {
+      destination: this.formBuilder.control<string>('', {
+        validators: [Validators.required],
+      }),
+      departDate: this.formBuilder.control<string>(''),
+      returnDate: this.formBuilder.control<string>(''),
+      adults: this.formBuilder.control<number | null>(1, {
+        validators: [Validators.min(0)],
+      }),
+      children: this.formBuilder.control<number | null>(0, {
+        validators: [Validators.min(0)],
+      }),
+      notes: this.formBuilder.control<string>(''),
+      managerId: this.formBuilder.control<string>(''),
+    },
+    {
+      validators: [this.returnDateAfterDepartDateValidator()],
+    },
+  );
 
   protected readonly filteredAgents = computed(() => {
     const query = this.assignSearch().trim().toLowerCase();
@@ -283,6 +354,7 @@ export class LeadDetailComponent {
       }
 
       this.travelDetailsData.set(value.lead);
+      this.requestsData.set(value.requests);
       this.activityPage.set(1);
       this.activityTotal.set(value.activities.total ?? value.activities.items.length);
 
@@ -293,6 +365,7 @@ export class LeadDetailComponent {
       this.activityItems.set(ordered);
       this.patchTravelForm(value.lead);
       this.editingTravelDetails.set(false);
+      this.resetRequestEditingState();
     });
   }
 
@@ -463,15 +536,228 @@ export class LeadDetailComponent {
   }
 
   protected createTravelRequest(): void {
+    this.showAddRequestForm.update((value) => !value);
+
+    if (!this.showAddRequestForm()) {
+      this.addRequestForm.reset({
+        destination: '',
+        departDate: '',
+        returnDate: '',
+        adults: 1,
+        children: 0,
+        notes: '',
+        managerId: '',
+      });
+    }
+  }
+
+  protected saveTravelRequest(): void {
     const lead = this.lead();
 
-    if (!lead) {
+    if (!lead || this.savingRequest()) {
       return;
     }
 
-    void this.router.navigate(['/app/requests/new'], {
-      queryParams: { leadId: lead.id },
+    if (this.addRequestForm.invalid) {
+      this.addRequestForm.markAllAsTouched();
+
+      return;
+    }
+
+    const value = this.addRequestForm.getRawValue();
+
+    this.savingRequest.set(true);
+    this.requestsService
+      .create({
+        leadId: lead.id,
+        destination: this.normalizeText(value.destination),
+        departDate: this.normalizeText(value.departDate),
+        returnDate: this.normalizeText(value.returnDate),
+        adults: value.adults ?? undefined,
+        children: value.children ?? undefined,
+        notes: this.normalizeText(value.notes),
+        managerId: this.normalizeText(value.managerId),
+      })
+      .subscribe({
+        next: (created) => {
+          this.requestsData.update((items) => [created, ...items]);
+          this.showAddRequestForm.set(false);
+          this.addRequestForm.reset({
+            destination: '',
+            departDate: '',
+            returnDate: '',
+            adults: 1,
+            children: 0,
+            notes: '',
+            managerId: '',
+          });
+          this.toast.showSuccess('Travel request was created');
+        },
+        error: (err: unknown) => {
+          this.toast.showError(this.getErrorMessage(err, 'Failed to create travel request'));
+        },
+        complete: () => {
+          this.savingRequest.set(false);
+        },
+      });
+  }
+
+  protected cancelAddTravelRequest(): void {
+    this.showAddRequestForm.set(false);
+    this.addRequestForm.reset({
+      destination: '',
+      departDate: '',
+      returnDate: '',
+      adults: 1,
+      children: 0,
+      notes: '',
+      managerId: '',
     });
+  }
+
+  protected editTravelRequest(request: RequestResponseDto): void {
+    this.editingRequestId.set(request.id);
+    this.editRequestForm.reset({
+      destination: request.destination ?? '',
+      departDate: this.asDateInputValue(request.departDate),
+      returnDate: this.asDateInputValue(request.returnDate),
+      adults: request.adults ?? 1,
+      children: request.children ?? 0,
+      notes: request.notes ?? '',
+      managerId: request.managerId ?? '',
+    });
+  }
+
+  protected cancelEditTravelRequest(): void {
+    this.editingRequestId.set(null);
+  }
+
+  protected saveEditedTravelRequest(requestId: string): void {
+    if (this.updatingRequest()) {
+      return;
+    }
+
+    if (this.editRequestForm.invalid) {
+      this.editRequestForm.markAllAsTouched();
+
+      return;
+    }
+
+    const value = this.editRequestForm.getRawValue();
+
+    this.updatingRequest.set(true);
+    this.requestsService
+      .update(requestId, {
+        destination: this.normalizeText(value.destination),
+        departDate: this.normalizeText(value.departDate),
+        returnDate: this.normalizeText(value.returnDate),
+        adults: value.adults ?? undefined,
+        children: value.children ?? undefined,
+        notes: this.normalizeText(value.notes),
+        managerId: this.normalizeText(value.managerId),
+      })
+      .subscribe({
+        next: (updated) => {
+          this.requestsData.update((items) => {
+            return items.map((item) => {
+              if (item.id === requestId) {
+                return updated;
+              }
+
+              return item;
+            });
+          });
+          this.editingRequestId.set(null);
+          this.toast.showSuccess('Travel request was updated');
+        },
+        error: (err: unknown) => {
+          this.toast.showError(this.getErrorMessage(err, 'Failed to update travel request'));
+        },
+        complete: () => {
+          this.updatingRequest.set(false);
+        },
+      });
+  }
+
+  protected isEditingRequest(requestId: string): boolean {
+    return this.editingRequestId() === requestId;
+  }
+
+  protected openNewOffer(requestId: string): void {
+    void this.router.navigate(['/app/offers/new'], {
+      queryParams: { requestId },
+    });
+  }
+
+  protected canCreateOfferForRequest(status: string): boolean {
+    return !REQUEST_TERMINAL_STATUSES.has(status);
+  }
+
+  protected getRequestStatusClass(status: string | null | undefined): string {
+    if (status === 'OPEN') {
+      return 'request-status-open';
+    }
+
+    if (status === 'QUOTED') {
+      return 'request-status-quoted';
+    }
+
+    if (status === 'CLOSED') {
+      return 'request-status-closed';
+    }
+
+    return 'request-status-default';
+  }
+
+  protected getRequestStatusLabel(status: string | null | undefined): string {
+    if (status === 'OPEN') {
+      return 'Open';
+    }
+
+    if (status === 'QUOTED') {
+      return 'Quoted';
+    }
+
+    if (status === 'CLOSED') {
+      return 'Closed';
+    }
+
+    return status ?? 'Unknown';
+  }
+
+  protected getOfferStatusClass(status: string | null | undefined): string {
+    if (!status) {
+      return 'offer-status-default';
+    }
+
+    return OFFER_STATUS_CLASS[status] ?? 'offer-status-default';
+  }
+
+  protected getOfferTooltip(offer: OfferResponseDto): string {
+    const amount = offer.total;
+    const currency = offer.currency;
+
+    if (amount === null || amount === undefined) {
+      return 'Total is not set';
+    }
+
+    if (!currency) {
+      return `Total: ${amount}`;
+    }
+
+    return `Total: ${amount} ${currency}`;
+  }
+
+  protected canShowDateRangeError(formName: 'add' | 'edit'): boolean {
+    const form = formName === 'add' ? this.addRequestForm : this.editRequestForm;
+
+    if (!form.hasError('invalidReturnDateRange')) {
+      return false;
+    }
+
+    const returnDateControl = form.get('returnDate');
+
+    return Boolean(returnDateControl?.dirty || returnDateControl?.touched);
   }
 
   protected loadMoreActivity(): void {
@@ -670,6 +956,49 @@ export class LeadDetailComponent {
     const trimmed = value?.trim();
 
     return trimmed ? trimmed : undefined;
+  }
+
+  private resetRequestEditingState(): void {
+    this.showAddRequestForm.set(false);
+    this.savingRequest.set(false);
+    this.editingRequestId.set(null);
+    this.updatingRequest.set(false);
+    this.addRequestForm.reset({
+      destination: '',
+      departDate: '',
+      returnDate: '',
+      adults: 1,
+      children: 0,
+      notes: '',
+      managerId: '',
+    });
+    this.editRequestForm.reset({
+      destination: '',
+      departDate: '',
+      returnDate: '',
+      adults: 1,
+      children: 0,
+      notes: '',
+      managerId: '',
+    });
+  }
+
+  private returnDateAfterDepartDateValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const group = control;
+      const departDate = String(group.get('departDate')?.value ?? '').trim();
+      const returnDate = String(group.get('returnDate')?.value ?? '').trim();
+
+      if (!departDate || !returnDate) {
+        return null;
+      }
+
+      if (returnDate >= departDate) {
+        return null;
+      }
+
+      return { invalidReturnDateRange: true };
+    };
   }
 
   private getErrorMessage(err: unknown, fallback: string): string {
