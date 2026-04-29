@@ -32,6 +32,7 @@ import { LeadsService } from '@app/services/leads.service';
 import { MeService } from '@app/services/me.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { RoleService } from '@app/services/role.service';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientResponseDto, CreateLeadDto, LeadResponseDto, OrgRole } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
@@ -110,6 +111,7 @@ function isFieldErrorMap(value: unknown): value is FieldErrorMap {
     MatIconModule,
     MatProgressSpinnerModule,
     ...MAT_FORM_BUTTONS,
+    PageHeading,
   ],
   templateUrl: './create-lead.html',
   styleUrl: './create-lead.scss',
