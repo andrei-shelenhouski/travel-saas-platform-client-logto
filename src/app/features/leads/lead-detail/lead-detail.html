@@ -34,305 +34,314 @@
         </a>
       </app-page-heading>
 
-      <section class="lead-header-card">
-        <div class="lead-header-main">
-          <div>
-            <p class="lead-header-label">Lead number</p>
-            <h1 class="lead-header-title">{{ l.number }}</h1>
+      <div class="m-4">
+        <section class="lead-header-card">
+          <div class="lead-header-main">
+            <div>
+              <p class="lead-header-label">Lead number</p>
+              <h1 class="lead-header-title">{{ l.number }}</h1>
+            </div>
+            <app-status-badge variant="lead" [status]="l.status" />
           </div>
-          <app-status-badge variant="lead" [status]="l.status" />
+
+          <div class="lead-header-actions">
+            @if (!isTerminalLead()) {
+              <button mat-stroked-button type="button" (click)="startEditTravelDetails()">
+                <mat-icon>edit</mat-icon>
+                Edit travel details
+              </button>
+            }
+
+            @for (action of visibleActions(); track action) {
+              <button
+                color="primary"
+                mat-flat-button
+                type="button"
+                [disabled]="isActionBusy(action)"
+                (click)="applyAction(action)"
+              >
+                {{ getActionLabel(action) }}
+              </button>
+            }
+          </div>
+        </section>
+
+        <div class="lead-grid">
+          <section class="lead-card">
+            <h2 class="lead-card-title">Client</h2>
+            <dl class="lead-data-list">
+              <div class="lead-data-row">
+                <dt>Name</dt>
+                <dd>{{ l.clientName ?? '—' }}</dd>
+              </div>
+              <div class="lead-data-row">
+                <dt>Type</dt>
+                <dd>
+                  @if (l.clientType) {
+                    <app-client-type-badge [type]="l.clientType" />
+                  } @else {
+                    —
+                  }
+                </dd>
+              </div>
+              <div class="lead-data-row">
+                <dt>Phone</dt>
+                <dd>{{ l.contactPhone ?? '—' }}</dd>
+              </div>
+              <div class="lead-data-row">
+                <dt>Email</dt>
+                <dd>{{ l.contactEmail ?? '—' }}</dd>
+              </div>
+              <div class="lead-data-row">
+                <dt>Profile</dt>
+                <dd>
+                  @if (l.clientId) {
+                    <a class="lead-link" [routerLink]="['/app/clients', l.clientId]">Open client</a>
+                  } @else {
+                    —
+                  }
+                </dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="lead-card">
+            <div class="lead-card-header">
+              <h2 class="lead-card-title">Travel details</h2>
+            </div>
+
+            @if (editingTravelDetails()) {
+              <form class="travel-form" [formGroup]="travelForm" (ngSubmit)="saveTravelDetails()">
+                <mat-form-field appearance="outline">
+                  <mat-label>Destination</mat-label>
+                  <input formControlName="destination" matInput />
+                </mat-form-field>
+
+                <div class="travel-date-grid">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Depart from</mat-label>
+                    <input formControlName="departDateFrom" matInput type="date" />
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Depart to</mat-label>
+                    <input formControlName="departDateTo" matInput type="date" />
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Return from</mat-label>
+                    <input formControlName="returnDateFrom" matInput type="date" />
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Return to</mat-label>
+                    <input formControlName="returnDateTo" matInput type="date" />
+                  </mat-form-field>
+                </div>
+
+                <div class="travel-count-grid">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Adults</mat-label>
+                    <input formControlName="adults" matInput min="0" type="number" />
+                  </mat-form-field>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Children</mat-label>
+                    <input formControlName="children" matInput min="0" type="number" />
+                  </mat-form-field>
+                </div>
+
+                <mat-form-field appearance="outline">
+                  <mat-label>Notes</mat-label>
+                  <textarea formControlName="notes" matInput rows="3"></textarea>
+                </mat-form-field>
+
+                <div class="travel-form-actions">
+                  <button mat-button type="button" (click)="cancelEditTravelDetails()">
+                    Cancel
+                  </button>
+                  <button
+                    color="primary"
+                    mat-flat-button
+                    type="submit"
+                    [disabled]="savingTravelDetails()"
+                  >
+                    Save
+                  </button>
+                </div>
+              </form>
+            } @else {
+              <dl class="lead-data-list">
+                <div class="lead-data-row">
+                  <dt>Destination</dt>
+                  <dd>{{ l.destination ?? '—' }}</dd>
+                </div>
+                <div class="lead-data-row">
+                  <dt>Dates</dt>
+                  <dd>{{ formatDateRange(l.departDateFrom, l.returnDateTo) }}</dd>
+                </div>
+                <div class="lead-data-row">
+                  <dt>Adults / children</dt>
+                  <dd>{{ l.adults ?? 0 }} / {{ l.children ?? 0 }}</dd>
+                </div>
+                <div class="lead-data-row">
+                  <dt>Notes</dt>
+                  <dd class="whitespace-pre-wrap">{{ l.notes ?? '—' }}</dd>
+                </div>
+              </dl>
+            }
+          </section>
+
+          <section class="lead-card">
+            <h2 class="lead-card-title">Agent</h2>
+            <div class="agent-row">
+              <span class="agent-avatar" [attr.aria-label]="l.assignedAgentName || 'Unassigned'">
+                {{ getAgentInitials(l.assignedAgentName) }}
+              </span>
+              <div class="agent-info">
+                <p class="agent-name">{{ l.assignedAgentName ?? 'Unassigned' }}</p>
+                <p class="agent-meta">Assigned agent</p>
+              </div>
+              @if (canReassign()) {
+                <button mat-stroked-button type="button" (click)="openAssignDialog()">
+                  Reassign
+                </button>
+              }
+            </div>
+          </section>
+
+          <section class="lead-card lead-requests-card">
+            <div class="lead-card-header">
+              <h2 class="lead-card-title">Travel requests</h2>
+              @if (showAddTravelRequest()) {
+                <button
+                  color="primary"
+                  mat-flat-button
+                  type="button"
+                  (click)="createTravelRequest()"
+                >
+                  Add travel request
+                </button>
+              }
+            </div>
+
+            @if (requests().length === 0) {
+              <p class="text-sm text-gray-500">No travel requests yet.</p>
+            } @else {
+              <div class="requests-grid">
+                @for (request of requests(); track request.id) {
+                  <article class="request-card">
+                    <p class="request-destination">{{ request.destination ?? '—' }}</p>
+                    <p class="request-dates">
+                      {{ formatDateRange(request.departDate, request.returnDate) }}
+                    </p>
+                    <p class="request-offers-count">Offers: {{ request.offersCount }}</p>
+
+                    <div class="offer-chip-list">
+                      @for (offer of getOffersForRequest(request.id); track offer.id) {
+                        <a class="offer-chip" [routerLink]="['/app/offers', offer.id]">
+                          {{ offer.number ?? offer.id }}
+                        </a>
+                      } @empty {
+                        <span class="text-xs text-gray-500">No offers</span>
+                      }
+                    </div>
+                  </article>
+                }
+              </div>
+            }
+          </section>
+
+          <section class="lead-card lead-activity-card">
+            <h2 class="lead-card-title">Activity log</h2>
+
+            @if (activityItems().length === 0) {
+              <p class="text-sm text-gray-500">No activity yet.</p>
+            } @else {
+              <ul class="activity-list" role="list">
+                @for (item of activityItems(); track item.id) {
+                  <li class="activity-item">
+                    <span aria-hidden="true" class="activity-icon-wrap">
+                      <mat-icon class="activity-icon">{{ getActivityIcon(item.type) }}</mat-icon>
+                    </span>
+                    <div class="activity-content">
+                      <p class="activity-label">{{ getActivityLabel(item.type) }}</p>
+                      <p class="activity-meta">
+                        {{ getActivityActor(item) }} · {{ formatDateTime(item.createdAt) }}
+                      </p>
+                    </div>
+                  </li>
+                }
+              </ul>
+
+              @if (canLoadMoreActivity()) {
+                <button
+                  class="mt-4"
+                  mat-stroked-button
+                  type="button"
+                  [disabled]="loadingMoreActivity()"
+                  (click)="loadMoreActivity()"
+                >
+                  Load more
+                </button>
+              }
+            }
+          </section>
         </div>
 
-        <div class="lead-header-actions">
-          @if (!isTerminalLead()) {
-            <button mat-stroked-button type="button" (click)="startEditTravelDetails()">
-              <mat-icon>edit</mat-icon>
-              Edit travel details
-            </button>
-          }
+        @if (bookingInfo(); as booking) {
+          <section class="lead-booking-card">
+            <p>
+              <span>Booking:</span>
+              <a class="lead-link" [routerLink]="['/app/bookings', booking.id]">{{
+                booking.number
+              }}</a>
+            </p>
+          </section>
+        }
 
-          @for (action of visibleActions(); track action) {
+        <ng-template #assignDialogTemplate>
+          <h3 class="assign-dialog-title">Assign lead</h3>
+
+          <mat-form-field appearance="outline" class="w-full">
+            <mat-label>Search agent</mat-label>
+            <input
+              #assignSearchInput
+              matInput
+              [value]="assignSearch()"
+              (input)="updateAssignSearch(assignSearchInput.value)"
+            />
+          </mat-form-field>
+
+          <div aria-label="Agents" class="assign-agent-list" role="listbox">
+            @for (agent of filteredAgents(); track agent.id) {
+              <button
+                class="assign-agent-item"
+                type="button"
+                [class.assign-agent-item-active]="isSelectedAgent(agent.userId)"
+                (click)="selectAgent(agent.userId)"
+              >
+                <span class="agent-avatar">{{ getAgentInitials(agent.name) }}</span>
+                <span class="assign-agent-text">
+                  <span>{{ agent.name }}</span>
+                  <span class="text-xs text-gray-500">{{ agent.email }}</span>
+                </span>
+              </button>
+            } @empty {
+              <p class="text-sm text-gray-500">No active agents found.</p>
+            }
+          </div>
+
+          <div class="assign-dialog-actions">
+            <button mat-button type="button" (click)="closeAssignDialog()">Cancel</button>
             <button
               color="primary"
               mat-flat-button
               type="button"
-              [disabled]="isActionBusy(action)"
-              (click)="applyAction(action)"
+              [disabled]="!selectedAgentId() || assignLoading()"
+              (click)="confirmAssign()"
             >
-              {{ getActionLabel(action) }}
+              Assign
             </button>
-          }
-        </div>
-      </section>
-
-      <div class="lead-grid">
-        <section class="lead-card">
-          <h2 class="lead-card-title">Client</h2>
-          <dl class="lead-data-list">
-            <div class="lead-data-row">
-              <dt>Name</dt>
-              <dd>{{ l.clientName ?? '—' }}</dd>
-            </div>
-            <div class="lead-data-row">
-              <dt>Type</dt>
-              <dd>
-                @if (l.clientType) {
-                  <app-client-type-badge [type]="l.clientType" />
-                } @else {
-                  —
-                }
-              </dd>
-            </div>
-            <div class="lead-data-row">
-              <dt>Phone</dt>
-              <dd>{{ l.contactPhone ?? '—' }}</dd>
-            </div>
-            <div class="lead-data-row">
-              <dt>Email</dt>
-              <dd>{{ l.contactEmail ?? '—' }}</dd>
-            </div>
-            <div class="lead-data-row">
-              <dt>Profile</dt>
-              <dd>
-                @if (l.clientId) {
-                  <a class="lead-link" [routerLink]="['/app/clients', l.clientId]">Open client</a>
-                } @else {
-                  —
-                }
-              </dd>
-            </div>
-          </dl>
-        </section>
-
-        <section class="lead-card">
-          <div class="lead-card-header">
-            <h2 class="lead-card-title">Travel details</h2>
           </div>
-
-          @if (editingTravelDetails()) {
-            <form class="travel-form" [formGroup]="travelForm" (ngSubmit)="saveTravelDetails()">
-              <mat-form-field appearance="outline">
-                <mat-label>Destination</mat-label>
-                <input formControlName="destination" matInput />
-              </mat-form-field>
-
-              <div class="travel-date-grid">
-                <mat-form-field appearance="outline">
-                  <mat-label>Depart from</mat-label>
-                  <input formControlName="departDateFrom" matInput type="date" />
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                  <mat-label>Depart to</mat-label>
-                  <input formControlName="departDateTo" matInput type="date" />
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                  <mat-label>Return from</mat-label>
-                  <input formControlName="returnDateFrom" matInput type="date" />
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                  <mat-label>Return to</mat-label>
-                  <input formControlName="returnDateTo" matInput type="date" />
-                </mat-form-field>
-              </div>
-
-              <div class="travel-count-grid">
-                <mat-form-field appearance="outline">
-                  <mat-label>Adults</mat-label>
-                  <input formControlName="adults" matInput min="0" type="number" />
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                  <mat-label>Children</mat-label>
-                  <input formControlName="children" matInput min="0" type="number" />
-                </mat-form-field>
-              </div>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Notes</mat-label>
-                <textarea formControlName="notes" matInput rows="3"></textarea>
-              </mat-form-field>
-
-              <div class="travel-form-actions">
-                <button mat-button type="button" (click)="cancelEditTravelDetails()">Cancel</button>
-                <button
-                  color="primary"
-                  mat-flat-button
-                  type="submit"
-                  [disabled]="savingTravelDetails()"
-                >
-                  Save
-                </button>
-              </div>
-            </form>
-          } @else {
-            <dl class="lead-data-list">
-              <div class="lead-data-row">
-                <dt>Destination</dt>
-                <dd>{{ l.destination ?? '—' }}</dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Dates</dt>
-                <dd>{{ formatDateRange(l.departDateFrom, l.returnDateTo) }}</dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Adults / children</dt>
-                <dd>{{ l.adults ?? 0 }} / {{ l.children ?? 0 }}</dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Notes</dt>
-                <dd class="whitespace-pre-wrap">{{ l.notes ?? '—' }}</dd>
-              </div>
-            </dl>
-          }
-        </section>
-
-        <section class="lead-card">
-          <h2 class="lead-card-title">Agent</h2>
-          <div class="agent-row">
-            <span class="agent-avatar" [attr.aria-label]="l.assignedAgentName || 'Unassigned'">
-              {{ getAgentInitials(l.assignedAgentName) }}
-            </span>
-            <div class="agent-info">
-              <p class="agent-name">{{ l.assignedAgentName ?? 'Unassigned' }}</p>
-              <p class="agent-meta">Assigned agent</p>
-            </div>
-            @if (canReassign()) {
-              <button mat-stroked-button type="button" (click)="openAssignDialog()">
-                Reassign
-              </button>
-            }
-          </div>
-        </section>
-
-        <section class="lead-card lead-requests-card">
-          <div class="lead-card-header">
-            <h2 class="lead-card-title">Travel requests</h2>
-            @if (showAddTravelRequest()) {
-              <button color="primary" mat-flat-button type="button" (click)="createTravelRequest()">
-                Add travel request
-              </button>
-            }
-          </div>
-
-          @if (requests().length === 0) {
-            <p class="text-sm text-gray-500">No travel requests yet.</p>
-          } @else {
-            <div class="requests-grid">
-              @for (request of requests(); track request.id) {
-                <article class="request-card">
-                  <p class="request-destination">{{ request.destination ?? '—' }}</p>
-                  <p class="request-dates">
-                    {{ formatDateRange(request.departDate, request.returnDate) }}
-                  </p>
-                  <p class="request-offers-count">Offers: {{ request.offersCount }}</p>
-
-                  <div class="offer-chip-list">
-                    @for (offer of getOffersForRequest(request.id); track offer.id) {
-                      <a class="offer-chip" [routerLink]="['/app/offers', offer.id]">
-                        {{ offer.number ?? offer.id }}
-                      </a>
-                    } @empty {
-                      <span class="text-xs text-gray-500">No offers</span>
-                    }
-                  </div>
-                </article>
-              }
-            </div>
-          }
-        </section>
-
-        <section class="lead-card lead-activity-card">
-          <h2 class="lead-card-title">Activity log</h2>
-
-          @if (activityItems().length === 0) {
-            <p class="text-sm text-gray-500">No activity yet.</p>
-          } @else {
-            <ul class="activity-list" role="list">
-              @for (item of activityItems(); track item.id) {
-                <li class="activity-item">
-                  <span aria-hidden="true" class="activity-icon-wrap">
-                    <mat-icon class="activity-icon">{{ getActivityIcon(item.type) }}</mat-icon>
-                  </span>
-                  <div class="activity-content">
-                    <p class="activity-label">{{ getActivityLabel(item.type) }}</p>
-                    <p class="activity-meta">
-                      {{ getActivityActor(item) }} · {{ formatDateTime(item.createdAt) }}
-                    </p>
-                  </div>
-                </li>
-              }
-            </ul>
-
-            @if (canLoadMoreActivity()) {
-              <button
-                class="mt-4"
-                mat-stroked-button
-                type="button"
-                [disabled]="loadingMoreActivity()"
-                (click)="loadMoreActivity()"
-              >
-                Load more
-              </button>
-            }
-          }
-        </section>
+        </ng-template>
       </div>
-
-      @if (bookingInfo(); as booking) {
-        <section class="lead-booking-card">
-          <p>
-            <span>Booking:</span>
-            <a class="lead-link" [routerLink]="['/app/bookings', booking.id]">{{
-              booking.number
-            }}</a>
-          </p>
-        </section>
-      }
-
-      <ng-template #assignDialogTemplate>
-        <h3 class="assign-dialog-title">Assign lead</h3>
-
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Search agent</mat-label>
-          <input
-            #assignSearchInput
-            matInput
-            [value]="assignSearch()"
-            (input)="updateAssignSearch(assignSearchInput.value)"
-          />
-        </mat-form-field>
-
-        <div aria-label="Agents" class="assign-agent-list" role="listbox">
-          @for (agent of filteredAgents(); track agent.id) {
-            <button
-              class="assign-agent-item"
-              type="button"
-              [class.assign-agent-item-active]="isSelectedAgent(agent.userId)"
-              (click)="selectAgent(agent.userId)"
-            >
-              <span class="agent-avatar">{{ getAgentInitials(agent.name) }}</span>
-              <span class="assign-agent-text">
-                <span>{{ agent.name }}</span>
-                <span class="text-xs text-gray-500">{{ agent.email }}</span>
-              </span>
-            </button>
-          } @empty {
-            <p class="text-sm text-gray-500">No active agents found.</p>
-          }
-        </div>
-
-        <div class="assign-dialog-actions">
-          <button mat-button type="button" (click)="closeAssignDialog()">Cancel</button>
-          <button
-            color="primary"
-            mat-flat-button
-            type="button"
-            [disabled]="!selectedAgentId() || assignLoading()"
-            (click)="confirmAssign()"
-          >
-            Assign
-          </button>
-        </div>
-      </ng-template>
     } @else {
       <p class="text-gray-500">Lead not found.</p>
     }
