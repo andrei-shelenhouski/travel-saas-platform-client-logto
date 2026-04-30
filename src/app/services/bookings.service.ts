@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 
 import type {
+  BookingDocumentResponseDto,
   BookingResponseDto,
   BookingStatus,
   CreateBookingDto,
@@ -52,12 +53,12 @@ export class BookingsService {
     }
 
     if (params?.status !== undefined) {
-      const status = Array.isArray(params.status)
-        ? params.status.filter((value) => Boolean(value)).join(',')
-        : params.status;
+      const statuses = Array.isArray(params.status)
+        ? params.status.filter((value) => Boolean(value))
+        : [params.status];
 
-      if (status) {
-        httpParams = httpParams.set('status', status);
+      for (const status of statuses) {
+        httpParams = httpParams.append('status', status);
       }
     }
 
@@ -100,6 +101,25 @@ export class BookingsService {
   /** PUT /api/bookings/{id}/status. Use for status transitions. */
   updateStatus(id: string, dto: UpdateBookingStatusDto): Observable<BookingResponseDto> {
     return this.http.put<BookingResponseDto>(`${BOOKINGS_URL}/${id}/status`, dto);
+  }
+
+  /** GET /api/bookings/{id}/documents. */
+  listDocuments(id: string): Observable<BookingDocumentResponseDto[]> {
+    return this.http.get<BookingDocumentResponseDto[]>(`${BOOKINGS_URL}/${id}/documents`);
+  }
+
+  /** POST /api/bookings/{id}/documents. */
+  uploadDocument(id: string, file: File): Observable<BookingDocumentResponseDto> {
+    const formData = new FormData();
+
+    formData.set('file', file);
+
+    return this.http.post<BookingDocumentResponseDto>(`${BOOKINGS_URL}/${id}/documents`, formData);
+  }
+
+  /** DELETE /api/bookings/{id}/documents/{docId}. */
+  deleteDocument(id: string, docId: string): Observable<void> {
+    return this.http.delete<void>(`${BOOKINGS_URL}/${id}/documents/${docId}`);
   }
 
   delete(id: string): Observable<void> {

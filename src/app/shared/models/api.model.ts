@@ -461,6 +461,21 @@ export type UpdateBookingStatusDto = {
   reason?: string;
 };
 
+/** OpenAPI: BookingDocumentResponse. */
+export type BookingDocumentResponseDto = {
+  id: string;
+  filename?: string;
+  uploadedAt?: string;
+  uploadedByName?: string;
+};
+
+/** OpenAPI: ErrorResponse. */
+export type ErrorResponseDto = {
+  status?: number;
+  error?: string;
+  message?: string;
+};
+
 /** OpenAPI: BookingResponse. */
 export type BookingResponseDto = {
   id: string;

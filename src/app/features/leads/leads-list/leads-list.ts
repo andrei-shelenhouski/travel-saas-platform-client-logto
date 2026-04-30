@@ -168,7 +168,7 @@ export class LeadsListComponent {
       return this.leadsService.findAll({
         page: page + 1,
         limit: PAGE_SIZE,
-        status: status.length > 0 ? status.join(',') : undefined,
+        status: status.length > 0 ? status : undefined,
         agentId: agentId || undefined,
         clientType: clientType || undefined,
         dateFrom: dateFrom || undefined,
