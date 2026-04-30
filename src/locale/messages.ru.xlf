@@ -118,6 +118,222 @@
           <context context-type="linenumber">157,158</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="bookingFilterStatusLabel" datatype="html">
+        <source>Status</source>
+        <target>Статус</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.html</context>
+          <context context-type="linenumber">3,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingFilterAssignedStaffLabel" datatype="html">
+        <source>Assigned staff</source>
+        <target>Назначенный сотрудник</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.html</context>
+          <context context-type="linenumber">12,13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingFilterAllAssignedStaffOption" datatype="html">
+        <source>All staff</source>
+        <target>Все сотрудники</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.html</context>
+          <context context-type="linenumber">14,15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingFilterDepartureRangeLabel" datatype="html">
+        <source>Departure date range</source>
+        <target>Диапазон дат выезда</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.html</context>
+          <context context-type="linenumber">22,23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingFilterDateFromPlaceholder" datatype="html">
+        <source>From</source>
+        <target>С</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.html</context>
+          <context context-type="linenumber">29,31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingFilterDateToPlaceholder" datatype="html">
+        <source>To</source>
+        <target>По</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.html</context>
+          <context context-type="linenumber">35,37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingStatusOptionPendingConfirmation" datatype="html">
+        <source>Pending confirmation</source>
+        <target>Ожидает подтверждения</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.ts</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingStatusOptionConfirmed" datatype="html">
+        <source>Confirmed</source>
+        <target>Подтверждено</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.ts</context>
+          <context context-type="linenumber">19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingStatusOptionInProgress" datatype="html">
+        <source>In progress</source>
+        <target>В поездке</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.ts</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingStatusOptionCompleted" datatype="html">
+        <source>Completed</source>
+        <target>Завершено</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.ts</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingStatusOptionCancelled" datatype="html">
+        <source>Cancelled</source>
+        <target>Отменено</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListTitle" datatype="html">
+        <source>Bookings</source>
+        <target>Бронирования</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListNewBookingCta" datatype="html">
+        <source>New booking</source>
+        <target>+Новое бронирование</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">5,8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListTotalCountLabel" datatype="html">
+        <source> Total: <x id="INTERPOLATION" equiv-text="{{ totalElements() }}"/> bookings </source>
+        <target> Всего: <x id="INTERPOLATION" equiv-text="{{ totalElements() }}"/> бронирований </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">18,21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnNumber" datatype="html">
+        <source>Booking #</source>
+        <target>Бронь #</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">28,29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnClient" datatype="html">
+        <source>Client</source>
+        <target>Клиент</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">41,42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnDestination" datatype="html">
+        <source>Destination</source>
+        <target>Направление</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">48,49</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnDeparture" datatype="html">
+        <source>Departure</source>
+        <target>Выезд</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">55,56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnReturn" datatype="html">
+        <source>Return</source>
+        <target>Возврат</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">62,63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnStatus" datatype="html">
+        <source>Status</source>
+        <target>Статус</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">69,70</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnAssignedStaff" datatype="html">
+        <source> Assigned staff </source>
+        <target> Назначенный сотрудник </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">77,79</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnActions" datatype="html">
+        <source>Actions</source>
+        <target>Действия</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">85,86</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListOpenBookingAriaLabel" datatype="html">
+        <source>Open booking</source>
+        <target>Открыть бронирование</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">88,89</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListLoading" datatype="html">
+        <source>Loading bookings...</source>
+        <target>Загрузка бронирований...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">112,114</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListLoadingAriaLabel" datatype="html">
+        <source>Loading bookings</source>
+        <target>Загрузка бронирований</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">114,115</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListEmptyState" datatype="html">
+        <source>No bookings for current filters</source>
+        <target>Нет бронирований по текущим фильтрам</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">120,123</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListPaginatorAriaLabel" datatype="html">
+        <source>Bookings pagination</source>
+        <target>Пагинация бронирований</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">130,131</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="createClientSelectTypeLabel" datatype="html">
         <source> Select client type: </source>
         <target>Выберите тип клиента:</target>

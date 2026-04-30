@@ -28,8 +28,9 @@ export class BookingsService {
 
   getList(params?: {
     page?: number;
+    size?: number;
     limit?: number;
-    status?: BookingStatus;
+    status?: BookingStatus | BookingStatus[];
     offerId?: string;
     assignedBackofficeId?: string;
     departDateFrom?: string;
@@ -41,12 +42,22 @@ export class BookingsService {
       httpParams = httpParams.set('page', params.page);
     }
 
-    if (params?.limit !== undefined) {
+    if (params?.size !== undefined) {
+      httpParams = httpParams.set('size', params.size);
+    }
+
+    if (params?.limit !== undefined && params?.size === undefined) {
       httpParams = httpParams.set('limit', params.limit);
     }
 
     if (params?.status !== undefined) {
-      httpParams = httpParams.set('status', params.status);
+      const status = Array.isArray(params.status)
+        ? params.status.filter((value) => Boolean(value)).join(',')
+        : params.status;
+
+      if (status) {
+        httpParams = httpParams.set('status', status);
+      }
     }
 
     if (params?.offerId !== undefined) {

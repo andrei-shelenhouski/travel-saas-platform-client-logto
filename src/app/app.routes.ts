@@ -77,6 +77,15 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'bookings/:id',
+    redirectTo: 'app/bookings/:id',
+  },
+  {
+    path: 'bookings',
+    redirectTo: 'app/bookings',
+    pathMatch: 'full',
+  },
+  {
     path: 'app',
     loadComponent: () =>
       import('@app/layout/main-layout.component').then((m) => m.MainLayoutComponent),
