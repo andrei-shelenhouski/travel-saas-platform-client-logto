@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+
 import { of } from 'rxjs';
 
-import { InvoicesListComponent } from './invoices-list';
 import { InvoicesService } from '@app/services/invoices.service';
+
+import { InvoicesListComponent } from './invoices-list';
 
 describe('InvoicesListComponent', () => {
   let component: InvoicesListComponent;
@@ -17,7 +19,7 @@ describe('InvoicesListComponent', () => {
         {
           provide: InvoicesService,
           useValue: {
-            getList: () => of({ data: [], total: 0, page: 1, limit: 20 }),
+            getList: () => of({ items: [], total: 0, page: 1, limit: 20 }),
           },
         },
       ],

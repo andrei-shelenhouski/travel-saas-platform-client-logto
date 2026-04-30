@@ -13,15 +13,19 @@ type FilterTab = 'ALL' | InvoiceStatus;
 const FILTER_TABS: { value: FilterTab; label: string }[] = [
   { value: 'ALL', label: 'All' },
   { value: InvoiceStatus.DRAFT, label: 'Draft' },
-  { value: InvoiceStatus.SENT, label: 'Sent' },
+  { value: InvoiceStatus.ISSUED, label: 'Issued' },
   { value: InvoiceStatus.PAID, label: 'Paid' },
+  { value: InvoiceStatus.PARTIALLY_PAID, label: 'Partially paid' },
+  { value: InvoiceStatus.OVERDUE, label: 'Overdue' },
   { value: InvoiceStatus.CANCELLED, label: 'Cancelled' },
 ];
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
   DRAFT: 'bg-gray-100 text-gray-800',
-  SENT: 'bg-blue-100 text-blue-800',
+  ISSUED: 'bg-blue-100 text-blue-800',
   PAID: 'bg-green-100 text-green-800',
+  PARTIALLY_PAID: 'bg-amber-100 text-amber-800',
+  OVERDUE: 'bg-orange-100 text-orange-800',
   CANCELLED: 'bg-red-100 text-red-800',
 };
 

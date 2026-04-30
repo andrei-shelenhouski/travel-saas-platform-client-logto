@@ -508,49 +508,113 @@ export type PaginatedBookingResponseDto = PaginatedDto<BookingResponseDto>;
 
 // ----- Invoices -----
 
-/** OpenAPI: CreateInvoiceRequest. POST /api/invoices. */
-export type CreateInvoiceDto = {
-  bookingId: string;
-  issueDate: string;
-  amount: number;
-  currency: string;
-  dueDate?: string;
-};
-
 export const InvoiceStatus = {
   DRAFT: 'DRAFT',
-  SENT: 'SENT',
+  ISSUED: 'ISSUED',
   PAID: 'PAID',
+  PARTIALLY_PAID: 'PARTIALLY_PAID',
+  OVERDUE: 'OVERDUE',
   CANCELLED: 'CANCELLED',
 } as const;
 export type InvoiceStatus = (typeof InvoiceStatus)[keyof typeof InvoiceStatus];
 
+export type CreateInvoiceLineItemDto = {
+  sortOrder?: number;
+  description: string;
+  serviceDateFrom?: string;
+  serviceDateTo?: string;
+  travelers?: string;
+  unitPrice?: number;
+  quantity?: number;
+  tourCost?: number;
+  commissionAmount?: number;
+};
+
 /** OpenAPI: InvoiceResponse. amount as number. */
 export type InvoiceResponseDto = {
   id: string;
-  organizationId: string;
-  bookingId: string;
   number: string;
-  issueDate: string;
-  dueDate: string | null;
-  amount: number;
+  bookingId: string;
+  clientId: string;
+  clientType?: ClientType | string;
+  clientSnapshot?: string;
+  issuerSnapshot?: string;
+  language?: string;
+  invoiceDate: string;
+  dueDate: string;
   currency: string;
+  subtotal?: number;
+  discountAmount?: number;
+  commissionVatAmount?: number;
+  total?: number;
+  amountInWords?: string;
+  paymentTerms?: string;
+  internalNotes?: string;
   status: InvoiceStatus | string;
-  pdfUrl: string | null;
+  cancellationReason?: string;
+  publishedAt?: string;
+  createdById?: string;
+  lineItems?: InvoiceLineItemResponseDto[];
+  payments?: unknown[];
+  paidAmount?: number;
   createdAt: string;
   updatedAt: string;
 };
 
 export type PaginatedInvoiceResponseDto = PaginatedDto<InvoiceResponseDto>;
 
-/** OpenAPI: UpdateInvoiceRequest. PATCH /api/invoices/{id}. */
+/** OpenAPI: UpdateInvoiceRequest. PUT /api/invoices/{id}. */
 export type UpdateInvoiceDto = {
-  issueDate?: string;
+  invoiceDate?: string;
   dueDate?: string;
-  amount?: number;
   currency?: string;
-  status?: InvoiceStatus;
-  pdfUrl?: string;
+  language?: string;
+  paymentTerms?: string;
+  internalNotes?: string;
+  lineItems?: CreateInvoiceLineItemDto[];
+};
+
+export type CreateInvoiceDto = {
+  bookingId?: string;
+  clientId: string;
+  clientType: ClientType;
+  language?: string;
+  invoiceDate: string;
+  dueDate: string;
+  currency: string;
+  paymentTerms?: string;
+  internalNotes?: string;
+  lineItems: CreateInvoiceLineItemDto[];
+};
+
+export type InvoiceLineItemResponseDto = {
+  id?: string;
+  sortOrder?: number;
+  description?: string;
+  serviceDateFrom?: string;
+  serviceDateTo?: string;
+  travelers?: string;
+  unitPrice?: number;
+  quantity?: number;
+  tourCost?: number;
+  commissionAmount?: number;
+  commissionVat?: number;
+  total?: number;
+};
+
+export type CancelInvoiceDto = {
+  reason: string;
+};
+
+export type InvoiceFilterQueryDto = {
+  page?: number;
+  limit?: number;
+  status?: InvoiceStatus[];
+  clientType?: ClientType;
+  dateFrom?: string;
+  dateTo?: string;
+  currency?: string;
+  search?: string;
 };
 
 // ----- Contacts -----
