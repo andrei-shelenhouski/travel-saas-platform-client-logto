@@ -37,7 +37,6 @@ import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import {
   MAT_BUTTON_TOGGLES,
   MAT_BUTTONS,
-  MAT_DATE_INPUTS,
   MAT_DIALOG,
   MAT_FORM_BUTTONS,
   MAT_ICONS,
@@ -102,7 +101,6 @@ const SERVICE_TYPE_OPTIONS = [
     ...MAT_FORM_BUTTONS,
     ...MAT_BUTTONS,
     ...MAT_BUTTON_TOGGLES,
-    ...MAT_DATE_INPUTS,
     ...MAT_DIALOG,
     ...MAT_ICONS,
     PageHeading,
@@ -263,7 +261,9 @@ export class OfferEditComponent implements OnInit {
       discountMode === 'PCT' ? toSafeNumber(offer.discountPct) : toSafeNumber(offer.discountAmount);
 
     this.form.patchValue({
-      language: offer.language === 'en' ? 'en' : 'ru',
+      language: LANGUAGE_OPTIONS.includes(offer.language as (typeof LANGUAGE_OPTIONS)[number])
+        ? offer.language
+        : 'ru',
       currency:
         offer.currency &&
         CURRENCY_OPTIONS.includes(offer.currency as (typeof CURRENCY_OPTIONS)[number])

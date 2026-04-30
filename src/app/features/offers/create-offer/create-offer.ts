@@ -40,7 +40,6 @@ import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import {
   MAT_BUTTON_TOGGLES,
   MAT_BUTTONS,
-  MAT_DATE_INPUTS,
   MAT_DIALOG,
   MAT_FORM_BUTTONS,
   MAT_ICONS,
@@ -105,7 +104,6 @@ const SERVICE_TYPE_OPTIONS = [
     ...MAT_FORM_BUTTONS,
     ...MAT_BUTTONS,
     ...MAT_BUTTON_TOGGLES,
-    ...MAT_DATE_INPUTS,
     ...MAT_DIALOG,
     ...MAT_ICONS,
   ],
@@ -176,14 +174,9 @@ export class CreateOfferComponent implements OnInit {
   ngOnInit(): void {
     const requestId = this.route.snapshot.queryParamMap.get('requestId');
 
-    if (!requestId) {
-      this.error.set('requestId query param is required to create an offer.');
-      this.requestLoading.set(false);
-
-      return;
+    if (requestId) {
+      this.requestId.set(requestId);
     }
-
-    this.requestId.set(requestId);
 
     this.organizationSettingsService.get().subscribe({
       next: (settings) => {
@@ -200,6 +193,12 @@ export class CreateOfferComponent implements OnInit {
         this.form.patchValue({ validityDate: formatDateWithOffset(14) });
       },
     });
+
+    if (!requestId) {
+      this.requestLoading.set(false);
+
+      return;
+    }
 
     this.requestsService.getById(requestId).subscribe({
       next: (request) => {
@@ -321,10 +320,14 @@ export class CreateOfferComponent implements OnInit {
   }
 
   onSubmit(): void {
+    if (this.saving()) {
+      return;
+    }
+
     const requestId = this.requestId();
 
-    if (!requestId || this.saving()) {
-      this.error.set('Unable to save draft because requestId is missing.');
+    if (!requestId) {
+      this.error.set('Unable to save: this offer is not linked to a travel request.');
 
       return;
     }
