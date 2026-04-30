@@ -329,8 +329,14 @@
       </section>
 
       <div class="flex flex-wrap gap-3">
-        <button mat-stroked-button type="button" (click)="openPreview(previewDialog)">
-          Preview
+        <button
+          i18n="@@offerPdfPreviewButton"
+          mat-stroked-button
+          type="button"
+          [disabled]="saving() || previewing()"
+          (click)="onPreviewClick()"
+        >
+          Preview PDF
         </button>
         <button color="primary" mat-flat-button type="submit" [disabled]="saving() || form.invalid">
           @if (saving()) {
@@ -347,48 +353,3 @@
     </form>
   }
 </div>
-
-<ng-template #previewDialog>
-  <div class="max-h-[80vh] overflow-auto p-2">
-    <h3 class="text-lg font-semibold text-gray-900">Offer preview</h3>
-    <p class="mt-1 text-sm text-gray-600">
-      Live preview generated from current form values before saving.
-    </p>
-
-    <div class="mt-4 space-y-3 text-sm text-gray-800">
-      <p><strong>Destination:</strong> {{ form.controls.destination.value || '-' }}</p>
-      <p><strong>Departure city:</strong> {{ form.controls.departureCity.value || '-' }}</p>
-      <p>
-        <strong>Dates:</strong> {{ form.controls.departDate.value || '-' }} -
-        {{ form.controls.returnDate.value || '-' }}
-      </p>
-      <p>
-        <strong>Passengers:</strong> {{ form.controls.adults.value }} adults,
-        {{ form.controls.children.value }} children
-      </p>
-      <p><strong>Language:</strong> {{ form.controls.language.value.toUpperCase() }}</p>
-      <p><strong>Currency:</strong> {{ form.controls.currency.value }}</p>
-
-      <hr class="my-2 border-gray-200" />
-
-      <p><strong>Accommodations:</strong> {{ accommodationsArray.length }}</p>
-      <p><strong>Services:</strong> {{ servicesArray.length }}</p>
-      <p>
-        <strong>Subtotal:</strong> {{ pricingSummary().subtotal | number: '1.2-2' }}
-        {{ form.controls.currency.value }}
-      </p>
-      <p>
-        <strong>Discount:</strong> {{ pricingSummary().discountAmount | number: '1.2-2' }}
-        {{ form.controls.currency.value }}
-      </p>
-      <p>
-        <strong>Total:</strong> {{ pricingSummary().total | number: '1.2-2' }}
-        {{ form.controls.currency.value }}
-      </p>
-    </div>
-
-    <div class="mt-4 flex justify-end">
-      <button mat-button mat-dialog-close type="button">Close</button>
-    </div>
-  </div>
-</ng-template>

@@ -7,7 +7,6 @@ import {
   inject,
   OnInit,
   signal,
-  TemplateRef,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -24,6 +23,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { startWith } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 import {
   calculateNights,
@@ -33,6 +33,7 @@ import {
   mapServicesForDto,
   toSafeNumber,
 } from '@app/features/offers/offer-builder.utils';
+import { OfferPdfPreviewModalComponent } from '@app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { RequestsService } from '@app/services/requests.service';
@@ -123,6 +124,7 @@ export class CreateOfferComponent implements OnInit {
   readonly request = signal<RequestResponseDto | null>(null);
   readonly requestLoading = signal(true);
   readonly saving = signal(false);
+  readonly previewing = signal(false);
   readonly error = signal('');
   readonly requestId = signal<string | null>(null);
 
@@ -312,11 +314,45 @@ export class CreateOfferComponent implements OnInit {
     );
   }
 
-  openPreview(template: TemplateRef<unknown>): void {
-    this.dialog.open(template, {
-      width: '960px',
-      maxWidth: '95vw',
-    });
+  onPreviewClick(): void {
+    if (this.saving() || this.previewing()) {
+      return;
+    }
+
+    const requestId = this.requestId();
+
+    if (!requestId) {
+      this.toast.showError(
+        $localize`:@@offerPdfPreviewSaveDraftPrompt:Save a draft before opening PDF preview.`,
+      );
+
+      return;
+    }
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+
+      return;
+    }
+
+    const dto = this.buildCreateDto(requestId);
+
+    this.error.set('');
+    this.previewing.set(true);
+
+    this.offersService
+      .create(dto)
+      .pipe(finalize(() => this.previewing.set(false)))
+      .subscribe({
+        next: (created) => {
+          this.form.markAsPristine();
+          this.toast.showSuccess('Offer draft saved');
+          this.openPdfPreviewDialog(created.id, created.number);
+        },
+        error: (err) => {
+          this.error.set(err.error?.message ?? err.message ?? 'Failed to create offer');
+        },
+      });
   }
 
   onSubmit(): void {
@@ -341,9 +377,40 @@ export class CreateOfferComponent implements OnInit {
     this.error.set('');
     this.saving.set(true);
 
+    const dto = this.buildCreateDto(requestId);
+
+    this.offersService.create(dto).subscribe({
+      next: (created) => {
+        this.form.markAsPristine();
+        this.toast.showSuccess('Offer draft saved');
+        this.router.navigate(['/app/offers', created.id]);
+      },
+      error: (err) => {
+        this.error.set(err.error?.message ?? err.message ?? 'Failed to create offer');
+        this.saving.set(false);
+      },
+      complete: () => this.saving.set(false),
+    });
+  }
+
+  private openPdfPreviewDialog(offerId: string, offerNumber?: string): void {
+    this.dialog.open(OfferPdfPreviewModalComponent, {
+      data: {
+        offerId,
+        offerNumber,
+      },
+      width: '900px',
+      maxWidth: '95vw',
+      maxHeight: '95vh',
+      panelClass: 'pdf-preview-dialog',
+    });
+  }
+
+  private buildCreateDto(requestId: string): CreateOfferDto {
     const v = this.form.getRawValue();
     const pricing = this.pricingSummary();
-    const dto: CreateOfferDto = {
+
+    return {
       requestId,
       language: v.language,
       currency: v.currency,
@@ -363,19 +430,6 @@ export class CreateOfferComponent implements OnInit {
       accommodations: mapAccommodationsForDto(v.accommodations),
       services: mapServicesForDto(v.services),
     };
-
-    this.offersService.create(dto).subscribe({
-      next: (created) => {
-        this.form.markAsPristine();
-        this.toast.showSuccess('Offer draft saved');
-        this.router.navigate(['/app/offers', created.id]);
-      },
-      error: (err) => {
-        this.error.set(err.error?.message ?? err.message ?? 'Failed to create offer');
-        this.saving.set(false);
-      },
-      complete: () => this.saving.set(false),
-    });
   }
 
   private createAccommodationGroup(): AccommodationFormGroup {

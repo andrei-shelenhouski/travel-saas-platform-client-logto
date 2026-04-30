@@ -8,12 +8,14 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EMPTY, of } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
 import { calculateNights } from '@app/features/offers/offer-builder.utils';
+import { OfferPdfPreviewModalComponent } from '@app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal';
 import { getAllowedTransitions, OfferAction } from '@app/features/offers/offer-state-machine';
 import { OfferTimelineComponent } from '@app/features/offers/offer-timeline/offer-timeline';
 import { BookingsService } from '@app/services/bookings.service';
@@ -21,7 +23,7 @@ import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
 import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
+import { MAT_BUTTONS, MAT_DIALOG } from '@app/shared/material-imports';
 import { OfferStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
@@ -67,6 +69,7 @@ const ACTION_LABELS: Record<OfferAction, string> = {
     OfferTimelineComponent,
     ConfirmationDialogComponent,
     ...MAT_BUTTONS,
+    ...MAT_DIALOG,
   ],
   templateUrl: './offer-detail.html',
   styleUrl: './offer-detail.scss',
@@ -77,6 +80,7 @@ export class OfferDetailComponent {
   private readonly bookingsService = inject(BookingsService);
   private readonly offersService = inject(OffersService);
   private readonly requestsService = inject(RequestsService);
+  private readonly dialog = inject(MatDialog);
   private readonly toast = inject(ToastService);
   private readonly permissions = inject(PermissionService);
 
@@ -133,7 +137,6 @@ export class OfferDetailComponent {
   });
 
   protected readonly actionLoading = signal(false);
-  protected readonly pdfLoading = signal(false);
   protected readonly confirmOpen = signal(false);
   protected readonly confirmPayload = signal<{
     action: 'SEND' | 'ACCEPT' | 'REJECT' | 'DELETE';
@@ -349,33 +352,23 @@ export class OfferDetailComponent {
     this.confirmPayload.set(null);
   }
 
-  protected downloadPdf(): void {
-    const offerId = this.offer()?.id;
+  protected openPdfPreview(): void {
+    const currentOffer = this.offer();
 
-    if (!offerId || this.pdfLoading()) {
+    if (!currentOffer) {
       return;
     }
 
-    this.pdfLoading.set(true);
-
-    this.offersService
-      .getPdf(offerId)
-      .pipe(finalize(() => this.pdfLoading.set(false)))
-      .subscribe({
-        next: (blob) => {
-          const url = URL.createObjectURL(blob);
-          const popup = window.open(url, '_blank', 'noopener,noreferrer');
-
-          if (!popup) {
-            this.toast.showError('Unable to open PDF preview');
-          }
-
-          setTimeout(() => URL.revokeObjectURL(url), 30_000);
-        },
-        error: (err) => {
-          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to download PDF');
-        },
-      });
+    this.dialog.open(OfferPdfPreviewModalComponent, {
+      data: {
+        offerId: currentOffer.id,
+        offerNumber: currentOffer.number ?? currentOffer.id,
+      },
+      width: '900px',
+      maxWidth: '95vw',
+      maxHeight: '95vh',
+      panelClass: 'pdf-preview-dialog',
+    });
   }
 
   protected isDestructiveAction(action: OfferAction): boolean {
