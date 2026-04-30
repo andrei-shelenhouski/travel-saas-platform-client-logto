@@ -6,6 +6,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   templateUrl: './page-heading.html',
   styleUrl: './page-heading.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: 'bg-white sticky top-0 z-10',
+  },
 })
 export class PageHeading {
   readonly title = input<string | null>();

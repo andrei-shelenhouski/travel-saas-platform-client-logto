@@ -1,12 +1,17 @@
 <div class="space-y-4">
   @if (loading()) {
     <div class="flex justify-center py-12">
-      <div aria-hidden="true" class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+      <div
+        aria-hidden="true"
+        class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+      ></div>
     </div>
   } @else {
     @let b = booking();
     @if (b) {
-      <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
+      <header
+        class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4"
+      >
         <div class="min-w-0">
           <h1 class="text-xl font-semibold text-gray-900">Booking</h1>
           <span
@@ -57,8 +62,16 @@
         <h2 class="text-sm font-semibold text-gray-900">Details</h2>
         <dl class="mt-3 space-y-2 text-sm">
           <div>
-            <dt class="text-gray-500">Agreed price</dt>
-            <dd class="font-medium text-gray-900">{{ b.agreedPrice }} {{ b.currency }}</dd>
+            <dt class="text-gray-500">Booking number</dt>
+            <dd class="font-medium text-gray-900">{{ b.number || '—' }}</dd>
+          </div>
+          <div>
+            <dt class="text-gray-500">Destination</dt>
+            <dd class="font-medium text-gray-900">{{ b.destination || '—' }}</dd>
+          </div>
+          <div>
+            <dt class="text-gray-500">Travel dates</dt>
+            <dd class="text-gray-900">{{ b.departDate || '—' }} to {{ b.returnDate || '—' }}</dd>
           </div>
           <div>
             <dt class="text-gray-500">Created</dt>

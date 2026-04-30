@@ -1,8 +1,5 @@
 <div class="mb-4">
-  <a
-    class="text-sm font-medium text-gray-600 hover:text-gray-900"
-    routerLink="/app/invoices"
-  >
+  <a class="text-sm font-medium text-gray-600 hover:text-gray-900" routerLink="/app/invoices">
     ← Back to invoices
   </a>
 </div>
@@ -20,7 +17,8 @@
           <mat-option value="">Select a booking</mat-option>
           @for (b of bookings(); track b.id) {
             <mat-option [value]="b.id">
-              {{ b.agreedPrice }} {{ b.currency }} – {{ formatDate(b.createdAt) }}
+              {{ b.number || b.id.slice(0, 8) }} · {{ b.destination || 'No destination' }} ·
+              {{ formatDate(b.createdAt) }}
             </mat-option>
           }
         </mat-select>
@@ -43,7 +41,14 @@
       <div class="flex gap-3">
         <mat-form-field appearance="outline" class="grow" subscriptSizing="dynamic">
           <mat-label>Amount</mat-label>
-          <input formControlName="amount" id="amount" matInput min="0.01" step="0.01" type="number" />
+          <input
+            formControlName="amount"
+            id="amount"
+            matInput
+            min="0.01"
+            step="0.01"
+            type="number"
+          />
           @if (form.controls.amount.invalid && form.controls.amount.touched) {
             <mat-error>Enter a valid amount</mat-error>
           }

@@ -1,28 +1,33 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 
 import { BookingsService } from '@app/services/bookings.service';
 import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
-import type { BookingResponseDto } from '@app/shared/models';
 import { BookingStatus } from '@app/shared/models';
 
+import type { BookingResponseDto } from '@app/shared/models';
 type FilterTab = 'ALL' | BookingStatus;
 
 const FILTER_TABS: { value: FilterTab; label: string }[] = [
   { value: 'ALL', label: 'All' },
-  { value: BookingStatus.PENDING, label: 'Pending' },
+  { value: BookingStatus.PENDING_CONFIRMATION, label: 'Pending confirmation' },
   { value: BookingStatus.CONFIRMED, label: 'Confirmed' },
-  { value: BookingStatus.PAID, label: 'Paid' },
+  { value: BookingStatus.IN_PROGRESS, label: 'In progress' },
+  { value: BookingStatus.COMPLETED, label: 'Completed' },
   { value: BookingStatus.CANCELLED, label: 'Cancelled' },
 ];
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
-  PENDING: 'bg-amber-100 text-amber-800',
+  PENDING_CONFIRMATION: 'bg-amber-100 text-amber-800',
   CONFIRMED: 'bg-green-100 text-green-800',
-  PAID: 'bg-emerald-100 text-emerald-800',
+  IN_PROGRESS: 'bg-sky-100 text-sky-800',
+  COMPLETED: 'bg-emerald-100 text-emerald-800',
   CANCELLED: 'bg-red-100 text-red-800',
+  // Legacy aliases for local/mock data.
+  PENDING: 'bg-amber-100 text-amber-800',
+  PAID: 'bg-emerald-100 text-emerald-800',
 };
 
 @Component({

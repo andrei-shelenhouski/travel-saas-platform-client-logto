@@ -14,6 +14,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientType, CreateClientDto, UpdateClientDto } from '@app/shared/models';
 
@@ -50,12 +51,15 @@ const TYPE_OPTIONS: TypeOption[] = [
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-client-form',
-  imports: [MatCheckboxModule, MatIconModule, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
+  imports: [
+    MatCheckboxModule,
+    MatIconModule,
+    ReactiveFormsModule,
+    ...MAT_FORM_BUTTONS,
+    PageHeading,
+  ],
   templateUrl: './client-form.html',
   styleUrl: './client-form.scss',
-  host: {
-    class: 'block p-4',
-  },
 })
 export class ClientFormComponent {
   private readonly fb = inject(FormBuilder);

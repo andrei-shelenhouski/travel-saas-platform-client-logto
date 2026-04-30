@@ -1,6 +1,7 @@
 import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -21,6 +22,12 @@ export const MAT_BUTTONS = [MatButtonModule] as const;
 
 /** Segmented controls / filter tabs on list views. */
 export const MAT_BUTTON_TOGGLES = [MatButtonToggleModule] as const;
+
+/** Material dialogs. */
+export const MAT_DIALOG = [MatDialogModule] as const;
+
+/** Material icons only. */
+export const MAT_ICONS = [MatIconModule] as const;
 
 /** Sidebar / app shell navigation list with icons. */
 export const MAT_NAV_LIST = [MatListModule, MatIconModule] as const;

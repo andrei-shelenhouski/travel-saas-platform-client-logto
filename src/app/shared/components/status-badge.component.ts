@@ -2,14 +2,24 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 export type StatusBadgeVariant = 'lead' | 'offer' | 'generic';
 
-const LEAD_STATUS_CLASS: Record<string, string> = {
-  NEW: 'bg-blue-100 text-blue-800',
-  ASSIGNED: 'bg-amber-100 text-amber-800',
-  IN_PROGRESS: 'bg-cyan-100 text-cyan-800',
-  OFFER_SENT: 'bg-purple-100 text-purple-800',
-  WON: 'bg-green-100 text-green-800',
-  LOST: 'bg-red-100 text-red-800',
-  EXPIRED: 'bg-gray-100 text-gray-500',
+export const LEAD_STATUS_COLORS: Record<string, string> = {
+  NEW: '#2b9db8',
+  ASSIGNED: '#784d90',
+  IN_PROGRESS: '#d97706',
+  OFFER_SENT: '#41636e',
+  WON: '#16a34a',
+  LOST: '#73787a',
+  EXPIRED: '#ba1a1a',
+};
+
+export const LEAD_STATUS_LABELS: Record<string, string> = {
+  NEW: 'New',
+  ASSIGNED: 'Assigned',
+  IN_PROGRESS: 'In progress',
+  OFFER_SENT: 'Offer sent',
+  WON: 'Won',
+  LOST: 'Lost',
+  EXPIRED: 'Expired',
 };
 
 const OFFER_STATUS_CLASS: Record<string, string> = {
@@ -28,8 +38,10 @@ const OFFER_STATUS_CLASS: Record<string, string> = {
     <span
       class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
       [class]="badgeClass()"
+      [style.background-color]="badgeBackgroundColor()"
+      [style.color]="badgeTextColor()"
     >
-      {{ status() ?? '—' }}
+      {{ label() }}
     </span>
   `,
 })
@@ -38,6 +50,40 @@ export class StatusBadgeComponent {
   readonly status = input<string | null | undefined>(null);
   /** Which color set to use. */
   readonly variant = input<StatusBadgeVariant>('generic');
+
+  label(): string {
+    const s = this.status();
+
+    if (!s) {
+      return '—';
+    }
+
+    if (this.variant() === 'lead') {
+      return LEAD_STATUS_LABELS[s] ?? s;
+    }
+
+    return s;
+  }
+
+  badgeBackgroundColor(): string {
+    const s = this.status();
+
+    if (this.variant() === 'lead' && s) {
+      return LEAD_STATUS_COLORS[s] ?? '#6b7280';
+    }
+
+    return '';
+  }
+
+  badgeTextColor(): string {
+    const s = this.status();
+
+    if (this.variant() === 'lead' && s) {
+      return '#ffffff';
+    }
+
+    return '';
+  }
 
   badgeClass(): string {
     const v = this.variant();
@@ -48,7 +94,7 @@ export class StatusBadgeComponent {
     }
 
     if (v === 'lead') {
-      return LEAD_STATUS_CLASS[s] ?? 'bg-gray-100 text-gray-600';
+      return 'border border-transparent';
     }
 
     if (v === 'offer') {

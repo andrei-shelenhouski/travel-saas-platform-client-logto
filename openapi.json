@@ -11,6 +11,76 @@
     }
   ],
   "paths": {
+    "/api/settings/organization": {
+      "get": {
+        "tags": [
+          "settings-controller"
+        ],
+        "operationId": "getSettings",
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationSettingsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "settings-controller"
+        ],
+        "operationId": "updateSettings",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrganizationSettingsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationSettingsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/requests/{id}": {
       "get": {
         "tags": [
@@ -718,6 +788,183 @@
         }
       }
     },
+    "/api/bookings/{id}": {
+      "get": {
+        "tags": [
+          "booking-controller"
+        ],
+        "operationId": "findById_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "booking-controller"
+        ],
+        "operationId": "update_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBookingRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "booking-controller"
+        ],
+        "operationId": "delete_4",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "204": {
+            "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/bookings/{id}/status": {
+      "put": {
+        "tags": [
+          "booking-controller"
+        ],
+        "operationId": "updateStatus_2",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateBookingStatusRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/BookingResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/webhook-subscriptions": {
       "get": {
         "tags": [
@@ -918,6 +1165,78 @@
           },
           "204": {
             "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/settings/organization/logo": {
+      "get": {
+        "tags": [
+          "settings-controller"
+        ],
+        "operationId": "getLogo",
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "settings-controller"
+        ],
+        "operationId": "uploadLogo",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -1911,11 +2230,39 @@
             "schema": {
               "type": "string",
               "enum": [
-                "PENDING",
+                "PENDING_CONFIRMATION",
                 "CONFIRMED",
-                "PAID",
+                "IN_PROGRESS",
+                "COMPLETED",
                 "CANCELLED"
               ]
+            }
+          },
+          {
+            "name": "assignedBackofficeId",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "departDateFrom",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
+          },
+          {
+            "name": "departDateTo",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date"
             }
           }
         ],
@@ -2190,7 +2537,7 @@
         "tags": [
           "invoice-controller"
         ],
-        "operationId": "findById_4",
+        "operationId": "findById_5",
         "parameters": [
           {
             "name": "id",
@@ -2230,7 +2577,7 @@
         "tags": [
           "invoice-controller"
         ],
-        "operationId": "delete_4",
+        "operationId": "delete_5",
         "parameters": [
           {
             "name": "id",
@@ -2263,7 +2610,7 @@
         "tags": [
           "invoice-controller"
         ],
-        "operationId": "update_4",
+        "operationId": "update_5",
         "parameters": [
           {
             "name": "id",
@@ -2303,183 +2650,6 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/InvoiceResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/bookings/{id}": {
-      "get": {
-        "tags": [
-          "booking-controller"
-        ],
-        "operationId": "findById_5",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {}
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BookingResponse"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "booking-controller"
-        ],
-        "operationId": "delete_5",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {}
-                }
-              }
-            }
-          },
-          "204": {
-            "description": "No Content"
-          }
-        }
-      },
-      "patch": {
-        "tags": [
-          "booking-controller"
-        ],
-        "operationId": "update_5",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateBookingRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {}
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BookingResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/bookings/{id}/status": {
-      "patch": {
-        "tags": [
-          "booking-controller"
-        ],
-        "operationId": "updateStatus_2",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateBookingStatusRequest"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "409": {
-            "description": "Conflict",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {}
-                }
-              }
-            }
-          },
-          "200": {
-            "description": "OK",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/BookingResponse"
                 }
               }
             }
@@ -3011,6 +3181,56 @@
         }
       }
     },
+    "/api/bookings/{id}/invoices": {
+      "get": {
+        "tags": [
+          "booking-controller"
+        ],
+        "operationId": "listInvoices",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/PageQuery"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseInvoiceResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/bookings/stats": {
       "get": {
         "tags": [
@@ -3213,6 +3433,211 @@
   },
   "components": {
     "schemas": {
+      "UpdateOrganizationSettingsRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "legalName": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 0
+          },
+          "legalAddress": {
+            "type": "string"
+          },
+          "unp": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "okpo": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "directorName": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "directorTitle": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 0
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 30,
+            "minLength": 0
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "website": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 0
+          },
+          "iban": {
+            "type": "string",
+            "maxLength": 34,
+            "minLength": 0
+          },
+          "bankName": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "bik": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "defaultCurrency": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "BYN|USD|EUR"
+          },
+          "defaultLanguage": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "RU|EN"
+          },
+          "offerNumberPrefix": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "invoicePrefix": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "offerValidityDays": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 365,
+            "minimum": 1
+          },
+          "leadExpiryDays": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 365,
+            "minimum": 1
+          },
+          "defaultPaymentTerms": {
+            "type": "string"
+          },
+          "defaultCommissionPct": {
+            "type": "number",
+            "maximum": 100,
+            "minimum": 0
+          },
+          "agentAssignmentRule": {
+            "type": "string",
+            "pattern": "MANUAL|ROUND_ROBIN"
+          }
+        },
+        "required": [
+          "defaultCurrency",
+          "defaultLanguage",
+          "name"
+        ]
+      },
+      "OrganizationSettingsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "legalName": {
+            "type": "string"
+          },
+          "legalAddress": {
+            "type": "string"
+          },
+          "unp": {
+            "type": "string"
+          },
+          "okpo": {
+            "type": "string"
+          },
+          "directorName": {
+            "type": "string"
+          },
+          "directorTitle": {
+            "type": "string"
+          },
+          "logoUrl": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          },
+          "iban": {
+            "type": "string"
+          },
+          "bankName": {
+            "type": "string"
+          },
+          "bik": {
+            "type": "string"
+          },
+          "defaultCurrency": {
+            "type": "string"
+          },
+          "defaultLanguage": {
+            "type": "string"
+          },
+          "offerNumberPrefix": {
+            "type": "string"
+          },
+          "invoicePrefix": {
+            "type": "string"
+          },
+          "offerValidityDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "leadExpiryDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "defaultPaymentTerms": {
+            "type": "string"
+          },
+          "defaultCommissionPct": {
+            "type": "number"
+          },
+          "agentAssignmentRule": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "UpdateTravelRequestRequest": {
         "type": "object",
         "properties": {
@@ -4016,6 +4441,164 @@
           }
         }
       },
+      "UpdateBookingRequest": {
+        "type": "object",
+        "properties": {
+          "supplierConfirmationNumber": {
+            "type": "string"
+          },
+          "internalNotes": {
+            "type": "string"
+          },
+          "assignedBackofficeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "accommodationDetails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {}
+            }
+          },
+          "destination": {
+            "type": "string"
+          },
+          "departDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date"
+          }
+        }
+      },
+      "BookingResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "organizationId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "number": {
+            "type": "string"
+          },
+          "offerId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "leadId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clientId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "clientSnapshot": {
+            "type": "object",
+            "additionalProperties": {}
+          },
+          "destination": {
+            "type": "string"
+          },
+          "departDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "children": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "accommodationDetails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {}
+            }
+          },
+          "supplierConfirmationNumber": {
+            "type": "string"
+          },
+          "assignedBackofficeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "assignedBackofficeName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING_CONFIRMATION",
+              "CONFIRMED",
+              "IN_PROGRESS",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "cancellationReason": {
+            "type": "string"
+          },
+          "internalNotes": {
+            "type": "string"
+          },
+          "invoicesCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "documentsCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "createdById": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "UpdateBookingStatusRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "PENDING_CONFIRMATION",
+              "CONFIRMED",
+              "IN_PROGRESS",
+              "COMPLETED",
+              "CANCELLED"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
       "CreateWebhookRequest": {
         "type": "object",
         "properties": {
@@ -4639,68 +5222,53 @@
             "type": "string",
             "format": "uuid"
           },
+          "leadId": {
+            "type": "string",
+            "format": "uuid"
+          },
           "clientId": {
             "type": "string",
             "format": "uuid"
           },
-          "agreedPrice": {
-            "type": "number"
+          "destination": {
+            "type": "string"
           },
-          "currency": {
+          "departDate": {
             "type": "string",
-            "minLength": 1
+            "format": "date"
+          },
+          "returnDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "adults": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 1
+          },
+          "children": {
+            "type": "integer",
+            "format": "int32",
+            "minimum": 0
+          },
+          "accommodationDetails": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": {}
+            }
+          },
+          "assignedBackofficeId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "internalNotes": {
+            "type": "string"
           }
         },
         "required": [
-          "agreedPrice",
-          "clientId",
-          "currency",
-          "offerId"
+          "clientId"
         ]
-      },
-      "BookingResponse": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "organizationId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "offerId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "clientId": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "agreedPrice": {
-            "type": "number"
-          },
-          "currency": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string",
-            "enum": [
-              "PENDING",
-              "CONFIRMED",
-              "PAID",
-              "CANCELLED"
-            ]
-          },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time"
-          }
-        }
       },
       "Activity": {
         "type": "object",
@@ -4799,34 +5367,6 @@
             "type": "string"
           }
         }
-      },
-      "UpdateBookingRequest": {
-        "type": "object",
-        "properties": {
-          "agreedPrice": {
-            "type": "number"
-          },
-          "currency": {
-            "type": "string"
-          }
-        }
-      },
-      "UpdateBookingStatusRequest": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "string",
-            "enum": [
-              "PENDING",
-              "CONFIRMED",
-              "PAID",
-              "CANCELLED"
-            ]
-          }
-        },
-        "required": [
-          "status"
-        ]
       },
       "PageQuery": {
         "type": "object",

@@ -44,7 +44,10 @@ Separate control-flow structures with one blank line: put a blank line between *
 - Use `input()` and `output()` functions instead of decorators
 - Use `computed()` for derived state
 - Set `changeDetection: ChangeDetectionStrategy.OnPush` in `@Component` decorator
-- Prefer inline templates for small components
+- Never use inline templates or inline styles in components
+- One component must live in exactly one dedicated folder
+- Do not create components inside another component's folder
+- Every component must include exactly four files: `.ts`, `.html`, `.spec.ts`, and `.scss`
 - Prefer Reactive forms instead of Template-driven ones
 - Do NOT use `ngClass`, use `class` bindings instead
 - Do NOT use `ngStyle`, use `style` bindings instead
@@ -62,11 +65,15 @@ Separate control-flow structures with one blank line: put a blank line between *
 - Keep templates simple and avoid complex logic
 - Use native control flow (`@if`, `@for`, `@switch`) instead of `*ngIf`, `*ngFor`, `*ngSwitch`
 - Use the async pipe to handle observables
+- Never use Russian language in source code strings (labels, messages, placeholders, hints, errors, and similar UI text)
+- Russian translations are allowed only in localization files such as `src/locale/messages.ru.xlf`
+- Add i18n attributes for user-visible template strings
+- After adding or changing translatable strings, run `ng extract-i18n` and then add dedicated translations to `src/locale/messages.ru.xlf`
 - Do not assume globals like (`new Date()`) are available.
 - Do not write arrow functions in templates (they are not supported).
 - For event handlers, prefer method references (e.g. `(click)="onClick()"`) over inline statements (e.g. `(click)="count++"`), especially when the handler logic is more than a simple one-liner. This keeps templates cleaner and allows for better separation of concerns.
 - For class and style bindings, prefer using the `class` and `style` bindings with object syntax (e.g. `[class.active]="isActive"`) instead of `ngClass` and `ngStyle` directives, as they are more performant and easier to read.
-- Never use inline templates in components that have more than a few lines of HTML. For larger templates, always use an external template file to keep the component code clean and maintainable.
+- Never use inline templates or inline styles in components.
 
 ## Services
 

@@ -127,9 +127,88 @@ export type OrganizationResponseDto = {
   id: string;
   name: string;
   defaultCurrency?: string;
+  offerValidityDays?: number;
   invoicePrefix?: string;
   invoiceNextNumber?: number;
   createdAt: string;
+};
+
+/** OpenAPI: UpdateOrganizationSettingsRequest.defaultCurrency pattern. */
+export const OrganizationCurrency = {
+  BYN: 'BYN',
+  USD: 'USD',
+  EUR: 'EUR',
+} as const;
+export type OrganizationCurrency = (typeof OrganizationCurrency)[keyof typeof OrganizationCurrency];
+
+/** OpenAPI: UpdateOrganizationSettingsRequest.defaultLanguage pattern. */
+export const OrganizationLanguage = {
+  RU: 'RU',
+  EN: 'EN',
+} as const;
+export type OrganizationLanguage = (typeof OrganizationLanguage)[keyof typeof OrganizationLanguage];
+
+/** OpenAPI: UpdateOrganizationSettingsRequest.agentAssignmentRule pattern. */
+export const AgentAssignmentRule = {
+  MANUAL: 'MANUAL',
+  ROUND_ROBIN: 'ROUND_ROBIN',
+} as const;
+export type AgentAssignmentRule = (typeof AgentAssignmentRule)[keyof typeof AgentAssignmentRule];
+
+/** OpenAPI: UpdateOrganizationSettingsRequest. PUT /api/settings/organization body. */
+export type UpdateOrganizationSettingsDto = {
+  name: string;
+  defaultCurrency: OrganizationCurrency;
+  defaultLanguage: OrganizationLanguage;
+  legalName?: string;
+  legalAddress?: string;
+  unp?: string;
+  okpo?: string;
+  directorName?: string;
+  directorTitle?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  iban?: string;
+  bankName?: string;
+  bik?: string;
+  offerNumberPrefix?: string;
+  invoicePrefix?: string;
+  offerValidityDays?: number;
+  leadExpiryDays?: number;
+  defaultPaymentTerms?: string;
+  defaultCommissionPct?: number;
+  agentAssignmentRule?: AgentAssignmentRule;
+};
+
+/** OpenAPI: OrganizationSettingsResponse. GET/PUT /api/settings/organization response. */
+export type OrganizationSettingsResponseDto = {
+  id?: string;
+  name?: string;
+  legalName?: string;
+  legalAddress?: string;
+  unp?: string;
+  okpo?: string;
+  directorName?: string;
+  directorTitle?: string;
+  logoUrl?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  iban?: string;
+  bankName?: string;
+  bik?: string;
+  defaultCurrency?: OrganizationCurrency;
+  defaultLanguage?: OrganizationLanguage;
+  offerNumberPrefix?: string;
+  invoicePrefix?: string;
+  offerValidityDays?: number;
+  leadExpiryDays?: number;
+  defaultPaymentTerms?: string;
+  defaultCommissionPct?: number;
+  agentAssignmentRule?: AgentAssignmentRule;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 // ----- Leads -----
@@ -339,41 +418,73 @@ export type PaginatedOfferResponseDto = PaginatedDto<OfferResponseDto>;
 // ----- Bookings -----
 
 export const BookingStatus = {
-  PENDING: 'PENDING',
+  PENDING_CONFIRMATION: 'PENDING_CONFIRMATION',
   CONFIRMED: 'CONFIRMED',
-  PAID: 'PAID',
+  IN_PROGRESS: 'IN_PROGRESS',
+  COMPLETED: 'COMPLETED',
   CANCELLED: 'CANCELLED',
+  // Backward-compatible aliases used in existing UI code.
+  PENDING: 'PENDING_CONFIRMATION',
+  PAID: 'COMPLETED',
 } as const;
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus];
 
 /** OpenAPI: CreateBookingRequest. POST /api/bookings. */
 export type CreateBookingDto = {
-  offerId: string;
+  offerId?: string;
+  leadId?: string;
   clientId: string;
-  agreedPrice: number;
-  currency: string;
+  destination?: string;
+  departDate?: string;
+  returnDate?: string;
+  adults?: number;
+  children?: number;
+  accommodationDetails?: Record<string, unknown>[];
+  assignedBackofficeId?: string;
+  internalNotes?: string;
 };
 
-/** OpenAPI: UpdateBookingRequest. PATCH /api/bookings/{id}. */
+/** OpenAPI: UpdateBookingRequest. PUT /api/bookings/{id}. */
 export type UpdateBookingDto = {
-  agreedPrice?: number;
-  currency?: string;
+  supplierConfirmationNumber?: string;
+  internalNotes?: string;
+  assignedBackofficeId?: string;
+  accommodationDetails?: Record<string, unknown>[];
+  destination?: string;
+  departDate?: string;
+  returnDate?: string;
 };
 
-/** OpenAPI: UpdateBookingStatusRequest. PATCH /api/bookings/{id}/status. */
+/** OpenAPI: UpdateBookingStatusRequest. PUT /api/bookings/{id}/status. */
 export type UpdateBookingStatusDto = {
   status: BookingStatus;
+  reason?: string;
 };
 
-/** OpenAPI: BookingResponse. agreedPrice as number. */
+/** OpenAPI: BookingResponse. */
 export type BookingResponseDto = {
   id: string;
   organizationId: string;
+  number?: string;
   offerId: string;
+  leadId?: string;
   clientId: string;
-  agreedPrice: number;
-  currency: string;
+  clientSnapshot?: Record<string, unknown>;
+  destination?: string;
+  departDate?: string;
+  returnDate?: string;
+  adults?: number;
+  children?: number;
+  accommodationDetails?: Record<string, unknown>[];
+  supplierConfirmationNumber?: string;
+  assignedBackofficeId?: string;
+  assignedBackofficeName?: string;
   status: BookingStatus | string;
+  cancellationReason?: string;
+  internalNotes?: string;
+  invoicesCount?: number;
+  documentsCount?: number;
+  createdById?: string;
   createdAt: string;
   updatedAt: string;
 };

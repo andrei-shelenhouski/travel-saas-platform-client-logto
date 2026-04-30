@@ -27,6 +27,7 @@ import {
 import { ClientTypeBadgeComponent } from '../client-type-badge/client-type-badge';
 
 import type { ClientResponseDto } from '@app/shared/models';
+
 const PAGE_SIZE = 20;
 
 @Component({
@@ -34,13 +35,13 @@ const PAGE_SIZE = 20;
   selector: 'app-clients-list',
   imports: [
     ...MAT_BUTTONS,
+    ClientFilterBarComponent,
+    ClientTypeBadgeComponent,
+    DatePipe,
+    MatIcon,
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatTableModule,
-    ClientFilterBarComponent,
-    ClientTypeBadgeComponent,
-    MatIcon,
-    DatePipe,
     PageHeading,
   ],
   templateUrl: './clients-list.html',

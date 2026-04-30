@@ -1,0 +1,72 @@
+<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+  <mat-form-field>
+    <mat-label i18n="@@leadsListFilterStatusLabel">Statuses</mat-label>
+    <mat-select
+      multiple
+      [value]="statusFilter()"
+      (selectionChange)="onStatusSelectionChange($event.value)"
+    >
+      @for (status of statusOptions(); track status.value) {
+        <mat-option [value]="status.value">{{ status.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  @if (showAgentFilter()) {
+    <mat-form-field>
+      <mat-label i18n="@@leadsListFilterAgentLabel">Agent</mat-label>
+      <mat-select
+        [value]="selectedAgentId()"
+        (selectionChange)="onAgentSelectionChange($event.value)"
+      >
+        <mat-option i18n="@@leadsListFilterAgentAllOption" value="">All</mat-option>
+        @for (agent of agentOptions(); track agent.id) {
+          <mat-option [value]="agent.id">{{ agent.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
+
+  <mat-form-field>
+    <mat-label i18n="@@leadsListFilterClientTypeLabel">Client type</mat-label>
+    <mat-select
+      [value]="clientTypeFilter()"
+      (selectionChange)="onClientTypeSelectionChange($event.value)"
+    >
+      <mat-option i18n="@@leadsListFilterClientTypeAllOption" value="">All</mat-option>
+      @for (type of clientTypeOptions(); track type.value) {
+        <mat-option [value]="type.value">{{ type.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label i18n="@@leadsListFilterCreatedFromLabel">Created from</mat-label>
+    <input
+      matInput
+      type="date"
+      [value]="dateFromFilter()"
+      (change)="onDateFromInputChange($any($event.target).value)"
+    />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label i18n="@@leadsListFilterCreatedToLabel">Created to</mat-label>
+    <input
+      matInput
+      type="date"
+      [value]="dateToFilter()"
+      (change)="onDateToInputChange($any($event.target).value)"
+    />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label i18n="@@leadsListFilterSearchLabel">Search</mat-label>
+    <input
+      matInput
+      placeholder="Client, phone, email, lead number"
+      i18n-placeholder="@@leadsListFilterSearchPlaceholder"
+      [formControl]="searchControl()"
+    />
+  </mat-form-field>
+</div>

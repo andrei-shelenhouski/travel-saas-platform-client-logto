@@ -9,17 +9,15 @@ import { BookingsService } from '@app/services/bookings.service';
 import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { RequestsService } from '@app/services/requests.service';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-dashboard',
-  imports: [RouterLink, ...MAT_BUTTONS],
+  imports: [RouterLink, ...MAT_BUTTONS, PageHeading],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
-  host: {
-    class: 'p-4',
-  },
 })
 export class DashboardComponent {
   private readonly leadsService = inject(LeadsService);

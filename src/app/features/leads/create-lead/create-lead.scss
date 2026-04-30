@@ -1,1 +1,12 @@
-/* Create lead styles */
+:host {
+  display: block;
+}
+
+mat-option .text-xs {
+  white-space: nowrap;
+}
+
+button mat-spinner {
+  display: inline-block;
+  vertical-align: middle;
+}

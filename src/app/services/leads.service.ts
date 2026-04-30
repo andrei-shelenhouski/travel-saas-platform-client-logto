@@ -26,7 +26,7 @@ export class LeadsService {
   findAll(params?: {
     page?: number;
     limit?: number;
-    status?: LeadStatus;
+    status?: LeadStatus | string;
     agentId?: string;
     clientType?: string;
     source?: LeadSource;
@@ -44,7 +44,7 @@ export class LeadsService {
       httpParams = httpParams.set('limit', params.limit);
     }
 
-    if (params?.status !== undefined) {
+    if (params?.status !== undefined && params.status !== '') {
       httpParams = httpParams.set('status', params.status);
     }
 
