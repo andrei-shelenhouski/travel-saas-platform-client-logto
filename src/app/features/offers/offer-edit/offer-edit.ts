@@ -7,7 +7,6 @@ import {
   inject,
   OnInit,
   signal,
-  TemplateRef,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -24,6 +23,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { startWith } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 import {
   calculateNights,
@@ -32,6 +32,7 @@ import {
   mapServicesForDto,
   toSafeNumber,
 } from '@app/features/offers/offer-builder.utils';
+import { OfferPdfPreviewModalComponent } from '@app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal';
 import { OffersService } from '@app/services/offers.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import {
@@ -119,6 +120,7 @@ export class OfferEditComponent implements OnInit {
   readonly offer = signal<OfferResponseDto | null>(null);
   readonly loading = signal(true);
   readonly saving = signal(false);
+  readonly previewing = signal(false);
   readonly error = signal('');
 
   readonly form: OfferBuilderFormGroup = this.fb.nonNullable.group({
@@ -365,11 +367,49 @@ export class OfferEditComponent implements OnInit {
     );
   }
 
-  openPreview(template: TemplateRef<unknown>): void {
-    this.dialog.open(template, {
-      width: '960px',
-      maxWidth: '95vw',
-    });
+  onPreviewClick(): void {
+    const currentOffer = this.offer();
+
+    if (
+      !currentOffer ||
+      currentOffer.status !== OfferStatus.DRAFT ||
+      this.saving() ||
+      this.previewing()
+    ) {
+      return;
+    }
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+
+      return;
+    }
+
+    if (!this.form.dirty) {
+      this.openPdfPreviewDialog(currentOffer.id, currentOffer.number);
+
+      return;
+    }
+
+    const dto = this.buildUpdateDto();
+
+    this.error.set('');
+    this.previewing.set(true);
+
+    this.offersService
+      .update(currentOffer.id, dto)
+      .pipe(finalize(() => this.previewing.set(false)))
+      .subscribe({
+        next: (updated) => {
+          this.offer.set(updated);
+          this.form.markAsPristine();
+          this.toast.showSuccess('Offer draft updated');
+          this.openPdfPreviewDialog(updated.id, updated.number);
+        },
+        error: (err) => {
+          this.error.set(err.error?.message ?? err.message ?? 'Failed to update offer');
+        },
+      });
   }
 
   onSubmit(): void {
@@ -384,9 +424,41 @@ export class OfferEditComponent implements OnInit {
     this.error.set('');
     this.saving.set(true);
 
+    const dto = this.buildUpdateDto();
+
+    this.offersService.update(o.id, dto).subscribe({
+      next: (updated) => {
+        this.offer.set(updated);
+        this.form.markAsPristine();
+        this.toast.showSuccess('Offer draft updated');
+        this.router.navigate(['/app/offers', o.id]);
+      },
+      error: (err) => {
+        this.error.set(err.error?.message ?? err.message ?? 'Failed to update offer');
+        this.saving.set(false);
+      },
+      complete: () => this.saving.set(false),
+    });
+  }
+
+  private openPdfPreviewDialog(offerId: string, offerNumber?: string): void {
+    this.dialog.open(OfferPdfPreviewModalComponent, {
+      data: {
+        offerId,
+        offerNumber,
+      },
+      width: '900px',
+      maxWidth: '95vw',
+      maxHeight: '95vh',
+      panelClass: 'pdf-preview-dialog',
+    });
+  }
+
+  private buildUpdateDto(): UpdateOfferDto {
     const v = this.form.getRawValue();
     const pricing = this.pricingSummary();
-    const dto: UpdateOfferDto = {
+
+    return {
       language: v.language,
       currency: v.currency,
       ...(v.destination?.trim() && { destination: v.destination.trim() }),
@@ -405,20 +477,6 @@ export class OfferEditComponent implements OnInit {
       accommodations: mapAccommodationsForDto(v.accommodations),
       services: mapServicesForDto(v.services),
     };
-
-    this.offersService.update(o.id, dto).subscribe({
-      next: (updated) => {
-        this.offer.set(updated);
-        this.form.markAsPristine();
-        this.toast.showSuccess('Offer draft updated');
-        this.router.navigate(['/app/offers', o.id]);
-      },
-      error: (err) => {
-        this.error.set(err.error?.message ?? err.message ?? 'Failed to update offer');
-        this.saving.set(false);
-      },
-      complete: () => this.saving.set(false),
-    });
   }
 
   private createAccommodationGroup(initial?: {

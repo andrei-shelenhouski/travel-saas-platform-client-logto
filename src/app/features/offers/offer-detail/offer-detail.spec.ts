@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 
+import { OfferPdfPreviewModalComponent } from '@app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal';
 import { BookingsService } from '@app/services/bookings.service';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
@@ -66,30 +68,6 @@ describe('OfferDetailComponent', () => {
     vi.restoreAllMocks();
     vi.clearAllMocks();
 
-    Object.defineProperty(window, 'open', {
-      configurable: true,
-      value: vi.fn(() => ({ closed: false }) as unknown as Window),
-      writable: true,
-    });
-
-    if (!('createObjectURL' in URL)) {
-      Object.defineProperty(URL, 'createObjectURL', {
-        configurable: true,
-        value: vi.fn(),
-        writable: true,
-      });
-    }
-
-    if (!('revokeObjectURL' in URL)) {
-      Object.defineProperty(URL, 'revokeObjectURL', {
-        configurable: true,
-        value: vi.fn(),
-        writable: true,
-      });
-    }
-    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:preview');
-    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
-
     await TestBed.configureTestingModule({
       imports: [OfferDetailComponent],
       providers: [
@@ -119,7 +97,7 @@ describe('OfferDetailComponent', () => {
     const text = fixture.nativeElement.textContent as string;
 
     expect(text).toContain('Offer OF-100');
-    expect(text).toContain('Download PDF');
+    expect(text).toContain('Preview PDF');
   });
 
   it('calls revise and navigates to edit for revised offer', () => {
@@ -134,14 +112,25 @@ describe('OfferDetailComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/app/offers', 'offer-2', 'edit']);
   });
 
-  it('downloads pdf using offers service', () => {
+  it('opens pdf preview dialog', () => {
+    const componentDialog = (fixture.componentInstance as unknown as { dialog: MatDialog }).dialog;
+    const openSpy = vi.spyOn(componentDialog, 'open').mockReturnValue({} as never);
     const componentApi = fixture.componentInstance as unknown as {
-      downloadPdf: () => void;
+      openPdfPreview: () => void;
     };
 
-    componentApi.downloadPdf();
+    componentApi.openPdfPreview();
 
-    expect(offersServiceMock.getPdf).toHaveBeenCalledWith('offer-1');
+    expect(openSpy).toHaveBeenCalledWith(OfferPdfPreviewModalComponent, {
+      data: {
+        offerId: 'offer-1',
+        offerNumber: 'OF-100',
+      },
+      width: '900px',
+      maxWidth: '95vw',
+      maxHeight: '95vh',
+      panelClass: 'pdf-preview-dialog',
+    });
   });
 
   it('opens booking using fallback booking lookup for accepted offer', async () => {

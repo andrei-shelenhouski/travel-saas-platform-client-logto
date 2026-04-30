@@ -974,6 +974,70 @@
           <context context-type="linenumber">218,219</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="offerPdfPreviewButton" datatype="html">
+        <source> Preview PDF </source>
+        <target> Предварительный просмотр </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.html</context>
+          <context context-type="linenumber">339,341</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offer-detail/offer-detail.html</context>
+          <context context-type="linenumber">69,71</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offer-edit/offer-edit.html</context>
+          <context context-type="linenumber">331,333</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerPdfPreviewSaveDraftPrompt" datatype="html">
+        <source>Save a draft before opening PDF preview.</source>
+        <target>Сохраните черновик перед предпросмотром.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.ts</context>
+          <context context-type="linenumber">326</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerPdfPreviewDialogTitle" datatype="html">
+        <source>Offer <x id="INTERPOLATION" equiv-text="{{ data.offerNumber ?? data.offerId }}"/> PDF preview</source>
+        <target>Предложение <x id="INTERPOLATION" equiv-text="{{ data.offerNumber ?? data.offerId }}"/>: предпросмотр PDF</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal.html</context>
+          <context context-type="linenumber">3,5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerPdfDownloadButton" datatype="html">
+        <source> Download PDF </source>
+        <target> Скачать PDF </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal.html</context>
+          <context context-type="linenumber">13,16</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerPdfPreviewCloseAria" datatype="html">
+        <source>Close PDF preview</source>
+        <target>Закрыть предпросмотр PDF</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal.html</context>
+          <context context-type="linenumber">17,19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerPdfPreviewFrameTitle" datatype="html">
+        <source>Offer PDF preview</source>
+        <target>Предпросмотр PDF предложения</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal.html</context>
+          <context context-type="linenumber">43,47</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerPdfPreviewLoadError" datatype="html">
+        <source>Unable to load PDF. Please try again.</source>
+        <target>Не удалось загрузить PDF. Попробуйте еще раз.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal.ts</context>
+          <context context-type="linenumber">32</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="leadStatusOptionNew" datatype="html">
         <source>New</source>
         <target>Новый</target>
