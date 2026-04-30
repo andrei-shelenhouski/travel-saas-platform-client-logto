@@ -47,7 +47,7 @@ import {
 } from '@app/shared/material-imports';
 import { ToastService } from '@app/shared/services/toast.service';
 
-import type { CreateOfferDto, RequestResponseDto } from '@app/shared/models';
+import type { CreateOfferDto, RequestResponseDto, UpdateOfferDto } from '@app/shared/models';
 type AccommodationFormGroup = FormGroup<{
   hotelName: FormControl<string>;
   roomType: FormControl<string>;
@@ -127,6 +127,7 @@ export class CreateOfferComponent implements OnInit {
   readonly previewing = signal(false);
   readonly error = signal('');
   readonly requestId = signal<string | null>(null);
+  readonly createdDraftId = signal<string | null>(null);
 
   readonly form: OfferBuilderFormGroup = this.fb.nonNullable.group({
     language: this.fb.nonNullable.control('ru', Validators.required),
@@ -335,24 +336,42 @@ export class CreateOfferComponent implements OnInit {
       return;
     }
 
-    const dto = this.buildCreateDto(requestId);
-
     this.error.set('');
     this.previewing.set(true);
 
-    this.offersService
-      .create(dto)
-      .pipe(finalize(() => this.previewing.set(false)))
-      .subscribe({
-        next: (created) => {
-          this.form.markAsPristine();
-          this.toast.showSuccess('Offer draft saved');
-          this.openPdfPreviewDialog(created.id, created.number);
-        },
-        error: (err) => {
-          this.error.set(err.error?.message ?? err.message ?? 'Failed to create offer');
-        },
-      });
+    const existingId = this.createdDraftId();
+
+    if (existingId) {
+      const updateDto = this.buildUpdateDto();
+      this.offersService
+        .update(existingId, updateDto)
+        .pipe(finalize(() => this.previewing.set(false)))
+        .subscribe({
+          next: (updated) => {
+            this.form.markAsPristine();
+            this.openPdfPreviewDialog(updated.id, updated.number);
+          },
+          error: (err) => {
+            this.error.set(err.error?.message ?? err.message ?? 'Failed to update offer');
+          },
+        });
+    } else {
+      const dto = this.buildCreateDto(requestId);
+      this.offersService
+        .create(dto)
+        .pipe(finalize(() => this.previewing.set(false)))
+        .subscribe({
+          next: (created) => {
+            this.createdDraftId.set(created.id);
+            this.form.markAsPristine();
+            this.toast.showSuccess('Offer draft saved');
+            this.openPdfPreviewDialog(created.id, created.number);
+          },
+          error: (err) => {
+            this.error.set(err.error?.message ?? err.message ?? 'Failed to create offer');
+          },
+        });
+    }
   }
 
   onSubmit(): void {
@@ -377,20 +396,37 @@ export class CreateOfferComponent implements OnInit {
     this.error.set('');
     this.saving.set(true);
 
-    const dto = this.buildCreateDto(requestId);
+    const existingId = this.createdDraftId();
 
-    this.offersService.create(dto).subscribe({
-      next: (created) => {
-        this.form.markAsPristine();
-        this.toast.showSuccess('Offer draft saved');
-        this.router.navigate(['/app/offers', created.id]);
-      },
-      error: (err) => {
-        this.error.set(err.error?.message ?? err.message ?? 'Failed to create offer');
-        this.saving.set(false);
-      },
-      complete: () => this.saving.set(false),
-    });
+    if (existingId) {
+      const updateDto = this.buildUpdateDto();
+      this.offersService.update(existingId, updateDto).subscribe({
+        next: (updated) => {
+          this.form.markAsPristine();
+          this.toast.showSuccess('Offer draft saved');
+          this.router.navigate(['/app/offers', updated.id]);
+        },
+        error: (err) => {
+          this.error.set(err.error?.message ?? err.message ?? 'Failed to update offer');
+          this.saving.set(false);
+        },
+        complete: () => this.saving.set(false),
+      });
+    } else {
+      const dto = this.buildCreateDto(requestId);
+      this.offersService.create(dto).subscribe({
+        next: (created) => {
+          this.form.markAsPristine();
+          this.toast.showSuccess('Offer draft saved');
+          this.router.navigate(['/app/offers', created.id]);
+        },
+        error: (err) => {
+          this.error.set(err.error?.message ?? err.message ?? 'Failed to create offer');
+          this.saving.set(false);
+        },
+        complete: () => this.saving.set(false),
+      });
+    }
   }
 
   private openPdfPreviewDialog(offerId: string, offerNumber?: string): void {
@@ -412,6 +448,31 @@ export class CreateOfferComponent implements OnInit {
 
     return {
       requestId,
+      language: v.language,
+      currency: v.currency,
+      ...(v.destination?.trim() && { destination: v.destination.trim() }),
+      ...(v.departureCity?.trim() && { departureCity: v.departureCity.trim() }),
+      ...(v.departDate && { departDate: v.departDate }),
+      ...(v.returnDate && { returnDate: v.returnDate }),
+      ...(v.adults > 0 && { adults: v.adults }),
+      children: Math.max(0, toSafeNumber(v.children)),
+      ...(v.validityDate && { validityDate: v.validityDate }),
+      ...(v.discountMode === 'PCT'
+        ? { discountPct: Math.min(100, Math.max(0, toSafeNumber(v.discountValue))) }
+        : {
+            discountAmount: Math.min(pricing.subtotal, Math.max(0, toSafeNumber(v.discountValue))),
+          }),
+      ...(v.internalNotes?.trim() && { internalNotes: v.internalNotes.trim() }),
+      accommodations: mapAccommodationsForDto(v.accommodations),
+      services: mapServicesForDto(v.services),
+    };
+  }
+
+  private buildUpdateDto(): UpdateOfferDto {
+    const v = this.form.getRawValue();
+    const pricing = this.pricingSummary();
+
+    return {
       language: v.language,
       currency: v.currency,
       ...(v.destination?.trim() && { destination: v.destination.trim() }),
