@@ -30,6 +30,7 @@ export class BookingsService {
     page?: number;
     limit?: number;
     status?: BookingStatus;
+    offerId?: string;
     assignedBackofficeId?: string;
     departDateFrom?: string;
     departDateTo?: string;
@@ -46,6 +47,10 @@ export class BookingsService {
 
     if (params?.status !== undefined) {
       httpParams = httpParams.set('status', params.status);
+    }
+
+    if (params?.offerId !== undefined) {
+      httpParams = httpParams.set('offerId', params.offerId);
     }
 
     if (params?.assignedBackofficeId !== undefined) {

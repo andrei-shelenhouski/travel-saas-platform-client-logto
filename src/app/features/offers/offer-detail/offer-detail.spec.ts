@@ -4,6 +4,7 @@ import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angul
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 
+import { BookingsService } from '@app/services/bookings.service';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
@@ -47,6 +48,10 @@ describe('OfferDetailComponent', () => {
     ),
   };
 
+  const bookingsServiceMock = {
+    getList: vi.fn(() => of({ items: [{ id: 'booking-1' }], total: 1, page: 1, limit: 1 })),
+  };
+
   const permissionServiceMock = {
     canDeleteOffer: vi.fn(() => true),
     isAgent: vi.fn(() => false),
@@ -81,6 +86,7 @@ describe('OfferDetailComponent', () => {
           },
         },
         { provide: OffersService, useValue: offersServiceMock },
+        { provide: BookingsService, useValue: bookingsServiceMock },
         { provide: RequestsService, useValue: requestsServiceMock },
         { provide: PermissionService, useValue: permissionServiceMock },
         { provide: ToastService, useValue: toastServiceMock },
@@ -121,6 +127,30 @@ describe('OfferDetailComponent', () => {
     componentApi.downloadPdf();
 
     expect(offersServiceMock.getPdf).toHaveBeenCalledWith('offer-1');
+  });
+
+  it('opens booking using fallback booking lookup for accepted offer', async () => {
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    offersServiceMock.getById.mockReturnValueOnce(of(createOffer({ status: 'ACCEPTED' })));
+
+    fixture = TestBed.createComponent(OfferDetailComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const componentApi = fixture.componentInstance as unknown as {
+      onActionClick: (action: 'VIEW_BOOKING') => void;
+    };
+
+    componentApi.onActionClick('VIEW_BOOKING');
+
+    expect(bookingsServiceMock.getList).toHaveBeenCalledWith({
+      offerId: 'offer-1',
+      page: 1,
+      limit: 1,
+    });
+    expect(navigateSpy).toHaveBeenCalledWith(['/app/bookings', 'booking-1']);
   });
 });
 

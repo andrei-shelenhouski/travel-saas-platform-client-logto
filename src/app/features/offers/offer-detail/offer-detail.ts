@@ -10,12 +10,13 @@ import {
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { EMPTY } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { calculateNights } from '@app/features/offers/offer-builder.utils';
 import { getAllowedTransitions, OfferAction } from '@app/features/offers/offer-state-machine';
 import { OfferTimelineComponent } from '@app/features/offers/offer-timeline/offer-timeline';
+import { BookingsService } from '@app/services/bookings.service';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
@@ -26,6 +27,7 @@ import { ToastService } from '@app/shared/services/toast.service';
 
 import type {
   OfferResponseDto,
+  PaginatedBookingResponseDto,
   RequestResponseDto,
   UpdateOfferStatusDto,
 } from '@app/shared/models';
@@ -72,6 +74,7 @@ const ACTION_LABELS: Record<OfferAction, string> = {
 export class OfferDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly bookingsService = inject(BookingsService);
   private readonly offersService = inject(OffersService);
   private readonly requestsService = inject(RequestsService);
   private readonly toast = inject(ToastService);
@@ -146,10 +149,45 @@ export class OfferDetailComponent {
   protected readonly displayVersion = computed(() => `v${this.offer()?.version ?? 1}`);
   protected readonly canSeeInternalNotes = computed(() => !this.permissions.isAgent());
   protected readonly hasVersionHistory = computed(() => !!this.offer()?.previousVersionId);
-  protected readonly bookingId = computed(() => {
+  protected readonly bookingIdFromOffer = computed(() => {
     const current = this.offer() as OfferResponseDto & { bookingId?: string };
 
     return current.bookingId;
+  });
+
+  protected readonly bookingLookup = rxResource<PaginatedBookingResponseDto, string | null>({
+    params: (): string | null => {
+      const currentOffer = this.offer();
+
+      if (
+        !currentOffer ||
+        currentOffer.status !== OfferStatus.ACCEPTED ||
+        this.bookingIdFromOffer()
+      ) {
+        return null;
+      }
+
+      return currentOffer.id;
+    },
+    stream: ({ params }) => {
+      const offerId = params;
+
+      if (!offerId) {
+        return of({ items: [], total: 0, page: 1, limit: 1 });
+      }
+
+      return this.bookingsService.getList({ offerId, page: 1, limit: 1 });
+    },
+  });
+
+  protected readonly resolvedBookingId = computed(() => {
+    const directBookingId = this.bookingIdFromOffer();
+
+    if (directBookingId) {
+      return directBookingId;
+    }
+
+    return this.bookingLookup.value()?.items[0]?.id;
   });
 
   protected readonly allowedActions = computed(() => {
@@ -165,12 +203,8 @@ export class OfferDetailComponent {
       return actions.filter((a) => a !== 'DELETE');
     }
 
-    if (this.bookingId() && actions.includes('DELETE')) {
+    if (this.resolvedBookingId() && actions.includes('DELETE')) {
       return actions.filter((a) => a !== 'DELETE');
-    }
-
-    if (actions.includes('VIEW_BOOKING') && !this.bookingId()) {
-      return actions.filter((a) => a !== 'VIEW_BOOKING');
     }
 
     return actions;
@@ -211,7 +245,7 @@ export class OfferDetailComponent {
     }
 
     if (action === 'VIEW_BOOKING') {
-      const linkedBookingId = this.bookingId();
+      const linkedBookingId = this.resolvedBookingId();
 
       if (!linkedBookingId) {
         this.toast.showError('Booking is not available for this offer');
@@ -373,6 +407,8 @@ export class OfferDetailComponent {
 
           if (linkedBookingId) {
             this.router.navigate(['/app/bookings', linkedBookingId]);
+          } else {
+            this.toast.showSuccess('Offer accepted. Booking will appear shortly.');
           }
         }
 
