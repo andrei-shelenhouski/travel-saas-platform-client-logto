@@ -145,7 +145,7 @@ describe('LeadDetailComponent', () => {
           children: { setValue: (value: number) => void };
         };
       };
-      requests: () => Array<{ id: string }>;
+      requests: () => { id: string }[];
     };
 
     api.createTravelRequest();

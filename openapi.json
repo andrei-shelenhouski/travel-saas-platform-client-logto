@@ -11,6 +11,76 @@
     }
   ],
   "paths": {
+    "/api/settings/organization": {
+      "get": {
+        "tags": [
+          "settings-controller"
+        ],
+        "operationId": "getSettings",
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationSettingsResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "settings-controller"
+        ],
+        "operationId": "updateSettings",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrganizationSettingsRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationSettingsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/requests/{id}": {
       "get": {
         "tags": [
@@ -1095,6 +1165,78 @@
           },
           "204": {
             "description": "No Content"
+          }
+        }
+      }
+    },
+    "/api/settings/organization/logo": {
+      "get": {
+        "tags": [
+          "settings-controller"
+        ],
+        "operationId": "getLogo",
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "byte"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "settings-controller"
+        ],
+        "operationId": "uploadLogo",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -3291,6 +3433,211 @@
   },
   "components": {
     "schemas": {
+      "UpdateOrganizationSettingsRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "legalName": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 0
+          },
+          "legalAddress": {
+            "type": "string"
+          },
+          "unp": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "okpo": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "directorName": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "directorTitle": {
+            "type": "string",
+            "maxLength": 80,
+            "minLength": 0
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 30,
+            "minLength": 0
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "website": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 0
+          },
+          "iban": {
+            "type": "string",
+            "maxLength": 34,
+            "minLength": 0
+          },
+          "bankName": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "bik": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "defaultCurrency": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "BYN|USD|EUR"
+          },
+          "defaultLanguage": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "RU|EN"
+          },
+          "offerNumberPrefix": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "invoicePrefix": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "offerValidityDays": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 365,
+            "minimum": 1
+          },
+          "leadExpiryDays": {
+            "type": "integer",
+            "format": "int32",
+            "maximum": 365,
+            "minimum": 1
+          },
+          "defaultPaymentTerms": {
+            "type": "string"
+          },
+          "defaultCommissionPct": {
+            "type": "number",
+            "maximum": 100,
+            "minimum": 0
+          },
+          "agentAssignmentRule": {
+            "type": "string",
+            "pattern": "MANUAL|ROUND_ROBIN"
+          }
+        },
+        "required": [
+          "defaultCurrency",
+          "defaultLanguage",
+          "name"
+        ]
+      },
+      "OrganizationSettingsResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "legalName": {
+            "type": "string"
+          },
+          "legalAddress": {
+            "type": "string"
+          },
+          "unp": {
+            "type": "string"
+          },
+          "okpo": {
+            "type": "string"
+          },
+          "directorName": {
+            "type": "string"
+          },
+          "directorTitle": {
+            "type": "string"
+          },
+          "logoUrl": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "website": {
+            "type": "string"
+          },
+          "iban": {
+            "type": "string"
+          },
+          "bankName": {
+            "type": "string"
+          },
+          "bik": {
+            "type": "string"
+          },
+          "defaultCurrency": {
+            "type": "string"
+          },
+          "defaultLanguage": {
+            "type": "string"
+          },
+          "offerNumberPrefix": {
+            "type": "string"
+          },
+          "invoicePrefix": {
+            "type": "string"
+          },
+          "offerValidityDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "leadExpiryDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "defaultPaymentTerms": {
+            "type": "string"
+          },
+          "defaultCommissionPct": {
+            "type": "number"
+          },
+          "agentAssignmentRule": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "UpdateTravelRequestRequest": {
         "type": "object",
         "properties": {

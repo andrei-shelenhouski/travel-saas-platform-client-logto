@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,

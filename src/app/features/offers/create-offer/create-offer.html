@@ -1,112 +1,394 @@
-<div class="space-y-4">
-  <header class="flex items-center justify-between border-b border-gray-200 pb-4">
-    <h1 class="text-xl font-semibold text-gray-900">Create offer</h1>
-    <a mat-button routerLink="/app/offers">Cancel</a>
-  </header>
+<app-page-heading title="Offer builder">
+  <a mat-button routerLink="/app/offers">Cancel</a>
+</app-page-heading>
 
-  <p class="text-sm text-gray-600">Create an offer for a request. The offer will be created as draft.</p>
+<div class="p-4">
+  @if (requestLoading()) {
+    <div class="flex justify-center py-12">
+      <div
+        aria-hidden="true"
+        class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+      ></div>
+    </div>
+  } @else {
+    @if (error()) {
+      <p class="text-sm text-red-600">{{ error() }}</p>
+    }
 
-  @if (error()) {
-    <p class="text-sm text-red-600">{{ error() }}</p>
-  }
-
-  <form class="max-w-xl flex flex-col gap-4" [formGroup]="form" (ngSubmit)="onSubmit()">
-    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-      <mat-label>Request</mat-label>
-      <mat-select formControlName="selectedRequestId" id="request">
-        <mat-option value="">Select a request…</mat-option>
-        @for (req of requests(); track req.id) {
-          <mat-option [value]="req.id">
-            {{ req.destination }} — {{ req.departDate }} ({{ req.adults }} adults)
-          </mat-option>
+    <form class="space-y-6" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <section class="rounded-lg border border-gray-200 bg-white p-4">
+        <h2 class="text-base font-semibold text-gray-900">Header</h2>
+        @if (request(); as req) {
+          <p class="mt-2 text-sm text-gray-600">
+            Request: {{ req.destination || 'Destination not set' }} | {{ req.departDate || '-' }} -
+            {{ req.returnDate || '-' }} | {{ req.adults || 0 }} adults,
+            {{ req.children || 0 }} children
+          </p>
         }
-      </mat-select>
-      @if (
-        form.controls.selectedRequestId.hasError('required') &&
-        form.controls.selectedRequestId.touched
-      ) {
-        <mat-error>Select a request</mat-error>
-      }
-      @if (requestsLoading()) {
-        <mat-hint>Loading requests…</mat-hint>
-      }
-      @if (!requestsLoading() && requests().length === 0) {
-        <mat-hint class="!text-amber-700">No requests found. Create a request first.</mat-hint>
-      }
-    </mat-form-field>
 
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Language</mat-label>
-        <mat-select formControlName="language" id="language">
-          <mat-option value="en">English</mat-option>
-          <mat-option value="ru">Russian</mat-option>
-          <mat-option value="de">German</mat-option>
-          <mat-option value="pl">Polish</mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Currency</mat-label>
-        <input formControlName="currency" id="currency" matInput type="text" />
-      </mat-form-field>
-    </div>
+        <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-4">
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-label>Destination</mat-label>
+            <input formControlName="destination" id="destination" matInput type="text" />
+          </mat-form-field>
 
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Destination</mat-label>
-        <input formControlName="destination" id="destination" matInput type="text" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Departure city</mat-label>
-        <input formControlName="departureCity" id="departureCity" matInput type="text" />
-      </mat-form-field>
-    </div>
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-label>Departure city</mat-label>
+            <input formControlName="departureCity" id="departureCity" matInput type="text" />
+          </mat-form-field>
 
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Depart date</mat-label>
-        <input formControlName="departDate" id="departDate" matInput type="date" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Return date</mat-label>
-        <input formControlName="returnDate" id="returnDate" matInput type="date" />
-      </mat-form-field>
-    </div>
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-label>Depart date</mat-label>
+            <input formControlName="departDate" id="departDate" matInput type="date" />
+          </mat-form-field>
 
-    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Adults</mat-label>
-        <input formControlName="adults" id="adults" matInput min="0" type="number" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Children</mat-label>
-        <input formControlName="children" id="children" matInput min="0" type="number" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Valid until</mat-label>
-        <input formControlName="validityDate" id="validityDate" matInput type="date" />
-      </mat-form-field>
-    </div>
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-label>Return date</mat-label>
+            <input formControlName="returnDate" id="returnDate" matInput type="date" />
+          </mat-form-field>
+        </div>
 
-    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-      <mat-label>Internal notes</mat-label>
-      <textarea formControlName="internalNotes" id="internalNotes" matInput rows="3"></textarea>
-    </mat-form-field>
+        <div class="mt-2 grid grid-cols-1 gap-4 lg:grid-cols-6">
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-label>Adults</mat-label>
+            <input formControlName="adults" id="adults" matInput min="0" type="number" />
+          </mat-form-field>
 
-    <div class="flex flex-wrap gap-3 pt-2">
-      <button
-        color="primary"
-        mat-flat-button
-        type="submit"
-        [disabled]="saving() || form.invalid || requests().length === 0"
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-label>Children</mat-label>
+            <input formControlName="children" id="children" matInput min="0" type="number" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-label>Validity date</mat-label>
+            <input formControlName="validityDate" id="validityDate" matInput type="date" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-label>Currency</mat-label>
+            <mat-select formControlName="currency" id="currency">
+              @for (currency of currencyOptions; track currency) {
+                <mat-option [value]="currency">{{ currency }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <div class="lg:col-span-2">
+            <label class="mb-2 block text-sm font-medium text-gray-700" for="create-offer-language">
+              Language
+            </label>
+            <mat-button-toggle-group
+              aria-label="Offer language"
+              formControlName="language"
+              id="create-offer-language"
+            >
+              @for (language of languageOptions; track language) {
+                <mat-button-toggle [value]="language">{{
+                  language.toUpperCase()
+                }}</mat-button-toggle>
+              }
+            </mat-button-toggle-group>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="rounded-lg border border-gray-200 bg-white p-4"
+        formArrayName="accommodations"
       >
-        @if (saving()) {
-          <span aria-hidden="true" class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></span>
-        } @else {
-          Create offer
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-semibold text-gray-900">Accommodations</h2>
+          <button mat-stroked-button type="button" (click)="addAccommodation()">
+            Add accommodation
+          </button>
+        </div>
+
+        @if (form.controls.accommodations.hasError('minItems')) {
+          <p class="mt-2 text-sm text-red-600">At least one accommodation row is required.</p>
         }
-      </button>
-      <a mat-stroked-button routerLink="/app/offers">Cancel</a>
-    </div>
-  </form>
+
+        <div cdkDropList class="mt-4 space-y-3" (cdkDropListDropped)="dropAccommodation($event)">
+          @for (row of accommodationsArray.controls; track $index) {
+            <div cdkDrag class="rounded-md border border-gray-200 p-3" [formGroupName]="$index">
+              <div class="grid grid-cols-1 gap-3 lg:grid-cols-9">
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-2"
+                  subscriptSizing="dynamic"
+                >
+                  <mat-label>Hotel name</mat-label>
+                  <input formControlName="hotelName" matInput required type="text" />
+                  @if (
+                    row.controls.hotelName.hasError('required') && row.controls.hotelName.touched
+                  ) {
+                    <mat-error>Required</mat-error>
+                  }
+                </mat-form-field>
+
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-1"
+                  subscriptSizing="dynamic"
+                >
+                  <mat-label>Room type</mat-label>
+                  <input formControlName="roomType" matInput type="text" />
+                </mat-form-field>
+
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-1"
+                  subscriptSizing="dynamic"
+                >
+                  <mat-label>Meal plan</mat-label>
+                  <mat-select formControlName="mealPlan">
+                    <mat-option value="">None</mat-option>
+                    @for (meal of mealPlanOptions; track meal) {
+                      <mat-option [value]="meal">{{ meal }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-1"
+                  subscriptSizing="dynamic"
+                >
+                  <mat-label>Check-in</mat-label>
+                  <input formControlName="checkinDate" matInput type="date" />
+                </mat-form-field>
+
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-1"
+                  subscriptSizing="dynamic"
+                >
+                  <mat-label>Check-out</mat-label>
+                  <input formControlName="checkoutDate" matInput type="date" />
+                </mat-form-field>
+
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-1"
+                  subscriptSizing="dynamic"
+                >
+                  <mat-label>Unit price</mat-label>
+                  <input formControlName="unitPrice" matInput min="0" type="number" />
+                </mat-form-field>
+
+                <div class="flex flex-col justify-center text-sm text-gray-700">
+                  <span>Nights: {{ accommodationNights($index) }}</span>
+                  <span>Total: {{ accommodationTotal($index) | number: '1.2-2' }}</span>
+                </div>
+
+                <div class="flex items-center justify-end gap-2">
+                  <button
+                    aria-label="Remove accommodation"
+                    mat-icon-button
+                    type="button"
+                    (click)="removeAccommodation($index)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+
+              @if (
+                row.hasError('invalidDateRange') &&
+                (row.controls.checkoutDate.touched || row.controls.checkinDate.touched)
+              ) {
+                <p class="mt-2 text-sm text-red-600">Check-out date must be after check-in date.</p>
+              }
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="rounded-lg border border-gray-200 bg-white p-4" formArrayName="services">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-semibold text-gray-900">Services</h2>
+          <button mat-stroked-button type="button" (click)="addService()">Add service</button>
+        </div>
+
+        <div cdkDropList class="mt-4 space-y-3" (cdkDropListDropped)="dropService($event)">
+          @for (row of servicesArray.controls; track $index) {
+            <div cdkDrag class="rounded-md border border-gray-200 p-3" [formGroupName]="$index">
+              <div class="grid grid-cols-1 gap-3 lg:grid-cols-8">
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-2"
+                  subscriptSizing="dynamic"
+                >
+                  <mat-label>Service type</mat-label>
+                  <mat-select formControlName="serviceType">
+                    @for (serviceType of serviceTypeOptions; track serviceType) {
+                      <mat-option [value]="serviceType">{{ serviceType }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-2"
+                  subscriptSizing="dynamic"
+                >
+                  <mat-label>Description</mat-label>
+                  <input formControlName="description" matInput type="text" />
+                </mat-form-field>
+
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-1"
+                  subscriptSizing="dynamic"
+                >
+                  <mat-label>Quantity</mat-label>
+                  <input formControlName="quantity" matInput min="1" type="number" />
+                </mat-form-field>
+
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-1"
+                  subscriptSizing="dynamic"
+                >
+                  <mat-label>Unit price</mat-label>
+                  <input formControlName="unitPrice" matInput min="0" type="number" />
+                </mat-form-field>
+
+                <div class="flex flex-col justify-center text-sm text-gray-700">
+                  <span>Total: {{ serviceTotal($index) | number: '1.2-2' }}</span>
+                </div>
+
+                <div class="flex items-center justify-end">
+                  <button
+                    aria-label="Remove service"
+                    mat-icon-button
+                    type="button"
+                    (click)="removeService($index)"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+
+      <section class="rounded-lg border border-gray-200 bg-white p-4">
+        <h2 class="text-base font-semibold text-gray-900">Pricing summary</h2>
+        <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-4">
+          <div>
+            <label
+              class="mb-2 block text-sm font-medium text-gray-700"
+              for="create-offer-discount-mode"
+            >
+              Discount type
+            </label>
+            <mat-button-toggle-group
+              aria-label="Discount type"
+              formControlName="discountMode"
+              id="create-offer-discount-mode"
+            >
+              <mat-button-toggle value="PCT">%</mat-button-toggle>
+              <mat-button-toggle value="AMOUNT">{{
+                form.controls.currency.value
+              }}</mat-button-toggle>
+            </mat-button-toggle-group>
+          </div>
+
+          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+            <mat-label>Discount value</mat-label>
+            <input formControlName="discountValue" matInput min="0" type="number" />
+          </mat-form-field>
+
+          <div class="rounded-md bg-gray-50 p-3 text-sm">
+            <p class="text-gray-500">Subtotal</p>
+            <p class="font-semibold text-gray-900">
+              {{ pricingSummary().subtotal | number: '1.2-2' }} {{ form.controls.currency.value }}
+            </p>
+          </div>
+
+          <div class="rounded-md bg-gray-50 p-3 text-sm">
+            <p class="text-gray-500">Total</p>
+            <p class="font-semibold text-gray-900">
+              {{ pricingSummary().total | number: '1.2-2' }} {{ form.controls.currency.value }}
+            </p>
+          </div>
+        </div>
+
+        <p class="mt-2 text-xs text-gray-500">
+          Discount amount: {{ pricingSummary().discountAmount | number: '1.2-2' }} | Discount
+          percent: {{ pricingSummary().discountPct | number: '1.2-2' }}%
+        </p>
+      </section>
+
+      <section class="rounded-lg border border-gray-200 bg-white p-4">
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-label>Internal notes</mat-label>
+          <textarea formControlName="internalNotes" matInput rows="4"></textarea>
+        </mat-form-field>
+      </section>
+
+      <div class="flex flex-wrap gap-3">
+        <button mat-stroked-button type="button" (click)="openPreview(previewDialog)">
+          Preview
+        </button>
+        <button color="primary" mat-flat-button type="submit" [disabled]="saving() || form.invalid">
+          @if (saving()) {
+            <span
+              aria-hidden="true"
+              class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+            ></span>
+          } @else {
+            Save as Draft
+          }
+        </button>
+        <a mat-button routerLink="/app/offers">Cancel</a>
+      </div>
+    </form>
+  }
 </div>
+
+<ng-template #previewDialog>
+  <div class="max-h-[80vh] overflow-auto p-2">
+    <h3 class="text-lg font-semibold text-gray-900">Offer preview</h3>
+    <p class="mt-1 text-sm text-gray-600">
+      Live preview generated from current form values before saving.
+    </p>
+
+    <div class="mt-4 space-y-3 text-sm text-gray-800">
+      <p><strong>Destination:</strong> {{ form.controls.destination.value || '-' }}</p>
+      <p><strong>Departure city:</strong> {{ form.controls.departureCity.value || '-' }}</p>
+      <p>
+        <strong>Dates:</strong> {{ form.controls.departDate.value || '-' }} -
+        {{ form.controls.returnDate.value || '-' }}
+      </p>
+      <p>
+        <strong>Passengers:</strong> {{ form.controls.adults.value }} adults,
+        {{ form.controls.children.value }} children
+      </p>
+      <p><strong>Language:</strong> {{ form.controls.language.value.toUpperCase() }}</p>
+      <p><strong>Currency:</strong> {{ form.controls.currency.value }}</p>
+
+      <hr class="my-2 border-gray-200" />
+
+      <p><strong>Accommodations:</strong> {{ accommodationsArray.length }}</p>
+      <p><strong>Services:</strong> {{ servicesArray.length }}</p>
+      <p>
+        <strong>Subtotal:</strong> {{ pricingSummary().subtotal | number: '1.2-2' }}
+        {{ form.controls.currency.value }}
+      </p>
+      <p>
+        <strong>Discount:</strong> {{ pricingSummary().discountAmount | number: '1.2-2' }}
+        {{ form.controls.currency.value }}
+      </p>
+      <p>
+        <strong>Total:</strong> {{ pricingSummary().total | number: '1.2-2' }}
+        {{ form.controls.currency.value }}
+      </p>
+    </div>
+
+    <div class="mt-4 flex justify-end">
+      <button mat-button mat-dialog-close type="button">Close</button>
+    </div>
+  </div>
+</ng-template>
