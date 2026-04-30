@@ -69,6 +69,12 @@ html {
       background-color: var(--mat-sys-surface-container-high);
       cursor: pointer;
     }
+
+    > .mat-mdc-cell {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   .table-wrap {

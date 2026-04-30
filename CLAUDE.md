@@ -51,6 +51,10 @@ npm run refresh-openapi  # pull latest OpenAPI spec from localhost:3000
 
 Tests use **Vitest** (not Karma or Jest). Test files are co-located with source files as `*.spec.ts`.
 
+## Git
+
+- Do not add `Co-Authored-By` trailers to commit messages.
+
 ## Firebase
 
 - Project: `travel-saas-platform-prod`

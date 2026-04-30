@@ -9,9 +9,8 @@ export const OfferAction = {
   SEND: 'SEND',
   ACCEPT: 'ACCEPT',
   REJECT: 'REJECT',
-  EXPIRE: 'EXPIRE',
-  CREATE_BOOKING: 'CREATE_BOOKING',
-  DUPLICATE: 'DUPLICATE',
+  REVISE: 'REVISE',
+  VIEW_BOOKING: 'VIEW_BOOKING',
   DELETE: 'DELETE',
 } as const;
 export type OfferAction = (typeof OfferAction)[keyof typeof OfferAction];
@@ -26,12 +25,12 @@ export function getAllowedTransitions(status: OfferStatus): OfferAction[] {
       return [OfferAction.EDIT, OfferAction.SEND, OfferAction.DELETE];
     case 'SENT':
     case 'VIEWED':
-      return [OfferAction.ACCEPT, OfferAction.REJECT, OfferAction.EXPIRE];
+      return [OfferAction.ACCEPT, OfferAction.REJECT, OfferAction.REVISE];
     case 'ACCEPTED':
-      return [OfferAction.CREATE_BOOKING];
+      return [OfferAction.VIEW_BOOKING];
     case 'REJECTED':
     case 'EXPIRED':
-      return [];
+      return [OfferAction.REVISE];
     default:
       return [];
   }
