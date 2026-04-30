@@ -26,6 +26,7 @@ const BOOKINGS_STATS_URL = `${environment.baseUrl}/api/bookings/stats`;
 export class BookingsService {
   private readonly http = inject(HttpClient);
 
+  // eslint-disable-next-line complexity
   getList(params?: {
     page?: number;
     size?: number;
