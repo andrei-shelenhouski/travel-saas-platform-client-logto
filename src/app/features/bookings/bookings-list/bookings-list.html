@@ -29,10 +29,8 @@
         <td *matCellDef="let element" mat-cell>
           <a
             class="booking-link"
-            href=""
-            (click)="
-              $event.preventDefault(); $event.stopPropagation(); navigateToBooking(element.id)
-            "
+            [routerLink]="['/bookings', element.id]"
+            (click)="$event.stopPropagation()"
           >
             {{ element.number || '—' }}
           </a>

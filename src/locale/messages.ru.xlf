@@ -173,6 +173,18 @@
           <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.ts</context>
           <context context-type="linenumber">23</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/booking-status-chip/booking-status-chip.ts</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingStatusOptionPending" datatype="html">
+        <source>Pending</source>
+        <target>В ожидании</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/booking-status-chip/booking-status-chip.ts</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="bookingStatusOptionConfirmed" datatype="html">
         <source>Confirmed</source>
@@ -196,6 +208,18 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.ts</context>
           <context context-type="linenumber">35</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/booking-status-chip/booking-status-chip.ts</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingStatusOptionPaid" datatype="html">
+        <source>Paid</source>
+        <target>Оплачено</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/booking-status-chip/booking-status-chip.ts</context>
+          <context context-type="linenumber">18</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingStatusOptionCancelled" datatype="html">

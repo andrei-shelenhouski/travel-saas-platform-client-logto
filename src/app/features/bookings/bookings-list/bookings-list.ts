@@ -13,7 +13,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { BookingsService } from '@app/services/bookings.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
@@ -50,6 +50,7 @@ const BOOKING_STATUSES = new Set<BookingStatus>([
     MatProgressSpinnerModule,
     MatTableModule,
     PageHeading,
+    RouterLink,
   ],
   templateUrl: './bookings-list.html',
   styleUrl: './bookings-list.scss',

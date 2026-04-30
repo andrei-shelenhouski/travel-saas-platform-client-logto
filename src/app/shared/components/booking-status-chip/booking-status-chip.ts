@@ -2,18 +2,22 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
 export const BOOKING_STATUS_COLORS: Record<string, string> = {
   PENDING_CONFIRMATION: '#d97706',
+  PENDING: '#d97706',
   CONFIRMED: '#2b9db8',
   IN_PROGRESS: '#41636e',
   COMPLETED: '#16a34a',
+  PAID: '#16a34a',
   CANCELLED: '#73787a',
 };
 
 export const BOOKING_STATUS_LABELS: Record<string, string> = {
-  PENDING_CONFIRMATION: 'Pending confirmation',
-  CONFIRMED: 'Confirmed',
-  IN_PROGRESS: 'In progress',
-  COMPLETED: 'Completed',
-  CANCELLED: 'Cancelled',
+  PENDING_CONFIRMATION: $localize`:@@bookingStatusOptionPendingConfirmation:Pending confirmation`,
+  PENDING: $localize`:@@bookingStatusOptionPending:Pending`,
+  CONFIRMED: $localize`:@@bookingStatusOptionConfirmed:Confirmed`,
+  IN_PROGRESS: $localize`:@@bookingStatusOptionInProgress:In progress`,
+  COMPLETED: $localize`:@@bookingStatusOptionCompleted:Completed`,
+  PAID: $localize`:@@bookingStatusOptionPaid:Paid`,
+  CANCELLED: $localize`:@@bookingStatusOptionCancelled:Cancelled`,
 };
 
 @Component({
@@ -43,5 +47,15 @@ export class BookingStatusChipComponent {
     }
 
     return BOOKING_STATUS_COLORS[status] ?? '#73787a';
+  }
+
+  textColor(): string {
+    const status = this.status();
+
+    if (!status || !(status in BOOKING_STATUS_COLORS)) {
+      return '#1f2937';
+    }
+
+    return '#ffffff';
   }
 }
