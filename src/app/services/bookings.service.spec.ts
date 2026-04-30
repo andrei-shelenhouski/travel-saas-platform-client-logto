@@ -61,7 +61,9 @@ describe('BookingsService', () => {
     service.listDocuments('booking-1').subscribe();
     service.deleteDocument('booking-1', 'doc-1').subscribe();
 
-    expect(httpClient.get).toHaveBeenCalledWith(`${environment.baseUrl}/api/bookings/booking-1/documents`);
+    expect(httpClient.get).toHaveBeenCalledWith(
+      `${environment.baseUrl}/api/bookings/booking-1/documents`,
+    );
     expect(httpClient.delete).toHaveBeenCalledWith(
       `${environment.baseUrl}/api/bookings/booking-1/documents/doc-1`,
     );
