@@ -11,7 +11,7 @@ import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EMPTY, of } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 
 import { calculateNights } from '@app/features/offers/offer-builder.utils';
 import { getAllowedTransitions, OfferAction } from '@app/features/offers/offer-state-machine';
@@ -150,9 +150,15 @@ export class OfferDetailComponent {
   protected readonly canSeeInternalNotes = computed(() => !this.permissions.isAgent());
   protected readonly hasVersionHistory = computed(() => !!this.offer()?.previousVersionId);
   protected readonly bookingIdFromOffer = computed(() => {
-    const current = this.offer() as OfferResponseDto & { bookingId?: string };
+    const current = this.offer();
 
-    return current.bookingId;
+    if (!current || !('bookingId' in current)) {
+      return undefined;
+    }
+
+    const bookingId = current['bookingId' as keyof typeof current];
+
+    return typeof bookingId === 'string' ? bookingId : undefined;
   });
 
   protected readonly bookingLookup = rxResource<PaginatedBookingResponseDto, string | null>({
@@ -352,22 +358,24 @@ export class OfferDetailComponent {
 
     this.pdfLoading.set(true);
 
-    this.offersService.getPdf(offerId).subscribe({
-      next: (blob) => {
-        const url = URL.createObjectURL(blob);
-        const popup = window.open(url, '_blank', 'noopener,noreferrer');
+    this.offersService
+      .getPdf(offerId)
+      .pipe(finalize(() => this.pdfLoading.set(false)))
+      .subscribe({
+        next: (blob) => {
+          const url = URL.createObjectURL(blob);
+          const popup = window.open(url, '_blank', 'noopener,noreferrer');
 
-        if (!popup) {
-          this.toast.showError('Unable to open PDF preview');
-        }
+          if (!popup) {
+            this.toast.showError('Unable to open PDF preview');
+          }
 
-        setTimeout(() => URL.revokeObjectURL(url), 30_000);
-      },
-      error: (err) => {
-        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to download PDF');
-      },
-      complete: () => this.pdfLoading.set(false),
-    });
+          setTimeout(() => URL.revokeObjectURL(url), 30_000);
+        },
+        error: (err) => {
+          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to download PDF');
+        },
+      });
   }
 
   protected isDestructiveAction(action: OfferAction): boolean {
@@ -392,65 +400,74 @@ export class OfferDetailComponent {
     this.data.set({ ...currentOffer, status: newStatus } as OfferResponseDto);
     this.actionLoading.set(true);
 
-    this.offersService.setStatus(id, newStatus).subscribe({
-      next: (updated) => {
-        this.data.set(updated);
+    this.offersService
+      .setStatus(id, newStatus)
+      .pipe(finalize(() => this.actionLoading.set(false)))
+      .subscribe({
+        next: (updated) => {
+          this.data.set(updated);
 
-        if (newStatus === OfferStatus.SENT) {
-          this.toast.showSuccess('Offer sent');
-        }
-
-        if (newStatus === OfferStatus.ACCEPTED) {
-          const linkedBookingId = (updated as OfferResponseDto & { bookingId?: string }).bookingId;
-
-          this.toast.showSuccess('Offer accepted');
-
-          if (linkedBookingId) {
-            this.router.navigate(['/app/bookings', linkedBookingId]);
-          } else {
-            this.toast.showSuccess('Offer accepted. Booking will appear shortly.');
+          if (newStatus === OfferStatus.SENT) {
+            this.toast.showSuccess('Offer sent');
           }
-        }
 
-        if (newStatus === OfferStatus.REJECTED) {
-          this.toast.showSuccess('Offer marked as rejected');
-        }
-      },
-      error: (err) => {
-        this.data.set(currentOffer);
-        this.toast.showError(err.error?.message ?? err.message ?? 'Action failed');
-      },
-      complete: () => this.actionLoading.set(false),
-    });
+          if (newStatus === OfferStatus.ACCEPTED) {
+            const linkedBookingId =
+              'bookingId' in updated &&
+              typeof (updated as Record<string, unknown>)['bookingId'] === 'string'
+                ? ((updated as Record<string, unknown>)['bookingId'] as string)
+                : undefined;
+
+            if (linkedBookingId) {
+              this.toast.showSuccess('Offer accepted');
+              this.router.navigate(['/app/bookings', linkedBookingId]);
+            } else {
+              this.toast.showSuccess('Offer accepted. Booking will appear shortly.');
+            }
+          }
+
+          if (newStatus === OfferStatus.REJECTED) {
+            this.toast.showSuccess('Offer marked as rejected');
+          }
+        },
+        error: (err) => {
+          this.data.set(currentOffer);
+          this.toast.showError(err.error?.message ?? err.message ?? 'Action failed');
+        },
+      });
   }
 
   private runDeleteAction(id: string): void {
     this.actionLoading.set(true);
 
-    this.offersService.delete(id).subscribe({
-      next: () => {
-        this.toast.showSuccess('Offer deleted');
-        this.router.navigate(['/app/offers']);
-      },
-      error: (err) => {
-        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to delete offer');
-      },
-      complete: () => this.actionLoading.set(false),
-    });
+    this.offersService
+      .delete(id)
+      .pipe(finalize(() => this.actionLoading.set(false)))
+      .subscribe({
+        next: () => {
+          this.toast.showSuccess('Offer deleted');
+          this.router.navigate(['/app/offers']);
+        },
+        error: (err) => {
+          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to delete offer');
+        },
+      });
   }
 
   private runReviseAction(id: string): void {
     this.actionLoading.set(true);
 
-    this.offersService.revise(id).subscribe({
-      next: (revisedOffer) => {
-        this.toast.showSuccess('Revision created');
-        this.router.navigate(['/app/offers', revisedOffer.id, 'edit']);
-      },
-      error: (err) => {
-        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to revise offer');
-      },
-      complete: () => this.actionLoading.set(false),
-    });
+    this.offersService
+      .revise(id)
+      .pipe(finalize(() => this.actionLoading.set(false)))
+      .subscribe({
+        next: (revisedOffer) => {
+          this.toast.showSuccess('Revision created');
+          this.router.navigate(['/app/offers', revisedOffer.id, 'edit']);
+        },
+        error: (err) => {
+          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to revise offer');
+        },
+      });
   }
 }

@@ -72,6 +72,21 @@ describe('OfferDetailComponent', () => {
       writable: true,
     });
 
+    if (!('createObjectURL' in URL)) {
+      Object.defineProperty(URL, 'createObjectURL', {
+        configurable: true,
+        value: vi.fn(),
+        writable: true,
+      });
+    }
+
+    if (!('revokeObjectURL' in URL)) {
+      Object.defineProperty(URL, 'revokeObjectURL', {
+        configurable: true,
+        value: vi.fn(),
+        writable: true,
+      });
+    }
     vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:preview');
     vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
 

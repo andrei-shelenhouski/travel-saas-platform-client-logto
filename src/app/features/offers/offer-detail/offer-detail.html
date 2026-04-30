@@ -45,8 +45,7 @@
               {{ displayVersion() }}
             </span>
             <span
-              class="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
-              [class]="statusBadgeClass()"
+              [class]="'inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ' + statusBadgeClass()"
             >
               {{ o.status }}
             </span>
@@ -100,13 +99,13 @@
               <div>
                 <dt class="text-gray-500">Offer date</dt>
                 <dd class="font-medium text-gray-900">
-                  {{ o.offerDate || o.createdAt | date: 'mediumDate' }}
+                  {{ (o.offerDate || o.createdAt) | date: 'mediumDate' }}
                 </dd>
               </div>
               <div>
                 <dt class="text-gray-500">Valid until</dt>
                 <dd class="font-medium text-gray-900">
-                  {{ o.validityDate || '-' | date: 'mediumDate' }}
+                  {{ o.validityDate ? (o.validityDate | date: 'mediumDate') : '-' }}
                 </dd>
               </div>
               <div>
@@ -116,8 +115,8 @@
               <div>
                 <dt class="text-gray-500">Travel dates</dt>
                 <dd class="font-medium text-gray-900">
-                  {{ o.departDate || '-' | date: 'mediumDate' }} -
-                  {{ o.returnDate || '-' | date: 'mediumDate' }}
+                  {{ o.departDate ? (o.departDate | date: 'mediumDate') : '-' }} -
+                  {{ o.returnDate ? (o.returnDate | date: 'mediumDate') : '-' }}
                 </dd>
               </div>
               <div>
@@ -154,8 +153,8 @@
                       <td class="px-2 py-2">{{ row.roomType || '-' }}</td>
                       <td class="px-2 py-2">{{ row.mealPlan || '-' }}</td>
                       <td class="px-2 py-2">
-                        {{ row.checkinDate || '-' | date: 'mediumDate' }} -
-                        {{ row.checkoutDate || '-' | date: 'mediumDate' }}
+                        {{ row.checkinDate ? (row.checkinDate | date: 'mediumDate') : '-' }} -
+                        {{ row.checkoutDate ? (row.checkoutDate | date: 'mediumDate') : '-' }}
                       </td>
                       <td class="px-2 py-2">
                         {{ getAccommodationNights(row.checkinDate, row.checkoutDate) }}
