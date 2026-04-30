@@ -1,3 +1,4 @@
+import { DatePipe, DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,15 +8,14 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { EMPTY, switchMap } from 'rxjs';
+import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { calculateNights } from '@app/features/offers/offer-builder.utils';
 import { getAllowedTransitions, OfferAction } from '@app/features/offers/offer-state-machine';
 import { OfferTimelineComponent } from '@app/features/offers/offer-timeline/offer-timeline';
-import { BookingsService } from '@app/services/bookings.service';
-import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
@@ -24,7 +24,18 @@ import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { OfferStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
-import type { OfferResponseDto, UpdateOfferStatusDto } from '@app/shared/models';
+import type {
+  OfferResponseDto,
+  RequestResponseDto,
+  UpdateOfferStatusDto,
+} from '@app/shared/models';
+
+type LoadError = {
+  status?: number;
+  error?: { message?: string };
+  message?: string;
+};
+
 const STATUS_BADGE_CLASS: Record<OfferStatus, string> = {
   DRAFT: 'bg-gray-100 text-gray-800',
   SENT: 'bg-blue-100 text-blue-800',
@@ -39,16 +50,22 @@ const ACTION_LABELS: Record<OfferAction, string> = {
   SEND: 'Send',
   ACCEPT: 'Accept',
   REJECT: 'Reject',
-  EXPIRE: 'Expire',
-  CREATE_BOOKING: 'Convert to Booking',
-  DUPLICATE: 'Duplicate',
+  REVISE: 'Revise',
+  VIEW_BOOKING: 'Open booking',
   DELETE: 'Delete',
 };
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-offer-detail',
-  imports: [OfferTimelineComponent, ConfirmationDialogComponent, ...MAT_BUTTONS],
+  imports: [
+    DatePipe,
+    DecimalPipe,
+    RouterLink,
+    OfferTimelineComponent,
+    ConfirmationDialogComponent,
+    ...MAT_BUTTONS,
+  ],
   templateUrl: './offer-detail.html',
   styleUrl: './offer-detail.scss',
 })
@@ -56,8 +73,6 @@ export class OfferDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly offersService = inject(OffersService);
-  private readonly bookingsService = inject(BookingsService);
-  private readonly leadsService = inject(LeadsService);
   private readonly requestsService = inject(RequestsService);
   private readonly toast = inject(ToastService);
   private readonly permissions = inject(PermissionService);
@@ -77,37 +92,94 @@ export class OfferDetailComponent {
     },
   });
 
-  readonly offer = computed(() => this.data.value() ?? null);
-  readonly loading = computed(() => this.data.isLoading());
-  readonly actionLoading = signal(false);
-  readonly confirmOpen = signal(false);
-  readonly confirmPayload = signal<{
-    action: 'REJECT' | 'EXPIRE' | 'DELETE';
+  protected readonly offer = computed(() => this.data.value() ?? null);
+  protected readonly loading = computed(() => this.data.isLoading());
+  protected readonly hasError = computed(
+    () => this.data.error() !== undefined && this.data.error() !== null,
+  );
+
+  protected readonly request = rxResource<RequestResponseDto, string | null>({
+    params: (): string | null => this.offer()?.requestId ?? null,
+    stream: ({ params }) => {
+      const requestId = params;
+
+      if (requestId === null) {
+        return EMPTY;
+      }
+
+      return this.requestsService.getById(requestId);
+    },
+  });
+
+  protected readonly loadErrorMessage = computed(() => {
+    const error = this.data.error() as LoadError | undefined;
+
+    if (!error) {
+      return '';
+    }
+
+    if (error.status === 404) {
+      return 'Offer not found';
+    }
+
+    if (error.status === 403) {
+      return 'You do not have access to this offer';
+    }
+
+    return error.error?.message ?? error.message ?? 'Failed to load offer';
+  });
+
+  protected readonly actionLoading = signal(false);
+  protected readonly pdfLoading = signal(false);
+  protected readonly confirmOpen = signal(false);
+  protected readonly confirmPayload = signal<{
+    action: 'SEND' | 'ACCEPT' | 'REJECT' | 'DELETE';
     title: string;
     message: string;
     confirmLabel: string;
     danger: boolean;
   } | null>(null);
 
-  protected readonly allowedActions = computed(() => {
-    const o = this.offer();
+  protected readonly displayOfferNumber = computed(
+    () => this.offer()?.number ?? this.offer()?.id ?? '',
+  );
+  protected readonly displayVersion = computed(() => `v${this.offer()?.version ?? 1}`);
+  protected readonly canSeeInternalNotes = computed(() => !this.permissions.isAgent());
+  protected readonly hasVersionHistory = computed(() => !!this.offer()?.previousVersionId);
+  protected readonly bookingId = computed(() => {
+    const current = this.offer() as OfferResponseDto & { bookingId?: string };
 
-    if (!o) {
+    return current.bookingId;
+  });
+
+  protected readonly allowedActions = computed(() => {
+    const currentOffer = this.offer();
+
+    if (!currentOffer) {
       return [];
     }
-    const actions = getAllowedTransitions(o.status as OfferStatus);
+
+    const actions = getAllowedTransitions(currentOffer.status as OfferStatus);
 
     if (!this.permissions.canDeleteOffer() && actions.includes('DELETE')) {
       return actions.filter((a) => a !== 'DELETE');
+    }
+
+    if (this.bookingId() && actions.includes('DELETE')) {
+      return actions.filter((a) => a !== 'DELETE');
+    }
+
+    if (actions.includes('VIEW_BOOKING') && !this.bookingId()) {
+      return actions.filter((a) => a !== 'VIEW_BOOKING');
     }
 
     return actions;
   });
 
   protected readonly statusBadgeClass = computed(() => {
-    const o = this.offer();
+    const currentOffer = this.offer();
 
-    return o ? STATUS_BADGE_CLASS[o.status as OfferStatus] : '';
+    return currentOffer ? STATUS_BADGE_CLASS[currentOffer.status as OfferStatus] : '';
   });
 
   protected readonly ACTION_LABELS = ACTION_LABELS;
@@ -115,182 +187,120 @@ export class OfferDetailComponent {
   constructor() {
     effect(() => {
       if (this.routeId() === null) {
-        this.toast.showError('Offer ID missing');
+        this.toast.showError('Offer ID is missing');
         this.router.navigate(['/app/offers']);
       }
     });
   }
 
-  private runTransition(
-    id: string,
-    action: OfferAction,
-    newStatus?: UpdateOfferStatusDto['status'],
-  ): void {
-    const current = this.offer();
-
-    if (newStatus !== undefined && current) {
-      this.data.set({ ...current, status: newStatus } as OfferResponseDto);
-    }
-    this.actionLoading.set(true);
-    const req = newStatus !== undefined ? this.offersService.setStatus(id, newStatus) : null;
-
-    if (action === 'DELETE') {
-      this.offersService.delete(id).subscribe({
-        next: () => {
-          this.toast.showSuccess('Offer deleted');
-          this.router.navigate(['/app/offers']);
-        },
-        error: (err) => {
-          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to delete offer');
-        },
-        complete: () => this.actionLoading.set(false),
-      });
-
-      return;
-    }
-
-    if (action === 'CREATE_BOOKING') {
-      const offer = this.offer();
-
-      if (!offer?.requestId) {
-        this.toast.showError('Offer has no associated request');
-        this.actionLoading.set(false);
-
-        return;
-      }
-
-      this.requestsService
-        .getById(offer.requestId)
-        .pipe(
-          switchMap((request) => this.leadsService.findById(request.leadId)),
-          switchMap((lead) => {
-            if (!lead.clientId) {
-              throw new Error('Lead has no associated client');
-            }
-
-            return this.bookingsService.create({
-              offerId: id,
-              leadId: lead.id,
-              clientId: lead.clientId,
-              destination: offer.destination,
-              departDate: offer.departDate,
-              returnDate: offer.returnDate,
-              adults: offer.adults,
-              children: offer.children,
-              internalNotes: offer.internalNotes,
-            });
-          }),
-        )
-        .subscribe({
-          next: () => {
-            this.toast.showSuccess('Booking created');
-            this.router.navigate(['/app/bookings']);
-          },
-          error: (err) => {
-            this.toast.showError(err.error?.message ?? err.message ?? 'Failed to create booking');
-            this.actionLoading.set(false);
-          },
-          complete: () => this.actionLoading.set(false),
-        });
-
-      return;
-    }
-
-    if (req && current) {
-      req.subscribe({
-        next: (updated) => {
-          this.data.set(updated);
-        },
-        error: (err) => {
-          this.data.set(current);
-          this.toast.showError(err.error?.message ?? err.message ?? 'Action failed');
-        },
-        complete: () => this.actionLoading.set(false),
-      });
-    } else {
-      this.actionLoading.set(false);
-    }
+  protected onBackClick(): void {
+    this.router.navigate(['/app/offers']);
   }
 
   protected onActionClick(action: OfferAction): void {
-    const o = this.offer();
+    const currentOffer = this.offer();
 
-    if (!o || this.actionLoading()) {
-      return;
-    }
-
-    if (action === 'REJECT' || action === 'EXPIRE' || action === 'DELETE') {
-      const payloads = {
-        REJECT: {
-          action: 'REJECT' as const,
-          title: 'Reject offer',
-          message: 'Are you sure you want to reject this offer?',
-          confirmLabel: 'Reject',
-          danger: true,
-        },
-        EXPIRE: {
-          action: 'EXPIRE' as const,
-          title: 'Expire offer',
-          message: 'Are you sure you want to mark this offer as expired?',
-          confirmLabel: 'Expire',
-          danger: true,
-        },
-        DELETE: {
-          action: 'DELETE' as const,
-          title: 'Delete offer',
-          message: 'Are you sure you want to delete this draft offer?',
-          confirmLabel: 'Delete',
-          danger: true,
-        },
-      };
-      this.confirmPayload.set(payloads[action]);
-      this.confirmOpen.set(true);
-
+    if (!currentOffer || this.actionLoading()) {
       return;
     }
 
     if (action === 'EDIT') {
-      this.router.navigate(['/app/offers', o.id, 'edit']);
+      this.router.navigate(['/app/offers', currentOffer.id, 'edit']);
 
       return;
     }
 
-    const statusMap: Partial<Record<OfferAction, UpdateOfferStatusDto['status']>> = {
-      SEND: OfferStatus.SENT,
-      ACCEPT: OfferStatus.ACCEPTED,
-      REJECT: OfferStatus.REJECTED,
-      EXPIRE: OfferStatus.EXPIRED,
-    };
-    const newStatus = statusMap[action];
+    if (action === 'VIEW_BOOKING') {
+      const linkedBookingId = this.bookingId();
 
-    if (newStatus) {
-      this.runTransition(o.id, action, newStatus);
-    } else if (action === 'DUPLICATE') {
-      this.runTransition(o.id, action);
-    } else if (action === 'CREATE_BOOKING') {
-      this.runTransition(o.id, action);
+      if (!linkedBookingId) {
+        this.toast.showError('Booking is not available for this offer');
+
+        return;
+      }
+
+      this.router.navigate(['/app/bookings', linkedBookingId]);
+
+      return;
+    }
+
+    if (action === 'REVISE') {
+      this.runReviseAction(currentOffer.id);
+
+      return;
+    }
+
+    const payloads = {
+      SEND: {
+        action: 'SEND' as const,
+        title: 'Send offer',
+        message: 'Send this offer to the client?',
+        confirmLabel: 'Send',
+        danger: false,
+      },
+      ACCEPT: {
+        action: 'ACCEPT' as const,
+        title: 'Accept offer',
+        message: 'Mark this offer as accepted? This action cannot be undone.',
+        confirmLabel: 'Accept',
+        danger: true,
+      },
+      REJECT: {
+        action: 'REJECT' as const,
+        title: 'Reject offer',
+        message: 'Mark this offer as rejected by the client?',
+        confirmLabel: 'Reject',
+        danger: true,
+      },
+      DELETE: {
+        action: 'DELETE' as const,
+        title: 'Delete offer',
+        message: 'Delete this draft offer?',
+        confirmLabel: 'Delete',
+        danger: true,
+      },
+    };
+
+    if (action === 'SEND' || action === 'ACCEPT' || action === 'REJECT' || action === 'DELETE') {
+      this.confirmPayload.set(payloads[action]);
+      this.confirmOpen.set(true);
     }
   }
 
   protected onConfirmDialogConfirm(): void {
     const payload = this.confirmPayload();
-    const o = this.offer();
+    const currentOffer = this.offer();
 
-    if (!payload || !o) {
+    if (!payload || !currentOffer) {
       this.confirmOpen.set(false);
       this.confirmPayload.set(null);
 
       return;
     }
+
     this.confirmOpen.set(false);
     this.confirmPayload.set(null);
 
+    if (payload.action === 'SEND') {
+      this.runStatusAction(currentOffer.id, OfferStatus.SENT);
+
+      return;
+    }
+
+    if (payload.action === 'ACCEPT') {
+      this.runStatusAction(currentOffer.id, OfferStatus.ACCEPTED);
+
+      return;
+    }
+
     if (payload.action === 'REJECT') {
-      this.runTransition(o.id, 'REJECT', OfferStatus.REJECTED);
-    } else if (payload.action === 'EXPIRE') {
-      this.runTransition(o.id, 'EXPIRE', OfferStatus.EXPIRED);
-    } else if (payload.action === 'DELETE') {
-      this.runTransition(o.id, 'DELETE');
+      this.runStatusAction(currentOffer.id, OfferStatus.REJECTED);
+
+      return;
+    }
+
+    if (payload.action === 'DELETE') {
+      this.runDeleteAction(currentOffer.id);
     }
   }
 
@@ -299,25 +309,112 @@ export class OfferDetailComponent {
     this.confirmPayload.set(null);
   }
 
-  protected isDestructiveAction(action: OfferAction): boolean {
-    return action === 'REJECT' || action === 'EXPIRE' || action === 'DELETE';
+  protected downloadPdf(): void {
+    const offerId = this.offer()?.id;
+
+    if (!offerId || this.pdfLoading()) {
+      return;
+    }
+
+    this.pdfLoading.set(true);
+
+    this.offersService.getPdf(offerId).subscribe({
+      next: (blob) => {
+        const url = URL.createObjectURL(blob);
+        const popup = window.open(url, '_blank', 'noopener,noreferrer');
+
+        if (!popup) {
+          this.toast.showError('Unable to open PDF preview');
+        }
+
+        setTimeout(() => URL.revokeObjectURL(url), 30_000);
+      },
+      error: (err) => {
+        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to download PDF');
+      },
+      complete: () => this.pdfLoading.set(false),
+    });
   }
 
-  protected getConfirmConfig(): {
-    open: boolean;
-    title: string;
-    message: string;
-    confirmLabel: string;
-    danger: boolean;
-  } {
-    const p = this.confirmPayload();
+  protected isDestructiveAction(action: OfferAction): boolean {
+    return action === 'ACCEPT' || action === 'REJECT' || action === 'DELETE';
+  }
 
-    return {
-      open: this.confirmOpen(),
-      title: p?.title ?? 'Confirm',
-      message: p?.message ?? '',
-      confirmLabel: p?.confirmLabel ?? 'Confirm',
-      danger: p?.danger ?? false,
-    };
+  protected getAccommodationNights(checkinDate?: string, checkoutDate?: string): number | string {
+    if (!checkinDate || !checkoutDate) {
+      return '-';
+    }
+
+    return calculateNights(checkinDate, checkoutDate);
+  }
+
+  private runStatusAction(id: string, newStatus: UpdateOfferStatusDto['status']): void {
+    const currentOffer = this.offer();
+
+    if (!currentOffer) {
+      return;
+    }
+
+    this.data.set({ ...currentOffer, status: newStatus } as OfferResponseDto);
+    this.actionLoading.set(true);
+
+    this.offersService.setStatus(id, newStatus).subscribe({
+      next: (updated) => {
+        this.data.set(updated);
+
+        if (newStatus === OfferStatus.SENT) {
+          this.toast.showSuccess('Offer sent');
+        }
+
+        if (newStatus === OfferStatus.ACCEPTED) {
+          const linkedBookingId = (updated as OfferResponseDto & { bookingId?: string }).bookingId;
+
+          this.toast.showSuccess('Offer accepted');
+
+          if (linkedBookingId) {
+            this.router.navigate(['/app/bookings', linkedBookingId]);
+          }
+        }
+
+        if (newStatus === OfferStatus.REJECTED) {
+          this.toast.showSuccess('Offer marked as rejected');
+        }
+      },
+      error: (err) => {
+        this.data.set(currentOffer);
+        this.toast.showError(err.error?.message ?? err.message ?? 'Action failed');
+      },
+      complete: () => this.actionLoading.set(false),
+    });
+  }
+
+  private runDeleteAction(id: string): void {
+    this.actionLoading.set(true);
+
+    this.offersService.delete(id).subscribe({
+      next: () => {
+        this.toast.showSuccess('Offer deleted');
+        this.router.navigate(['/app/offers']);
+      },
+      error: (err) => {
+        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to delete offer');
+      },
+      complete: () => this.actionLoading.set(false),
+    });
+  }
+
+  private runReviseAction(id: string): void {
+    this.actionLoading.set(true);
+
+    this.offersService.revise(id).subscribe({
+      next: (revisedOffer) => {
+        this.toast.showSuccess('Revision created');
+        this.router.navigate(['/app/offers', revisedOffer.id, 'edit']);
+      },
+      error: (err) => {
+        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to revise offer');
+      },
+      complete: () => this.actionLoading.set(false),
+    });
   }
 }

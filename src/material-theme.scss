@@ -69,6 +69,10 @@ html {
       background-color: var(--mat-sys-surface-container-high);
       cursor: pointer;
     }
+
+    * {
+      white-space: nowrap;
+    }
   }
 
   .table-wrap {
