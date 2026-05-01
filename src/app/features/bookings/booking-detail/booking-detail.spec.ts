@@ -1,14 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { provideRouter } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, provideRouter } from '@angular/router';
 
 import { of, throwError } from 'rxjs';
 
 import { BookingsService } from '@app/services/bookings.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { RoleService } from '@app/services/role.service';
-import { ToastService } from '@app/shared/services/toast.service';
 import { BookingStatus, OrgRole } from '@app/shared/models';
+import { ToastService } from '@app/shared/services/toast.service';
 
 import { BookingDetailComponent } from './booking-detail';
 

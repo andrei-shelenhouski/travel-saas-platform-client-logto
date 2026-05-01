@@ -14,8 +14,8 @@ import { EMPTY, forkJoin } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
 import { BookingsService } from '@app/services/bookings.service';
-import { ToastService } from '@app/shared/services/toast.service';
 import { BookingStatus } from '@app/shared/models';
+import { ToastService } from '@app/shared/services/toast.service';
 
 import { AccommodationTableComponent } from './accommodation-table/accommodation-table';
 import { BookingHeaderComponent } from './booking-header/booking-header';

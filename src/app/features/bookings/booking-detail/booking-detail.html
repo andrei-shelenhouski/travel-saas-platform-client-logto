@@ -10,9 +10,7 @@
     <section class="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
       <p class="text-base font-semibold text-red-800">{{ loadErrorMessage() }}</p>
       @if (loadNotFound()) {
-        <p class="mt-1 text-sm text-red-600" i18n>
-          Check the URL or return to the bookings list.
-        </p>
+        <p class="mt-1 text-sm text-red-600" i18n>Check the URL or return to the bookings list.</p>
       } @else {
         <p class="mt-1 text-sm text-red-600" i18n>
           Try again later or return to the bookings list.
@@ -32,10 +30,7 @@
       <div class="grid gap-4 lg:grid-cols-3">
         <!-- Left column: main content -->
         <div class="space-y-4 lg:col-span-2">
-          <app-client-snapshot-card
-            [clientId]="b.clientId"
-            [snapshot]="b.clientSnapshot"
-          />
+          <app-client-snapshot-card [clientId]="b.clientId" [snapshot]="b.clientSnapshot" />
 
           <app-travel-details-section
             [booking]="b"
