@@ -1,5 +1,6 @@
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -28,6 +29,9 @@ export const MAT_DIALOG = [MatDialogModule] as const;
 
 /** Material icons only. */
 export const MAT_ICONS = [MatIconModule] as const;
+
+/** Material autocomplete with form controls. */
+export const MAT_AUTOCOMPLETE = [MatAutocompleteModule] as const;
 
 /** Sidebar / app shell navigation list with icons. */
 export const MAT_NAV_LIST = [MatListModule, MatIconModule] as const;
