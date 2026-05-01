@@ -104,20 +104,10 @@ export class InvoicesListComponent {
     },
   });
 
-  private readonly summaryData = rxResource({
-    stream: () => this.invoicesService.getSummary(),
-  });
-
   protected readonly invoices = computed(() => this.data.value()?.items ?? []);
   protected readonly totalElements = computed(() => this.data.value()?.total ?? 0);
   protected readonly loading = computed(() => this.data.isLoading());
   protected readonly summary = computed<InvoiceSummaryResponseDto>(() => {
-    const response = this.summaryData.value();
-
-    if (response) {
-      return response;
-    }
-
     const items = this.invoices();
     const currency = items[0]?.currency ?? 'BYN';
 
