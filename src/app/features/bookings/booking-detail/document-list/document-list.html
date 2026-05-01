@@ -26,15 +26,15 @@
 </section>
 
 <app-confirmation-dialog
-  i18n-cancelLabel
   cancelLabel="Cancel"
-  i18n-confirmLabel
+  i18n-cancelLabel
   confirmLabel="Delete"
+  i18n-confirmLabel
+  title="Delete document"
+  i18n-title
   [danger]="true"
   [message]="deleteConfirmMessage()"
   [open]="deleteDialogOpen()"
-  i18n-title
-  title="Delete document"
   (cancel)="onDeleteCancel()"
   (confirm)="onDeleteConfirm()"
 />

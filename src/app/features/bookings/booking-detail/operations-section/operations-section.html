@@ -19,7 +19,7 @@
         <mat-form-field class="w-full">
           <mat-label i18n>Assignee (Back Office)</mat-label>
           <mat-select formControlName="assignedBackofficeId">
-            <mat-option value="" i18n>— Unassigned —</mat-option>
+            <mat-option i18n value="">— Unassigned —</mat-option>
             @for (member of backOfficeMembers(); track member.userId) {
               <mat-option [value]="member.userId">{{ member.name }}</mat-option>
             }
@@ -33,7 +33,7 @@
       </mat-form-field>
 
       <div class="flex justify-end gap-2">
-        <button mat-button type="button" (click)="cancelEdit()" i18n>Cancel</button>
+        <button i18n mat-button type="button" (click)="cancelEdit()">Cancel</button>
         <button color="primary" mat-flat-button type="submit" [disabled]="saving()">
           <span i18n>Save</span>
         </button>
