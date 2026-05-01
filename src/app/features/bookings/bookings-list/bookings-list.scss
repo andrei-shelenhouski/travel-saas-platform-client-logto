@@ -1,1 +1,9 @@
-/* Bookings list styles */
+.booking-link {
+  color: #0e7490;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.booking-link:hover {
+  text-decoration: underline;
+}

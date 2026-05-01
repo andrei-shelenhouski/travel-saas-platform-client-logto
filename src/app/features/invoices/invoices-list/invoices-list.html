@@ -56,7 +56,9 @@
               <td class="px-4 py-3 text-sm font-mono text-gray-600">
                 {{ inv.bookingId.slice(0, 8) }}…
               </td>
-              <td class="px-4 py-3 text-sm text-gray-900">{{ inv.amount }} {{ inv.currency }}</td>
+              <td class="px-4 py-3 text-sm text-gray-900">
+                {{ inv.total ?? inv.subtotal ?? 0 }} {{ inv.currency }}
+              </td>
               <td class="px-4 py-3">
                 <span
                   class="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
@@ -66,7 +68,7 @@
                 </span>
               </td>
               <td class="px-4 py-3 text-sm text-gray-600">
-                {{ formatDate(inv.issueDate) }}
+                {{ formatDate(inv.invoiceDate) }}
               </td>
             </tr>
           }

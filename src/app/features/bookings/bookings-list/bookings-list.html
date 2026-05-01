@@ -1,85 +1,141 @@
-<div class="p-4">
-  <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
-    <h1 class="text-xl font-semibold text-gray-900">Bookings</h1>
-    <p class="text-sm text-gray-500 w-full">Created from accepted offers.</p>
-  </header>
+<app-page-heading title="Bookings" i18n-title="@@bookingsListTitle">
+  @if (showCreateBookingButton()) {
+    <button color="primary" mat-flat-button type="button" (click)="navigateToCreateBooking()">
+      <mat-icon>add</mat-icon>
+      <span i18n="@@bookingsListNewBookingCta">New booking</span>
+    </button>
+  }
+</app-page-heading>
 
-  <mat-button-toggle-group
-    appearance="standard"
-    class="flex flex-wrap"
-    hideSingleSelectionIndicator
-    [value]="activeFilter()"
-    (change)="setFilter($event.value)"
-  >
-    @for (tab of filterTabs; track tab.value) {
-      <mat-button-toggle [value]="tab.value">{{ tab.label }}</mat-button-toggle>
-    }
-  </mat-button-toggle-group>
+<div class="space-y-4 p-4">
+  <app-booking-filter-bar
+    [staffOptions]="staffOptions()"
+    [value]="filterValue()"
+    (filterChange)="onFilterChange($event)"
+  />
+
+  <p class="text-sm text-gray-600" i18n="@@bookingsListTotalCountLabel">
+    Total: {{ totalElements() }} bookings
+  </p>
 
   @if (error()) {
-    <p class="text-sm text-red-600">{{ error() }}</p>
+    <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
   }
 
-  <div class="rounded-lg border border-gray-200 bg-white overflow-hidden">
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead class="bg-gray-50">
-        <tr>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-            Offer / Client
-          </th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trip</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-200">
-        @if (loading()) {
-          <tr>
-            <td class="px-4 py-12 text-center text-gray-500" colspan="4">
-              <div
-                aria-hidden="true"
-                class="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-              ></div>
-            </td>
-          </tr>
-        } @else if (bookings().length === 0) {
-          <tr>
-            <td class="px-4 py-12 text-center text-gray-500" colspan="4">
-              No bookings yet. Create a booking from an accepted offer.
-            </td>
-          </tr>
-        } @else {
-          @for (b of bookings(); track b.id) {
-            <tr class="cursor-pointer hover:bg-gray-50" (click)="goToDetail(b)">
-              <td class="px-4 py-3 text-sm">
-                <span class="font-mono text-xs text-gray-500"
-                  >Offer {{ b.offerId.slice(0, 8) }}…</span
-                >
-                <span class="block text-gray-900">Client {{ b.clientId.slice(0, 8) }}…</span>
-              </td>
-              <td class="px-4 py-3 text-sm text-gray-700">
-                <span class="block font-medium text-gray-900">{{ b.destination || '—' }}</span>
-                @if (b.departDate || b.returnDate) {
-                  <span class="text-xs text-gray-500"
-                    >{{ b.departDate || '—' }} to {{ b.returnDate || '—' }}</span
-                  >
-                }
-              </td>
-              <td class="px-4 py-3">
-                <span
-                  class="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
-                  [class]="getStatusBadgeClass(b.status)"
-                >
-                  {{ b.status }}
-                </span>
-              </td>
-              <td class="px-4 py-3 text-sm text-gray-600">
-                {{ formatDate(b.createdAt) }}
-              </td>
-            </tr>
-          }
-        }
-      </tbody>
+  <div class="table-wrap overflow-scroll">
+    <table mat-table [dataSource]="bookings()">
+      <ng-container matColumnDef="number">
+        <th *matHeaderCellDef i18n="@@bookingsListColumnNumber" mat-header-cell>Booking #</th>
+        <td *matCellDef="let element" mat-cell>
+          <a
+            class="booking-link"
+            [routerLink]="['/bookings', element.id]"
+            (click)="$event.stopPropagation()"
+          >
+            {{ element.number || '—' }}
+          </a>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="clientId">
+        <th *matHeaderCellDef i18n="@@bookingsListColumnClient" mat-header-cell>Client</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ getClientName(element) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="destination">
+        <th *matHeaderCellDef i18n="@@bookingsListColumnDestination" mat-header-cell>
+          Destination
+        </th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.destination || '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="departDate">
+        <th *matHeaderCellDef i18n="@@bookingsListColumnDeparture" mat-header-cell>Departure</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.departDate || '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="returnDate">
+        <th *matHeaderCellDef i18n="@@bookingsListColumnReturn" mat-header-cell>Return</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.returnDate || '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th *matHeaderCellDef i18n="@@bookingsListColumnStatus" mat-header-cell>Status</th>
+        <td *matCellDef="let element" mat-cell>
+          <app-booking-status-chip [status]="element.status" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="assignedBackofficeName">
+        <th *matHeaderCellDef i18n="@@bookingsListColumnAssignedStaff" mat-header-cell>
+          Assigned staff
+        </th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.assignedBackofficeName || '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th *matHeaderCellDef i18n="@@bookingsListColumnActions" mat-header-cell>Actions</th>
+        <td *matCellDef="let element" mat-cell>
+          <button
+            aria-label="Open booking"
+            i18n-aria-label="@@bookingsListOpenBookingAriaLabel"
+            mat-icon-button
+            type="button"
+            (click)="$event.stopPropagation(); navigateToBooking(element.id)"
+          >
+            <mat-icon>open_in_new</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="displayedColumns" class="table-header-row" mat-header-row></tr>
+      <tr
+        *matRowDef="let row; columns: displayedColumns"
+        class="table-row"
+        mat-row
+        tabindex="0"
+        (click)="navigateToBooking(row.id)"
+        (keydown)="onRowKeydown($event, row.id)"
+      ></tr>
+      <tr *matNoDataRow>
+        <td [attr.colspan]="displayedColumns.length">
+          <div class="m-10 align-middle text-center">
+            @if (loading()) {
+              <p class="pb-4" i18n="@@bookingsListLoading">Loading bookings...</p>
+              <mat-spinner
+                aria-label="Loading bookings"
+                i18n-aria-label="@@bookingsListLoadingAriaLabel"
+                class="mx-auto"
+                diameter="36"
+              />
+            } @else {
+              <p i18n="@@bookingsListEmptyState">No bookings for current filters</p>
+            }
+          </div>
+        </td>
+      </tr>
     </table>
   </div>
+
+  @if (totalElements() > pageSize) {
+    <mat-paginator
+      aria-label="Bookings pagination"
+      i18n-aria-label="@@bookingsListPaginatorAriaLabel"
+      [length]="totalElements()"
+      [pageIndex]="currentPage()"
+      [pageSize]="pageSize"
+      [showFirstLastButtons]="true"
+      (page)="onPageChange($event)"
+    />
+  }
 </div>

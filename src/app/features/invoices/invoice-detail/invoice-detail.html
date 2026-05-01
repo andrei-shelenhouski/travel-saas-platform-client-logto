@@ -1,12 +1,17 @@
 <div class="space-y-4">
   @if (loading()) {
     <div class="flex justify-center py-12">
-      <div aria-hidden="true" class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
+      <div
+        aria-hidden="true"
+        class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+      ></div>
     </div>
   } @else {
     @let inv = invoice();
     @if (inv) {
-      <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
+      <header
+        class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4"
+      >
         <div class="min-w-0">
           <h1 class="text-xl font-semibold text-gray-900">Invoice {{ inv.number }}</h1>
           <span
@@ -33,9 +38,9 @@
                 mat-flat-button
                 type="button"
                 [disabled]="actionLoading()"
-                (click)="deleteInvoice()"
+                (click)="cancelInvoice()"
               >
-                Delete
+                Cancel invoice
               </button>
             }
           </div>
@@ -47,26 +52,28 @@
           <h2 class="text-sm font-semibold text-gray-900 mb-3">Edit invoice</h2>
           <div class="flex max-w-md flex-col gap-3" [formGroup]="editForm">
             <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-              <mat-label>Status</mat-label>
-              <mat-select formControlName="status" id="edit-status">
-                @for (opt of statusOptions; track opt.value) {
-                  <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-                }
-              </mat-select>
+              <mat-label>Invoice date</mat-label>
+              <input formControlName="invoiceDate" id="edit-invoiceDate" matInput type="date" />
             </mat-form-field>
             <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
               <mat-label>Due date</mat-label>
               <input formControlName="dueDate" id="edit-dueDate" matInput type="date" />
             </mat-form-field>
             <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-              <mat-label>PDF URL</mat-label>
-              <input
-                formControlName="pdfUrl"
-                id="edit-pdfUrl"
-                matInput
-                placeholder="https://..."
-                type="url"
-              />
+              <mat-label>Currency</mat-label>
+              <input formControlName="currency" id="edit-currency" matInput maxlength="3" />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+              <mat-label>Language</mat-label>
+              <input formControlName="language" id="edit-language" matInput />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+              <mat-label>Payment terms</mat-label>
+              <input formControlName="paymentTerms" id="edit-paymentTerms" matInput />
+            </mat-form-field>
+            <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+              <mat-label>Internal notes</mat-label>
+              <textarea formControlName="internalNotes" id="edit-internalNotes" matInput></textarea>
             </mat-form-field>
             <div class="flex flex-wrap gap-2 pt-2">
               <button
@@ -99,11 +106,13 @@
             </div>
             <div>
               <dt class="text-gray-500">Amount</dt>
-              <dd class="font-medium text-gray-900">{{ inv.amount }} {{ inv.currency }}</dd>
+              <dd class="font-medium text-gray-900">
+                {{ inv.total ?? inv.subtotal ?? 0 }} {{ inv.currency }}
+              </dd>
             </div>
             <div>
-              <dt class="text-gray-500">Issue date</dt>
-              <dd class="text-gray-900">{{ formatDate(inv.issueDate) }}</dd>
+              <dt class="text-gray-500">Invoice date</dt>
+              <dd class="text-gray-900">{{ formatDate(inv.invoiceDate) }}</dd>
             </div>
             <div>
               <dt class="text-gray-500">Due date</dt>
@@ -113,21 +122,14 @@
               <dt class="text-gray-500">Booking ID</dt>
               <dd class="font-mono text-xs text-gray-600">{{ inv.bookingId }}</dd>
             </div>
-            @if (inv.pdfUrl) {
-              <div>
-                <dt class="text-gray-500">PDF</dt>
-                <dd>
-                  <a
-                    class="text-primary hover:underline"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                    [href]="inv.pdfUrl"
-                  >
-                    Open PDF
-                  </a>
-                </dd>
-              </div>
-            }
+            <div>
+              <dt class="text-gray-500">Language</dt>
+              <dd class="text-gray-900">{{ inv.language || '—' }}</dd>
+            </div>
+            <div>
+              <dt class="text-gray-500">Payment terms</dt>
+              <dd class="text-gray-900">{{ inv.paymentTerms || '—' }}</dd>
+            </div>
             <div>
               <dt class="text-gray-500">Created</dt>
               <dd class="text-gray-900">{{ formatDate(inv.createdAt) }}</dd>

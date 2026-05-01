@@ -105,6 +105,217 @@
           <context context-type="linenumber">157,158</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="bookingFilterStatusLabel" datatype="html">
+        <source>Status</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.html</context>
+          <context context-type="linenumber">3,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingFilterAssignedStaffLabel" datatype="html">
+        <source>Assigned staff</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.html</context>
+          <context context-type="linenumber">12,13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingFilterAllAssignedStaffOption" datatype="html">
+        <source>All staff</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.html</context>
+          <context context-type="linenumber">14,15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingFilterDepartureRangeLabel" datatype="html">
+        <source>Departure date range</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.html</context>
+          <context context-type="linenumber">22,23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingFilterDateFromPlaceholder" datatype="html">
+        <source>From</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingFilterDateToPlaceholder" datatype="html">
+        <source>To</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingStatusOptionPendingConfirmation" datatype="html">
+        <source>Pending confirmation</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.ts</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/booking-status-chip/booking-status-chip.ts</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingStatusOptionPending" datatype="html">
+        <source>Pending</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/booking-status-chip/booking-status-chip.ts</context>
+          <context context-type="linenumber">13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingStatusOptionConfirmed" datatype="html">
+        <source>Confirmed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.ts</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingStatusOptionInProgress" datatype="html">
+        <source>In progress</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingStatusOptionCompleted" datatype="html">
+        <source>Completed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.ts</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/booking-status-chip/booking-status-chip.ts</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingStatusOptionPaid" datatype="html">
+        <source>Paid</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/booking-status-chip/booking-status-chip.ts</context>
+          <context context-type="linenumber">18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingStatusOptionCancelled" datatype="html">
+        <source>Cancelled</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-filter-bar/booking-filter-bar.ts</context>
+          <context context-type="linenumber">39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListTitle" datatype="html">
+        <source>Bookings</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListNewBookingCta" datatype="html">
+        <source>New booking</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">5,8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListTotalCountLabel" datatype="html">
+        <source> Total: <x id="INTERPOLATION" equiv-text="{{ totalElements() }}"/> bookings </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">18,21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnNumber" datatype="html">
+        <source>Booking #</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">28,29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnClient" datatype="html">
+        <source>Client</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">43,44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnDestination" datatype="html">
+        <source> Destination </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">51,53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnDeparture" datatype="html">
+        <source>Departure</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">59,60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnReturn" datatype="html">
+        <source>Return</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">66,67</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnStatus" datatype="html">
+        <source>Status</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">73,74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnAssignedStaff" datatype="html">
+        <source> Assigned staff </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">81,83</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListColumnActions" datatype="html">
+        <source>Actions</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">89,90</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListOpenBookingAriaLabel" datatype="html">
+        <source>Open booking</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">92,93</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListLoading" datatype="html">
+        <source>Loading bookings...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">116,118</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListLoadingAriaLabel" datatype="html">
+        <source>Loading bookings</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">118,119</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListEmptyState" datatype="html">
+        <source>No bookings for current filters</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">124,127</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingsListPaginatorAriaLabel" datatype="html">
+        <source>Bookings pagination</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/bookings-list/bookings-list.html</context>
+          <context context-type="linenumber">134,135</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="createClientSelectTypeLabel" datatype="html">
         <source> Select client type: </source>
         <context-group purpose="location">
@@ -356,14 +567,14 @@
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListHeaderCreatedAt" datatype="html">
-        <source>Created At</source>
+        <source>Created</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
           <context context-type="linenumber">49,50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListHeaderUpdatedAt" datatype="html">
-        <source>Updated At</source>
+        <source>Updated</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
           <context context-type="linenumber">56,57</context>
@@ -1081,7 +1292,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/offer-detail/offer-detail.html</context>
-          <context context-type="linenumber">69,71</context>
+          <context context-type="linenumber">76,78</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/offer-edit/offer-edit.html</context>
@@ -1092,7 +1303,7 @@
         <source>Save a draft before opening PDF preview.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.ts</context>
-          <context context-type="linenumber">326</context>
+          <context context-type="linenumber">327</context>
         </context-group>
       </trans-unit>
       <trans-unit id="offerPdfPreviewDialogTitle" datatype="html">
@@ -1113,21 +1324,21 @@
         <source>Close PDF preview</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal.html</context>
-          <context context-type="linenumber">17,19</context>
+          <context context-type="linenumber">16,17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="offerPdfPreviewFrameTitle" datatype="html">
         <source>Offer PDF preview</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal.html</context>
-          <context context-type="linenumber">43,47</context>
+          <context context-type="linenumber">44,45</context>
         </context-group>
       </trans-unit>
       <trans-unit id="offerPdfPreviewLoadError" datatype="html">
         <source>Unable to load PDF. Please try again.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal.ts</context>
-          <context context-type="linenumber">32</context>
+          <context context-type="linenumber">42</context>
         </context-group>
       </trans-unit>
       <trans-unit id="selectOrganizationTitle" datatype="html">

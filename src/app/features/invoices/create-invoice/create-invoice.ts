@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { rxResource } from '@angular/core/rxjs-interop';
 
 import { BookingsService } from '@app/services/bookings.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+import { BookingStatus, ClientType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
-import type { CreateInvoiceDto } from '@app/shared/models';
-import { BookingStatus } from '@app/shared/models';
 
+import type { CreateInvoiceDto } from '@app/shared/models';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-invoice',
@@ -29,10 +29,11 @@ export class CreateInvoiceComponent {
 
   readonly form = this.fb.nonNullable.group({
     bookingId: ['', Validators.required],
-    issueDate: [new Date().toISOString().slice(0, 10), Validators.required],
+    clientType: [ClientType.INDIVIDUAL, Validators.required],
+    invoiceDate: [new Date().toISOString().slice(0, 10), Validators.required],
     amount: [0, [Validators.required, Validators.min(0.01)]],
     currency: ['USD', Validators.required],
-    dueDate: [''],
+    dueDate: [new Date().toISOString().slice(0, 10), Validators.required],
   });
 
   private readonly bookingsResource = rxResource({
@@ -51,23 +52,38 @@ export class CreateInvoiceComponent {
     this.error.set('');
     const v = this.form.getRawValue();
     const bid = v.bookingId.trim();
+    const booking = this.bookings().find((item) => item.id === bid);
 
-    if (!bid) {
+    if (!bid || !booking) {
       this.error.set('Please select a booking.');
 
       return;
     }
-    this.saving.set(true);
-    const dto: CreateInvoiceDto = {
-      bookingId: bid,
-      issueDate: v.issueDate,
-      amount: v.amount,
-      currency: v.currency.trim(),
-    };
 
-    if (v.dueDate.trim()) {
-      dto.dueDate = v.dueDate.trim();
+    if (!booking.clientId) {
+      this.error.set('Selected booking has no client.');
+
+      return;
     }
+
+    this.saving.set(true);
+
+    const dto: CreateInvoiceDto = {
+      clientId: booking.clientId,
+      clientType: v.clientType,
+      bookingId: bid,
+      invoiceDate: v.invoiceDate,
+      dueDate: v.dueDate,
+      currency: v.currency.trim().toUpperCase(),
+      lineItems: [
+        {
+          description: 'Travel services',
+          quantity: 1,
+          unitPrice: v.amount,
+          tourCost: v.amount,
+        },
+      ],
+    };
 
     this.invoicesService.create(dto).subscribe({
       next: (created) => {

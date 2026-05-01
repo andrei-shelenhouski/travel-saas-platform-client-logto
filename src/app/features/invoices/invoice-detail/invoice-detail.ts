@@ -6,33 +6,29 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ToastService } from '@app/shared/services/toast.service';
+
 import type { InvoiceResponseDto } from '@app/shared/models';
-import { InvoiceStatus } from '@app/shared/models';
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
   DRAFT: 'bg-gray-100 text-gray-800',
-  SENT: 'bg-blue-100 text-blue-800',
+  ISSUED: 'bg-blue-100 text-blue-800',
   PAID: 'bg-green-100 text-green-800',
+  PARTIALLY_PAID: 'bg-amber-100 text-amber-800',
+  OVERDUE: 'bg-orange-100 text-orange-800',
   CANCELLED: 'bg-red-100 text-red-800',
 };
-
-const STATUS_OPTIONS: { value: InvoiceStatus; label: string }[] = [
-  { value: InvoiceStatus.DRAFT, label: 'Draft' },
-  { value: InvoiceStatus.SENT, label: 'Sent' },
-  { value: InvoiceStatus.PAID, label: 'Paid' },
-  { value: InvoiceStatus.CANCELLED, label: 'Cancelled' },
-];
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -67,12 +63,11 @@ export class InvoiceDetailComponent {
   readonly invoice = computed(() => this.data.value() ?? null);
   readonly loading = computed(() => this.data.isLoading());
   readonly statusBadgeClass = STATUS_BADGE_CLASS;
-  readonly statusOptions = STATUS_OPTIONS;
   readonly actionLoading = signal(false);
   readonly editing = signal(false);
   readonly confirmOpen = signal(false);
   readonly confirmPayload = signal<{
-    action: 'DELETE';
+    action: 'CANCEL';
     title: string;
     message: string;
     confirmLabel: string;
@@ -80,9 +75,12 @@ export class InvoiceDetailComponent {
   } | null>(null);
 
   readonly editForm = this.fb.nonNullable.group({
-    status: this.fb.nonNullable.control<InvoiceStatus>(InvoiceStatus.DRAFT),
+    invoiceDate: [''],
     dueDate: [''],
-    pdfUrl: [''],
+    currency: [''],
+    language: [''],
+    paymentTerms: [''],
+    internalNotes: [''],
   });
 
   constructor() {
@@ -126,9 +124,12 @@ export class InvoiceDetailComponent {
       return;
     }
     this.editForm.patchValue({
-      status: (inv.status as InvoiceStatus) ?? InvoiceStatus.DRAFT,
+      invoiceDate: this.formatDateOnly(inv.invoiceDate),
       dueDate: this.formatDateOnly(inv.dueDate),
-      pdfUrl: inv.pdfUrl ?? '',
+      currency: inv.currency ?? '',
+      language: inv.language ?? '',
+      paymentTerms: inv.paymentTerms ?? '',
+      internalNotes: inv.internalNotes ?? '',
     });
     this.editing.set(true);
   }
@@ -144,17 +145,39 @@ export class InvoiceDetailComponent {
       return;
     }
     this.actionLoading.set(true);
+
     const v = this.editForm.getRawValue();
-    const dto: { status?: InvoiceStatus; dueDate?: string; pdfUrl?: string } = {
-      status: v.status,
-    };
+    const dto: {
+      invoiceDate?: string;
+      dueDate?: string;
+      currency?: string;
+      language?: string;
+      paymentTerms?: string;
+      internalNotes?: string;
+    } = {};
+
+    if (v.invoiceDate.trim()) {
+      dto.invoiceDate = v.invoiceDate.trim();
+    }
 
     if (v.dueDate.trim()) {
       dto.dueDate = v.dueDate.trim();
     }
 
-    if (v.pdfUrl.trim()) {
-      dto.pdfUrl = v.pdfUrl.trim();
+    if (v.currency.trim()) {
+      dto.currency = v.currency.trim().toUpperCase();
+    }
+
+    if (v.language.trim()) {
+      dto.language = v.language.trim();
+    }
+
+    if (v.paymentTerms.trim()) {
+      dto.paymentTerms = v.paymentTerms.trim();
+    }
+
+    if (v.internalNotes.trim()) {
+      dto.internalNotes = v.internalNotes.trim();
     }
 
     this.invoicesService.update(inv.id, dto).subscribe({
@@ -167,17 +190,18 @@ export class InvoiceDetailComponent {
     });
   }
 
-  deleteInvoice(): void {
+  cancelInvoice(): void {
     const inv = this.invoice();
 
     if (!inv || this.actionLoading()) {
       return;
     }
+
     this.confirmPayload.set({
-      action: 'DELETE',
-      title: 'Delete invoice',
-      message: 'Are you sure you want to delete this invoice?',
-      confirmLabel: 'Delete',
+      action: 'CANCEL',
+      title: 'Cancel invoice',
+      message: 'Are you sure you want to cancel this invoice?',
+      confirmLabel: 'Cancel invoice',
       danger: true,
     });
     this.confirmOpen.set(true);
@@ -193,12 +217,13 @@ export class InvoiceDetailComponent {
       return;
     }
     this.actionLoading.set(true);
-    this.invoicesService.delete(inv.id).subscribe({
-      next: () => {
-        this.toast.showSuccess('Invoice deleted');
-        this.router.navigate(['/app/invoices']);
+    this.invoicesService.cancel(inv.id, { reason: 'Cancelled from CRM' }).subscribe({
+      next: (updated) => {
+        this.data.set(updated);
+        this.toast.showSuccess('Invoice cancelled');
       },
-      error: (err) => this.toast.showError(err.error?.message ?? err.message ?? 'Failed to delete'),
+      error: (err) =>
+        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to cancel invoice'),
       complete: () => {
         this.actionLoading.set(false);
         this.confirmOpen.set(false);

@@ -31,11 +31,22 @@
           >
         }
       </mat-form-field>
+
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Issue date</mat-label>
-        <input formControlName="issueDate" id="issueDate" matInput type="date" />
-        @if (form.controls.issueDate.hasError('required') && form.controls.issueDate.touched) {
-          <mat-error>Issue date is required</mat-error>
+        <mat-label>Client type</mat-label>
+        <mat-select formControlName="clientType" id="clientType">
+          <mat-option value="INDIVIDUAL">Individual</mat-option>
+          <mat-option value="COMPANY">Company</mat-option>
+          <mat-option value="B2B_AGENT">B2B agent</mat-option>
+          <mat-option value="AGENT">Agent</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Invoice date</mat-label>
+        <input formControlName="invoiceDate" id="invoiceDate" matInput type="date" />
+        @if (form.controls.invoiceDate.hasError('required') && form.controls.invoiceDate.touched) {
+          <mat-error>Invoice date is required</mat-error>
         }
       </mat-form-field>
       <div class="flex gap-3">
@@ -59,8 +70,11 @@
         </mat-form-field>
       </div>
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Due date (optional)</mat-label>
+        <mat-label>Due date</mat-label>
         <input formControlName="dueDate" id="dueDate" matInput type="date" />
+        @if (form.controls.dueDate.hasError('required') && form.controls.dueDate.touched) {
+          <mat-error>Due date is required</mat-error>
+        }
       </mat-form-field>
       @if (error()) {
         <p class="text-sm text-red-600">{{ error() }}</p>

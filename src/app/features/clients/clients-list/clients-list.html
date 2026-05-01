@@ -46,14 +46,14 @@
       </ng-container>
 
       <ng-container matColumnDef="createdAt">
-        <th *matHeaderCellDef i18n="@@clientsListHeaderCreatedAt" mat-header-cell>Created At</th>
+        <th *matHeaderCellDef i18n="@@clientsListHeaderCreatedAt" mat-header-cell>Created</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.createdAt | date: 'dd MMM yyyy' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="updatedAt">
-        <th *matHeaderCellDef i18n="@@clientsListHeaderUpdatedAt" mat-header-cell>Updated At</th>
+        <th *matHeaderCellDef i18n="@@clientsListHeaderUpdatedAt" mat-header-cell>Updated</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.updatedAt | date: 'dd MMM yyyy' }}
         </td>
