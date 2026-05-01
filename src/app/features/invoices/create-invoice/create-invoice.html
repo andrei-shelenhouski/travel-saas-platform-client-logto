@@ -8,7 +8,10 @@
   }
 
   @if (clientTypeWarning()) {
-    <p class="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700" role="status">
+    <p
+      class="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700"
+      role="status"
+    >
       {{ clientTypeWarning() }}
     </p>
   }
@@ -51,7 +54,13 @@
 
         <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
           <mat-label i18n="@@invoiceCreateClientTypeLabel">Client type</mat-label>
-          <input id="invoice-client-type" matInput readonly type="text" [value]="form.controls.clientType.value" />
+          <input
+            id="invoice-client-type"
+            matInput
+            readonly
+            type="text"
+            [value]="form.controls.clientType.value"
+          />
         </mat-form-field>
       </div>
 
@@ -99,7 +108,10 @@
 
     <section class="rounded-lg border border-gray-200 bg-white p-4" formArrayName="lineItems">
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <h2 class="text-base font-semibold text-gray-900" i18n="@@invoiceCreateLineItemsSectionTitle">
+        <h2
+          class="text-base font-semibold text-gray-900"
+          i18n="@@invoiceCreateLineItemsSectionTitle"
+        >
           Line items
         </h2>
         <button mat-stroked-button type="button" (click)="addLineItem()">
@@ -118,7 +130,9 @@
         @for (row of lineItemsArray.controls; track $index) {
           <article cdkDrag class="rounded-md border border-gray-200 p-3" [formGroupName]="$index">
             <div class="mb-3 flex items-center justify-between gap-3">
-              <p class="text-sm font-medium text-gray-700" i18n="@@invoiceCreateRowLabel">Row {{ $index + 1 }}</p>
+              <p class="text-sm font-medium text-gray-700" i18n="@@invoiceCreateRowLabel">
+                Row {{ $index + 1 }}
+              </p>
               <button
                 aria-label="Remove line item"
                 i18n-aria-label="@@invoiceCreateRemoveLineItemAria"
@@ -135,8 +149,12 @@
               <mat-form-field appearance="outline" class="lg:col-span-4" subscriptSizing="dynamic">
                 <mat-label i18n="@@invoiceCreateDescriptionLabel">Description</mat-label>
                 <input formControlName="description" matInput type="text" />
-                @if (row.controls.description.hasError('required') && row.controls.description.touched) {
-                  <mat-error i18n="@@invoiceCreateDescriptionRequiredError">Description is required</mat-error>
+                @if (
+                  row.controls.description.hasError('required') && row.controls.description.touched
+                ) {
+                  <mat-error i18n="@@invoiceCreateDescriptionRequiredError"
+                    >Description is required</mat-error
+                  >
                 }
               </mat-form-field>
 
@@ -158,36 +176,98 @@
 
             @if (!isB2bMode()) {
               <div class="grid grid-cols-1 gap-3 lg:grid-cols-12">
-                <mat-form-field appearance="outline" class="lg:col-span-3" subscriptSizing="dynamic">
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-3"
+                  subscriptSizing="dynamic"
+                >
                   <mat-label i18n="@@invoiceCreateUnitPriceLabel">Unit price</mat-label>
-                  <input formControlName="unitPrice" matInput min="0.01" step="0.01" type="number" (input)="onStandardItemInput($index)" />
+                  <input
+                    formControlName="unitPrice"
+                    matInput
+                    min="0.01"
+                    step="0.01"
+                    type="number"
+                    (input)="onStandardItemInput($index)"
+                  />
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="lg:col-span-3" subscriptSizing="dynamic">
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-3"
+                  subscriptSizing="dynamic"
+                >
                   <mat-label i18n="@@invoiceCreateQuantityLabel">Quantity</mat-label>
-                  <input formControlName="quantity" matInput min="1" step="1" type="number" (input)="onStandardItemInput($index)" />
+                  <input
+                    formControlName="quantity"
+                    matInput
+                    min="1"
+                    step="1"
+                    type="number"
+                    (input)="onStandardItemInput($index)"
+                  />
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="lg:col-span-3" subscriptSizing="dynamic">
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-3"
+                  subscriptSizing="dynamic"
+                >
                   <mat-label i18n="@@invoiceCreateRowTotalLabel">Total</mat-label>
                   <input formControlName="total" matInput readonly type="number" />
                 </mat-form-field>
               </div>
             } @else {
               <div class="grid grid-cols-1 gap-3 lg:grid-cols-12">
-                <mat-form-field appearance="outline" class="lg:col-span-2" subscriptSizing="dynamic">
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-2"
+                  subscriptSizing="dynamic"
+                >
                   <mat-label i18n="@@invoiceCreateTourCostLabel">Tour cost</mat-label>
-                  <input formControlName="tourCost" matInput min="0.01" step="0.01" type="number" (input)="onB2bTourCostInput($index)" />
+                  <input
+                    formControlName="tourCost"
+                    matInput
+                    min="0.01"
+                    step="0.01"
+                    type="number"
+                    (input)="onB2bTourCostInput($index)"
+                  />
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="lg:col-span-2" subscriptSizing="dynamic">
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-2"
+                  subscriptSizing="dynamic"
+                >
                   <mat-label i18n="@@invoiceCreateCommissionPctLabel">Commission %</mat-label>
-                  <input formControlName="commissionPct" matInput max="100" min="0" step="0.01" type="number" (input)="onB2bCommissionPctInput($index)" />
+                  <input
+                    formControlName="commissionPct"
+                    matInput
+                    max="100"
+                    min="0"
+                    step="0.01"
+                    type="number"
+                    (input)="onB2bCommissionPctInput($index)"
+                  />
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="lg:col-span-2" subscriptSizing="dynamic">
-                  <mat-label i18n="@@invoiceCreateCommissionAmountLabel">Commission amount</mat-label>
-                  <input formControlName="commissionAmount" matInput min="0" step="0.01" type="number" (input)="onB2bCommissionAmountInput($index)" />
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-2"
+                  subscriptSizing="dynamic"
+                >
+                  <mat-label i18n="@@invoiceCreateCommissionAmountLabel"
+                    >Commission amount</mat-label
+                  >
+                  <input
+                    formControlName="commissionAmount"
+                    matInput
+                    min="0"
+                    step="0.01"
+                    type="number"
+                    (input)="onB2bCommissionAmountInput($index)"
+                  />
                   @if (row.controls.commissionAmount.hasError('commissionExceedsTourCost')) {
                     <mat-error i18n="@@invoiceCreateCommissionExceedsTourCostError">
                       Commission cannot exceed tour cost.
@@ -195,13 +275,23 @@
                   }
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="lg:col-span-2" subscriptSizing="dynamic">
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-2"
+                  subscriptSizing="dynamic"
+                >
                   <mat-label i18n="@@invoiceCreateNetToPayLabel">Net to pay</mat-label>
                   <input formControlName="netToPay" matInput readonly type="number" />
                 </mat-form-field>
 
-                <mat-form-field appearance="outline" class="lg:col-span-2" subscriptSizing="dynamic">
-                  <mat-label i18n="@@invoiceCreateVatOnCommissionLabel">VAT on commission</mat-label>
+                <mat-form-field
+                  appearance="outline"
+                  class="lg:col-span-2"
+                  subscriptSizing="dynamic"
+                >
+                  <mat-label i18n="@@invoiceCreateVatOnCommissionLabel"
+                    >VAT on commission</mat-label
+                  >
                   <input formControlName="commissionVat" matInput readonly type="number" />
                 </mat-form-field>
               </div>
@@ -212,7 +302,9 @@
     </section>
 
     <section class="rounded-lg border border-gray-200 bg-white p-4">
-      <h2 class="text-base font-semibold text-gray-900" i18n="@@invoiceCreateSummarySectionTitle">Summary</h2>
+      <h2 class="text-base font-semibold text-gray-900" i18n="@@invoiceCreateSummarySectionTitle">
+        Summary
+      </h2>
       <div class="mt-3 space-y-1 text-sm text-gray-700">
         <p i18n="@@invoiceCreateSummarySubtotal">
           Subtotal: {{ formatAmount(pricingSummary().subtotal) }} {{ form.controls.currency.value }}
@@ -220,15 +312,18 @@
 
         @if (isB2bMode()) {
           <p i18n="@@invoiceCreateSummaryCommission">
-            Total commission: {{ formatAmount(pricingSummary().totalCommission) }} {{ form.controls.currency.value }}
+            Total commission: {{ formatAmount(pricingSummary().totalCommission) }}
+            {{ form.controls.currency.value }}
           </p>
           <p i18n="@@invoiceCreateSummaryVat">
-            Total VAT: {{ formatAmount(pricingSummary().totalVat) }} {{ form.controls.currency.value }}
+            Total VAT: {{ formatAmount(pricingSummary().totalVat) }}
+            {{ form.controls.currency.value }}
           </p>
         }
 
         <p class="text-base font-semibold text-gray-900" i18n="@@invoiceCreateSummaryTotalToPay">
-          TOTAL TO PAY: {{ formatAmount(pricingSummary().total) }} {{ form.controls.currency.value }}
+          TOTAL TO PAY: {{ formatAmount(pricingSummary().total) }}
+          {{ form.controls.currency.value }}
         </p>
       </div>
     </section>
@@ -245,10 +340,20 @@
     </section>
 
     <div class="flex flex-wrap gap-3">
-      <button color="primary" mat-flat-button type="submit" [disabled]="saving() || loading() || form.invalid">
+      <button
+        color="primary"
+        mat-flat-button
+        type="submit"
+        [disabled]="saving() || loading() || form.invalid"
+      >
         {{ saving() ? 'Saving...' : 'Save draft' }}
       </button>
-      <button i18n="@@invoiceCreateCancelButton" mat-stroked-button type="button" (click)="onCancel()">
+      <button
+        i18n="@@invoiceCreateCancelButton"
+        mat-stroked-button
+        type="button"
+        (click)="onCancel()"
+      >
         Cancel
       </button>
     </div>

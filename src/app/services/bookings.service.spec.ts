@@ -72,8 +72,10 @@ describe('BookingsService', () => {
   it('calls booking invoices endpoint with expected URL', () => {
     service.listInvoices('booking-1').subscribe();
 
-    expect(httpClient.get).toHaveBeenCalledWith(
-      `${environment.baseUrl}/api/bookings/booking-1/invoices`,
-    );
+    const [url, options] = httpClient.get.mock.calls[0] as [string, { params: HttpParams }];
+
+    expect(url).toBe(`${environment.baseUrl}/api/bookings/booking-1/invoices`);
+    expect(options.params.get('page')).toBe('1');
+    expect(options.params.get('limit')).toBe('20');
   });
 });

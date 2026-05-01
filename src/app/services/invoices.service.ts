@@ -18,7 +18,13 @@ import type {
 const INVOICES_URL = `${environment.baseUrl}/api/invoices`;
 
 /**
- * Invoices API. Aligned with openapi.json: GET/POST /api/invoices, GET/PUT /api/invoices/{id}, PUT /api/invoices/{id}/cancel.
+ * Invoices API. Aligned with openapi.json:
+ * GET/POST /api/invoices,
+ * GET/PUT /api/invoices/{id},
+ * PUT /api/invoices/{id}/publish,
+ * PUT /api/invoices/{id}/cancel,
+ * GET /api/invoices/{id}/pdf,
+ * GET /api/invoices/summary.
  */
 @Injectable({ providedIn: 'root' })
 export class InvoicesService {
@@ -81,7 +87,15 @@ export class InvoicesService {
     return this.http.put<InvoiceResponseDto>(`${INVOICES_URL}/${id}`, dto);
   }
 
+  publish(id: string): Observable<InvoiceResponseDto> {
+    return this.http.put<InvoiceResponseDto>(`${INVOICES_URL}/${id}/publish`, {});
+  }
+
   cancel(id: string, dto: CancelInvoiceDto): Observable<InvoiceResponseDto> {
     return this.http.put<InvoiceResponseDto>(`${INVOICES_URL}/${id}/cancel`, dto);
+  }
+
+  getPdf(id: string): Observable<Blob> {
+    return this.http.get(`${INVOICES_URL}/${id}/pdf`, { responseType: 'blob' });
   }
 }

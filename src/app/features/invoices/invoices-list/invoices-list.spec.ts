@@ -62,6 +62,10 @@ describe('InvoicesListComponent', () => {
     );
   });
 
+  it('should request summary from API', () => {
+    expect(invoicesService.getSummary).toHaveBeenCalledTimes(1);
+  });
+
   it('should reset to first page when status filter changes', () => {
     (component as unknown as { currentPage: { set: (value: number) => void } }).currentPage.set(4);
 

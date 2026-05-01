@@ -10,8 +10,8 @@ import type {
   BookingResponseDto,
   BookingStatus,
   CreateBookingDto,
-  InvoiceResponseDto,
   PaginatedBookingResponseDto,
+  PaginatedInvoiceResponseDto,
   UpdateBookingDto,
   UpdateBookingStatusDto,
 } from '@app/shared/models';
@@ -104,9 +104,22 @@ export class BookingsService {
     return this.http.put<BookingResponseDto>(`${BOOKINGS_URL}/${id}/status`, dto);
   }
 
-  /** GET /api/bookings/{id}/invoices. */
-  listInvoices(id: string): Observable<InvoiceResponseDto[]> {
-    return this.http.get<InvoiceResponseDto[]>(`${BOOKINGS_URL}/${id}/invoices`);
+  /** GET /api/bookings/{id}/invoices. Returns paginated invoices list. */
+  listInvoices(
+    id: string,
+    params?: { page?: number; limit?: number },
+  ): Observable<PaginatedInvoiceResponseDto> {
+    let httpParams = new HttpParams();
+
+    const page = params?.page ?? 1;
+    const limit = params?.limit ?? 20;
+
+    httpParams = httpParams.set('page', page);
+    httpParams = httpParams.set('limit', limit);
+
+    return this.http.get<PaginatedInvoiceResponseDto>(`${BOOKINGS_URL}/${id}/invoices`, {
+      params: httpParams,
+    });
   }
 
   /** GET /api/bookings/{id}/documents. */
