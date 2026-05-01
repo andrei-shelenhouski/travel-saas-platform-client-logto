@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,34 +8,44 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { EMPTY } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { EMPTY, forkJoin } from 'rxjs';
+import { finalize, map } from 'rxjs/operators';
 
 import { BookingsService } from '@app/services/bookings.service';
-import { PermissionService } from '@app/services/permission.service';
-import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { BookingStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
-import type { BookingResponseDto } from '@app/shared/models';
-const STATUS_BADGE_CLASS: Record<string, string> = {
-  PENDING_CONFIRMATION: 'bg-amber-100 text-amber-800',
-  CONFIRMED: 'bg-green-100 text-green-800',
-  IN_PROGRESS: 'bg-sky-100 text-sky-800',
-  COMPLETED: 'bg-emerald-100 text-emerald-800',
-  CANCELLED: 'bg-red-100 text-red-800',
-  // Legacy aliases for local/mock data.
-  PENDING: 'bg-amber-100 text-amber-800',
-  PAID: 'bg-emerald-100 text-emerald-800',
-};
+import { AccommodationTableComponent } from './accommodation-table/accommodation-table';
+import { BookingHeaderComponent } from './booking-header/booking-header';
+import { CancellationDialogComponent } from './cancellation-dialog/cancellation-dialog';
+import { ClientSnapshotCardComponent } from './client-snapshot-card/client-snapshot-card';
+import { DocumentListComponent } from './document-list/document-list';
+import { InvoiceListMiniComponent } from './invoice-list-mini/invoice-list-mini';
+import { OperationsSectionComponent } from './operations-section/operations-section';
+import { TravelDetailsSectionComponent } from './travel-details-section/travel-details-section';
+
+import type {
+  BookingDocumentResponseDto,
+  BookingResponseDto,
+  InvoiceResponseDto,
+  UpdateBookingDto,
+} from '@app/shared/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-booking-detail',
-  imports: [RouterLink, ConfirmationDialogComponent, ...MAT_BUTTONS],
+  imports: [
+    AccommodationTableComponent,
+    BookingHeaderComponent,
+    CancellationDialogComponent,
+    ClientSnapshotCardComponent,
+    DocumentListComponent,
+    InvoiceListMiniComponent,
+    OperationsSectionComponent,
+    TravelDetailsSectionComponent,
+  ],
   templateUrl: './booking-detail.html',
   styleUrl: './booking-detail.scss',
 })
@@ -43,147 +54,230 @@ export class BookingDetailComponent {
   private readonly router = inject(Router);
   private readonly bookingsService = inject(BookingsService);
   private readonly toast = inject(ToastService);
-  readonly permissions = inject(PermissionService);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
 
-  private readonly data = rxResource<BookingResponseDto, string | null>({
+  private readonly allData = rxResource<
+    {
+      booking: BookingResponseDto;
+      invoices: InvoiceResponseDto[];
+      documents: BookingDocumentResponseDto[];
+    },
+    string | null
+  >({
     params: (): string | null => this.routeId() ?? null,
-    stream: ({ params }) => {
-      const id = params;
-
-      if (id === null) {
+    stream: ({ params: id }) => {
+      if (!id) {
         return EMPTY;
       }
 
-      return this.bookingsService.getById(id);
+      return forkJoin({
+        booking: this.bookingsService.getById(id),
+        invoices: this.bookingsService.listInvoices(id),
+        documents: this.bookingsService.listDocuments(id),
+      });
     },
   });
 
-  readonly BookingStatus = BookingStatus;
-  readonly booking = computed(() => this.data.value() ?? null);
-  readonly loading = computed(() => this.data.isLoading());
-  readonly statusBadgeClass = STATUS_BADGE_CLASS;
+  readonly booking = computed(() => this.allData.value()?.booking ?? null);
+  readonly invoices = computed(() => this.allData.value()?.invoices ?? []);
+  readonly documents = computed(() => this.allData.value()?.documents ?? []);
+  readonly loading = computed(() => this.allData.isLoading());
+  readonly loadError = computed(() => this.allData.error());
+  readonly loadNotFound = computed(() => {
+    const error = this.loadError();
+
+    return error instanceof HttpErrorResponse && error.status === 404;
+  });
+  readonly loadErrorMessage = computed(() => {
+    const error = this.loadError();
+
+    if (error instanceof HttpErrorResponse) {
+      if (error.status === 404) {
+        return $localize`:@@bookingNotFoundTitle:Booking not found`;
+      }
+
+      return (
+        error.error?.message ??
+        error.message ??
+        $localize`:@@bookingLoadFailed:Failed to load booking`
+      );
+    }
+
+    return $localize`:@@bookingLoadFailed:Failed to load booking`;
+  });
+
   readonly actionLoading = signal(false);
-  readonly confirmOpen = signal(false);
-  readonly confirmPayload = signal<{
-    action: 'CANCEL_BOOKING' | 'DELETE';
-    title: string;
-    message: string;
-    confirmLabel: string;
-    danger: boolean;
-  } | null>(null);
+  readonly savingTravel = signal(false);
+  readonly savingOps = signal(false);
+  readonly uploading = signal(false);
+
+  readonly cancellationDialogOpen = signal(false);
 
   constructor() {
     effect(() => {
       if (this.routeId() === null) {
-        this.router.navigate(['/app/bookings']);
+        void this.router.navigate(['/app/bookings']);
       }
     });
   }
 
-  formatDate(iso: string): string {
-    try {
-      return new Date(iso).toLocaleString(undefined, {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      });
-    } catch {
-      return iso;
-    }
-  }
-
-  getStatusBadgeClass(status: string): string {
-    return STATUS_BADGE_CLASS[status] ?? 'bg-gray-100 text-gray-500';
-  }
-
-  markCancelled(): void {
+  onConfirmBooking(): void {
     const b = this.booking();
 
     if (!b || this.actionLoading()) {
       return;
     }
-    this.confirmPayload.set({
-      action: 'CANCEL_BOOKING',
-      title: 'Cancel booking',
-      message: 'Are you sure you want to mark this booking as cancelled?',
-      confirmLabel: 'Cancel booking',
-      danger: true,
-    });
-    this.confirmOpen.set(true);
-  }
 
-  markConfirmed(): void {
-    const b = this.booking();
-
-    if (!b || this.actionLoading()) {
-      return;
-    }
     this.actionLoading.set(true);
-    this.bookingsService.updateStatus(b.id, { status: BookingStatus.CONFIRMED }).subscribe({
-      next: (updated) => this.data.set(updated),
-      error: (err) => this.toast.showError(err.error?.message ?? err.message ?? 'Failed to update'),
-      complete: () => this.actionLoading.set(false),
-    });
-  }
-
-  deleteBooking(): void {
-    const b = this.booking();
-
-    if (!b || this.actionLoading()) {
-      return;
-    }
-    this.confirmPayload.set({
-      action: 'DELETE',
-      title: 'Delete booking',
-      message: 'Are you sure you want to delete this booking? This action cannot be undone.',
-      confirmLabel: 'Delete',
-      danger: true,
-    });
-    this.confirmOpen.set(true);
-  }
-
-  onConfirmDialogConfirm(): void {
-    const payload = this.confirmPayload();
-    const b = this.booking();
-
-    if (!payload || !b) {
-      this.confirmOpen.set(false);
-
-      return;
-    }
-    this.actionLoading.set(true);
-
-    if (payload.action === 'CANCEL_BOOKING') {
-      this.bookingsService.updateStatus(b.id, { status: BookingStatus.CANCELLED }).subscribe({
-        next: (updated) => this.data.set(updated),
+    this.bookingsService
+      .updateStatus(b.id, { status: BookingStatus.CONFIRMED })
+      .pipe(finalize(() => this.actionLoading.set(false)))
+      .subscribe({
+        next: (updated) => this.patchBooking(updated),
         error: (err) =>
-          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to update'),
-        complete: () => {
-          this.actionLoading.set(false);
-          this.confirmOpen.set(false);
-          this.confirmPayload.set(null);
-        },
+          this.toast.showError(
+            err.error?.message ??
+              $localize`:@@bookingStatusUpdateFailed:Failed to update booking status`,
+          ),
       });
-    } else if (payload.action === 'DELETE') {
-      this.bookingsService.delete(b.id).subscribe({
-        next: () => {
-          this.toast.showSuccess('Booking deleted');
-          this.router.navigate(['/app/bookings']);
+  }
+
+  onCancelBooking(): void {
+    this.cancellationDialogOpen.set(true);
+  }
+
+  onCancellationConfirmed(result: { reason: string }): void {
+    const b = this.booking();
+
+    if (!b) {
+      return;
+    }
+
+    this.cancellationDialogOpen.set(false);
+    this.actionLoading.set(true);
+    this.bookingsService
+      .updateStatus(b.id, { status: BookingStatus.CANCELLED, reason: result.reason })
+      .pipe(finalize(() => this.actionLoading.set(false)))
+      .subscribe({
+        next: (updated) => this.patchBooking(updated),
+        error: (err) =>
+          this.toast.showError(
+            err.error?.message ?? $localize`:@@bookingCancellationFailed:Failed to cancel booking`,
+          ),
+      });
+  }
+
+  onCancellationCancelled(): void {
+    this.cancellationDialogOpen.set(false);
+  }
+
+  onSaveTravelDetails(dto: UpdateBookingDto): void {
+    const b = this.booking();
+
+    if (!b) {
+      return;
+    }
+
+    this.savingTravel.set(true);
+    this.bookingsService
+      .update(b.id, dto)
+      .pipe(finalize(() => this.savingTravel.set(false)))
+      .subscribe({
+        next: (updated) => {
+          this.patchBooking(updated);
+          this.toast.showSuccess($localize`:@@bookingTravelDetailsUpdated:Travel details updated`);
         },
         error: (err) =>
-          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to delete'),
-        complete: () => {
-          this.actionLoading.set(false);
-          this.confirmOpen.set(false);
-          this.confirmPayload.set(null);
-        },
+          this.toast.showError(
+            err.error?.message ?? $localize`:@@bookingSaveFailed:Failed to save changes`,
+          ),
       });
-    }
   }
 
-  onConfirmDialogCancel(): void {
-    this.confirmOpen.set(false);
-    this.confirmPayload.set(null);
+  onSaveOperations(dto: UpdateBookingDto): void {
+    const b = this.booking();
+
+    if (!b) {
+      return;
+    }
+
+    this.savingOps.set(true);
+    this.bookingsService
+      .update(b.id, dto)
+      .pipe(finalize(() => this.savingOps.set(false)))
+      .subscribe({
+        next: (updated) => {
+          this.patchBooking(updated);
+          this.toast.showSuccess($localize`:@@bookingOperationsUpdated:Operations data updated`);
+        },
+        error: (err) =>
+          this.toast.showError(
+            err.error?.message ?? $localize`:@@bookingSaveFailed:Failed to save changes`,
+          ),
+      });
+  }
+
+  onUploadFiles(files: File[]): void {
+    const b = this.booking();
+
+    if (!b) {
+      return;
+    }
+
+    this.uploading.set(true);
+
+    const upload$ = forkJoin(files.map((f) => this.bookingsService.uploadDocument(b.id, f)));
+
+    upload$.pipe(finalize(() => this.uploading.set(false))).subscribe({
+      next: (uploaded) => {
+        const current = this.allData.value();
+
+        if (current) {
+          this.allData.set({ ...current, documents: [...current.documents, ...uploaded] });
+        }
+        this.toast.showSuccess(
+          $localize`:@@bookingFilesUploaded:Uploaded files: ${uploaded.length}:uploadedCount:`,
+        );
+      },
+      error: (err) =>
+        this.toast.showError(
+          err.error?.message ?? $localize`:@@bookingFileUploadFailed:Failed to upload file`,
+        ),
+    });
+  }
+
+  onDeleteDocument(doc: BookingDocumentResponseDto): void {
+    const b = this.booking();
+
+    if (!b) {
+      return;
+    }
+
+    this.bookingsService.deleteDocument(b.id, doc.id).subscribe({
+      next: () => {
+        const current = this.allData.value();
+
+        if (current) {
+          this.allData.set({
+            ...current,
+            documents: current.documents.filter((d) => d.id !== doc.id),
+          });
+        }
+        this.toast.showSuccess($localize`:@@bookingDocumentDeleted:Document deleted`);
+      },
+      error: (err) =>
+        this.toast.showError(
+          err.error?.message ?? $localize`:@@bookingDocumentDeleteFailed:Failed to delete document`,
+        ),
+    });
+  }
+
+  private patchBooking(updated: BookingResponseDto): void {
+    const current = this.allData.value();
+
+    if (current) {
+      this.allData.set({ ...current, booking: updated });
+    }
   }
 }

@@ -10,6 +10,7 @@ import type {
   BookingResponseDto,
   BookingStatus,
   CreateBookingDto,
+  InvoiceResponseDto,
   PaginatedBookingResponseDto,
   UpdateBookingDto,
   UpdateBookingStatusDto,
@@ -101,6 +102,11 @@ export class BookingsService {
   /** PUT /api/bookings/{id}/status. Use for status transitions. */
   updateStatus(id: string, dto: UpdateBookingStatusDto): Observable<BookingResponseDto> {
     return this.http.put<BookingResponseDto>(`${BOOKINGS_URL}/${id}/status`, dto);
+  }
+
+  /** GET /api/bookings/{id}/invoices. */
+  listInvoices(id: string): Observable<InvoiceResponseDto[]> {
+    return this.http.get<InvoiceResponseDto[]>(`${BOOKINGS_URL}/${id}/invoices`);
   }
 
   /** GET /api/bookings/{id}/documents. */

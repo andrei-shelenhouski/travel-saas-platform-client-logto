@@ -68,4 +68,12 @@ describe('BookingsService', () => {
       `${environment.baseUrl}/api/bookings/booking-1/documents/doc-1`,
     );
   });
+
+  it('calls booking invoices endpoint with expected URL', () => {
+    service.listInvoices('booking-1').subscribe();
+
+    expect(httpClient.get).toHaveBeenCalledWith(
+      `${environment.baseUrl}/api/bookings/booking-1/invoices`,
+    );
+  });
 });
