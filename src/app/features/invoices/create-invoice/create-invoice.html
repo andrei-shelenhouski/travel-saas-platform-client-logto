@@ -30,9 +30,13 @@
             [matAutocomplete]="clientAutocomplete"
             (blur)="onClientSearchBlur()"
           />
-          <mat-autocomplete #clientAutocomplete="matAutocomplete" autoActiveFirstOption="true">
+          <mat-autocomplete
+            #clientAutocomplete="matAutocomplete"
+            autoActiveFirstOption="true"
+            (optionSelected)="onClientOptionSelected($event)"
+          >
             @for (client of clientOptions(); track trackByClientId($index, client)) {
-              <mat-option [value]="clientDisplayName(client)" (onSelectionChange)="onClientSelected(client)">
+              <mat-option [value]="clientDisplayName(client)">
                 {{ clientDisplayName(client) }}
               </mat-option>
             }

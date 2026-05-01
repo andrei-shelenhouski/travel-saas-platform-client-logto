@@ -254,4 +254,31 @@ describe('CreateInvoiceComponent', () => {
     expect(invoicesService.create).toHaveBeenCalled();
     expect(navigateSpy).toHaveBeenCalledWith(['/app/invoices', 'invoice-1']);
   });
+
+  it('resolves typed client name on blur and sets client id', async () => {
+    await createComponent();
+
+    clientsService.getList.mockReturnValue(
+      of({
+        items: [createClient({ id: 'client-typed', fullName: 'Typed Client' })],
+        total: 1,
+        page: 1,
+        limit: 10,
+      }),
+    );
+
+    const cmp = component as unknown as {
+      clientSearchControl: CreateInvoiceComponent['clientSearchControl'];
+      form: CreateInvoiceComponent['form'];
+      onClientSearchBlur: () => void;
+    };
+
+    cmp.clientSearchControl.setValue('Typed Client');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    cmp.onClientSearchBlur();
+
+    expect(cmp.form.controls.clientId.value).toBe('client-typed');
+  });
 });

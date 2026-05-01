@@ -13,6 +13,7 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { debounceTime, distinctUntilChanged, map, of, startWith } from 'rxjs';
@@ -176,6 +177,24 @@ export class CreateInvoiceComponent {
         this.recalculateRow(index);
       }
     });
+
+    this.clientSearchControl.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
+      const selectedClient = this.selectedClient();
+
+      if (selectedClient === null) {
+        return;
+      }
+
+      const typedValue = value.trim().toLowerCase();
+      const selectedValue = this.clientDisplayName(selectedClient).trim().toLowerCase();
+
+      if (typedValue === selectedValue) {
+        return;
+      }
+
+      this.selectedClient.set(null);
+      this.form.controls.clientId.setValue('');
+    });
   }
 
   protected get lineItemsArray(): FormArray<InvoiceLineItemFormGroup> {
@@ -195,18 +214,78 @@ export class CreateInvoiceComponent {
     this.loadClientById(client.id);
   }
 
+  protected onClientOptionSelected(event: MatAutocompleteSelectedEvent): void {
+    const selectedName = String(event.option.value ?? '')
+      .trim()
+      .toLowerCase();
+    const option = this.clientOptions().find((client) => {
+      return this.clientDisplayName(client).trim().toLowerCase() === selectedName;
+    });
+
+    if (option) {
+      this.onClientSelected(option);
+    }
+  }
+
   protected onClientSearchBlur(): void {
     const rawClientId = this.form.controls.clientId.getRawValue();
+    const rawSearch = this.clientSearchControl.getRawValue().trim();
+
+    if (rawSearch.length === 0) {
+      this.selectedClient.set(null);
+      this.form.controls.clientId.setValue('');
+
+      return;
+    }
 
     if (rawClientId.length > 0) {
       return;
     }
 
-    if (this.clientSearchControl.getRawValue().trim().length === 0) {
+    const exactMatch = this.clientOptions().find((client) => {
+      return this.clientDisplayName(client).trim().toLowerCase() === rawSearch.toLowerCase();
+    });
+
+    if (exactMatch) {
+      this.onClientSelected(exactMatch);
+
       return;
     }
 
-    this.clientSearchControl.setValue('');
+    if (this.clientOptions().length === 1) {
+      this.onClientSelected(this.clientOptions()[0]);
+
+      return;
+    }
+
+    this.clientsService.getList({ search: rawSearch, page: 1, limit: 10 }).subscribe({
+      next: (response) => {
+        const exactServerMatch = response.items.find((client) => {
+          return this.clientDisplayName(client).trim().toLowerCase() === rawSearch.toLowerCase();
+        });
+
+        if (exactServerMatch) {
+          this.onClientSelected(exactServerMatch);
+
+          return;
+        }
+
+        if (response.items.length === 1) {
+          this.onClientSelected(response.items[0]);
+
+          return;
+        }
+
+        this.selectedClient.set(null);
+        this.form.controls.clientId.setValue('');
+        this.clientSearchControl.setValue('');
+      },
+      error: () => {
+        this.selectedClient.set(null);
+        this.form.controls.clientId.setValue('');
+        this.clientSearchControl.setValue('');
+      },
+    });
   }
 
   protected addLineItem(): void {
