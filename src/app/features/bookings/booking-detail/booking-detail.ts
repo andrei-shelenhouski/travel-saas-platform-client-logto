@@ -109,7 +109,11 @@ export class BookingDetailComponent {
     this.actionLoading.set(true);
     this.bookingsService.updateStatus(b.id, { status: BookingStatus.CONFIRMED }).subscribe({
       next: (updated) => this.patchBooking(updated),
-      error: (err) => this.toast.showError(err.error?.message ?? 'Ошибка обновления статуса'),
+      error: (err) =>
+        this.toast.showError(
+          err.error?.message ??
+            $localize`:@@bookingStatusUpdateFailed:Failed to update booking status`,
+        ),
       complete: () => this.actionLoading.set(false),
     });
   }
@@ -131,7 +135,10 @@ export class BookingDetailComponent {
       .updateStatus(b.id, { status: BookingStatus.CANCELLED, reason: result.reason })
       .subscribe({
         next: (updated) => this.patchBooking(updated),
-        error: (err) => this.toast.showError(err.error?.message ?? 'Ошибка отмены бронирования'),
+        error: (err) =>
+          this.toast.showError(
+            err.error?.message ?? $localize`:@@bookingCancellationFailed:Failed to cancel booking`,
+          ),
         complete: () => this.actionLoading.set(false),
       });
   }
@@ -151,9 +158,12 @@ export class BookingDetailComponent {
     this.bookingsService.update(b.id, dto).subscribe({
       next: (updated) => {
         this.patchBooking(updated);
-        this.toast.showSuccess('Детали тура обновлены');
+        this.toast.showSuccess($localize`:@@bookingTravelDetailsUpdated:Travel details updated`);
       },
-      error: (err) => this.toast.showError(err.error?.message ?? 'Ошибка сохранения'),
+      error: (err) =>
+        this.toast.showError(
+          err.error?.message ?? $localize`:@@bookingSaveFailed:Failed to save changes`,
+        ),
       complete: () => this.savingTravel.set(false),
     });
   }
@@ -169,9 +179,12 @@ export class BookingDetailComponent {
     this.bookingsService.update(b.id, dto).subscribe({
       next: (updated) => {
         this.patchBooking(updated);
-        this.toast.showSuccess('Операционные данные обновлены');
+        this.toast.showSuccess($localize`:@@bookingOperationsUpdated:Operations data updated`);
       },
-      error: (err) => this.toast.showError(err.error?.message ?? 'Ошибка сохранения'),
+      error: (err) =>
+        this.toast.showError(
+          err.error?.message ?? $localize`:@@bookingSaveFailed:Failed to save changes`,
+        ),
       complete: () => this.savingOps.set(false),
     });
   }
@@ -194,9 +207,14 @@ export class BookingDetailComponent {
         if (current) {
           this.allData.set({ ...current, documents: [...current.documents, ...uploaded] });
         }
-        this.toast.showSuccess(`Загружено файлов: ${uploaded.length}`);
+        this.toast.showSuccess(
+          $localize`:@@bookingFilesUploaded:Uploaded files: ${uploaded.length}:uploadedCount:`,
+        );
       },
-      error: (err) => this.toast.showError(err.error?.message ?? 'Ошибка загрузки файла'),
+      error: (err) =>
+        this.toast.showError(
+          err.error?.message ?? $localize`:@@bookingFileUploadFailed:Failed to upload file`,
+        ),
       complete: () => this.uploading.set(false),
     });
   }
@@ -218,9 +236,12 @@ export class BookingDetailComponent {
             documents: current.documents.filter((d) => d.id !== doc.id),
           });
         }
-        this.toast.showSuccess('Документ удалён');
+        this.toast.showSuccess($localize`:@@bookingDocumentDeleted:Document deleted`);
       },
-      error: (err) => this.toast.showError(err.error?.message ?? 'Ошибка удаления документа'),
+      error: (err) =>
+        this.toast.showError(
+          err.error?.message ?? $localize`:@@bookingDocumentDeleteFailed:Failed to delete document`,
+        ),
     });
   }
 

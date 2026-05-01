@@ -23,6 +23,7 @@ const LEADS_STATS_URL = `${environment.baseUrl}/api/leads/stats`;
 export class LeadsService {
   private readonly http = inject(HttpClient);
 
+  // eslint-disable-next-line complexity
   findAll(params?: {
     page?: number;
     limit?: number;

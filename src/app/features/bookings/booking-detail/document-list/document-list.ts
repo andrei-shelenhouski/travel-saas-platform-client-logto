@@ -8,10 +8,9 @@ import {
   viewChild,
 } from '@angular/core';
 
+import { DocumentRowComponent } from '@app/features/bookings/booking-detail/document-row/document-row';
 import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
 import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
-
-import { DocumentRowComponent } from './document-row';
 
 import type { BookingDocumentResponseDto } from '@app/shared/models';
 
@@ -19,46 +18,8 @@ import type { BookingDocumentResponseDto } from '@app/shared/models';
   selector: 'app-document-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [DocumentRowComponent, ConfirmationDialogComponent, ...MAT_BUTTONS, ...MAT_ICONS],
-  template: `
-    <section class="rounded-lg border border-gray-200 bg-white p-4">
-      <div class="flex items-center justify-between">
-        <h2 class="text-sm font-semibold text-gray-900">Документы</h2>
-        <button mat-stroked-button type="button" [disabled]="uploading()" (click)="triggerUpload()">
-          <mat-icon>upload</mat-icon>
-          Загрузить
-        </button>
-      </div>
-
-      <!-- hidden file input -->
-      <input
-        #fileInput
-        accept="*/*"
-        class="hidden"
-        multiple
-        type="file"
-        (change)="onFileSelected($event)"
-      />
-
-      <div class="mt-3 space-y-2">
-        @for (doc of documents(); track doc.id) {
-          <app-document-row [document]="doc" (delete)="onDeleteRequest($event)" />
-        } @empty {
-          <p class="text-sm text-gray-500">Документы не загружены</p>
-        }
-      </div>
-    </section>
-
-    <app-confirmation-dialog
-      cancelLabel="Отмена"
-      confirmLabel="Удалить"
-      [danger]="true"
-      [message]="deleteConfirmMessage()"
-      [open]="deleteDialogOpen()"
-      [title]="'Удалить документ'"
-      (cancel)="onDeleteCancel()"
-      (confirm)="onDeleteConfirm()"
-    />
-  `,
+  templateUrl: './document-list.html',
+  styleUrl: './document-list.scss',
 })
 export class DocumentListComponent {
   readonly documents = input<BookingDocumentResponseDto[]>([]);
@@ -92,7 +53,7 @@ export class DocumentListComponent {
   onDeleteRequest(doc: BookingDocumentResponseDto): void {
     this.pendingDelete.set(doc);
     this.deleteConfirmMessage.set(
-      `Удалить документ "${doc.filename ?? 'Документ'}"? Это действие необратимо.`,
+      $localize`:@@bookingDeleteDocumentConfirmation:Delete document "${doc.filename ?? 'Document'}:documentName:"? This action cannot be undone.`,
     );
     this.deleteDialogOpen.set(true);
   }
@@ -108,6 +69,7 @@ export class DocumentListComponent {
     if (doc) {
       this.deleteDocument.emit(doc);
     }
+
     this.deleteDialogOpen.set(false);
     this.pendingDelete.set(null);
   }

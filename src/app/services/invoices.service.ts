@@ -23,6 +23,7 @@ const INVOICES_URL = `${environment.baseUrl}/api/invoices`;
 export class InvoicesService {
   private readonly http = inject(HttpClient);
 
+  // eslint-disable-next-line complexity
   getList(params?: InvoiceFilterQueryDto): Observable<PaginatedInvoiceResponseDto> {
     let httpParams = new HttpParams();
 

@@ -1642,6 +1642,230 @@
           <context context-type="linenumber">51</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="8348011332568414135" datatype="html">
+        <source>Accommodation</source>
+        <target>Проживание</target>
+      </trans-unit>
+      <trans-unit id="3083436517363670542" datatype="html">
+        <source>Hotel</source>
+        <target>Отель</target>
+      </trans-unit>
+      <trans-unit id="518297907399160251" datatype="html">
+        <source>Room</source>
+        <target>Номер</target>
+      </trans-unit>
+      <trans-unit id="3320978972962468804" datatype="html">
+        <source>Meal plan</source>
+        <target>Питание</target>
+      </trans-unit>
+      <trans-unit id="294733429660547646" datatype="html">
+        <source>Check-in</source>
+        <target>Заезд</target>
+      </trans-unit>
+      <trans-unit id="7445324744425922278" datatype="html">
+        <source>Check-out</source>
+        <target>Выезд</target>
+      </trans-unit>
+      <trans-unit id="1934485409059405046" datatype="html">
+        <source>Nights</source>
+        <target>Ночей</target>
+      </trans-unit>
+      <trans-unit id="3576729619892648913" datatype="html">
+        <source>No accommodation data</source>
+        <target>Нет данных о проживании</target>
+      </trans-unit>
+      <trans-unit id="5306146122851916248" datatype="html">
+        <source>Booking not found</source>
+        <target>Бронирование не найдено</target>
+      </trans-unit>
+      <trans-unit id="8071974525810441978" datatype="html">
+        <source> Check the URL or return to the bookings list. </source>
+        <target>Проверьте адрес или вернитесь к списку бронирований.</target>
+      </trans-unit>
+      <trans-unit id="bookingStatusUpdateFailed" datatype="html">
+        <source>Failed to update booking status</source>
+        <target>Не удалось обновить статус бронирования</target>
+      </trans-unit>
+      <trans-unit id="bookingCancellationFailed" datatype="html">
+        <source>Failed to cancel booking</source>
+        <target>Не удалось отменить бронирование</target>
+      </trans-unit>
+      <trans-unit id="bookingTravelDetailsUpdated" datatype="html">
+        <source>Travel details updated</source>
+        <target>Детали тура обновлены</target>
+      </trans-unit>
+      <trans-unit id="bookingSaveFailed" datatype="html">
+        <source>Failed to save changes</source>
+        <target>Не удалось сохранить изменения</target>
+      </trans-unit>
+      <trans-unit id="bookingOperationsUpdated" datatype="html">
+        <source>Operations data updated</source>
+        <target>Операционные данные обновлены</target>
+      </trans-unit>
+      <trans-unit id="bookingFilesUploaded" datatype="html">
+        <source>Uploaded files: <x id="uploadedCount" equiv-text="uploaded.length"/></source>
+        <target>Загружено файлов: <x id="uploadedCount" equiv-text="uploaded.length"/></target>
+      </trans-unit>
+      <trans-unit id="bookingFileUploadFailed" datatype="html">
+        <source>Failed to upload file</source>
+        <target>Не удалось загрузить файл</target>
+      </trans-unit>
+      <trans-unit id="bookingDocumentDeleted" datatype="html">
+        <source>Document deleted</source>
+        <target>Документ удален</target>
+      </trans-unit>
+      <trans-unit id="bookingDocumentDeleteFailed" datatype="html">
+        <source>Failed to delete document</source>
+        <target>Не удалось удалить документ</target>
+      </trans-unit>
+      <trans-unit id="3213927575781379768" datatype="html">
+        <source> Booking <x id="INTERPOLATION" equiv-text="{{ booking().number ? &apos;#&apos; + booking().number : &apos;&apos; }}"/> </source>
+        <target>Бронирование <x id="INTERPOLATION" equiv-text="{{ booking().number ? &apos;#&apos; + booking().number : &apos;&apos; }}"/></target>
+      </trans-unit>
+      <trans-unit id="5071191364211248740" datatype="html">
+        <source>Confirm booking</source>
+        <target>Подтвердить бронирование</target>
+      </trans-unit>
+      <trans-unit id="4936527822743442211" datatype="html">
+        <source> Cancel booking </source>
+        <target>Отмена бронирования</target>
+      </trans-unit>
+      <trans-unit id="5370170519653047207" datatype="html">
+        <source>Cancellation reason</source>
+        <target>Причина отмены</target>
+      </trans-unit>
+      <trans-unit id="7737843206827394717" datatype="html">
+        <source>Enter cancellation reason...</source>
+        <target>Укажите причину отмены...</target>
+      </trans-unit>
+      <trans-unit id="5110887738864806798" datatype="html">
+        <source>Cancellation reason is required</source>
+        <target>Причина отмены обязательна</target>
+      </trans-unit>
+      <trans-unit id="9178182467454450952" datatype="html">
+        <source>Confirm</source>
+        <target>Подтвердить</target>
+      </trans-unit>
+      <trans-unit id="3014142150963657456" datatype="html">
+        <source>Client</source>
+        <target>Клиент</target>
+      </trans-unit>
+      <trans-unit id="6602706258740451656" datatype="html">
+        <source>Open profile</source>
+        <target>Открыть профиль</target>
+      </trans-unit>
+      <trans-unit id="8953033926734869941" datatype="html">
+        <source>Name</source>
+        <target>Имя</target>
+      </trans-unit>
+      <trans-unit id="7697349281641412732" datatype="html">
+        <source>Client type</source>
+        <target>Тип клиента</target>
+      </trans-unit>
+      <trans-unit id="4733307402565258070" datatype="html">
+        <source>Documents</source>
+        <target>Документы</target>
+      </trans-unit>
+      <trans-unit id="6932865105766151309" datatype="html">
+        <source>Upload</source>
+        <target>Загрузить</target>
+      </trans-unit>
+      <trans-unit id="6071093332270833997" datatype="html">
+        <source>No documents uploaded</source>
+        <target>Документы не загружены</target>
+      </trans-unit>
+      <trans-unit id="7022070615528435141" datatype="html">
+        <source>Delete</source>
+        <target>Удалить</target>
+      </trans-unit>
+      <trans-unit id="719892092227206532" datatype="html">
+        <source>Delete document</source>
+        <target>Удалить документ</target>
+      </trans-unit>
+      <trans-unit id="bookingDeleteDocumentConfirmation" datatype="html">
+        <source>Delete document &quot;<x id="documentName" equiv-text="doc.filename ?? &apos;Document&apos;"/>&quot;? This action cannot be undone.</source>
+        <target>Удалить документ &quot;<x id="documentName" equiv-text="doc.filename ?? &apos;Document&apos;"/>&quot;? Это действие необратимо.</target>
+      </trans-unit>
+      <trans-unit id="7708270344948043036" datatype="html">
+        <source> <x id="INTERPOLATION" equiv-text="{{ document().filename || &apos;Document&apos; }}"/> </source>
+        <target><x id="INTERPOLATION" equiv-text="{{ document().filename || &apos;Document&apos; }}"/></target>
+      </trans-unit>
+      <trans-unit id="2363158409383485440" datatype="html">
+        <source>Invoices</source>
+        <target>Счета</target>
+      </trans-unit>
+      <trans-unit id="3833335631928489785" datatype="html">
+        <source>Create invoice</source>
+        <target>Создать счет</target>
+      </trans-unit>
+      <trans-unit id="3956938367326645834" datatype="html">
+        <source>Invoice #<x id="INTERPOLATION" equiv-text="{{ invoice.number }}"/></source>
+        <target>Счет #<x id="INTERPOLATION" equiv-text="{{ invoice.number }}"/></target>
+      </trans-unit>
+      <trans-unit id="9117740843475037430" datatype="html">
+        <source>No invoices created</source>
+        <target>Счета не созданы</target>
+      </trans-unit>
+      <trans-unit id="invoiceStatusDraft" datatype="html">
+        <source>Draft</source>
+        <target>Черновик</target>
+      </trans-unit>
+      <trans-unit id="invoiceStatusIssued" datatype="html">
+        <source>Issued</source>
+        <target>Выставлен</target>
+      </trans-unit>
+      <trans-unit id="invoiceStatusPaid" datatype="html">
+        <source>Paid</source>
+        <target>Оплачен</target>
+      </trans-unit>
+      <trans-unit id="invoiceStatusPartiallyPaid" datatype="html">
+        <source>Partially paid</source>
+        <target>Частично оплачен</target>
+      </trans-unit>
+      <trans-unit id="invoiceStatusOverdue" datatype="html">
+        <source>Overdue</source>
+        <target>Просрочен</target>
+      </trans-unit>
+      <trans-unit id="invoiceStatusCancelled" datatype="html">
+        <source>Cancelled</source>
+        <target>Отменен</target>
+      </trans-unit>
+      <trans-unit id="7457179823984196306" datatype="html">
+        <source>Operations</source>
+        <target>Операции</target>
+      </trans-unit>
+      <trans-unit id="5294525007836673630" datatype="html">
+        <source>Supplier confirmation number</source>
+        <target>Номер подтверждения поставщика</target>
+      </trans-unit>
+      <trans-unit id="3693879842889377070" datatype="html">
+        <source>Assignee (Back Office)</source>
+        <target>Ответственный (Back Office)</target>
+      </trans-unit>
+      <trans-unit id="1209536408383191297" datatype="html">
+        <source>— Unassigned —</source>
+        <target>— Не назначен —</target>
+      </trans-unit>
+      <trans-unit id="2416795515445077898" datatype="html">
+        <source>Internal notes</source>
+        <target>Внутренние заметки</target>
+      </trans-unit>
+      <trans-unit id="8846099596784148650" datatype="html">
+        <source>Travel details</source>
+        <target>Детали тура</target>
+      </trans-unit>
+      <trans-unit id="7917723851542871054" datatype="html">
+        <source>Departure date</source>
+        <target>Дата вылета</target>
+      </trans-unit>
+      <trans-unit id="4027752602668447426" datatype="html">
+        <source>Return date</source>
+        <target>Дата возвращения</target>
+      </trans-unit>
+      <trans-unit id="6874414284606860459" datatype="html">
+        <source>Adults / Children</source>
+        <target>Взрослых / Детей</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

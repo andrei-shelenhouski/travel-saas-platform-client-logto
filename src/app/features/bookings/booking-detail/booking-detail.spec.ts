@@ -20,8 +20,8 @@ const MOCK_BOOKING: BookingResponseDto = {
   number: 'BK-001',
   offerId: 'offer-1',
   clientId: 'client-1',
-  clientSnapshot: { fullName: 'Иван Иванов', phone: '+7-999-000-0000', email: 'ivan@test.com' },
-  destination: 'Турция, Анталья',
+  clientSnapshot: { fullName: 'John Doe', phone: '+7-999-000-0000', email: 'ivan@test.com' },
+  destination: 'Turkey, Antalya',
   departDate: '2026-07-01',
   returnDate: '2026-07-14',
   adults: 2,
@@ -141,10 +141,10 @@ describe('BookingDetailComponent', () => {
   it('should call updateStatus CANCELLED with reason on cancellation confirmed', async () => {
     await fixture.whenStable();
     fixture.detectChanges();
-    component.onCancellationConfirmed({ reason: 'Клиент отказался' });
+    component.onCancellationConfirmed({ reason: 'Customer cancelled' });
     expect(bookingsService.updateStatus).toHaveBeenCalledWith('booking-1', {
       status: BookingStatus.CANCELLED,
-      reason: 'Клиент отказался',
+      reason: 'Customer cancelled',
     });
   });
 
