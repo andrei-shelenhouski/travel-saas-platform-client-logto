@@ -54,6 +54,15 @@ describe('InvoicesListComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should request first API page as 1', () => {
+    expect(invoicesService.getList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        page: 1,
+        limit: 20,
+      }),
+    );
+  });
+
   it('should reset to first page when status filter changes', () => {
     (component as unknown as { currentPage: { set: (value: number) => void } }).currentPage.set(4);
 

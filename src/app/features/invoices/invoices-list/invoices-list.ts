@@ -92,7 +92,7 @@ export class InvoicesListComponent {
       const { clientType, currency, dateFrom, dateTo, page, search, status } = params;
 
       return this.invoicesService.getList({
-        page,
+        page: page + 1,
         limit: PAGE_SIZE,
         status: status.length > 0 ? status : undefined,
         clientType: this.parseClientType(clientType),
