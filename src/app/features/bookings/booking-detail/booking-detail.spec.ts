@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { ActivatedRoute } from '@angular/router';
 
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { BookingsService } from '@app/services/bookings.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
@@ -146,6 +146,28 @@ describe('BookingDetailComponent', () => {
       status: BookingStatus.CANCELLED,
       reason: 'Customer cancelled',
     });
+  });
+
+  it('resets actionLoading when confirm request fails', async () => {
+    bookingsService.updateStatus.mockReturnValue(throwError(() => new Error('boom')));
+
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    component.onConfirmBooking();
+
+    expect(component.actionLoading()).toBe(false);
+  });
+
+  it('resets uploading when upload fails', async () => {
+    bookingsService.uploadDocument.mockReturnValue(throwError(() => new Error('boom')));
+
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    component.onUploadFiles([new File(['test'], 'test.pdf', { type: 'application/pdf' })]);
+
+    expect(component.uploading()).toBe(false);
   });
 
   it('should remove document from local state after deletion', async () => {

@@ -27,18 +27,6 @@
         </mat-form-field>
       </div>
 
-      <div class="grid gap-3 sm:grid-cols-2">
-        <mat-form-field class="w-full">
-          <mat-label i18n>Adults</mat-label>
-          <input formControlName="adults" matInput min="0" type="number" />
-        </mat-form-field>
-
-        <mat-form-field class="w-full">
-          <mat-label i18n>Children</mat-label>
-          <input formControlName="children" matInput min="0" type="number" />
-        </mat-form-field>
-      </div>
-
       <div class="flex justify-end gap-2">
         <button i18n mat-button type="button" (click)="cancelEdit()">Cancel</button>
         <button color="primary" mat-flat-button type="submit" [disabled]="saving()">

@@ -1,3 +1,4 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -10,7 +11,7 @@ import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { EMPTY, forkJoin } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 
 import { BookingsService } from '@app/services/bookings.service';
 import { ToastService } from '@app/shared/services/toast.service';
@@ -83,6 +84,28 @@ export class BookingDetailComponent {
   readonly documents = computed(() => this.allData.value()?.documents ?? []);
   readonly loading = computed(() => this.allData.isLoading());
   readonly loadError = computed(() => this.allData.error());
+  readonly loadNotFound = computed(() => {
+    const error = this.loadError();
+
+    return error instanceof HttpErrorResponse && error.status === 404;
+  });
+  readonly loadErrorMessage = computed(() => {
+    const error = this.loadError();
+
+    if (error instanceof HttpErrorResponse) {
+      if (error.status === 404) {
+        return $localize`:@@bookingNotFoundTitle:Booking not found`;
+      }
+
+      return (
+        error.error?.message ??
+        error.message ??
+        $localize`:@@bookingLoadFailed:Failed to load booking`
+      );
+    }
+
+    return $localize`:@@bookingLoadFailed:Failed to load booking`;
+  });
 
   readonly actionLoading = signal(false);
   readonly savingTravel = signal(false);
@@ -107,15 +130,17 @@ export class BookingDetailComponent {
     }
 
     this.actionLoading.set(true);
-    this.bookingsService.updateStatus(b.id, { status: BookingStatus.CONFIRMED }).subscribe({
-      next: (updated) => this.patchBooking(updated),
-      error: (err) =>
-        this.toast.showError(
-          err.error?.message ??
-            $localize`:@@bookingStatusUpdateFailed:Failed to update booking status`,
-        ),
-      complete: () => this.actionLoading.set(false),
-    });
+    this.bookingsService
+      .updateStatus(b.id, { status: BookingStatus.CONFIRMED })
+      .pipe(finalize(() => this.actionLoading.set(false)))
+      .subscribe({
+        next: (updated) => this.patchBooking(updated),
+        error: (err) =>
+          this.toast.showError(
+            err.error?.message ??
+              $localize`:@@bookingStatusUpdateFailed:Failed to update booking status`,
+          ),
+      });
   }
 
   onCancelBooking(): void {
@@ -133,13 +158,13 @@ export class BookingDetailComponent {
     this.actionLoading.set(true);
     this.bookingsService
       .updateStatus(b.id, { status: BookingStatus.CANCELLED, reason: result.reason })
+      .pipe(finalize(() => this.actionLoading.set(false)))
       .subscribe({
         next: (updated) => this.patchBooking(updated),
         error: (err) =>
           this.toast.showError(
             err.error?.message ?? $localize`:@@bookingCancellationFailed:Failed to cancel booking`,
           ),
-        complete: () => this.actionLoading.set(false),
       });
   }
 
@@ -155,17 +180,19 @@ export class BookingDetailComponent {
     }
 
     this.savingTravel.set(true);
-    this.bookingsService.update(b.id, dto).subscribe({
-      next: (updated) => {
-        this.patchBooking(updated);
-        this.toast.showSuccess($localize`:@@bookingTravelDetailsUpdated:Travel details updated`);
-      },
-      error: (err) =>
-        this.toast.showError(
-          err.error?.message ?? $localize`:@@bookingSaveFailed:Failed to save changes`,
-        ),
-      complete: () => this.savingTravel.set(false),
-    });
+    this.bookingsService
+      .update(b.id, dto)
+      .pipe(finalize(() => this.savingTravel.set(false)))
+      .subscribe({
+        next: (updated) => {
+          this.patchBooking(updated);
+          this.toast.showSuccess($localize`:@@bookingTravelDetailsUpdated:Travel details updated`);
+        },
+        error: (err) =>
+          this.toast.showError(
+            err.error?.message ?? $localize`:@@bookingSaveFailed:Failed to save changes`,
+          ),
+      });
   }
 
   onSaveOperations(dto: UpdateBookingDto): void {
@@ -176,17 +203,19 @@ export class BookingDetailComponent {
     }
 
     this.savingOps.set(true);
-    this.bookingsService.update(b.id, dto).subscribe({
-      next: (updated) => {
-        this.patchBooking(updated);
-        this.toast.showSuccess($localize`:@@bookingOperationsUpdated:Operations data updated`);
-      },
-      error: (err) =>
-        this.toast.showError(
-          err.error?.message ?? $localize`:@@bookingSaveFailed:Failed to save changes`,
-        ),
-      complete: () => this.savingOps.set(false),
-    });
+    this.bookingsService
+      .update(b.id, dto)
+      .pipe(finalize(() => this.savingOps.set(false)))
+      .subscribe({
+        next: (updated) => {
+          this.patchBooking(updated);
+          this.toast.showSuccess($localize`:@@bookingOperationsUpdated:Operations data updated`);
+        },
+        error: (err) =>
+          this.toast.showError(
+            err.error?.message ?? $localize`:@@bookingSaveFailed:Failed to save changes`,
+          ),
+      });
   }
 
   onUploadFiles(files: File[]): void {
@@ -200,7 +229,7 @@ export class BookingDetailComponent {
 
     const upload$ = forkJoin(files.map((f) => this.bookingsService.uploadDocument(b.id, f)));
 
-    upload$.subscribe({
+    upload$.pipe(finalize(() => this.uploading.set(false))).subscribe({
       next: (uploaded) => {
         const current = this.allData.value();
 
@@ -215,7 +244,6 @@ export class BookingDetailComponent {
         this.toast.showError(
           err.error?.message ?? $localize`:@@bookingFileUploadFailed:Failed to upload file`,
         ),
-      complete: () => this.uploading.set(false),
     });
   }
 

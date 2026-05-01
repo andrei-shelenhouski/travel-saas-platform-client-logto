@@ -42,8 +42,6 @@ export class TravelDetailsSectionComponent {
     destination: [''],
     departDate: [''],
     returnDate: [''],
-    adults: [0],
-    children: [0],
   });
 
   startEdit(): void {
@@ -53,8 +51,6 @@ export class TravelDetailsSectionComponent {
       destination: b.destination ?? '',
       departDate: b.departDate ?? '',
       returnDate: b.returnDate ?? '',
-      adults: b.adults ?? 0,
-      children: b.children ?? 0,
     });
     this.editing.set(true);
   }

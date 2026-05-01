@@ -8,10 +8,16 @@
     </div>
   } @else if (loadError()) {
     <section class="rounded-lg border border-red-200 bg-red-50 p-6 text-center">
-      <p class="text-base font-semibold text-red-800" i18n>Booking not found</p>
-      <p class="mt-1 text-sm text-red-600" i18n>
-        Check the URL or return to the bookings list.
-      </p>
+      <p class="text-base font-semibold text-red-800">{{ loadErrorMessage() }}</p>
+      @if (loadNotFound()) {
+        <p class="mt-1 text-sm text-red-600" i18n>
+          Check the URL or return to the bookings list.
+        </p>
+      } @else {
+        <p class="mt-1 text-sm text-red-600" i18n>
+          Try again later or return to the bookings list.
+        </p>
+      }
     </section>
   } @else {
     @let b = booking();

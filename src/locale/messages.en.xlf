@@ -161,89 +161,110 @@
           <context context-type="linenumber">32,33</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="5306146122851916248" datatype="html">
-        <source>Booking not found</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
-          <context context-type="linenumber">11,12</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
-          <context context-type="linenumber">63,64</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="8071974525810441978" datatype="html">
         <source> Check the URL or return to the bookings list. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
-          <context context-type="linenumber">13,14</context>
+          <context context-type="linenumber">14,15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2431889474837358441" datatype="html">
+        <source> Try again later or return to the bookings list. </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
+          <context context-type="linenumber">18,19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5306146122851916248" datatype="html">
+        <source>Booking not found</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
+          <context context-type="linenumber">69,70</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingNotFoundTitle" datatype="html">
+        <source>Booking not found</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
+          <context context-type="linenumber">97</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingLoadFailed" datatype="html">
+        <source>Failed to load booking</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
+          <context context-type="linenumber">100</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
+          <context context-type="linenumber">103</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingStatusUpdateFailed" datatype="html">
         <source>Failed to update booking status</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">115</context>
+          <context context-type="linenumber">137</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingCancellationFailed" datatype="html">
         <source>Failed to cancel booking</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">140</context>
+          <context context-type="linenumber">162</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingTravelDetailsUpdated" datatype="html">
         <source>Travel details updated</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">161</context>
+          <context context-type="linenumber">185</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingSaveFailed" datatype="html">
         <source>Failed to save changes</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">165</context>
+          <context context-type="linenumber">189</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">186</context>
+          <context context-type="linenumber">212</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingOperationsUpdated" datatype="html">
         <source>Operations data updated</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">182</context>
+          <context context-type="linenumber">208</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingFilesUploaded" datatype="html">
         <source>Uploaded files: <x id="uploadedCount" equiv-text="uploaded.length"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">211</context>
+          <context context-type="linenumber">238</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingFileUploadFailed" datatype="html">
         <source>Failed to upload file</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">216</context>
+          <context context-type="linenumber">243</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingDocumentDeleted" datatype="html">
         <source>Document deleted</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">239</context>
+          <context context-type="linenumber">265</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingDocumentDeleteFailed" datatype="html">
         <source>Failed to delete document</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">243</context>
+          <context context-type="linenumber">269</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3213927575781379768" datatype="html">
@@ -276,7 +297,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/document-list/document-list.html</context>
-          <context context-type="linenumber">31</context>
+          <context context-type="linenumber">30</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/operations-section/operations-section.html</context>
@@ -284,7 +305,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/travel-details-section/travel-details-section.html</context>
-          <context context-type="linenumber">43,44</context>
+          <context context-type="linenumber">31,32</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
@@ -309,7 +330,7 @@
         <source>Enter cancellation reason...</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/cancellation-dialog/cancellation-dialog.html</context>
-          <context context-type="linenumber">21,22</context>
+          <context context-type="linenumber">20,21</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5110887738864806798" datatype="html">
@@ -390,14 +411,14 @@
         <source>Delete</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/document-list/document-list.html</context>
-          <context context-type="linenumber">33</context>
+          <context context-type="linenumber">32</context>
         </context-group>
       </trans-unit>
       <trans-unit id="719892092227206532" datatype="html">
         <source>Delete document</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/document-list/document-list.html</context>
-          <context context-type="linenumber">37,38</context>
+          <context context-type="linenumber">33,34</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/document-row/document-row.html</context>
@@ -543,7 +564,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/travel-details-section/travel-details-section.html</context>
-          <context context-type="linenumber">45,46</context>
+          <context context-type="linenumber">33,34</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
@@ -565,7 +586,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/travel-details-section/travel-details-section.html</context>
-          <context context-type="linenumber">52,53</context>
+          <context context-type="linenumber">40,41</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
@@ -580,7 +601,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/travel-details-section/travel-details-section.html</context>
-          <context context-type="linenumber">56,57</context>
+          <context context-type="linenumber">44,45</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4027752602668447426" datatype="html">
@@ -591,36 +612,14 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/travel-details-section/travel-details-section.html</context>
-          <context context-type="linenumber">62,63</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="5674559636104858599" datatype="html">
-        <source>Adults</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/bookings/booking-detail/travel-details-section/travel-details-section.html</context>
-          <context context-type="linenumber">32</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">204</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="4705822664965381735" datatype="html">
-        <source>Children</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/bookings/booking-detail/travel-details-section/travel-details-section.html</context>
-          <context context-type="linenumber">37</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">215</context>
+          <context context-type="linenumber">50,51</context>
         </context-group>
       </trans-unit>
       <trans-unit id="6874414284606860459" datatype="html">
         <source>Adults / Children</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/travel-details-section/travel-details-section.html</context>
-          <context context-type="linenumber">68,69</context>
+          <context context-type="linenumber">56,57</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingFilterStatusLabel" datatype="html">
@@ -1307,11 +1306,25 @@
           <context context-type="linenumber">196</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="5674559636104858599" datatype="html">
+        <source>Adults</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
+          <context context-type="linenumber">204</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="5891802386836734920" datatype="html">
         <source>Adults must be at least 1</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
           <context context-type="linenumber">207</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="4705822664965381735" datatype="html">
+        <source>Children</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
+          <context context-type="linenumber">215</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2513973022190705481" datatype="html">

@@ -1682,6 +1682,18 @@
         <source> Check the URL or return to the bookings list. </source>
         <target>Проверьте адрес или вернитесь к списку бронирований.</target>
       </trans-unit>
+      <trans-unit id="2431889474837358441" datatype="html">
+        <source> Try again later or return to the bookings list. </source>
+        <target>Попробуйте позже или вернитесь к списку бронирований.</target>
+      </trans-unit>
+      <trans-unit id="bookingNotFoundTitle" datatype="html">
+        <source>Booking not found</source>
+        <target>Бронирование не найдено</target>
+      </trans-unit>
+      <trans-unit id="bookingLoadFailed" datatype="html">
+        <source>Failed to load booking</source>
+        <target>Не удалось загрузить бронирование</target>
+      </trans-unit>
       <trans-unit id="bookingStatusUpdateFailed" datatype="html">
         <source>Failed to update booking status</source>
         <target>Не удалось обновить статус бронирования</target>
