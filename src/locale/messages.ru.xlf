@@ -2078,8 +2078,8 @@
         <source>Booking not found</source>
         <target>Бронирование не найдено</target>
       </trans-unit>
-      <trans-unit id="8071974525810441978" datatype="html">
-        <source> Check the URL or return to the bookings list. </source>
+      <trans-unit id="bookingDetailInvalidUrlHint" datatype="html">
+        <source>Check the URL or return to the bookings list.</source>
         <target>Проверьте адрес или вернитесь к списку бронирований.</target>
       </trans-unit>
       <trans-unit id="2431889474837358441" datatype="html">
