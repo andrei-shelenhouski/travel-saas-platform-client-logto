@@ -1,0 +1,55 @@
+.summary-card {
+  border: 1px solid transparent;
+  border-radius: 0.75rem;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 1rem;
+  text-align: left;
+  transition:
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    transform 120ms ease;
+}
+
+.summary-card:focus-visible {
+  outline: 2px solid #1d4ed8;
+  outline-offset: 1px;
+}
+
+.summary-card:hover {
+  transform: translateY(-1px);
+}
+
+.summary-card--active {
+  border-color: currentColor;
+  box-shadow: 0 0 0 1px currentColor;
+}
+
+.summary-card--draft {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.summary-card--pending {
+  background-color: #e0f2fe;
+  color: #1e3a8a;
+}
+
+.summary-card--overdue {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.summary-card__title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+}
+
+.summary-card__value {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5rem;
+}

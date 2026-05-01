@@ -617,6 +617,15 @@ export type InvoiceFilterQueryDto = {
   search?: string;
 };
 
+export type InvoiceSummaryResponseDto = {
+  drafts: number;
+  pendingCount: number;
+  pendingAmount: number;
+  overdueCount: number;
+  overdueAmount: number;
+  currency: string;
+};
+
 // ----- Contacts -----
 
 /** OpenAPI: ContactResponse. Contact person for a client. */

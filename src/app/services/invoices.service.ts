@@ -10,6 +10,7 @@ import type {
   CreateInvoiceDto,
   InvoiceFilterQueryDto,
   InvoiceResponseDto,
+  InvoiceSummaryResponseDto,
   PaginatedInvoiceResponseDto,
   UpdateInvoiceDto,
 } from '@app/shared/models';
@@ -66,6 +67,10 @@ export class InvoicesService {
 
   getById(id: string): Observable<InvoiceResponseDto> {
     return this.http.get<InvoiceResponseDto>(`${INVOICES_URL}/${id}`);
+  }
+
+  getSummary(): Observable<InvoiceSummaryResponseDto> {
+    return this.http.get<InvoiceSummaryResponseDto>(`${INVOICES_URL}/summary`);
   }
 
   create(dto: CreateInvoiceDto): Observable<InvoiceResponseDto> {
