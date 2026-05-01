@@ -49,9 +49,9 @@
     <mat-label i18n="@@invoiceFilterCurrencyLabel">Currency</mat-label>
     <input
       matInput
-      [value]="currencyFilter()"
       placeholder="BYN"
       i18n-placeholder="@@invoiceFilterCurrencyPlaceholder"
+      [value]="currencyFilter()"
       (change)="onCurrencyInputChange($any($event.target).value)"
     />
   </mat-form-field>

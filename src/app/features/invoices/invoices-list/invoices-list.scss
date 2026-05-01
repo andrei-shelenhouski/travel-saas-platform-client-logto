@@ -1,24 +1,24 @@
 :host {
-	display: flex;
-	flex: 1;
-	flex-direction: column;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 }
 
 .table-wrap {
-	border: 1px solid #e5e7eb;
-	border-radius: 0.75rem;
-	background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background-color: #ffffff;
 }
 
 table {
-	width: 100%;
-	min-width: 980px;
+  width: 100%;
+  min-width: 980px;
 }
 
 .table-row {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 .table-row:hover {
-	background-color: #f8fafc;
+  background-color: #f8fafc;
 }

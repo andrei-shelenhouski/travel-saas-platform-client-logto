@@ -8,7 +8,6 @@ import { InvoicesService } from '@app/services/invoices.service';
 import { InvoiceStatus } from '@app/shared/models';
 
 import { InvoiceSummaryCardsComponent } from '../invoice-summary-cards/invoice-summary-cards';
-
 import { InvoicesListComponent } from './invoices-list';
 
 describe('InvoicesListComponent', () => {
@@ -68,9 +67,9 @@ describe('InvoicesListComponent', () => {
 
     component.onStatusFilterChange([InvoiceStatus.OVERDUE]);
 
-    expect((component as unknown as { statusFilter: () => InvoiceStatus[] }).statusFilter()).toEqual([
-      InvoiceStatus.OVERDUE,
-    ]);
+    expect(
+      (component as unknown as { statusFilter: () => InvoiceStatus[] }).statusFilter(),
+    ).toEqual([InvoiceStatus.OVERDUE]);
     expect((component as unknown as { currentPage: () => number }).currentPage()).toBe(0);
   });
 
@@ -83,10 +82,9 @@ describe('InvoicesListComponent', () => {
 
     cardsComponent.statusesSelect.emit([InvoiceStatus.ISSUED, InvoiceStatus.PARTIALLY_PAID]);
 
-    expect((component as unknown as { statusFilter: () => InvoiceStatus[] }).statusFilter()).toEqual([
-      InvoiceStatus.ISSUED,
-      InvoiceStatus.PARTIALLY_PAID,
-    ]);
+    expect(
+      (component as unknown as { statusFilter: () => InvoiceStatus[] }).statusFilter(),
+    ).toEqual([InvoiceStatus.ISSUED, InvoiceStatus.PARTIALLY_PAID]);
     expect((component as unknown as { currentPage: () => number }).currentPage()).toBe(0);
   });
 });

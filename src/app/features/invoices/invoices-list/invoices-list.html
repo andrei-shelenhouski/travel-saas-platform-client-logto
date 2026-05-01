@@ -107,9 +107,9 @@
         <th *matHeaderCellDef i18n="@@invoiceListColumnActions" mat-header-cell>Actions</th>
         <td *matCellDef="let element" mat-cell>
           <button
+            i18n="@@invoiceListOpenAction"
             mat-stroked-button
             type="button"
-            i18n="@@invoiceListOpenAction"
             (click)="onActionClick($event, element.id)"
           >
             Open

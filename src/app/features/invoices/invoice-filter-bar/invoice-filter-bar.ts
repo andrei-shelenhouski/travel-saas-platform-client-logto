@@ -27,7 +27,10 @@ const STATUS_OPTIONS: InvoiceStatusOption[] = [
 ];
 
 const CLIENT_TYPE_OPTIONS: ClientTypeOption[] = [
-  { value: ClientType.INDIVIDUAL, label: $localize`:@@invoiceFilterClientTypeIndividual:Individual` },
+  {
+    value: ClientType.INDIVIDUAL,
+    label: $localize`:@@invoiceFilterClientTypeIndividual:Individual`,
+  },
   { value: ClientType.COMPANY, label: $localize`:@@invoiceFilterClientTypeCompany:Company` },
   { value: ClientType.B2B_AGENT, label: $localize`:@@invoiceFilterClientTypeB2bAgent:B2B agent` },
 ];

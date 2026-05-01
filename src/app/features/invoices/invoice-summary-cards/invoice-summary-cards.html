@@ -1,10 +1,10 @@
 <div class="grid gap-3 md:grid-cols-3">
   <button
+    aria-label="Filter by draft invoices"
+    i18n-aria-label="@@invoiceSummaryDraftAriaLabel"
     type="button"
     [class]="cardClass('draft', isDraftActive())"
     (click)="onDraftClick()"
-    i18n-aria-label="@@invoiceSummaryDraftAriaLabel"
-    aria-label="Filter by draft invoices"
   >
     <span class="summary-card__title" i18n="@@invoiceSummaryDraftTitle">Drafts</span>
     <span class="summary-card__value" i18n="@@invoiceSummaryDraftValue"
@@ -13,11 +13,11 @@
   </button>
 
   <button
+    aria-label="Filter by pending invoices"
+    i18n-aria-label="@@invoiceSummaryPendingAriaLabel"
     type="button"
     [class]="cardClass('pending', isPendingActive())"
     (click)="onPendingClick()"
-    i18n-aria-label="@@invoiceSummaryPendingAriaLabel"
-    aria-label="Filter by pending invoices"
   >
     <span class="summary-card__title" i18n="@@invoiceSummaryPendingTitle">Pending payment</span>
     <span class="summary-card__value" i18n="@@invoiceSummaryPendingValue"
@@ -27,15 +27,16 @@
   </button>
 
   <button
+    aria-label="Filter by overdue invoices"
+    i18n-aria-label="@@invoiceSummaryOverdueAriaLabel"
     type="button"
     [class]="cardClass('overdue', isOverdueActive())"
     (click)="onOverdueClick()"
-    i18n-aria-label="@@invoiceSummaryOverdueAriaLabel"
-    aria-label="Filter by overdue invoices"
   >
     <span class="summary-card__title" i18n="@@invoiceSummaryOverdueTitle">Overdue</span>
     <span class="summary-card__value" i18n="@@invoiceSummaryOverdueValue"
-      >Overdue: {{ overdueCount() }} / Amount: {{ formatAmount(overdueAmount()) }} {{ currency() }}</span
+      >Overdue: {{ overdueCount() }} / Amount: {{ formatAmount(overdueAmount()) }}
+      {{ currency() }}</span
     >
   </button>
 </div>
