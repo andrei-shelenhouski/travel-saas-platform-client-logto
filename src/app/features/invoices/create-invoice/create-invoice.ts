@@ -246,7 +246,8 @@ export class CreateInvoiceComponent {
     }
 
     const total =
-      this.toSafeNumber(row.controls.unitPrice.value) * this.toSafeNumber(row.controls.quantity.value);
+      this.toSafeNumber(row.controls.unitPrice.value) *
+      this.toSafeNumber(row.controls.quantity.value);
 
     row.controls.total.setValue(total);
   }
@@ -259,7 +260,10 @@ export class CreateInvoiceComponent {
     }
 
     const tourCost = this.toSafeNumber(row.controls.tourCost.value);
-    const commissionPct = Math.min(100, Math.max(0, this.toSafeNumber(row.controls.commissionPct.value)));
+    const commissionPct = Math.min(
+      100,
+      Math.max(0, this.toSafeNumber(row.controls.commissionPct.value)),
+    );
     const commissionAmount = (tourCost * commissionPct) / 100;
 
     row.controls.commissionPct.setValue(commissionPct);
@@ -719,8 +723,12 @@ export class CreateInvoiceComponent {
       dto.tourCost = this.toSafeNumber(row.tourCost);
       dto.commissionAmount = this.toSafeNumber(row.commissionAmount);
     } else {
-      dto.unitPrice = this.toSafeNumber(row.unitPrice);
-      dto.quantity = Math.max(1, this.toSafeNumber(row.quantity));
+      const unitPrice = this.toSafeNumber(row.unitPrice);
+      const quantity = Math.max(1, this.toSafeNumber(row.quantity));
+
+      dto.unitPrice = unitPrice;
+      dto.quantity = quantity;
+      dto.tourCost = unitPrice * quantity;
     }
 
     return dto;

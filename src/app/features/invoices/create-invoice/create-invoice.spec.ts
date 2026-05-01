@@ -161,14 +161,17 @@ describe('CreateInvoiceComponent', () => {
     expect(lineItems.at(0).controls.description.value).toContain('Travel services');
   });
 
-  it('calculates standard mode totals and validates due date', async () => {
+  it('calculates standard mode totals, validates due date, and sends total amount', async () => {
     await createComponent();
 
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     const cmp = component as unknown as {
       form: CreateInvoiceComponent['form'];
       lineItemsArray: CreateInvoiceComponent['lineItemsArray'];
       onStandardItemInput: (index: number) => void;
       pricingSummary: () => { subtotal: number };
+      onSubmit: () => void;
     };
 
     cmp.form.controls.clientId.setValue('client-1');
@@ -179,6 +182,23 @@ describe('CreateInvoiceComponent', () => {
 
     expect(cmp.lineItemsArray.at(0).controls.total.value).toBe(300);
     expect(cmp.pricingSummary().subtotal).toBe(300);
+
+    cmp.form.controls.dueDate.setValue('2026-05-10');
+    cmp.lineItemsArray.at(0).controls.description.setValue('Transfer service');
+    cmp.onSubmit();
+
+    expect(invoicesService.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        lineItems: [
+          expect.objectContaining({
+            unitPrice: 150,
+            quantity: 2,
+            tourCost: 300,
+          }),
+        ],
+      }),
+    );
+    expect(navigateSpy).toHaveBeenCalledWith(['/app/invoices', 'invoice-1']);
 
     cmp.form.controls.invoiceDate.setValue('2026-05-10');
     cmp.form.controls.dueDate.setValue('2026-05-09');
