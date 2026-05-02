@@ -4101,6 +4101,47 @@
         }
       }
     },
+    "/api/dashboard": {
+      "get": {
+        "tags": [
+          "dashboard-controller"
+        ],
+        "operationId": "get",
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/comments/{id}": {
       "get": {
         "tags": [
@@ -7519,6 +7560,103 @@
           },
           "currency": {
             "type": "string"
+          }
+        }
+      },
+      "DashboardResponse": {
+        "type": "object",
+        "properties": {
+          "leadsToday": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "leadsTotal": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "activeOffers": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "expiringOffersThisWeek": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "overdueInvoicesCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "overdueInvoicesAmount": {
+            "type": "number"
+          },
+          "overdueInvoicesCurrency": {
+            "type": "string"
+          },
+          "leadsByStatus": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "stalledLeads": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StalledLeadDto"
+            }
+          },
+          "upcomingDepartures": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UpcomingDepartureDto"
+            }
+          }
+        }
+      },
+      "StalledLeadDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "number": {
+            "type": "string"
+          },
+          "clientName": {
+            "type": "string"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "daysSinceUpdate": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "assignedAgentName": {
+            "type": "string"
+          }
+        }
+      },
+      "UpcomingDepartureDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "number": {
+            "type": "string"
+          },
+          "clientName": {
+            "type": "string"
+          },
+          "destination": {
+            "type": "string"
+          },
+          "departDate": {
+            "type": "string",
+            "format": "date"
           }
         }
       },

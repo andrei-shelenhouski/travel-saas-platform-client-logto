@@ -12,6 +12,7 @@ export * from './offers.service';
 export * from './organizations.service';
 export * from './organization-settings.service';
 export * from './requests.service';
+export * from './dashboard.service';
 export * from './activities.service';
 export * from './comments.service';
 export * from './tags.service';

@@ -3,5 +3,6 @@
  */
 
 export * from './api.model';
+export * from './dashboard.model';
 export * from './activity.model';
 export * from './comment.model';
