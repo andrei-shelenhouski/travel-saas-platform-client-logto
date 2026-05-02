@@ -462,6 +462,8 @@ export class InvoiceDetailComponent {
       return;
     }
     this.actionLoading.set(true);
+    const v = this.paymentForm.getRawValue();
+    this.invoicesService
       .recordPayment(inv.id, {
         amount: v.amount,
         currency: v.currency,
