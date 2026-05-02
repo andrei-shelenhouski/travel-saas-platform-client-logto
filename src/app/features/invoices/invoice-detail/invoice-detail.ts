@@ -24,8 +24,8 @@ import { MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import {
-  EntityType,
   type ActivityTimelineItem,
+  EntityType,
   type InvoiceResponseDto,
   type PaymentResponseDto,
 } from '@app/shared/models';
@@ -254,7 +254,9 @@ export class InvoiceDetailComponent {
   canDeletePayment(): boolean {
     const status = this.invoice()?.status;
 
-    return (status === 'ISSUED' || status === 'PARTIALLY_PAID') && this.permissions.canDeleteInvoice();
+    return (
+      (status === 'ISSUED' || status === 'PARTIALLY_PAID') && this.permissions.canDeleteInvoice()
+    );
   }
 
   formatDateOnly(iso: string | null | undefined): string {
@@ -456,6 +458,7 @@ export class InvoiceDetailComponent {
     if (!inv || this.actionLoading()) {
       return;
     }
+
     if (this.paymentForm.get('amount')!.invalid) {
       this.toast.showError('Сумма должна быть больше нуля');
 

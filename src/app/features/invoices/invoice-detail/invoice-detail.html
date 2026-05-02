@@ -20,7 +20,7 @@
         class="flex flex-wrap items-center justify-between gap-4 rounded-lg border border-gray-200 bg-white px-4 py-3"
       >
         <div class="min-w-0">
-          <h1 i18n="@@invoiceDetailTitle" class="text-xl font-semibold text-gray-900">
+          <h1 class="text-xl font-semibold text-gray-900" i18n="@@invoiceDetailTitle">
             Счёт {{ inv.number }}
           </h1>
           <span
@@ -47,8 +47,8 @@
             }
             @if (hasAction('publish')) {
               <button
-                i18n="@@invoiceDetailBtnPublish"
                 color="primary"
+                i18n="@@invoiceDetailBtnPublish"
                 mat-flat-button
                 type="button"
                 [disabled]="actionLoading()"
@@ -60,8 +60,8 @@
             }
             @if (hasAction('record_payment')) {
               <button
-                i18n="@@invoiceDetailBtnRecordPayment"
                 color="primary"
+                i18n="@@invoiceDetailBtnRecordPayment"
                 mat-flat-button
                 type="button"
                 [disabled]="actionLoading()"
@@ -85,8 +85,8 @@
             }
             @if (hasAction('cancel') && permissions.canDeleteInvoice()) {
               <button
-                i18n="@@invoiceDetailBtnCancel"
                 color="warn"
+                i18n="@@invoiceDetailBtnCancel"
                 mat-stroked-button
                 type="button"
                 [disabled]="actionLoading()"
@@ -103,10 +103,10 @@
       <!-- ===== CANCEL INLINE PANEL ===== -->
       @if (cancelDialogOpen()) {
         <div class="rounded-lg border border-amber-200 bg-amber-50 p-4">
-          <h2 i18n="@@invoiceDetailCancelPanelTitle" class="text-sm font-semibold text-gray-900">
+          <h2 class="text-sm font-semibold text-gray-900" i18n="@@invoiceDetailCancelPanelTitle">
             Отмена счёта
           </h2>
-          <p i18n="@@invoiceDetailCancelPanelDesc" class="mt-1 text-sm text-gray-600">
+          <p class="mt-1 text-sm text-gray-600" i18n="@@invoiceDetailCancelPanelDesc">
             Укажите причину отмены счёта {{ inv.number }}.
           </p>
           <div class="mt-3 max-w-md">
@@ -145,7 +145,7 @@
       <!-- ===== RECORD PAYMENT INLINE PANEL ===== -->
       @if (recordPaymentOpen()) {
         <div class="rounded-lg border border-blue-200 bg-blue-50 p-4">
-          <h2 i18n="@@invoiceDetailRecordPaymentTitle" class="text-sm font-semibold text-gray-900">
+          <h2 class="text-sm font-semibold text-gray-900" i18n="@@invoiceDetailRecordPaymentTitle">
             Записать платёж
           </h2>
           <div
@@ -209,7 +209,7 @@
       <!-- ===== EDIT FORM ===== -->
       @if (editing()) {
         <div class="rounded-lg border border-gray-200 bg-white p-4">
-          <h2 i18n="@@invoiceDetailEditFormTitle" class="text-sm font-semibold text-gray-900">
+          <h2 class="text-sm font-semibold text-gray-900" i18n="@@invoiceDetailEditFormTitle">
             Редактировать счёт
           </h2>
           <div class="mt-3 grid max-w-lg grid-cols-1 gap-3 sm:grid-cols-2" [formGroup]="editForm">
@@ -266,40 +266,40 @@
       } @else {
         <!-- ===== INVOICE DETAILS CARD ===== -->
         <div class="rounded-lg border border-gray-200 bg-white p-4">
-          <h2 i18n="@@invoiceDetailCardTitle" class="text-sm font-semibold text-gray-900">
+          <h2 class="text-sm font-semibold text-gray-900" i18n="@@invoiceDetailCardTitle">
             Детали счёта
           </h2>
           <dl class="mt-3 grid grid-cols-1 gap-x-6 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
             <div>
-              <dt i18n="@@invoiceDetailClientLabel" class="text-gray-500">Клиент</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailClientLabel">Клиент</dt>
               <dd class="font-medium text-gray-900">{{ clientName() }}</dd>
             </div>
             <div>
-              <dt i18n="@@invoiceDetailClientTypeLabel" class="text-gray-500">Тип клиента</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailClientTypeLabel">Тип клиента</dt>
               <dd class="text-gray-900">{{ inv.clientType ?? '—' }}</dd>
             </div>
             <div>
-              <dt i18n="@@invoiceDetailInvoiceDateLabel" class="text-gray-500">Дата счёта</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailInvoiceDateLabel">Дата счёта</dt>
               <dd class="text-gray-900">{{ formatDateOnly(inv.invoiceDate) }}</dd>
             </div>
             <div>
-              <dt i18n="@@invoiceDetailDueDateLabel" class="text-gray-500">Срок оплаты</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailDueDateLabel">Срок оплаты</dt>
               <dd class="text-gray-900">{{ formatDateOnly(inv.dueDate) }}</dd>
             </div>
             <div>
-              <dt i18n="@@invoiceDetailCurrencyLabel" class="text-gray-500">Валюта</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailCurrencyLabel">Валюта</dt>
               <dd class="text-gray-900">{{ inv.currency }}</dd>
             </div>
             <div>
-              <dt i18n="@@invoiceDetailLanguageLabel" class="text-gray-500">Язык</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailLanguageLabel">Язык</dt>
               <dd class="text-gray-900">{{ inv.language || '—' }}</dd>
             </div>
             <div>
-              <dt i18n="@@invoiceDetailPaymentTermsLabel" class="text-gray-500">Условия оплаты</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailPaymentTermsLabel">Условия оплаты</dt>
               <dd class="text-gray-900">{{ inv.paymentTerms || '—' }}</dd>
             </div>
             <div>
-              <dt i18n="@@invoiceDetailBookingLabel" class="text-gray-500">Бронирование</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailBookingLabel">Бронирование</dt>
               <dd>
                 @if (inv.bookingId) {
                   <a class="text-primary underline" [routerLink]="['/app/bookings', inv.bookingId]">
@@ -312,7 +312,7 @@
             </div>
             @if (inv.cancellationReason) {
               <div class="sm:col-span-2 lg:col-span-3">
-                <dt i18n="@@invoiceDetailCancellationReasonLabel" class="text-gray-500">
+                <dt class="text-gray-500" i18n="@@invoiceDetailCancellationReasonLabel">
                   Причина отмены
                 </dt>
                 <dd class="text-red-700">{{ inv.cancellationReason }}</dd>
@@ -320,7 +320,7 @@
             }
             @if (inv.internalNotes) {
               <div class="sm:col-span-2 lg:col-span-3">
-                <dt i18n="@@invoiceDetailInternalNotesLabel" class="text-gray-500">
+                <dt class="text-gray-500" i18n="@@invoiceDetailInternalNotesLabel">
                   Внутренние заметки
                 </dt>
                 <dd class="text-gray-900">{{ inv.internalNotes }}</dd>
@@ -332,7 +332,7 @@
 
       <!-- ===== LINE ITEMS TABLE ===== -->
       <div class="rounded-lg border border-gray-200 bg-white p-4">
-        <h2 i18n="@@invoiceDetailLineItemsTitle" class="mb-3 text-sm font-semibold text-gray-900">
+        <h2 class="mb-3 text-sm font-semibold text-gray-900" i18n="@@invoiceDetailLineItemsTitle">
           Позиции
         </h2>
         @if (lineItems().length > 0) {
@@ -341,9 +341,9 @@
               <!-- description -->
               <ng-container matColumnDef="description">
                 <mat-header-cell
-                  i18n="@@invoiceDetailColDescription"
                   *matHeaderCellDef
                   class="text-xs font-medium text-gray-500"
+                  i18n="@@invoiceDetailColDescription"
                 >
                   Описание
                 </mat-header-cell>
@@ -355,9 +355,9 @@
               <!-- serviceDates -->
               <ng-container matColumnDef="serviceDates">
                 <mat-header-cell
-                  i18n="@@invoiceDetailColServiceDates"
                   *matHeaderCellDef
                   class="text-xs font-medium text-gray-500"
+                  i18n="@@invoiceDetailColServiceDates"
                 >
                   Даты услуги
                 </mat-header-cell>
@@ -369,9 +369,9 @@
               <!-- travelers -->
               <ng-container matColumnDef="travelers">
                 <mat-header-cell
-                  i18n="@@invoiceDetailColTravelers"
                   *matHeaderCellDef
                   class="text-xs font-medium text-gray-500"
+                  i18n="@@invoiceDetailColTravelers"
                 >
                   Туристы
                 </mat-header-cell>
@@ -383,9 +383,9 @@
               <!-- unitPrice (standard) -->
               <ng-container matColumnDef="unitPrice">
                 <mat-header-cell
-                  i18n="@@invoiceDetailColUnitPrice"
                   *matHeaderCellDef
                   class="text-xs font-medium text-gray-500"
+                  i18n="@@invoiceDetailColUnitPrice"
                 >
                   Цена за ед.
                 </mat-header-cell>
@@ -397,9 +397,9 @@
               <!-- quantity (standard) -->
               <ng-container matColumnDef="quantity">
                 <mat-header-cell
-                  i18n="@@invoiceDetailColQuantity"
                   *matHeaderCellDef
                   class="text-xs font-medium text-gray-500"
+                  i18n="@@invoiceDetailColQuantity"
                 >
                   Кол-во
                 </mat-header-cell>
@@ -411,9 +411,9 @@
               <!-- total (standard) -->
               <ng-container matColumnDef="total">
                 <mat-header-cell
-                  i18n="@@invoiceDetailColTotal"
                   *matHeaderCellDef
                   class="text-xs font-medium text-gray-500"
+                  i18n="@@invoiceDetailColTotal"
                 >
                   Итого
                 </mat-header-cell>
@@ -425,9 +425,9 @@
               <!-- tourCost (B2B) -->
               <ng-container matColumnDef="tourCost">
                 <mat-header-cell
-                  i18n="@@invoiceDetailColTourCost"
                   *matHeaderCellDef
                   class="text-xs font-medium text-gray-500"
+                  i18n="@@invoiceDetailColTourCost"
                 >
                   Стоимость тура
                 </mat-header-cell>
@@ -439,9 +439,9 @@
               <!-- commissionAmount (B2B) -->
               <ng-container matColumnDef="commissionAmount">
                 <mat-header-cell
-                  i18n="@@invoiceDetailColCommission"
                   *matHeaderCellDef
                   class="text-xs font-medium text-gray-500"
+                  i18n="@@invoiceDetailColCommission"
                 >
                   Комиссия
                 </mat-header-cell>
@@ -453,9 +453,9 @@
               <!-- commissionVat (B2B) -->
               <ng-container matColumnDef="commissionVat">
                 <mat-header-cell
-                  i18n="@@invoiceDetailColCommissionVat"
                   *matHeaderCellDef
                   class="text-xs font-medium text-gray-500"
+                  i18n="@@invoiceDetailColCommissionVat"
                 >
                   НДС комиссии
                 </mat-header-cell>
@@ -467,9 +467,9 @@
               <!-- netToPay (B2B) -->
               <ng-container matColumnDef="netToPay">
                 <mat-header-cell
-                  i18n="@@invoiceDetailColNetToPay"
                   *matHeaderCellDef
                   class="text-xs font-medium text-gray-500"
+                  i18n="@@invoiceDetailColNetToPay"
                 >
                   К оплате
                 </mat-header-cell>
@@ -483,25 +483,25 @@
             </mat-table>
           </div>
         } @else {
-          <p i18n="@@invoiceDetailNoLineItems" class="text-sm text-gray-500">Нет позиций.</p>
+          <p class="text-sm text-gray-500" i18n="@@invoiceDetailNoLineItems">Нет позиций.</p>
         }
       </div>
 
       <!-- ===== PRICING BLOCK ===== -->
       <div class="rounded-lg border border-gray-200 bg-white p-4">
-        <h2 i18n="@@invoiceDetailPricingTitle" class="mb-3 text-sm font-semibold text-gray-900">
+        <h2 class="mb-3 text-sm font-semibold text-gray-900" i18n="@@invoiceDetailPricingTitle">
           Итоговая стоимость
         </h2>
         <dl class="space-y-1 text-sm">
           <div class="flex justify-between">
-            <dt i18n="@@invoiceDetailSubtotalLabel" class="text-gray-500">Подытог</dt>
+            <dt class="text-gray-500" i18n="@@invoiceDetailSubtotalLabel">Подытог</dt>
             <dd class="text-gray-900">
               {{ inv.subtotal ?? 0 | number: '1.2-2' }} {{ inv.currency }}
             </dd>
           </div>
           @if (inv.discountAmount && inv.discountAmount !== 0) {
             <div class="flex justify-between">
-              <dt i18n="@@invoiceDetailDiscountLabel" class="text-gray-500">Скидка</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailDiscountLabel">Скидка</dt>
               <dd class="text-green-700">
                 −{{ inv.discountAmount | number: '1.2-2' }} {{ inv.currency }}
               </dd>
@@ -509,14 +509,14 @@
           }
           @if (isB2bAgent() && inv.commissionVatAmount && inv.commissionVatAmount !== 0) {
             <div class="flex justify-between">
-              <dt i18n="@@invoiceDetailCommissionVatLabel" class="text-gray-500">НДС с комиссии</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailCommissionVatLabel">НДС с комиссии</dt>
               <dd class="text-gray-900">
                 {{ inv.commissionVatAmount | number: '1.2-2' }} {{ inv.currency }}
               </dd>
             </div>
           }
           <div class="flex justify-between border-t border-gray-200 pt-2 font-medium">
-            <dt i18n="@@invoiceDetailTotalLabel" class="text-gray-900">Итого</dt>
+            <dt class="text-gray-900" i18n="@@invoiceDetailTotalLabel">Итого</dt>
             <dd class="text-gray-900">{{ inv.total ?? 0 | number: '1.2-2' }} {{ inv.currency }}</dd>
           </div>
         </dl>
@@ -525,7 +525,7 @@
       <!-- ===== AMOUNT IN WORDS ===== -->
       @if (inv.status !== 'DRAFT' && inv.amountInWords) {
         <div class="rounded-lg border border-gray-200 bg-white p-4">
-          <p i18n="@@invoiceDetailAmountInWordsLabel" class="text-sm text-gray-500">
+          <p class="text-sm text-gray-500" i18n="@@invoiceDetailAmountInWordsLabel">
             Сумма прописью
           </p>
           <p class="mt-1 text-sm font-medium text-gray-900">{{ inv.amountInWords }}</p>
@@ -534,7 +534,7 @@
 
       <!-- ===== PAYMENTS SECTION ===== -->
       <div class="rounded-lg border border-gray-200 bg-white p-4">
-        <h2 i18n="@@invoiceDetailPaymentsTitle" class="mb-3 text-sm font-semibold text-gray-900">
+        <h2 class="mb-3 text-sm font-semibold text-gray-900" i18n="@@invoiceDetailPaymentsTitle">
           Платежи
         </h2>
         @if (payments().length > 0) {
@@ -559,8 +559,8 @@
                 </div>
                 @if (canDeletePayment()) {
                   <button
-                    i18n="@@invoiceDetailBtnDeletePayment"
                     color="warn"
+                    i18n="@@invoiceDetailBtnDeletePayment"
                     mat-button
                     type="button"
                     [disabled]="actionLoading()"
@@ -575,13 +575,13 @@
           </ul>
           <div class="mt-3 border-t border-gray-200 pt-3 space-y-1 text-sm">
             <div class="flex justify-between">
-              <span i18n="@@invoiceDetailPaidLabel" class="text-gray-500">Оплачено:</span>
+              <span class="text-gray-500" i18n="@@invoiceDetailPaidLabel">Оплачено:</span>
               <span class="font-medium text-gray-900">
                 {{ paidAmount() | number: '1.2-2' }} {{ inv.currency }}
               </span>
             </div>
             <div class="flex justify-between">
-              <span i18n="@@invoiceDetailRemainingLabel" class="text-gray-500">Остаток:</span>
+              <span class="text-gray-500" i18n="@@invoiceDetailRemainingLabel">Остаток:</span>
               <span
                 class="font-medium"
                 [class.text-green-700]="remainingAmount() <= 0"
@@ -592,18 +592,18 @@
             </div>
           </div>
         } @else {
-          <p i18n="@@invoiceDetailNoPayments" class="text-sm text-gray-500">Платежей нет.</p>
+          <p class="text-sm text-gray-500" i18n="@@invoiceDetailNoPayments">Платежей нет.</p>
         }
       </div>
 
       <!-- ===== ACTIVITY LOG ===== -->
       <app-activity-timeline
-        i18n-title="@@invoiceDetailActivityTitle"
         title="История изменений"
+        i18n-title="@@invoiceDetailActivityTitle"
         [items]="timelineItems()"
       />
     } @else {
-      <p i18n="@@invoiceDetailNotFound" class="text-sm text-gray-500">Счёт не найден.</p>
+      <p class="text-sm text-gray-500" i18n="@@invoiceDetailNotFound">Счёт не найден.</p>
     }
   }
 </div>
