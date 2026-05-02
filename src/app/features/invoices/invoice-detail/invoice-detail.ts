@@ -16,6 +16,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { InvoicePdfPreviewModalComponent } from '@app/features/invoices/invoice-pdf-preview-modal/invoice-pdf-preview-modal'; // eslint-disable-line max-len
 import { RecordPaymentModalComponent } from '@app/features/invoices/record-payment-modal/record-payment-modal';
 import { ActivitiesService } from '@app/services/activities.service';
 import { InvoicesService } from '@app/services/invoices.service';
@@ -388,6 +389,21 @@ export class InvoiceDetailComponent {
   }
 
   // ---- PDF ----
+
+  openPdfPreview(): void {
+    const inv = this.invoice();
+
+    if (!inv) {
+      return;
+    }
+
+    this.dialog.open(InvoicePdfPreviewModalComponent, {
+      data: { invoiceId: inv.id, invoiceNumber: inv.number },
+      width: '900px',
+      maxWidth: '95vw',
+      maxHeight: '95vh',
+    });
+  }
 
   downloadPdf(): void {
     const inv = this.invoice();

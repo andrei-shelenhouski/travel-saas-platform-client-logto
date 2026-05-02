@@ -33,6 +33,15 @@
 
         @if (!editing() && !cancelDialogOpen()) {
           <div class="flex flex-wrap items-center gap-2">
+            <button
+              i18n="@@invoiceDetailBtnPreviewPdf"
+              mat-stroked-button
+              type="button"
+              (click)="openPdfPreview()"
+            >
+              <mat-icon>preview</mat-icon>
+              Preview
+            </button>
             @if (hasAction('edit')) {
               <button
                 i18n="@@invoiceDetailBtnEdit"

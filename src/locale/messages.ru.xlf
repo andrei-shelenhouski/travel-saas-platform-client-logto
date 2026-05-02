@@ -2278,6 +2278,34 @@
         <source>Adults / Children</source>
         <target>Взрослых / Детей</target>
       </trans-unit>
+      <trans-unit id="invoiceDetailBtnPreviewPdf" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>preview<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Preview </source>
+        <target><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>preview<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Предварительный просмотр </target>
+      </trans-unit>
+      <trans-unit id="invoicePdfPreviewDialogTitle" datatype="html">
+        <source>Invoice <x id="INTERPOLATION" equiv-text="{{ data.invoiceNumber }}"/></source>
+        <target>Счёт №<x id="INTERPOLATION" equiv-text="{{ data.invoiceNumber }}"/></target>
+      </trans-unit>
+      <trans-unit id="invoicePdfDownloadButton" datatype="html">
+        <source> Download PDF </source>
+        <target> Скачать PDF </target>
+      </trans-unit>
+      <trans-unit id="invoicePdfPreviewCloseAria" datatype="html">
+        <source>Close PDF preview</source>
+        <target>Закрыть предпросмотр PDF</target>
+      </trans-unit>
+      <trans-unit id="invoicePdfPreviewRetryButton" datatype="html">
+        <source> Retry </source>
+        <target> Попробуйте ещё раз </target>
+      </trans-unit>
+      <trans-unit id="invoicePdfPreviewFrameTitle" datatype="html">
+        <source>Invoice PDF preview</source>
+        <target>Предпросмотр PDF счёта</target>
+      </trans-unit>
+      <trans-unit id="invoicePdfPreviewLoadError" datatype="html">
+        <source>Unable to load PDF. Please try again.</source>
+        <target>Не удалось загрузить PDF. Попробуйте ещё раз.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

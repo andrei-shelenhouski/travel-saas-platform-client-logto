@@ -1,0 +1,60 @@
+<h2 class="flex items-center justify-between gap-4" mat-dialog-title>
+  <span class="min-w-0 truncate" i18n="@@invoicePdfPreviewDialogTitle"
+    >Invoice {{ data.invoiceNumber }}</span
+  >
+  <div class="flex items-center gap-2">
+    <button
+      i18n="@@invoicePdfDownloadButton"
+      mat-stroked-button
+      type="button"
+      [disabled]="loading() || !!error()"
+      (click)="downloadPdf()"
+    >
+      Download PDF
+    </button>
+    <button
+      aria-label="Close PDF preview"
+      i18n-aria-label="@@invoicePdfPreviewCloseAria"
+      mat-icon-button
+      type="button"
+      (click)="close()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</h2>
+
+<mat-dialog-content>
+  <div class="pdf-container">
+    @if (loading()) {
+      <div aria-live="polite" class="pdf-state" role="status">
+        <div
+          aria-hidden="true"
+          class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+        ></div>
+      </div>
+    } @else if (error()) {
+      <div aria-live="assertive" class="pdf-state pdf-error" role="alert">
+        <span>{{ errorMessage() }}</span>
+        <button
+          class="mt-2"
+          i18n="@@invoicePdfPreviewRetryButton"
+          mat-stroked-button
+          type="button"
+          (click)="retry()"
+        >
+          Retry
+        </button>
+      </div>
+    } @else if (pdfUrl(); as currentPdfUrl) {
+      <div class="pdf-a4-frame">
+        <iframe
+          class="pdf-iframe"
+          title="Invoice PDF preview"
+          i18n-title="@@invoicePdfPreviewFrameTitle"
+          [src]="currentPdfUrl"
+        ></iframe>
+      </div>
+    }
+  </div>
+</mat-dialog-content>
