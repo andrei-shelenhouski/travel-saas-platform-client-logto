@@ -93,6 +93,7 @@ describe('InvoicePdfPreviewModalComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
+    invoicesServiceMock.getPdf.mockClear();
     invoicesServiceMock.getPdf.mockReturnValueOnce(
       of(new Blob(['pdf'], { type: 'application/pdf' })),
     );
@@ -104,7 +105,6 @@ describe('InvoicePdfPreviewModalComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    // 1 call from beforeEach fixture + 1 from this fixture's ngOnInit + 1 from retry()
-    expect(invoicesServiceMock.getPdf).toHaveBeenCalledTimes(3);
+    expect(invoicesServiceMock.getPdf).toHaveBeenCalledTimes(1);
   });
 });

@@ -16,7 +16,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { InvoicePdfPreviewModalComponent } from '@app/features/invoices/invoice-pdf-preview-modal/invoice-pdf-preview-modal'; // eslint-disable-line max-len
+import { InvoicePdfPreviewModalComponent } from '@app/features/invoices/invoice-pdf-preview-modal';
 import { RecordPaymentModalComponent } from '@app/features/invoices/record-payment-modal/record-payment-modal';
 import { ActivitiesService } from '@app/services/activities.service';
 import { InvoicesService } from '@app/services/invoices.service';
@@ -34,10 +34,10 @@ import type {
 } from '@app/shared/models';
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
-  BANK_TRANSFER: 'Банковский перевод',
-  CASH: 'Наличные',
-  CARD: 'Карта',
-  OTHER: 'Другое',
+  BANK_TRANSFER: 'Bank transfer',
+  CASH: 'Cash',
+  CARD: 'Card',
+  OTHER: 'Other',
 };
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
@@ -50,12 +50,12 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
 };
 
 const STATUS_LABELS: Record<string, string> = {
-  DRAFT: 'Черновик',
-  ISSUED: 'Выставлен',
-  PAID: 'Оплачен',
-  PARTIALLY_PAID: 'Частично оплачен',
-  OVERDUE: 'Просрочен',
-  CANCELLED: 'Отменён',
+  DRAFT: 'Draft',
+  ISSUED: 'Issued',
+  PAID: 'Paid',
+  PARTIALLY_PAID: 'Partially paid',
+  OVERDUE: 'Overdue',
+  CANCELLED: 'Cancelled',
 };
 
 @Component({
@@ -195,6 +195,10 @@ export class InvoiceDetailComponent {
   readonly deletePaymentConfirmOpen = signal(false);
   readonly pendingDeletePaymentId = signal<string | null>(null);
   readonly pendingDeletePaymentLabel = signal<string>('');
+  readonly deletePaymentMessage = computed(
+    () =>
+      $localize`:@@invoiceDetailDeletePaymentMessage:Delete payment of ${this.pendingDeletePaymentLabel()}:AMOUNT:? This action is irreversible.`,
+  );
 
   // ---- Forms ----
 

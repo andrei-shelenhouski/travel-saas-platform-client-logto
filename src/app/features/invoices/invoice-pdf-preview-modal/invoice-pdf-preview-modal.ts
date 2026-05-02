@@ -93,6 +93,7 @@ export class InvoicePdfPreviewModalComponent implements OnInit, OnDestroy {
           this.pdfUrl.set(this.sanitizer.bypassSecurityTrustResourceUrl(this.blobUrl));
         },
         error: () => {
+          this.revokeBlobUrl();
           this.error.set(true);
           this.pdfUrl.set(null);
         },
