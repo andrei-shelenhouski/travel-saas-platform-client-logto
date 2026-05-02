@@ -73,7 +73,7 @@ export class BookingDetailComponent {
 
       return forkJoin({
         booking: this.bookingsService.getById(id),
-        invoices: this.bookingsService.listInvoices(id),
+        invoices: this.bookingsService.listInvoices(id).pipe(map((response) => response.items)),
         documents: this.bookingsService.listDocuments(id),
       });
     },

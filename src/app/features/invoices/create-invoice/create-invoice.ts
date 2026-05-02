@@ -1,107 +1,871 @@
+import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
+import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
+import { debounceTime, distinctUntilChanged, map, of, startWith } from 'rxjs';
 
 import { BookingsService } from '@app/services/bookings.service';
+import { ClientsService } from '@app/services/clients.service';
 import { InvoicesService } from '@app/services/invoices.service';
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
-import { BookingStatus, ClientType } from '@app/shared/models';
+import { OrganizationSettingsService } from '@app/services/organization-settings.service';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { MAT_AUTOCOMPLETE, MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
+import { ClientType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
-import type { CreateInvoiceDto } from '@app/shared/models';
+import type {
+  BookingResponseDto,
+  ClientResponseDto,
+  ClientType as ClientTypeValue,
+  CreateInvoiceDto,
+  CreateInvoiceLineItemDto,
+  PaginatedClientResponseDto,
+} from '@app/shared/models';
+
+type InvoiceLineItemFormGroup = FormGroup<{
+  sortOrder: FormControl<number>;
+  description: FormControl<string>;
+  serviceDateFrom: FormControl<string>;
+  serviceDateTo: FormControl<string>;
+  travelers: FormControl<string>;
+  unitPrice: FormControl<number | null>;
+  quantity: FormControl<number>;
+  total: FormControl<number>;
+  tourCost: FormControl<number | null>;
+  commissionPct: FormControl<number | null>;
+  commissionAmount: FormControl<number | null>;
+  netToPay: FormControl<number>;
+  commissionVat: FormControl<number>;
+}>;
+
+type InvoiceFormGroup = FormGroup<{
+  bookingId: FormControl<string>;
+  clientId: FormControl<string>;
+  clientType: FormControl<ClientTypeValue>;
+  invoiceDate: FormControl<string>;
+  dueDate: FormControl<string>;
+  currency: FormControl<string>;
+  language: FormControl<string>;
+  paymentTerms: FormControl<string>;
+  internalNotes: FormControl<string>;
+  lineItems: FormArray<InvoiceLineItemFormGroup>;
+}>;
+
+const CURRENCY_OPTIONS = ['BYN', 'USD', 'EUR'] as const;
+const LANGUAGE_OPTIONS = ['RU', 'EN'] as const;
+
+const EMPTY_CLIENTS_PAGE: PaginatedClientResponseDto = {
+  items: [],
+  total: 0,
+  page: 1,
+  limit: 10,
+};
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-invoice',
-  imports: [RouterLink, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
+  imports: [
+    DragDropModule,
+    PageHeading,
+    RouterLink,
+    ReactiveFormsModule,
+    ...MAT_FORM_BUTTONS,
+    ...MAT_AUTOCOMPLETE,
+    ...MAT_ICONS,
+  ],
   templateUrl: './create-invoice.html',
   styleUrl: './create-invoice.scss',
 })
 export class CreateInvoiceComponent {
+  private readonly location = inject(Location);
+  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly bookingsService = inject(BookingsService);
+  private readonly clientsService = inject(ClientsService);
   private readonly invoicesService = inject(InvoicesService);
+  private readonly organizationSettingsService = inject(OrganizationSettingsService);
   private readonly toast = inject(ToastService);
   private readonly fb = inject(FormBuilder);
 
-  readonly saving = signal(false);
-  readonly error = signal('');
+  protected readonly saving = signal(false);
+  protected readonly loading = signal(true);
+  protected readonly error = signal('');
+  protected readonly clientTypeWarning = signal('');
+  protected readonly selectedClient = signal<ClientResponseDto | null>(null);
+  protected readonly selectedClientCommissionPct = signal<number | null>(null);
+  protected readonly defaultCommissionPct = signal<number | null>(null);
+  protected readonly booking = signal<BookingResponseDto | null>(null);
 
-  readonly form = this.fb.nonNullable.group({
-    bookingId: ['', Validators.required],
-    clientType: [ClientType.INDIVIDUAL, Validators.required],
-    invoiceDate: [new Date().toISOString().slice(0, 10), Validators.required],
-    amount: [0, [Validators.required, Validators.min(0.01)]],
-    currency: ['USD', Validators.required],
-    dueDate: [new Date().toISOString().slice(0, 10), Validators.required],
-  });
-
-  private readonly bookingsResource = rxResource({
-    stream: () =>
-      this.bookingsService.getList({
-        status: BookingStatus.CONFIRMED,
-        page: 1,
-        limit: 100,
+  protected readonly clientSearchControl = this.fb.nonNullable.control('');
+  protected readonly form: InvoiceFormGroup = this.fb.group(
+    {
+      bookingId: this.fb.nonNullable.control(''),
+      clientId: this.fb.nonNullable.control('', Validators.required),
+      clientType: this.fb.nonNullable.control<ClientTypeValue>(
+        ClientType.INDIVIDUAL,
+        Validators.required,
+      ),
+      invoiceDate: this.fb.nonNullable.control(this.todayIsoDate(), Validators.required),
+      dueDate: this.fb.nonNullable.control(this.todayIsoDate(), Validators.required),
+      currency: this.fb.nonNullable.control('EUR', Validators.required),
+      language: this.fb.nonNullable.control('EN', Validators.required),
+      paymentTerms: this.fb.nonNullable.control(''),
+      internalNotes: this.fb.nonNullable.control(''),
+      lineItems: this.fb.array<InvoiceLineItemFormGroup>([], {
+        validators: [this.minLineItemsValidator],
       }),
+    },
+    { validators: [this.dueDateAfterInvoiceDateValidator] },
+  );
+
+  private readonly clientSearchQuery = toSignal(
+    this.clientSearchControl.valueChanges.pipe(
+      startWith(this.clientSearchControl.getRawValue()),
+      debounceTime(250),
+      distinctUntilChanged(),
+      map((value) => value.trim()),
+    ),
+    { initialValue: '' },
+  );
+
+  private readonly clientsResource = rxResource({
+    params: () => this.clientSearchQuery(),
+    stream: ({ params }) => {
+      if (params.length < 2) {
+        return of(EMPTY_CLIENTS_PAGE);
+      }
+
+      return this.clientsService.getList({ search: params, page: 1, limit: 10 });
+    },
   });
 
-  readonly bookings = computed(() => this.bookingsResource.value()?.items ?? []);
-  readonly bookingsLoading = computed(() => this.bookingsResource.isLoading());
+  protected readonly clientOptions = computed(() => this.clientsResource.value()?.items ?? []);
+  protected readonly clientOptionsLoading = computed(() => this.clientsResource.isLoading());
 
-  onSubmit(): void {
+  protected readonly isB2bMode = computed(
+    () => this.form.controls.clientType.value === ClientType.B2B_AGENT,
+  );
+  protected readonly currencyOptions = CURRENCY_OPTIONS;
+  protected readonly languageOptions = LANGUAGE_OPTIONS;
+
+  constructor() {
+    this.loadDefaults();
+    this.loadBookingFromQuery();
+
+    if (this.lineItemsArray.length === 0) {
+      this.resetLineItems();
+    }
+
+    this.form.controls.clientType.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
+      this.applyLineItemModeValidators();
+
+      for (let index = 0; index < this.lineItemsArray.length; index++) {
+        this.recalculateRow(index);
+      }
+    });
+
+    this.clientSearchControl.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
+      const selectedClient = this.selectedClient();
+
+      if (selectedClient === null) {
+        return;
+      }
+
+      const typedValue = value.trim().toLowerCase();
+      const selectedValue = this.clientDisplayName(selectedClient).trim().toLowerCase();
+
+      if (typedValue === selectedValue) {
+        return;
+      }
+
+      this.selectedClient.set(null);
+      this.form.controls.clientId.setValue('');
+    });
+  }
+
+  protected get lineItemsArray(): FormArray<InvoiceLineItemFormGroup> {
+    return this.form.controls.lineItems;
+  }
+
+  hasUnsavedChanges(): boolean {
+    return this.form.dirty && !this.saving();
+  }
+
+  protected onClientSelected(client: ClientResponseDto): void {
+    this.clientTypeWarning.set('');
+    this.form.controls.clientId.setValue(client.id);
+    this.clientSearchControl.setValue(this.clientDisplayName(client), { emitEvent: false });
+
+    this.applyClientDetails(client);
+    this.loadClientById(client.id);
+  }
+
+  protected onClientOptionSelected(event: MatAutocompleteSelectedEvent): void {
+    const selectedName = String(event.option.value ?? '')
+      .trim()
+      .toLowerCase();
+    const option = this.clientOptions().find((client) => {
+      return this.clientDisplayName(client).trim().toLowerCase() === selectedName;
+    });
+
+    if (option) {
+      this.onClientSelected(option);
+    }
+  }
+
+  protected onClientSearchBlur(): void {
+    const rawClientId = this.form.controls.clientId.getRawValue();
+    const rawSearch = this.clientSearchControl.getRawValue().trim();
+
+    if (rawSearch.length === 0) {
+      this.selectedClient.set(null);
+      this.form.controls.clientId.setValue('');
+
+      return;
+    }
+
+    if (rawClientId.length > 0) {
+      return;
+    }
+
+    const exactMatch = this.clientOptions().find((client) => {
+      return this.clientDisplayName(client).trim().toLowerCase() === rawSearch.toLowerCase();
+    });
+
+    if (exactMatch) {
+      this.onClientSelected(exactMatch);
+
+      return;
+    }
+
+    if (this.clientOptions().length === 1) {
+      this.onClientSelected(this.clientOptions()[0]);
+
+      return;
+    }
+
+    this.clientsService.getList({ search: rawSearch, page: 1, limit: 10 }).subscribe({
+      next: (response) => {
+        const exactServerMatch = response.items.find((client) => {
+          return this.clientDisplayName(client).trim().toLowerCase() === rawSearch.toLowerCase();
+        });
+
+        if (exactServerMatch) {
+          this.onClientSelected(exactServerMatch);
+
+          return;
+        }
+
+        if (response.items.length === 1) {
+          this.onClientSelected(response.items[0]);
+
+          return;
+        }
+
+        this.selectedClient.set(null);
+        this.form.controls.clientId.setValue('');
+        this.clientSearchControl.setValue('');
+      },
+      error: () => {
+        this.selectedClient.set(null);
+        this.form.controls.clientId.setValue('');
+        this.clientSearchControl.setValue('');
+      },
+    });
+  }
+
+  protected addLineItem(): void {
+    this.lineItemsArray.push(this.createLineItemGroup(this.lineItemsArray.length));
+    this.syncLineItemSortOrder();
+    this.form.markAsDirty();
+  }
+
+  protected removeLineItem(index: number): void {
+    if (this.lineItemsArray.length <= 1) {
+      return;
+    }
+
+    this.lineItemsArray.removeAt(index);
+    this.syncLineItemSortOrder();
+    this.form.markAsDirty();
+  }
+
+  protected dropLineItem(event: CdkDragDrop<InvoiceLineItemFormGroup[]>): void {
+    if (event.previousIndex === event.currentIndex) {
+      return;
+    }
+
+    const moved = this.lineItemsArray.at(event.previousIndex);
+
+    this.lineItemsArray.removeAt(event.previousIndex);
+    this.lineItemsArray.insert(event.currentIndex, moved);
+    this.syncLineItemSortOrder();
+    this.form.markAsDirty();
+  }
+
+  protected onStandardItemInput(index: number): void {
+    const row = this.lineItemsArray.at(index);
+
+    if (!row) {
+      return;
+    }
+
+    const total =
+      this.toSafeNumber(row.controls.unitPrice.value) *
+      this.toSafeNumber(row.controls.quantity.value);
+
+    row.controls.total.setValue(total);
+  }
+
+  protected onB2bCommissionPctInput(index: number): void {
+    const row = this.lineItemsArray.at(index);
+
+    if (!row) {
+      return;
+    }
+
+    const tourCost = this.toSafeNumber(row.controls.tourCost.value);
+    const commissionPct = Math.min(
+      100,
+      Math.max(0, this.toSafeNumber(row.controls.commissionPct.value)),
+    );
+    const commissionAmount = (tourCost * commissionPct) / 100;
+
+    row.controls.commissionPct.setValue(commissionPct);
+    row.controls.commissionAmount.setValue(commissionAmount);
+
+    this.updateB2bCalculatedFields(row);
+    this.form.markAsDirty();
+  }
+
+  protected onB2bCommissionAmountInput(index: number): void {
+    const row = this.lineItemsArray.at(index);
+
+    if (!row) {
+      return;
+    }
+
+    const tourCost = this.toSafeNumber(row.controls.tourCost.value);
+    const commissionAmount = Math.max(0, this.toSafeNumber(row.controls.commissionAmount.value));
+    const commissionPct = tourCost > 0 ? (commissionAmount / tourCost) * 100 : 0;
+
+    row.controls.commissionAmount.setValue(commissionAmount);
+    row.controls.commissionPct.setValue(commissionPct);
+
+    this.updateB2bCalculatedFields(row);
+    this.form.markAsDirty();
+  }
+
+  protected onB2bTourCostInput(index: number): void {
+    const row = this.lineItemsArray.at(index);
+
+    if (!row) {
+      return;
+    }
+
+    const commissionPct = row.controls.commissionPct.value;
+
+    if (commissionPct !== null) {
+      this.onB2bCommissionPctInput(index);
+
+      return;
+    }
+
+    this.onB2bCommissionAmountInput(index);
+  }
+
+  protected onSubmit(): void {
     this.error.set('');
-    const v = this.form.getRawValue();
-    const bid = v.bookingId.trim();
-    const booking = this.bookings().find((item) => item.id === bid);
 
-    if (!bid || !booking) {
-      this.error.set('Please select a booking.');
+    if (this.saving()) {
+      return;
+    }
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
 
       return;
     }
 
-    if (!booking.clientId) {
-      this.error.set('Selected booking has no client.');
-
-      return;
-    }
+    const dto = this.buildCreateInvoiceDto();
 
     this.saving.set(true);
-
-    const dto: CreateInvoiceDto = {
-      clientId: booking.clientId,
-      clientType: v.clientType,
-      bookingId: bid,
-      invoiceDate: v.invoiceDate,
-      dueDate: v.dueDate,
-      currency: v.currency.trim().toUpperCase(),
-      lineItems: [
-        {
-          description: 'Travel services',
-          quantity: 1,
-          unitPrice: v.amount,
-          tourCost: v.amount,
-        },
-      ],
-    };
-
     this.invoicesService.create(dto).subscribe({
       next: (created) => {
-        this.toast.showSuccess('Invoice created');
+        this.form.markAsPristine();
+        this.toast.showSuccess('Invoice draft saved');
         this.router.navigate(['/app/invoices', created.id]);
       },
       error: (err) => {
         this.error.set(err.error?.message ?? err.message ?? 'Failed to create invoice');
+        this.saving.set(false);
       },
       complete: () => this.saving.set(false),
     });
   }
 
-  formatDate(iso: string): string {
-    try {
-      return new Date(iso).toLocaleDateString(undefined, { dateStyle: 'medium' });
-    } catch {
-      return iso;
+  protected onCancel(): void {
+    this.location.back();
+  }
+
+  protected clientDisplayName(client: ClientResponseDto): string {
+    if (client.type === ClientType.COMPANY && client.companyName) {
+      return client.companyName;
     }
+
+    return client.fullName ?? client.companyName ?? client.id;
+  }
+
+  protected trackByClientId(_: number, client: ClientResponseDto): string {
+    return client.id;
+  }
+
+  protected formatAmount(amount: number): string {
+    return new Intl.NumberFormat(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(amount);
+  }
+
+  protected pricingSummary(): {
+    subtotal: number;
+    total: number;
+    totalCommission: number;
+    totalVat: number;
+  } {
+    const lineItems = this.lineItemsArray.controls.map((row) => row.getRawValue());
+
+    if (this.form.controls.clientType.value === ClientType.B2B_AGENT) {
+      const totalCommission = lineItems.reduce((sum, item) => {
+        return sum + this.toSafeNumber(item.commissionAmount);
+      }, 0);
+      const subtotal = lineItems.reduce((sum, item) => {
+        return sum + this.toSafeNumber(item.netToPay);
+      }, 0);
+      const totalVat = lineItems.reduce((sum, item) => {
+        return sum + this.toSafeNumber(item.commissionVat);
+      }, 0);
+
+      return {
+        subtotal,
+        total: subtotal,
+        totalCommission,
+        totalVat,
+      };
+    }
+
+    const subtotal = lineItems.reduce((sum, item) => {
+      return sum + this.toSafeNumber(item.total);
+    }, 0);
+
+    return {
+      subtotal,
+      total: subtotal,
+      totalCommission: 0,
+      totalVat: 0,
+    };
+  }
+
+  private loadDefaults(): void {
+    this.organizationSettingsService.get().subscribe({
+      next: (settings) => {
+        const currency =
+          settings.defaultCurrency && CURRENCY_OPTIONS.includes(settings.defaultCurrency)
+            ? settings.defaultCurrency
+            : 'EUR';
+        const language =
+          settings.defaultLanguage && LANGUAGE_OPTIONS.includes(settings.defaultLanguage)
+            ? settings.defaultLanguage
+            : 'EN';
+
+        this.defaultCommissionPct.set(settings.defaultCommissionPct ?? null);
+        this.form.patchValue({
+          currency,
+          language,
+          paymentTerms: settings.defaultPaymentTerms ?? '',
+        });
+
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+      },
+    });
+  }
+
+  private loadBookingFromQuery(): void {
+    const bookingId = this.route.snapshot.queryParamMap.get('bookingId');
+
+    if (bookingId === null) {
+      return;
+    }
+
+    this.form.controls.bookingId.setValue(bookingId);
+    this.bookingsService.getById(bookingId).subscribe({
+      next: (booking) => {
+        this.booking.set(booking);
+
+        if (booking.clientId) {
+          this.form.controls.clientId.setValue(booking.clientId);
+          this.loadClientById(booking.clientId, true);
+        }
+
+        this.prefillLineItemsFromBooking(booking);
+        this.form.markAsPristine();
+      },
+      error: (err) => {
+        this.error.set(err.error?.message ?? err.message ?? 'Failed to load booking data');
+      },
+    });
+  }
+
+  private loadClientById(clientId: string, prefillFromBooking = false): void {
+    this.clientsService.getById(clientId).subscribe({
+      next: (client) => {
+        this.clientSearchControl.setValue(this.clientDisplayName(client), { emitEvent: false });
+        this.applyClientDetails(client, prefillFromBooking);
+      },
+      error: (err) => {
+        this.error.set(err.error?.message ?? err.message ?? 'Failed to load client details');
+      },
+    });
+  }
+
+  private applyClientDetails(client: ClientResponseDto, prefillFromBooking = false): void {
+    const previousType = this.form.controls.clientType.value;
+    const nextType = this.normalizeClientType(client.type);
+    const shouldResetRows =
+      previousType !== nextType && (this.hasMeaningfulLineItems() || prefillFromBooking);
+
+    this.selectedClient.set(client);
+    this.selectedClientCommissionPct.set(client.commissionPct ?? this.defaultCommissionPct());
+    this.form.controls.clientType.setValue(nextType);
+
+    if (shouldResetRows) {
+      this.clientTypeWarning.set(
+        'Client type changed. Existing invoice lines were cleared and rebuilt for the selected type.',
+      );
+      this.resetLineItems();
+    }
+
+    if (nextType === ClientType.B2B_AGENT) {
+      this.applyDefaultCommissionPctToRows();
+    }
+
+    if (prefillFromBooking && this.booking()) {
+      this.prefillLineItemsFromBooking(this.booking() as BookingResponseDto);
+    }
+
+    if (!prefillFromBooking) {
+      this.form.markAsDirty();
+    }
+  }
+
+  private applyDefaultCommissionPctToRows(): void {
+    const defaultPct = this.selectedClientCommissionPct();
+
+    if (defaultPct === null) {
+      return;
+    }
+
+    for (const row of this.lineItemsArray.controls) {
+      if (row.controls.commissionPct.value === null) {
+        row.controls.commissionPct.setValue(defaultPct);
+      }
+    }
+  }
+
+  private prefillLineItemsFromBooking(booking: BookingResponseDto): void {
+    if (this.lineItemsArray.length === 0) {
+      this.resetLineItems();
+    }
+
+    const row = this.lineItemsArray.at(0);
+
+    if (!row) {
+      return;
+    }
+
+    const travelersLabel = `${booking.adults ?? 0} adults, ${booking.children ?? 0} children`;
+    const description = booking.destination?.trim().length
+      ? `Travel services: ${booking.destination}`
+      : 'Travel services';
+
+    row.patchValue(
+      {
+        description,
+        serviceDateFrom: booking.departDate ?? '',
+        serviceDateTo: booking.returnDate ?? '',
+        travelers: travelersLabel,
+      },
+      { emitEvent: false },
+    );
+
+    this.recalculateRow(0);
+  }
+
+  private resetLineItems(): void {
+    this.lineItemsArray.clear();
+    this.lineItemsArray.push(this.createLineItemGroup(0));
+    this.syncLineItemSortOrder();
+    this.applyLineItemModeValidators();
+  }
+
+  private createLineItemGroup(sortOrder: number): InvoiceLineItemFormGroup {
+    const group: InvoiceLineItemFormGroup = this.fb.group({
+      sortOrder: this.fb.nonNullable.control(sortOrder),
+      description: this.fb.nonNullable.control('', Validators.required),
+      serviceDateFrom: this.fb.nonNullable.control(''),
+      serviceDateTo: this.fb.nonNullable.control(''),
+      travelers: this.fb.nonNullable.control(''),
+      unitPrice: this.fb.control<number | null>(null),
+      quantity: this.fb.nonNullable.control(1),
+      total: this.fb.nonNullable.control({ value: 0, disabled: true }),
+      tourCost: this.fb.control<number | null>(null),
+      commissionPct: this.fb.control<number | null>(this.selectedClientCommissionPct()),
+      commissionAmount: this.fb.control<number | null>(null),
+      netToPay: this.fb.nonNullable.control({ value: 0, disabled: true }),
+      commissionVat: this.fb.nonNullable.control({ value: 0, disabled: true }),
+    });
+
+    this.applyRowValidators(group);
+
+    return group;
+  }
+
+  private applyLineItemModeValidators(): void {
+    for (const row of this.lineItemsArray.controls) {
+      this.applyRowValidators(row);
+    }
+
+    this.lineItemsArray.updateValueAndValidity({ emitEvent: false });
+  }
+
+  private applyRowValidators(row: InvoiceLineItemFormGroup): void {
+    const isB2bMode = this.form.controls.clientType.value === ClientType.B2B_AGENT;
+
+    if (isB2bMode) {
+      row.controls.unitPrice.clearValidators();
+      row.controls.quantity.clearValidators();
+      row.controls.tourCost.setValidators([Validators.required, Validators.min(0.01)]);
+      row.controls.commissionPct.setValidators([Validators.min(0), Validators.max(100)]);
+      row.controls.commissionAmount.setValidators([
+        Validators.min(0),
+        this.commissionNotGreaterThanTourCostValidator(),
+      ]);
+    } else {
+      row.controls.unitPrice.setValidators([Validators.required, Validators.min(0.01)]);
+      row.controls.quantity.setValidators([Validators.required, Validators.min(1)]);
+      row.controls.tourCost.clearValidators();
+      row.controls.commissionPct.clearValidators();
+      row.controls.commissionAmount.clearValidators();
+    }
+
+    row.controls.unitPrice.updateValueAndValidity({ emitEvent: false });
+    row.controls.quantity.updateValueAndValidity({ emitEvent: false });
+    row.controls.tourCost.updateValueAndValidity({ emitEvent: false });
+    row.controls.commissionPct.updateValueAndValidity({ emitEvent: false });
+    row.controls.commissionAmount.updateValueAndValidity({ emitEvent: false });
+  }
+
+  private commissionNotGreaterThanTourCostValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const parent = control.parent as InvoiceLineItemFormGroup | null;
+
+      if (parent === null) {
+        return null;
+      }
+
+      const tourCost = this.toSafeNumber(parent.controls.tourCost.value);
+      const commissionAmount = this.toSafeNumber(control.value);
+
+      if (commissionAmount <= tourCost) {
+        return null;
+      }
+
+      return { commissionExceedsTourCost: true };
+    };
+  }
+
+  private dueDateAfterInvoiceDateValidator(control: AbstractControl): ValidationErrors | null {
+    if (!(control instanceof FormGroup)) {
+      return null;
+    }
+
+    const invoiceDate = String(control.get('invoiceDate')?.value ?? '');
+    const dueDate = String(control.get('dueDate')?.value ?? '');
+
+    if (!invoiceDate || !dueDate) {
+      return null;
+    }
+
+    if (dueDate >= invoiceDate) {
+      return null;
+    }
+
+    return { dueDateBeforeInvoiceDate: true };
+  }
+
+  private minLineItemsValidator(control: AbstractControl): ValidationErrors | null {
+    if (!(control instanceof FormArray)) {
+      return null;
+    }
+
+    if (control.length > 0) {
+      return null;
+    }
+
+    return { minItems: true };
+  }
+
+  private recalculateRow(index: number): void {
+    if (this.form.controls.clientType.value === ClientType.B2B_AGENT) {
+      this.onB2bTourCostInput(index);
+
+      return;
+    }
+
+    this.onStandardItemInput(index);
+  }
+
+  private updateB2bCalculatedFields(row: InvoiceLineItemFormGroup): void {
+    const tourCost = this.toSafeNumber(row.controls.tourCost.value);
+    const commissionAmount = this.toSafeNumber(row.controls.commissionAmount.value);
+    const normalizedCommissionAmount = Math.max(0, commissionAmount);
+    const netToPay = Math.max(0, tourCost - normalizedCommissionAmount);
+    const commissionVat = normalizedCommissionAmount * 0.2;
+
+    row.controls.commissionAmount.updateValueAndValidity();
+    row.controls.netToPay.setValue(netToPay);
+    row.controls.commissionVat.setValue(commissionVat);
+  }
+
+  private buildCreateInvoiceDto(): CreateInvoiceDto {
+    const value = this.form.getRawValue();
+    const lineItems = value.lineItems.map((row, index) => this.mapLineItemForDto(row, index));
+
+    const dto: CreateInvoiceDto = {
+      clientId: value.clientId,
+      clientType: value.clientType,
+      invoiceDate: value.invoiceDate,
+      dueDate: value.dueDate,
+      currency: value.currency,
+      language: value.language,
+      lineItems,
+    };
+
+    const bookingId = value.bookingId.trim();
+    const paymentTerms = value.paymentTerms.trim();
+    const internalNotes = value.internalNotes.trim();
+
+    if (bookingId.length > 0) {
+      dto.bookingId = bookingId;
+    }
+
+    if (paymentTerms.length > 0) {
+      dto.paymentTerms = paymentTerms;
+    }
+
+    if (internalNotes.length > 0) {
+      dto.internalNotes = internalNotes;
+    }
+
+    return dto;
+  }
+
+  private mapLineItemForDto(
+    row: ReturnType<InvoiceFormGroup['getRawValue']>['lineItems'][number],
+    index: number,
+  ): CreateInvoiceLineItemDto {
+    const isB2bMode = this.form.controls.clientType.value === ClientType.B2B_AGENT;
+    const dto: CreateInvoiceLineItemDto = {
+      sortOrder: index,
+      description: row.description.trim(),
+      serviceDateFrom: row.serviceDateFrom || undefined,
+      serviceDateTo: row.serviceDateTo || undefined,
+      travelers: row.travelers.trim() || undefined,
+    };
+
+    if (isB2bMode) {
+      dto.tourCost = this.toSafeNumber(row.tourCost);
+      dto.commissionAmount = this.toSafeNumber(row.commissionAmount);
+    } else {
+      const unitPrice = this.toSafeNumber(row.unitPrice);
+      const quantity = Math.max(1, this.toSafeNumber(row.quantity));
+
+      dto.unitPrice = unitPrice;
+      dto.quantity = quantity;
+      dto.tourCost = unitPrice * quantity;
+    }
+
+    return dto;
+  }
+
+  private syncLineItemSortOrder(): void {
+    this.lineItemsArray.controls.forEach((row, index) => {
+      row.controls.sortOrder.setValue(index, { emitEvent: false });
+    });
+
+    this.lineItemsArray.updateValueAndValidity({ emitEvent: false });
+  }
+
+  private hasMeaningfulLineItems(): boolean {
+    for (const row of this.lineItemsArray.controls) {
+      const value = row.getRawValue();
+
+      if (value.description.trim().length > 0) {
+        return true;
+      }
+
+      if (this.toSafeNumber(value.total) > 0 || this.toSafeNumber(value.netToPay) > 0) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private normalizeClientType(type: string): ClientTypeValue {
+    if (type === ClientType.B2B_AGENT) {
+      return ClientType.B2B_AGENT;
+    }
+
+    if (type === ClientType.COMPANY) {
+      return ClientType.COMPANY;
+    }
+
+    if (type === ClientType.AGENT) {
+      return ClientType.AGENT;
+    }
+
+    return ClientType.INDIVIDUAL;
+  }
+
+  private toSafeNumber(value: number | string | null | undefined): number {
+    const num = Number(value);
+
+    if (Number.isFinite(num)) {
+      return num;
+    }
+
+    return 0;
+  }
+
+  private todayIsoDate(): string {
+    return new Date().toISOString().slice(0, 10);
   }
 }

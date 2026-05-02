@@ -207,6 +207,51 @@ export class InvoiceDetailComponent {
     this.confirmOpen.set(true);
   }
 
+  publishInvoice(): void {
+    const inv = this.invoice();
+
+    if (!inv || this.actionLoading() || inv.status !== 'DRAFT') {
+      return;
+    }
+
+    this.actionLoading.set(true);
+    this.invoicesService.publish(inv.id).subscribe({
+      next: (updated) => {
+        this.data.set(updated);
+        this.toast.showSuccess('Invoice published');
+      },
+      error: (err) =>
+        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to publish invoice'),
+      complete: () => this.actionLoading.set(false),
+    });
+  }
+
+  downloadPdf(): void {
+    const inv = this.invoice();
+
+    if (!inv || this.actionLoading() || inv.status === 'DRAFT') {
+      return;
+    }
+
+    this.actionLoading.set(true);
+    this.invoicesService.getPdf(inv.id).subscribe({
+      next: (blob) => {
+        const fileName = this.buildPdfFileName(inv.number);
+        const objectUrl = URL.createObjectURL(blob);
+        const anchor = document.createElement('a');
+
+        anchor.href = objectUrl;
+        anchor.download = fileName;
+        anchor.click();
+
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
+      },
+      error: (err) =>
+        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to download PDF'),
+      complete: () => this.actionLoading.set(false),
+    });
+  }
+
   onConfirmDialogConfirm(): void {
     const payload = this.confirmPayload();
     const inv = this.invoice();
@@ -235,5 +280,15 @@ export class InvoiceDetailComponent {
   onConfirmDialogCancel(): void {
     this.confirmOpen.set(false);
     this.confirmPayload.set(null);
+  }
+
+  private buildPdfFileName(number: string): string {
+    const sanitizedNumber = number.trim().replace(/[^a-zA-Z0-9._-]+/g, '-');
+
+    if (sanitizedNumber.length === 0) {
+      return 'invoice.pdf';
+    }
+
+    return `${sanitizedNumber}.pdf`;
   }
 }

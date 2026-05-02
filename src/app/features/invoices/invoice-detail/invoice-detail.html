@@ -23,6 +23,31 @@
         </div>
         @if (!editing()) {
           <div class="flex flex-wrap items-center gap-2">
+            @if (inv.status === 'DRAFT') {
+              <button
+                color="primary"
+                i18n
+                mat-flat-button
+                type="button"
+                [disabled]="actionLoading()"
+                (click)="publishInvoice()"
+              >
+                Publish invoice
+              </button>
+            }
+
+            @if (inv.status !== 'DRAFT') {
+              <button
+                i18n
+                mat-stroked-button
+                type="button"
+                [disabled]="actionLoading()"
+                (click)="downloadPdf()"
+              >
+                Download PDF
+              </button>
+            }
+
             <button
               color="primary"
               mat-flat-button
@@ -35,6 +60,7 @@
             @if (permissions.canDeleteInvoice()) {
               <button
                 color="warn"
+                i18n
                 mat-flat-button
                 type="button"
                 [disabled]="actionLoading()"

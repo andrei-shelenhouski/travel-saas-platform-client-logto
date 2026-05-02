@@ -223,6 +223,7 @@ export const routes: Routes = [
       // Invoices
       {
         path: 'invoices/new',
+        canDeactivate: [pendingChangesGuard],
         loadComponent: () =>
           import('@app/features/invoices/create-invoice/create-invoice').then(
             (m) => m.CreateInvoiceComponent,
