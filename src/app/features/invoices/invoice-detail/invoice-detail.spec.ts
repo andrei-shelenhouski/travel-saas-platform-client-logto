@@ -3,6 +3,7 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 
 import { of } from 'rxjs';
 
+import { ActivitiesService } from '@app/services/activities.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { ToastService } from '@app/shared/services/toast.service';
@@ -21,7 +22,12 @@ describe('InvoiceDetailComponent', () => {
     publish: ReturnType<typeof vi.fn>;
     cancel: ReturnType<typeof vi.fn>;
     getPdf: ReturnType<typeof vi.fn>;
+    listPayments: ReturnType<typeof vi.fn>;
+    recordPayment: ReturnType<typeof vi.fn>;
+    deletePayment: ReturnType<typeof vi.fn>;
   };
+
+  let activitiesService: { findByEntity: ReturnType<typeof vi.fn> };
 
   let toast: {
     showSuccess: ReturnType<typeof vi.fn>;
@@ -41,6 +47,16 @@ describe('InvoiceDetailComponent', () => {
     updatedAt: '2026-05-01T09:00:00Z',
   });
 
+  const makePayment = () => ({
+    id: 'payment-1',
+    invoiceId: 'invoice-1',
+    amount: 500,
+    currency: 'BYN',
+    paymentDate: '2026-05-01',
+    paymentMethod: 'BANK_TRANSFER' as const,
+    createdAt: '2026-05-01T09:00:00Z',
+  });
+
   beforeEach(async () => {
     invoicesService = {
       getById: vi.fn(() => of(makeInvoice('DRAFT'))),
@@ -48,6 +64,23 @@ describe('InvoiceDetailComponent', () => {
       publish: vi.fn(() => of(makeInvoice('ISSUED'))),
       cancel: vi.fn(() => of(makeInvoice('CANCELLED'))),
       getPdf: vi.fn(() => of(new Blob(['pdf'], { type: 'application/pdf' }))),
+      listPayments: vi.fn(() => of([])),
+      recordPayment: vi.fn(() =>
+        of({
+          id: 'p1',
+          invoiceId: 'invoice-1',
+          amount: 100,
+          currency: 'BYN',
+          paymentDate: '2026-05-01',
+          paymentMethod: 'CASH',
+          createdAt: '2026-05-01T09:00:00Z',
+        }),
+      ),
+      deletePayment: vi.fn(() => of(undefined)),
+    };
+
+    activitiesService = {
+      findByEntity: vi.fn(() => of({ items: [], total: 0, page: 0, limit: 20 })),
     };
 
     toast = {
@@ -62,6 +95,10 @@ describe('InvoiceDetailComponent', () => {
         {
           provide: InvoicesService,
           useValue: invoicesService,
+        },
+        {
+          provide: ActivitiesService,
+          useValue: activitiesService,
         },
         {
           provide: ToastService,
@@ -93,7 +130,7 @@ describe('InvoiceDetailComponent', () => {
     component.publishInvoice();
 
     expect(invoicesService.publish).toHaveBeenCalledWith('invoice-1');
-    expect(toast.showSuccess).toHaveBeenCalledWith('Invoice published');
+    expect(toast.showSuccess).toHaveBeenCalledWith('Счёт опубликован');
   });
 
   it('downloads pdf for non-draft invoice', () => {
@@ -119,5 +156,77 @@ describe('InvoiceDetailComponent', () => {
     component.downloadPdf();
 
     expect(invoicesService.getPdf).toHaveBeenCalledWith('invoice-1');
+  });
+
+  it('cancels invoice with reason', () => {
+    component.openCancelDialog();
+    component.cancelReasonControl.setValue('Test reason');
+    component.confirmCancel();
+
+    expect(invoicesService.cancel).toHaveBeenCalledWith('invoice-1', { reason: 'Test reason' });
+    expect(toast.showSuccess).toHaveBeenCalledWith('Счёт отменён');
+  });
+
+  it('does not cancel when reason is empty', () => {
+    component.openCancelDialog();
+    component.cancelReasonControl.setValue('');
+    component.confirmCancel();
+
+    expect(invoicesService.cancel).not.toHaveBeenCalled();
+    expect(toast.showError).toHaveBeenCalled();
+  });
+
+  it('records a payment', () => {
+    (component as unknown as { data: { set: (invoice: InvoiceResponseDto) => void } }).data.set(
+      makeInvoice('ISSUED'),
+    );
+    component.openRecordPayment();
+    component.paymentForm.patchValue({
+      amount: 100,
+      currency: 'BYN',
+      paymentDate: '2026-05-02',
+      paymentMethod: 'CASH',
+    });
+    component.submitRecordPayment();
+
+    expect(invoicesService.recordPayment).toHaveBeenCalledWith(
+      'invoice-1',
+      expect.objectContaining({ amount: 100 }),
+    );
+    expect(toast.showSuccess).toHaveBeenCalledWith('Платёж записан');
+  });
+
+  it('shows error when recording payment with amount 0', () => {
+    (component as unknown as { data: { set: (invoice: InvoiceResponseDto) => void } }).data.set(
+      makeInvoice('ISSUED'),
+    );
+    component.openRecordPayment();
+    // amount stays at 0 (form initial value)
+    component.submitRecordPayment();
+
+    expect(invoicesService.recordPayment).not.toHaveBeenCalled();
+    expect(toast.showError).toHaveBeenCalled();
+  });
+
+  it('opens delete payment confirmation', () => {
+    (component as unknown as { data: { set: (invoice: InvoiceResponseDto) => void } }).data.set({
+      ...makeInvoice('ISSUED'),
+      payments: [makePayment()],
+    } as InvoiceResponseDto);
+    component.confirmDeletePayment(makePayment());
+
+    expect(component.deletePaymentConfirmOpen()).toBe(true);
+    expect(component.pendingDeletePaymentId()).toBe('payment-1');
+  });
+
+  it('deletes a payment on confirm', () => {
+    (component as unknown as { data: { set: (invoice: InvoiceResponseDto) => void } }).data.set(
+      makeInvoice('ISSUED'),
+    );
+    component.confirmDeletePayment(makePayment());
+    component.onDeletePaymentConfirm();
+
+    expect(invoicesService.deletePayment).toHaveBeenCalledWith('invoice-1', 'payment-1');
+    expect(toast.showSuccess).toHaveBeenCalledWith('Платёж удалён');
   });
 });

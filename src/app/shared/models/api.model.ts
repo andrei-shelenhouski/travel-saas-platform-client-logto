@@ -866,6 +866,7 @@ export const EntityType = {
   Request: 'Request',
   Offer: 'Offer',
   Booking: 'Booking',
+  Invoice: 'Invoice',
 } as const;
 export type EntityType = (typeof EntityType)[keyof typeof EntityType];
 

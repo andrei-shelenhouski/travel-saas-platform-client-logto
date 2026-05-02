@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -23,11 +23,11 @@ import { ConfirmationDialogComponent } from '@app/shared/components/confirmation
 import { MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { ToastService } from '@app/shared/services/toast.service';
 
-import type {
-  ActivityTimelineItem,
+import {
   EntityType,
-  InvoiceResponseDto,
-  PaymentResponseDto,
+  type ActivityTimelineItem,
+  type InvoiceResponseDto,
+  type PaymentResponseDto,
 } from '@app/shared/models';
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
@@ -108,7 +108,7 @@ export class InvoiceDetailComponent {
       }
 
       return this.activitiesService
-        .findByEntity({ entityType: 'INVOICE' as unknown as EntityType, entityId: params })
+        .findByEntity({ entityType: EntityType.Invoice, entityId: params })
         .pipe(
           map((r) =>
             r.items.map<ActivityTimelineItem>((a) => ({
@@ -213,7 +213,7 @@ export class InvoiceDetailComponent {
   readonly cancelReasonControl = this.fb.nonNullable.control('');
 
   readonly paymentForm = this.fb.nonNullable.group({
-    amount: [0 as number],
+    amount: [0 as number, [Validators.min(0.01)]],
     currency: [''],
     paymentDate: [''],
     paymentMethod: ['BANK_TRANSFER'],
@@ -254,7 +254,7 @@ export class InvoiceDetailComponent {
   canDeletePayment(): boolean {
     const status = this.invoice()?.status;
 
-    return status === 'ISSUED' || status === 'PARTIALLY_PAID';
+    return (status === 'ISSUED' || status === 'PARTIALLY_PAID') && this.permissions.canDeleteInvoice();
   }
 
   formatDateOnly(iso: string | null | undefined): string {
@@ -356,6 +356,7 @@ export class InvoiceDetailComponent {
     this.invoicesService.publish(inv.id).subscribe({
       next: (updated) => {
         this.data.set(updated);
+        this.activitiesData.reload();
         this.toast.showSuccess('Счёт опубликован');
       },
       error: (err) =>
@@ -392,6 +393,7 @@ export class InvoiceDetailComponent {
     this.invoicesService.cancel(inv.id, { reason }).subscribe({
       next: (updated) => {
         this.data.set(updated);
+        this.activitiesData.reload();
         this.cancelDialogOpen.set(false);
         this.toast.showSuccess('Счёт отменён');
       },
@@ -454,9 +456,12 @@ export class InvoiceDetailComponent {
     if (!inv || this.actionLoading()) {
       return;
     }
+    if (this.paymentForm.get('amount')!.invalid) {
+      this.toast.showError('Сумма должна быть больше нуля');
+
+      return;
+    }
     this.actionLoading.set(true);
-    const v = this.paymentForm.getRawValue();
-    this.invoicesService
       .recordPayment(inv.id, {
         amount: v.amount,
         currency: v.currency,
@@ -467,6 +472,7 @@ export class InvoiceDetailComponent {
       .subscribe({
         next: () => {
           this.data.reload();
+          this.activitiesData.reload();
           this.recordPaymentOpen.set(false);
           this.toast.showSuccess('Платёж записан');
         },
@@ -493,6 +499,7 @@ export class InvoiceDetailComponent {
     this.invoicesService.deletePayment(inv.id, paymentId).subscribe({
       next: () => {
         this.data.reload();
+        this.activitiesData.reload();
         this.toast.showSuccess('Платёж удалён');
       },
       error: (err) =>
