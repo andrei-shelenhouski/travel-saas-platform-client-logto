@@ -31,7 +31,7 @@
           </span>
         </div>
 
-        @if (!editing() && !cancelDialogOpen() && !recordPaymentOpen()) {
+        @if (!editing() && !cancelDialogOpen()) {
           <div class="flex flex-wrap items-center gap-2">
             @if (hasAction('edit')) {
               <button
@@ -137,70 +137,6 @@
               (click)="closeCancelDialog()"
             >
               Назад
-            </button>
-          </div>
-        </div>
-      }
-
-      <!-- ===== RECORD PAYMENT INLINE PANEL ===== -->
-      @if (recordPaymentOpen()) {
-        <div class="rounded-lg border border-blue-200 bg-blue-50 p-4">
-          <h2 class="text-sm font-semibold text-gray-900" i18n="@@invoiceDetailRecordPaymentTitle">
-            Записать платёж
-          </h2>
-          <div
-            class="mt-3 grid max-w-lg grid-cols-1 gap-3 sm:grid-cols-2"
-            [formGroup]="paymentForm"
-          >
-            <mat-form-field subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailPaymentAmountLabel">Сумма</mat-label>
-              <input formControlName="amount" matInput min="0" step="0.01" type="number" />
-            </mat-form-field>
-            <mat-form-field subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailPaymentCurrencyLabel">Валюта</mat-label>
-              <input formControlName="currency" matInput maxlength="3" />
-            </mat-form-field>
-            <mat-form-field subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailPaymentDateLabel">Дата платежа</mat-label>
-              <input formControlName="paymentDate" matInput type="date" />
-            </mat-form-field>
-            <mat-form-field subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailPaymentMethodLabel">Способ оплаты</mat-label>
-              <mat-select formControlName="paymentMethod">
-                @for (method of paymentMethods; track method.value) {
-                  <mat-option [value]="method.value">{{ method.label }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field class="sm:col-span-2" subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailPaymentReferenceLabel">
-                Референс / номер документа
-              </mat-label>
-              <input formControlName="reference" matInput />
-            </mat-form-field>
-          </div>
-          <div class="mt-3 flex gap-2">
-            <button
-              color="primary"
-              mat-flat-button
-              type="button"
-              [disabled]="actionLoading()"
-              (click)="submitRecordPayment()"
-            >
-              @if (actionLoading()) {
-                <span i18n="@@invoiceDetailRecordPaymentLoading">Сохранение…</span>
-              } @else {
-                <span i18n="@@invoiceDetailBtnSubmitPayment">Записать</span>
-              }
-            </button>
-            <button
-              i18n="@@invoiceDetailBtnCancelRecordPayment"
-              mat-stroked-button
-              type="button"
-              [disabled]="actionLoading()"
-              (click)="closeRecordPayment()"
-            >
-              Отмена
             </button>
           </div>
         </div>
