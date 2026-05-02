@@ -101,11 +101,7 @@
           <div class="mt-3 max-w-md">
             <mat-form-field class="w-full" subscriptSizing="dynamic">
               <mat-label>Причина отмены</mat-label>
-              <textarea
-                matInput
-                rows="3"
-                [formControl]="cancelReasonControl"
-              ></textarea>
+              <textarea matInput rows="3" [formControl]="cancelReasonControl"></textarea>
             </mat-form-field>
           </div>
           <div class="mt-3 flex gap-2">
@@ -134,16 +130,13 @@
       @if (recordPaymentOpen()) {
         <div class="rounded-lg border border-blue-200 bg-blue-50 p-4">
           <h2 class="text-sm font-semibold text-gray-900">Записать платёж</h2>
-          <div class="mt-3 grid max-w-lg grid-cols-1 gap-3 sm:grid-cols-2" [formGroup]="paymentForm">
+          <div
+            class="mt-3 grid max-w-lg grid-cols-1 gap-3 sm:grid-cols-2"
+            [formGroup]="paymentForm"
+          >
             <mat-form-field subscriptSizing="dynamic">
               <mat-label>Сумма</mat-label>
-              <input
-                formControlName="amount"
-                matInput
-                min="0"
-                step="0.01"
-                type="number"
-              />
+              <input formControlName="amount" matInput min="0" step="0.01" type="number" />
             </mat-form-field>
             <mat-form-field subscriptSizing="dynamic">
               <mat-label>Валюта</mat-label>
@@ -275,10 +268,7 @@
               <dt class="text-gray-500">Бронирование</dt>
               <dd>
                 @if (inv.bookingId) {
-                  <a
-                    class="text-primary underline"
-                    [routerLink]="['/app/bookings', inv.bookingId]"
-                  >
+                  <a class="text-primary underline" [routerLink]="['/app/bookings', inv.bookingId]">
                     {{ inv.bookingId }}
                   </a>
                 } @else {
@@ -307,7 +297,7 @@
         <h2 class="mb-3 text-sm font-semibold text-gray-900">Позиции</h2>
         @if (lineItems().length > 0) {
           <div class="overflow-x-auto">
-            <mat-table [dataSource]="lineItems()" class="w-full min-w-[600px]">
+            <mat-table class="w-full min-w-[600px]" [dataSource]="lineItems()">
               <!-- description -->
               <ng-container matColumnDef="description">
                 <mat-header-cell *matHeaderCellDef class="text-xs font-medium text-gray-500">
@@ -409,7 +399,7 @@
               </ng-container>
 
               <mat-header-row *matHeaderRowDef="displayedColumns()" />
-              <mat-row *matRowDef="let row; columns: displayedColumns();" />
+              <mat-row *matRowDef="let row; columns: displayedColumns()" />
             </mat-table>
           </div>
         } @else {
@@ -423,18 +413,24 @@
         <dl class="space-y-1 text-sm">
           <div class="flex justify-between">
             <dt class="text-gray-500">Подытог</dt>
-            <dd class="text-gray-900">{{ inv.subtotal ?? 0 | number: '1.2-2' }} {{ inv.currency }}</dd>
+            <dd class="text-gray-900">
+              {{ inv.subtotal ?? 0 | number: '1.2-2' }} {{ inv.currency }}
+            </dd>
           </div>
           @if (inv.discountAmount && inv.discountAmount !== 0) {
             <div class="flex justify-between">
               <dt class="text-gray-500">Скидка</dt>
-              <dd class="text-green-700">−{{ inv.discountAmount | number: '1.2-2' }} {{ inv.currency }}</dd>
+              <dd class="text-green-700">
+                −{{ inv.discountAmount | number: '1.2-2' }} {{ inv.currency }}
+              </dd>
             </div>
           }
           @if (isB2bAgent() && inv.commissionVatAmount && inv.commissionVatAmount !== 0) {
             <div class="flex justify-between">
               <dt class="text-gray-500">НДС с комиссии</dt>
-              <dd class="text-gray-900">{{ inv.commissionVatAmount | number: '1.2-2' }} {{ inv.currency }}</dd>
+              <dd class="text-gray-900">
+                {{ inv.commissionVatAmount | number: '1.2-2' }} {{ inv.currency }}
+              </dd>
             </div>
           }
           <div class="flex justify-between border-t border-gray-200 pt-2 font-medium">
@@ -501,8 +497,8 @@
               <span class="text-gray-500">Остаток:</span>
               <span
                 class="font-medium"
-                [class.text-red-700]="remainingAmount() > 0"
                 [class.text-green-700]="remainingAmount() <= 0"
+                [class.text-red-700]="remainingAmount() > 0"
               >
                 {{ remainingAmount() | number: '1.2-2' }} {{ inv.currency }}
               </span>
@@ -515,7 +511,6 @@
 
       <!-- ===== ACTIVITY LOG ===== -->
       <app-activity-timeline title="История изменений" [items]="timelineItems()" />
-
     } @else {
       <p class="text-sm text-gray-500">Счёт не найден.</p>
     }
@@ -526,10 +521,10 @@
 <app-confirmation-dialog
   cancelLabel="Отмена"
   confirmLabel="Удалить"
+  title="Удалить платёж"
   [danger]="true"
   [message]="'Удалить платёж на ' + pendingDeletePaymentLabel() + '? Это действие необратимо.'"
   [open]="deletePaymentConfirmOpen()"
-  title="Удалить платёж"
   (cancel)="onDeletePaymentCancel()"
   (confirm)="onDeletePaymentConfirm()"
 />

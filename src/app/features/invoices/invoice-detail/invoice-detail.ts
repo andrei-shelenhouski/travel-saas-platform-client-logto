@@ -1,3 +1,4 @@
+import { DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,10 +9,8 @@ import {
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-
-import { DatePipe } from '@angular/common';
 import { MatTableModule } from '@angular/material/table';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -70,7 +69,7 @@ const PAYMENT_METHODS = [
     RouterLink,
     ReactiveFormsModule,
     MatTableModule,
-    DatePipe,
+    DecimalPipe,
     ActivityTimelineComponent,
     ConfirmationDialogComponent,
     ...MAT_FORM_BUTTONS,
