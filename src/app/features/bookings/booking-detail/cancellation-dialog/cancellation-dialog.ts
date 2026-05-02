@@ -1,3 +1,4 @@
+import { TextFieldModule } from '@angular/cdk/text-field';
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -8,7 +9,13 @@ export type CancellationResult = { reason: string };
 @Component({
   selector: 'app-cancellation-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, ...MAT_FORM_BUTTONS, ...MAT_BUTTONS, ...MAT_DIALOG],
+  imports: [
+    ReactiveFormsModule,
+    TextFieldModule,
+    ...MAT_FORM_BUTTONS,
+    ...MAT_BUTTONS,
+    ...MAT_DIALOG,
+  ],
   templateUrl: './cancellation-dialog.html',
   styleUrl: './cancellation-dialog.scss',
 })

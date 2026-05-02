@@ -346,7 +346,11 @@
         type="submit"
         [disabled]="saving() || loading() || form.invalid"
       >
-        {{ saving() ? 'Saving...' : 'Save draft' }}
+        @if (saving()) {
+          <span i18n="@@invoiceCreateSavingButton">Saving...</span>
+        } @else {
+          <span i18n="@@invoiceCreateSaveDraftButton">Save draft</span>
+        }
       </button>
       <button
         i18n="@@invoiceCreateCancelButton"

@@ -570,7 +570,9 @@ export class CreateInvoiceComponent {
       this.prefillLineItemsFromBooking(this.booking() as BookingResponseDto);
     }
 
-    this.form.markAsDirty();
+    if (!prefillFromBooking) {
+      this.form.markAsDirty();
+    }
   }
 
   private applyDefaultCommissionPctToRows(): void {

@@ -243,7 +243,8 @@ export class InvoiceDetailComponent {
         anchor.href = objectUrl;
         anchor.download = fileName;
         anchor.click();
-        URL.revokeObjectURL(objectUrl);
+
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
       },
       error: (err) =>
         this.toast.showError(err.error?.message ?? err.message ?? 'Failed to download PDF'),

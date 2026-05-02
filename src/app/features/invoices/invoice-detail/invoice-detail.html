@@ -26,6 +26,7 @@
             @if (inv.status === 'DRAFT') {
               <button
                 color="primary"
+                i18n
                 mat-flat-button
                 type="button"
                 [disabled]="actionLoading()"
@@ -37,6 +38,7 @@
 
             @if (inv.status !== 'DRAFT') {
               <button
+                i18n
                 mat-stroked-button
                 type="button"
                 [disabled]="actionLoading()"
@@ -58,6 +60,7 @@
             @if (permissions.canDeleteInvoice()) {
               <button
                 color="warn"
+                i18n
                 mat-flat-button
                 type="button"
                 [disabled]="actionLoading()"
