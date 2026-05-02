@@ -1,3 +1,4 @@
+import { DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,33 +8,73 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { ActivitiesService } from '@app/services/activities.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
+import { ActivityTimelineComponent } from '@app/shared/components/activity-timeline.component';
 import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+import { MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { ToastService } from '@app/shared/services/toast.service';
 
-import type { InvoiceResponseDto } from '@app/shared/models';
+import {
+  EntityType,
+  type ActivityTimelineItem,
+  type InvoiceResponseDto,
+  type PaymentResponseDto,
+} from '@app/shared/models';
+
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  BANK_TRANSFER: 'Банковский перевод',
+  CASH: 'Наличные',
+  CARD: 'Карта',
+  OTHER: 'Другое',
+};
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
   DRAFT: 'bg-gray-100 text-gray-800',
   ISSUED: 'bg-blue-100 text-blue-800',
   PAID: 'bg-green-100 text-green-800',
   PARTIALLY_PAID: 'bg-amber-100 text-amber-800',
-  OVERDUE: 'bg-orange-100 text-orange-800',
+  OVERDUE: 'bg-red-100 text-red-800',
   CANCELLED: 'bg-red-100 text-red-800',
 };
+
+const STATUS_LABELS: Record<string, string> = {
+  DRAFT: 'Черновик',
+  ISSUED: 'Выставлен',
+  PAID: 'Оплачен',
+  PARTIALLY_PAID: 'Частично оплачен',
+  OVERDUE: 'Просрочен',
+  CANCELLED: 'Отменён',
+};
+
+const PAYMENT_METHODS = [
+  { value: 'BANK_TRANSFER', label: 'Банковский перевод' },
+  { value: 'CASH', label: 'Наличные' },
+  { value: 'CARD', label: 'Карта' },
+  { value: 'OTHER', label: 'Другое' },
+] as const;
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-invoice-detail',
-  imports: [RouterLink, ReactiveFormsModule, ConfirmationDialogComponent, ...MAT_FORM_BUTTONS],
+  imports: [
+    RouterLink,
+    ReactiveFormsModule,
+    MatTableModule,
+    DecimalPipe,
+    ActivityTimelineComponent,
+    ConfirmationDialogComponent,
+    ...MAT_FORM_BUTTONS,
+    ...MAT_ICONS,
+  ],
   templateUrl: './invoice-detail.html',
   styleUrl: './invoice-detail.scss',
 })
@@ -41,6 +82,7 @@ export class InvoiceDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly invoicesService = inject(InvoicesService);
+  private readonly activitiesService = inject(ActivitiesService);
   private readonly toast = inject(ToastService);
   private readonly fb = inject(FormBuilder);
   readonly permissions = inject(PermissionService);
@@ -50,29 +92,114 @@ export class InvoiceDetailComponent {
   private readonly data = rxResource<InvoiceResponseDto, string | null>({
     params: (): string | null => this.routeId() ?? null,
     stream: ({ params }) => {
-      const id = params;
-
-      if (id === null) {
+      if (params === null) {
         return EMPTY;
       }
 
-      return this.invoicesService.getById(id);
+      return this.invoicesService.getById(params);
     },
   });
 
+  private readonly activitiesData = rxResource<ActivityTimelineItem[], string | null>({
+    params: (): string | null => this.routeId() ?? null,
+    stream: ({ params }) => {
+      if (params === null) {
+        return EMPTY;
+      }
+
+      return this.activitiesService
+        .findByEntity({ entityType: EntityType.Invoice, entityId: params })
+        .pipe(
+          map((r) =>
+            r.items.map<ActivityTimelineItem>((a) => ({
+              id: a.id,
+              label: a.type,
+              date: a.createdAt,
+              type: a.type === 'CREATED' ? 'created' : a.type === 'UPDATED' ? 'updated' : 'status',
+            })),
+          ),
+        );
+    },
+  });
+
+  // ---- Derived state ----
+
   readonly invoice = computed(() => this.data.value() ?? null);
   readonly loading = computed(() => this.data.isLoading());
-  readonly statusBadgeClass = STATUS_BADGE_CLASS;
+  readonly timelineItems = computed(() => this.activitiesData.value() ?? []);
+
+  readonly invoiceActions = computed<string[]>(() => {
+    const inv = this.invoice();
+
+    if (!inv) {
+      return [];
+    }
+
+    return this.getInvoiceActions(inv.status);
+  });
+
+  readonly isB2bAgent = computed(() => this.invoice()?.clientType === 'B2B_AGENT');
+
+  readonly displayedColumns = computed<string[]>(() => {
+    if (this.isB2bAgent()) {
+      return [
+        'description',
+        'serviceDates',
+        'travelers',
+        'tourCost',
+        'commissionAmount',
+        'commissionVat',
+        'netToPay',
+      ];
+    }
+
+    return ['description', 'serviceDates', 'travelers', 'unitPrice', 'quantity', 'total'];
+  });
+
+  readonly lineItems = computed(() => this.invoice()?.lineItems ?? []);
+
+  readonly payments = computed<PaymentResponseDto[]>(() => {
+    const inv = this.invoice();
+
+    return (inv?.payments ?? []) as PaymentResponseDto[];
+  });
+
+  readonly paidAmount = computed(() =>
+    this.payments().reduce((sum, p) => sum + (p.amount ?? 0), 0),
+  );
+
+  readonly remainingAmount = computed(() => {
+    const inv = this.invoice();
+
+    return (inv?.total ?? 0) - this.paidAmount();
+  });
+
+  readonly clientName = computed<string>(() => {
+    const inv = this.invoice();
+
+    if (!inv?.clientSnapshot) {
+      return '—';
+    }
+    try {
+      const snap = JSON.parse(inv.clientSnapshot) as { fullName?: string };
+
+      return snap.fullName ?? '—';
+    } catch {
+      return '—';
+    }
+  });
+
+  // ---- UI state ----
+
   readonly actionLoading = signal(false);
   readonly editing = signal(false);
-  readonly confirmOpen = signal(false);
-  readonly confirmPayload = signal<{
-    action: 'CANCEL';
-    title: string;
-    message: string;
-    confirmLabel: string;
-    danger: boolean;
-  } | null>(null);
+  readonly cancelDialogOpen = signal(false);
+  readonly recordPaymentOpen = signal(false);
+  readonly deletePaymentConfirmOpen = signal(false);
+  readonly pendingDeletePaymentId = signal<string | null>(null);
+  readonly pendingDeletePaymentLabel = signal<string>('');
+
+  // ---- Forms ----
 
   readonly editForm = this.fb.nonNullable.group({
     invoiceDate: [''],
@@ -83,6 +210,21 @@ export class InvoiceDetailComponent {
     internalNotes: [''],
   });
 
+  readonly cancelReasonControl = this.fb.nonNullable.control('');
+
+  readonly paymentForm = this.fb.nonNullable.group({
+    amount: [0 as number, [Validators.min(0.01)]],
+    currency: [''],
+    paymentDate: [''],
+    paymentMethod: ['BANK_TRANSFER'],
+    reference: [''],
+  });
+
+  // ---- Lookup tables exposed to template ----
+
+  readonly paymentMethods = PAYMENT_METHODS;
+  readonly statusLabels = STATUS_LABELS;
+
   constructor() {
     effect(() => {
       if (this.routeId() === null) {
@@ -91,31 +233,51 @@ export class InvoiceDetailComponent {
     });
   }
 
-  formatDate(iso: string): string {
-    try {
-      return new Date(iso).toLocaleString(undefined, {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      });
-    } catch {
-      return iso;
-    }
-  }
-
-  formatDateOnly(iso: string | null): string {
-    if (!iso) {
-      return '—';
-    }
-    try {
-      return new Date(iso).toISOString().slice(0, 10);
-    } catch {
-      return iso;
-    }
-  }
+  // ---- Helper methods ----
 
   getStatusBadgeClass(status: string): string {
     return STATUS_BADGE_CLASS[status] ?? 'bg-gray-100 text-gray-500';
   }
+
+  getStatusLabel(status: string): string {
+    return STATUS_LABELS[status] ?? status;
+  }
+
+  getPaymentMethodLabel(method: string): string {
+    return PAYMENT_METHOD_LABELS[method] ?? method;
+  }
+
+  hasAction(action: string): boolean {
+    return this.invoiceActions().includes(action);
+  }
+
+  canDeletePayment(): boolean {
+    const status = this.invoice()?.status;
+
+    return (status === 'ISSUED' || status === 'PARTIALLY_PAID') && this.permissions.canDeleteInvoice();
+  }
+
+  formatDateOnly(iso: string | null | undefined): string {
+    if (!iso) {
+      return '—';
+    }
+
+    return iso.slice(0, 10);
+  }
+
+  formatServiceDates(from?: string | null, to?: string | null): string {
+    if (!from && !to) {
+      return '—';
+    }
+
+    if (from && to) {
+      return `${this.formatDateOnly(from)} – ${this.formatDateOnly(to)}`;
+    }
+
+    return this.formatDateOnly(from ?? to);
+  }
+
+  // ---- Edit ----
 
   startEdit(): void {
     const inv = this.invoice();
@@ -145,16 +307,8 @@ export class InvoiceDetailComponent {
       return;
     }
     this.actionLoading.set(true);
-
     const v = this.editForm.getRawValue();
-    const dto: {
-      invoiceDate?: string;
-      dueDate?: string;
-      currency?: string;
-      language?: string;
-      paymentTerms?: string;
-      internalNotes?: string;
-    } = {};
+    const dto: Parameters<typeof this.invoicesService.update>[1] = {};
 
     if (v.invoiceDate.trim()) {
       dto.invoiceDate = v.invoiceDate.trim();
@@ -179,116 +333,212 @@ export class InvoiceDetailComponent {
     if (v.internalNotes.trim()) {
       dto.internalNotes = v.internalNotes.trim();
     }
-
     this.invoicesService.update(inv.id, dto).subscribe({
       next: (updated) => {
         this.data.set(updated);
         this.editing.set(false);
       },
-      error: (err) => this.toast.showError(err.error?.message ?? err.message ?? 'Failed to update'),
+      error: (err) =>
+        this.toast.showError(err.error?.message ?? err.message ?? 'Ошибка обновления'),
       complete: () => this.actionLoading.set(false),
     });
   }
 
-  cancelInvoice(): void {
+  // ---- Publish ----
+
+  publishInvoice(): void {
     const inv = this.invoice();
 
     if (!inv || this.actionLoading()) {
       return;
     }
-
-    this.confirmPayload.set({
-      action: 'CANCEL',
-      title: 'Cancel invoice',
-      message: 'Are you sure you want to cancel this invoice?',
-      confirmLabel: 'Cancel invoice',
-      danger: true,
-    });
-    this.confirmOpen.set(true);
-  }
-
-  publishInvoice(): void {
-    const inv = this.invoice();
-
-    if (!inv || this.actionLoading() || inv.status !== 'DRAFT') {
-      return;
-    }
-
     this.actionLoading.set(true);
     this.invoicesService.publish(inv.id).subscribe({
       next: (updated) => {
         this.data.set(updated);
-        this.toast.showSuccess('Invoice published');
+        this.activitiesData.reload();
+        this.toast.showSuccess('Счёт опубликован');
       },
       error: (err) =>
-        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to publish invoice'),
+        this.toast.showError(err.error?.message ?? err.message ?? 'Ошибка публикации'),
       complete: () => this.actionLoading.set(false),
     });
   }
+
+  // ---- Cancel ----
+
+  openCancelDialog(): void {
+    this.cancelReasonControl.reset('');
+    this.cancelDialogOpen.set(true);
+  }
+
+  closeCancelDialog(): void {
+    this.cancelDialogOpen.set(false);
+  }
+
+  confirmCancel(): void {
+    const inv = this.invoice();
+
+    if (!inv || this.actionLoading()) {
+      return;
+    }
+    const reason = this.cancelReasonControl.value.trim();
+
+    if (!reason) {
+      this.toast.showError('Укажите причину отмены');
+
+      return;
+    }
+    this.actionLoading.set(true);
+    this.invoicesService.cancel(inv.id, { reason }).subscribe({
+      next: (updated) => {
+        this.data.set(updated);
+        this.activitiesData.reload();
+        this.cancelDialogOpen.set(false);
+        this.toast.showSuccess('Счёт отменён');
+      },
+      error: (err) => this.toast.showError(err.error?.message ?? err.message ?? 'Ошибка отмены'),
+      complete: () => this.actionLoading.set(false),
+    });
+  }
+
+  // ---- PDF ----
 
   downloadPdf(): void {
     const inv = this.invoice();
 
-    if (!inv || this.actionLoading() || inv.status === 'DRAFT') {
+    if (!inv || this.actionLoading()) {
       return;
     }
-
     this.actionLoading.set(true);
     this.invoicesService.getPdf(inv.id).subscribe({
       next: (blob) => {
-        const fileName = this.buildPdfFileName(inv.number);
-        const objectUrl = URL.createObjectURL(blob);
-        const anchor = document.createElement('a');
-
-        anchor.href = objectUrl;
-        anchor.download = fileName;
-        anchor.click();
-
-        setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
+        const sanitized = inv.number.trim().replace(/[^a-zA-Z0-9._-]+/g, '-');
+        const fileName = sanitized.length ? `${sanitized}.pdf` : 'invoice.pdf';
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 0);
       },
       error: (err) =>
-        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to download PDF'),
+        this.toast.showError(err.error?.message ?? err.message ?? 'Ошибка скачивания PDF'),
       complete: () => this.actionLoading.set(false),
     });
   }
 
-  onConfirmDialogConfirm(): void {
-    const payload = this.confirmPayload();
+  // ---- Payments ----
+
+  openRecordPayment(): void {
     const inv = this.invoice();
 
-    if (!payload || !inv) {
-      this.confirmOpen.set(false);
+    if (!inv) {
+      return;
+    }
+    this.paymentForm.patchValue({
+      amount: 0,
+      currency: inv.currency,
+      paymentDate: new Date().toISOString().slice(0, 10),
+      paymentMethod: 'BANK_TRANSFER',
+      reference: '',
+    });
+    this.recordPaymentOpen.set(true);
+  }
+
+  closeRecordPayment(): void {
+    this.recordPaymentOpen.set(false);
+  }
+
+  submitRecordPayment(): void {
+    const inv = this.invoice();
+
+    if (!inv || this.actionLoading()) {
+      return;
+    }
+    if (this.paymentForm.get('amount')!.invalid) {
+      this.toast.showError('Сумма должна быть больше нуля');
 
       return;
     }
     this.actionLoading.set(true);
-    this.invoicesService.cancel(inv.id, { reason: 'Cancelled from CRM' }).subscribe({
-      next: (updated) => {
-        this.data.set(updated);
-        this.toast.showSuccess('Invoice cancelled');
+    const v = this.paymentForm.getRawValue();
+    this.invoicesService
+      .recordPayment(inv.id, {
+        amount: v.amount,
+        currency: v.currency,
+        paymentDate: v.paymentDate,
+        paymentMethod: v.paymentMethod,
+        reference: v.reference.trim() || undefined,
+      })
+      .subscribe({
+        next: () => {
+          this.data.reload();
+          this.activitiesData.reload();
+          this.recordPaymentOpen.set(false);
+          this.toast.showSuccess('Платёж записан');
+        },
+        error: (err) =>
+          this.toast.showError(err.error?.message ?? err.message ?? 'Ошибка записи платежа'),
+        complete: () => this.actionLoading.set(false),
+      });
+  }
+
+  confirmDeletePayment(payment: PaymentResponseDto): void {
+    this.pendingDeletePaymentId.set(payment.id);
+    this.pendingDeletePaymentLabel.set(`${payment.amount} ${payment.currency}`);
+    this.deletePaymentConfirmOpen.set(true);
+  }
+
+  onDeletePaymentConfirm(): void {
+    const inv = this.invoice();
+    const paymentId = this.pendingDeletePaymentId();
+
+    if (!inv || !paymentId || this.actionLoading()) {
+      return;
+    }
+    this.actionLoading.set(true);
+    this.invoicesService.deletePayment(inv.id, paymentId).subscribe({
+      next: () => {
+        this.data.reload();
+        this.activitiesData.reload();
+        this.toast.showSuccess('Платёж удалён');
       },
       error: (err) =>
-        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to cancel invoice'),
+        this.toast.showError(err.error?.message ?? err.message ?? 'Ошибка удаления платежа'),
       complete: () => {
         this.actionLoading.set(false);
-        this.confirmOpen.set(false);
-        this.confirmPayload.set(null);
+        this.deletePaymentConfirmOpen.set(false);
+        this.pendingDeletePaymentId.set(null);
+        this.pendingDeletePaymentLabel.set('');
       },
     });
   }
 
-  onConfirmDialogCancel(): void {
-    this.confirmOpen.set(false);
-    this.confirmPayload.set(null);
+  onDeletePaymentCancel(): void {
+    this.deletePaymentConfirmOpen.set(false);
+    this.pendingDeletePaymentId.set(null);
+    this.pendingDeletePaymentLabel.set('');
   }
 
-  private buildPdfFileName(number: string): string {
-    const sanitizedNumber = number.trim().replace(/[^a-zA-Z0-9._-]+/g, '-');
+  // ---- Private helpers ----
 
-    if (sanitizedNumber.length === 0) {
-      return 'invoice.pdf';
+  private getInvoiceActions(status: string): string[] {
+    switch (status) {
+      case 'DRAFT':
+        return ['edit', 'publish', 'cancel'];
+      case 'ISSUED':
+        return ['record_payment', 'download_pdf', 'cancel'];
+      case 'PARTIALLY_PAID':
+        return ['record_payment', 'download_pdf'];
+      case 'OVERDUE':
+        return ['record_payment', 'download_pdf'];
+      case 'PAID':
+        return ['download_pdf'];
+      case 'CANCELLED':
+        return [];
+      default:
+        return [];
     }
-
-    return `${sanitizedNumber}.pdf`;
   }
 }
