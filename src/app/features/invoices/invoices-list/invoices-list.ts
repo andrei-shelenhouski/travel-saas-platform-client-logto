@@ -158,7 +158,6 @@ export class InvoicesListComponent {
     'total',
     'status',
     'paidAmount',
-    'actions',
   ];
 
   constructor() {

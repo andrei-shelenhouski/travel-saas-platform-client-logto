@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="space-y-4 p-4">
   @if (loading()) {
     <div class="flex justify-center py-12">
       <div
@@ -12,7 +12,7 @@
       <!-- Back navigation -->
       <a i18n="@@invoiceDetailBack" mat-button routerLink="/app/invoices">
         <mat-icon>arrow_back</mat-icon>
-        Назад к счетам
+        Back to invoices
       </a>
 
       <!-- ===== HEADER ===== -->
@@ -21,7 +21,7 @@
       >
         <div class="min-w-0">
           <h1 class="text-xl font-semibold text-gray-900" i18n="@@invoiceDetailTitle">
-            Счёт {{ inv.number }}
+            Invoice {{ inv.number }}
           </h1>
           <span
             class="mt-1 inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
@@ -33,6 +33,15 @@
 
         @if (!editing() && !cancelDialogOpen()) {
           <div class="flex flex-wrap items-center gap-2">
+            <button
+              i18n="@@invoiceDetailBtnPreviewPdf"
+              mat-stroked-button
+              type="button"
+              (click)="openPdfPreview()"
+            >
+              <mat-icon>preview</mat-icon>
+              Preview
+            </button>
             @if (hasAction('edit')) {
               <button
                 i18n="@@invoiceDetailBtnEdit"
@@ -42,7 +51,7 @@
                 (click)="startEdit()"
               >
                 <mat-icon>edit</mat-icon>
-                Редактировать
+                Edit
               </button>
             }
             @if (hasAction('publish')) {
@@ -55,7 +64,7 @@
                 (click)="publishInvoice()"
               >
                 <mat-icon>publish</mat-icon>
-                Опубликовать
+                Publish
               </button>
             }
             @if (hasAction('record_payment')) {
@@ -68,7 +77,7 @@
                 (click)="openRecordPayment()"
               >
                 <mat-icon>payments</mat-icon>
-                Записать платёж
+                Record payment
               </button>
             }
             @if (hasAction('download_pdf')) {
@@ -80,7 +89,7 @@
                 (click)="downloadPdf()"
               >
                 <mat-icon>picture_as_pdf</mat-icon>
-                Скачать PDF
+                Download PDF
               </button>
             }
             @if (hasAction('cancel') && permissions.canDeleteInvoice()) {
@@ -93,7 +102,7 @@
                 (click)="openCancelDialog()"
               >
                 <mat-icon>cancel</mat-icon>
-                Отменить
+                Cancel
               </button>
             }
           </div>
@@ -104,14 +113,14 @@
       @if (cancelDialogOpen()) {
         <div class="rounded-lg border border-amber-200 bg-amber-50 p-4">
           <h2 class="text-sm font-semibold text-gray-900" i18n="@@invoiceDetailCancelPanelTitle">
-            Отмена счёта
+            Cancel invoice
           </h2>
           <p class="mt-1 text-sm text-gray-600" i18n="@@invoiceDetailCancelPanelDesc">
-            Укажите причину отмены счёта {{ inv.number }}.
+            Provide a reason for cancelling invoice {{ inv.number }}.
           </p>
           <div class="mt-3 max-w-md">
             <mat-form-field class="w-full" subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailCancelReasonLabel">Причина отмены</mat-label>
+              <mat-label i18n="@@invoiceDetailCancelReasonLabel">Cancellation reason</mat-label>
               <textarea matInput rows="3" [formControl]="cancelReasonControl"></textarea>
             </mat-form-field>
           </div>
@@ -124,9 +133,9 @@
               (click)="confirmCancel()"
             >
               @if (actionLoading()) {
-                <span i18n="@@invoiceDetailConfirmCancelLoading">Отмена…</span>
+                <span i18n="@@invoiceDetailConfirmCancelLoading">Cancelling...</span>
               } @else {
-                <span i18n="@@invoiceDetailBtnConfirmCancel">Подтвердить отмену</span>
+                <span i18n="@@invoiceDetailBtnConfirmCancel">Confirm cancellation</span>
               }
             </button>
             <button
@@ -136,7 +145,7 @@
               [disabled]="actionLoading()"
               (click)="closeCancelDialog()"
             >
-              Назад
+              Back
             </button>
           </div>
         </div>
@@ -146,31 +155,31 @@
       @if (editing()) {
         <div class="rounded-lg border border-gray-200 bg-white p-4">
           <h2 class="text-sm font-semibold text-gray-900" i18n="@@invoiceDetailEditFormTitle">
-            Редактировать счёт
+            Edit invoice
           </h2>
           <div class="mt-3 grid max-w-lg grid-cols-1 gap-3 sm:grid-cols-2" [formGroup]="editForm">
             <mat-form-field subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailEditInvoiceDateLabel">Дата счёта</mat-label>
+              <mat-label i18n="@@invoiceDetailEditInvoiceDateLabel">Invoice date</mat-label>
               <input formControlName="invoiceDate" matInput type="date" />
             </mat-form-field>
             <mat-form-field subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailEditDueDateLabel">Срок оплаты</mat-label>
+              <mat-label i18n="@@invoiceDetailEditDueDateLabel">Due date</mat-label>
               <input formControlName="dueDate" matInput type="date" />
             </mat-form-field>
             <mat-form-field subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailEditCurrencyLabel">Валюта</mat-label>
+              <mat-label i18n="@@invoiceDetailEditCurrencyLabel">Currency</mat-label>
               <input formControlName="currency" matInput maxlength="3" />
             </mat-form-field>
             <mat-form-field subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailEditLanguageLabel">Язык</mat-label>
+              <mat-label i18n="@@invoiceDetailEditLanguageLabel">Language</mat-label>
               <input formControlName="language" matInput />
             </mat-form-field>
             <mat-form-field class="sm:col-span-2" subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailEditPaymentTermsLabel">Условия оплаты</mat-label>
+              <mat-label i18n="@@invoiceDetailEditPaymentTermsLabel">Payment terms</mat-label>
               <input formControlName="paymentTerms" matInput />
             </mat-form-field>
             <mat-form-field class="sm:col-span-2" subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailEditInternalNotesLabel">Внутренние заметки</mat-label>
+              <mat-label i18n="@@invoiceDetailEditInternalNotesLabel">Internal notes</mat-label>
               <textarea formControlName="internalNotes" matInput rows="3"></textarea>
             </mat-form-field>
           </div>
@@ -183,9 +192,9 @@
               (click)="saveEdit()"
             >
               @if (actionLoading()) {
-                <span i18n="@@invoiceDetailSaveLoading">Сохранение…</span>
+                <span i18n="@@invoiceDetailSaveLoading">Saving...</span>
               } @else {
-                <span i18n="@@invoiceDetailBtnSave">Сохранить</span>
+                <span i18n="@@invoiceDetailBtnSave">Save</span>
               }
             </button>
             <button
@@ -195,7 +204,7 @@
               [disabled]="actionLoading()"
               (click)="cancelEdit()"
             >
-              Отмена
+              Cancel
             </button>
           </div>
         </div>
@@ -203,39 +212,39 @@
         <!-- ===== INVOICE DETAILS CARD ===== -->
         <div class="rounded-lg border border-gray-200 bg-white p-4">
           <h2 class="text-sm font-semibold text-gray-900" i18n="@@invoiceDetailCardTitle">
-            Детали счёта
+            Invoice details
           </h2>
           <dl class="mt-3 grid grid-cols-1 gap-x-6 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
             <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailClientLabel">Клиент</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailClientLabel">Client</dt>
               <dd class="font-medium text-gray-900">{{ clientName() }}</dd>
             </div>
             <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailClientTypeLabel">Тип клиента</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailClientTypeLabel">Client type</dt>
               <dd class="text-gray-900">{{ inv.clientType ?? '—' }}</dd>
             </div>
             <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailInvoiceDateLabel">Дата счёта</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailInvoiceDateLabel">Invoice date</dt>
               <dd class="text-gray-900">{{ formatDateOnly(inv.invoiceDate) }}</dd>
             </div>
             <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailDueDateLabel">Срок оплаты</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailDueDateLabel">Due date</dt>
               <dd class="text-gray-900">{{ formatDateOnly(inv.dueDate) }}</dd>
             </div>
             <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailCurrencyLabel">Валюта</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailCurrencyLabel">Currency</dt>
               <dd class="text-gray-900">{{ inv.currency }}</dd>
             </div>
             <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailLanguageLabel">Язык</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailLanguageLabel">Language</dt>
               <dd class="text-gray-900">{{ inv.language || '—' }}</dd>
             </div>
             <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailPaymentTermsLabel">Условия оплаты</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailPaymentTermsLabel">Payment terms</dt>
               <dd class="text-gray-900">{{ inv.paymentTerms || '—' }}</dd>
             </div>
             <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailBookingLabel">Бронирование</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailBookingLabel">Booking</dt>
               <dd>
                 @if (inv.bookingId) {
                   <a class="text-primary underline" [routerLink]="['/app/bookings', inv.bookingId]">
@@ -249,7 +258,7 @@
             @if (inv.cancellationReason) {
               <div class="sm:col-span-2 lg:col-span-3">
                 <dt class="text-gray-500" i18n="@@invoiceDetailCancellationReasonLabel">
-                  Причина отмены
+                  Cancellation reason
                 </dt>
                 <dd class="text-red-700">{{ inv.cancellationReason }}</dd>
               </div>
@@ -257,7 +266,7 @@
             @if (inv.internalNotes) {
               <div class="sm:col-span-2 lg:col-span-3">
                 <dt class="text-gray-500" i18n="@@invoiceDetailInternalNotesLabel">
-                  Внутренние заметки
+                  Internal notes
                 </dt>
                 <dd class="text-gray-900">{{ inv.internalNotes }}</dd>
               </div>
@@ -269,7 +278,7 @@
       <!-- ===== LINE ITEMS TABLE ===== -->
       <div class="rounded-lg border border-gray-200 bg-white p-4">
         <h2 class="mb-3 text-sm font-semibold text-gray-900" i18n="@@invoiceDetailLineItemsTitle">
-          Позиции
+          Line items
         </h2>
         @if (lineItems().length > 0) {
           <div class="overflow-x-auto">
@@ -281,7 +290,7 @@
                   class="text-xs font-medium text-gray-500"
                   i18n="@@invoiceDetailColDescription"
                 >
-                  Описание
+                  Description
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm text-gray-900">
                   {{ row.description || '—' }}
@@ -295,7 +304,7 @@
                   class="text-xs font-medium text-gray-500"
                   i18n="@@invoiceDetailColServiceDates"
                 >
-                  Даты услуги
+                  Service dates
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm text-gray-900">
                   {{ formatServiceDates(row.serviceDateFrom, row.serviceDateTo) }}
@@ -309,7 +318,7 @@
                   class="text-xs font-medium text-gray-500"
                   i18n="@@invoiceDetailColTravelers"
                 >
-                  Туристы
+                  Travelers
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm text-gray-900">
                   {{ row.travelers || '—' }}
@@ -323,7 +332,7 @@
                   class="text-xs font-medium text-gray-500"
                   i18n="@@invoiceDetailColUnitPrice"
                 >
-                  Цена за ед.
+                  Unit price
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm text-gray-900">
                   {{ row.unitPrice ?? '—' }}
@@ -337,7 +346,7 @@
                   class="text-xs font-medium text-gray-500"
                   i18n="@@invoiceDetailColQuantity"
                 >
-                  Кол-во
+                  Quantity
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm text-gray-900">
                   {{ row.quantity ?? '—' }}
@@ -351,7 +360,7 @@
                   class="text-xs font-medium text-gray-500"
                   i18n="@@invoiceDetailColTotal"
                 >
-                  Итого
+                  Total
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm font-medium text-gray-900">
                   {{ row.total ?? '—' }}
@@ -365,7 +374,7 @@
                   class="text-xs font-medium text-gray-500"
                   i18n="@@invoiceDetailColTourCost"
                 >
-                  Стоимость тура
+                  Tour cost
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm text-gray-900">
                   {{ row.tourCost ?? '—' }}
@@ -379,7 +388,7 @@
                   class="text-xs font-medium text-gray-500"
                   i18n="@@invoiceDetailColCommission"
                 >
-                  Комиссия
+                  Commission
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm text-gray-900">
                   {{ row.commissionAmount ?? '—' }}
@@ -393,7 +402,7 @@
                   class="text-xs font-medium text-gray-500"
                   i18n="@@invoiceDetailColCommissionVat"
                 >
-                  НДС комиссии
+                  Commission VAT
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm text-gray-900">
                   {{ row.commissionVat ?? '—' }}
@@ -407,7 +416,7 @@
                   class="text-xs font-medium text-gray-500"
                   i18n="@@invoiceDetailColNetToPay"
                 >
-                  К оплате
+                  Net to pay
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm font-medium text-gray-900">
                   {{ row.total ?? '—' }}
@@ -419,25 +428,25 @@
             </mat-table>
           </div>
         } @else {
-          <p class="text-sm text-gray-500" i18n="@@invoiceDetailNoLineItems">Нет позиций.</p>
+          <p class="text-sm text-gray-500" i18n="@@invoiceDetailNoLineItems">No line items.</p>
         }
       </div>
 
       <!-- ===== PRICING BLOCK ===== -->
       <div class="rounded-lg border border-gray-200 bg-white p-4">
         <h2 class="mb-3 text-sm font-semibold text-gray-900" i18n="@@invoiceDetailPricingTitle">
-          Итоговая стоимость
+          Pricing
         </h2>
         <dl class="space-y-1 text-sm">
           <div class="flex justify-between">
-            <dt class="text-gray-500" i18n="@@invoiceDetailSubtotalLabel">Подытог</dt>
+            <dt class="text-gray-500" i18n="@@invoiceDetailSubtotalLabel">Subtotal</dt>
             <dd class="text-gray-900">
               {{ inv.subtotal ?? 0 | number: '1.2-2' }} {{ inv.currency }}
             </dd>
           </div>
           @if (inv.discountAmount && inv.discountAmount !== 0) {
             <div class="flex justify-between">
-              <dt class="text-gray-500" i18n="@@invoiceDetailDiscountLabel">Скидка</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailDiscountLabel">Discount</dt>
               <dd class="text-green-700">
                 −{{ inv.discountAmount | number: '1.2-2' }} {{ inv.currency }}
               </dd>
@@ -445,14 +454,14 @@
           }
           @if (isB2bAgent() && inv.commissionVatAmount && inv.commissionVatAmount !== 0) {
             <div class="flex justify-between">
-              <dt class="text-gray-500" i18n="@@invoiceDetailCommissionVatLabel">НДС с комиссии</dt>
+              <dt class="text-gray-500" i18n="@@invoiceDetailCommissionVatLabel">Commission VAT</dt>
               <dd class="text-gray-900">
                 {{ inv.commissionVatAmount | number: '1.2-2' }} {{ inv.currency }}
               </dd>
             </div>
           }
           <div class="flex justify-between border-t border-gray-200 pt-2 font-medium">
-            <dt class="text-gray-900" i18n="@@invoiceDetailTotalLabel">Итого</dt>
+            <dt class="text-gray-900" i18n="@@invoiceDetailTotalLabel">Total</dt>
             <dd class="text-gray-900">{{ inv.total ?? 0 | number: '1.2-2' }} {{ inv.currency }}</dd>
           </div>
         </dl>
@@ -462,7 +471,7 @@
       @if (inv.status !== 'DRAFT' && inv.amountInWords) {
         <div class="rounded-lg border border-gray-200 bg-white p-4">
           <p class="text-sm text-gray-500" i18n="@@invoiceDetailAmountInWordsLabel">
-            Сумма прописью
+            Amount in words
           </p>
           <p class="mt-1 text-sm font-medium text-gray-900">{{ inv.amountInWords }}</p>
         </div>
@@ -471,7 +480,7 @@
       <!-- ===== PAYMENTS SECTION ===== -->
       <div class="rounded-lg border border-gray-200 bg-white p-4">
         <h2 class="mb-3 text-sm font-semibold text-gray-900" i18n="@@invoiceDetailPaymentsTitle">
-          Платежи
+          Payments
         </h2>
         @if (payments().length > 0) {
           <ul class="divide-y divide-gray-100" role="list">
@@ -503,7 +512,7 @@
                     (click)="confirmDeletePayment(payment)"
                   >
                     <mat-icon>delete</mat-icon>
-                    Удалить
+                    Delete
                   </button>
                 }
               </li>
@@ -511,13 +520,13 @@
           </ul>
           <div class="mt-3 border-t border-gray-200 pt-3 space-y-1 text-sm">
             <div class="flex justify-between">
-              <span class="text-gray-500" i18n="@@invoiceDetailPaidLabel">Оплачено:</span>
+              <span class="text-gray-500" i18n="@@invoiceDetailPaidLabel">Paid:</span>
               <span class="font-medium text-gray-900">
                 {{ paidAmount() | number: '1.2-2' }} {{ inv.currency }}
               </span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-500" i18n="@@invoiceDetailRemainingLabel">Остаток:</span>
+              <span class="text-gray-500" i18n="@@invoiceDetailRemainingLabel">Remaining:</span>
               <span
                 class="font-medium"
                 [class.text-green-700]="remainingAmount() <= 0"
@@ -528,32 +537,32 @@
             </div>
           </div>
         } @else {
-          <p class="text-sm text-gray-500" i18n="@@invoiceDetailNoPayments">Платежей нет.</p>
+          <p class="text-sm text-gray-500" i18n="@@invoiceDetailNoPayments">No payments.</p>
         }
       </div>
 
       <!-- ===== ACTIVITY LOG ===== -->
       <app-activity-timeline
-        title="История изменений"
+        title="Activity log"
         i18n-title="@@invoiceDetailActivityTitle"
         [items]="timelineItems()"
       />
     } @else {
-      <p class="text-sm text-gray-500" i18n="@@invoiceDetailNotFound">Счёт не найден.</p>
+      <p class="text-sm text-gray-500" i18n="@@invoiceDetailNotFound">Invoice not found.</p>
     }
   }
 </div>
 
 <!-- ===== DELETE PAYMENT CONFIRMATION ===== -->
 <app-confirmation-dialog
-  cancelLabel="Отмена"
+  cancelLabel="Cancel"
   i18n-cancelLabel="@@invoiceDetailDeletePaymentCancelLabel"
-  confirmLabel="Удалить"
+  confirmLabel="Delete"
   i18n-confirmLabel="@@invoiceDetailDeletePaymentConfirmLabel"
-  title="Удалить платёж"
+  title="Delete payment"
   i18n-title="@@invoiceDetailDeletePaymentDialogTitle"
   [danger]="true"
-  [message]="'Удалить платёж на ' + pendingDeletePaymentLabel() + '? Это действие необратимо.'"
+  [message]="deletePaymentMessage()"
   [open]="deletePaymentConfirmOpen()"
   (cancel)="onDeletePaymentCancel()"
   (confirm)="onDeletePaymentConfirm()"

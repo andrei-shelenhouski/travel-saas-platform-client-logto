@@ -2278,6 +2278,286 @@
         <source>Adults / Children</source>
         <target>Взрослых / Детей</target>
       </trans-unit>
+      <trans-unit id="invoiceDetailBtnPreviewPdf" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>preview<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Preview </source>
+        <target><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>preview<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Предварительный просмотр </target>
+      </trans-unit>
+      <trans-unit id="invoicePdfPreviewDialogTitle" datatype="html">
+        <source>Invoice <x id="INTERPOLATION" equiv-text="{{ data.invoiceNumber }}"/></source>
+        <target>Счёт №<x id="INTERPOLATION" equiv-text="{{ data.invoiceNumber }}"/></target>
+      </trans-unit>
+      <trans-unit id="invoicePdfDownloadButton" datatype="html">
+        <source> Download PDF </source>
+        <target> Скачать PDF </target>
+      </trans-unit>
+      <trans-unit id="invoicePdfPreviewCloseAria" datatype="html">
+        <source>Close PDF preview</source>
+        <target>Закрыть предпросмотр PDF</target>
+      </trans-unit>
+      <trans-unit id="invoicePdfPreviewRetryButton" datatype="html">
+        <source> Retry </source>
+        <target> Попробуйте ещё раз </target>
+      </trans-unit>
+      <trans-unit id="invoicePdfPreviewFrameTitle" datatype="html">
+        <source>Invoice PDF preview</source>
+        <target>Предпросмотр PDF счёта</target>
+      </trans-unit>
+      <trans-unit id="invoicePdfPreviewLoadError" datatype="html">
+        <source>Unable to load PDF. Please try again.</source>
+        <target>Не удалось загрузить PDF. Попробуйте ещё раз.</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailBack" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>arrow_back<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Back to invoices </source>
+        <target><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>arrow_back<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Назад к счетам </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailTitle" datatype="html">
+        <source> Invoice <x id="INTERPOLATION" equiv-text="{{ inv.number }}"/> </source>
+        <target> Счёт <x id="INTERPOLATION" equiv-text="{{ inv.number }}"/> </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailBtnEdit" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Edit </source>
+        <target><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>edit<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Редактировать </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailBtnPublish" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>publish<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Publish </source>
+        <target><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>publish<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Опубликовать </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailBtnRecordPayment" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>payments<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Record payment </source>
+        <target><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>payments<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Записать платёж </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailBtnDownloadPdf" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>picture_as_pdf<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Download PDF </source>
+        <target><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>picture_as_pdf<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Скачать PDF </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailBtnCancel" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>cancel<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Cancel </source>
+        <target><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>cancel<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Отменить </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailCancelPanelTitle" datatype="html">
+        <source> Cancel invoice </source>
+        <target> Отмена счёта </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailCancelPanelDesc" datatype="html">
+        <source> Provide a reason for cancelling invoice <x id="INTERPOLATION" equiv-text="{{ inv.number }}"/>. </source>
+        <target> Укажите причину отмены счёта <x id="INTERPOLATION" equiv-text="{{ inv.number }}"/>. </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailCancelReasonLabel" datatype="html">
+        <source>Cancellation reason</source>
+        <target>Причина отмены</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailConfirmCancelLoading" datatype="html">
+        <source>Cancelling...</source>
+        <target>Отмена…</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailBtnConfirmCancel" datatype="html">
+        <source>Confirm cancellation</source>
+        <target>Подтвердить отмену</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailBtnBack" datatype="html">
+        <source> Back </source>
+        <target> Назад </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditFormTitle" datatype="html">
+        <source> Edit invoice </source>
+        <target> Редактировать счёт </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditInvoiceDateLabel" datatype="html">
+        <source>Invoice date</source>
+        <target>Дата счёта</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditDueDateLabel" datatype="html">
+        <source>Due date</source>
+        <target>Срок оплаты</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditCurrencyLabel" datatype="html">
+        <source>Currency</source>
+        <target>Валюта</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditLanguageLabel" datatype="html">
+        <source>Language</source>
+        <target>Язык</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditPaymentTermsLabel" datatype="html">
+        <source>Payment terms</source>
+        <target>Условия оплаты</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditInternalNotesLabel" datatype="html">
+        <source>Internal notes</source>
+        <target>Внутренние заметки</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailSaveLoading" datatype="html">
+        <source>Saving...</source>
+        <target>Сохранение…</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailBtnSave" datatype="html">
+        <source>Save</source>
+        <target>Сохранить</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailBtnCancelEdit" datatype="html">
+        <source> Cancel </source>
+        <target> Отмена </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailCardTitle" datatype="html">
+        <source> Invoice details </source>
+        <target> Детали счёта </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailClientLabel" datatype="html">
+        <source>Client</source>
+        <target>Клиент</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailClientTypeLabel" datatype="html">
+        <source>Client type</source>
+        <target>Тип клиента</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailInvoiceDateLabel" datatype="html">
+        <source>Invoice date</source>
+        <target>Дата счёта</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailDueDateLabel" datatype="html">
+        <source>Due date</source>
+        <target>Срок оплаты</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailCurrencyLabel" datatype="html">
+        <source>Currency</source>
+        <target>Валюта</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailLanguageLabel" datatype="html">
+        <source>Language</source>
+        <target>Язык</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailPaymentTermsLabel" datatype="html">
+        <source>Payment terms</source>
+        <target>Условия оплаты</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailBookingLabel" datatype="html">
+        <source>Booking</source>
+        <target>Бронирование</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailCancellationReasonLabel" datatype="html">
+        <source> Cancellation reason </source>
+        <target> Причина отмены </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailInternalNotesLabel" datatype="html">
+        <source> Internal notes </source>
+        <target> Внутренние заметки </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailLineItemsTitle" datatype="html">
+        <source> Line items </source>
+        <target> Позиции </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailColDescription" datatype="html">
+        <source> Description </source>
+        <target> Описание </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailColServiceDates" datatype="html">
+        <source> Service dates </source>
+        <target> Даты услуги </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailColTravelers" datatype="html">
+        <source> Travelers </source>
+        <target> Туристы </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailColUnitPrice" datatype="html">
+        <source> Unit price </source>
+        <target> Цена за ед. </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailColQuantity" datatype="html">
+        <source> Quantity </source>
+        <target> Кол-во </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailColTotal" datatype="html">
+        <source> Total </source>
+        <target> Итого </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailColTourCost" datatype="html">
+        <source> Tour cost </source>
+        <target> Стоимость тура </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailColCommission" datatype="html">
+        <source> Commission </source>
+        <target> Комиссия </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailColCommissionVat" datatype="html">
+        <source> Commission VAT </source>
+        <target> НДС комиссии </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailColNetToPay" datatype="html">
+        <source> Net to pay </source>
+        <target> К оплате </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailNoLineItems" datatype="html">
+        <source>No line items.</source>
+        <target>Нет позиций.</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailPricingTitle" datatype="html">
+        <source> Pricing </source>
+        <target> Итоговая стоимость </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailSubtotalLabel" datatype="html">
+        <source>Subtotal</source>
+        <target>Подытог</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailDiscountLabel" datatype="html">
+        <source>Discount</source>
+        <target>Скидка</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailCommissionVatLabel" datatype="html">
+        <source>Commission VAT</source>
+        <target>НДС с комиссии</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailTotalLabel" datatype="html">
+        <source>Total</source>
+        <target>Итого</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailAmountInWordsLabel" datatype="html">
+        <source> Amount in words </source>
+        <target> Сумма прописью </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailPaymentsTitle" datatype="html">
+        <source> Payments </source>
+        <target> Платежи </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailBtnDeletePayment" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>delete<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Delete </source>
+        <target><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>delete<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Удалить </target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailPaidLabel" datatype="html">
+        <source>Paid:</source>
+        <target>Оплачено:</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailRemainingLabel" datatype="html">
+        <source>Remaining:</source>
+        <target>Остаток:</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailNoPayments" datatype="html">
+        <source>No payments.</source>
+        <target>Платежей нет.</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailActivityTitle" datatype="html">
+        <source>Activity log</source>
+        <target>История изменений</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailNotFound" datatype="html">
+        <source>Invoice not found.</source>
+        <target>Счёт не найден.</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailDeletePaymentCancelLabel" datatype="html">
+        <source>Cancel</source>
+        <target>Отмена</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailDeletePaymentConfirmLabel" datatype="html">
+        <source>Delete</source>
+        <target>Удалить</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailDeletePaymentDialogTitle" datatype="html">
+        <source>Delete payment</source>
+        <target>Удалить платёж</target>
+      </trans-unit>
+      <trans-unit id="invoiceDetailDeletePaymentMessage" datatype="html">
+        <source>Delete payment of <x id="AMOUNT" equiv-text="this.pendingDeletePaymentLabel()"/>? This action is irreversible.</source>
+        <target>Удалить платёж на <x id="AMOUNT" equiv-text="this.pendingDeletePaymentLabel()"/>? Это действие необратимо.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

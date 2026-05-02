@@ -138,7 +138,6 @@ export class BookingsListComponent {
     'returnDate',
     'status',
     'assignedBackofficeName',
-    'actions',
   ];
 
   constructor() {
