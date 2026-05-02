@@ -12,12 +12,16 @@ import { RecordPaymentModalComponent } from './record-payment-modal';
 describe('RecordPaymentModalComponent', () => {
   let fixture: ComponentFixture<RecordPaymentModalComponent>;
   let component: RecordPaymentModalComponent;
+  const fixedNow = new Date(2026, 4, 2, 12, 0, 0);
 
   let invoicesService: { recordPayment: ReturnType<typeof vi.fn> };
   let dialogRef: { close: ReturnType<typeof vi.fn> };
   let snackBar: { open: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(fixedNow);
+
     invoicesService = {
       recordPayment: vi.fn(() =>
         of({
@@ -58,6 +62,10 @@ describe('RecordPaymentModalComponent', () => {
     fixture.detectChanges();
   });
 
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
   it('prefills amount and date', () => {
     const formValue = component['form'].getRawValue();
 
@@ -80,7 +88,7 @@ describe('RecordPaymentModalComponent', () => {
   it('records payment and closes with refresh result', () => {
     component['form'].patchValue({
       amount: 20,
-      paymentDate: new Date(2026, 4, 2),
+      paymentDate: component['today'],
       paymentMethod: 'CASH',
       reference: 'P-123',
     });
@@ -95,7 +103,7 @@ describe('RecordPaymentModalComponent', () => {
       reference: 'P-123',
     });
     expect(dialogRef.close).toHaveBeenCalledWith({ refresh: true });
-    expect(snackBar.open).toHaveBeenCalledWith('Платёж записан. Счёт обновлён.', 'OK', {
+    expect(snackBar.open).toHaveBeenCalledWith('Payment recorded. Invoice updated.', 'OK', {
       duration: 4000,
     });
   });
@@ -103,14 +111,14 @@ describe('RecordPaymentModalComponent', () => {
   it('shows fully paid snackbar message when amount covers outstanding balance', () => {
     component['form'].patchValue({
       amount: 123.45,
-      paymentDate: new Date(2026, 4, 2),
+      paymentDate: component['today'],
       paymentMethod: 'BANK_TRANSFER',
       reference: '',
     });
 
     component['save']();
 
-    expect(snackBar.open).toHaveBeenCalledWith('Счёт полностью оплачен.', 'OK', {
+    expect(snackBar.open).toHaveBeenCalledWith('Invoice fully paid.', 'OK', {
       duration: 4000,
     });
   });
@@ -132,7 +140,7 @@ describe('RecordPaymentModalComponent', () => {
     );
     component['form'].patchValue({
       amount: 10,
-      paymentDate: new Date(2026, 4, 2),
+      paymentDate: component['today'],
       paymentMethod: 'CARD',
     });
 

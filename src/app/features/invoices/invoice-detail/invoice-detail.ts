@@ -1,12 +1,5 @@
 import { DecimalPipe } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,20 +9,20 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { RecordPaymentModalComponent } from '@app/features/invoices/record-payment-modal/record-payment-modal';
 import { ActivitiesService } from '@app/services/activities.service';
 import { InvoicesService } from '@app/services/invoices.service';
-import { RecordPaymentModalComponent } from '@app/features/invoices/record-payment-modal/record-payment-modal';
 import { PermissionService } from '@app/services/permission.service';
 import { ActivityTimelineComponent } from '@app/shared/components/activity-timeline.component';
 import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
 import { MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
+import { EntityType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
-import {
-  type ActivityTimelineItem,
-  EntityType,
-  type InvoiceResponseDto,
-  type PaymentResponseDto,
+import type {
+  ActivityTimelineItem,
+  InvoiceResponseDto,
+  PaymentResponseDto,
 } from '@app/shared/models';
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
@@ -166,8 +159,9 @@ export class InvoiceDetailComponent {
 
   readonly remainingAmount = computed(() => {
     const inv = this.invoice();
+    const invoiceTotal = inv?.total ?? inv?.subtotal ?? 0;
 
-    return (inv?.total ?? 0) - this.paidAmount();
+    return Math.max(invoiceTotal - this.paidAmount(), 0);
   });
 
   readonly clientName = computed<string>(() => {
@@ -421,7 +415,7 @@ export class InvoiceDetailComponent {
       return;
     }
 
-    const outstandingAmount = (inv.total ?? 0) - this.paidAmount();
+    const outstandingAmount = this.remainingAmount();
     const dialogRef = this.dialog.open(RecordPaymentModalComponent, {
       data: {
         invoiceId: inv.id,

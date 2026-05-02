@@ -1,12 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  ReactiveFormsModule,
-  type ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
@@ -29,12 +23,7 @@ export type RecordPaymentModalResult = {
   refresh: true;
 };
 
-const PAYMENT_METHOD_OPTIONS: readonly { value: PaymentMethod; label: string }[] = [
-  { value: 'BANK_TRANSFER', label: 'Банковский перевод' },
-  { value: 'CASH', label: 'Наличные' },
-  { value: 'CARD', label: 'Карта' },
-  { value: 'OTHER', label: 'Другое' },
-];
+const PAYMENT_METHOD_OPTIONS: readonly PaymentMethod[] = ['BANK_TRANSFER', 'CASH', 'CARD', 'OTHER'];
 
 @Component({
   selector: 'app-record-payment-modal',
@@ -115,8 +104,8 @@ export class RecordPaymentModalComponent {
 
         const message =
           request.amount >= this.outstandingAmount()
-            ? 'Счёт полностью оплачен.'
-            : 'Платёж записан. Счёт обновлён.';
+            ? $localize`:@@recordPaymentModalInvoiceFullyPaidSuccess:Invoice fully paid.`
+            : $localize`:@@recordPaymentModalPaymentRecordedSuccess:Payment recorded. Invoice updated.`;
 
         this.snackBar.open(message, 'OK', { duration: 4000 });
       },
@@ -195,7 +184,11 @@ export class RecordPaymentModalComponent {
       }
     }
 
-    return errorResponse.error?.message ?? errorResponse.message ?? 'Ошибка записи платежа.';
+    return (
+      errorResponse.error?.message ??
+      errorResponse.message ??
+      $localize`:@@recordPaymentModalRecordPaymentError:Failed to record payment.`
+    );
   }
 
   private isFieldErrorMap(value: unknown): value is RecordPaymentModalFieldErrorMap {
