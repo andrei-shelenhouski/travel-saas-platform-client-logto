@@ -12,6 +12,8 @@ import type {
   InvoiceResponseDto,
   InvoiceSummaryResponseDto,
   PaginatedInvoiceResponseDto,
+  PaymentResponseDto,
+  RecordPaymentRequestDto,
   UpdateInvoiceDto,
 } from '@app/shared/models';
 
@@ -97,5 +99,17 @@ export class InvoicesService {
 
   getPdf(id: string): Observable<Blob> {
     return this.http.get(`${INVOICES_URL}/${id}/pdf`, { responseType: 'blob' });
+  }
+
+  listPayments(invoiceId: string): Observable<PaymentResponseDto[]> {
+    return this.http.get<PaymentResponseDto[]>(`${INVOICES_URL}/${invoiceId}/payments`);
+  }
+
+  recordPayment(invoiceId: string, dto: RecordPaymentRequestDto): Observable<PaymentResponseDto> {
+    return this.http.post<PaymentResponseDto>(`${INVOICES_URL}/${invoiceId}/payments`, dto);
+  }
+
+  deletePayment(invoiceId: string, paymentId: string): Observable<void> {
+    return this.http.delete<void>(`${INVOICES_URL}/${invoiceId}/payments/${paymentId}`);
   }
 }

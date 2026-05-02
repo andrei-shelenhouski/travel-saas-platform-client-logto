@@ -506,6 +506,58 @@ export type BookingResponseDto = {
 
 export type PaginatedBookingResponseDto = PaginatedDto<BookingResponseDto>;
 
+/** OpenAPI: TravelRequestSummary. Item in GET /api/clients/{id}/requests. */
+export type TravelRequestSummaryDto = {
+  id: string;
+  leadId?: string;
+  leadNumber?: string;
+  destination?: string;
+  departDate?: string;
+  returnDate?: string;
+  adults?: number;
+  children?: number;
+  status?: string;
+  offersCount?: number;
+  createdAt?: string;
+};
+
+export type PaginatedTravelRequestSummaryDto = PaginatedDto<TravelRequestSummaryDto>;
+
+/** OpenAPI: OfferSummary. Item in GET /api/clients/{id}/offers. */
+export type OfferSummaryDto = {
+  id: string;
+  offerNumber?: string;
+  leadId?: string;
+  leadNumber?: string;
+  travelRequestId?: string;
+  destination?: string;
+  totalPrice?: number;
+  currency?: string;
+  status?: string;
+  createdAt?: string;
+};
+
+export type PaginatedOfferSummaryDto = PaginatedDto<OfferSummaryDto>;
+
+/** OpenAPI: BookingSummary. Item in GET /api/clients/{id}/bookings. */
+export type BookingSummaryDto = {
+  id: string;
+  bookingNumber?: string;
+  leadId?: string;
+  leadNumber?: string;
+  offerId?: string;
+  offerNumber?: string;
+  destination?: string;
+  departDate?: string;
+  returnDate?: string;
+  status?: string;
+  totalPrice?: number;
+  currency?: string;
+  createdAt?: string;
+};
+
+export type PaginatedBookingSummaryDto = PaginatedDto<BookingSummaryDto>;
+
 // ----- Invoices -----
 
 export const InvoiceStatus = {
@@ -555,7 +607,7 @@ export type InvoiceResponseDto = {
   publishedAt?: string;
   createdById?: string;
   lineItems?: InvoiceLineItemResponseDto[];
-  payments?: unknown[];
+  payments?: PaymentResponseDto[];
   paidAmount?: number;
   createdAt: string;
   updatedAt: string;
@@ -604,6 +656,37 @@ export type InvoiceLineItemResponseDto = {
 
 export type CancelInvoiceDto = {
   reason: string;
+};
+
+export const PaymentMethod = {
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  CASH: 'CASH',
+  CARD: 'CARD',
+  OTHER: 'OTHER',
+} as const;
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod];
+
+/** OpenAPI: PaymentResponse. GET /api/invoices/{id}/payments response item. */
+export type PaymentResponseDto = {
+  id: string;
+  invoiceId: string;
+  amount: number;
+  currency: string;
+  paymentDate: string;
+  paymentMethod: PaymentMethod | string;
+  reference?: string;
+  source?: string;
+  recordedByName?: string;
+  createdAt: string;
+};
+
+/** OpenAPI: RecordPaymentRequest. POST /api/invoices/{id}/payments body. */
+export type RecordPaymentRequestDto = {
+  amount: number;
+  currency: string;
+  paymentDate: string;
+  paymentMethod: PaymentMethod | string;
+  reference?: string;
 };
 
 export type InvoiceFilterQueryDto = {
