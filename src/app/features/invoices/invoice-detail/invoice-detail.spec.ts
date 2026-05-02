@@ -1,8 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
 
 import { of } from 'rxjs';
 
+import { RecordPaymentModalComponent } from '@app/features/invoices/record-payment-modal/record-payment-modal';
 import { ActivitiesService } from '@app/services/activities.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
@@ -28,6 +30,7 @@ describe('InvoiceDetailComponent', () => {
   };
 
   let activitiesService: { findByEntity: ReturnType<typeof vi.fn> };
+  let dialog: { open: ReturnType<typeof vi.fn> };
 
   let toast: {
     showSuccess: ReturnType<typeof vi.fn>;
@@ -43,6 +46,7 @@ describe('InvoiceDetailComponent', () => {
     dueDate: '2026-05-10',
     currency: 'BYN',
     status,
+    total: 1000,
     createdAt: '2026-05-01T09:00:00Z',
     updatedAt: '2026-05-01T09:00:00Z',
   });
@@ -82,6 +86,9 @@ describe('InvoiceDetailComponent', () => {
     activitiesService = {
       findByEntity: vi.fn(() => of({ items: [], total: 0, page: 0, limit: 20 })),
     };
+    dialog = {
+      open: vi.fn(() => ({ afterClosed: () => of(undefined) })),
+    };
 
     toast = {
       showSuccess: vi.fn(),
@@ -107,6 +114,10 @@ describe('InvoiceDetailComponent', () => {
         {
           provide: PermissionService,
           useValue: { canDeleteInvoice: () => true },
+        },
+        {
+          provide: MatDialog,
+          useValue: dialog,
         },
         {
           provide: ActivatedRoute,
@@ -176,36 +187,49 @@ describe('InvoiceDetailComponent', () => {
     expect(toast.showError).toHaveBeenCalled();
   });
 
-  it('records a payment', () => {
+  it('opens record payment dialog with invoice context', () => {
     (component as unknown as { data: { set: (invoice: InvoiceResponseDto) => void } }).data.set(
       makeInvoice('ISSUED'),
     );
-    component.openRecordPayment();
-    component.paymentForm.patchValue({
-      amount: 100,
-      currency: 'BYN',
-      paymentDate: '2026-05-02',
-      paymentMethod: 'CASH',
-    });
-    component.submitRecordPayment();
 
-    expect(invoicesService.recordPayment).toHaveBeenCalledWith(
-      'invoice-1',
-      expect.objectContaining({ amount: 100 }),
-    );
-    expect(toast.showSuccess).toHaveBeenCalledWith('Платёж записан');
+    component.openRecordPayment();
+
+    expect(dialog.open).toHaveBeenCalledWith(RecordPaymentModalComponent, {
+      data: {
+        invoiceId: 'invoice-1',
+        invoiceNumber: 'INV-001',
+        currency: 'BYN',
+        outstandingAmount: 1000,
+      },
+      width: '480px',
+    });
   });
 
-  it('shows error when recording payment with amount 0', () => {
+  it('reloads invoice data when dialog returns refresh', () => {
+    const dataReload = vi.fn();
+    const activitiesReload = vi.fn();
+
+    dialog.open.mockReturnValueOnce({ afterClosed: () => of({ refresh: true }) });
     (component as unknown as { data: { set: (invoice: InvoiceResponseDto) => void } }).data.set(
       makeInvoice('ISSUED'),
     );
-    component.openRecordPayment();
-    // amount stays at 0 (form initial value)
-    component.submitRecordPayment();
+    (
+      component as unknown as {
+        data: { reload: () => void };
+        activitiesData: { reload: () => void };
+      }
+    ).data.reload = dataReload;
+    (
+      component as unknown as {
+        data: { reload: () => void };
+        activitiesData: { reload: () => void };
+      }
+    ).activitiesData.reload = activitiesReload;
 
-    expect(invoicesService.recordPayment).not.toHaveBeenCalled();
-    expect(toast.showError).toHaveBeenCalled();
+    component.openRecordPayment();
+
+    expect(dataReload).toHaveBeenCalled();
+    expect(activitiesReload).toHaveBeenCalled();
   });
 
   it('opens delete payment confirmation', () => {

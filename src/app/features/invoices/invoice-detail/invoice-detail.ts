@@ -8,26 +8,28 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { RecordPaymentModalComponent } from '@app/features/invoices/record-payment-modal/record-payment-modal';
 import { ActivitiesService } from '@app/services/activities.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { ActivityTimelineComponent } from '@app/shared/components/activity-timeline.component';
 import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
 import { MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
+import { EntityType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
-import {
-  type ActivityTimelineItem,
-  EntityType,
-  type InvoiceResponseDto,
-  type PaymentResponseDto,
+import type {
+  ActivityTimelineItem,
+  InvoiceResponseDto,
+  PaymentResponseDto,
 } from '@app/shared/models';
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
@@ -55,13 +57,6 @@ const STATUS_LABELS: Record<string, string> = {
   CANCELLED: 'Отменён',
 };
 
-const PAYMENT_METHODS = [
-  { value: 'BANK_TRANSFER', label: 'Банковский перевод' },
-  { value: 'CASH', label: 'Наличные' },
-  { value: 'CARD', label: 'Карта' },
-  { value: 'OTHER', label: 'Другое' },
-] as const;
-
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-invoice-detail',
@@ -83,6 +78,7 @@ export class InvoiceDetailComponent {
   private readonly router = inject(Router);
   private readonly invoicesService = inject(InvoicesService);
   private readonly activitiesService = inject(ActivitiesService);
+  private readonly dialog = inject(MatDialog);
   private readonly toast = inject(ToastService);
   private readonly fb = inject(FormBuilder);
   readonly permissions = inject(PermissionService);
@@ -170,8 +166,9 @@ export class InvoiceDetailComponent {
 
   readonly remainingAmount = computed(() => {
     const inv = this.invoice();
+    const invoiceTotal = inv?.total ?? inv?.subtotal ?? 0;
 
-    return (inv?.total ?? 0) - this.paidAmount();
+    return Math.max(invoiceTotal - this.paidAmount(), 0);
   });
 
   readonly clientName = computed<string>(() => {
@@ -194,7 +191,6 @@ export class InvoiceDetailComponent {
   readonly actionLoading = signal(false);
   readonly editing = signal(false);
   readonly cancelDialogOpen = signal(false);
-  readonly recordPaymentOpen = signal(false);
   readonly deletePaymentConfirmOpen = signal(false);
   readonly pendingDeletePaymentId = signal<string | null>(null);
   readonly pendingDeletePaymentLabel = signal<string>('');
@@ -211,19 +207,6 @@ export class InvoiceDetailComponent {
   });
 
   readonly cancelReasonControl = this.fb.nonNullable.control('');
-
-  readonly paymentForm = this.fb.nonNullable.group({
-    amount: [0 as number, [Validators.min(0.01)]],
-    currency: [''],
-    paymentDate: [''],
-    paymentMethod: ['BANK_TRANSFER'],
-    reference: [''],
-  });
-
-  // ---- Lookup tables exposed to template ----
-
-  readonly paymentMethods = PAYMENT_METHODS;
-  readonly statusLabels = STATUS_LABELS;
 
   constructor() {
     effect(() => {
@@ -438,53 +421,26 @@ export class InvoiceDetailComponent {
     if (!inv) {
       return;
     }
-    this.paymentForm.patchValue({
-      amount: 0,
-      currency: inv.currency,
-      paymentDate: new Date().toISOString().slice(0, 10),
-      paymentMethod: 'BANK_TRANSFER',
-      reference: '',
+
+    const outstandingAmount = this.remainingAmount();
+    const dialogRef = this.dialog.open(RecordPaymentModalComponent, {
+      data: {
+        invoiceId: inv.id,
+        invoiceNumber: inv.number,
+        currency: inv.currency,
+        outstandingAmount,
+      },
+      width: '480px',
     });
-    this.recordPaymentOpen.set(true);
-  }
 
-  closeRecordPayment(): void {
-    this.recordPaymentOpen.set(false);
-  }
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result?.refresh) {
+        return;
+      }
 
-  submitRecordPayment(): void {
-    const inv = this.invoice();
-
-    if (!inv || this.actionLoading()) {
-      return;
-    }
-
-    if (this.paymentForm.get('amount')!.invalid) {
-      this.toast.showError('Сумма должна быть больше нуля');
-
-      return;
-    }
-    this.actionLoading.set(true);
-    const v = this.paymentForm.getRawValue();
-    this.invoicesService
-      .recordPayment(inv.id, {
-        amount: v.amount,
-        currency: v.currency,
-        paymentDate: v.paymentDate,
-        paymentMethod: v.paymentMethod,
-        reference: v.reference.trim() || undefined,
-      })
-      .subscribe({
-        next: () => {
-          this.data.reload();
-          this.activitiesData.reload();
-          this.recordPaymentOpen.set(false);
-          this.toast.showSuccess('Платёж записан');
-        },
-        error: (err) =>
-          this.toast.showError(err.error?.message ?? err.message ?? 'Ошибка записи платежа'),
-        complete: () => this.actionLoading.set(false),
-      });
+      this.data.reload();
+      this.activitiesData.reload();
+    });
   }
 
   confirmDeletePayment(payment: PaymentResponseDto): void {
