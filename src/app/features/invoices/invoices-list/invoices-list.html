@@ -1,4 +1,8 @@
-<app-page-heading title="Invoices" i18n-title="@@invoiceListHeadingTitle">
+<app-page-heading
+  subtitle="Total: {{ totalElements() }} invoices"
+  title="Invoices"
+  i18n-title="@@invoiceListHeadingTitle"
+>
   <button color="primary" mat-flat-button type="button" (click)="navigateToCreateInvoice()">
     <mat-icon>add</mat-icon>
     <span i18n="@@invoiceListNewInvoiceCta">New invoice</span>
@@ -7,6 +11,7 @@
 
 <div class="space-y-4 p-4">
   <app-invoice-summary-cards
+    class="m-4"
     [currency]="summary().currency"
     [drafts]="summary().drafts"
     [overdueAmount]="summary().overdueAmount"
@@ -31,10 +36,6 @@
     (statusFilterChange)="onStatusFilterChange($event)"
   />
 
-  <p class="text-sm text-gray-600" i18n="@@invoiceListTotalCountLabel">
-    Total: {{ totalElements() }} invoices
-  </p>
-
   @if (error()) {
     <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
   }
@@ -45,7 +46,7 @@
         <th *matHeaderCellDef i18n="@@invoiceListColumnNumber" mat-header-cell>Invoice #</th>
         <td *matCellDef="let element" mat-cell>
           <a
-            class="font-semibold text-blue-700 hover:underline"
+            class="invoice-link"
             [routerLink]="['/app/invoices', element.id]"
             (click)="onInvoiceNumberClick($event)"
           >
@@ -100,20 +101,6 @@
         <th *matHeaderCellDef i18n="@@invoiceListColumnPaidAmount" mat-header-cell>Paid amount</th>
         <td *matCellDef="let element" mat-cell>
           {{ paidAmountLabel(element) }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <th *matHeaderCellDef i18n="@@invoiceListColumnActions" mat-header-cell>Actions</th>
-        <td *matCellDef="let element" mat-cell>
-          <button
-            i18n="@@invoiceListOpenAction"
-            mat-stroked-button
-            type="button"
-            (click)="onActionClick($event, element.id)"
-          >
-            Open
-          </button>
         </td>
       </ng-container>
 

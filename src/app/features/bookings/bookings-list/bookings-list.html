@@ -1,4 +1,8 @@
-<app-page-heading title="Bookings" i18n-title="@@bookingsListTitle">
+<app-page-heading
+  subtitle="Total: {{ totalElements() }} bookings"
+  title="Bookings"
+  i18n-title="@@bookingsListTitle"
+>
   @if (showCreateBookingButton()) {
     <button color="primary" mat-flat-button type="button" (click)="navigateToCreateBooking()">
       <mat-icon>add</mat-icon>
@@ -9,14 +13,11 @@
 
 <div class="space-y-4 p-4">
   <app-booking-filter-bar
+    class="m-4"
     [staffOptions]="staffOptions()"
     [value]="filterValue()"
     (filterChange)="onFilterChange($event)"
   />
-
-  <p class="text-sm text-gray-600" i18n="@@bookingsListTotalCountLabel">
-    Total: {{ totalElements() }} bookings
-  </p>
 
   @if (error()) {
     <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
@@ -80,21 +81,6 @@
         </th>
         <td *matCellDef="let element" mat-cell>
           {{ element.assignedBackofficeName || '—' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <th *matHeaderCellDef i18n="@@bookingsListColumnActions" mat-header-cell>Actions</th>
-        <td *matCellDef="let element" mat-cell>
-          <button
-            aria-label="Open booking"
-            i18n-aria-label="@@bookingsListOpenBookingAriaLabel"
-            mat-icon-button
-            type="button"
-            (click)="$event.stopPropagation(); navigateToBooking(element.id)"
-          >
-            <mat-icon>open_in_new</mat-icon>
-          </button>
         </td>
       </ng-container>
 
