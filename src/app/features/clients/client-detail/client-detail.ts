@@ -116,7 +116,7 @@ export class ClientDetailComponent {
         return EMPTY;
       }
 
-      return this.clientsService.getLeads(clientId, { page: 0, limit: 20 }).pipe(map((r) => r.items));
+      return this.clientsService.getLeads(clientId, { page: 1, limit: 20 }).pipe(map((r) => r.items));
     },
   });
 
@@ -131,7 +131,7 @@ export class ClientDetailComponent {
       }
 
       return this.clientsService
-        .getRequests(clientId, { page: 0, limit: 20 })
+        .getRequests(clientId, { page: 1, limit: 20 })
         .pipe(map((r) => r.items));
     },
   });
@@ -146,7 +146,7 @@ export class ClientDetailComponent {
         return EMPTY;
       }
 
-      return this.clientsService.getOffers(clientId, { page: 0, limit: 20 }).pipe(map((r) => r.items));
+      return this.clientsService.getOffers(clientId, { page: 1, limit: 20 }).pipe(map((r) => r.items));
     },
   });
 
@@ -161,7 +161,7 @@ export class ClientDetailComponent {
       }
 
       return this.clientsService
-        .getBookings(clientId, { page: 0, limit: 20 })
+        .getBookings(clientId, { page: 1, limit: 20 })
         .pipe(map((r) => r.items));
     },
   });
