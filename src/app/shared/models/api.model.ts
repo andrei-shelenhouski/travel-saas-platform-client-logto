@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /**
  * API types aligned with OpenAPI spec.
  * Source of truth: project root openapi.json.
