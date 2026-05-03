@@ -13,6 +13,7 @@ import { finalize } from 'rxjs';
 
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { ConfirmDialogComponent } from '@app/shared/components';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 
 import type {
   OrganizationCurrency,
@@ -20,7 +21,6 @@ import type {
   OrganizationSettingsResponseDto,
 } from '@app/shared/models';
 import type { PendingChangesComponent } from '@app/guards/pending-changes.guard';
-
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-company-profile',
@@ -35,6 +35,7 @@ import type { PendingChangesComponent } from '@app/guards/pending-changes.guard'
     MatButtonModule,
     MatDialogModule,
     MatSnackBarModule,
+    PageHeading,
   ],
 })
 export class CompanyProfileComponent implements PendingChangesComponent {
