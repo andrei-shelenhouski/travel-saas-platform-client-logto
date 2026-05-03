@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
@@ -21,9 +20,6 @@ describe('CompanyProfileComponent', () => {
     uploadLogo: ReturnType<typeof vi.fn>;
   };
   let snackBar: {
-    open: ReturnType<typeof vi.fn>;
-  };
-  let dialog: {
     open: ReturnType<typeof vi.fn>;
   };
 
@@ -51,9 +47,9 @@ describe('CompanyProfileComponent', () => {
       open: vi.fn(),
     };
 
-    dialog = {
-      open: vi.fn(),
-    };
+    // Mock URL.createObjectURL and URL.revokeObjectURL for logo upload tests
+    global.URL.createObjectURL = vi.fn(() => 'blob:mock-url');
+    global.URL.revokeObjectURL = vi.fn();
 
     await TestBed.configureTestingModule({
       imports: [CompanyProfileComponent, ReactiveFormsModule],
@@ -61,7 +57,6 @@ describe('CompanyProfileComponent', () => {
         provideNoopAnimations(),
         { provide: OrganizationSettingsService, useValue: settingsService },
         { provide: MatSnackBar, useValue: snackBar },
-        { provide: MatDialog, useValue: dialog },
       ],
     }).compileComponents();
 
@@ -127,6 +122,48 @@ describe('CompanyProfileComponent', () => {
 
     expect(settingsService.uploadLogo).toHaveBeenCalledWith(mockFile);
     expect(snackBar.open).toHaveBeenCalledWith('Логотип обновлён', 'OK', expect.any(Object));
+  });
+
+  it('should reject files larger than 2 MB', () => {
+    const largeFile = new File([new ArrayBuffer(3 * 1024 * 1024)], 'large.png', {
+      type: 'image/png',
+    });
+
+    const event = {
+      target: {
+        files: [largeFile],
+        value: '',
+      },
+    } as unknown as Event;
+
+    component.onLogoSelected(event);
+
+    expect(settingsService.uploadLogo).not.toHaveBeenCalled();
+    expect(snackBar.open).toHaveBeenCalledWith(
+      expect.stringContaining('слишком большой'),
+      'Закрыть',
+      expect.any(Object),
+    );
+  });
+
+  it('should reject invalid file types', () => {
+    const invalidFile = new File([''], 'document.pdf', { type: 'application/pdf' });
+
+    const event = {
+      target: {
+        files: [invalidFile],
+        value: '',
+      },
+    } as unknown as Event;
+
+    component.onLogoSelected(event);
+
+    expect(settingsService.uploadLogo).not.toHaveBeenCalled();
+    expect(snackBar.open).toHaveBeenCalledWith(
+      expect.stringContaining('Неверный формат'),
+      'Закрыть',
+      expect.any(Object),
+    );
   });
 
   it('should return false when form is pristine (hasUnsavedChanges)', () => {

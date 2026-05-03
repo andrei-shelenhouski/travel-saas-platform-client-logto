@@ -238,11 +238,13 @@
               <button mat-stroked-button type="button" (click)="logoInput.click()">
                 Загрузить логотип
               </button>
+              <!-- Delete button disabled until backend endpoint is available
               @if (logoUrl()) {
                 <button color="warn" mat-stroked-button type="button" (click)="deleteLogo()">
                   Удалить
                 </button>
               }
+              -->
               <input
                 #logoInput
                 accept="image/png,image/jpeg"

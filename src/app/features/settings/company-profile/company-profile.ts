@@ -3,7 +3,6 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -12,7 +11,6 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { finalize } from 'rxjs';
 
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
-import { ConfirmDialogComponent } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 
 import type {
@@ -33,7 +31,6 @@ import type { PendingChangesComponent } from '@app/guards/pending-changes.guard'
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
-    MatDialogModule,
     MatSnackBarModule,
     PageHeading,
   ],
@@ -42,11 +39,11 @@ export class CompanyProfileComponent implements PendingChangesComponent {
   private readonly fb = inject(FormBuilder);
   private readonly settingsService = inject(OrganizationSettingsService);
   private readonly snackBar = inject(MatSnackBar);
-  private readonly dialog = inject(MatDialog);
 
   protected readonly loading = signal(true);
   protected readonly saving = signal(false);
   protected readonly logoUrl = signal<string | null>(null);
+  private currentBlobUrl: string | null = null;
 
   readonly form = this.fb.nonNullable.group({
     // Section 1 — Основная информация
@@ -106,36 +103,38 @@ export class CompanyProfileComponent implements PendingChangesComponent {
           }
         },
         error: (err) => {
-          this.snackBar.open('Ошибка загрузки настроек: ' + err.message, 'Закрыть', {
-            duration: 5000,
-          });
+          this.snackBar.open(
+            'Ошибка загрузки настроек: ' + (err.error?.message || err.message),
+            'Закрыть',
+            { duration: 5000 },
+          );
         },
       });
   }
 
   private patchFormWithSettings(data: OrganizationSettingsResponseDto): void {
     this.form.patchValue({
-      name: data.name || '',
-      legalName: data.legalName || '',
-      legalAddress: data.legalAddress || '',
-      unp: data.unp || '',
-      okpo: data.okpo || '',
-      phone: data.phone || '',
-      email: data.email || '',
-      website: data.website || '',
-      iban: data.iban || '',
-      bankName: data.bankName || '',
-      bik: data.bik || '',
-      directorName: data.directorName || '',
-      directorTitle: data.directorTitle || '',
-      defaultCurrency: (data.defaultCurrency || 'BYN') as OrganizationCurrency,
-      defaultLanguage: (data.defaultLanguage || 'RU') as OrganizationLanguage,
-      offerNumberPrefix: data.offerNumberPrefix || 'OF-',
-      invoicePrefix: data.invoicePrefix || 'INV-',
-      offerValidityDays: data.offerValidityDays || 7,
-      leadExpiryDays: data.leadExpiryDays || 30,
-      defaultPaymentTerms: data.defaultPaymentTerms || '',
-      defaultCommissionPct: data.defaultCommissionPct || 10.0,
+      name: data.name ?? '',
+      legalName: data.legalName ?? '',
+      legalAddress: data.legalAddress ?? '',
+      unp: data.unp ?? '',
+      okpo: data.okpo ?? '',
+      phone: data.phone ?? '',
+      email: data.email ?? '',
+      website: data.website ?? '',
+      iban: data.iban ?? '',
+      bankName: data.bankName ?? '',
+      bik: data.bik ?? '',
+      directorName: data.directorName ?? '',
+      directorTitle: data.directorTitle ?? '',
+      defaultCurrency: (data.defaultCurrency ?? 'BYN') as OrganizationCurrency,
+      defaultLanguage: (data.defaultLanguage ?? 'RU') as OrganizationLanguage,
+      offerNumberPrefix: data.offerNumberPrefix ?? 'OF-',
+      invoicePrefix: data.invoicePrefix ?? 'INV-',
+      offerValidityDays: data.offerValidityDays ?? 7,
+      leadExpiryDays: data.leadExpiryDays ?? 30,
+      defaultPaymentTerms: data.defaultPaymentTerms ?? '',
+      defaultCommissionPct: data.defaultCommissionPct ?? 10.0,
     });
 
     this.form.markAsPristine();
@@ -149,10 +148,38 @@ export class CompanyProfileComponent implements PendingChangesComponent {
       return;
     }
 
+    // Validate file size (2 MB max)
+    const maxSizeBytes = 2 * 1024 * 1024;
+
+    if (file.size > maxSizeBytes) {
+      this.snackBar.open('Файл слишком большой. Максимум 2 МБ', 'Закрыть', { duration: 5000 });
+      input.value = '';
+
+      return;
+    }
+
+    // Validate file type
+    const validTypes = ['image/png', 'image/jpeg'];
+
+    if (!validTypes.includes(file.type)) {
+      this.snackBar.open('Неверный формат файла. Поддерживаются PNG и JPEG', 'Закрыть', {
+        duration: 5000,
+      });
+      input.value = '';
+
+      return;
+    }
+
     // Immediate upload on file selection
     this.settingsService.uploadLogo(file).subscribe({
       next: () => {
-        this.logoUrl.set(URL.createObjectURL(file));
+        // Revoke previous blob URL to avoid memory leak
+        if (this.currentBlobUrl) {
+          URL.revokeObjectURL(this.currentBlobUrl);
+        }
+
+        this.currentBlobUrl = URL.createObjectURL(file);
+        this.logoUrl.set(this.currentBlobUrl);
         this.snackBar.open('Логотип обновлён', 'OK', { duration: 3000 });
       },
       error: (err) => {
@@ -167,23 +194,13 @@ export class CompanyProfileComponent implements PendingChangesComponent {
   }
 
   protected deleteLogo(): void {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        title: 'Удалить логотип',
-        message: 'Вы уверены, что хотите удалить логотип?',
-        confirmLabel: 'Удалить',
-        cancelLabel: 'Отмена',
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        // TODO: Backend endpoint for DELETE /api/settings/organization/logo not yet available
-        // For now, we just clear the logo URL locally
-        this.logoUrl.set(null);
-        this.snackBar.open('Логотип удалён', 'OK', { duration: 3000 });
-      }
-    });
+    // TODO: Backend endpoint for DELETE /api/settings/organization/logo not yet available
+    // This method is currently disabled in the template
+    this.snackBar.open(
+      'Удаление логотипа временно недоступно. Обратитесь к администратору.',
+      'Закрыть',
+      { duration: 5000 },
+    );
   }
 
   protected save(): void {
