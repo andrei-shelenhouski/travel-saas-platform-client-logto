@@ -140,7 +140,7 @@ export class CompanyProfileComponent implements PendingChangesComponent {
     this.form.markAsPristine();
   }
 
-  protected onLogoSelected(event: Event): void {
+  onLogoSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
 
@@ -203,7 +203,7 @@ export class CompanyProfileComponent implements PendingChangesComponent {
     );
   }
 
-  protected save(): void {
+  save(): void {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
 
