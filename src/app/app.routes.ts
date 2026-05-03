@@ -246,11 +246,6 @@ export const routes: Routes = [
       {
         path: 'settings',
         loadComponent: () =>
-          import('@app/features/onboarding/settings/settings').then((m) => m.SettingsComponent),
-      },
-      {
-        path: 'settings/company',
-        loadComponent: () =>
           import('@app/features/settings/company-profile/company-profile').then(
             (m) => m.CompanyProfileComponent,
           ),
