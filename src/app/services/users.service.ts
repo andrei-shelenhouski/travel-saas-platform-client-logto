@@ -29,7 +29,7 @@ export class UsersService {
     role?: OrgRole;
     isActive?: boolean;
     page?: number;
-    size?: number;
+    limit?: number;
   }): Observable<PaginatedOrgUserResponseDto> {
     let httpParams = new HttpParams();
 
@@ -45,8 +45,8 @@ export class UsersService {
       httpParams = httpParams.set('page', params.page);
     }
 
-    if (params?.size !== undefined) {
-      httpParams = httpParams.set('size', params.size);
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('size', params.limit);
     }
 
     return this.http.get<PaginatedOrgUserResponseDto>(USERS_URL, { params: httpParams });

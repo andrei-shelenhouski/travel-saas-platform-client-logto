@@ -1,11 +1,7 @@
-<h2 i18n="@@publishInvoiceDialogTitle" mat-dialog-title>
-  Publish invoice {{ data.invoiceNumber }}?
-</h2>
+<h2 i18n="@@publishInvoiceDialogTitle" mat-dialog-title>Publish invoice {{ data.invoiceNumber }}?</h2>
 
 <mat-dialog-content>
-  <p i18n="@@publishInvoiceDialogBody">
-    After publishing, the invoice cannot be edited. Client and issuer details will be locked.
-  </p>
+  <p i18n="@@publishInvoiceDialogBody">After publishing, the invoice cannot be edited. Client and issuer details will be locked.</p>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
@@ -36,7 +32,7 @@
     (click)="confirm()"
   >
     @if (loading()) {
-      <mat-spinner diameter="20" />
+      <mat-spinner diameter="20"></mat-spinner>
     } @else {
       <mat-icon>publish</mat-icon>
     }

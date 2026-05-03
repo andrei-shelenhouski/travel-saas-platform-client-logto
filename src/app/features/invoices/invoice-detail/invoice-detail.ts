@@ -347,6 +347,7 @@ export class InvoiceDetailComponent {
     const dialogRef = this.dialog.open(PublishInvoiceDialogComponent, {
       data: { invoiceId: inv.id, invoiceNumber: inv.number },
       width: '480px',
+      disableClose: true,
     });
 
     dialogRef.afterClosed().subscribe((result) => {

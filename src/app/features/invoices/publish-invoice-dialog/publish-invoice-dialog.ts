@@ -56,6 +56,7 @@ export class PublishInvoiceDialogComponent {
     }
 
     this.loading.set(true);
+    this.dialogRef.disableClose = true;
     this.invoicesService.publish(this.data.invoiceId).subscribe({
       next: (invoice) => {
         this.dialogRef.close({ published: true, invoice });
@@ -67,6 +68,7 @@ export class PublishInvoiceDialogComponent {
       },
       error: () => {
         this.loading.set(false);
+        this.dialogRef.disableClose = false;
         this.snackBar.open(
           $localize`:@@publishInvoiceDialogErrorMessage:Error publishing invoice. Please try again.`,
           $localize`:@@publishInvoiceDialogErrorAction:Dismiss`,
