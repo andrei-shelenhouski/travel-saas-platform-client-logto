@@ -16,6 +16,7 @@ import {
   RequestStatusChipComponent,
   TagSelectorComponent,
 } from '@app/shared/components';
+import { InvoiceStatusChipComponent } from '@app/features/invoices/invoice-status-chip/invoice-status-chip';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS, MAT_TABS } from '@app/shared/material-imports';
 import { ClientType, EntityType } from '@app/shared/models';
@@ -24,6 +25,7 @@ import { ToastService } from '@app/shared/services/toast.service';
 import type {
   BookingSummaryDto,
   ClientResponseDto,
+  InvoiceResponseDto,
   LeadResponseDto,
   OfferSummaryDto,
   TravelRequestSummaryDto,
@@ -34,7 +36,7 @@ const TYPE_LABEL: Record<string, string> = {
   [ClientType.B2B_AGENT]: 'B2B Agent',
 };
 
-type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings';
+type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,6 +48,7 @@ type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings';
     RequestStatusChipComponent,
     OfferStatusChipComponent,
     BookingStatusChipComponent,
+    InvoiceStatusChipComponent,
     ...MAT_BUTTONS,
     ...MAT_TABS,
     PageHeading,
@@ -163,6 +166,22 @@ export class ClientDetailComponent {
     },
   });
 
+  private readonly invoicesLoadTrigger = signal(0);
+  private readonly invoicesData = rxResource<InvoiceResponseDto[], [string | null, number]>({
+    params: () => [this.routeId() ?? null, this.invoicesLoadTrigger()] as [string | null, number],
+    stream: ({ params }) => {
+      const [clientId, trigger] = params;
+
+      if (clientId === null || trigger === 0) {
+        return of([]);
+      }
+
+      return this.clientsService
+        .getInvoices(clientId, { page: 1, limit: 20 })
+        .pipe(map((r) => r.items));
+    },
+  });
+
   readonly typeLabel = TYPE_LABEL;
   readonly client = computed(() => this.data.value() ?? null);
   readonly loading = computed(() => this.data.isLoading());
@@ -183,6 +202,9 @@ export class ClientDetailComponent {
 
   readonly bookings = computed(() => this.bookingsData.value() ?? []);
   readonly bookingsLoading = computed(() => this.bookingsData.isLoading());
+
+  readonly invoices = computed(() => this.invoicesData.value() ?? []);
+  readonly invoicesLoading = computed(() => this.invoicesData.isLoading());
 
   readonly clientTags = computed<string[]>(() => {
     const tags = this.entityTagsData.value() ?? [];
@@ -210,7 +232,7 @@ export class ClientDetailComponent {
   }
 
   onSelectedTabChange(index: number): void {
-    const tabs: ClientHistoryTab[] = ['leads', 'requests', 'offers', 'bookings'];
+    const tabs: ClientHistoryTab[] = ['leads', 'requests', 'offers', 'bookings', 'invoices'];
     const tab = tabs[index];
 
     if (!tab) {
@@ -229,6 +251,8 @@ export class ClientDetailComponent {
       this.offersLoadTrigger.set(1);
     } else if (tab === 'bookings' && this.bookingsLoadTrigger() === 0) {
       this.bookingsLoadTrigger.set(1);
+    } else if (tab === 'invoices' && this.invoicesLoadTrigger() === 0) {
+      this.invoicesLoadTrigger.set(1);
     }
   }
 
@@ -317,6 +341,10 @@ export class ClientDetailComponent {
 
   goToBooking(booking: BookingSummaryDto): void {
     this.router.navigate(['/app/bookings', booking.id]);
+  }
+
+  goToInvoice(invoice: InvoiceResponseDto): void {
+    this.router.navigate(['/app/invoices', invoice.id]);
   }
 
   formatDate(iso: string | null | undefined): string {
