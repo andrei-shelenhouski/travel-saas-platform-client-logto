@@ -113,14 +113,15 @@ export class DashboardComponent implements OnDestroy {
 
   readonly pipelineChartData = computed(() => {
     const leadsByStatus = this.stats()?.leadsByStatus ?? {};
-    const maxValue = Math.max(...LEAD_STATUS_CONFIG.map((s) => leadsByStatus[s.key] ?? 0), 1);
+    const totalLeads =
+      LEAD_STATUS_CONFIG.reduce((sum, s) => sum + (leadsByStatus[s.key] ?? 0), 0) || 1;
 
     return LEAD_STATUS_CONFIG.map((status) => ({
       key: status.key,
       label: status.label,
       color: status.color,
       value: leadsByStatus[status.key] ?? 0,
-      widthPercent: ((leadsByStatus[status.key] ?? 0) / maxValue) * 100,
+      widthPercent: ((leadsByStatus[status.key] ?? 0) / totalLeads) * 100,
     }));
   });
 
