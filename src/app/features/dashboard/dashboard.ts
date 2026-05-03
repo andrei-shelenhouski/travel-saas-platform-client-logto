@@ -20,13 +20,13 @@ import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 /** Lead status labels and colors for pipeline chart. */
 const LEAD_STATUS_CONFIG = [
-  { key: 'NEW', label: 'Новый', color: '#2b9db8' },
-  { key: 'ASSIGNED', label: 'Назначен', color: '#784d90' },
-  { key: 'IN_PROGRESS', label: 'В работе', color: '#d97706' },
-  { key: 'OFFER_SENT', label: 'Отправлено КП', color: '#41636e' },
-  { key: 'WON', label: 'Выигран', color: '#16a34a' },
-  { key: 'LOST', label: 'Проигран', color: '#73787a' },
-  { key: 'EXPIRED', label: 'Истёк', color: '#ba1a1a' },
+  { key: 'NEW', label: 'Новый', color: '#5b9aa9' },
+  { key: 'ASSIGNED', label: 'Назначен', color: '#8b7a9c' },
+  { key: 'IN_PROGRESS', label: 'В работе', color: '#c89a5e' },
+  { key: 'OFFER_SENT', label: 'Отправлено КП', color: '#6b8591' },
+  { key: 'WON', label: 'Выигран', color: '#5d9c71' },
+  { key: 'LOST', label: 'Проигран', color: '#8b8f92' },
+  { key: 'EXPIRED', label: 'Истёк', color: '#a86565' },
 ] as const;
 
 @Component({
