@@ -9,6 +9,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { InvoicesService } from '@app/services/invoices.service';
 
 import { PublishInvoiceDialogComponent } from './publish-invoice-dialog';
+
 import type { InvoiceResponseDto } from '@app/shared/models';
 
 const mockInvoice = { id: 'inv-1', status: 'ISSUED' } as InvoiceResponseDto;
