@@ -1,11 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -116,7 +109,9 @@ export class ClientDetailComponent {
         return of([]);
       }
 
-      return this.clientsService.getLeads(clientId, { page: 1, limit: 20 }).pipe(map((r) => r.items));
+      return this.clientsService
+        .getLeads(clientId, { page: 1, limit: 20 })
+        .pipe(map((r) => r.items));
     },
   });
 
@@ -146,7 +141,9 @@ export class ClientDetailComponent {
         return of([]);
       }
 
-      return this.clientsService.getOffers(clientId, { page: 1, limit: 20 }).pipe(map((r) => r.items));
+      return this.clientsService
+        .getOffers(clientId, { page: 1, limit: 20 })
+        .pipe(map((r) => r.items));
     },
   });
 
