@@ -1,1 +1,93 @@
 /* Dashboard styles */
+
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Summary Cards */
+.summary-card {
+  background-color: #ffffff;
+  border-color: #e5e7eb;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.summary-card-blue {
+  border-color: #2b9db8;
+  background-color: #f0f9fb;
+  color: #164e63;
+
+  &:hover {
+    border-color: #1e7a8f;
+    background-color: #e0f4f7;
+  }
+}
+
+.summary-card-orange {
+  border-color: #d97706;
+  background-color: #fff8eb;
+  color: #78350f;
+
+  &:hover {
+    border-color: #b45309;
+    background-color: #fef3c7;
+  }
+}
+
+.summary-card-red {
+  border-color: #ba1a1a;
+  background-color: #fef2f2;
+  color: #7f1d1d;
+
+  &:hover {
+    border-color: #991b1b;
+    background-color: #fee2e2;
+  }
+}
+
+/* Pipeline Bar Chart */
+.pipeline-bar-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.pipeline-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 8px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.875rem;
+  min-width: 40px;
+}
+
+/* Material Table Styles */
+.stalled-leads-table,
+.departures-table {
+  mat-header-cell {
+    font-weight: 600;
+    color: #374151;
+  }
+
+  mat-cell {
+    color: #6b7280;
+  }
+
+  mat-row {
+    &:hover {
+      background-color: #f9fafb;
+    }
+  }
+}
+
