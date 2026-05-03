@@ -17,7 +17,11 @@ import { finalize } from 'rxjs';
 
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { ConfirmDialogComponent } from '@app/shared/components';
-import type { OrganizationSettingsResponseDto } from '@app/shared/models';
+import type {
+  OrganizationCurrency,
+  OrganizationLanguage,
+  OrganizationSettingsResponseDto,
+} from '@app/shared/models';
 import type { PendingChangesComponent } from '@app/guards/pending-changes.guard';
 
 @Component({
@@ -64,8 +68,8 @@ export class CompanyProfileComponent implements PendingChangesComponent {
     directorName: ['', Validators.required],
     directorTitle: ['', Validators.required],
     // Section 4 — Настройки по умолчанию
-    defaultCurrency: ['BYN', Validators.required],
-    defaultLanguage: ['RU', Validators.required],
+    defaultCurrency: ['BYN' as OrganizationCurrency, Validators.required],
+    defaultLanguage: ['RU' as OrganizationLanguage, Validators.required],
     offerNumberPrefix: ['OF-'],
     invoicePrefix: ['INV-'],
     offerValidityDays: [7, [Validators.required, Validators.min(1), Validators.max(365)]],
@@ -75,14 +79,14 @@ export class CompanyProfileComponent implements PendingChangesComponent {
   });
 
   protected readonly currencies = [
-    { value: 'BYN', label: 'BYN (Белорусский рубль)' },
-    { value: 'USD', label: 'USD (Доллар США)' },
-    { value: 'EUR', label: 'EUR (Евро)' },
+    { value: 'BYN' as OrganizationCurrency, label: 'BYN (Белорусский рубль)' },
+    { value: 'USD' as OrganizationCurrency, label: 'USD (Доллар США)' },
+    { value: 'EUR' as OrganizationCurrency, label: 'EUR (Евро)' },
   ];
 
   protected readonly languages = [
-    { value: 'RU', label: 'Русский' },
-    { value: 'EN', label: 'English' },
+    { value: 'RU' as OrganizationLanguage, label: 'Русский' },
+    { value: 'EN' as OrganizationLanguage, label: 'English' },
   ];
 
   constructor() {
@@ -126,8 +130,8 @@ export class CompanyProfileComponent implements PendingChangesComponent {
       bik: data.bik || '',
       directorName: data.directorName || '',
       directorTitle: data.directorTitle || '',
-      defaultCurrency: data.defaultCurrency || 'BYN',
-      defaultLanguage: data.defaultLanguage || 'RU',
+      defaultCurrency: (data.defaultCurrency || 'BYN') as OrganizationCurrency,
+      defaultLanguage: (data.defaultLanguage || 'RU') as OrganizationLanguage,
       offerNumberPrefix: data.offerNumberPrefix || 'OF-',
       invoicePrefix: data.invoicePrefix || 'INV-',
       offerValidityDays: data.offerValidityDays || 7,
