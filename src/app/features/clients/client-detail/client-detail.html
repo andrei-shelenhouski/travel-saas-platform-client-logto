@@ -121,7 +121,13 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200 bg-white">
                   @for (lead of leads(); track lead.id) {
-                    <tr class="cursor-pointer hover:bg-gray-50" (click)="goToLead(lead)">
+                    <tr
+                      class="cursor-pointer hover:bg-gray-50"
+                      tabindex="0"
+                      (click)="goToLead(lead)"
+                      (keydown.enter)="goToLead(lead)"
+                      (keydown.space)="goToLead(lead); $event.preventDefault()"
+                    >
                       <td class="px-4 py-3 text-sm font-medium text-gray-900">
                         {{ lead.number }}
                       </td>
@@ -194,7 +200,13 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200 bg-white">
                   @for (req of requests(); track req.id) {
-                    <tr class="cursor-pointer hover:bg-gray-50" (click)="goToRequest(req)">
+                    <tr
+                      class="cursor-pointer hover:bg-gray-50"
+                      tabindex="0"
+                      (click)="goToRequest(req)"
+                      (keydown.enter)="goToRequest(req)"
+                      (keydown.space)="goToRequest(req); $event.preventDefault()"
+                    >
                       <td class="px-4 py-3 text-sm font-medium text-gray-900">
                         {{ req.destination ?? '—' }}
                       </td>
@@ -274,7 +286,13 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200 bg-white">
                   @for (offer of offers(); track offer.id) {
-                    <tr class="cursor-pointer hover:bg-gray-50" (click)="goToOffer(offer)">
+                    <tr
+                      class="cursor-pointer hover:bg-gray-50"
+                      tabindex="0"
+                      (click)="goToOffer(offer)"
+                      (keydown.enter)="goToOffer(offer)"
+                      (keydown.space)="goToOffer(offer); $event.preventDefault()"
+                    >
                       <td class="px-4 py-3 text-sm font-medium text-gray-900">
                         {{ offer.offerNumber ?? '—' }}
                       </td>
@@ -357,7 +375,13 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200 bg-white">
                   @for (booking of bookings(); track booking.id) {
-                    <tr class="cursor-pointer hover:bg-gray-50" (click)="goToBooking(booking)">
+                    <tr
+                      class="cursor-pointer hover:bg-gray-50"
+                      tabindex="0"
+                      (click)="goToBooking(booking)"
+                      (keydown.enter)="goToBooking(booking)"
+                      (keydown.space)="goToBooking(booking); $event.preventDefault()"
+                    >
                       <td class="px-4 py-3 text-sm font-medium text-gray-900">
                         {{ booking.bookingNumber ?? '—' }}
                       </td>
@@ -441,7 +465,13 @@
                 </thead>
                 <tbody class="divide-y divide-gray-200 bg-white">
                   @for (invoice of invoices(); track invoice.id) {
-                    <tr class="cursor-pointer hover:bg-gray-50" (click)="goToInvoice(invoice)">
+                    <tr
+                      class="cursor-pointer hover:bg-gray-50"
+                      tabindex="0"
+                      (click)="goToInvoice(invoice)"
+                      (keydown.enter)="goToInvoice(invoice)"
+                      (keydown.space)="goToInvoice(invoice); $event.preventDefault()"
+                    >
                       <td class="px-4 py-3 text-sm font-medium text-gray-900">
                         {{ invoice.number }}
                       </td>
