@@ -116,13 +116,20 @@ export class DashboardComponent implements OnDestroy {
     const totalLeads =
       LEAD_STATUS_CONFIG.reduce((sum, s) => sum + (leadsByStatus[s.key] ?? 0), 0) || 1;
 
-    return LEAD_STATUS_CONFIG.map((status) => ({
-      key: status.key,
-      label: status.label,
-      color: status.color,
-      value: leadsByStatus[status.key] ?? 0,
-      widthPercent: ((leadsByStatus[status.key] ?? 0) / totalLeads) * 100,
-    }));
+    return LEAD_STATUS_CONFIG.map((status, index) => {
+      const cumulativeValue = LEAD_STATUS_CONFIG.slice(index).reduce(
+        (sum, s) => sum + (leadsByStatus[s.key] ?? 0),
+        0,
+      );
+
+      return {
+        key: status.key,
+        label: status.label,
+        color: status.color,
+        value: cumulativeValue,
+        widthPercent: (cumulativeValue / totalLeads) * 100,
+      };
+    });
   });
 
   readonly stalledLeads = computed(() => this.stats()?.stalledLeads ?? []);
