@@ -1,0 +1,215 @@
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
+import {
+  FormBuilder,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
+import { finalize } from 'rxjs';
+
+import { OrganizationSettingsService } from '@app/services/organization-settings.service';
+import { ConfirmDialogComponent } from '@app/shared/components';
+import type { OrganizationSettingsResponseDto } from '@app/shared/models';
+import type { PendingChangesComponent } from '@app/guards/pending-changes.guard';
+
+@Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-company-profile',
+  templateUrl: './company-profile.html',
+  styleUrl: './company-profile.scss',
+  imports: [
+    ReactiveFormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatDialogModule,
+    MatSnackBarModule,
+  ],
+})
+export class CompanyProfileComponent implements PendingChangesComponent {
+  private readonly fb = inject(FormBuilder);
+  private readonly settingsService = inject(OrganizationSettingsService);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
+
+  protected readonly loading = signal(true);
+  protected readonly saving = signal(false);
+  protected readonly logoUrl = signal<string | null>(null);
+
+  protected readonly form = this.fb.nonNullable.group({
+    // Section 1 — Основная информация
+    name: ['', [Validators.required, Validators.maxLength(120)]],
+    legalName: ['', Validators.maxLength(200)],
+    legalAddress: [''],
+    unp: ['', Validators.pattern(/^\d{9}$/)],
+    okpo: [''],
+    phone: [''],
+    email: ['', Validators.email],
+    website: [''],
+    // Section 2 — Банковские реквизиты
+    iban: [''],
+    bankName: [''],
+    bik: [''],
+    // Section 3 — Реквизиты для документов
+    directorName: ['', Validators.required],
+    directorTitle: ['', Validators.required],
+    // Section 4 — Настройки по умолчанию
+    defaultCurrency: ['BYN', Validators.required],
+    defaultLanguage: ['RU', Validators.required],
+    offerNumberPrefix: ['OF-'],
+    invoicePrefix: ['INV-'],
+    offerValidityDays: [7, [Validators.required, Validators.min(1), Validators.max(365)]],
+    leadExpiryDays: [30, [Validators.required, Validators.min(1), Validators.max(365)]],
+    defaultPaymentTerms: [''],
+    defaultCommissionPct: [10.0, [Validators.min(0), Validators.max(100)]],
+  });
+
+  protected readonly currencies = [
+    { value: 'BYN', label: 'BYN (Белорусский рубль)' },
+    { value: 'USD', label: 'USD (Доллар США)' },
+    { value: 'EUR', label: 'EUR (Евро)' },
+  ];
+
+  protected readonly languages = [
+    { value: 'RU', label: 'Русский' },
+    { value: 'EN', label: 'English' },
+  ];
+
+  constructor() {
+    this.loadSettings();
+  }
+
+  private loadSettings(): void {
+    this.loading.set(true);
+
+    this.settingsService
+      .get()
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: (data) => {
+          this.patchFormWithSettings(data);
+
+          if (data.logoUrl) {
+            this.logoUrl.set(data.logoUrl);
+          }
+        },
+        error: (err) => {
+          this.snackBar.open('Ошибка загрузки настроек: ' + err.message, 'Закрыть', {
+            duration: 5000,
+          });
+        },
+      });
+  }
+
+  private patchFormWithSettings(data: OrganizationSettingsResponseDto): void {
+    this.form.patchValue({
+      name: data.name || '',
+      legalName: data.legalName || '',
+      legalAddress: data.legalAddress || '',
+      unp: data.unp || '',
+      okpo: data.okpo || '',
+      phone: data.phone || '',
+      email: data.email || '',
+      website: data.website || '',
+      iban: data.iban || '',
+      bankName: data.bankName || '',
+      bik: data.bik || '',
+      directorName: data.directorName || '',
+      directorTitle: data.directorTitle || '',
+      defaultCurrency: data.defaultCurrency || 'BYN',
+      defaultLanguage: data.defaultLanguage || 'RU',
+      offerNumberPrefix: data.offerNumberPrefix || 'OF-',
+      invoicePrefix: data.invoicePrefix || 'INV-',
+      offerValidityDays: data.offerValidityDays || 7,
+      leadExpiryDays: data.leadExpiryDays || 30,
+      defaultPaymentTerms: data.defaultPaymentTerms || '',
+      defaultCommissionPct: data.defaultCommissionPct || 10.0,
+    });
+
+    this.form.markAsPristine();
+  }
+
+  protected onLogoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+
+    if (!file) {
+      return;
+    }
+
+    // Immediate upload on file selection
+    this.settingsService.uploadLogo(file).subscribe({
+      next: () => {
+        this.logoUrl.set(URL.createObjectURL(file));
+        this.snackBar.open('Логотип обновлён', 'OK', { duration: 3000 });
+      },
+      error: (err) => {
+        this.snackBar.open('Ошибка загрузки: ' + (err.error?.message || err.message), 'Закрыть', {
+          duration: 5000,
+        });
+      },
+    });
+
+    // Reset input to allow re-selecting the same file
+    input.value = '';
+  }
+
+  protected deleteLogo(): void {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Удалить логотип',
+        message: 'Вы уверены, что хотите удалить логотип?',
+        confirmLabel: 'Удалить',
+        cancelLabel: 'Отмена',
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        // TODO: Backend endpoint for DELETE /api/settings/organization/logo not yet available
+        // For now, we just clear the logo URL locally
+        this.logoUrl.set(null);
+        this.snackBar.open('Логотип удалён', 'OK', { duration: 3000 });
+      }
+    });
+  }
+
+  protected save(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+
+      return;
+    }
+
+    this.saving.set(true);
+
+    this.settingsService
+      .update(this.form.getRawValue())
+      .pipe(finalize(() => this.saving.set(false)))
+      .subscribe({
+        next: () => {
+          this.form.markAsPristine();
+          this.snackBar.open('Настройки сохранены', 'OK', { duration: 3000 });
+        },
+        error: (err) => {
+          this.snackBar.open('Ошибка сохранения: ' + (err.error?.message || err.message), 'Закрыть', {
+            duration: 5000,
+          });
+        },
+      });
+  }
+
+  hasUnsavedChanges(): boolean {
+    return !this.form.pristine;
+  }
+}

@@ -249,6 +249,15 @@ export const routes: Routes = [
           import('@app/features/onboarding/settings/settings').then((m) => m.SettingsComponent),
       },
       {
+        path: 'settings/company',
+        loadComponent: () =>
+          import('@app/features/settings/company-profile/company-profile').then(
+            (m) => m.CompanyProfileComponent,
+          ),
+        canActivate: [adminGuard],
+        canDeactivate: [pendingChangesGuard],
+      },
+      {
         path: 'organizations/new',
         loadComponent: () =>
           import('@app/features/onboarding/create-organization/create-organization').then(

@@ -1,0 +1,89 @@
+.company-profile-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.header {
+  margin-bottom: 32px;
+
+  h1 {
+    margin: 0 0 8px 0;
+    font-size: 32px;
+    font-weight: 500;
+  }
+
+  .subtitle {
+    margin: 0;
+    color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+.loading-state {
+  text-align: center;
+  padding: 48px;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.section-card {
+  margin-bottom: 24px;
+
+  mat-card-header {
+    margin-bottom: 16px;
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+
+  .full-width {
+    grid-column: 1 / -1;
+  }
+}
+
+.logo-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  .logo-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px;
+    padding: 16px;
+    border: 2px dashed rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+
+    img {
+      max-height: 80px;
+      max-width: 200px;
+      object-fit: contain;
+    }
+
+    .no-logo {
+      color: rgba(0, 0, 0, 0.38);
+      font-style: italic;
+    }
+  }
+
+  .logo-actions {
+    display: flex;
+    gap: 8px;
+  }
+
+  mat-hint {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(0, 0, 0, 0.12);
+}

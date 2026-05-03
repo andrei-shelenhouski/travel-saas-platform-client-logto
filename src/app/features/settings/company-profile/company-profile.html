@@ -1,0 +1,253 @@
+<div class="company-profile-container">
+  <div class="header">
+    <h1>Профиль компании</h1>
+    <p class="subtitle">Юридические реквизиты и настройки организации</p>
+  </div>
+
+  @if (loading()) {
+  <div class="loading-state">
+    <p>Загрузка настроек...</p>
+  </div>
+  } @else {
+  <form [formGroup]="form" (ngSubmit)="save()">
+    <!-- Section 1: Основная информация -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Основная информация</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="form-grid">
+          <mat-form-field>
+            <mat-label>Название организации</mat-label>
+            <input matInput formControlName="name" required />
+            @if (form.controls.name.hasError('required')) {
+            <mat-error>Обязательное поле</mat-error>
+            } @if (form.controls.name.hasError('maxlength')) {
+            <mat-error>Максимум 120 символов</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Юридическое название</mat-label>
+            <input matInput formControlName="legalName" />
+            @if (form.controls.legalName.hasError('maxlength')) {
+            <mat-error>Максимум 200 символов</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field class="full-width">
+            <mat-label>Юридический адрес</mat-label>
+            <input matInput formControlName="legalAddress" />
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>УНП</mat-label>
+            <input matInput formControlName="unp" />
+            <mat-hint>9 цифр (Республика Беларусь)</mat-hint>
+            @if (form.controls.unp.hasError('pattern')) {
+            <mat-error>УНП должен содержать ровно 9 цифр</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>ОКПО</mat-label>
+            <input matInput formControlName="okpo" />
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Телефон</mat-label>
+            <input matInput formControlName="phone" type="tel" />
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email" />
+            @if (form.controls.email.hasError('email')) {
+            <mat-error>Неверный формат email</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Веб-сайт</mat-label>
+            <input matInput formControlName="website" type="url" />
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section 2: Банковские реквизиты -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Банковские реквизиты</mat-card-title>
+        <mat-card-subtitle>Отображаются в PDF-счетах как "Исполнитель"</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="form-grid">
+          <mat-form-field>
+            <mat-label>IBAN</mat-label>
+            <input matInput formControlName="iban" />
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Название банка</mat-label>
+            <input matInput formControlName="bankName" />
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>БИК</mat-label>
+            <input matInput formControlName="bik" />
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section 3: Реквизиты для документов -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Реквизиты для документов</mat-card-title>
+        <mat-card-subtitle>Подпись на PDF-счетах и договорах</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="form-grid">
+          <mat-form-field>
+            <mat-label>ФИО директора</mat-label>
+            <input matInput formControlName="directorName" required />
+            @if (form.controls.directorName.hasError('required')) {
+            <mat-error>Обязательное поле</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Должность директора</mat-label>
+            <input matInput formControlName="directorTitle" required />
+            <mat-hint>По умолчанию: "Директор"</mat-hint>
+            @if (form.controls.directorTitle.hasError('required')) {
+            <mat-error>Обязательное поле</mat-error>
+            }
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section 4: Настройки по умолчанию -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Настройки по умолчанию</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="form-grid">
+          <mat-form-field>
+            <mat-label>Валюта по умолчанию</mat-label>
+            <mat-select formControlName="defaultCurrency">
+              @for (currency of currencies; track currency.value) {
+              <mat-option [value]="currency.value">{{ currency.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Язык по умолчанию</mat-label>
+            <mat-select formControlName="defaultLanguage">
+              @for (language of languages; track language.value) {
+              <mat-option [value]="language.value">{{ language.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Префикс номеров предложений</mat-label>
+            <input matInput formControlName="offerNumberPrefix" />
+            <mat-hint>Например: OF-</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Префикс номеров счетов</mat-label>
+            <input matInput formControlName="invoicePrefix" />
+            <mat-hint>Например: INV-</mat-hint>
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Срок действия предложений (дней)</mat-label>
+            <input matInput formControlName="offerValidityDays" type="number" min="1" max="365" />
+            @if (form.controls.offerValidityDays.hasError('required')) {
+            <mat-error>Обязательное поле</mat-error>
+            } @if (form.controls.offerValidityDays.hasError('min') ||
+            form.controls.offerValidityDays.hasError('max')) {
+            <mat-error>От 1 до 365 дней</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Срок истечения лидов (дней)</mat-label>
+            <input matInput formControlName="leadExpiryDays" type="number" min="1" max="365" />
+            @if (form.controls.leadExpiryDays.hasError('required')) {
+            <mat-error>Обязательное поле</mat-error>
+            } @if (form.controls.leadExpiryDays.hasError('min') ||
+            form.controls.leadExpiryDays.hasError('max')) {
+            <mat-error>От 1 до 365 дней</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field>
+            <mat-label>Комиссия по умолчанию (%)</mat-label>
+            <input matInput formControlName="defaultCommissionPct" type="number" min="0" max="100" step="0.1" />
+            @if (form.controls.defaultCommissionPct.hasError('min') ||
+            form.controls.defaultCommissionPct.hasError('max')) {
+            <mat-error>От 0 до 100%</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field class="full-width">
+            <mat-label>Условия оплаты по умолчанию</mat-label>
+            <textarea matInput formControlName="defaultPaymentTerms" rows="3"></textarea>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Section 5: Логотип -->
+    <mat-card class="section-card">
+      <mat-card-header>
+        <mat-card-title>Логотип</mat-card-title>
+        <mat-card-subtitle>Отображается на PDF-документах</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="logo-section">
+          <div class="logo-preview">
+            @if (logoUrl()) {
+            <img [src]="logoUrl()" alt="Логотип компании" />
+            } @else {
+            <span class="no-logo">Логотип не загружен</span>
+            }
+          </div>
+          <div class="logo-actions">
+            <button mat-stroked-button type="button" (click)="logoInput.click()">
+              Загрузить логотип
+            </button>
+            @if (logoUrl()) {
+            <button mat-stroked-button color="warn" type="button" (click)="deleteLogo()">
+              Удалить
+            </button>
+            }
+            <input
+              #logoInput
+              type="file"
+              hidden
+              accept="image/png,image/jpeg"
+              (change)="onLogoSelected($event)"
+            />
+          </div>
+          <mat-hint>PNG или JPEG, максимум 2 МБ. Логотип отображается на PDF-документах.</mat-hint>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Save button -->
+    <div class="actions">
+      <button mat-flat-button color="primary" type="submit" [disabled]="saving() || form.pristine">
+        @if (saving()) { Сохранение... } @else { Сохранить }
+      </button>
+    </div>
+  </form>
+  }
+</div>
