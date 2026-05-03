@@ -181,7 +181,9 @@ describe('DashboardComponent', () => {
 
     component['navigateFromCard']('leads');
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/app/leads'], { queryParams: { createdToday: true } });
+    expect(navigateSpy).toHaveBeenCalledWith(['/app/leads'], {
+      queryParams: { createdToday: true },
+    });
   });
 
   it('should navigate to offers when clicking offers card', () => {

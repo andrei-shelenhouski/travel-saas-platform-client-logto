@@ -1,3 +1,4 @@
+import { NgClass } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -8,10 +9,9 @@ import {
   OnDestroy,
   signal,
 } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
-import { NgClass } from '@angular/common';
+import { MatTableModule } from '@angular/material/table';
+import { Router, RouterLink } from '@angular/router';
 
 import { DashboardService } from '@app/services/dashboard.service';
 import { MeService } from '@app/services/me.service';
