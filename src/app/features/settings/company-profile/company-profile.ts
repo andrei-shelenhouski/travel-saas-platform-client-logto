@@ -1,10 +1,6 @@
-import { ChangeDetectionStrategy, Component, effect, inject, signal } from '@angular/core';
-import {
-  FormBuilder,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+/* eslint-disable complexity */
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -17,6 +13,7 @@ import { finalize } from 'rxjs';
 
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { ConfirmDialogComponent } from '@app/shared/components';
+
 import type {
   OrganizationCurrency,
   OrganizationLanguage,
@@ -206,9 +203,13 @@ export class CompanyProfileComponent implements PendingChangesComponent {
           this.snackBar.open('Настройки сохранены', 'OK', { duration: 3000 });
         },
         error: (err) => {
-          this.snackBar.open('Ошибка сохранения: ' + (err.error?.message || err.message), 'Закрыть', {
-            duration: 5000,
-          });
+          this.snackBar.open(
+            'Ошибка сохранения: ' + (err.error?.message || err.message),
+            'Закрыть',
+            {
+              duration: 5000,
+            },
+          );
         },
       });
   }

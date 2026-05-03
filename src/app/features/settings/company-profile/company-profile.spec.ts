@@ -2,13 +2,15 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { Router } from '@angular/router';
 
 import { of, throwError } from 'rxjs';
 
-import { CompanyProfileComponent } from './company-profile';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
+
+import { CompanyProfileComponent } from './company-profile';
+
 import type { OrganizationSettingsResponseDto } from '@app/shared/models';
 
 describe('CompanyProfileComponent', () => {
@@ -78,9 +80,7 @@ describe('CompanyProfileComponent', () => {
   });
 
   it('should show error when loading settings fails', () => {
-    settingsService.get.and.returnValue(
-      throwError(() => new Error('Failed to load settings')),
-    );
+    settingsService.get.and.returnValue(throwError(() => new Error('Failed to load settings')));
 
     const newFixture = TestBed.createComponent(CompanyProfileComponent);
 
