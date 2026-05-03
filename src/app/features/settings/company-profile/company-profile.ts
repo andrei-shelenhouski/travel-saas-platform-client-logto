@@ -48,7 +48,7 @@ export class CompanyProfileComponent implements PendingChangesComponent {
   protected readonly saving = signal(false);
   protected readonly logoUrl = signal<string | null>(null);
 
-  protected readonly form = this.fb.nonNullable.group({
+  readonly form = this.fb.nonNullable.group({
     // Section 1 — Основная информация
     name: ['', [Validators.required, Validators.maxLength(120)]],
     legalName: ['', Validators.maxLength(200)],
