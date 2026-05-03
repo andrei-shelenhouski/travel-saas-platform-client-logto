@@ -23,7 +23,31 @@
         "locales": {
           "ru-BY": {
             "translation": "src/locale/messages.ru.xlf",
-            "subPath": ""
+            "subPath": "ru"
+          },
+          "pl-PL": {
+            "translation": "src/locale/pl-PL.xlf",
+            "subPath": "pl"
+          },
+          "de-DE": {
+            "translation": "src/locale/de-DE.xlf",
+            "subPath": "de"
+          },
+          "ka-GE": {
+            "translation": "src/locale/ka-GE.xlf",
+            "subPath": "ka"
+          },
+          "tr-TR": {
+            "translation": "src/locale/tr-TR.xlf",
+            "subPath": "tr"
+          },
+          "el-GR": {
+            "translation": "src/locale/el-GR.xlf",
+            "subPath": "el"
+          },
+          "ar-AE": {
+            "translation": "src/locale/ar-AE.xlf",
+            "subPath": "ar"
           }
         }
       },
@@ -74,6 +98,104 @@
                   "with": "src/environments/environment.development.ts"
                 }
               ]
+            },
+            "development-ru": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "localize": [
+                "ru-BY"
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
+            },
+            "development-pl": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "localize": [
+                "pl-PL"
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
+            },
+            "development-de": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "localize": [
+                "de-DE"
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
+            },
+            "development-ka": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "localize": [
+                "ka-GE"
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
+            },
+            "development-tr": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "localize": [
+                "tr-TR"
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
+            },
+            "development-el": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "localize": [
+                "el-GR"
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
+            },
+            "development-ar": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "localize": [
+                "ar-AE"
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -86,6 +208,27 @@
             },
             "development": {
               "buildTarget": "tsp-client-app:build:development"
+            },
+            "ru": {
+              "buildTarget": "tsp-client-app:build:development-ru"
+            },
+            "pl": {
+              "buildTarget": "tsp-client-app:build:development-pl"
+            },
+            "de": {
+              "buildTarget": "tsp-client-app:build:development-de"
+            },
+            "ka": {
+              "buildTarget": "tsp-client-app:build:development-ka"
+            },
+            "tr": {
+              "buildTarget": "tsp-client-app:build:development-tr"
+            },
+            "el": {
+              "buildTarget": "tsp-client-app:build:development-el"
+            },
+            "ar": {
+              "buildTarget": "tsp-client-app:build:development-ar"
             }
           },
           "defaultConfiguration": "development"

@@ -9,44 +9,55 @@ import {
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { EMPTY } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
+import { InvoiceStatusChipComponent } from '@app/features/invoices/invoice-status-chip/invoice-status-chip';
 import { ActivitiesService } from '@app/services/activities.service';
 import { ClientsService } from '@app/services/clients.service';
 import { CommentsService } from '@app/services/comments.service';
-import { RequestsService } from '@app/services/requests.service';
 import { TagsService } from '@app/services/tags.service';
 import {
-  ActivityTimelineComponent,
-  CommentComponent,
+  BookingStatusChipComponent,
+  LeadStatusChipComponent,
+  OfferStatusChipComponent,
+  RequestStatusChipComponent,
   TagSelectorComponent,
 } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
+import { MAT_BUTTONS, MAT_TABS } from '@app/shared/material-imports';
 import { ClientType, EntityType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
-import type { ClientResponseDto, RequestResponseDto } from '@app/shared/models';
-import type { ActivityTimelineItem } from '@app/shared/models';
-import type { CommentItem } from '@app/shared/models';
+import type {
+  BookingSummaryDto,
+  ClientResponseDto,
+  InvoiceResponseDto,
+  LeadResponseDto,
+  OfferSummaryDto,
+  TravelRequestSummaryDto,
+} from '@app/shared/models';
 const TYPE_LABEL: Record<string, string> = {
   [ClientType.INDIVIDUAL]: 'Individual',
   [ClientType.COMPANY]: 'Company',
   [ClientType.B2B_AGENT]: 'B2B Agent',
 };
 
-type ClientTab = 'overview' | 'requests' | 'activity' | 'comments';
+type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-client-detail',
   imports: [
     RouterLink,
-    ActivityTimelineComponent,
     TagSelectorComponent,
-    CommentComponent,
+    LeadStatusChipComponent,
+    RequestStatusChipComponent,
+    OfferStatusChipComponent,
+    BookingStatusChipComponent,
+    InvoiceStatusChipComponent,
     ...MAT_BUTTONS,
+    ...MAT_TABS,
     PageHeading,
   ],
   templateUrl: './client-detail.html',
@@ -59,7 +70,6 @@ export class ClientDetailComponent {
   protected readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly clientsService = inject(ClientsService);
-  private readonly requestsService = inject(RequestsService);
   private readonly activitiesService = inject(ActivitiesService);
   private readonly commentsService = inject(CommentsService);
   private readonly tagsService = inject(TagsService);
@@ -80,51 +90,7 @@ export class ClientDetailComponent {
     },
   });
 
-  private readonly requestsData = rxResource<RequestResponseDto[], string | null>({
-    params: (): string | null => this.routeId() ?? null,
-    stream: () => {
-      return this.requestsService.getList({ limit: 100 }).pipe(map((res) => res.items));
-    },
-  });
-
-  private readonly commentsVersion = signal(0);
   private readonly tagsVersion = signal(0);
-
-  private readonly activitiesData = rxResource({
-    params: (): string | null => this.routeId() ?? null,
-    stream: ({ params }) => {
-      if (params === null) {
-        return EMPTY;
-      }
-
-      return this.activitiesService
-        .findByEntity({
-          entityType: EntityType.Client,
-          entityId: params,
-          limit: 50,
-        })
-        .pipe(map((r) => r.items));
-    },
-  });
-
-  private readonly commentsData = rxResource({
-    params: (): [string | null, number] => [this.routeId() ?? null, this.commentsVersion()],
-    stream: ({ params }) => {
-      const [clientId] = params;
-
-      if (clientId === null) {
-        return EMPTY;
-      }
-
-      return this.commentsService
-        .findByEntity({
-          commentableType: EntityType.Client,
-          commentableId: clientId,
-          limit: 100,
-        })
-        .pipe(map((r) => r.items));
-    },
-  });
 
   private readonly entityTagsData = rxResource({
     params: (): [string | null, number] => [this.routeId() ?? null, this.tagsVersion()],
@@ -142,49 +108,109 @@ export class ClientDetailComponent {
     },
   });
 
+  // Lazy-loaded tab data
+  private readonly leadsLoadTrigger = signal(0);
+  private readonly leadsData = rxResource<LeadResponseDto[], [string | null, number]>({
+    params: () => [this.routeId() ?? null, this.leadsLoadTrigger()] as [string | null, number],
+    stream: ({ params }) => {
+      const [clientId, trigger] = params;
+
+      if (clientId === null || trigger === 0) {
+        return of([]);
+      }
+
+      return this.clientsService
+        .getLeads(clientId, { page: 1, limit: 20 })
+        .pipe(map((r) => r.items));
+    },
+  });
+
+  private readonly requestsLoadTrigger = signal(0);
+  private readonly requestsData = rxResource<TravelRequestSummaryDto[], [string | null, number]>({
+    params: () => [this.routeId() ?? null, this.requestsLoadTrigger()] as [string | null, number],
+    stream: ({ params }) => {
+      const [clientId, trigger] = params;
+
+      if (clientId === null || trigger === 0) {
+        return of([]);
+      }
+
+      return this.clientsService
+        .getRequests(clientId, { page: 1, limit: 20 })
+        .pipe(map((r) => r.items));
+    },
+  });
+
+  private readonly offersLoadTrigger = signal(0);
+  private readonly offersData = rxResource<OfferSummaryDto[], [string | null, number]>({
+    params: () => [this.routeId() ?? null, this.offersLoadTrigger()] as [string | null, number],
+    stream: ({ params }) => {
+      const [clientId, trigger] = params;
+
+      if (clientId === null || trigger === 0) {
+        return of([]);
+      }
+
+      return this.clientsService
+        .getOffers(clientId, { page: 1, limit: 20 })
+        .pipe(map((r) => r.items));
+    },
+  });
+
+  private readonly bookingsLoadTrigger = signal(0);
+  private readonly bookingsData = rxResource<BookingSummaryDto[], [string | null, number]>({
+    params: () => [this.routeId() ?? null, this.bookingsLoadTrigger()] as [string | null, number],
+    stream: ({ params }) => {
+      const [clientId, trigger] = params;
+
+      if (clientId === null || trigger === 0) {
+        return of([]);
+      }
+
+      return this.clientsService
+        .getBookings(clientId, { page: 1, limit: 20 })
+        .pipe(map((r) => r.items));
+    },
+  });
+
+  private readonly invoicesLoadTrigger = signal(0);
+  private readonly invoicesData = rxResource<InvoiceResponseDto[], [string | null, number]>({
+    params: () => [this.routeId() ?? null, this.invoicesLoadTrigger()] as [string | null, number],
+    stream: ({ params }) => {
+      const [clientId, trigger] = params;
+
+      if (clientId === null || trigger === 0) {
+        return of([]);
+      }
+
+      return this.clientsService
+        .getInvoices(clientId, { page: 1, limit: 20 })
+        .pipe(map((r) => r.items));
+    },
+  });
+
   readonly typeLabel = TYPE_LABEL;
   readonly client = computed(() => this.data.value() ?? null);
   readonly loading = computed(() => this.data.isLoading());
-  readonly requests = computed(() => this.requestsData.value() ?? []);
-  readonly requestsLoading = computed(() => this.requestsData.isLoading());
-  readonly activitiesLoading = computed(() => this.activitiesData.isLoading());
-  readonly commentsLoading = computed(() => this.commentsData.isLoading());
   readonly tagsLoading = computed(() => this.entityTagsData.isLoading());
-
-  readonly activeTab = signal<ClientTab>('overview');
   readonly tagsSaveLoading = signal(false);
 
-  readonly activityItems = computed<ActivityTimelineItem[]>(() => {
-    const items = this.activitiesData.value() ?? [];
-    const c = this.client();
-    const list: ActivityTimelineItem[] = items.map((a) => ({
-      id: a.id,
-      label: a.type.replace(/_/g, ' '),
-      date: a.createdAt,
-      type: a.type === 'note' ? 'updated' : 'default',
-    }));
+  readonly selectedTabIndex = signal(0);
 
-    if (c?.createdAt) {
-      list.push({
-        label: 'Client created',
-        date: c.createdAt,
-        type: 'created',
-      });
-    }
+  readonly leads = computed(() => this.leadsData.value() ?? []);
+  readonly leadsLoading = computed(() => this.leadsData.isLoading());
 
-    return list.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  });
+  readonly requests = computed(() => this.requestsData.value() ?? []);
+  readonly requestsLoading = computed(() => this.requestsData.isLoading());
 
-  readonly clientComments = computed<CommentItem[]>(() => {
-    const items = this.commentsData.value() ?? [];
+  readonly offers = computed(() => this.offersData.value() ?? []);
+  readonly offersLoading = computed(() => this.offersData.isLoading());
 
-    return items.map((c) => ({
-      id: c.id,
-      author: '—',
-      text: c.body,
-      createdAt: c.createdAt,
-    }));
-  });
+  readonly bookings = computed(() => this.bookingsData.value() ?? []);
+  readonly bookingsLoading = computed(() => this.bookingsData.isLoading());
+
+  readonly invoices = computed(() => this.invoicesData.value() ?? []);
+  readonly invoicesLoading = computed(() => this.invoicesData.isLoading());
 
   readonly clientTags = computed<string[]>(() => {
     const tags = this.entityTagsData.value() ?? [];
@@ -200,21 +226,39 @@ export class ClientDetailComponent {
         this.router.navigate(['/app/clients']);
       }
     });
+
+    // Load the first tab (Leads) on initialization
+    effect(() => {
+      const clientId = this.routeId();
+
+      if (clientId && this.leadsLoadTrigger() === 0) {
+        this.leadsLoadTrigger.set(1);
+      }
+    });
   }
 
-  setTab(tab: ClientTab): void {
-    this.activeTab.set(tab);
-  }
+  onSelectedTabChange(index: number): void {
+    const tabs: ClientHistoryTab[] = ['leads', 'requests', 'offers', 'bookings', 'invoices'];
+    const tab = tabs[index];
 
-  createRequest(): void {
-    const c = this.client();
-
-    if (!c) {
+    if (!tab) {
       return;
     }
-    this.router.navigate(['/app/requests/new'], {
-      queryParams: { clientId: c.id },
-    });
+
+    this.selectedTabIndex.set(index);
+
+    // Lazy-load tab data on first activation
+    if (tab === 'leads' && this.leadsLoadTrigger() === 0) {
+      this.leadsLoadTrigger.set(1);
+    } else if (tab === 'requests' && this.requestsLoadTrigger() === 0) {
+      this.requestsLoadTrigger.set(1);
+    } else if (tab === 'offers' && this.offersLoadTrigger() === 0) {
+      this.offersLoadTrigger.set(1);
+    } else if (tab === 'bookings' && this.bookingsLoadTrigger() === 0) {
+      this.bookingsLoadTrigger.set(1);
+    } else if (tab === 'invoices' && this.invoicesLoadTrigger() === 0) {
+      this.invoicesLoadTrigger.set(1);
+    }
   }
 
   onTagsChange(tags: string[]): void {
@@ -286,33 +330,39 @@ export class ClientDetailComponent {
     }
   }
 
-  onAddComment(event: { text: string }): void {
-    const c = this.client();
-
-    if (!c || !event.text.trim()) {
-      return;
-    }
-    this.commentsService
-      .create({
-        commentableType: EntityType.Client,
-        commentableId: c.id,
-        body: event.text.trim(),
-      })
-      .subscribe({
-        next: () => {
-          this.commentsVersion.update((v) => v + 1);
-        },
-        error: (err) => {
-          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to add comment');
-        },
-      });
+  goToLead(lead: LeadResponseDto): void {
+    this.router.navigate(['/app/leads', lead.id]);
   }
 
-  goToRequest(req: RequestResponseDto): void {
+  goToRequest(req: TravelRequestSummaryDto): void {
     this.router.navigate(['/app/requests', req.id]);
   }
 
-  formatDate(iso: string | null): string {
+  goToOffer(offer: OfferSummaryDto): void {
+    this.router.navigate(['/app/offers', offer.id]);
+  }
+
+  goToBooking(booking: BookingSummaryDto): void {
+    this.router.navigate(['/app/bookings', booking.id]);
+  }
+
+  goToInvoice(invoice: InvoiceResponseDto): void {
+    this.router.navigate(['/app/invoices', invoice.id]);
+  }
+
+  createRequest(): void {
+    const c = this.client();
+
+    if (!c) {
+      return;
+    }
+
+    this.router.navigate(['/app/requests/new'], {
+      queryParams: { clientId: c.id },
+    });
+  }
+
+  formatDate(iso: string | null | undefined): string {
     if (!iso) {
       return '—';
     }
@@ -327,7 +377,7 @@ export class ClientDetailComponent {
     }
   }
 
-  formatDateShort(iso: string | null): string {
+  formatDateShort(iso: string | null | undefined): string {
     if (!iso) {
       return '—';
     }
