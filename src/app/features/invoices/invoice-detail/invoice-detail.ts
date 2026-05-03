@@ -17,6 +17,7 @@ import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { InvoicePdfPreviewModalComponent } from '@app/features/invoices/invoice-pdf-preview-modal';
+import { PublishInvoiceDialogComponent } from '@app/features/invoices/publish-invoice-dialog/publish-invoice-dialog';
 import { RecordPaymentModalComponent } from '@app/features/invoices/record-payment-modal/record-payment-modal';
 import { ActivitiesService } from '@app/services/activities.service';
 import { InvoicesService } from '@app/services/invoices.service';
@@ -339,19 +340,22 @@ export class InvoiceDetailComponent {
   publishInvoice(): void {
     const inv = this.invoice();
 
-    if (!inv || this.actionLoading()) {
+    if (!inv) {
       return;
     }
-    this.actionLoading.set(true);
-    this.invoicesService.publish(inv.id).subscribe({
-      next: (updated) => {
-        this.data.set(updated);
-        this.activitiesData.reload();
-        this.toast.showSuccess('Счёт опубликован');
-      },
-      error: (err) =>
-        this.toast.showError(err.error?.message ?? err.message ?? 'Ошибка публикации'),
-      complete: () => this.actionLoading.set(false),
+
+    const dialogRef = this.dialog.open(PublishInvoiceDialogComponent, {
+      data: { invoiceId: inv.id, invoiceNumber: inv.number },
+      width: '480px',
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (!result?.published) {
+        return;
+      }
+
+      this.data.set(result.invoice);
+      this.activitiesData.reload();
     });
   }
 

@@ -2558,6 +2558,44 @@
         <source>Delete payment of <x id="AMOUNT" equiv-text="this.pendingDeletePaymentLabel()"/>? This action is irreversible.</source>
         <target>Удалить платёж на <x id="AMOUNT" equiv-text="this.pendingDeletePaymentLabel()"/>? Это действие необратимо.</target>
       </trans-unit>
+      <trans-unit id="publishInvoiceDialogTitle" datatype="html">
+        <source> Publish invoice <x id="INTERPOLATION" equiv-text="{{ data.invoiceNumber }}"/>?
+</source>
+        <target> Опубликовать счёт <x id="INTERPOLATION" equiv-text="{{ data.invoiceNumber }}"/>?
+</target>
+      </trans-unit>
+      <trans-unit id="publishInvoiceDialogBody" datatype="html">
+        <source> After publishing, the invoice cannot be edited. Client and issuer details will be locked. </source>
+        <target> После публикации счёт нельзя будет редактировать. Данные клиента и исполнителя будут зафиксированы. </target>
+      </trans-unit>
+      <trans-unit id="publishInvoiceDialogBtnPreview" datatype="html">
+        <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>preview<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Preview </source>
+        <target><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>preview<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Предварительный просмотр </target>
+      </trans-unit>
+      <trans-unit id="publishInvoiceDialogBtnCancel" datatype="html">
+        <source> Cancel </source>
+        <target> Отмена </target>
+      </trans-unit>
+      <trans-unit id="publishInvoiceDialogBtnConfirm" datatype="html">
+        <source><x id="START_BLOCK_IF" equiv-text="@if (loading()) {"/><x id="START_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;mat-spinner diameter=&quot;20&quot; /&gt;"/><x id="CLOSE_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;mat-spinner diameter=&quot;20&quot; /&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_BLOCK_ELSE" equiv-text="@else {"/><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>publish<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/><x id="CLOSE_BLOCK_ELSE" equiv-text="}"/> Publish </source>
+        <target><x id="START_BLOCK_IF" equiv-text="@if (loading()) {"/><x id="START_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;mat-spinner diameter=&quot;20&quot; /&gt;"/><x id="CLOSE_TAG_MAT_SPINNER" ctype="x-mat_spinner" equiv-text="&lt;mat-spinner diameter=&quot;20&quot; /&gt;"/><x id="CLOSE_BLOCK_IF" equiv-text="}"/><x id="START_BLOCK_ELSE" equiv-text="@else {"/><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>publish<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/><x id="CLOSE_BLOCK_ELSE" equiv-text="}"/> Опубликовать </target>
+      </trans-unit>
+      <trans-unit id="publishInvoiceDialogSuccessMessage" datatype="html">
+        <source>Invoice published and issued to the client.</source>
+        <target>Счёт опубликован и выставлен клиенту.</target>
+      </trans-unit>
+      <trans-unit id="publishInvoiceDialogSuccessAction" datatype="html">
+        <source>OK</source>
+        <target>OK</target>
+      </trans-unit>
+      <trans-unit id="publishInvoiceDialogErrorMessage" datatype="html">
+        <source>Error publishing invoice. Please try again.</source>
+        <target>Ошибка при публикации. Попробуйте ещё раз.</target>
+      </trans-unit>
+      <trans-unit id="publishInvoiceDialogErrorAction" datatype="html">
+        <source>Dismiss</source>
+        <target>Закрыть</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
