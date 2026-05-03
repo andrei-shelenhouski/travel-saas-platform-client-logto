@@ -15,6 +15,7 @@ import { Router, RouterLink } from '@angular/router';
 
 import { DashboardService } from '@app/services/dashboard.service';
 import { MeService } from '@app/services/me.service';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 /** Lead status labels and colors for pipeline chart. */
@@ -31,7 +32,7 @@ const LEAD_STATUS_CONFIG = [
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-dashboard',
-  imports: [RouterLink, MatTableModule, MatIconModule, NgClass, ...MAT_BUTTONS],
+  imports: [RouterLink, MatTableModule, MatIconModule, NgClass, PageHeading, ...MAT_BUTTONS],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })

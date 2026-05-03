@@ -1,9 +1,24 @@
+<app-page-heading subtitle="Overview of your organization" title="Dashboard">
+  <a
+    class="inline-flex items-center gap-2"
+    color="primary"
+    matButton="filled"
+    routerLink="/app/leads/new"
+  >
+    <span aria-hidden="true" class="material-icons text-base">add</span>
+    New lead
+  </a>
+  <a class="inline-flex items-center gap-2" matButton="tonal" routerLink="/app/clients/new">
+    <span aria-hidden="true" class="material-icons text-base">person_add</span>
+    New client
+  </a>
+  <a class="inline-flex items-center gap-2" matButton="tonal" routerLink="/app/requests/new">
+    <span aria-hidden="true" class="material-icons text-base">inbox</span>
+    New request
+  </a>
+</app-page-heading>
+
 <div class="dashboard-container p-6">
-  <!-- Greeting Section -->
-  <div class="mb-6">
-    <h1 class="text-2xl font-bold text-gray-900" i18n>{{ greeting() }}</h1>
-    <p class="mt-1 text-sm text-gray-600">{{ currentDateFormatted() }}</p>
-  </div>
 
   <!-- Error State -->
   @if (error()) {
