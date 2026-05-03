@@ -16,3 +16,4 @@ export * from './dashboard.service';
 export * from './activities.service';
 export * from './comments.service';
 export * from './tags.service';
+export * from './users.service';

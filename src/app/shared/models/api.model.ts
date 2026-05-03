@@ -92,6 +92,35 @@ export const AppRole = {
 } as const;
 export type AppRole = (typeof AppRole)[keyof typeof AppRole];
 
+// ----- Org users (/api/users) -----
+
+/** OpenAPI: OrgUserResponse. Full user record returned by GET/PUT /api/users. */
+export type OrgUserResponseDto = {
+  id: string;
+  appUserId: string;
+  email: string;
+  fullName: string;
+  role: OrgRole;
+  isActive: boolean;
+  joinedAt: string;
+  lastLoginAt?: string;
+};
+
+export type PaginatedOrgUserResponseDto = PaginatedDto<OrgUserResponseDto>;
+
+/** OpenAPI: InviteUserRequest. POST /api/users body. */
+export type InviteUserRequestDto = {
+  email: string;
+  fullName: string;
+  role: OrgRole;
+};
+
+/** OpenAPI: UpdateUserRequest. PUT /api/users/{id} body. */
+export type UpdateUserRequestDto = {
+  fullName: string;
+  role: OrgRole;
+};
+
 // ----- Organization members -----
 
 /** OpenAPI: MemberResponse. Member of the current organization. */

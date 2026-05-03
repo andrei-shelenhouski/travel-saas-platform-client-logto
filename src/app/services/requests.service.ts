@@ -7,6 +7,7 @@ import { environment } from '@environments/environment';
 
 import type {
   CreateRequestDto,
+  PaginatedOfferResponseDto,
   PaginatedRequestResponseDto,
   RequestResponseDto,
   UpdateRequestDto,
@@ -70,5 +71,25 @@ export class RequestsService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${REQUESTS_URL}/${id}`);
+  }
+
+  /** GET /api/requests/{id}/offers. Returns paginated offers linked to this travel request. */
+  getOffers(
+    requestId: string,
+    params?: { page?: number; limit?: number },
+  ): Observable<PaginatedOfferResponseDto> {
+    let httpParams = new HttpParams();
+
+    if (params?.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
+    }
+
+    return this.http.get<PaginatedOfferResponseDto>(`${REQUESTS_URL}/${requestId}/offers`, {
+      params: httpParams,
+    });
   }
 }
