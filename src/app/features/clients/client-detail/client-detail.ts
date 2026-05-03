@@ -1,10 +1,18 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EMPTY, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
+import { InvoiceStatusChipComponent } from '@app/features/invoices/invoice-status-chip/invoice-status-chip';
 import { ActivitiesService } from '@app/services/activities.service';
 import { ClientsService } from '@app/services/clients.service';
 import { CommentsService } from '@app/services/comments.service';
@@ -16,7 +24,6 @@ import {
   RequestStatusChipComponent,
   TagSelectorComponent,
 } from '@app/shared/components';
-import { InvoiceStatusChipComponent } from '@app/features/invoices/invoice-status-chip/invoice-status-chip';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS, MAT_TABS } from '@app/shared/material-imports';
 import { ClientType, EntityType } from '@app/shared/models';

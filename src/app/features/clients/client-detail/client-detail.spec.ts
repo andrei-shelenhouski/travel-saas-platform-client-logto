@@ -1,15 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
-import { provideRouter } from '@angular/router';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 
 import { of, Subject } from 'rxjs';
 
-import { ClientDetailComponent } from './client-detail';
 import { ClientsService } from '@app/services/clients.service';
 import { TagsService } from '@app/services/tags.service';
-import { ToastService } from '@app/shared/services/toast.service';
 import { ClientType } from '@app/shared/models';
+import { ToastService } from '@app/shared/services/toast.service';
+
+import { ClientDetailComponent } from './client-detail';
 
 import type { ClientResponseDto } from '@app/shared/models';
 
@@ -45,7 +45,12 @@ describe('ClientDetailComponent', () => {
       'getBookings',
       'getInvoices',
     ]);
-    mockTagsService = jasmine.createSpyObj('TagsService', ['findAll', 'create', 'attach', 'detach']);
+    mockTagsService = jasmine.createSpyObj('TagsService', [
+      'findAll',
+      'create',
+      'attach',
+      'detach',
+    ]);
     mockToastService = jasmine.createSpyObj('ToastService', ['showError', 'showSuccess']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
 
