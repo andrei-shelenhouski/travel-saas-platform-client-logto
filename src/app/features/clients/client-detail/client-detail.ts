@@ -9,7 +9,7 @@ import {
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
-import { EMPTY } from 'rxjs';
+import { EMPTY, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
 import { ActivitiesService } from '@app/services/activities.service';
@@ -113,7 +113,7 @@ export class ClientDetailComponent {
       const [clientId, trigger] = params;
 
       if (clientId === null || trigger === 0) {
-        return EMPTY;
+        return of([]);
       }
 
       return this.clientsService.getLeads(clientId, { page: 1, limit: 20 }).pipe(map((r) => r.items));
@@ -127,7 +127,7 @@ export class ClientDetailComponent {
       const [clientId, trigger] = params;
 
       if (clientId === null || trigger === 0) {
-        return EMPTY;
+        return of([]);
       }
 
       return this.clientsService
@@ -143,7 +143,7 @@ export class ClientDetailComponent {
       const [clientId, trigger] = params;
 
       if (clientId === null || trigger === 0) {
-        return EMPTY;
+        return of([]);
       }
 
       return this.clientsService.getOffers(clientId, { page: 1, limit: 20 }).pipe(map((r) => r.items));
@@ -157,7 +157,7 @@ export class ClientDetailComponent {
       const [clientId, trigger] = params;
 
       if (clientId === null || trigger === 0) {
-        return EMPTY;
+        return of([]);
       }
 
       return this.clientsService
