@@ -56,6 +56,12 @@ export class LeadStatusChipComponent {
   }
 
   textColor(): string {
+    const status = this.status();
+
+    if (!status || !(status in LEAD_STATUS_COLORS)) {
+      return '#1f2937';
+    }
+
     return '#ffffff';
   }
 }

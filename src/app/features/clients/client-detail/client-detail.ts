@@ -188,7 +188,6 @@ export class ClientDetailComponent {
   readonly tagsLoading = computed(() => this.entityTagsData.isLoading());
   readonly tagsSaveLoading = signal(false);
 
-  readonly activeTab = signal<ClientHistoryTab>('leads');
   readonly selectedTabIndex = signal(0);
 
   readonly leads = computed(() => this.leadsData.value() ?? []);
@@ -239,7 +238,6 @@ export class ClientDetailComponent {
       return;
     }
 
-    this.activeTab.set(tab);
     this.selectedTabIndex.set(index);
 
     // Lazy-load tab data on first activation
@@ -330,9 +328,7 @@ export class ClientDetailComponent {
   }
 
   goToRequest(req: TravelRequestSummaryDto): void {
-    if (req.leadId) {
-      this.router.navigate(['/app/leads', req.leadId]);
-    }
+    this.router.navigate(['/app/requests', req.id]);
   }
 
   goToOffer(offer: OfferSummaryDto): void {
@@ -345,6 +341,18 @@ export class ClientDetailComponent {
 
   goToInvoice(invoice: InvoiceResponseDto): void {
     this.router.navigate(['/app/invoices', invoice.id]);
+  }
+
+  createRequest(): void {
+    const c = this.client();
+
+    if (!c) {
+      return;
+    }
+
+    this.router.navigate(['/app/requests/new'], {
+      queryParams: { clientId: c.id },
+    });
   }
 
   formatDate(iso: string | null | undefined): string {

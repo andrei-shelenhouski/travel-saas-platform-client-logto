@@ -60,6 +60,12 @@ export class OfferStatusChipComponent {
   }
 
   textColor(): string {
+    const status = this.status();
+
+    if (!status || !(status in OFFER_STATUS_COLORS)) {
+      return '#1f2937';
+    }
+
     return '#ffffff';
   }
 }
