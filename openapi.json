@@ -11,6 +11,222 @@
     }
   ],
   "paths": {
+    "/api/users/{id}": {
+      "get": {
+        "tags": [
+          "org-member-controller"
+        ],
+        "operationId": "getById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgUserResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "org-member-controller"
+        ],
+        "operationId": "update",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgUserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}/reactivate": {
+      "put": {
+        "tags": [
+          "org-member-controller"
+        ],
+        "operationId": "reactivate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgUserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/users/{id}/deactivate": {
+      "put": {
+        "tags": [
+          "org-member-controller"
+        ],
+        "operationId": "deactivate",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgUserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/settings/organization": {
       "get": {
         "tags": [
@@ -156,7 +372,7 @@
         "tags": [
           "travel-request-controller"
         ],
-        "operationId": "update",
+        "operationId": "update_1",
         "parameters": [
           {
             "name": "id",
@@ -311,7 +527,7 @@
         "tags": [
           "offer-controller"
         ],
-        "operationId": "update_1",
+        "operationId": "update_2",
         "parameters": [
           {
             "name": "id",
@@ -528,7 +744,7 @@
         "tags": [
           "lead-controller"
         ],
-        "operationId": "update_2",
+        "operationId": "update_3",
         "parameters": [
           {
             "name": "id",
@@ -745,7 +961,7 @@
         "tags": [
           "invoice-controller"
         ],
-        "operationId": "update_3",
+        "operationId": "update_4",
         "parameters": [
           {
             "name": "id",
@@ -971,7 +1187,7 @@
         "tags": [
           "client-controller"
         ],
-        "operationId": "update_4",
+        "operationId": "update_5",
         "parameters": [
           {
             "name": "id",
@@ -1249,7 +1465,7 @@
         "tags": [
           "booking-controller"
         ],
-        "operationId": "update_5",
+        "operationId": "update_6",
         "parameters": [
           {
             "name": "id",
@@ -1504,12 +1720,147 @@
         }
       }
     },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "org-member-controller"
+        ],
+        "operationId": "list_1",
+        "parameters": [
+          {
+            "name": "role",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "ADMIN",
+                "MANAGER",
+                "AGENT",
+                "SALES_AGENT",
+                "BACK_OFFICE"
+              ]
+            }
+          },
+          {
+            "name": "isActive",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 20
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponseOrgUserResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "org-member-controller"
+        ],
+        "operationId": "invite",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteUserRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgUserResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/tags": {
       "get": {
         "tags": [
           "tag-controller"
         ],
-        "operationId": "list_1",
+        "operationId": "list_2",
         "parameters": [
           {
             "name": "query",
@@ -1761,7 +2112,7 @@
         "tags": [
           "travel-request-controller"
         ],
-        "operationId": "list_2",
+        "operationId": "list_3",
         "parameters": [
           {
             "name": "query",
@@ -2023,7 +2374,7 @@
         "tags": [
           "api-key-controller"
         ],
-        "operationId": "list_3",
+        "operationId": "list_4",
         "responses": {
           "409": {
             "description": "Conflict",
@@ -2117,7 +2468,7 @@
         "tags": [
           "offer-controller"
         ],
-        "operationId": "list_4",
+        "operationId": "list_5",
         "parameters": [
           {
             "name": "query",
@@ -2312,7 +2663,7 @@
         "tags": [
           "lead-controller"
         ],
-        "operationId": "list_5",
+        "operationId": "list_6",
         "parameters": [
           {
             "name": "query",
@@ -2464,7 +2815,7 @@
         "tags": [
           "invoice-controller"
         ],
-        "operationId": "list_6",
+        "operationId": "list_7",
         "parameters": [
           {
             "name": "query",
@@ -2781,7 +3132,7 @@
         "tags": [
           "comment-controller"
         ],
-        "operationId": "list_7",
+        "operationId": "list_8",
         "parameters": [
           {
             "name": "commentableType",
@@ -2901,7 +3252,7 @@
         "tags": [
           "client-controller"
         ],
-        "operationId": "list_8",
+        "operationId": "list_9",
         "parameters": [
           {
             "name": "query",
@@ -3063,7 +3414,7 @@
         "tags": [
           "booking-controller"
         ],
-        "operationId": "list_9",
+        "operationId": "list_10",
         "parameters": [
           {
             "name": "query",
@@ -3331,7 +3682,7 @@
         "tags": [
           "activity-controller"
         ],
-        "operationId": "list_10",
+        "operationId": "list_11",
         "parameters": [
           {
             "name": "entityType",
@@ -4972,6 +5323,69 @@
           }
         }
       },
+      "UpdateUserRequest": {
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "MANAGER",
+              "AGENT",
+              "SALES_AGENT",
+              "BACK_OFFICE"
+            ]
+          }
+        },
+        "required": [
+          "fullName",
+          "role"
+        ]
+      },
+      "OrgUserResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "appUserId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "email": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "MANAGER",
+              "AGENT",
+              "SALES_AGENT",
+              "BACK_OFFICE"
+            ]
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "joinedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastLoginAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
       "UpdateOrganizationSettingsRequest": {
         "type": "object",
         "properties": {
@@ -6487,6 +6901,34 @@
           }
         }
       },
+      "InviteUserRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "minLength": 1
+          },
+          "fullName": {
+            "type": "string",
+            "minLength": 1
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "ADMIN",
+              "MANAGER",
+              "AGENT",
+              "SALES_AGENT",
+              "BACK_OFFICE"
+            ]
+          }
+        },
+        "required": [
+          "email",
+          "fullName",
+          "role"
+        ]
+      },
       "Tag": {
         "type": "object",
         "properties": {
@@ -6619,7 +7061,9 @@
             "enum": [
               "ADMIN",
               "MANAGER",
-              "AGENT"
+              "AGENT",
+              "SALES_AGENT",
+              "BACK_OFFICE"
             ]
           }
         },
@@ -6650,7 +7094,9 @@
             "enum": [
               "ADMIN",
               "MANAGER",
-              "AGENT"
+              "AGENT",
+              "SALES_AGENT",
+              "BACK_OFFICE"
             ]
           },
           "active": {
@@ -7174,7 +7620,9 @@
             "enum": [
               "ADMIN",
               "MANAGER",
-              "AGENT"
+              "AGENT",
+              "SALES_AGENT",
+              "BACK_OFFICE"
             ]
           }
         },
@@ -7193,6 +7641,29 @@
         "required": [
           "agentId"
         ]
+      },
+      "PaginatedResponseOrgUserResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrgUserResponse"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "limit": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
       },
       "PageQuery": {
         "type": "object",
@@ -7338,7 +7809,9 @@
             "enum": [
               "ADMIN",
               "MANAGER",
-              "AGENT"
+              "AGENT",
+              "SALES_AGENT",
+              "BACK_OFFICE"
             ]
           }
         }
