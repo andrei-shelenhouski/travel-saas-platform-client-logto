@@ -129,6 +129,7 @@ export class LeadDetailComponent {
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
   private readonly travelDetailsData = signal<LeadResponseDto | null>(null);
   private readonly requestsData = signal<RequestResponseDto[]>([]);
+  private readonly requestsDataInitialized = signal(false);
 
   private readonly data = rxResource<LeadDetailLoadData, string | null>({
     params: (): string | null => this.routeId() ?? null,
@@ -171,10 +172,8 @@ export class LeadDetailComponent {
     () => this.travelDetailsData() ?? this.data.value()?.lead ?? null,
   );
   protected readonly requests = computed(() => {
-    const local = this.requestsData();
-
-    if (local.length > 0) {
-      return local;
+    if (this.requestsDataInitialized()) {
+      return this.requestsData();
     }
 
     return this.data.value()?.requests ?? [];
@@ -282,6 +281,7 @@ export class LeadDetailComponent {
   protected readonly editingRequestId = signal<string | null>(null);
   protected readonly updatingRequest = signal(false);
   protected readonly deletingRequestId = signal<string | null>(null);
+  protected readonly expandedNotesRequestId = signal<string | null>(null);
 
   protected readonly travelForm = this.formBuilder.group({
     destination: this.formBuilder.control<string>(''),
@@ -354,6 +354,7 @@ export class LeadDetailComponent {
 
       this.travelDetailsData.set(value.lead);
       this.requestsData.set(value.requests);
+      this.requestsDataInitialized.set(true);
       this.activityPage.set(1);
       this.activityTotal.set(value.activities.total ?? value.activities.items.length);
 
@@ -739,13 +740,13 @@ export class LeadDetailComponent {
     return offersCount === 0;
   }
 
-  protected deleteRequest(request: RequestResponseDto): void {
+  protected deleteRequest(request: RequestResponseDto, index: number): void {
     if (!this.canDeleteRequest(request) || this.deletingRequestId()) {
       return;
     }
 
     const confirmed = confirm(
-      `Are you sure you want to delete ${this.getRequestIdentifier(request, 0)}?`,
+      `Are you sure you want to delete ${this.getRequestIdentifier(request, index)}?`,
     );
 
     if (!confirmed) {
@@ -753,18 +754,22 @@ export class LeadDetailComponent {
     }
 
     this.deletingRequestId.set(request.id);
-    this.requestsService.delete(request.id).subscribe({
-      next: () => {
-        this.requestsData.update((items) => items.filter((item) => item.id !== request.id));
-        this.toast.showSuccess('Travel request was deleted');
-      },
-      error: (err: unknown) => {
-        this.toast.showError(this.getErrorMessage(err, 'Failed to delete travel request'));
-      },
-      complete: () => {
-        this.deletingRequestId.set(null);
-      },
-    });
+    this.requestsService
+      .delete(request.id)
+      .pipe(
+        finalize(() => {
+          this.deletingRequestId.set(null);
+        }),
+      )
+      .subscribe({
+        next: () => {
+          this.requestsData.update((items) => items.filter((item) => item.id !== request.id));
+          this.toast.showSuccess('Travel request was deleted');
+        },
+        error: (err: unknown) => {
+          this.toast.showError(this.getErrorMessage(err, 'Failed to delete travel request'));
+        },
+      });
   }
 
   protected openNewOffer(requestId: string): void {
@@ -830,6 +835,16 @@ export class LeadDetailComponent {
     }
 
     return `Total: ${amount} ${currency}`;
+  }
+
+  protected toggleNotesExpanded(requestId: string): void {
+    const current = this.expandedNotesRequestId();
+
+    this.expandedNotesRequestId.set(current === requestId ? null : requestId);
+  }
+
+  protected isNotesExpanded(requestId: string): boolean {
+    return this.expandedNotesRequestId() === requestId;
   }
 
   protected canShowDateRangeError(formName: 'add' | 'edit'): boolean {
@@ -1012,7 +1027,9 @@ export class LeadDetailComponent {
   }
 
   protected isSystemEvent(item: ActivityResponseDto): boolean {
-    return !item.createdBy && !this.getActivityActorFromPayload(item);
+    const createdBy = item.createdBy?.toLowerCase();
+
+    return createdBy === 'system' || createdBy === 'system action';
   }
 
   private isTerminalStatus(status: string): boolean {

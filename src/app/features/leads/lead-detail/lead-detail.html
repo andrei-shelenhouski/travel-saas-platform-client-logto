@@ -466,20 +466,22 @@
                             <mat-icon>more_vert</mat-icon>
                           </button>
                           <mat-menu #requestMenu="matMenu">
-                            <button
-                              mat-menu-item
-                              type="button"
-                              [disabled]="!canDeleteRequest(request)"
-                              [matTooltip]="
-                                canDeleteRequest(request)
-                                  ? ''
-                                  : 'Cannot delete request with linked offers'
-                              "
-                              (click)="deleteRequest(request)"
-                            >
-                              <mat-icon>delete</mat-icon>
-                              <span>Delete</span>
-                            </button>
+                            @if (!canDeleteRequest(request)) {
+                              <div
+                                class="delete-tooltip-wrapper"
+                                matTooltip="Cannot delete request with linked offers"
+                              >
+                                <button mat-menu-item type="button" [disabled]="true">
+                                  <mat-icon>delete</mat-icon>
+                                  <span>Delete</span>
+                                </button>
+                              </div>
+                            } @else {
+                              <button mat-menu-item type="button" (click)="deleteRequest(request, idx)">
+                                <mat-icon>delete</mat-icon>
+                                <span>Delete</span>
+                              </button>
+                            }
                           </mat-menu>
                         </div>
                       </div>
@@ -504,7 +506,47 @@
                       </p>
 
                       @if (request.notes) {
-                        <p class="request-notes" [title]="request.notes">{{ request.notes }}</p>
+                        <div class="request-notes-container">
+                          <p
+                            class="request-notes"
+                            [class.request-notes-expanded]="isNotesExpanded(request.id)"
+                          >
+                            {{ request.notes }}
+                          </p>
+                          @if (request.notes.length > 80) {
+                            <button
+                              class="request-notes-toggle"
+                              mat-button
+                              type="button"
+                              (click)="toggleNotesExpanded(request.id)"
+                            >
+                              {{ isNotesExpanded(request.id) ? 'Show less' : 'Show more' }}
+                            </button>
+                          }
+                        </div>
+                      }
+
+                      @if (getOffersForRequest(request.id).length > 0) {
+                        <div class="request-offers-section">
+                          <p class="request-offers-label">Offers:</p>
+                          <div class="offer-chip-list">
+                            @for (offer of getOffersForRequest(request.id); track offer.id) {
+                              <a
+                                class="offer-chip"
+                                [attr.title]="getOfferTooltip(offer)"
+                                [routerLink]="['/app/offers', offer.id]"
+                              >
+                                <span>{{ offer.number ?? offer.id.slice(0, 8) }}</span>
+                                <span
+                                  class="offer-status-chip"
+                                  [class]="getOfferStatusClass(offer.status)"
+                                >
+                                  {{ offer.status }}
+                                </span>
+                              </a>
+                            }
+                          </div>
+                        </div>
                       }
 
                       @if (canCreateOfferForRequest(request.status)) {

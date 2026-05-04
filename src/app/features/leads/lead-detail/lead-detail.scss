@@ -238,13 +238,49 @@
   color: #9ca3af;
 }
 
+.request-notes-container {
+  margin-top: 0.5rem;
+}
+
 .request-notes {
-  margin: 0.5rem 0 0;
+  margin: 0;
   font-size: 0.875rem;
   color: #6b7280;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.request-notes-expanded {
+  -webkit-line-clamp: unset;
+}
+
+.request-notes-toggle {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  min-height: auto;
+  padding: 0.25rem 0.5rem;
+}
+
+.request-offers-section {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.request-offers-label {
+  margin: 0 0 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.delete-tooltip-wrapper {
+  cursor: not-allowed;
 }
 
 .request-create-offer-row {
@@ -395,8 +431,6 @@
 }
 
 .activity-item-system {
-  opacity: 0.85;
-
   .activity-icon-wrap {
     background: #fef3c7;
   }
