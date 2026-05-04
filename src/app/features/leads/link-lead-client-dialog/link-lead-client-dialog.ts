@@ -18,7 +18,6 @@ import { LeadResponseDto } from '@app/shared/models';
 
 export type LinkLeadClientDialogData = {
   leadId: string;
-  initialClientId: string | null;
 };
 
 @Component({
@@ -57,6 +56,9 @@ export class LinkLeadClientDialogComponent {
         distinctUntilChanged(),
         switchMap((query) => {
           const trimmed = query.trim();
+
+          this.selectedClientId.set('');
+          this.errorMessage.set('');
 
           if (trimmed.length < 2) {
             this.options.set([]);
