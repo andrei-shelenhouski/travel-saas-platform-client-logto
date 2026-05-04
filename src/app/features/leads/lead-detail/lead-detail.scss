@@ -92,6 +92,33 @@
   text-decoration: underline;
 }
 
+.client-placeholder-card {
+  border: 1px dashed #d1d5db;
+  border-radius: 0.75rem;
+  padding: 0.85rem;
+  background: #f9fafb;
+}
+
+.client-placeholder-title {
+  margin: 0;
+  color: #111827;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.client-placeholder-text {
+  margin: 0.4rem 0 0;
+  color: #4b5563;
+  font-size: 0.85rem;
+}
+
+.client-placeholder-actions {
+  margin-top: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
 .agent-row {
   display: flex;
   flex-wrap: wrap;

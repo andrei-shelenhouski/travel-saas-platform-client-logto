@@ -308,6 +308,22 @@ export type UpdateLeadStatusDto = {
   reason?: string;
 };
 
+/** OpenAPI: LinkLeadClientRequest. PATCH /api/leads/{id}/client body. */
+export type LinkLeadClientDto = {
+  clientId: string;
+};
+
+/** OpenAPI: PromoteLeadToClientRequest. POST /api/leads/{id}/promote-client body. */
+export type PromoteLeadToClientDto = CreateClientDto & {
+  dataConsentDate?: string;
+};
+
+/** OpenAPI: PromoteLeadToClientResponse. */
+export type PromoteLeadToClientResponseDto = {
+  client: ClientResponseDto;
+  lead: LeadResponseDto;
+};
+
 /** OpenAPI: AssignLeadRequest. PATCH /api/leads/{id}/assign body. */
 export type AssignLeadDto = {
   agentId: string;
@@ -790,6 +806,7 @@ export type CreateClientDto = {
   bik?: string;
   commissionPct?: number;
   dataConsentGiven: boolean;
+  dataConsentDate?: string;
 };
 
 /** OpenAPI: ClientResponse. */

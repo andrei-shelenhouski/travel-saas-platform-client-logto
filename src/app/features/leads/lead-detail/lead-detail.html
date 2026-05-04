@@ -61,41 +61,103 @@
 
         <div class="lead-grid">
           <section class="lead-card">
-            <h2 class="lead-card-title">Client</h2>
-            <dl class="lead-data-list">
-              <div class="lead-data-row">
-                <dt>Name</dt>
-                <dd>{{ l.clientName ?? '—' }}</dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Type</dt>
-                <dd>
-                  @if (l.clientType) {
-                    <app-client-type-badge [type]="l.clientType" />
-                  } @else {
-                    —
-                  }
-                </dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Phone</dt>
-                <dd>{{ l.contactPhone ?? '—' }}</dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Email</dt>
-                <dd>{{ l.contactEmail ?? '—' }}</dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Profile</dt>
-                <dd>
-                  @if (l.clientId) {
+            <div class="lead-card-header">
+              <h2 class="lead-card-title">Client</h2>
+
+              @if (l.clientId && canManageLeadClient()) {
+                <button
+                  aria-label="Client actions"
+                  mat-icon-button
+                  type="button"
+                  [matMenuTriggerFor]="clientActionsMenu"
+                >
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+
+                <mat-menu #clientActionsMenu="matMenu">
+                  <button mat-menu-item type="button" (click)="openLinkClientDialog()">
+                    Change client
+                  </button>
+                </mat-menu>
+              }
+            </div>
+
+            @if (l.clientId) {
+              <dl class="lead-data-list">
+                <div class="lead-data-row">
+                  <dt>Name</dt>
+                  <dd>{{ l.clientName ?? '—' }}</dd>
+                </div>
+                <div class="lead-data-row">
+                  <dt>Type</dt>
+                  <dd>
+                    @if (l.clientType) {
+                      <app-client-type-badge [type]="l.clientType" />
+                    } @else {
+                      —
+                    }
+                  </dd>
+                </div>
+                <div class="lead-data-row">
+                  <dt>Phone</dt>
+                  <dd>{{ l.contactPhone ?? '—' }}</dd>
+                </div>
+                <div class="lead-data-row">
+                  <dt>Email</dt>
+                  <dd>{{ l.contactEmail ?? '—' }}</dd>
+                </div>
+                <div class="lead-data-row">
+                  <dt>Profile</dt>
+                  <dd>
                     <a class="lead-link" [routerLink]="['/app/clients', l.clientId]">Open client</a>
-                  } @else {
-                    —
-                  }
-                </dd>
+                  </dd>
+                </div>
+              </dl>
+            } @else {
+              <div class="client-placeholder-card">
+                <p class="client-placeholder-title">No linked client</p>
+                <p class="client-placeholder-text">
+                  This lead is not linked to a client yet. Link an existing client or save this lead as
+                  a new client profile.
+                </p>
+
+                <dl class="lead-data-list">
+                  <div class="lead-data-row">
+                    <dt>Name</dt>
+                    <dd>{{ l.clientName ?? '—' }}</dd>
+                  </div>
+                  <div class="lead-data-row">
+                    <dt>Type</dt>
+                    <dd>
+                      @if (l.clientType) {
+                        <app-client-type-badge [type]="l.clientType" />
+                      } @else {
+                        —
+                      }
+                    </dd>
+                  </div>
+                  <div class="lead-data-row">
+                    <dt>Phone</dt>
+                    <dd>{{ l.contactPhone ?? '—' }}</dd>
+                  </div>
+                  <div class="lead-data-row">
+                    <dt>Email</dt>
+                    <dd>{{ l.contactEmail ?? '—' }}</dd>
+                  </div>
+                </dl>
+
+                @if (canManageLeadClient()) {
+                  <div class="client-placeholder-actions">
+                    <button mat-stroked-button type="button" (click)="openLinkClientDialog()">
+                      Link existing client
+                    </button>
+                    <button color="primary" mat-flat-button type="button" (click)="openPromoteClientDialog()">
+                      Save as new client
+                    </button>
+                  </div>
+                }
               </div>
-            </dl>
+            }
           </section>
 
           <section class="lead-card">
