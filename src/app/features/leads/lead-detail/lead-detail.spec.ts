@@ -35,6 +35,7 @@ describe('LeadDetailComponent', () => {
     getList: vi.fn(() => of({ items: [createRequest()], total: 1, page: 1, limit: 100 })),
     create: vi.fn(() => of(createRequest({ id: 'request-new', status: 'OPEN', offersCount: 0 }))),
     update: vi.fn((id: string) => of(createRequest({ id, destination: 'Updated request' }))),
+    delete: vi.fn(() => of(undefined)),
   };
 
   beforeEach(async () => {
@@ -91,6 +92,7 @@ describe('LeadDetailComponent', () => {
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
     fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   it('creates component', () => {
@@ -180,7 +182,7 @@ describe('LeadDetailComponent', () => {
     expect(api.canManageLeadClient()).toBe(false);
   });
 
-  it('creates travel request from inline form', () => {
+  it('creates travel request from inline form', async () => {
     const api = component as unknown as {
       createTravelRequest: () => void;
       saveTravelRequest: () => void;
@@ -203,6 +205,7 @@ describe('LeadDetailComponent', () => {
     api.addRequestForm.controls.adults.setValue(2);
     api.addRequestForm.controls.children.setValue(1);
     api.saveTravelRequest();
+    await fixture.whenStable();
 
     expect(requestsServiceMock.create).toHaveBeenCalledTimes(1);
     expect(api.requests().some((request) => request.id === 'request-new')).toBe(true);

@@ -188,6 +188,107 @@
   padding: 0.75rem;
 }
 
+.request-view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.request-id-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.request-id {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.request-status-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.12rem 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.request-view-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.request-summary-line {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #111827;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.request-dot {
+  color: #9ca3af;
+}
+
+.request-notes-container {
+  margin-top: 0.5rem;
+}
+
+.request-notes {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.request-notes-expanded {
+  -webkit-line-clamp: unset;
+}
+
+.request-notes-toggle {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  min-height: auto;
+  padding: 0.25rem 0.5rem;
+}
+
+.request-offers-section {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.request-offers-label {
+  margin: 0 0 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.delete-tooltip-wrapper {
+  cursor: not-allowed;
+}
+
+.request-create-offer-row {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
 .request-header {
   display: flex;
   align-items: center;
@@ -327,6 +428,21 @@
   display: flex;
   gap: 0.7rem;
   align-items: flex-start;
+}
+
+.activity-item-system {
+  .activity-icon-wrap {
+    background: #fef3c7;
+  }
+
+  .activity-icon {
+    color: #92400e;
+  }
+
+  .activity-label {
+    font-style: italic;
+    color: #6b7280;
+  }
 }
 
 .activity-icon-wrap {

@@ -360,7 +360,7 @@
               <p class="text-sm text-gray-500">No travel requests yet.</p>
             } @else {
               <div class="requests-grid">
-                @for (request of requests(); track request.id) {
+                @for (request of requests(); track request.id; let idx = $index) {
                   <article class="request-card">
                     @if (isEditingRequest(request.id)) {
                       <form
@@ -438,67 +438,131 @@
                         </div>
                       </form>
                     } @else {
-                      <div class="request-header">
-                        <p class="request-destination">{{ request.destination ?? '—' }}</p>
-                        <button
-                          aria-label="Edit travel request"
-                          mat-icon-button
-                          type="button"
-                          (click)="editTravelRequest(request)"
-                        >
-                          <mat-icon>edit</mat-icon>
-                        </button>
+                      <div class="request-view-header">
+                        <div class="request-id-status">
+                          <span class="request-id">{{ getRequestIdentifier(request, idx) }}</span>
+                          <span
+                            class="request-status-badge"
+                            [class]="getRequestStatusClass(request.status)"
+                          >
+                            {{ getRequestStatusLabel(request.status) }}
+                          </span>
+                        </div>
+                        <div class="request-view-actions">
+                          <button
+                            aria-label="Edit travel request"
+                            mat-icon-button
+                            type="button"
+                            (click)="editTravelRequest(request)"
+                          >
+                            <mat-icon>edit</mat-icon>
+                          </button>
+                          <button
+                            aria-label="More actions"
+                            mat-icon-button
+                            type="button"
+                            [matMenuTriggerFor]="requestMenu"
+                          >
+                            <mat-icon>more_vert</mat-icon>
+                          </button>
+                          <mat-menu #requestMenu="matMenu">
+                            @if (!canDeleteRequest(request)) {
+                              <div
+                                class="delete-tooltip-wrapper"
+                                matTooltip="Cannot delete request with linked offers"
+                              >
+                                <button mat-menu-item type="button" [disabled]="true">
+                                  <mat-icon>delete</mat-icon>
+                                  <span>Delete</span>
+                                </button>
+                              </div>
+                            } @else {
+                              <button
+                                mat-menu-item
+                                type="button"
+                                (click)="deleteRequest(request, idx)"
+                              >
+                                <mat-icon>delete</mat-icon>
+                                <span>Delete</span>
+                              </button>
+                            }
+                          </mat-menu>
+                        </div>
                       </div>
 
-                      <div class="request-meta-row">
+                      <p class="request-summary-line">
+                        <span>{{ request.destination ?? '—' }}</span>
+                        <span class="request-dot">·</span>
+                        <span>{{ formatDateRange(request.departDate, request.returnDate) }}</span>
+                        <span class="request-dot">·</span>
                         <span
-                          class="request-status-chip"
-                          [class]="getRequestStatusClass(request.status)"
+                          >{{ request.adults ?? 0 }} adult{{
+                            request.adults === 1 ? '' : 's'
+                          }}</span
                         >
-                          {{ getRequestStatusLabel(request.status) }}
-                        </span>
-                        <p class="request-meta-text">Offers: {{ request.offersCount }}</p>
-                      </div>
+                        @if (request.children && request.children > 0) {
+                          <span
+                            >, {{ request.children }} child{{
+                              request.children === 1 ? '' : 'ren'
+                            }}</span
+                          >
+                        }
+                      </p>
 
-                      <p class="request-dates">
-                        {{ formatDateRange(request.departDate, request.returnDate) }}
-                      </p>
-                      <p class="request-offers-count">
-                        Adults/Children: {{ request.adults ?? 0 }}/{{ request.children ?? 0 }}
-                      </p>
-                      @if (request.managerName) {
-                        <p class="request-offers-count">Manager: {{ request.managerName }}</p>
+                      @if (request.notes) {
+                        <div class="request-notes-container">
+                          <p
+                            class="request-notes"
+                            [class.request-notes-expanded]="isNotesExpanded(request.id)"
+                          >
+                            {{ request.notes }}
+                          </p>
+                          @if (request.notes.length > 80) {
+                            <button
+                              class="request-notes-toggle"
+                              mat-button
+                              type="button"
+                              (click)="toggleNotesExpanded(request.id)"
+                            >
+                              {{ isNotesExpanded(request.id) ? 'Show less' : 'Show more' }}
+                            </button>
+                          }
+                        </div>
                       }
 
-                      <div class="offer-chip-list">
-                        @for (offer of getOffersForRequest(request.id); track offer.id) {
-                          <a
-                            class="offer-chip"
-                            [attr.title]="getOfferTooltip(offer)"
-                            [routerLink]="['/app/offers', offer.id]"
-                          >
-                            <span>{{ offer.number ?? offer.id }}</span>
-                            <span
-                              class="offer-status-chip"
-                              [class]="getOfferStatusClass(offer.status)"
-                            >
-                              {{ offer.status }}
-                            </span>
-                          </a>
-                        } @empty {
-                          <span class="text-xs text-gray-500">No offers</span>
-                        }
-                      </div>
+                      @if (getOffersForRequest(request.id).length > 0) {
+                        <div class="request-offers-section">
+                          <p class="request-offers-label">Offers:</p>
+                          <div class="offer-chip-list">
+                            @for (offer of getOffersForRequest(request.id); track offer.id) {
+                              <a
+                                class="offer-chip"
+                                [attr.title]="getOfferTooltip(offer)"
+                                [routerLink]="['/app/offers', offer.id]"
+                              >
+                                <span>{{ offer.number ?? offer.id.slice(0, 8) }}</span>
+                                <span
+                                  class="offer-status-chip"
+                                  [class]="getOfferStatusClass(offer.status)"
+                                >
+                                  {{ offer.status }}
+                                </span>
+                              </a>
+                            }
+                          </div>
+                        </div>
+                      }
 
                       @if (canCreateOfferForRequest(request.status)) {
-                        <div class="request-actions">
+                        <div class="request-create-offer-row">
                           <button
                             color="primary"
-                            mat-stroked-button
+                            mat-flat-button
                             type="button"
                             (click)="openNewOffer(request.id)"
                           >
-                            + New offer
+                            <mat-icon>add</mat-icon>
+                            Create Offer
                           </button>
                         </div>
                       }
@@ -517,7 +581,7 @@
             } @else {
               <ul class="activity-list" role="list">
                 @for (item of activityItems(); track item.id) {
-                  <li class="activity-item">
+                  <li class="activity-item" [class.activity-item-system]="isSystemEvent(item)">
                     <span aria-hidden="true" class="activity-icon-wrap">
                       <mat-icon class="activity-icon">{{ getActivityIcon(item.type) }}</mat-icon>
                     </span>
