@@ -30,7 +30,7 @@ export class InviteUserDialogComponent {
   protected readonly sendingLabel = $localize`:@@usersInviteSending:Sending...`;
   protected readonly inviteLabel = $localize`:@@usersInviteSubmit:Invite`;
 
-  protected readonly roles: ReadonlyArray<{ value: OrgRole; label: string }> = [
+  protected readonly roles: readonly { value: OrgRole; label: string }[] = [
     { value: 'ADMIN', label: $localize`:@@usersRoleAdministrator:Administrator` },
     { value: 'MANAGER', label: $localize`:@@usersRoleManager:Manager` },
     { value: 'AGENT', label: $localize`:@@usersRoleAgent:Agent` },

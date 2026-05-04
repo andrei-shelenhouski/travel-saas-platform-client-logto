@@ -7,10 +7,18 @@
       </p>
     </div>
     <div class="users-page__actions">
-      <button color="primary" mat-flat-button type="button" (click)="openInviteDialog()" i18n="@@usersInviteButton">
+      <button
+        color="primary"
+        i18n="@@usersInviteButton"
+        mat-flat-button
+        type="button"
+        (click)="openInviteDialog()"
+      >
         + Invite user
       </button>
-      <a mat-stroked-button routerLink="/app/dashboard" i18n="@@usersBackToDashboard">Back to dashboard</a>
+      <a i18n="@@usersBackToDashboard" mat-stroked-button routerLink="/app/dashboard"
+        >Back to dashboard</a
+      >
     </div>
   </header>
 
@@ -40,7 +48,9 @@
           @if (users().length === 0) {
             <tr>
               <td colspan="6">
-                <div class="users-table__empty" i18n="@@usersEmptyState">No users yet. Invite the first member.</div>
+                <div class="users-table__empty" i18n="@@usersEmptyState">
+                  No users yet. Invite the first member.
+                </div>
               </td>
             </tr>
           } @else {
@@ -49,16 +59,18 @@
                 <td>
                   <div class="users-table__identity">
                     <span
+                      aria-hidden="true"
                       class="users-table__avatar"
                       [style.background-color]="getAvatarColor(user.id)"
-                      aria-hidden="true"
                     >
                       {{ getInitials(user.fullName) }}
                     </span>
                     <div>
                       <div class="users-table__name">{{ user.fullName }}</div>
                       @if (isCurrentUser(user)) {
-                        <div class="users-table__current-user" i18n="@@usersCurrentUser">Current user</div>
+                        <div class="users-table__current-user" i18n="@@usersCurrentUser">
+                          Current user
+                        </div>
                       }
                     </div>
                   </div>
@@ -69,7 +81,11 @@
                 </td>
 
                 <td>
-                  <mat-form-field appearance="outline" class="users-table__role-select" subscriptSizing="dynamic">
+                  <mat-form-field
+                    appearance="outline"
+                    class="users-table__role-select"
+                    subscriptSizing="dynamic"
+                  >
                     <mat-select
                       [disabled]="!canChangeRole(user) || updatingRoleId() === user.id"
                       [value]="user.role"
@@ -96,13 +112,13 @@
 
                 <td class="users-table__actions-column">
                   <button
+                    aria-label="Open actions menu"
+                    i18n-aria-label="@@usersActionsMenuAria"
                     mat-icon-button
                     type="button"
                     [disabled]="togglingActiveId() === user.id"
-                    [matMenuTriggerFor]="actionsMenu"
                     [matMenuTriggerData]="{ user: user }"
-                    aria-label="Open actions menu"
-                    i18n-aria-label="@@usersActionsMenuAria"
+                    [matMenuTriggerFor]="actionsMenu"
                   >
                     <mat-icon>more_vert</mat-icon>
                   </button>
@@ -119,10 +135,24 @@
     <ng-template let-user="user" matMenuContent>
       @if (user.isActive) {
         @if (!isCurrentUser(user)) {
-          <button mat-menu-item type="button" (click)="openDeactivateDialog(user)" i18n="@@usersDeactivateActionMenu">Deactivate</button>
+          <button
+            i18n="@@usersDeactivateActionMenu"
+            mat-menu-item
+            type="button"
+            (click)="openDeactivateDialog(user)"
+          >
+            Deactivate
+          </button>
         }
       } @else {
-        <button mat-menu-item type="button" (click)="reactivateUser(user.id)" i18n="@@usersReactivateActionMenu">Activate</button>
+        <button
+          i18n="@@usersReactivateActionMenu"
+          mat-menu-item
+          type="button"
+          (click)="reactivateUser(user.id)"
+        >
+          Activate
+        </button>
       }
     </ng-template>
   </mat-menu>

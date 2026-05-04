@@ -1,24 +1,19 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  signal,
-} from '@angular/core';
 import { DatePipe } from '@angular/common';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+
+import { finalize, forkJoin } from 'rxjs';
 
 import { PermissionService } from '@app/services/permission.service';
 import { UsersService } from '@app/services/users.service';
 import { ConfirmDialogComponent } from '@app/shared/components';
 import { MAT_FORM_BUTTONS, MAT_ICONS, MAT_MENU } from '@app/shared/material-imports';
 import { OrgRole } from '@app/shared/models';
-import { InviteUserDialogComponent } from './invite-user-dialog/invite-user-dialog';
 
-import { finalize, forkJoin } from 'rxjs';
+import { InviteUserDialogComponent } from './invite-user-dialog/invite-user-dialog';
 
 import type { OrgUserResponseDto } from '@app/shared/models';
 
@@ -117,7 +112,9 @@ export class UsersManagementComponent {
         },
         error: (err) => {
           const message =
-            err.error?.message ?? err.message ?? $localize`:@@usersUpdateRoleError:Failed to update role`;
+            err.error?.message ??
+            err.message ??
+            $localize`:@@usersUpdateRoleError:Failed to update role`;
 
           this.snackBar.open(message, this.closeLabel, { duration: 5000 });
         },
