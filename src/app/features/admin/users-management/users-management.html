@@ -7,10 +7,10 @@
       </p>
     </div>
     <div class="users-page__actions">
-      <button color="primary" mat-flat-button type="button" (click)="openInviteDialog()">
-        + Пригласить пользователя
+      <button color="primary" mat-flat-button type="button" (click)="openInviteDialog()" i18n="@@usersInviteButton">
+        + Invite user
       </button>
-      <a mat-stroked-button routerLink="/app/dashboard">Назад к дашборду</a>
+      <a mat-stroked-button routerLink="/app/dashboard" i18n="@@usersBackToDashboard">Back to dashboard</a>
     </div>
   </header>
 
@@ -27,12 +27,12 @@
       <table class="users-table__table">
         <thead>
           <tr>
-            <th>Пользователь</th>
-            <th>Email</th>
-            <th>Роль</th>
-            <th>Статус</th>
-            <th>Дата входа</th>
-            <th class="users-table__actions-column">Действия</th>
+            <th i18n="@@usersColumnUser">User</th>
+            <th i18n="@@usersColumnEmail">Email</th>
+            <th i18n="@@usersColumnRole">Role</th>
+            <th i18n="@@usersColumnStatus">Status</th>
+            <th i18n="@@usersColumnJoined">Joined</th>
+            <th class="users-table__actions-column" i18n="@@usersColumnActions">Actions</th>
           </tr>
         </thead>
 
@@ -40,7 +40,7 @@
           @if (users().length === 0) {
             <tr>
               <td colspan="6">
-                <div class="users-table__empty">Нет пользователей. Пригласите первого участника.</div>
+                <div class="users-table__empty" i18n="@@usersEmptyState">No users yet. Invite the first member.</div>
               </td>
             </tr>
           } @else {
@@ -58,7 +58,7 @@
                     <div>
                       <div class="users-table__name">{{ user.fullName }}</div>
                       @if (isCurrentUser(user)) {
-                        <div class="users-table__current-user">Текущий пользователь</div>
+                        <div class="users-table__current-user" i18n="@@usersCurrentUser">Current user</div>
                       }
                     </div>
                   </div>
@@ -88,7 +88,7 @@
                     [class.users-table__status--active]="user.isActive"
                     [class.users-table__status--inactive]="!user.isActive"
                   >
-                    {{ user.isActive ? 'Активен' : 'Неактивен' }}
+                    {{ getStatusLabel(user.isActive) }}
                   </span>
                 </td>
 
@@ -101,7 +101,8 @@
                     [disabled]="togglingActiveId() === user.id"
                     [matMenuTriggerFor]="actionsMenu"
                     [matMenuTriggerData]="{ user: user }"
-                    aria-label="Открыть меню действий"
+                    aria-label="Open actions menu"
+                    i18n-aria-label="@@usersActionsMenuAria"
                   >
                     <mat-icon>more_vert</mat-icon>
                   </button>
@@ -118,12 +119,10 @@
     <ng-template let-user="user" matMenuContent>
       @if (user.isActive) {
         @if (!isCurrentUser(user)) {
-          <button mat-menu-item type="button" (click)="openDeactivateDialog(user)">
-            Деактивировать
-          </button>
+          <button mat-menu-item type="button" (click)="openDeactivateDialog(user)" i18n="@@usersDeactivateActionMenu">Deactivate</button>
         }
       } @else {
-        <button mat-menu-item type="button" (click)="reactivateUser(user.id)">Активировать</button>
+        <button mat-menu-item type="button" (click)="reactivateUser(user.id)" i18n="@@usersReactivateActionMenu">Activate</button>
       }
     </ng-template>
   </mat-menu>

@@ -14,6 +14,7 @@ import type { OrgUserResponseDto } from '@app/shared/models';
 describe('UsersManagementComponent', () => {
   let fixture: ComponentFixture<UsersManagementComponent>;
   let component: UsersManagementComponent;
+  let dialogOpenSpy: ReturnType<typeof vi.spyOn>;
   let usersService: {
     getList: ReturnType<typeof vi.fn>;
     update: ReturnType<typeof vi.fn>;
@@ -69,7 +70,9 @@ describe('UsersManagementComponent', () => {
     fixture = TestBed.createComponent(UsersManagementComponent);
     component = fixture.componentInstance;
 
-    vi.spyOn(component['dialog'], 'open').mockReturnValue({ afterClosed: () => of(false) } as never);
+    dialogOpenSpy = vi
+      .spyOn(component['dialog'], 'open')
+      .mockReturnValue({ afterClosed: () => of(false) } as never);
     vi.spyOn(component['snackBar'], 'open').mockReturnValue({
       dismiss: vi.fn(),
       afterDismissed: () => of(undefined),
@@ -100,13 +103,13 @@ describe('UsersManagementComponent', () => {
       fullName: 'Active User',
       role: 'ADMIN',
     });
-    expect(component['snackBar'].open).toHaveBeenCalledWith('Роль обновлена', 'OK', {
+    expect(component['snackBar'].open).toHaveBeenCalledWith('Role updated', 'OK', {
       duration: 3500,
     });
   });
 
   it('should deactivate user after confirmation', () => {
-    vi.spyOn(component['dialog'], 'open').mockReturnValue({
+    dialogOpenSpy.mockReturnValue({
       afterClosed: () => of(true),
     } as never);
 
@@ -119,7 +122,7 @@ describe('UsersManagementComponent', () => {
     component['reactivateUser']('u-2');
 
     expect(usersService.reactivate).toHaveBeenCalledWith('u-2');
-    expect(component['snackBar'].open).toHaveBeenCalledWith('Пользователь активирован', 'OK', {
+    expect(component['snackBar'].open).toHaveBeenCalledWith('User activated', 'OK', {
       duration: 3500,
     });
   });

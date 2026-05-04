@@ -18,15 +18,16 @@ import { MAT_FORM_BUTTONS, MAT_ICONS, MAT_MENU } from '@app/shared/material-impo
 import { OrgRole } from '@app/shared/models';
 import { InviteUserDialogComponent } from './invite-user-dialog/invite-user-dialog';
 
-import { forkJoin } from 'rxjs';
+import { finalize, forkJoin } from 'rxjs';
 
 import type { OrgUserResponseDto } from '@app/shared/models';
 
 const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
-  { value: 'ADMIN', label: 'Администратор' },
-  { value: 'MANAGER', label: 'Менеджер' },
-  { value: 'SALES_AGENT', label: 'Менеджер по продажам' },
-  { value: 'BACK_OFFICE', label: 'Бэк-офис' },
+  { value: 'ADMIN', label: $localize`:@@usersRoleAdministrator:Administrator` },
+  { value: 'MANAGER', label: $localize`:@@usersRoleManager:Manager` },
+  { value: 'AGENT', label: $localize`:@@usersRoleAgent:Agent` },
+  { value: 'SALES_AGENT', label: $localize`:@@usersRoleSalesAgent:Sales agent` },
+  { value: 'BACK_OFFICE', label: $localize`:@@usersRoleBackOffice:Back office` },
 ];
 
 @Component({
@@ -60,6 +61,11 @@ export class UsersManagementComponent {
   protected readonly togglingActiveId = signal<string | null>(null);
 
   protected readonly currentUserId = computed(() => this.permissions.currentUserId() ?? null);
+  protected readonly activeStatusLabel = $localize`:@@usersStatusActive:Active`;
+  protected readonly inactiveStatusLabel = $localize`:@@usersStatusInactive:Inactive`;
+
+  private readonly okLabel = $localize`:@@commonOk:OK`;
+  private readonly closeLabel = $localize`:@@commonClose:Close`;
 
   constructor() {
     this.loadUsers();
@@ -99,19 +105,22 @@ export class UsersManagementComponent {
         fullName: user.fullName,
         role,
       })
+      .pipe(finalize(() => this.updatingRoleId.set(null)))
       .subscribe({
         next: (updatedUser) => {
           this.users.update((items) =>
             items.map((item) => (item.id === updatedUser.id ? updatedUser : item)),
           );
-          this.snackBar.open('Роль обновлена', 'OK', { duration: 3500 });
+          this.snackBar.open($localize`:@@usersRoleUpdated:Role updated`, this.okLabel, {
+            duration: 3500,
+          });
         },
         error: (err) => {
-          const message = err.error?.message ?? err.message ?? 'Не удалось обновить роль';
+          const message =
+            err.error?.message ?? err.message ?? $localize`:@@usersUpdateRoleError:Failed to update role`;
 
-          this.snackBar.open(message, 'Закрыть', { duration: 5000 });
+          this.snackBar.open(message, this.closeLabel, { duration: 5000 });
         },
-        complete: () => this.updatingRoleId.set(null),
       });
   }
 
@@ -119,10 +128,10 @@ export class UsersManagementComponent {
     this.dialog
       .open(ConfirmDialogComponent, {
         data: {
-          title: 'Деактивировать пользователя',
-          message: `Деактивировать ${user.fullName}? Пользователь немедленно потеряет доступ к системе.`,
-          confirmLabel: 'Деактивировать',
-          cancelLabel: 'Отмена',
+          title: $localize`:@@usersDeactivateTitle:Deactivate user`,
+          message: $localize`:@@usersDeactivateMessage:Deactivate ${user.fullName}? The user will immediately lose access to the system.`,
+          confirmLabel: $localize`:@@usersDeactivateAction:Deactivate`,
+          cancelLabel: $localize`:@@commonCancel:Cancel`,
           confirmColor: 'warn',
         },
       })
@@ -136,18 +145,29 @@ export class UsersManagementComponent {
 
   protected reactivateUser(userId: string): void {
     this.togglingActiveId.set(userId);
-    this.usersService.reactivate(userId).subscribe({
-      next: () => {
-        this.snackBar.open('Пользователь активирован', 'OK', { duration: 3500 });
-        this.loadUsers();
-      },
-      error: (err) => {
-        const message = err.error?.message ?? err.message ?? 'Не удалось активировать пользователя';
+    this.usersService
+      .reactivate(userId)
+      .pipe(finalize(() => this.togglingActiveId.set(null)))
+      .subscribe({
+        next: () => {
+          this.snackBar.open($localize`:@@usersActivated:User activated`, this.okLabel, {
+            duration: 3500,
+          });
+          this.loadUsers();
+        },
+        error: (err) => {
+          const message =
+            err.error?.message ??
+            err.message ??
+            $localize`:@@usersActivateError:Failed to activate user`;
 
-        this.snackBar.open(message, 'Закрыть', { duration: 5000 });
-      },
-      complete: () => this.togglingActiveId.set(null),
-    });
+          this.snackBar.open(message, this.closeLabel, { duration: 5000 });
+        },
+      });
+  }
+
+  protected getStatusLabel(isActive: boolean): string {
+    return isActive ? this.activeStatusLabel : this.inactiveStatusLabel;
   }
 
   protected getInitials(fullName: string): string {
@@ -169,19 +189,25 @@ export class UsersManagementComponent {
 
   private deactivateUser(userId: string): void {
     this.togglingActiveId.set(userId);
-    this.usersService.deactivate(userId).subscribe({
-      next: () => {
-        this.snackBar.open('Пользователь деактивирован', 'OK', { duration: 3500 });
-        this.loadUsers();
-      },
-      error: (err) => {
-        const message =
-          err.error?.message ?? err.message ?? 'Не удалось деактивировать пользователя';
+    this.usersService
+      .deactivate(userId)
+      .pipe(finalize(() => this.togglingActiveId.set(null)))
+      .subscribe({
+        next: () => {
+          this.snackBar.open($localize`:@@usersDeactivated:User deactivated`, this.okLabel, {
+            duration: 3500,
+          });
+          this.loadUsers();
+        },
+        error: (err) => {
+          const message =
+            err.error?.message ??
+            err.message ??
+            $localize`:@@usersDeactivateError:Failed to deactivate user`;
 
-        this.snackBar.open(message, 'Закрыть', { duration: 5000 });
-      },
-      complete: () => this.togglingActiveId.set(null),
-    });
+          this.snackBar.open(message, this.closeLabel, { duration: 5000 });
+        },
+      });
   }
 
   private loadUsers(): void {
@@ -191,24 +217,26 @@ export class UsersManagementComponent {
     forkJoin([
       this.usersService.getList({ isActive: true, limit: 200 }),
       this.usersService.getList({ isActive: false, limit: 200 }),
-    ]).subscribe({
-      next: ([activeUsers, inactiveUsers]) => {
-        const merged = [...activeUsers.items, ...inactiveUsers.items];
-        const deduplicated = Array.from(new Map(merged.map((item) => [item.id, item])).values());
+    ])
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: ([activeUsers, inactiveUsers]) => {
+          const merged = [...activeUsers.items, ...inactiveUsers.items];
+          const deduplicated = Array.from(new Map(merged.map((item) => [item.id, item])).values());
 
-        this.users.set(
-          [...deduplicated].sort(
-            (a: OrgUserResponseDto, b: OrgUserResponseDto) =>
-              new Date(a.joinedAt).getTime() - new Date(b.joinedAt).getTime(),
-          ),
-        );
-      },
-      error: (err) => {
-        const message = err.error?.message ?? err.message ?? 'Не удалось загрузить пользователей';
+          this.users.set(
+            [...deduplicated].sort(
+              (a: OrgUserResponseDto, b: OrgUserResponseDto) =>
+                new Date(a.joinedAt).getTime() - new Date(b.joinedAt).getTime(),
+            ),
+          );
+        },
+        error: (err) => {
+          const message =
+            err.error?.message ?? err.message ?? $localize`:@@usersLoadError:Failed to load users`;
 
-        this.error.set(message);
-      },
-      complete: () => this.loading.set(false),
-    });
+          this.error.set(message);
+        },
+      });
   }
 }
