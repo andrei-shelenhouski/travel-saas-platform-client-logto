@@ -286,6 +286,7 @@ export type LeadResponseDto = {
   convertedToClientId: string | null;
   createdAt: string;
   updatedAt: string;
+  travelRequests?: RequestResponseDto[];
 };
 
 export type PaginatedLeadResponseDto = PaginatedDto<LeadResponseDto>;
