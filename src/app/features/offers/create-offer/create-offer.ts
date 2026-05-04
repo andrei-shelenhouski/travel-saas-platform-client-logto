@@ -1,5 +1,6 @@
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { DecimalPipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -123,11 +124,22 @@ export class CreateOfferComponent implements OnInit {
 
   readonly request = signal<RequestResponseDto | null>(null);
   readonly requestLoading = signal(true);
+  readonly requestPrefillWarning = signal('');
   readonly saving = signal(false);
   readonly previewing = signal(false);
   readonly error = signal('');
   readonly requestId = signal<string | null>(null);
   readonly createdDraftId = signal<string | null>(null);
+  readonly destinationNotSetLabel = $localize`:@@createOfferDestinationNotSet:Destination not set`;
+  readonly prefilledRequestCode = computed(() => {
+    const request = this.request();
+
+    if (!request) {
+      return null;
+    }
+
+    return `TR-${this.getRequestCodeSuffix(request.id)}`;
+  });
 
   readonly form: OfferBuilderFormGroup = this.fb.nonNullable.group({
     language: this.fb.nonNullable.control('ru', Validators.required),
@@ -179,6 +191,7 @@ export class CreateOfferComponent implements OnInit {
 
     if (requestId) {
       this.requestId.set(requestId);
+      this.requestPrefillWarning.set('');
     }
 
     this.organizationSettingsService.get().subscribe({
@@ -203,33 +216,50 @@ export class CreateOfferComponent implements OnInit {
       return;
     }
 
-    this.requestsService.getById(requestId).subscribe({
-      next: (request) => {
-        this.request.set(request);
-        this.form.patchValue({
-          destination: request.destination ?? '',
-          departDate: request.departDate ?? '',
-          returnDate: request.returnDate ?? '',
-          adults: request.adults ?? 1,
-          children: request.children ?? 0,
-        });
-
-        const firstAccommodation = this.accommodationsArray.at(0);
-
-        if (firstAccommodation) {
-          firstAccommodation.patchValue({
-            checkinDate: request.departDate ?? '',
-            checkoutDate: request.returnDate ?? '',
+    this.requestsService
+      .getById(requestId)
+      .pipe(finalize(() => this.requestLoading.set(false)))
+      .subscribe({
+        next: (request) => {
+          this.request.set(request);
+          this.requestPrefillWarning.set('');
+          this.form.patchValue({
+            destination: request.destination ?? '',
+            departDate: request.departDate ?? '',
+            returnDate: request.returnDate ?? '',
+            adults: request.adults ?? 1,
+            children: request.children ?? 0,
           });
-        }
 
-        this.form.markAsPristine();
-      },
-      error: (err) => {
-        this.error.set(err.error?.message ?? err.message ?? 'Failed to load request data.');
-      },
-      complete: () => this.requestLoading.set(false),
-    });
+          const firstAccommodation = this.accommodationsArray.at(0);
+
+          if (firstAccommodation) {
+            firstAccommodation.patchValue({
+              checkinDate: request.departDate ?? '',
+              checkoutDate: request.returnDate ?? '',
+            });
+          }
+
+          this.form.markAsPristine();
+        },
+        error: (err: unknown) => {
+          if (err instanceof HttpErrorResponse && err.status === 404) {
+            this.request.set(null);
+            this.requestPrefillWarning.set(
+              $localize`:@@createOfferRequestPrefillNotFound:Trip request was not found. Fill travel details manually and continue creating the offer.`,
+            );
+
+            return;
+          }
+
+          this.error.set(
+            this.getErrorMessage(
+              err,
+              $localize`:@@createOfferRequestLoadFailed:Failed to load request data.`,
+            ),
+          );
+        },
+      });
   }
 
   get accommodationsArray(): FormArray<AccommodationFormGroup> {
@@ -562,5 +592,28 @@ export class CreateOfferComponent implements OnInit {
     }
 
     return { invalidDateRange: true };
+  }
+
+  private getErrorMessage(error: unknown, fallbackMessage: string): string {
+    if (error instanceof HttpErrorResponse) {
+      return (
+        (typeof error.error?.message === 'string' && error.error.message) ||
+        error.message ||
+        fallbackMessage
+      );
+    }
+
+    if (error instanceof Error) {
+      return error.message || fallbackMessage;
+    }
+
+    return fallbackMessage;
+  }
+
+  private getRequestCodeSuffix(requestId: string): string {
+    const parts = requestId.split('-').filter(Boolean);
+    const suffix = parts.at(-1) ?? requestId;
+
+    return suffix.toUpperCase();
   }
 }

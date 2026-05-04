@@ -2,6 +2,178 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file source-language="en-US" datatype="plaintext" original="ng2.template">
     <body>
+      <trans-unit id="usersInviteDialogTitle" datatype="html">
+        <source>Invite user</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">1,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteEmailLabel" datatype="html">
+        <source>Email</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">6,7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteEmailRequired" datatype="html">
+        <source>Email is required</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">10,13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteEmailInvalid" datatype="html">
+        <source>Enter a valid email</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">14,17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteEmailDuplicate" datatype="html">
+        <source>A user with this email is already added</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">19,22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteFullNameLabel" datatype="html">
+        <source>Full name</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">25,26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteFullNameRequired" datatype="html">
+        <source>Full name is required</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">29,31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteRoleLabel" datatype="html">
+        <source>Role</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">34,35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="commonCancel" datatype="html">
+        <source>Cancel</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">45,46</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">131</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteSending" datatype="html">
+        <source>Sending...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteSubmit" datatype="html">
+        <source>Invite</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleAdministrator" datatype="html">
+        <source>Administrator</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleManager" datatype="html">
+        <source>Manager</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleAgent" datatype="html">
+        <source>Agent</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleSalesAgent" datatype="html">
+        <source>Sales agent</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleBackOffice" datatype="html">
+        <source>Back office</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteSuccess" datatype="html">
+        <source>Invitation sent. The user will get access on first sign-in.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="commonOk" datatype="html">
+        <source>OK</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteError" datatype="html">
+        <source>Failed to invite user</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">78</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="commonClose" datatype="html">
+        <source>Close</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="userManagement" datatype="html">
         <source>User management</source>
         <context-group purpose="location">
@@ -14,95 +186,185 @@
         </context-group>
       </trans-unit>
       <trans-unit id="userManagementDescription" datatype="html">
-        <source> Manage organization members and roles. </source>
+        <source> Manage organization members and their access rights. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
           <context context-type="linenumber">6,9</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="backToDashboard" datatype="html">
+      <trans-unit id="usersInviteButton" datatype="html">
+        <source> + Invite user </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
+          <context context-type="linenumber">17,19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersBackToDashboard" datatype="html">
         <source>Back to dashboard</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">14,17</context>
+          <context context-type="linenumber">20,24</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="inviteByEmail" datatype="html">
-        <source>Invite by email</source>
+      <trans-unit id="usersColumnUser" datatype="html">
+        <source>User</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">21,22</context>
+          <context context-type="linenumber">38,39</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="inviteByEmailDescription" datatype="html">
-        <source> The user must already have an account. Enter their email and choose a role. </source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">23,26</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="email" datatype="html">
+      <trans-unit id="usersColumnEmail" datatype="html">
         <source>Email</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">31,32</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">91,92</context>
+          <context context-type="linenumber">39,40</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="role" datatype="html">
+      <trans-unit id="usersColumnRole" datatype="html">
         <source>Role</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
+          <context context-type="linenumber">40,41</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersColumnStatus" datatype="html">
+        <source>Status</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
+          <context context-type="linenumber">41,42</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersColumnJoined" datatype="html">
+        <source>Joined</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
+          <context context-type="linenumber">42,43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersColumnActions" datatype="html">
+        <source>Actions</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
+          <context context-type="linenumber">43,45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersEmptyState" datatype="html">
+        <source> No users yet. Invite the first member. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
           <context context-type="linenumber">52,53</context>
         </context-group>
+      </trans-unit>
+      <trans-unit id="usersCurrentUser" datatype="html">
+        <source> Current user </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">94,95</context>
+          <context context-type="linenumber">72,73</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="name" datatype="html">
-        <source>Name</source>
+      <trans-unit id="usersActionsMenuAria" datatype="html">
+        <source>Open actions menu</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">88,89</context>
+          <context context-type="linenumber">115,116</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="status" datatype="html">
-        <source>Status</source>
+      <trans-unit id="usersDeactivateActionMenu" datatype="html">
+        <source> Deactivate </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">97,98</context>
+          <context context-type="linenumber">144,146</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="actions" datatype="html">
-        <source>Actions</source>
+      <trans-unit id="usersReactivateActionMenu" datatype="html">
+        <source> Activate </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">101,102</context>
+          <context context-type="linenumber">154,157</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="noMembersFound" datatype="html">
-        <source>No members found.</source>
+      <trans-unit id="usersStatusActive" datatype="html">
+        <source>Active</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">109,111</context>
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">59</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="you" datatype="html">
-        <source>(you)</source>
+      <trans-unit id="usersStatusInactive" datatype="html">
+        <source>Inactive</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">118,119</context>
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">60</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="updating" datatype="html">
-        <source>Updating…</source>
+      <trans-unit id="usersRoleUpdated" datatype="html">
+        <source>Role updated</source>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">157,158</context>
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">109</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersUpdateRoleError" datatype="html">
+        <source>Failed to update role</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">117</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersDeactivateTitle" datatype="html">
+        <source>Deactivate user</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">128</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersDeactivateMessage" datatype="html">
+        <source>Deactivate <x id="PH" equiv-text="user.fullName"/>? The user will immediately lose access to the system.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">129</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersDeactivateAction" datatype="html">
+        <source>Deactivate</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">130</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersActivated" datatype="html">
+        <source>User activated</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">150</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersActivateError" datatype="html">
+        <source>Failed to activate user</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">159</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersDeactivated" datatype="html">
+        <source>User deactivated</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">194</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersDeactivateError" datatype="html">
+        <source>Failed to deactivate user</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">203</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersLoadError" datatype="html">
+        <source>Failed to load users</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">233</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8348011332568414135" datatype="html">
@@ -810,13 +1072,6 @@
           <context context-type="linenumber">118,119</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="backToClients" datatype="html">
-        <source>Back to clients</source>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">15,17</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="editClient" datatype="html">
         <source>Edit client</source>
         <context-group purpose="location">
@@ -1302,39 +1557,39 @@
         <source>Clients</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">1</context>
+          <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListNewClientCta" datatype="html">
         <source>New Client</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">4,6</context>
+          <context context-type="linenumber">8,10</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">95,97</context>
+          <context context-type="linenumber">99,101</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListHeaderName" datatype="html">
         <source>Name</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">18,19</context>
+          <context context-type="linenumber">22,23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListHeaderType" datatype="html">
         <source>Type</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">28,29</context>
+          <context context-type="linenumber">32,33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListHeaderPhone" datatype="html">
         <source>Phone</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">35,36</context>
+          <context context-type="linenumber">39,40</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/leads-list/leads-list.html</context>
@@ -1345,7 +1600,7 @@
         <source>Email</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">42,43</context>
+          <context context-type="linenumber">46,47</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/leads-list/leads-list.html</context>
@@ -1356,14 +1611,14 @@
         <source>Created</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">49,50</context>
+          <context context-type="linenumber">53,54</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListHeaderUpdatedAt" datatype="html">
         <source>Updated</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">56,57</context>
+          <context context-type="linenumber">60,61</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/leads-list/leads-list.html</context>
@@ -1374,35 +1629,35 @@
         <source>Loading clients...</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">73,75</context>
+          <context context-type="linenumber">77,79</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListLoadingAriaLabel" datatype="html">
         <source>Loading clients</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">75,76</context>
+          <context context-type="linenumber">79,80</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListNoData" datatype="html">
         <source> Ooooops, no clients found. Try adjusting your filters. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">82,83</context>
+          <context context-type="linenumber">86,87</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListOrDivider" datatype="html">
         <source>or</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">85,88</context>
+          <context context-type="linenumber">89,92</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListPaginatorAriaLabel" datatype="html">
         <source>Clients pagination</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">107,108</context>
+          <context context-type="linenumber">111,112</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceCreateHeadingTitle" datatype="html">
@@ -3367,11 +3622,32 @@
           <context context-type="linenumber">169,170</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="createOfferTravelDetailsHeading" datatype="html">
+        <source> Travel details </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.html</context>
+          <context context-type="linenumber">21,24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createOfferRequestPrefillBannerText" datatype="html">
+        <source> Pre-filled from trip request <x id="INTERPOLATION" equiv-text="{{ prefilledRequestCode() }}"/> · <x id="INTERPOLATION_1" equiv-text="{{ req.destination || destinationNotSetLabel }}"/> </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.html</context>
+          <context context-type="linenumber">30,32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createOfferViewRequestLink" datatype="html">
+        <source>View request</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.html</context>
+          <context context-type="linenumber">37,40</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="offerPdfPreviewButton" datatype="html">
         <source> Preview PDF </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.html</context>
-          <context context-type="linenumber">339,341</context>
+          <context context-type="linenumber">370,372</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/offer-detail/offer-detail.html</context>
@@ -3382,11 +3658,32 @@
           <context context-type="linenumber">331,333</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="createOfferDestinationNotSet" datatype="html">
+        <source>Destination not set</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.ts</context>
+          <context context-type="linenumber">133</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createOfferRequestPrefillNotFound" datatype="html">
+        <source>Trip request was not found. Fill travel details manually and continue creating the offer.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.ts</context>
+          <context context-type="linenumber">249</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createOfferRequestLoadFailed" datatype="html">
+        <source>Failed to load request data.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.ts</context>
+          <context context-type="linenumber">258</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="offerPdfPreviewSaveDraftPrompt" datatype="html">
         <source>Save a draft before opening PDF preview.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.ts</context>
-          <context context-type="linenumber">327</context>
+          <context context-type="linenumber">357</context>
         </context-group>
       </trans-unit>
       <trans-unit id="offerPdfPreviewDialogTitle" datatype="html">
@@ -3454,6 +3751,13 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/onboarding/select-organization/select-organization.html</context>
           <context context-type="linenumber">22,24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListTitle" datatype="html">
+        <source>Requests</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">3,4</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noOtherOrganizations" datatype="html">
@@ -3699,6 +4003,13 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/components/offer-status-chip/offer-status-chip.ts</context>
           <context context-type="linenumber">30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="pageHeadingBackLinkAria" datatype="html">
+        <source>Go back to previous page</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/page-heading/page-heading.html</context>
+          <context context-type="linenumber">4,5</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestStatusNew" datatype="html">
