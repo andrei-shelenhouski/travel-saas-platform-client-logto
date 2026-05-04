@@ -477,7 +477,11 @@
                                 </button>
                               </div>
                             } @else {
-                              <button mat-menu-item type="button" (click)="deleteRequest(request, idx)">
+                              <button
+                                mat-menu-item
+                                type="button"
+                                (click)="deleteRequest(request, idx)"
+                              >
                                 <mat-icon>delete</mat-icon>
                                 <span>Delete</span>
                               </button>
