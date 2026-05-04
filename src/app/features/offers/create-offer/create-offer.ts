@@ -130,6 +130,7 @@ export class CreateOfferComponent implements OnInit {
   readonly error = signal('');
   readonly requestId = signal<string | null>(null);
   readonly createdDraftId = signal<string | null>(null);
+  readonly destinationNotSetLabel = $localize`:@@createOfferDestinationNotSet:Destination not set`;
   readonly prefilledRequestCode = computed(() => {
     const request = this.request();
 
@@ -245,13 +246,18 @@ export class CreateOfferComponent implements OnInit {
           if (err instanceof HttpErrorResponse && err.status === 404) {
             this.request.set(null);
             this.requestPrefillWarning.set(
-              'Trip request was not found. Fill travel details manually and continue creating the offer.',
+              $localize`:@@createOfferRequestPrefillNotFound:Trip request was not found. Fill travel details manually and continue creating the offer.`,
             );
 
             return;
           }
 
-          this.error.set(this.getErrorMessage(err, 'Failed to load request data.'));
+          this.error.set(
+            this.getErrorMessage(
+              err,
+              $localize`:@@createOfferRequestLoadFailed:Failed to load request data.`,
+            ),
+          );
         },
       });
   }

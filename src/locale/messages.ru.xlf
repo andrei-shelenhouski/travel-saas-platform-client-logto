@@ -3817,6 +3817,54 @@
           <context context-type="linenumber">169,170</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="createOfferTravelDetailsHeading" datatype="html">
+        <source> Travel details </source>
+        <target> Детали поездки </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.html</context>
+          <context context-type="linenumber">21,24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createOfferRequestPrefillBannerText" datatype="html">
+        <source> Pre-filled from trip request <x id="INTERPOLATION" equiv-text="{{ prefilledRequestCode() }}"/> · <x id="INTERPOLATION_1" equiv-text="{{ req.destination || destinationNotSetLabel }}"/> </source>
+        <target> Предзаполнено из запроса на поездку <x id="INTERPOLATION" equiv-text="{{ prefilledRequestCode() }}"/> · <x id="INTERPOLATION_1" equiv-text="{{ req.destination || destinationNotSetLabel }}"/> </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.html</context>
+          <context context-type="linenumber">30,32</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createOfferViewRequestLink" datatype="html">
+        <source>View request</source>
+        <target>Открыть запрос</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.html</context>
+          <context context-type="linenumber">37,40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createOfferDestinationNotSet" datatype="html">
+        <source>Destination not set</source>
+        <target>Направление не указано</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.ts</context>
+          <context context-type="linenumber">133</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createOfferRequestPrefillNotFound" datatype="html">
+        <source>Trip request was not found. Fill travel details manually and continue creating the offer.</source>
+        <target>Запрос на поездку не найден. Заполните детали поездки вручную и продолжайте создание предложения.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.ts</context>
+          <context context-type="linenumber">249</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createOfferRequestLoadFailed" datatype="html">
+        <source>Failed to load request data.</source>
+        <target>Не удалось загрузить данные запроса.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.ts</context>
+          <context context-type="linenumber">258</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="offerPdfPreviewButton" datatype="html">
         <source> Preview PDF </source>
         <target> Предварительный просмотр </target>
