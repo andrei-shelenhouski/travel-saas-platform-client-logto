@@ -7,6 +7,7 @@ import { environment } from '@environments/environment';
 
 import type {
   CreateRequestDto,
+  OfferResponseDto,
   PaginatedRequestResponseDto,
   RequestResponseDto,
   UpdateRequestDto,
@@ -70,5 +71,10 @@ export class RequestsService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${REQUESTS_URL}/${id}`);
+  }
+
+  /** GET /api/requests/{id}/offers. Returns all offers linked to this travel request. */
+  getOffers(requestId: string): Observable<OfferResponseDto[]> {
+    return this.http.get<OfferResponseDto[]>(`${REQUESTS_URL}/${requestId}/offers`);
   }
 }

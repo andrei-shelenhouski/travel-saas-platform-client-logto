@@ -1,4 +1,8 @@
-<app-page-heading title="Leads" i18n-title="@@leadsListHeadingTitle">
+<app-page-heading
+  title="Leads"
+  i18n-title="@@leadsListHeadingTitle"
+  [subtitle]="'Total: ' + totalElements() + ' leads'"
+>
   <a matButton="filled" routerLink="/app/leads/new">
     <mat-icon>add</mat-icon>
     <span i18n="@@leadsListNewLeadCta">New lead</span>
@@ -35,10 +39,6 @@
     (dateToChange)="onDateToChange($event)"
     (statusFilterChange)="onStatusFilterChange($event)"
   />
-
-  <p class="text-sm text-gray-600" i18n="@@leadsTotalCountLabel">
-    Total: {{ totalElements() }} leads
-  </p>
 
   @if (error()) {
     <p class="mb-4 text-sm text-red-600">{{ error() }}</p>

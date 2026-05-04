@@ -1,11 +1,13 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   inject,
   OnDestroy,
   OnInit,
   signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
@@ -30,6 +32,7 @@ export class OfferPdfPreviewModalComponent implements OnInit, OnDestroy {
   private readonly offersService = inject(OffersService);
   private readonly sanitizer = inject(DomSanitizer);
   private readonly dialogRef = inject(MatDialogRef<OfferPdfPreviewModalComponent>);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly data = inject<OfferPdfPreviewModalData>(MAT_DIALOG_DATA);
 
@@ -78,7 +81,10 @@ export class OfferPdfPreviewModalComponent implements OnInit, OnDestroy {
 
     this.offersService
       .getPdf(this.data.offerId)
-      .pipe(finalize(() => this.loading.set(false)))
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.loading.set(false)),
+      )
       .subscribe({
         next: (blob) => {
           this.revokeBlobUrl();

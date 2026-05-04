@@ -1,0 +1,68 @@
+<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+  <mat-form-field>
+    <mat-label i18n="@@invoiceFilterStatusLabel">Statuses</mat-label>
+    <mat-select
+      multiple
+      [value]="statusFilter()"
+      (selectionChange)="onStatusSelectionChange($event.value)"
+    >
+      @for (status of statusOptions; track status.value) {
+        <mat-option [value]="status.value">{{ status.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label i18n="@@invoiceFilterClientTypeLabel">Client type</mat-label>
+    <mat-select
+      [value]="clientTypeFilter()"
+      (selectionChange)="onClientTypeSelectionChange($event.value)"
+    >
+      <mat-option i18n="@@invoiceFilterClientTypeAllOption" value="">All</mat-option>
+      @for (type of clientTypeOptions; track type.value) {
+        <mat-option [value]="type.value">{{ type.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label i18n="@@invoiceFilterDateFromLabel">Invoice date from</mat-label>
+    <input
+      matInput
+      type="date"
+      [value]="dateFromFilter()"
+      (change)="onDateFromInputChange($any($event.target).value)"
+    />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label i18n="@@invoiceFilterDateToLabel">Invoice date to</mat-label>
+    <input
+      matInput
+      type="date"
+      [value]="dateToFilter()"
+      (change)="onDateToInputChange($any($event.target).value)"
+    />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label i18n="@@invoiceFilterCurrencyLabel">Currency</mat-label>
+    <input
+      matInput
+      placeholder="BYN"
+      i18n-placeholder="@@invoiceFilterCurrencyPlaceholder"
+      [value]="currencyFilter()"
+      (change)="onCurrencyInputChange($any($event.target).value)"
+    />
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label i18n="@@invoiceFilterSearchLabel">Search</mat-label>
+    <input
+      matInput
+      placeholder="Invoice number or client name"
+      i18n-placeholder="@@invoiceFilterSearchPlaceholder"
+      [formControl]="searchControl()"
+    />
+  </mat-form-field>
+</div>

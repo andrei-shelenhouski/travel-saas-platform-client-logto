@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 /**
  * API types aligned with OpenAPI spec.
  * Source of truth: project root openapi.json.
@@ -91,6 +92,35 @@ export const AppRole = {
   Agent: 'Agent',
 } as const;
 export type AppRole = (typeof AppRole)[keyof typeof AppRole];
+
+// ----- Org users (/api/users) -----
+
+/** OpenAPI: OrgUserResponse. Full user record returned by GET/PUT /api/users. */
+export type OrgUserResponseDto = {
+  id: string;
+  appUserId: string;
+  email: string;
+  fullName: string;
+  role: OrgRole;
+  isActive: boolean;
+  joinedAt: string;
+  lastLoginAt?: string;
+};
+
+export type PaginatedOrgUserResponseDto = PaginatedDto<OrgUserResponseDto>;
+
+/** OpenAPI: InviteUserRequest. POST /api/users body. */
+export type InviteUserRequestDto = {
+  email: string;
+  fullName: string;
+  role: OrgRole;
+};
+
+/** OpenAPI: UpdateUserRequest. PUT /api/users/{id} body. */
+export type UpdateUserRequestDto = {
+  fullName: string;
+  role: OrgRole;
+};
 
 // ----- Organization members -----
 
@@ -256,6 +286,7 @@ export type LeadResponseDto = {
   convertedToClientId: string | null;
   createdAt: string;
   updatedAt: string;
+  travelRequests?: RequestResponseDto[];
 };
 
 export type PaginatedLeadResponseDto = PaginatedDto<LeadResponseDto>;
@@ -276,6 +307,20 @@ export type UpdateLeadDto = {
 export type UpdateLeadStatusDto = {
   status: LeadStatus;
   reason?: string;
+};
+
+/** OpenAPI: LinkLeadClientRequest. PATCH /api/leads/{id}/client body. */
+export type LinkLeadClientDto = {
+  clientId: string;
+};
+
+/** OpenAPI: PromoteLeadToClientRequest. POST /api/leads/{id}/promote-client body. */
+export type PromoteLeadToClientDto = CreateClientDto;
+
+/** OpenAPI: PromoteLeadToClientResponse. */
+export type PromoteLeadToClientResponseDto = {
+  client: ClientResponseDto;
+  lead: LeadResponseDto;
 };
 
 /** OpenAPI: AssignLeadRequest. PATCH /api/leads/{id}/assign body. */
@@ -461,6 +506,21 @@ export type UpdateBookingStatusDto = {
   reason?: string;
 };
 
+/** OpenAPI: BookingDocumentResponse. */
+export type BookingDocumentResponseDto = {
+  id: string;
+  filename?: string;
+  uploadedAt?: string;
+  uploadedByName?: string;
+};
+
+/** OpenAPI: ErrorResponse. */
+export type ErrorResponseDto = {
+  status?: number;
+  error?: string;
+  message?: string;
+};
+
 /** OpenAPI: BookingResponse. */
 export type BookingResponseDto = {
   id: string;
@@ -491,51 +551,207 @@ export type BookingResponseDto = {
 
 export type PaginatedBookingResponseDto = PaginatedDto<BookingResponseDto>;
 
-// ----- Invoices -----
-
-/** OpenAPI: CreateInvoiceRequest. POST /api/invoices. */
-export type CreateInvoiceDto = {
-  bookingId: string;
-  issueDate: string;
-  amount: number;
-  currency: string;
-  dueDate?: string;
+/** OpenAPI: TravelRequestSummary. Item in GET /api/clients/{id}/requests. */
+export type TravelRequestSummaryDto = {
+  id: string;
+  leadId?: string;
+  leadNumber?: string;
+  destination?: string;
+  departDate?: string;
+  returnDate?: string;
+  adults?: number;
+  children?: number;
+  status?: string;
+  offersCount?: number;
+  createdAt?: string;
 };
+
+export type PaginatedTravelRequestSummaryDto = PaginatedDto<TravelRequestSummaryDto>;
+
+/** OpenAPI: OfferSummary. Item in GET /api/clients/{id}/offers. */
+export type OfferSummaryDto = {
+  id: string;
+  offerNumber?: string;
+  leadId?: string;
+  leadNumber?: string;
+  travelRequestId?: string;
+  destination?: string;
+  totalPrice?: number;
+  currency?: string;
+  status?: string;
+  createdAt?: string;
+};
+
+export type PaginatedOfferSummaryDto = PaginatedDto<OfferSummaryDto>;
+
+/** OpenAPI: BookingSummary. Item in GET /api/clients/{id}/bookings. */
+export type BookingSummaryDto = {
+  id: string;
+  bookingNumber?: string;
+  leadId?: string;
+  leadNumber?: string;
+  offerId?: string;
+  offerNumber?: string;
+  destination?: string;
+  departDate?: string;
+  returnDate?: string;
+  status?: string;
+  totalPrice?: number;
+  currency?: string;
+  createdAt?: string;
+};
+
+export type PaginatedBookingSummaryDto = PaginatedDto<BookingSummaryDto>;
+
+// ----- Invoices -----
 
 export const InvoiceStatus = {
   DRAFT: 'DRAFT',
-  SENT: 'SENT',
+  ISSUED: 'ISSUED',
   PAID: 'PAID',
+  PARTIALLY_PAID: 'PARTIALLY_PAID',
+  OVERDUE: 'OVERDUE',
   CANCELLED: 'CANCELLED',
 } as const;
 export type InvoiceStatus = (typeof InvoiceStatus)[keyof typeof InvoiceStatus];
 
+export type CreateInvoiceLineItemDto = {
+  sortOrder?: number;
+  description: string;
+  serviceDateFrom?: string;
+  serviceDateTo?: string;
+  travelers?: string;
+  unitPrice?: number;
+  quantity?: number;
+  tourCost?: number;
+  commissionAmount?: number;
+};
+
 /** OpenAPI: InvoiceResponse. amount as number. */
 export type InvoiceResponseDto = {
   id: string;
-  organizationId: string;
-  bookingId: string;
   number: string;
-  issueDate: string;
-  dueDate: string | null;
-  amount: number;
+  bookingId: string;
+  clientId: string;
+  clientType?: ClientType | string;
+  clientSnapshot?: string;
+  issuerSnapshot?: string;
+  language?: string;
+  invoiceDate: string;
+  dueDate: string;
   currency: string;
+  subtotal?: number;
+  discountAmount?: number;
+  commissionVatAmount?: number;
+  total?: number;
+  amountInWords?: string;
+  paymentTerms?: string;
+  internalNotes?: string;
   status: InvoiceStatus | string;
-  pdfUrl: string | null;
+  cancellationReason?: string;
+  publishedAt?: string;
+  createdById?: string;
+  lineItems?: InvoiceLineItemResponseDto[];
+  payments?: PaymentResponseDto[];
+  paidAmount?: number;
   createdAt: string;
   updatedAt: string;
 };
 
 export type PaginatedInvoiceResponseDto = PaginatedDto<InvoiceResponseDto>;
 
-/** OpenAPI: UpdateInvoiceRequest. PATCH /api/invoices/{id}. */
+/** OpenAPI: UpdateInvoiceRequest. PUT /api/invoices/{id}. */
 export type UpdateInvoiceDto = {
-  issueDate?: string;
+  invoiceDate?: string;
   dueDate?: string;
-  amount?: number;
   currency?: string;
-  status?: InvoiceStatus;
-  pdfUrl?: string;
+  language?: string;
+  paymentTerms?: string;
+  internalNotes?: string;
+  lineItems?: CreateInvoiceLineItemDto[];
+};
+
+export type CreateInvoiceDto = {
+  bookingId?: string;
+  clientId: string;
+  clientType: ClientType;
+  language?: string;
+  invoiceDate: string;
+  dueDate: string;
+  currency: string;
+  paymentTerms?: string;
+  internalNotes?: string;
+  lineItems: CreateInvoiceLineItemDto[];
+};
+
+export type InvoiceLineItemResponseDto = {
+  id?: string;
+  sortOrder?: number;
+  description?: string;
+  serviceDateFrom?: string;
+  serviceDateTo?: string;
+  travelers?: string;
+  unitPrice?: number;
+  quantity?: number;
+  tourCost?: number;
+  commissionAmount?: number;
+  commissionVat?: number;
+  total?: number;
+};
+
+export type CancelInvoiceDto = {
+  reason: string;
+};
+
+export const PaymentMethod = {
+  BANK_TRANSFER: 'BANK_TRANSFER',
+  CASH: 'CASH',
+  CARD: 'CARD',
+  OTHER: 'OTHER',
+} as const;
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod];
+
+/** OpenAPI: PaymentResponse. GET /api/invoices/{id}/payments response item. */
+export type PaymentResponseDto = {
+  id: string;
+  invoiceId: string;
+  amount: number;
+  currency: string;
+  paymentDate: string;
+  paymentMethod: PaymentMethod | string;
+  reference?: string;
+  source?: string;
+  recordedByName?: string;
+  createdAt: string;
+};
+
+/** OpenAPI: RecordPaymentRequest. POST /api/invoices/{id}/payments body. */
+export type RecordPaymentRequestDto = {
+  amount: number;
+  currency: string;
+  paymentDate: string;
+  paymentMethod: PaymentMethod | string;
+  reference?: string;
+};
+
+export type InvoiceFilterQueryDto = {
+  page?: number;
+  limit?: number;
+  status?: InvoiceStatus[];
+  clientType?: ClientType;
+  dateFrom?: string;
+  dateTo?: string;
+  currency?: string;
+  search?: string;
+};
+
+export type InvoiceSummaryResponseDto = {
+  drafts: number;
+  pendingCount: number;
+  pendingAmount: number;
+  overdueCount: number;
+  overdueAmount: number;
+  currency: string;
 };
 
 // ----- Contacts -----
@@ -589,6 +805,7 @@ export type CreateClientDto = {
   bik?: string;
   commissionPct?: number;
   dataConsentGiven: boolean;
+  dataConsentDate?: string;
 };
 
 /** OpenAPI: ClientResponse. */
@@ -695,6 +912,7 @@ export const EntityType = {
   Request: 'Request',
   Offer: 'Offer',
   Booking: 'Booking',
+  Invoice: 'Invoice',
 } as const;
 export type EntityType = (typeof EntityType)[keyof typeof EntityType];
 

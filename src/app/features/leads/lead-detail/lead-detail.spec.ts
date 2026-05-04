@@ -35,6 +35,7 @@ describe('LeadDetailComponent', () => {
     getList: vi.fn(() => of({ items: [createRequest()], total: 1, page: 1, limit: 100 })),
     create: vi.fn(() => of(createRequest({ id: 'request-new', status: 'OPEN', offersCount: 0 }))),
     update: vi.fn((id: string) => of(createRequest({ id, destination: 'Updated request' }))),
+    delete: vi.fn(() => of(undefined)),
   };
 
   beforeEach(async () => {
@@ -91,6 +92,7 @@ describe('LeadDetailComponent', () => {
     component = fixture.componentInstance;
     router = TestBed.inject(Router);
     fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   it('creates component', () => {
@@ -125,14 +127,62 @@ describe('LeadDetailComponent', () => {
   it('does not call updateStatus when selecting assign action', () => {
     const api = component as unknown as {
       applyAction: (action: 'assign') => void;
+      openAssignDialog: () => void;
     };
+
+    vi.spyOn(api, 'openAssignDialog').mockImplementation(() => undefined);
 
     api.applyAction('assign');
 
     expect(leadsServiceMock.updateStatus).not.toHaveBeenCalled();
   });
 
-  it('creates travel request from inline form', () => {
+  it('updates lead after linking client from dialog', () => {
+    const api = component as unknown as {
+      openLinkClientDialog: () => void;
+      lead: () => LeadResponseDto | null;
+      dialog: { open: (...args: unknown[]) => unknown };
+    };
+
+    vi.spyOn(api.dialog, 'open').mockReturnValueOnce({
+      afterClosed: () => of(createLead({ clientId: 'client-22', clientName: 'Linked Client' })),
+    });
+
+    api.openLinkClientDialog();
+
+    expect(api.lead()?.clientId).toBe('client-22');
+  });
+
+  it('updates lead after saving as new client from dialog', () => {
+    const api = component as unknown as {
+      openPromoteClientDialog: () => void;
+      lead: () => LeadResponseDto | null;
+      dialog: { open: (...args: unknown[]) => unknown };
+    };
+
+    vi.spyOn(api.dialog, 'open').mockReturnValueOnce({
+      afterClosed: () => of(createLead({ clientId: 'client-99', clientName: 'Promoted Client' })),
+    });
+
+    api.openPromoteClientDialog();
+
+    expect(api.lead()?.clientId).toBe('client-99');
+  });
+
+  it('disables client actions for terminal lead status', () => {
+    leadsServiceMock.findById.mockReturnValueOnce(of(createLead({ status: 'WON' })));
+
+    const terminalFixture = TestBed.createComponent(LeadDetailComponent);
+    terminalFixture.detectChanges();
+
+    const api = terminalFixture.componentInstance as unknown as {
+      canManageLeadClient: () => boolean;
+    };
+
+    expect(api.canManageLeadClient()).toBe(false);
+  });
+
+  it('creates travel request from inline form', async () => {
     const api = component as unknown as {
       createTravelRequest: () => void;
       saveTravelRequest: () => void;
@@ -155,6 +205,7 @@ describe('LeadDetailComponent', () => {
     api.addRequestForm.controls.adults.setValue(2);
     api.addRequestForm.controls.children.setValue(1);
     api.saveTravelRequest();
+    await fixture.whenStable();
 
     expect(requestsServiceMock.create).toHaveBeenCalledTimes(1);
     expect(api.requests().some((request) => request.id === 'request-new')).toBe(true);

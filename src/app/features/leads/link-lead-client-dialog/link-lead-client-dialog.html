@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>Link existing client</h2>
+
+<mat-dialog-content>
+  <div class="pt-4">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Search client</mat-label>
+      <input
+        matInput
+        placeholder="Type name, phone, or email"
+        type="text"
+        [formControl]="search"
+        [matAutocomplete]="clientsAutocomplete"
+      />
+      @if (loadingOptions()) {
+        <mat-spinner diameter="18" matSuffix></mat-spinner>
+      }
+      <mat-hint>Minimum 2 characters</mat-hint>
+    </mat-form-field>
+
+    <mat-autocomplete
+      #clientsAutocomplete="matAutocomplete"
+      [displayWith]="displayClientLabel"
+      (optionSelected)="onSelected($event)"
+    >
+      @for (option of options(); track option.id) {
+        <mat-option [value]="option">
+          {{ option.fullName ?? 'Unnamed client' }}
+          <span class="client-option-meta">{{ option.phone || option.email || '' }}</span>
+        </mat-option>
+      } @empty {
+        <mat-option disabled>No matching clients found</mat-option>
+      }
+    </mat-autocomplete>
+
+    @if (errorMessage()) {
+      <p class="link-error" role="alert">{{ errorMessage() }}</p>
+    }
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()">Cancel</button>
+  <button
+    color="primary"
+    mat-flat-button
+    type="button"
+    [disabled]="!selectedClientId() || submitting()"
+    (click)="confirm()"
+  >
+    Link client
+  </button>
+</mat-dialog-actions>

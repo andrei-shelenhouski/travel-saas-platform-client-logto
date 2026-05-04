@@ -77,6 +77,15 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'bookings/:id',
+    redirectTo: 'app/bookings/:id',
+  },
+  {
+    path: 'bookings',
+    redirectTo: 'app/bookings',
+    pathMatch: 'full',
+  },
+  {
     path: 'app',
     loadComponent: () =>
       import('@app/layout/main-layout.component').then((m) => m.MainLayoutComponent),
@@ -214,6 +223,7 @@ export const routes: Routes = [
       // Invoices
       {
         path: 'invoices/new',
+        canDeactivate: [pendingChangesGuard],
         loadComponent: () =>
           import('@app/features/invoices/create-invoice/create-invoice').then(
             (m) => m.CreateInvoiceComponent,
@@ -236,7 +246,19 @@ export const routes: Routes = [
       {
         path: 'settings',
         loadComponent: () =>
-          import('@app/features/onboarding/settings/settings').then((m) => m.SettingsComponent),
+          import('@app/features/settings/company-profile/company-profile').then(
+            (m) => m.CompanyProfileComponent,
+          ),
+        canActivate: [adminGuard],
+        canDeactivate: [pendingChangesGuard],
+      },
+      {
+        path: 'settings/users',
+        loadComponent: () =>
+          import('@app/features/admin/users-management/users-management').then(
+            (m) => m.UsersManagementComponent,
+          ),
+        canActivate: [adminGuard],
       },
       {
         path: 'organizations/new',
@@ -248,11 +270,7 @@ export const routes: Routes = [
       },
       {
         path: 'admin/users',
-        loadComponent: () =>
-          import('@app/features/admin/users-management/users-management').then(
-            (m) => m.UsersManagementComponent,
-          ),
-        canActivate: [adminGuard],
+        redirectTo: 'settings/users',
       },
     ],
   },

@@ -11,9 +11,12 @@ import type {
   ContactResponseDto,
   CreateClientDto,
   CreateContactDto,
+  PaginatedBookingSummaryDto,
   PaginatedClientResponseDto,
   PaginatedInvoiceResponseDto,
   PaginatedLeadResponseDto,
+  PaginatedOfferSummaryDto,
+  PaginatedTravelRequestSummaryDto,
   UpdateClientDto,
   UpdateContactDto,
 } from '@app/shared/models';
@@ -120,6 +123,64 @@ export class ClientsService {
     }
 
     return this.http.get<PaginatedInvoiceResponseDto>(`${CLIENTS_URL}/${clientId}/invoices`, {
+      params: httpParams,
+    });
+  }
+
+  getOffers(
+    clientId: string,
+    params?: { page?: number; limit?: number },
+  ): Observable<PaginatedOfferSummaryDto> {
+    let httpParams = new HttpParams();
+
+    if (params?.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
+    }
+
+    return this.http.get<PaginatedOfferSummaryDto>(`${CLIENTS_URL}/${clientId}/offers`, {
+      params: httpParams,
+    });
+  }
+
+  getBookings(
+    clientId: string,
+    params?: { page?: number; limit?: number },
+  ): Observable<PaginatedBookingSummaryDto> {
+    let httpParams = new HttpParams();
+
+    if (params?.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
+    }
+
+    return this.http.get<PaginatedBookingSummaryDto>(`${CLIENTS_URL}/${clientId}/bookings`, {
+      params: httpParams,
+    });
+  }
+
+  /** GET /api/clients/{id}/requests. Returns paginated travel-request summaries for the client. */
+  getRequests(
+    clientId: string,
+    params?: { page?: number; limit?: number },
+  ): Observable<PaginatedTravelRequestSummaryDto> {
+    let httpParams = new HttpParams();
+
+    if (params?.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
+    }
+
+    return this.http.get<PaginatedTravelRequestSummaryDto>(`${CLIENTS_URL}/${clientId}/requests`, {
       params: httpParams,
     });
   }

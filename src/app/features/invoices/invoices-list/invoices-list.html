@@ -1,77 +1,145 @@
-<div class="p-4">
-  <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
-    <h1 class="text-xl font-semibold text-gray-900">Invoices</h1>
-    <a color="primary" mat-flat-button routerLink="/app/invoices/new">Create invoice</a>
-  </header>
+<app-page-heading
+  subtitle="Total: {{ totalElements() }} invoices"
+  title="Invoices"
+  i18n-title="@@invoiceListHeadingTitle"
+>
+  <button color="primary" mat-flat-button type="button" (click)="navigateToCreateInvoice()">
+    <mat-icon>add</mat-icon>
+    <span i18n="@@invoiceListNewInvoiceCta">New invoice</span>
+  </button>
+</app-page-heading>
 
-  <mat-button-toggle-group
-    appearance="standard"
-    class="flex flex-wrap"
-    hideSingleSelectionIndicator
-    [value]="activeFilter()"
-    (change)="setFilter($event.value)"
-  >
-    @for (tab of filterTabs; track tab.value) {
-      <mat-button-toggle [value]="tab.value">{{ tab.label }}</mat-button-toggle>
-    }
-  </mat-button-toggle-group>
+<div class="space-y-4 p-4">
+  <app-invoice-summary-cards
+    class="m-4"
+    [currency]="summary().currency"
+    [drafts]="summary().drafts"
+    [overdueAmount]="summary().overdueAmount"
+    [overdueCount]="summary().overdueCount"
+    [pendingAmount]="summary().pendingAmount"
+    [pendingCount]="summary().pendingCount"
+    [selectedStatuses]="statusFilter()"
+    (statusesSelect)="onSummaryPresetSelect($event)"
+  />
+
+  <app-invoice-filter-bar
+    [clientTypeFilter]="clientTypeFilter()"
+    [currencyFilter]="currencyFilter()"
+    [dateFromFilter]="dateFromFilter()"
+    [dateToFilter]="dateToFilter()"
+    [searchControl]="searchControl"
+    [statusFilter]="statusFilter()"
+    (clientTypeFilterChange)="onClientTypeFilterChange($event)"
+    (currencyFilterChange)="onCurrencyFilterChange($event)"
+    (dateFromChange)="onDateFromChange($event)"
+    (dateToChange)="onDateToChange($event)"
+    (statusFilterChange)="onStatusFilterChange($event)"
+  />
 
   @if (error()) {
-    <p class="text-sm text-red-600">{{ error() }}</p>
+    <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
   }
 
-  <div class="rounded-lg border border-gray-200 bg-white overflow-hidden">
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead class="bg-gray-50">
-        <tr>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Number</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Booking</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-            Issue date
-          </th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-200">
-        @if (loading()) {
-          <tr>
-            <td class="px-4 py-12 text-center text-gray-500" colspan="5">
-              <div
-                aria-hidden="true"
-                class="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-              ></div>
-            </td>
-          </tr>
-        } @else if (invoices().length === 0) {
-          <tr>
-            <td class="px-4 py-12 text-center text-gray-500" colspan="5">No invoices yet.</td>
-          </tr>
-        } @else {
-          @for (inv of invoices(); track inv.id) {
-            <tr class="cursor-pointer hover:bg-gray-50" (click)="goToDetail(inv)">
-              <td class="px-4 py-3 text-sm font-medium text-gray-900">
-                {{ inv.number }}
-              </td>
-              <td class="px-4 py-3 text-sm font-mono text-gray-600">
-                {{ inv.bookingId.slice(0, 8) }}…
-              </td>
-              <td class="px-4 py-3 text-sm text-gray-900">{{ inv.amount }} {{ inv.currency }}</td>
-              <td class="px-4 py-3">
-                <span
-                  class="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
-                  [class]="getStatusBadgeClass(inv.status)"
-                >
-                  {{ inv.status }}
-                </span>
-              </td>
-              <td class="px-4 py-3 text-sm text-gray-600">
-                {{ formatDate(inv.issueDate) }}
-              </td>
-            </tr>
-          }
-        }
-      </tbody>
+  <div class="table-wrap overflow-scroll">
+    <table mat-table [dataSource]="invoices()" [multiTemplateDataRows]="true">
+      <ng-container matColumnDef="number">
+        <th *matHeaderCellDef i18n="@@invoiceListColumnNumber" mat-header-cell>Invoice #</th>
+        <td *matCellDef="let element" mat-cell>
+          <a
+            class="invoice-link"
+            [routerLink]="['/app/invoices', element.id]"
+            (click)="onInvoiceNumberClick($event)"
+          >
+            {{ element.number }}
+          </a>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="client">
+        <th *matHeaderCellDef i18n="@@invoiceListColumnClient" mat-header-cell>Client</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ clientLabel(element) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <th *matHeaderCellDef i18n="@@invoiceListColumnType" mat-header-cell>Type</th>
+        <td *matCellDef="let element" mat-cell>
+          <app-client-type-badge [type]="element.clientType ?? ''" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="invoiceDate">
+        <th *matHeaderCellDef i18n="@@invoiceListColumnDate" mat-header-cell>Date</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ formatDate(element.invoiceDate) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="dueDate">
+        <th *matHeaderCellDef i18n="@@invoiceListColumnDueDate" mat-header-cell>Due date</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ formatDate(element.dueDate) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="total">
+        <th *matHeaderCellDef i18n="@@invoiceListColumnTotal" mat-header-cell>Total</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ formatAmount(element.total ?? element.subtotal, element.currency) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th *matHeaderCellDef i18n="@@invoiceListColumnStatus" mat-header-cell>Status</th>
+        <td *matCellDef="let element" mat-cell>
+          <app-invoice-status-chip [status]="element.status" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="paidAmount">
+        <th *matHeaderCellDef i18n="@@invoiceListColumnPaidAmount" mat-header-cell>Paid amount</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ paidAmountLabel(element) }}
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="displayedColumns" class="table-header-row" mat-header-row></tr>
+      <tr
+        *matRowDef="let row; columns: displayedColumns"
+        class="table-row"
+        mat-row
+        (click)="navigateToInvoice(row.id)"
+      ></tr>
+      <tr *matNoDataRow>
+        <td [attr.colspan]="displayedColumns.length">
+          <div class="m-10 align-middle text-center">
+            @if (loading()) {
+              <p class="pb-4" i18n="@@invoiceListLoading">Loading invoices...</p>
+              <mat-spinner
+                aria-label="Loading invoices"
+                i18n-aria-label="@@invoiceListLoadingAriaLabel"
+                class="mx-auto"
+                diameter="36"
+              />
+            } @else {
+              <p i18n="@@invoiceListEmptyState">No invoices found for current filters</p>
+            }
+          </div>
+        </td>
+      </tr>
     </table>
   </div>
+
+  @if (totalElements() > pageSize) {
+    <mat-paginator
+      aria-label="Invoices pagination"
+      i18n-aria-label="@@invoiceListPaginatorAriaLabel"
+      [length]="totalElements()"
+      [pageIndex]="currentPage()"
+      [pageSize]="pageSize"
+      [showFirstLastButtons]="true"
+      (page)="onPageChange($event)"
+    />
+  }
 </div>

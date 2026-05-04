@@ -1,5 +1,6 @@
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { DecimalPipe } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -47,7 +48,7 @@ import {
 } from '@app/shared/material-imports';
 import { ToastService } from '@app/shared/services/toast.service';
 
-import type { CreateOfferDto, RequestResponseDto } from '@app/shared/models';
+import type { CreateOfferDto, RequestResponseDto, UpdateOfferDto } from '@app/shared/models';
 type AccommodationFormGroup = FormGroup<{
   hotelName: FormControl<string>;
   roomType: FormControl<string>;
@@ -123,10 +124,22 @@ export class CreateOfferComponent implements OnInit {
 
   readonly request = signal<RequestResponseDto | null>(null);
   readonly requestLoading = signal(true);
+  readonly requestPrefillWarning = signal('');
   readonly saving = signal(false);
   readonly previewing = signal(false);
   readonly error = signal('');
   readonly requestId = signal<string | null>(null);
+  readonly createdDraftId = signal<string | null>(null);
+  readonly destinationNotSetLabel = $localize`:@@createOfferDestinationNotSet:Destination not set`;
+  readonly prefilledRequestCode = computed(() => {
+    const request = this.request();
+
+    if (!request) {
+      return null;
+    }
+
+    return `TR-${this.getRequestCodeSuffix(request.id)}`;
+  });
 
   readonly form: OfferBuilderFormGroup = this.fb.nonNullable.group({
     language: this.fb.nonNullable.control('ru', Validators.required),
@@ -178,6 +191,7 @@ export class CreateOfferComponent implements OnInit {
 
     if (requestId) {
       this.requestId.set(requestId);
+      this.requestPrefillWarning.set('');
     }
 
     this.organizationSettingsService.get().subscribe({
@@ -202,33 +216,50 @@ export class CreateOfferComponent implements OnInit {
       return;
     }
 
-    this.requestsService.getById(requestId).subscribe({
-      next: (request) => {
-        this.request.set(request);
-        this.form.patchValue({
-          destination: request.destination ?? '',
-          departDate: request.departDate ?? '',
-          returnDate: request.returnDate ?? '',
-          adults: request.adults ?? 1,
-          children: request.children ?? 0,
-        });
-
-        const firstAccommodation = this.accommodationsArray.at(0);
-
-        if (firstAccommodation) {
-          firstAccommodation.patchValue({
-            checkinDate: request.departDate ?? '',
-            checkoutDate: request.returnDate ?? '',
+    this.requestsService
+      .getById(requestId)
+      .pipe(finalize(() => this.requestLoading.set(false)))
+      .subscribe({
+        next: (request) => {
+          this.request.set(request);
+          this.requestPrefillWarning.set('');
+          this.form.patchValue({
+            destination: request.destination ?? '',
+            departDate: request.departDate ?? '',
+            returnDate: request.returnDate ?? '',
+            adults: request.adults ?? 1,
+            children: request.children ?? 0,
           });
-        }
 
-        this.form.markAsPristine();
-      },
-      error: (err) => {
-        this.error.set(err.error?.message ?? err.message ?? 'Failed to load request data.');
-      },
-      complete: () => this.requestLoading.set(false),
-    });
+          const firstAccommodation = this.accommodationsArray.at(0);
+
+          if (firstAccommodation) {
+            firstAccommodation.patchValue({
+              checkinDate: request.departDate ?? '',
+              checkoutDate: request.returnDate ?? '',
+            });
+          }
+
+          this.form.markAsPristine();
+        },
+        error: (err: unknown) => {
+          if (err instanceof HttpErrorResponse && err.status === 404) {
+            this.request.set(null);
+            this.requestPrefillWarning.set(
+              $localize`:@@createOfferRequestPrefillNotFound:Trip request was not found. Fill travel details manually and continue creating the offer.`,
+            );
+
+            return;
+          }
+
+          this.error.set(
+            this.getErrorMessage(
+              err,
+              $localize`:@@createOfferRequestLoadFailed:Failed to load request data.`,
+            ),
+          );
+        },
+      });
   }
 
   get accommodationsArray(): FormArray<AccommodationFormGroup> {
@@ -335,24 +366,42 @@ export class CreateOfferComponent implements OnInit {
       return;
     }
 
-    const dto = this.buildCreateDto(requestId);
-
     this.error.set('');
     this.previewing.set(true);
 
-    this.offersService
-      .create(dto)
-      .pipe(finalize(() => this.previewing.set(false)))
-      .subscribe({
-        next: (created) => {
-          this.form.markAsPristine();
-          this.toast.showSuccess('Offer draft saved');
-          this.openPdfPreviewDialog(created.id, created.number);
-        },
-        error: (err) => {
-          this.error.set(err.error?.message ?? err.message ?? 'Failed to create offer');
-        },
-      });
+    const existingId = this.createdDraftId();
+
+    if (existingId) {
+      const updateDto = this.buildUpdateDto();
+      this.offersService
+        .update(existingId, updateDto)
+        .pipe(finalize(() => this.previewing.set(false)))
+        .subscribe({
+          next: (updated) => {
+            this.form.markAsPristine();
+            this.openPdfPreviewDialog(updated.id, updated.number);
+          },
+          error: (err) => {
+            this.error.set(err.error?.message ?? err.message ?? 'Failed to update offer');
+          },
+        });
+    } else {
+      const dto = this.buildCreateDto(requestId);
+      this.offersService
+        .create(dto)
+        .pipe(finalize(() => this.previewing.set(false)))
+        .subscribe({
+          next: (created) => {
+            this.createdDraftId.set(created.id);
+            this.form.markAsPristine();
+            this.toast.showSuccess('Offer draft saved');
+            this.openPdfPreviewDialog(created.id, created.number);
+          },
+          error: (err) => {
+            this.error.set(err.error?.message ?? err.message ?? 'Failed to create offer');
+          },
+        });
+    }
   }
 
   onSubmit(): void {
@@ -377,20 +426,37 @@ export class CreateOfferComponent implements OnInit {
     this.error.set('');
     this.saving.set(true);
 
-    const dto = this.buildCreateDto(requestId);
+    const existingId = this.createdDraftId();
 
-    this.offersService.create(dto).subscribe({
-      next: (created) => {
-        this.form.markAsPristine();
-        this.toast.showSuccess('Offer draft saved');
-        this.router.navigate(['/app/offers', created.id]);
-      },
-      error: (err) => {
-        this.error.set(err.error?.message ?? err.message ?? 'Failed to create offer');
-        this.saving.set(false);
-      },
-      complete: () => this.saving.set(false),
-    });
+    if (existingId) {
+      const updateDto = this.buildUpdateDto();
+      this.offersService.update(existingId, updateDto).subscribe({
+        next: (updated) => {
+          this.form.markAsPristine();
+          this.toast.showSuccess('Offer draft saved');
+          this.router.navigate(['/app/offers', updated.id]);
+        },
+        error: (err) => {
+          this.error.set(err.error?.message ?? err.message ?? 'Failed to update offer');
+          this.saving.set(false);
+        },
+        complete: () => this.saving.set(false),
+      });
+    } else {
+      const dto = this.buildCreateDto(requestId);
+      this.offersService.create(dto).subscribe({
+        next: (created) => {
+          this.form.markAsPristine();
+          this.toast.showSuccess('Offer draft saved');
+          this.router.navigate(['/app/offers', created.id]);
+        },
+        error: (err) => {
+          this.error.set(err.error?.message ?? err.message ?? 'Failed to create offer');
+          this.saving.set(false);
+        },
+        complete: () => this.saving.set(false),
+      });
+    }
   }
 
   private openPdfPreviewDialog(offerId: string, offerNumber?: string): void {
@@ -412,6 +478,31 @@ export class CreateOfferComponent implements OnInit {
 
     return {
       requestId,
+      language: v.language,
+      currency: v.currency,
+      ...(v.destination?.trim() && { destination: v.destination.trim() }),
+      ...(v.departureCity?.trim() && { departureCity: v.departureCity.trim() }),
+      ...(v.departDate && { departDate: v.departDate }),
+      ...(v.returnDate && { returnDate: v.returnDate }),
+      ...(v.adults > 0 && { adults: v.adults }),
+      children: Math.max(0, toSafeNumber(v.children)),
+      ...(v.validityDate && { validityDate: v.validityDate }),
+      ...(v.discountMode === 'PCT'
+        ? { discountPct: Math.min(100, Math.max(0, toSafeNumber(v.discountValue))) }
+        : {
+            discountAmount: Math.min(pricing.subtotal, Math.max(0, toSafeNumber(v.discountValue))),
+          }),
+      ...(v.internalNotes?.trim() && { internalNotes: v.internalNotes.trim() }),
+      accommodations: mapAccommodationsForDto(v.accommodations),
+      services: mapServicesForDto(v.services),
+    };
+  }
+
+  private buildUpdateDto(): UpdateOfferDto {
+    const v = this.form.getRawValue();
+    const pricing = this.pricingSummary();
+
+    return {
       language: v.language,
       currency: v.currency,
       ...(v.destination?.trim() && { destination: v.destination.trim() }),
@@ -501,5 +592,28 @@ export class CreateOfferComponent implements OnInit {
     }
 
     return { invalidDateRange: true };
+  }
+
+  private getErrorMessage(error: unknown, fallbackMessage: string): string {
+    if (error instanceof HttpErrorResponse) {
+      return (
+        (typeof error.error?.message === 'string' && error.error.message) ||
+        error.message ||
+        fallbackMessage
+      );
+    }
+
+    if (error instanceof Error) {
+      return error.message || fallbackMessage;
+    }
+
+    return fallbackMessage;
+  }
+
+  private getRequestCodeSuffix(requestId: string): string {
+    const parts = requestId.split('-').filter(Boolean);
+    const suffix = parts.at(-1) ?? requestId;
+
+    return suffix.toUpperCase();
   }
 }

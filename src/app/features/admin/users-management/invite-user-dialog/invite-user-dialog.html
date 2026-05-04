@@ -1,0 +1,49 @@
+<h2 i18n="@@usersInviteDialogTitle" mat-dialog-title>Invite user</h2>
+
+<mat-dialog-content>
+  <form class="invite-form" [formGroup]="form">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label i18n="@@usersInviteEmailLabel">Email</mat-label>
+      <input formControlName="email" matInput type="email" />
+
+      @if (form.controls.email.hasError('required') && form.controls.email.touched) {
+        <mat-error i18n="@@usersInviteEmailRequired">Email is required</mat-error>
+      }
+
+      @if (form.controls.email.hasError('email') && form.controls.email.touched) {
+        <mat-error i18n="@@usersInviteEmailInvalid">Enter a valid email</mat-error>
+      }
+
+      @if (form.controls.email.hasError('duplicate') && form.controls.email.touched) {
+        <mat-error i18n="@@usersInviteEmailDuplicate"
+          >A user with this email is already added</mat-error
+        >
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label i18n="@@usersInviteFullNameLabel">Full name</mat-label>
+      <input formControlName="fullName" matInput type="text" />
+
+      @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
+        <mat-error i18n="@@usersInviteFullNameRequired">Full name is required</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label i18n="@@usersInviteRoleLabel">Role</mat-label>
+      <mat-select formControlName="role">
+        @for (role of roles; track role.value) {
+          <mat-option [value]="role.value">{{ role.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button i18n="@@commonCancel" mat-button mat-dialog-close type="button">Cancel</button>
+  <button color="primary" mat-flat-button type="button" [disabled]="saving()" (click)="save()">
+    {{ saving() ? sendingLabel : inviteLabel }}
+  </button>
+</mat-dialog-actions>

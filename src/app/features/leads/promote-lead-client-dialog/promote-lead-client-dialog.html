@@ -1,0 +1,180 @@
+<h2 mat-dialog-title>Save as new client</h2>
+
+<mat-dialog-content>
+  <form class="promote-form" [formGroup]="form">
+    @if (submitError()) {
+      <p class="promote-error" role="alert">{{ submitError() }}</p>
+    }
+
+    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-label>Client type</mat-label>
+      <mat-select formControlName="type">
+        <mat-option [value]="ClientType.INDIVIDUAL">Individual</mat-option>
+        <mat-option [value]="ClientType.COMPANY">Company</mat-option>
+        <mat-option [value]="ClientType.B2B_AGENT">B2B agent</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-label>Full name</mat-label>
+      <input formControlName="fullName" matInput type="text" />
+      @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
+        <mat-error>Full name is required</mat-error>
+      }
+      @if (hasServerError('fullName')) {
+        <mat-error>{{ serverErrorText('fullName') }}</mat-error>
+      }
+    </mat-form-field>
+
+    @if (isCompanyType()) {
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Company name</mat-label>
+        <input formControlName="companyName" matInput type="text" />
+        @if (form.controls.companyName.hasError('required') && form.controls.companyName.touched) {
+          <mat-error>Company name is required</mat-error>
+        }
+        @if (hasServerError('companyName')) {
+          <mat-error>{{ serverErrorText('companyName') }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Legal address</mat-label>
+        <input formControlName="legalAddress" matInput type="text" />
+        @if (
+          form.controls.legalAddress.hasError('required') && form.controls.legalAddress.touched
+        ) {
+          <mat-error>Legal address is required</mat-error>
+        }
+        @if (hasServerError('legalAddress')) {
+          <mat-error>{{ serverErrorText('legalAddress') }}</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="promote-grid-two">
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-label>UNP</mat-label>
+          <input formControlName="unp" matInput type="text" />
+          @if (form.controls.unp.hasError('pattern') && form.controls.unp.touched) {
+            <mat-error>UNP must be 9 digits</mat-error>
+          }
+          @if (hasServerError('unp')) {
+            <mat-error>{{ serverErrorText('unp') }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-label>OKPO</mat-label>
+          <input formControlName="okpo" matInput type="text" />
+          @if (hasServerError('okpo')) {
+            <mat-error>{{ serverErrorText('okpo') }}</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="promote-grid-two">
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-label>IBAN</mat-label>
+          <input formControlName="iban" matInput type="text" />
+          @if (hasServerError('iban')) {
+            <mat-error>{{ serverErrorText('iban') }}</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-label>Bank name</mat-label>
+          <input formControlName="bankName" matInput type="text" />
+          @if (hasServerError('bankName')) {
+            <mat-error>{{ serverErrorText('bankName') }}</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>BIK</mat-label>
+        <input formControlName="bik" matInput type="text" />
+        @if (hasServerError('bik')) {
+          <mat-error>{{ serverErrorText('bik') }}</mat-error>
+        }
+      </mat-form-field>
+    }
+
+    <div class="promote-grid-two">
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Phone</mat-label>
+        <input formControlName="phone" matInput type="tel" />
+        @if (hasServerError('phone')) {
+          <mat-error>{{ serverErrorText('phone') }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-label>Email</mat-label>
+        <input formControlName="email" matInput type="email" />
+        @if (form.controls.email.hasError('email') && form.controls.email.touched) {
+          <mat-error>Enter a valid email</mat-error>
+        }
+        @if (hasServerError('email')) {
+          <mat-error>{{ serverErrorText('email') }}</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-label>Telegram</mat-label>
+      <input formControlName="telegramHandle" matInput type="text" />
+      @if (hasServerError('telegramHandle')) {
+        <mat-error>{{ serverErrorText('telegramHandle') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-label>Notes</mat-label>
+      <textarea formControlName="notes" matInput rows="3"></textarea>
+      @if (hasServerError('notes')) {
+        <mat-error>{{ serverErrorText('notes') }}</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="promote-consent-block">
+      <mat-checkbox formControlName="dataConsentGiven">
+        Personal data processing consent
+      </mat-checkbox>
+      @if (
+        form.controls.dataConsentGiven.hasError('required') &&
+        form.controls.dataConsentGiven.touched
+      ) {
+        <p class="promote-error">Data consent is required</p>
+      }
+
+      @if (form.controls.dataConsentGiven.value) {
+        <mat-form-field appearance="outline" class="w-56" subscriptSizing="dynamic">
+          <mat-label>Consent date</mat-label>
+          <input formControlName="dataConsentDate" matInput type="date" />
+          @if (
+            form.controls.dataConsentDate.hasError('required') &&
+            form.controls.dataConsentDate.touched
+          ) {
+            <mat-error>Consent date is required</mat-error>
+          }
+          @if (hasServerError('dataConsentDate')) {
+            <mat-error>{{ serverErrorText('dataConsentDate') }}</mat-error>
+          }
+        </mat-form-field>
+      }
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()">Cancel</button>
+  <button
+    color="primary"
+    mat-flat-button
+    type="button"
+    [disabled]="submitting()"
+    (click)="submit()"
+  >
+    Save client
+  </button>
+</mat-dialog-actions>

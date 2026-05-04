@@ -1,0 +1,36 @@
+<div
+  aria-labelledby="cancel-dialog-title"
+  aria-modal="true"
+  class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+  role="dialog"
+>
+  <div class="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
+    <h2 class="text-lg font-semibold text-gray-900" i18n id="cancel-dialog-title">
+      Cancel booking
+    </h2>
+
+    <form class="mt-4 space-y-4" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field class="w-full">
+        <mat-label i18n>Cancellation reason</mat-label>
+        <textarea
+          cdkAutosizeMaxRows="6"
+          cdkAutosizeMinRows="3"
+          formControlName="reason"
+          matInput
+          placeholder="Enter cancellation reason..."
+          i18n-placeholder
+        ></textarea>
+        @if (form.controls.reason.hasError('required')) {
+          <mat-error i18n>Cancellation reason is required</mat-error>
+        }
+      </mat-form-field>
+
+      <div class="flex justify-end gap-3">
+        <button i18n mat-button type="button" (click)="cancelled.emit()">Cancel</button>
+        <button color="warn" mat-flat-button type="submit" [disabled]="form.invalid">
+          <span i18n>Confirm</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

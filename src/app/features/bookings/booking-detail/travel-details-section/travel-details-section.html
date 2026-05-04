@@ -1,0 +1,63 @@
+<section class="rounded-lg border border-gray-200 bg-white p-4">
+  <div class="flex items-center justify-between">
+    <h2 class="text-sm font-semibold text-gray-900" i18n>Travel details</h2>
+    @if (isEditable() && !editing()) {
+      <button mat-icon-button type="button" (click)="startEdit()">
+        <mat-icon>edit</mat-icon>
+      </button>
+    }
+  </div>
+
+  @if (editing()) {
+    <form class="mt-3 space-y-3" [formGroup]="form" (ngSubmit)="onSave()">
+      <mat-form-field class="w-full">
+        <mat-label i18n>Destination</mat-label>
+        <input formControlName="destination" matInput />
+      </mat-form-field>
+
+      <div class="grid gap-3 sm:grid-cols-2">
+        <mat-form-field class="w-full">
+          <mat-label i18n>Departure date</mat-label>
+          <input formControlName="departDate" matInput type="date" />
+        </mat-form-field>
+
+        <mat-form-field class="w-full">
+          <mat-label i18n>Return date</mat-label>
+          <input formControlName="returnDate" matInput type="date" />
+        </mat-form-field>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button i18n mat-button type="button" (click)="cancelEdit()">Cancel</button>
+        <button color="primary" mat-flat-button type="submit" [disabled]="saving()">
+          <span i18n>Save</span>
+        </button>
+      </div>
+    </form>
+  } @else {
+    <dl class="mt-3 grid gap-2 text-sm sm:grid-cols-2">
+      <div>
+        <dt class="text-gray-500" i18n>Destination</dt>
+        <dd class="font-medium text-gray-900">{{ booking().destination || '—' }}</dd>
+      </div>
+      <div>
+        <dt class="text-gray-500" i18n>Departure date</dt>
+        <dd class="font-medium text-gray-900">
+          {{ booking().departDate ? (booking().departDate | date: 'mediumDate') : '—' }}
+        </dd>
+      </div>
+      <div>
+        <dt class="text-gray-500" i18n>Return date</dt>
+        <dd class="font-medium text-gray-900">
+          {{ booking().returnDate ? (booking().returnDate | date: 'mediumDate') : '—' }}
+        </dd>
+      </div>
+      <div>
+        <dt class="text-gray-500" i18n>Adults / Children</dt>
+        <dd class="font-medium text-gray-900">
+          {{ booking().adults ?? 0 }} / {{ booking().children ?? 0 }}
+        </dd>
+      </div>
+    </dl>
+  }
+</section>

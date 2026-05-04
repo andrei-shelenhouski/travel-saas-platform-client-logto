@@ -101,7 +101,7 @@
               <div>
                 <dt class="text-gray-500">Offer date</dt>
                 <dd class="font-medium text-gray-900">
-                  {{ o.offerDate || o.createdAt | date: 'mediumDate' }}
+                  {{ (o.offerDate || o.createdAt) | date: 'mediumDate' }}
                 </dd>
               </div>
               <div>

@@ -7,8 +7,6 @@ import {
   effect,
   inject,
   signal,
-  TemplateRef,
-  viewChild,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -21,12 +19,17 @@ import {
 } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EMPTY, forkJoin, of } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
+import { AssignDialogComponent } from '@app/features/leads/assign-dialog/assign-dialog';
+import { LinkLeadClientDialogComponent } from '@app/features/leads/link-lead-client-dialog/link-lead-client-dialog';
+// eslint-disable-next-line max-len
+import { PromoteLeadClientDialogComponent } from '@app/features/leads/promote-lead-client-dialog/promote-lead-client-dialog';
 import { ActivitiesService } from '@app/services/activities.service';
 import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
@@ -36,7 +39,7 @@ import { RequestsService } from '@app/services/requests.service';
 import { RoleService } from '@app/services/role.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
-import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { EntityType, LeadStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
@@ -97,8 +100,10 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     ReactiveFormsModule,
     MatDialogModule,
     MatIconModule,
+    MatTooltipModule,
     ...MAT_BUTTONS,
     ...MAT_FORM_BUTTONS,
+    ...MAT_MENU,
     StatusBadgeComponent,
     ClientTypeBadgeComponent,
     PageHeading,
@@ -121,11 +126,10 @@ export class LeadDetailComponent {
 
   protected readonly permissions = inject(PermissionService);
 
-  protected readonly assignDialogTemplate = viewChild<TemplateRef<unknown>>('assignDialogTemplate');
-
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
   private readonly travelDetailsData = signal<LeadResponseDto | null>(null);
   private readonly requestsData = signal<RequestResponseDto[]>([]);
+  private readonly requestsDataInitialized = signal(false);
 
   private readonly data = rxResource<LeadDetailLoadData, string | null>({
     params: (): string | null => this.routeId() ?? null,
@@ -168,10 +172,8 @@ export class LeadDetailComponent {
     () => this.travelDetailsData() ?? this.data.value()?.lead ?? null,
   );
   protected readonly requests = computed(() => {
-    const local = this.requestsData();
-
-    if (local.length > 0) {
-      return local;
+    if (this.requestsDataInitialized()) {
+      return this.requestsData();
     }
 
     return this.data.value()?.requests ?? [];
@@ -182,6 +184,16 @@ export class LeadDetailComponent {
 
   protected readonly canReassign = computed(() => {
     return this.roleService.isAdmin() || this.roleService.isManager();
+  });
+
+  protected readonly canManageLeadClient = computed(() => {
+    const lead = this.lead();
+
+    if (!lead) {
+      return false;
+    }
+
+    return !this.isTerminalStatus(lead.status);
   });
 
   protected readonly visibleActions = computed<LeadAction[]>(() => {
@@ -268,8 +280,8 @@ export class LeadDetailComponent {
   protected readonly savingRequest = signal(false);
   protected readonly editingRequestId = signal<string | null>(null);
   protected readonly updatingRequest = signal(false);
-  protected readonly selectedAgentId = signal('');
-  protected readonly assignSearch = signal('');
+  protected readonly deletingRequestId = signal<string | null>(null);
+  protected readonly expandedNotesRequestId = signal<string | null>(null);
 
   protected readonly travelForm = this.formBuilder.group({
     destination: this.formBuilder.control<string>(''),
@@ -324,21 +336,7 @@ export class LeadDetailComponent {
     },
   );
 
-  protected readonly filteredAgents = computed(() => {
-    const query = this.assignSearch().trim().toLowerCase();
-    const items = this.membersData.value() ?? [];
-
-    if (!query) {
-      return items;
-    }
-
-    return items.filter((item) => {
-      const inName = item.name.toLowerCase().includes(query);
-      const inEmail = item.email.toLowerCase().includes(query);
-
-      return inName || inEmail;
-    });
-  });
+  protected readonly filteredAgents = computed(() => this.membersData.value() ?? []);
 
   constructor() {
     effect(() => {
@@ -356,6 +354,7 @@ export class LeadDetailComponent {
 
       this.travelDetailsData.set(value.lead);
       this.requestsData.set(value.requests);
+      this.requestsDataInitialized.set(true);
       this.activityPage.set(1);
       this.activityTotal.set(value.activities.total ?? value.activities.items.length);
 
@@ -429,24 +428,28 @@ export class LeadDetailComponent {
 
   protected openAssignDialog(): void {
     const lead = this.lead();
-    const template = this.assignDialogTemplate();
 
-    if (!lead || !template || this.assignLoading()) {
+    if (!lead || this.assignLoading()) {
       return;
     }
 
-    this.selectedAgentId.set(lead.assignedAgentId ?? '');
-    this.assignSearch.set('');
-    this.dialog.open(template, { width: '480px' });
+    const dialogRef = this.dialog.open(AssignDialogComponent, {
+      width: '480px',
+      data: {
+        agents: this.filteredAgents(),
+        initialSelectedAgentId: lead.assignedAgentId ?? null,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((agentId: string | undefined) => {
+      if (agentId) {
+        this.confirmAssign(agentId);
+      }
+    });
   }
 
-  protected closeAssignDialog(): void {
-    this.dialog.closeAll();
-  }
-
-  protected confirmAssign(): void {
+  protected confirmAssign(agentId: string): void {
     const lead = this.lead();
-    const agentId = this.selectedAgentId();
 
     if (!lead || !agentId || this.assignLoading()) {
       return;
@@ -457,7 +460,6 @@ export class LeadDetailComponent {
       next: (updated) => {
         this.travelDetailsData.set(updated);
         this.toast.showSuccess('Lead was reassigned');
-        this.closeAssignDialog();
       },
       error: (err: unknown) => {
         this.toast.showError(this.getErrorMessage(err, 'Failed to assign lead'));
@@ -468,16 +470,56 @@ export class LeadDetailComponent {
     });
   }
 
-  protected isSelectedAgent(agentId: string): boolean {
-    return this.selectedAgentId() === agentId;
+  protected openLinkClientDialog(): void {
+    const lead = this.lead();
+
+    if (!lead || this.isTerminalStatus(lead.status)) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open(LinkLeadClientDialogComponent, {
+      width: '640px',
+      data: {
+        leadId: lead.id,
+        initialClientId: lead.clientId,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((updatedLead: LeadResponseDto | undefined) => {
+      if (!updatedLead) {
+        return;
+      }
+
+      this.travelDetailsData.set(updatedLead);
+      this.patchTravelForm(updatedLead);
+      this.toast.showSuccess('Client was linked to lead');
+    });
   }
 
-  protected selectAgent(agentId: string): void {
-    this.selectedAgentId.set(agentId);
-  }
+  protected openPromoteClientDialog(): void {
+    const lead = this.lead();
 
-  protected updateAssignSearch(value: string): void {
-    this.assignSearch.set(value);
+    if (!lead || this.isTerminalStatus(lead.status)) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open(PromoteLeadClientDialogComponent, {
+      width: '860px',
+      maxWidth: '96vw',
+      data: {
+        lead,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((updatedLead: LeadResponseDto | undefined) => {
+      if (!updatedLead) {
+        return;
+      }
+
+      this.travelDetailsData.set(updatedLead);
+      this.patchTravelForm(updatedLead);
+      this.toast.showSuccess('Lead was saved as a new client');
+    });
   }
 
   protected startEditTravelDetails(): void {
@@ -688,6 +730,48 @@ export class LeadDetailComponent {
     return this.editingRequestId() === requestId;
   }
 
+  protected getRequestIdentifier(request: RequestResponseDto, index: number): string {
+    return `TR-${index + 1}`;
+  }
+
+  protected canDeleteRequest(request: RequestResponseDto): boolean {
+    const offersCount = request.offersCount ?? 0;
+
+    return offersCount === 0;
+  }
+
+  protected deleteRequest(request: RequestResponseDto, index: number): void {
+    if (!this.canDeleteRequest(request) || this.deletingRequestId()) {
+      return;
+    }
+
+    const confirmed = confirm(
+      `Are you sure you want to delete ${this.getRequestIdentifier(request, index)}?`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.deletingRequestId.set(request.id);
+    this.requestsService
+      .delete(request.id)
+      .pipe(
+        finalize(() => {
+          this.deletingRequestId.set(null);
+        }),
+      )
+      .subscribe({
+        next: () => {
+          this.requestsData.update((items) => items.filter((item) => item.id !== request.id));
+          this.toast.showSuccess('Travel request was deleted');
+        },
+        error: (err: unknown) => {
+          this.toast.showError(this.getErrorMessage(err, 'Failed to delete travel request'));
+        },
+      });
+  }
+
   protected openNewOffer(requestId: string): void {
     void this.router.navigate(['/app/offers/new'], {
       queryParams: { requestId },
@@ -751,6 +835,16 @@ export class LeadDetailComponent {
     }
 
     return `Total: ${amount} ${currency}`;
+  }
+
+  protected toggleNotesExpanded(requestId: string): void {
+    const current = this.expandedNotesRequestId();
+
+    this.expandedNotesRequestId.set(current === requestId ? null : requestId);
+  }
+
+  protected isNotesExpanded(requestId: string): boolean {
+    return this.expandedNotesRequestId() === requestId;
   }
 
   protected canShowDateRangeError(formName: 'add' | 'edit'): boolean {
@@ -932,6 +1026,12 @@ export class LeadDetailComponent {
     return item.createdBy || 'System action';
   }
 
+  protected isSystemEvent(item: ActivityResponseDto): boolean {
+    const createdBy = item.createdBy?.toLowerCase();
+
+    return createdBy === 'system' || createdBy === 'system action';
+  }
+
   private isTerminalStatus(status: string): boolean {
     return TERMINAL_STATUSES.has(status);
   }
@@ -1020,5 +1120,11 @@ export class LeadDetailComponent {
     }
 
     return fallback;
+  }
+
+  private getActivityActorFromPayload(item: ActivityResponseDto): string | null {
+    const payload = item.payload;
+
+    return payload && typeof payload['actorName'] === 'string' ? payload['actorName'] : null;
   }
 }

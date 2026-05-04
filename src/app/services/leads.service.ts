@@ -11,7 +11,10 @@ import type {
   LeadResponseDto,
   LeadSource,
   LeadStatus,
+  LinkLeadClientDto,
   PaginatedLeadResponseDto,
+  PromoteLeadToClientDto,
+  PromoteLeadToClientResponseDto,
   UpdateLeadDto,
   UpdateLeadStatusDto,
 } from '@app/shared/models';
@@ -23,10 +26,11 @@ const LEADS_STATS_URL = `${environment.baseUrl}/api/leads/stats`;
 export class LeadsService {
   private readonly http = inject(HttpClient);
 
+  // eslint-disable-next-line complexity
   findAll(params?: {
     page?: number;
     limit?: number;
-    status?: LeadStatus | string;
+    status?: LeadStatus | LeadStatus[];
     agentId?: string;
     clientType?: string;
     source?: LeadSource;
@@ -44,8 +48,14 @@ export class LeadsService {
       httpParams = httpParams.set('limit', params.limit);
     }
 
-    if (params?.status !== undefined && params.status !== '') {
-      httpParams = httpParams.set('status', params.status);
+    if (params?.status !== undefined) {
+      const statuses = Array.isArray(params.status)
+        ? params.status.filter((value) => Boolean(value))
+        : [params.status];
+
+      for (const status of statuses) {
+        httpParams = httpParams.append('status', status);
+      }
     }
 
     if (params?.agentId !== undefined) {
@@ -105,5 +115,16 @@ export class LeadsService {
 
   convertToClient(id: string): Observable<LeadResponseDto> {
     return this.http.post<LeadResponseDto>(`${LEADS_URL}/${id}/convert-to-client`, {});
+  }
+
+  linkClient(id: string, dto: LinkLeadClientDto): Observable<LeadResponseDto> {
+    return this.http.patch<LeadResponseDto>(`${LEADS_URL}/${id}/client`, dto);
+  }
+
+  promoteToClient(
+    id: string,
+    dto: PromoteLeadToClientDto,
+  ): Observable<PromoteLeadToClientResponseDto> {
+    return this.http.post<PromoteLeadToClientResponseDto>(`${LEADS_URL}/${id}/promote-client`, dto);
   }
 }
