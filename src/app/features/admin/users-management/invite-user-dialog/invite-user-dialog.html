@@ -3,7 +3,7 @@
 <mat-dialog-content>
   <form class="invite-form" [formGroup]="form">
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
-      <mat-label i18n="@@usersInviteEmailLabel">Email*</mat-label>
+      <mat-label i18n="@@usersInviteEmailLabel">Email</mat-label>
       <input formControlName="email" matInput type="email" />
 
       @if (form.controls.email.hasError('required') && form.controls.email.touched) {
@@ -22,7 +22,7 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
-      <mat-label i18n="@@usersInviteFullNameLabel">Full name*</mat-label>
+      <mat-label i18n="@@usersInviteFullNameLabel">Full name</mat-label>
       <input formControlName="fullName" matInput type="text" />
 
       @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
@@ -31,7 +31,7 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
-      <mat-label i18n="@@usersInviteRoleLabel">Role*</mat-label>
+      <mat-label i18n="@@usersInviteRoleLabel">Role</mat-label>
       <mat-select formControlName="role">
         @for (role of roles; track role.value) {
           <mat-option [value]="role.value">{{ role.label }}</mat-option>

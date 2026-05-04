@@ -1,4 +1,4 @@
-<app-page-heading [title]="isEditMode() ? 'Edit client' : 'Create client'">
+<app-page-heading [showBackButton]="true" [title]="isEditMode() ? 'Edit client' : 'Create client'">
   <button mat-button type="button" (click)="cancel()">
     <span aria-hidden="true" class="material-icons text-base">chevron_left</span>
     <span>Back to clients</span>

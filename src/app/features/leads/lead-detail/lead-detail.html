@@ -27,11 +27,25 @@
   } @else {
     @let l = lead();
     @if (l) {
-      <app-page-heading subtitle="Lead details" [title]="l.number">
-        <a matButton routerLink="/app/leads">
-          <span aria-hidden="true" class="material-icons text-base">chevron_left</span>
-          <span>Back to leads</span>
-        </a>
+      <app-page-heading subtitle="Lead details" [showBackButton]="true" [title]="l.number">
+        @if (!isTerminalLead()) {
+          <button mat-stroked-button type="button" (click)="startEditTravelDetails()">
+            <mat-icon>edit</mat-icon>
+            Edit travel details
+          </button>
+        }
+
+        @for (action of visibleActions(); track action) {
+          <button
+            color="primary"
+            mat-flat-button
+            type="button"
+            [disabled]="isActionBusy(action)"
+            (click)="applyAction(action)"
+          >
+            {{ getActionLabel(action) }}
+          </button>
+        }
       </app-page-heading>
 
       <div class="m-4">
@@ -42,27 +56,6 @@
               <h1 class="lead-header-title">{{ l.number }}</h1>
             </div>
             <app-status-badge variant="lead" [status]="l.status" />
-          </div>
-
-          <div class="lead-header-actions">
-            @if (!isTerminalLead()) {
-              <button mat-stroked-button type="button" (click)="startEditTravelDetails()">
-                <mat-icon>edit</mat-icon>
-                Edit travel details
-              </button>
-            }
-
-            @for (action of visibleActions(); track action) {
-              <button
-                color="primary"
-                mat-flat-button
-                type="button"
-                [disabled]="isActionBusy(action)"
-                (click)="applyAction(action)"
-              >
-                {{ getActionLabel(action) }}
-              </button>
-            }
           </div>
         </section>
 
@@ -496,52 +489,6 @@
             </p>
           </section>
         }
-
-        <ng-template #assignDialogTemplate>
-          <h3 class="assign-dialog-title">Assign lead</h3>
-
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Search agent</mat-label>
-            <input
-              #assignSearchInput
-              matInput
-              [value]="assignSearch()"
-              (input)="updateAssignSearch(assignSearchInput.value)"
-            />
-          </mat-form-field>
-
-          <div aria-label="Agents" class="assign-agent-list" role="listbox">
-            @for (agent of filteredAgents(); track agent.id) {
-              <button
-                class="assign-agent-item"
-                type="button"
-                [class.assign-agent-item-active]="isSelectedAgent(agent.userId)"
-                (click)="selectAgent(agent.userId)"
-              >
-                <span class="agent-avatar">{{ getAgentInitials(agent.name) }}</span>
-                <span class="assign-agent-text">
-                  <span>{{ agent.name }}</span>
-                  <span class="text-xs text-gray-500">{{ agent.email }}</span>
-                </span>
-              </button>
-            } @empty {
-              <p class="text-sm text-gray-500">No active agents found.</p>
-            }
-          </div>
-
-          <div class="assign-dialog-actions">
-            <button mat-button type="button" (click)="closeAssignDialog()">Cancel</button>
-            <button
-              color="primary"
-              mat-flat-button
-              type="button"
-              [disabled]="!selectedAgentId() || assignLoading()"
-              (click)="confirmAssign()"
-            >
-              Assign
-            </button>
-          </div>
-        </ng-template>
       </div>
     } @else {
       <p class="text-gray-500">Lead not found.</p>

@@ -1,9 +1,12 @@
-<div class="p-4">
-  <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
-    <h1 class="text-xl font-semibold text-gray-900">Requests</h1>
-    <a color="primary" mat-flat-button routerLink="/app/requests/new">Create request</a>
-  </header>
+<app-page-heading
+  subtitle="Total: {{ totalElements() }} requests"
+  title="Requests"
+  i18n-title="@@requestsListTitle"
+>
+  <a color="primary" mat-flat-button routerLink="/app/requests/new">Create request</a>
+</app-page-heading>
 
+<div class="p-4">
   @if (error()) {
     <p class="text-sm text-red-600">{{ error() }}</p>
   }

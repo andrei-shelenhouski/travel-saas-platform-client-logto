@@ -9,11 +9,11 @@
   } @else {
     @let c = client();
     @if (c) {
-      <app-page-heading [subtitle]="typeLabel[c.type]" [title]="c.companyName ?? c.fullName">
-        <a matButton routerLink="/app/clients">
-          <span aria-hidden="true" class="material-icons text-base">chevron_left</span>
-          <span i18n="@@backToClients">Back to clients</span>
-        </a>
+      <app-page-heading
+        [showBackButton]="true"
+        [subtitle]="typeLabel[c.type]"
+        [title]="c.companyName ?? c.fullName"
+      >
         <a i18n="@@editClient" matButton [relativeTo]="route" [routerLink]="['edit']"
           >Edit client</a
         >
