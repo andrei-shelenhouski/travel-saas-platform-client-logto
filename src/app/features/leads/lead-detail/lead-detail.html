@@ -495,7 +495,11 @@
                           }}</span
                         >
                         @if (request.children && request.children > 0) {
-                          <span>, {{ request.children }} child{{ request.children === 1 ? '' : 'ren' }}</span>
+                          <span
+                            >, {{ request.children }} child{{
+                              request.children === 1 ? '' : 'ren'
+                            }}</span
+                          >
                         }
                       </p>
 
