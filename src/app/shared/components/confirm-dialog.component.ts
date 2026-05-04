@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { ThemePalette } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 
 export type ConfirmDialogData = {
@@ -7,6 +8,7 @@ export type ConfirmDialogData = {
   message: string;
   confirmLabel?: string;
   cancelLabel?: string;
+  confirmColor?: ThemePalette;
 };
 
 @Component({
@@ -20,7 +22,12 @@ export type ConfirmDialogData = {
       <button mat-button type="button" [mat-dialog-close]="false">
         {{ data.cancelLabel ?? 'Cancel' }}
       </button>
-      <button color="primary" mat-flat-button type="button" [mat-dialog-close]="true">
+      <button
+        [color]="data.confirmColor ?? 'primary'"
+        mat-flat-button
+        type="button"
+        [mat-dialog-close]="true"
+      >
         {{ data.confirmLabel ?? 'Confirm' }}
       </button>
     </mat-dialog-actions>

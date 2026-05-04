@@ -1,0 +1,47 @@
+<h2 mat-dialog-title>Приглашение пользователя</h2>
+
+<mat-dialog-content>
+  <form class="invite-form" [formGroup]="form">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Email*</mat-label>
+      <input formControlName="email" matInput type="email" />
+
+      @if (form.controls.email.hasError('required') && form.controls.email.touched) {
+        <mat-error>Email обязателен</mat-error>
+      }
+
+      @if (form.controls.email.hasError('email') && form.controls.email.touched) {
+        <mat-error>Введите корректный email</mat-error>
+      }
+
+      @if (form.controls.email.hasError('duplicate') && form.controls.email.touched) {
+        <mat-error>Пользователь с таким email уже добавлен</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Full name*</mat-label>
+      <input formControlName="fullName" matInput type="text" />
+
+      @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
+        <mat-error>Имя обязательно</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-label>Role*</mat-label>
+      <mat-select formControlName="role">
+        @for (role of roles; track role.value) {
+          <mat-option [value]="role.value">{{ role.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close type="button">Отмена</button>
+  <button color="primary" mat-flat-button type="button" [disabled]="saving()" (click)="save()">
+    {{ saving() ? 'Отправка...' : 'Пригласить' }}
+  </button>
+</mat-dialog-actions>

@@ -1,168 +1,214 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  effect,
   inject,
   signal,
 } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { DatePipe } from '@angular/common';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ReactiveFormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 
-import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+import { UsersService } from '@app/services/users.service';
+import { ConfirmDialogComponent } from '@app/shared/components';
+import { MAT_FORM_BUTTONS, MAT_ICONS, MAT_MENU } from '@app/shared/material-imports';
 import { OrgRole } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { InviteUserDialogComponent } from './invite-user-dialog/invite-user-dialog';
 
-import type { AddOrganizationMemberDto, OrganizationMemberResponseDto } from '@app/shared/models';
+import { forkJoin } from 'rxjs';
+
+import type { OrgUserResponseDto } from '@app/shared/models';
+
 const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
-  { value: 'ADMIN', label: 'Admin' },
-  { value: 'MANAGER', label: 'Manager' },
-  { value: 'AGENT', label: 'Agent' },
+  { value: 'ADMIN', label: 'Администратор' },
+  { value: 'MANAGER', label: 'Менеджер' },
+  { value: 'SALES_AGENT', label: 'Менеджер по продажам' },
+  { value: 'BACK_OFFICE', label: 'Бэк-офис' },
 ];
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-users-management',
 
-  imports: [RouterLink, ReactiveFormsModule, ...MAT_FORM_BUTTONS],
+  imports: [
+    DatePipe,
+    RouterLink,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    ...MAT_FORM_BUTTONS,
+    ...MAT_ICONS,
+    ...MAT_MENU,
+  ],
   templateUrl: './users-management.html',
   styleUrl: './users-management.scss',
 })
 export class UsersManagementComponent {
-  private readonly membersService = inject(OrganizationMembersService);
+  private readonly usersService = inject(UsersService);
   private readonly permissions = inject(PermissionService);
-  private readonly toast = inject(ToastService);
-  private readonly fb = inject(FormBuilder);
+  private readonly dialog = inject(MatDialog);
+  private readonly snackBar = inject(MatSnackBar);
 
-  readonly roleOptions = ROLE_OPTIONS;
-  private readonly data = rxResource({
-    stream: () => this.membersService.findAll(),
-  });
-  /** Local list synced from API and updated optimistically when role changes. */
-  private readonly membersList = signal<OrganizationMemberResponseDto[]>([]);
+  protected readonly roleOptions = ROLE_OPTIONS;
+  protected readonly users = signal<OrgUserResponseDto[]>([]);
+  protected readonly loading = signal(true);
+  protected readonly error = signal<string | null>(null);
+  protected readonly updatingRoleId = signal<string | null>(null);
+  protected readonly togglingActiveId = signal<string | null>(null);
 
-  readonly members = computed(() => this.membersList());
-  readonly loading = computed(() => this.data.isLoading());
-  readonly error = computed(() => {
-    const err = this.data.error();
-
-    if (err instanceof HttpErrorResponse) {
-      return err.error?.message ?? err.message ?? 'Failed to load members';
-    }
-
-    return undefined;
-  });
-
-  /** Member id (organizationMember.id) currently updating role. */
-  readonly updatingRoleId = signal<string | null>(null);
-
-  readonly addMemberForm = this.fb.nonNullable.group({
-    email: ['', [Validators.required, Validators.email]],
-    role: ['MANAGER' as OrgRole],
-  });
-
-  readonly addingMember = signal(false);
-  readonly addFormVisible = signal(false);
+  protected readonly currentUserId = computed(() => this.permissions.currentUserId() ?? null);
 
   constructor() {
-    effect(() => {
-      const value = this.data.value();
-
-      if (value !== undefined && value !== null) {
-        this.membersList.set(value);
-      }
-    });
+    this.loadUsers();
   }
 
-  isCurrentUser(member: OrganizationMemberResponseDto): boolean {
-    const uid = this.permissions.currentUserId();
-
-    return uid !== undefined && uid !== null && member.userId === uid;
-  }
-
-  canChangeRole(member: OrganizationMemberResponseDto): boolean {
-    return !this.isCurrentUser(member) && member.active;
-  }
-
-  toggleAddForm(): void {
-    this.addFormVisible.update((v) => !v);
-
-    if (!this.addFormVisible()) {
-      this.addMemberForm.reset({
-        email: '',
-        role: 'MANAGER',
+  protected openInviteDialog(): void {
+    this.dialog
+      .open(InviteUserDialogComponent, { width: '520px' })
+      .afterClosed()
+      .subscribe((result?: { invited?: boolean }) => {
+        if (result?.invited) {
+          this.loadUsers();
+        }
       });
-    }
   }
 
-  onAddMember(): void {
-    if (this.addMemberForm.invalid) {
-      this.addMemberForm.markAllAsTouched();
+  protected isCurrentUser(user: OrgUserResponseDto): boolean {
+    const currentUserId = this.currentUserId();
 
-      return;
-    }
-    const { email, role } = this.addMemberForm.getRawValue();
-    const trimmed = email.trim();
-
-    if (!trimmed) {
-      this.toast.showError('Please enter an email address');
-
-      return;
-    }
-    const dto: AddOrganizationMemberDto = { email: trimmed, role };
-    this.addingMember.set(true);
-    this.membersService.addMember(dto).subscribe({
-      next: (member) => {
-        this.membersList.update((list) => [...list, member]);
-        this.addMemberForm.reset({ email: '', role: 'MANAGER' });
-        this.addFormVisible.set(false);
-        this.toast.showSuccess(`${member.email} has been added to the organization`);
-      },
-      error: (err: HttpErrorResponse) => {
-        const status = err.status;
-        const msg =
-          status === 404
-            ? 'User with this email was not found. They must sign up first.'
-            : status === 409
-              ? 'This user is already a member of the organization.'
-              : (err.error?.message ?? err.message ?? 'Failed to add member');
-        this.toast.showError(msg);
-      },
-      complete: () => this.addingMember.set(false),
-    });
+    return currentUserId !== null && user.appUserId === currentUserId;
   }
 
-  onRoleChange(member: OrganizationMemberResponseDto, newRole: OrgRole): void {
-    if (newRole === (member.role as OrgRole) || !this.canChangeRole(member)) {
+  protected canChangeRole(user: OrgUserResponseDto): boolean {
+    return !this.isCurrentUser(user) && user.isActive;
+  }
+
+  protected onRoleChange(user: OrgUserResponseDto, role: OrgRole): void {
+    const isUnchanged = user.role === role;
+
+    if (isUnchanged || !this.canChangeRole(user)) {
       return;
     }
-    this.updatingRoleId.set(member.id);
-    this.membersService.updateRole(member.id, { role: newRole }).subscribe({
-      next: (updated) => {
-        this.membersList.update((list) => list.map((m) => (m.id === updated.id ? updated : m)));
-        this.toast.showSuccess(`Role updated to ${newRole}`);
+
+    this.updatingRoleId.set(user.id);
+    this.usersService
+      .update(user.id, {
+        fullName: user.fullName,
+        role,
+      })
+      .subscribe({
+        next: (updatedUser) => {
+          this.users.update((items) =>
+            items.map((item) => (item.id === updatedUser.id ? updatedUser : item)),
+          );
+          this.snackBar.open('Роль обновлена', 'OK', { duration: 3500 });
+        },
+        error: (err) => {
+          const message = err.error?.message ?? err.message ?? 'Не удалось обновить роль';
+
+          this.snackBar.open(message, 'Закрыть', { duration: 5000 });
+        },
+        complete: () => this.updatingRoleId.set(null),
+      });
+  }
+
+  protected openDeactivateDialog(user: OrgUserResponseDto): void {
+    this.dialog
+      .open(ConfirmDialogComponent, {
+        data: {
+          title: 'Деактивировать пользователя',
+          message: `Деактивировать ${user.fullName}? Пользователь немедленно потеряет доступ к системе.`,
+          confirmLabel: 'Деактивировать',
+          cancelLabel: 'Отмена',
+          confirmColor: 'warn',
+        },
+      })
+      .afterClosed()
+      .subscribe((confirmed: boolean | undefined) => {
+        if (confirmed) {
+          this.deactivateUser(user.id);
+        }
+      });
+  }
+
+  protected reactivateUser(userId: string): void {
+    this.togglingActiveId.set(userId);
+    this.usersService.reactivate(userId).subscribe({
+      next: () => {
+        this.snackBar.open('Пользователь активирован', 'OK', { duration: 3500 });
+        this.loadUsers();
       },
       error: (err) => {
-        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to update role');
+        const message = err.error?.message ?? err.message ?? 'Не удалось активировать пользователя';
+
+        this.snackBar.open(message, 'Закрыть', { duration: 5000 });
       },
-      complete: () => this.updatingRoleId.set(null),
+      complete: () => this.togglingActiveId.set(null),
     });
   }
 
-  getRoleBadgeClass(role: string): string {
-    switch (role) {
-      case 'ADMIN':
-        return 'bg-violet-100 text-violet-800';
-      case 'MANAGER':
-        return 'bg-sky-100 text-sky-800';
-      case 'AGENT':
-        return 'bg-amber-100 text-amber-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
+  protected getInitials(fullName: string): string {
+    const words = fullName.trim().split(/\s+/).filter(Boolean);
+
+    return words
+      .slice(0, 2)
+      .map((word) => word.charAt(0))
+      .join('')
+      .toUpperCase();
+  }
+
+  protected getAvatarColor(userId: string): string {
+    const colors = ['#2b9db8', '#784d90', '#d97706', '#41636e', '#16a34a', '#73787a'];
+    const hash = userId.charCodeAt(0) % colors.length;
+
+    return colors[hash];
+  }
+
+  private deactivateUser(userId: string): void {
+    this.togglingActiveId.set(userId);
+    this.usersService.deactivate(userId).subscribe({
+      next: () => {
+        this.snackBar.open('Пользователь деактивирован', 'OK', { duration: 3500 });
+        this.loadUsers();
+      },
+      error: (err) => {
+        const message =
+          err.error?.message ?? err.message ?? 'Не удалось деактивировать пользователя';
+
+        this.snackBar.open(message, 'Закрыть', { duration: 5000 });
+      },
+      complete: () => this.togglingActiveId.set(null),
+    });
+  }
+
+  private loadUsers(): void {
+    this.loading.set(true);
+    this.error.set(null);
+
+    forkJoin([
+      this.usersService.getList({ isActive: true, limit: 200 }),
+      this.usersService.getList({ isActive: false, limit: 200 }),
+    ]).subscribe({
+      next: ([activeUsers, inactiveUsers]) => {
+        const merged = [...activeUsers.items, ...inactiveUsers.items];
+        const deduplicated = Array.from(new Map(merged.map((item) => [item.id, item])).values());
+
+        this.users.set(
+          [...deduplicated].sort(
+            (a: OrgUserResponseDto, b: OrgUserResponseDto) =>
+              new Date(a.joinedAt).getTime() - new Date(b.joinedAt).getTime(),
+          ),
+        );
+      },
+      error: (err) => {
+        const message = err.error?.message ?? err.message ?? 'Не удалось загрузить пользователей';
+
+        this.error.set(message);
+      },
+      complete: () => this.loading.set(false),
+    });
   }
 }
