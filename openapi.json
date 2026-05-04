@@ -2758,6 +2758,68 @@
         }
       }
     },
+    "/api/leads/{id}/promote-client": {
+      "post": {
+        "tags": [
+          "lead-controller"
+        ],
+        "operationId": "promoteToClient",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PromoteLeadToClientRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/PromoteLeadToClientResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/leads/{id}/convert-to-client": {
       "post": {
         "tags": [
@@ -3850,6 +3912,68 @@
               "*/*": {
                 "schema": {
                   "$ref": "#/components/schemas/MemberResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/leads/{id}/client": {
+      "patch": {
+        "tags": [
+          "lead-controller"
+        ],
+        "operationId": "linkClient",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LinkLeadClientRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeadResponse"
                 }
               }
             }
@@ -6165,6 +6289,12 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "travelRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TravelRequestResponse"
+            }
           }
         }
       },
@@ -7250,6 +7380,102 @@
           }
         }
       },
+      "PromoteLeadToClientRequest": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "INDIVIDUAL",
+              "COMPANY",
+              "B2B_AGENT",
+              "AGENT"
+            ]
+          },
+          "fullName": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 0
+          },
+          "email": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "phone": {
+            "type": "string",
+            "maxLength": 30,
+            "minLength": 0
+          },
+          "telegramHandle": {
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 0
+          },
+          "notes": {
+            "type": "string"
+          },
+          "companyName": {
+            "type": "string",
+            "maxLength": 200,
+            "minLength": 0
+          },
+          "legalAddress": {
+            "type": "string"
+          },
+          "unp": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "okpo": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "iban": {
+            "type": "string",
+            "maxLength": 34,
+            "minLength": 0
+          },
+          "bankName": {
+            "type": "string",
+            "maxLength": 120,
+            "minLength": 0
+          },
+          "bik": {
+            "type": "string",
+            "maxLength": 20,
+            "minLength": 0
+          },
+          "commissionPct": {
+            "type": "number"
+          },
+          "dataConsentGiven": {
+            "type": "boolean"
+          },
+          "dataConsentDate": {
+            "type": "string",
+            "format": "date"
+          }
+        },
+        "required": [
+          "dataConsentGiven",
+          "fullName",
+          "type"
+        ]
+      },
+      "PromoteLeadToClientResponse": {
+        "type": "object",
+        "properties": {
+          "client": {
+            "$ref": "#/components/schemas/ClientResponse"
+          },
+          "lead": {
+            "$ref": "#/components/schemas/LeadResponse"
+          }
+        }
+      },
       "CreateInvoiceRequest": {
         "type": "object",
         "properties": {
@@ -7628,6 +7854,18 @@
         },
         "required": [
           "role"
+        ]
+      },
+      "LinkLeadClientRequest": {
+        "type": "object",
+        "properties": {
+          "clientId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "clientId"
         ]
       },
       "AssignLeadRequest": {

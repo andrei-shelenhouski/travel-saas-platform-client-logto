@@ -11,7 +11,10 @@ import type {
   LeadResponseDto,
   LeadSource,
   LeadStatus,
+  LinkLeadClientDto,
   PaginatedLeadResponseDto,
+  PromoteLeadToClientDto,
+  PromoteLeadToClientResponseDto,
   UpdateLeadDto,
   UpdateLeadStatusDto,
 } from '@app/shared/models';
@@ -112,5 +115,16 @@ export class LeadsService {
 
   convertToClient(id: string): Observable<LeadResponseDto> {
     return this.http.post<LeadResponseDto>(`${LEADS_URL}/${id}/convert-to-client`, {});
+  }
+
+  linkClient(id: string, dto: LinkLeadClientDto): Observable<LeadResponseDto> {
+    return this.http.patch<LeadResponseDto>(`${LEADS_URL}/${id}/client`, dto);
+  }
+
+  promoteToClient(
+    id: string,
+    dto: PromoteLeadToClientDto,
+  ): Observable<PromoteLeadToClientResponseDto> {
+    return this.http.post<PromoteLeadToClientResponseDto>(`${LEADS_URL}/${id}/promote-client`, dto);
   }
 }

@@ -286,6 +286,7 @@ export type LeadResponseDto = {
   convertedToClientId: string | null;
   createdAt: string;
   updatedAt: string;
+  travelRequests?: RequestResponseDto[];
 };
 
 export type PaginatedLeadResponseDto = PaginatedDto<LeadResponseDto>;
@@ -306,6 +307,20 @@ export type UpdateLeadDto = {
 export type UpdateLeadStatusDto = {
   status: LeadStatus;
   reason?: string;
+};
+
+/** OpenAPI: LinkLeadClientRequest. PATCH /api/leads/{id}/client body. */
+export type LinkLeadClientDto = {
+  clientId: string;
+};
+
+/** OpenAPI: PromoteLeadToClientRequest. POST /api/leads/{id}/promote-client body. */
+export type PromoteLeadToClientDto = CreateClientDto;
+
+/** OpenAPI: PromoteLeadToClientResponse. */
+export type PromoteLeadToClientResponseDto = {
+  client: ClientResponseDto;
+  lead: LeadResponseDto;
 };
 
 /** OpenAPI: AssignLeadRequest. PATCH /api/leads/{id}/assign body. */
@@ -790,6 +805,7 @@ export type CreateClientDto = {
   bik?: string;
   commissionPct?: number;
   dataConsentGiven: boolean;
+  dataConsentDate?: string;
 };
 
 /** OpenAPI: ClientResponse. */

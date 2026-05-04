@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -25,6 +26,8 @@ import { catchError, finalize, map } from 'rxjs/operators';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
 import { AssignDialogComponent } from '@app/features/leads/assign-dialog/assign-dialog';
+import { LinkLeadClientDialogComponent } from '@app/features/leads/link-lead-client-dialog/link-lead-client-dialog';
+import { PromoteLeadClientDialogComponent } from '@app/features/leads/promote-lead-client-dialog/promote-lead-client-dialog';
 import { ActivitiesService } from '@app/services/activities.service';
 import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
@@ -34,7 +37,7 @@ import { RequestsService } from '@app/services/requests.service';
 import { RoleService } from '@app/services/role.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
-import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { EntityType, LeadStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
@@ -97,6 +100,7 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     MatIconModule,
     ...MAT_BUTTONS,
     ...MAT_FORM_BUTTONS,
+    ...MAT_MENU,
     StatusBadgeComponent,
     ClientTypeBadgeComponent,
     PageHeading,
@@ -178,6 +182,16 @@ export class LeadDetailComponent {
 
   protected readonly canReassign = computed(() => {
     return this.roleService.isAdmin() || this.roleService.isManager();
+  });
+
+  protected readonly canManageLeadClient = computed(() => {
+    const lead = this.lead();
+
+    if (!lead) {
+      return false;
+    }
+
+    return !this.isTerminalStatus(lead.status);
   });
 
   protected readonly visibleActions = computed<LeadAction[]>(() => {
@@ -448,6 +462,58 @@ export class LeadDetailComponent {
       complete: () => {
         this.assignLoading.set(false);
       },
+    });
+  }
+
+  protected openLinkClientDialog(): void {
+    const lead = this.lead();
+
+    if (!lead || this.isTerminalStatus(lead.status)) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open(LinkLeadClientDialogComponent, {
+      width: '640px',
+      data: {
+        leadId: lead.id,
+        initialClientId: lead.clientId,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((updatedLead: LeadResponseDto | undefined) => {
+      if (!updatedLead) {
+        return;
+      }
+
+      this.travelDetailsData.set(updatedLead);
+      this.patchTravelForm(updatedLead);
+      this.toast.showSuccess('Client was linked to lead');
+    });
+  }
+
+  protected openPromoteClientDialog(): void {
+    const lead = this.lead();
+
+    if (!lead || this.isTerminalStatus(lead.status)) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open(PromoteLeadClientDialogComponent, {
+      width: '860px',
+      maxWidth: '96vw',
+      data: {
+        lead,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((updatedLead: LeadResponseDto | undefined) => {
+      if (!updatedLead) {
+        return;
+      }
+
+      this.travelDetailsData.set(updatedLead);
+      this.patchTravelForm(updatedLead);
+      this.toast.showSuccess('Lead was saved as a new client');
     });
   }
 

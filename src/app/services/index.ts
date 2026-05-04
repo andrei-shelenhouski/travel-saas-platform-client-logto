@@ -17,3 +17,5 @@ export * from './activities.service';
 export * from './comments.service';
 export * from './tags.service';
 export * from './users.service';
+export * from './organization-api-keys.service';
+export * from './webhook-subscriptions.service';
