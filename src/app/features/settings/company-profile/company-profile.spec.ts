@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
 
 import { of, throwError } from 'rxjs';
 
@@ -55,6 +56,7 @@ describe('CompanyProfileComponent', () => {
       imports: [CompanyProfileComponent, ReactiveFormsModule],
       providers: [
         provideNoopAnimations(),
+        provideRouter([]),
         { provide: OrganizationSettingsService, useValue: settingsService },
         { provide: MatSnackBar, useValue: snackBar },
       ],
@@ -84,7 +86,6 @@ describe('CompanyProfileComponent', () => {
 
     const newFixture = TestBed.createComponent(CompanyProfileComponent);
     const newComponent = newFixture.componentInstance;
-    const snackBarSpy = vi.spyOn(newComponent['snackBar'], 'open');
 
     // Trigger component initialization
     newFixture.detectChanges();

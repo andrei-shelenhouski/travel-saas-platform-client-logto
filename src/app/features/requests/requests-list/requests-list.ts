@@ -1,18 +1,18 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
-
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { Router, RouterLink } from '@angular/router';
 
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
-import type { RequestResponseDto } from '@app/shared/models';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { MAT_BUTTONS } from '@app/shared/material-imports';
 
+import type { RequestResponseDto } from '@app/shared/models';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-requests-list',
-  imports: [RouterLink, ...MAT_BUTTONS],
+  imports: [RouterLink, ...MAT_BUTTONS, PageHeading],
   templateUrl: './requests-list.html',
   styleUrl: './requests-list.scss',
 })
@@ -39,6 +39,7 @@ export class RequestsListComponent {
     return list.filter((r) => r.managerId === uid);
   });
   readonly loading = computed(() => this.data.isLoading());
+  readonly totalElements = computed(() => this.data.value()?.total ?? 0);
   readonly error = computed(() => {
     const err = this.data.error();
 

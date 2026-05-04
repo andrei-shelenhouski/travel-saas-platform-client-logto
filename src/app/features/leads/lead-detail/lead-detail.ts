@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -7,8 +6,6 @@ import {
   effect,
   inject,
   signal,
-  TemplateRef,
-  viewChild,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -27,6 +24,7 @@ import { EMPTY, forkJoin, of } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
+import { AssignDialogComponent } from '@app/features/leads/assign-dialog/assign-dialog';
 import { ActivitiesService } from '@app/services/activities.service';
 import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
@@ -120,8 +118,6 @@ export class LeadDetailComponent {
   private readonly toast = inject(ToastService);
 
   protected readonly permissions = inject(PermissionService);
-
-  protected readonly assignDialogTemplate = viewChild<TemplateRef<unknown>>('assignDialogTemplate');
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
   private readonly travelDetailsData = signal<LeadResponseDto | null>(null);
@@ -268,8 +264,6 @@ export class LeadDetailComponent {
   protected readonly savingRequest = signal(false);
   protected readonly editingRequestId = signal<string | null>(null);
   protected readonly updatingRequest = signal(false);
-  protected readonly selectedAgentId = signal('');
-  protected readonly assignSearch = signal('');
 
   protected readonly travelForm = this.formBuilder.group({
     destination: this.formBuilder.control<string>(''),
@@ -324,21 +318,7 @@ export class LeadDetailComponent {
     },
   );
 
-  protected readonly filteredAgents = computed(() => {
-    const query = this.assignSearch().trim().toLowerCase();
-    const items = this.membersData.value() ?? [];
-
-    if (!query) {
-      return items;
-    }
-
-    return items.filter((item) => {
-      const inName = item.name.toLowerCase().includes(query);
-      const inEmail = item.email.toLowerCase().includes(query);
-
-      return inName || inEmail;
-    });
-  });
+  protected readonly filteredAgents = computed(() => this.membersData.value() ?? []);
 
   constructor() {
     effect(() => {
@@ -429,24 +409,28 @@ export class LeadDetailComponent {
 
   protected openAssignDialog(): void {
     const lead = this.lead();
-    const template = this.assignDialogTemplate();
 
-    if (!lead || !template || this.assignLoading()) {
+    if (!lead || this.assignLoading()) {
       return;
     }
 
-    this.selectedAgentId.set(lead.assignedAgentId ?? '');
-    this.assignSearch.set('');
-    this.dialog.open(template, { width: '480px' });
+    const dialogRef = this.dialog.open(AssignDialogComponent, {
+      width: '480px',
+      data: {
+        agents: this.filteredAgents(),
+        initialSelectedAgentId: lead.assignedAgentId ?? null,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((agentId: string | undefined) => {
+      if (agentId) {
+        this.confirmAssign(agentId);
+      }
+    });
   }
 
-  protected closeAssignDialog(): void {
-    this.dialog.closeAll();
-  }
-
-  protected confirmAssign(): void {
+  protected confirmAssign(agentId: string): void {
     const lead = this.lead();
-    const agentId = this.selectedAgentId();
 
     if (!lead || !agentId || this.assignLoading()) {
       return;
@@ -457,7 +441,6 @@ export class LeadDetailComponent {
       next: (updated) => {
         this.travelDetailsData.set(updated);
         this.toast.showSuccess('Lead was reassigned');
-        this.closeAssignDialog();
       },
       error: (err: unknown) => {
         this.toast.showError(this.getErrorMessage(err, 'Failed to assign lead'));
@@ -466,18 +449,6 @@ export class LeadDetailComponent {
         this.assignLoading.set(false);
       },
     });
-  }
-
-  protected isSelectedAgent(agentId: string): boolean {
-    return this.selectedAgentId() === agentId;
-  }
-
-  protected selectAgent(agentId: string): void {
-    this.selectedAgentId.set(agentId);
-  }
-
-  protected updateAssignSearch(value: string): void {
-    this.assignSearch.set(value);
   }
 
   protected startEditTravelDetails(): void {

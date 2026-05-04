@@ -253,6 +253,14 @@ export const routes: Routes = [
         canDeactivate: [pendingChangesGuard],
       },
       {
+        path: 'settings/users',
+        loadComponent: () =>
+          import('@app/features/admin/users-management/users-management').then(
+            (m) => m.UsersManagementComponent,
+          ),
+        canActivate: [adminGuard],
+      },
+      {
         path: 'organizations/new',
         loadComponent: () =>
           import('@app/features/onboarding/create-organization/create-organization').then(
@@ -262,11 +270,7 @@ export const routes: Routes = [
       },
       {
         path: 'admin/users',
-        loadComponent: () =>
-          import('@app/features/admin/users-management/users-management').then(
-            (m) => m.UsersManagementComponent,
-          ),
-        canActivate: [adminGuard],
+        redirectTo: 'settings/users',
       },
     ],
   },

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 
 import { PageHeading } from './page-heading';
 
@@ -24,6 +25,7 @@ describe('PageHeading', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [PageHeading],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PageHeading);
@@ -63,6 +65,7 @@ describe('PageHeading', () => {
     await TestBed.resetTestingModule();
     await TestBed.configureTestingModule({
       imports: [TestHostComponent],
+      providers: [provideRouter([])],
     }).compileComponents();
 
     const hostFixture = TestBed.createComponent(TestHostComponent);

@@ -39,7 +39,7 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
   { path: '/app/bookings', icon: 'flight', label: $localize`:@@bookings:Bookings` },
   { path: '/app/invoices', icon: 'description', label: $localize`:@@invoices:Invoices` },
   {
-    path: '/app/admin/users',
+    path: '/app/settings/users',
     icon: 'manage_accounts',
     label: $localize`:@@userManagement:User management`,
     adminOnly: true,

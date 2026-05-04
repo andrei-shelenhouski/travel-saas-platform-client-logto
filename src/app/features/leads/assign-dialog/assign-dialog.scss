@@ -1,0 +1,42 @@
+.assign-agent-list {
+  max-height: 14rem;
+  overflow: auto;
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.assign-agent-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.6rem;
+  background: #ffffff;
+  text-align: left;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.assign-agent-item-active {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.assign-agent-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.agent-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #e5e7eb;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+}

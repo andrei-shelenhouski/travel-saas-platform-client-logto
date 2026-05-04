@@ -1,4 +1,8 @@
-<app-page-heading title="Clients" i18n-title="@@clientsListTitle">
+<app-page-heading
+  subtitle="Total: {{ totalElements() }} clients"
+  title="Clients"
+  i18n-title="@@clientsListTitle"
+>
   <button color="primary" mat-flat-button type="button" (click)="navigateToCreateClient()">
     <mat-icon>add</mat-icon>
     <span i18n="@@clientsListNewClientCta">New Client</span>

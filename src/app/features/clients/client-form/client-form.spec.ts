@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { provideRouter } from '@angular/router';
 
 import { ClientType } from '@app/shared/models';
 
@@ -41,7 +42,7 @@ describe('ClientFormComponent', () => {
   async function createComponent(): Promise<void> {
     TestBed.configureTestingModule({
       imports: [ClientFormComponent],
-      providers: [provideNoopAnimations()],
+      providers: [provideNoopAnimations(), provideRouter([])],
     });
 
     fixture = TestBed.createComponent(ClientFormComponent);

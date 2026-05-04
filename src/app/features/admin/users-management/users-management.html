@@ -1,161 +1,127 @@
-<div class="p-4">
-  <header class="flex flex-wrap items-center justify-between gap-4 border-b border-gray-200 pb-4">
+<div class="users-page p-4">
+  <header class="users-page__header">
     <div>
-      <h1 class="text-xl font-semibold text-gray-900" i18n="@@userManagement">User management</h1>
-      <p class="mt-1 text-sm text-gray-500" i18n="@@userManagementDescription">
-        Manage organization members and roles.
+      <h1 class="users-page__title" i18n="@@userManagement">User management</h1>
+      <p class="users-page__description" i18n="@@userManagementDescription">
+        Manage organization members and their access rights.
       </p>
     </div>
-    <div class="flex items-center gap-2">
-      <button color="primary" mat-flat-button type="button" (click)="toggleAddForm()">
-        {{ addFormVisible() ? 'Cancel' : 'Add member' }}
+    <div class="users-page__actions">
+      <button
+        color="primary"
+        i18n="@@usersInviteButton"
+        mat-flat-button
+        type="button"
+        (click)="openInviteDialog()"
+      >
+        + Invite user
       </button>
-      <a i18n="@@backToDashboard" mat-stroked-button routerLink="/app/dashboard"
+      <a i18n="@@usersBackToDashboard" mat-stroked-button routerLink="/app/dashboard"
         >Back to dashboard</a
       >
     </div>
   </header>
 
-  @if (addFormVisible()) {
-    <div class="rounded-lg border border-gray-200 bg-gray-50 p-4">
-      <h2 class="text-sm font-medium text-gray-700 mb-3" i18n="@@inviteByEmail">Invite by email</h2>
-      <p class="text-xs text-gray-500 mb-3" i18n="@@inviteByEmailDescription">
-        The user must already have an account. Enter their email and choose a role.
-      </p>
-      <form
-        class="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end"
-        [formGroup]="addMemberForm"
-        (ngSubmit)="onAddMember()"
-      >
-        <mat-form-field appearance="outline" class="min-w-55 flex-1" subscriptSizing="dynamic">
-          <mat-label i18n="@@email">Email</mat-label>
-          <input
-            formControlName="email"
-            id="add-member-email"
-            matInput
-            placeholder="colleague@example.com"
-            type="email"
-          />
-          @if (
-            addMemberForm.controls.email.hasError('required') &&
-            addMemberForm.controls.email.touched
-          ) {
-            <mat-error>Required</mat-error>
-          }
-          @if (
-            addMemberForm.controls.email.hasError('email') && addMemberForm.controls.email.touched
-          ) {
-            <mat-error>Invalid email</mat-error>
-          }
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="min-w-36" subscriptSizing="dynamic">
-          <mat-label i18n="@@role">Role</mat-label>
-          <mat-select formControlName="role" id="add-member-role">
-            @for (opt of roleOptions; track opt.value) {
-              <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-        <button
-          color="primary"
-          mat-flat-button
-          type="submit"
-          [disabled]="addingMember() || addMemberForm.invalid"
-        >
-          {{ addingMember() ? 'Adding…' : 'Add member' }}
-        </button>
-      </form>
-    </div>
-  }
-
   @if (error()) {
-    <p class="text-sm text-red-600">{{ error() }}</p>
+    <div class="users-page__error">{{ error() }}</div>
   }
 
-  <div class="rounded-lg border border-gray-200 bg-white overflow-hidden">
+  <section class="users-table">
     @if (loading()) {
-      <div class="flex justify-center py-12">
-        <div
-          aria-hidden="true"
-          class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-        ></div>
+      <div class="users-table__loading">
+        <div aria-hidden="true" class="users-table__spinner"></div>
       </div>
     } @else {
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+      <table class="users-table__table">
+        <thead>
           <tr>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-              <span i18n="@@name">Name</span>
-            </th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-              <span i18n="@@email">Email</span>
-            </th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-              <span i18n="@@role">Role</span>
-            </th>
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-              <span i18n="@@status">Status</span>
-            </th>
-
-            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-              <span i18n="@@actions">Actions</span>
-            </th>
+            <th i18n="@@usersColumnUser">User</th>
+            <th i18n="@@usersColumnEmail">Email</th>
+            <th i18n="@@usersColumnRole">Role</th>
+            <th i18n="@@usersColumnStatus">Status</th>
+            <th i18n="@@usersColumnJoined">Joined</th>
+            <th class="users-table__actions-column" i18n="@@usersColumnActions">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200">
-          @if (members().length === 0) {
+
+        <tbody>
+          @if (users().length === 0) {
             <tr>
-              <td class="px-4 py-12 text-center text-gray-500" colspan="6">
-                <span i18n="@@noMembersFound">No members found.</span>
+              <td colspan="6">
+                <div class="users-table__empty" i18n="@@usersEmptyState">
+                  No users yet. Invite the first member.
+                </div>
               </td>
             </tr>
           } @else {
-            @for (member of members(); track member.id) {
-              <tr class="hover:bg-gray-50/50">
-                <td class="px-4 py-3 text-sm font-medium text-gray-900">
-                  {{ member.name || '—' }}
-                  @if (isCurrentUser(member)) {
-                    <span class="ml-1 text-xs text-gray-500" i18n="@@you">(you)</span>
-                  }
-                </td>
-                <td class="px-4 py-3 text-sm text-gray-600">{{ member.email || '—' }}</td>
-                <td class="px-4 py-3">
-                  @if (canChangeRole(member)) {
-                    <mat-form-field appearance="outline" class="w-44" subscriptSizing="dynamic">
-                      <mat-select
-                        [disabled]="updatingRoleId() === member.id"
-                        [value]="member.role"
-                        (selectionChange)="onRoleChange(member, $event.value)"
-                      >
-                        @for (opt of roleOptions; track opt.value) {
-                          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
-                        }
-                      </mat-select>
-                    </mat-form-field>
-                  } @else {
+            @for (user of users(); track user.id) {
+              <tr>
+                <td>
+                  <div class="users-table__identity">
                     <span
-                      class="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
-                      [class]="getRoleBadgeClass(member.role)"
+                      aria-hidden="true"
+                      class="users-table__avatar"
+                      [style.background-color]="getAvatarColor(user.id)"
                     >
-                      {{ member.role }}
+                      {{ getInitials(user.fullName) }}
                     </span>
-                  }
+                    <div>
+                      <div class="users-table__name">{{ user.fullName }}</div>
+                      @if (isCurrentUser(user)) {
+                        <div class="users-table__current-user" i18n="@@usersCurrentUser">
+                          Current user
+                        </div>
+                      }
+                    </div>
+                  </div>
                 </td>
-                <td class="px-4 py-3">
-                  <span
-                    class="inline-block rounded-full px-2.5 py-0.5 text-xs font-medium"
-                    [class]="
-                      member.active ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-                    "
+
+                <td>
+                  <span class="users-table__email" [title]="user.email">{{ user.email }}</span>
+                </td>
+
+                <td>
+                  <mat-form-field
+                    appearance="outline"
+                    class="users-table__role-select"
+                    subscriptSizing="dynamic"
                   >
-                    {{ member.active ? 'Active' : 'Inactive' }}
+                    <mat-select
+                      [disabled]="!canChangeRole(user) || updatingRoleId() === user.id"
+                      [value]="user.role"
+                      (selectionChange)="onRoleChange(user, $event.value)"
+                    >
+                      @for (option of roleOptions; track option.value) {
+                        <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+
+                <td>
+                  <span
+                    class="users-table__status"
+                    [class.users-table__status--active]="user.isActive"
+                    [class.users-table__status--inactive]="!user.isActive"
+                  >
+                    {{ getStatusLabel(user.isActive) }}
                   </span>
                 </td>
 
-                <td class="px-4 py-3">
-                  @if (updatingRoleId() === member.id) {
-                    <span class="text-xs text-gray-500" i18n="@@updating">Updating…</span>
-                  }
+                <td>{{ user.joinedAt | date: 'dd.MM.yyyy' }}</td>
+
+                <td class="users-table__actions-column">
+                  <button
+                    aria-label="Open actions menu"
+                    i18n-aria-label="@@usersActionsMenuAria"
+                    mat-icon-button
+                    type="button"
+                    [disabled]="togglingActiveId() === user.id"
+                    [matMenuTriggerData]="{ user: user }"
+                    [matMenuTriggerFor]="actionsMenu"
+                  >
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
                 </td>
               </tr>
             }
@@ -163,5 +129,31 @@
         </tbody>
       </table>
     }
-  </div>
+  </section>
+
+  <mat-menu #actionsMenu="matMenu">
+    <ng-template let-user="user" matMenuContent>
+      @if (user.isActive) {
+        @if (!isCurrentUser(user)) {
+          <button
+            i18n="@@usersDeactivateActionMenu"
+            mat-menu-item
+            type="button"
+            (click)="openDeactivateDialog(user)"
+          >
+            Deactivate
+          </button>
+        }
+      } @else {
+        <button
+          i18n="@@usersReactivateActionMenu"
+          mat-menu-item
+          type="button"
+          (click)="reactivateUser(user.id)"
+        >
+          Activate
+        </button>
+      }
+    </ng-template>
+  </mat-menu>
 </div>
