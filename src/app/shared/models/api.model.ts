@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 /**
  * API types aligned with OpenAPI spec.
  * Source of truth: project root openapi.json.
@@ -984,4 +983,43 @@ export type PaginatedTagResponseDto = PaginatedDto<TagResponseDto>;
 export type AttachTagDto = {
   entityType: EntityType;
   entityId: string;
+};
+
+// ----- Webhooks -----
+
+export type CreateWebhookRequest = {
+  url: string;
+  events: string[];
+};
+
+export type WebhookSubscription = {
+  id: string;
+  organizationId: string;
+  url: string;
+  signingSecret: string;
+  events: string[];
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  active: boolean;
+};
+
+// ----- API Keys -----
+
+export type CreateApiKeyRequest = {
+  name: string;
+  scopes: string[];
+};
+
+export type OrganizationApiKey = {
+  id: string;
+  organizationId: string;
+  name: string;
+  keyPrefix: string;
+  keyHash: string;
+  scopes: string[];
+  createdAt: string;
+  lastUsedAt: string | null;
+  revokedAt: string | null;
+  createdBy: string;
 };
