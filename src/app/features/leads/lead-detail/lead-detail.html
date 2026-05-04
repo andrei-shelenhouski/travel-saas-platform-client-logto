@@ -117,8 +117,8 @@
               <div class="client-placeholder-card">
                 <p class="client-placeholder-title">No linked client</p>
                 <p class="client-placeholder-text">
-                  This lead is not linked to a client yet. Link an existing client or save this lead as
-                  a new client profile.
+                  This lead is not linked to a client yet. Link an existing client or save this lead
+                  as a new client profile.
                 </p>
 
                 <dl class="lead-data-list">
@@ -151,7 +151,12 @@
                     <button mat-stroked-button type="button" (click)="openLinkClientDialog()">
                       Link existing client
                     </button>
-                    <button color="primary" mat-flat-button type="button" (click)="openPromoteClientDialog()">
+                    <button
+                      color="primary"
+                      mat-flat-button
+                      type="button"
+                      (click)="openPromoteClientDialog()"
+                    >
                       Save as new client
                     </button>
                   </div>
