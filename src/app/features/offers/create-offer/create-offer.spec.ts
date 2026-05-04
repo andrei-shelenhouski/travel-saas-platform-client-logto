@@ -91,7 +91,9 @@ describe('CreateOfferComponent', () => {
     await setup('request-missing');
 
     expect(fixture.componentInstance.requestLoading()).toBe(false);
-    expect(fixture.componentInstance.requestPrefillWarning()).toContain('Trip request was not found');
+    expect(fixture.componentInstance.requestPrefillWarning()).toContain(
+      'Trip request was not found',
+    );
     expect(fixture.componentInstance.error()).toBe('');
 
     const text = fixture.nativeElement.textContent as string;
