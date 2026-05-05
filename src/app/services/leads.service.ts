@@ -130,11 +130,18 @@ export class LeadsService {
   }
 
   /** GET /api/leads/{id}/activity. Returns paginated activity history for this lead. */
-  getActivity(id: string, params?: { page?: number }): Observable<ActivityListResponseDto> {
+  getActivity(
+    id: string,
+    params?: { page?: number; limit?: number },
+  ): Observable<ActivityListResponseDto> {
     let httpParams = new HttpParams();
 
     if (params?.page !== undefined) {
       httpParams = httpParams.set('page', params.page);
+    }
+
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
     }
 
     return this.http.get<ActivityListResponseDto>(`${LEADS_URL}/${id}/activity`, {

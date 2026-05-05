@@ -1,6 +1,13 @@
 /* eslint-disable max-lines */
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import {
   AbstractControl,
@@ -141,6 +148,7 @@ export class LeadDetailComponent {
           .pipe(map((res) => res.items)),
         activities: this.leadsService.getActivity(id, {
           page: 1,
+          limit: ACTIVITY_PAGE_SIZE,
         }),
       });
     },
@@ -860,6 +868,7 @@ export class LeadDetailComponent {
     this.leadsService
       .getActivity(lead.id, {
         page: nextPage,
+        limit: ACTIVITY_PAGE_SIZE,
       })
       .pipe(
         catchError((err) => {

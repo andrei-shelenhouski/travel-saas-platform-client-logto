@@ -5,7 +5,7 @@
 
 ## Overview
 
-Comprehensive review and update of API clients and TypeScript types to ensure alignment with the latest OpenAPI specification (`openapi.json`).
+Comprehensive review and update of API clients and TypeScript types to ensure alignment with the latest OpenAPI specification (`openapi.json`), plus fixes for B2B_AGENT invoice creation reactivity and pagination consistency in lead activity loading.
 
 ## Changes Made
 
@@ -24,6 +24,15 @@ Comprehensive review and update of API clients and TypeScript types to ensure al
 
 - **Added:** `organization-members.service` export
 - **Reason:** This service was implemented but missing from the public API surface
+
+### 3. **Type Alignment**
+
+#### Updated `InvoiceResponseDto`
+
+- **Added field:** `clientName?: string`
+- **Location:** `src/app/shared/models/api.model.ts`
+- **Reason:** OpenAPI `InvoiceResponse` schema includes `clientName` field that was missing from the frontend DTO
+- **UI impact:** Updated `invoices-list.html` to use `clientName` with fallback to `clientSnapshot` for backward compatibility
 
 ## Verification
 
@@ -71,13 +80,25 @@ All OpenAPI endpoints are implemented in corresponding Angular services:
 
 1. [`src/app/services/leads.service.ts`](src/app/services/leads.service.ts)
    - Added `ActivityListResponseDto` import
-   - Added `getActivity()` method
+   - Added `getActivity()` method with pagination support (`page` and `limit` parameters)
 
 2. [`src/app/services/leads.service.spec.ts`](src/app/services/leads.service.spec.ts)
    - Added test for `getActivity()` method
 
 3. [`src/app/services/index.ts`](src/app/services/index.ts)
    - Added export for `organization-members.service`
+
+4. [`src/app/shared/models/api.model.ts`](src/app/shared/models/api.model.ts)
+   - Added `clientName?: string` field to `InvoiceResponseDto` type
+
+5. [`src/app/features/invoices/invoices-list/invoices-list.html`](src/app/features/invoices/invoices-list/invoices-list.html)
+   - Updated client column to display `clientName` with fallback to `clientSnapshot`
+
+6. [`src/app/features/leads/lead-detail/lead-detail.ts`](src/app/features/leads/lead-detail/lead-detail.ts)
+   - Updated `getActivity()` calls to pass both `page` and `limit` parameters for consistent pagination
+
+7. [`src/app/features/invoices/create-invoice/create-invoice.ts`](src/app/features/invoices/create-invoice/create-invoice.ts)
+   - Fixed `applyDefaultCommissionPctToRows()` to only apply default when `commissionPct` is `null` (not when it's `0`, which is a valid B2B_AGENT commission rate)
 
 ## Alignment Status
 
@@ -92,7 +113,7 @@ All OpenAPI endpoints are implemented in corresponding Angular services:
 ### No Outstanding Issues
 
 - No missing endpoints
-- No type mismatches
+- No type mismatches (all OpenAPI schemas now aligned with TypeScript DTOs)
 - No missing required fields
 - No deprecated methods
 
