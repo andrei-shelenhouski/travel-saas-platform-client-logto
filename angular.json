@@ -74,6 +74,20 @@
                   "with": "src/environments/environment.development.ts"
                 }
               ]
+            },
+            "ru-BY": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "localize": [
+                "ru-BY"
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.development.ts"
+                }
+              ]
             }
           },
           "defaultConfiguration": "production"
@@ -86,6 +100,9 @@
             },
             "development": {
               "buildTarget": "tsp-client-app:build:development"
+            },
+            "ru-BY": {
+              "buildTarget": "tsp-client-app:build:ru-BY"
             }
           },
           "defaultConfiguration": "development"

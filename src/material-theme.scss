@@ -62,6 +62,12 @@ html {
 
   .table-header-row {
     background-color: var(--mat-sys-surface-container);
+
+    > .mat-mdc-header-cell {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 
   .table-row {
