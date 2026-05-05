@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 
 import type {
+  ActivityListResponseDto,
   AssignLeadDto,
   CreateLeadDto,
   LeadResponseDto,
@@ -126,5 +127,25 @@ export class LeadsService {
     dto: PromoteLeadToClientDto,
   ): Observable<PromoteLeadToClientResponseDto> {
     return this.http.post<PromoteLeadToClientResponseDto>(`${LEADS_URL}/${id}/promote-client`, dto);
+  }
+
+  /** GET /api/leads/{id}/activity. Returns paginated activity history for this lead. */
+  getActivity(
+    id: string,
+    params?: { page?: number; limit?: number },
+  ): Observable<ActivityListResponseDto> {
+    let httpParams = new HttpParams();
+
+    if (params?.page !== undefined) {
+      httpParams = httpParams.set('page', params.page);
+    }
+
+    if (params?.limit !== undefined) {
+      httpParams = httpParams.set('limit', params.limit);
+    }
+
+    return this.http.get<ActivityListResponseDto>(`${LEADS_URL}/${id}/activity`, {
+      params: httpParams,
+    });
   }
 }

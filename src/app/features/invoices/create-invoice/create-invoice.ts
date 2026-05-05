@@ -156,9 +156,11 @@ export class CreateInvoiceComponent {
   protected readonly clientOptions = computed(() => this.clientsResource.value()?.items ?? []);
   protected readonly clientOptionsLoading = computed(() => this.clientsResource.isLoading());
 
-  protected readonly isB2bMode = computed(
-    () => this.form.controls.clientType.value === ClientType.B2B_AGENT,
+  protected readonly clientTypeSignal = toSignal(
+    this.form.controls.clientType.valueChanges.pipe(startWith(this.form.controls.clientType.value)),
+    { initialValue: this.form.controls.clientType.value },
   );
+  protected readonly isB2bMode = computed(() => this.clientTypeSignal() === ClientType.B2B_AGENT);
   protected readonly currencyOptions = CURRENCY_OPTIONS;
   protected readonly languageOptions = LANGUAGE_OPTIONS;
 
@@ -289,8 +291,11 @@ export class CreateInvoiceComponent {
   }
 
   protected addLineItem(): void {
-    this.lineItemsArray.push(this.createLineItemGroup(this.lineItemsArray.length));
+    const newIndex = this.lineItemsArray.length;
+
+    this.lineItemsArray.push(this.createLineItemGroup(newIndex));
     this.syncLineItemSortOrder();
+    this.recalculateRow(newIndex);
     this.form.markAsDirty();
   }
 
@@ -582,9 +587,13 @@ export class CreateInvoiceComponent {
       return;
     }
 
-    for (const row of this.lineItemsArray.controls) {
-      if (row.controls.commissionPct.value === null) {
+    for (let index = 0; index < this.lineItemsArray.length; index++) {
+      const row = this.lineItemsArray.at(index);
+      const currentPct = row.controls.commissionPct.value;
+
+      if (currentPct === null || currentPct === 0) {
         row.controls.commissionPct.setValue(defaultPct);
+        this.recalculateRow(index);
       }
     }
   }
