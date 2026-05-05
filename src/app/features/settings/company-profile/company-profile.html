@@ -9,7 +9,7 @@
   } @else {
     <form [formGroup]="form" (ngSubmit)="save()">
       <!-- Section 1: Основная информация -->
-      <mat-card class="section-card">
+      <mat-card appearance="outlined" class="section-card">
         <mat-card-header>
           <mat-card-title>Основная информация</mat-card-title>
         </mat-card-header>
@@ -75,7 +75,7 @@
       </mat-card>
 
       <!-- Section 2: Банковские реквизиты -->
-      <mat-card class="section-card">
+      <mat-card appearance="outlined" class="section-card">
         <mat-card-header>
           <mat-card-title>Банковские реквизиты</mat-card-title>
           <mat-card-subtitle>Отображаются в PDF-счетах как "Исполнитель"</mat-card-subtitle>
@@ -101,7 +101,7 @@
       </mat-card>
 
       <!-- Section 3: Реквизиты для документов -->
-      <mat-card class="section-card">
+      <mat-card appearance="outlined" class="section-card">
         <mat-card-header>
           <mat-card-title>Реквизиты для документов</mat-card-title>
           <mat-card-subtitle>Подпись на PDF-счетах и договорах</mat-card-subtitle>
@@ -129,7 +129,7 @@
       </mat-card>
 
       <!-- Section 4: Настройки по умолчанию -->
-      <mat-card class="section-card">
+      <mat-card appearance="outlined" class="section-card">
         <mat-card-header>
           <mat-card-title>Настройки по умолчанию</mat-card-title>
         </mat-card-header>
@@ -220,7 +220,7 @@
       </mat-card>
 
       <!-- Section 5: Логотип -->
-      <mat-card class="section-card">
+      <mat-card appearance="outlined" class="section-card">
         <mat-card-header>
           <mat-card-title>Логотип</mat-card-title>
           <mat-card-subtitle>Отображается на PDF-документах</mat-card-subtitle>

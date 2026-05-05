@@ -1,3 +1,0 @@
-/**
- * Bookings feature.
- */
