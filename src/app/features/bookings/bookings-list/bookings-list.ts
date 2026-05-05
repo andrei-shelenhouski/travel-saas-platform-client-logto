@@ -1,13 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
@@ -191,7 +183,7 @@ export class BookingsListComponent {
 
     if (snapshot && typeof snapshot === 'object') {
       const map = snapshot as Record<string, unknown>;
-      const candidates = [map['fullName'], map['companyName'], map['name'], map['clientName']];
+      const candidates = [map['companyName'], map['fullName'], map['name'], map['clientName']];
 
       for (const candidate of candidates) {
         if (typeof candidate === 'string' && candidate.trim().length > 0) {

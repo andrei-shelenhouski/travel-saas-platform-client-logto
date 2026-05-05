@@ -6410,6 +6410,9 @@
             "type": "string",
             "format": "uuid"
           },
+          "clientName": {
+            "type": "string"
+          },
           "clientType": {
             "type": "string",
             "enum": [

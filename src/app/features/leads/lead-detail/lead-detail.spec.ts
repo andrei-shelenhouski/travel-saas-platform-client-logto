@@ -4,7 +4,6 @@ import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angul
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
-import { ActivitiesService } from '@app/services/activities.service';
 import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
@@ -29,6 +28,7 @@ describe('LeadDetailComponent', () => {
       of(createLead({ assignedAgentId: 'agent-1', assignedAgentName: 'Agent One' })),
     ),
     update: vi.fn(() => of(createLead())),
+    getActivity: vi.fn(() => of(createActivityResponse())),
   };
 
   const requestsServiceMock = {
@@ -56,10 +56,6 @@ describe('LeadDetailComponent', () => {
         {
           provide: OffersService,
           useValue: { getList: () => of({ items: [], total: 0, page: 1, limit: 100 }) },
-        },
-        {
-          provide: ActivitiesService,
-          useValue: { findByEntity: () => of(createActivityResponse()) },
         },
         {
           provide: OrganizationMembersService,

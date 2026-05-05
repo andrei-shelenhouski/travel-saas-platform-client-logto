@@ -44,4 +44,16 @@ describe('LeadsService', () => {
 
     expect(options.params.getAll('status')).toEqual(['NEW', 'ASSIGNED']);
   });
+
+  it('calls GET /api/leads/{id}/activity with page param', () => {
+    const leadId = 'lead-123';
+    const page = 2;
+
+    service.getActivity(leadId, { page }).subscribe();
+
+    const [url, options] = httpClient.get.mock.calls[0] as [string, { params: HttpParams }];
+
+    expect(url).toContain(`/api/leads/${leadId}/activity`);
+    expect(options.params.get('page')).toBe(String(page));
+  });
 });

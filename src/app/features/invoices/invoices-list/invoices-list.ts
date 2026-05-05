@@ -1,13 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  DestroyRef,
-  effect,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatIcon } from '@angular/material/icon';
@@ -230,20 +222,6 @@ export class InvoicesListComponent {
     const total = invoice.total ?? 0;
 
     return `${this.formatAmount(paid, invoice.currency)} / ${this.formatAmount(total, invoice.currency)}`;
-  }
-
-  clientLabel(invoice: InvoiceResponseDto): string {
-    if (invoice.clientSnapshot) {
-      try {
-        const snap = JSON.parse(invoice.clientSnapshot) as { fullName?: string; name?: string };
-
-        return snap.fullName ?? snap.name ?? invoice.clientId;
-      } catch {
-        return invoice.clientId;
-      }
-    }
-
-    return invoice.clientId;
   }
 
   onInvoiceNumberClick(event: MouseEvent): void {
