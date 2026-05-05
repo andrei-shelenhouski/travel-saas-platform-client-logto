@@ -158,7 +158,7 @@ export class CreateInvoiceComponent {
 
   protected readonly clientTypeSignal = toSignal(
     this.form.controls.clientType.valueChanges.pipe(startWith(this.form.controls.clientType.value)),
-    { initialValue: ClientType.INDIVIDUAL },
+    { initialValue: this.form.controls.clientType.value },
   );
   protected readonly isB2bMode = computed(() => this.clientTypeSignal() === ClientType.B2B_AGENT);
   protected readonly currencyOptions = CURRENCY_OPTIONS;
@@ -589,8 +589,9 @@ export class CreateInvoiceComponent {
 
     for (let index = 0; index < this.lineItemsArray.length; index++) {
       const row = this.lineItemsArray.at(index);
+      const currentPct = row.controls.commissionPct.value;
 
-      if (row.controls.commissionPct.value === null) {
+      if (currentPct === null || currentPct === 0) {
         row.controls.commissionPct.setValue(defaultPct);
         this.recalculateRow(index);
       }
