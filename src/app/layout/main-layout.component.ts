@@ -31,7 +31,7 @@ type MainNavLink = {
 };
 
 const MAIN_NAV_LINKS: MainNavLink[] = [
-  { path: '/app/dashboard', icon: 'home', label: $localize`:@@dashboard:Dashboard` },
+  { path: '/app/dashboard', icon: 'dashboard', label: $localize`:@@dashboard:Dashboard` },
   { path: '/app/leads', icon: 'inbox', label: $localize`:@@leads:Leads` },
   { path: '/app/clients', icon: 'group', label: $localize`:@@clients:Clients` },
   { path: '/app/requests', icon: 'alt_route', label: $localize`:@@requests:Requests` },
@@ -49,7 +49,6 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
     path: '/app/settings',
     icon: 'settings',
     label: $localize`:@@settings:Settings`,
-    sectionMargin: true,
   },
 ];
 

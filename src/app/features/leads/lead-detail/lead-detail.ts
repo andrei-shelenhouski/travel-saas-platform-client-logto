@@ -30,7 +30,6 @@ import { AssignDialogComponent } from '@app/features/leads/assign-dialog/assign-
 import { LinkLeadClientDialogComponent } from '@app/features/leads/link-lead-client-dialog/link-lead-client-dialog';
 // eslint-disable-next-line max-len
 import { PromoteLeadClientDialogComponent } from '@app/features/leads/promote-lead-client-dialog/promote-lead-client-dialog';
-import { ActivitiesService } from '@app/services/activities.service';
 import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
@@ -40,7 +39,7 @@ import { RoleService } from '@app/services/role.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
-import { EntityType, LeadStatus } from '@app/shared/models';
+import { LeadStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import type {
@@ -119,7 +118,6 @@ export class LeadDetailComponent {
   private readonly leadsService = inject(LeadsService);
   private readonly requestsService = inject(RequestsService);
   private readonly offersService = inject(OffersService);
-  private readonly activitiesService = inject(ActivitiesService);
   private readonly membersService = inject(OrganizationMembersService);
   private readonly roleService = inject(RoleService);
   private readonly toast = inject(ToastService);
@@ -148,9 +146,7 @@ export class LeadDetailComponent {
         offers: this.offersService
           .getList({ leadId: id, limit: 100 })
           .pipe(map((res) => res.items)),
-        activities: this.activitiesService.findByEntity({
-          entityType: EntityType.Lead,
-          entityId: id,
+        activities: this.leadsService.getActivity(id, {
           page: 1,
           limit: ACTIVITY_PAGE_SIZE,
         }),
@@ -869,10 +865,8 @@ export class LeadDetailComponent {
     const nextPage = this.activityPage() + 1;
 
     this.loadingMoreActivity.set(true);
-    this.activitiesService
-      .findByEntity({
-        entityType: EntityType.Lead,
-        entityId: lead.id,
+    this.leadsService
+      .getActivity(lead.id, {
         page: nextPage,
         limit: ACTIVITY_PAGE_SIZE,
       })

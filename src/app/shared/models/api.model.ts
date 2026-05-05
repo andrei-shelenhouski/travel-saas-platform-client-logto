@@ -634,6 +634,7 @@ export type InvoiceResponseDto = {
   bookingId: string;
   clientId: string;
   clientType?: ClientType | string;
+  clientName?: string;
   clientSnapshot?: string;
   issuerSnapshot?: string;
   language?: string;

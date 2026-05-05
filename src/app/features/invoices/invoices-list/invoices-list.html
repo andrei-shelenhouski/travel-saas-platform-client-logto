@@ -58,7 +58,7 @@
       <ng-container matColumnDef="client">
         <th *matHeaderCellDef i18n="@@invoiceListColumnClient" mat-header-cell>Client</th>
         <td *matCellDef="let element" mat-cell>
-          {{ clientLabel(element) }}
+          {{ element.clientName || element.clientSnapshot || '—' }}
         </td>
       </ng-container>
 

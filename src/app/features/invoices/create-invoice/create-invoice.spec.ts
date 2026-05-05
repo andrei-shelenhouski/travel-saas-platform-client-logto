@@ -281,4 +281,100 @@ describe('CreateInvoiceComponent', () => {
 
     expect(cmp.form.controls.clientId.value).toBe('client-typed');
   });
+
+  it('reactively updates isB2bMode signal when clientType toggles between INDIVIDUAL and B2B_AGENT', async () => {
+    await createComponent();
+
+    const cmp = component as unknown as {
+      form: CreateInvoiceComponent['form'];
+      isB2bMode: () => boolean;
+    };
+
+    expect(cmp.isB2bMode()).toBe(false);
+
+    cmp.form.controls.clientType.setValue(ClientType.B2B_AGENT);
+    fixture.detectChanges();
+
+    expect(cmp.isB2bMode()).toBe(true);
+
+    cmp.form.controls.clientType.setValue(ClientType.INDIVIDUAL);
+    fixture.detectChanges();
+
+    expect(cmp.isB2bMode()).toBe(false);
+
+    cmp.form.controls.clientType.setValue(ClientType.COMPANY);
+    fixture.detectChanges();
+
+    expect(cmp.isB2bMode()).toBe(false);
+  });
+
+  it('initializes derived B2B fields when adding a new line item in B2B mode', async () => {
+    await createComponent();
+
+    const cmp = component as unknown as {
+      form: CreateInvoiceComponent['form'];
+      lineItemsArray: CreateInvoiceComponent['lineItemsArray'];
+      addLineItem: () => void;
+      onB2bTourCostInput: (index: number) => void;
+      onB2bCommissionPctInput: (index: number) => void;
+    };
+
+    cmp.form.controls.clientType.setValue(ClientType.B2B_AGENT);
+    cmp.lineItemsArray.at(0).controls.tourCost.setValue(1000);
+    cmp.lineItemsArray.at(0).controls.commissionPct.setValue(10);
+    cmp.onB2bTourCostInput(0);
+    fixture.detectChanges();
+
+    cmp.addLineItem();
+    fixture.detectChanges();
+
+    const newRow = cmp.lineItemsArray.at(1);
+
+    newRow.controls.tourCost.setValue(500);
+    newRow.controls.commissionPct.setValue(15);
+    cmp.onB2bCommissionPctInput(1);
+    fixture.detectChanges();
+
+    expect(newRow.controls.commissionAmount.value).toBe(75);
+    expect(newRow.controls.netToPay.value).toBe(425);
+    expect(newRow.controls.commissionVat.value).toBe(15);
+  });
+
+  it('updates netToPay and commissionVat when default commission is applied programmatically for B2B_AGENT', async () => {
+    await createComponent();
+
+    const cmp = component as unknown as {
+      form: CreateInvoiceComponent['form'];
+      lineItemsArray: CreateInvoiceComponent['lineItemsArray'];
+      onClientSelected: (client: ClientResponseDto) => void;
+      onB2bTourCostInput: (index: number) => void;
+    };
+
+    const b2bClient = createClient({
+      id: 'b2b-client',
+      type: ClientType.B2B_AGENT,
+      commissionPct: 12,
+    });
+
+    clientsService.getById.mockReturnValue(of(b2bClient));
+
+    const initialCommissionPct = cmp.lineItemsArray.at(0).controls.commissionPct.value;
+
+    expect(initialCommissionPct).toBe(null);
+
+    cmp.onClientSelected(b2bClient);
+    fixture.detectChanges();
+
+    const row = cmp.lineItemsArray.at(0);
+
+    expect(row.controls.commissionPct.value).toBe(12);
+
+    row.controls.tourCost.setValue(2000);
+    cmp.onB2bTourCostInput(0);
+    fixture.detectChanges();
+
+    expect(row.controls.commissionAmount.value).toBe(240);
+    expect(row.controls.netToPay.value).toBe(1760);
+    expect(row.controls.commissionVat.value).toBe(48);
+  });
 });

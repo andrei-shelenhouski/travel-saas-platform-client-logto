@@ -191,7 +191,7 @@ export class BookingsListComponent {
 
     if (snapshot && typeof snapshot === 'object') {
       const map = snapshot as Record<string, unknown>;
-      const candidates = [map['fullName'], map['companyName'], map['name'], map['clientName']];
+      const candidates = [map['companyName'], map['fullName'], map['name'], map['clientName']];
 
       for (const candidate of candidates) {
         if (typeof candidate === 'string' && candidate.trim().length > 0) {

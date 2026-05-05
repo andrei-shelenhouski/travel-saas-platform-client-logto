@@ -1,7 +1,7 @@
+@use '@angular/material' as mat;
+
 .company-profile-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
+  padding: 1rem;
 }
 
 .header {
@@ -31,6 +31,12 @@
   mat-card-header {
     margin-bottom: 16px;
   }
+
+  @include mat.card-overrides(
+    (
+      outlined-container-color: #ffffff,
+    )
+  );
 }
 
 .form-grid {

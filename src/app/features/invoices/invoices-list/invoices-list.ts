@@ -232,20 +232,6 @@ export class InvoicesListComponent {
     return `${this.formatAmount(paid, invoice.currency)} / ${this.formatAmount(total, invoice.currency)}`;
   }
 
-  clientLabel(invoice: InvoiceResponseDto): string {
-    if (invoice.clientSnapshot) {
-      try {
-        const snap = JSON.parse(invoice.clientSnapshot) as { fullName?: string; name?: string };
-
-        return snap.fullName ?? snap.name ?? invoice.clientId;
-      } catch {
-        return invoice.clientId;
-      }
-    }
-
-    return invoice.clientId;
-  }
-
   onInvoiceNumberClick(event: MouseEvent): void {
     event.stopPropagation();
   }
