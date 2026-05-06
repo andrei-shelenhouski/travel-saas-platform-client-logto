@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
-import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -47,7 +46,6 @@ const REQUEST_STATUSES = new Set<RequestStatus>([
     RequestFilterBarComponent,
     RequestStatusChipComponent,
     MatIcon,
-    MatPaginatorModule,
     MatProgressSpinnerModule,
     MatTableModule,
     PageHeading,
@@ -66,9 +64,6 @@ export class RequestsListComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly pageSize = PAGE_SIZE;
-
-  readonly currentPage = signal(0);
   readonly statusFilter = signal<RequestStatus[]>([]);
   readonly managerId = signal('');
   readonly departDateFrom = signal('');
@@ -92,19 +87,21 @@ export class RequestsListComponent {
 
   private readonly data = rxResource({
     params: () => ({
-      page: this.currentPage(),
-      status: this.statusFilter(),
       managerId: this.managerId(),
-      departDateFrom: this.departDateFrom(),
-      departDateTo: this.departDateTo(),
     }),
     stream: ({ params }) => {
-      const { managerId, page } = params;
+      let effectiveManagerId = params.managerId || undefined;
+
+      if (this.permissions.filterToOwnRecords()) {
+        const uid = this.permissions.currentUserId();
+
+        if (uid) {
+          effectiveManagerId = uid;
+        }
+      }
 
       return this.requestsService.getList({
-        page: page + 1,
-        limit: PAGE_SIZE,
-        managerId: managerId || undefined,
+        managerId: effectiveManagerId,
       });
     },
   });
@@ -118,14 +115,6 @@ export class RequestsListComponent {
 
   readonly requests = computed(() => {
     let list = this.data.value()?.items ?? [];
-
-    if (this.permissions.filterToOwnRecords()) {
-      const uid = this.permissions.currentUserId();
-
-      if (uid) {
-        list = list.filter((r) => r.managerId === uid);
-      }
-    }
 
     const statusFilterValue = this.statusFilter();
     const departDateFromValue = this.departDateFrom();
@@ -146,7 +135,7 @@ export class RequestsListComponent {
     return list;
   });
 
-  readonly totalElements = computed(() => this.requests().length);
+  readonly totalElements = computed(() => this.data.value()?.total ?? 0);
   readonly loading = computed(() => this.data.isLoading());
 
   protected readonly displayedColumns: (keyof (RequestResponseDto & { actions: string }))[] = [
@@ -179,11 +168,6 @@ export class RequestsListComponent {
     this.managerId.set(value.managerId);
     this.departDateFrom.set(value.departDateFrom);
     this.departDateTo.set(value.departDateTo);
-    this.currentPage.set(0);
-  }
-
-  onPageChange(event: PageEvent): void {
-    this.currentPage.set(event.pageIndex);
   }
 
   navigateToRequest(id: string): void {
@@ -225,13 +209,11 @@ export class RequestsListComponent {
       .subscribe((queryParams) => {
         this.applyingQueryParams.set(true);
 
-        const page = Number(queryParams.get('page') ?? '0');
         const status = this.parseStatus(queryParams.get('status'));
         const managerId = queryParams.get('managerId') ?? '';
         const departDateFrom = queryParams.get('departDateFrom') ?? '';
         const departDateTo = queryParams.get('departDateTo') ?? '';
 
-        this.currentPage.set(Number.isFinite(page) && page >= 0 ? page : 0);
         this.statusFilter.set(status);
         this.managerId.set(managerId);
         this.departDateFrom.set(departDateFrom);
@@ -252,14 +234,12 @@ export class RequestsListComponent {
         return;
       }
 
-      const page = this.currentPage();
       const status = this.statusFilter();
       const managerId = this.managerId();
       const departDateFrom = this.departDateFrom();
       const departDateTo = this.departDateTo();
 
       const queryParams: Record<string, string | number | undefined> = {
-        page: page > 0 ? page : undefined,
         status: status.length > 0 ? status.join(',') : undefined,
         managerId: managerId || undefined,
         departDateFrom: departDateFrom || undefined,

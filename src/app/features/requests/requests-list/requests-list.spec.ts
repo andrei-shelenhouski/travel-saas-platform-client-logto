@@ -6,6 +6,7 @@ import { of } from 'rxjs';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
+import { RequestStatus } from '@app/shared/models';
 
 import { RequestsListComponent } from './requests-list';
 
@@ -35,8 +36,8 @@ describe('RequestsListComponent', () => {
         {
           provide: PermissionService,
           useValue: {
-            filterToOwnRecords: () => false,
-            currentUserId: () => null,
+            filterToOwnRecords: vi.fn(() => false),
+            currentUserId: vi.fn(() => null),
           },
         },
       ],
@@ -52,18 +53,16 @@ describe('RequestsListComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should reset page on filter change', () => {
-    component.currentPage.set(3);
-
+  it('should apply filter changes', () => {
     component.onFilterChange({
-      status: ['OPEN'],
+      status: [RequestStatus.OPEN],
       managerId: 'manager-1',
       departDateFrom: '2026-06-01',
       departDateTo: '2026-06-15',
     });
 
-    expect(component.currentPage()).toBe(0);
-    expect(component.statusFilter()).toEqual(['OPEN']);
+    expect(component.statusFilter()).toEqual([RequestStatus.OPEN]);
+    expect(component.managerId()).toBe('manager-1');
   });
 
   it('should navigate to request details', () => {
@@ -74,11 +73,10 @@ describe('RequestsListComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/app/requests', 'request-1']);
   });
 
-  it('should request first page as 1-based index', () => {
+  it('should request data without pagination', () => {
     expect(requestsService.getList).toHaveBeenCalledWith(
       expect.objectContaining({
-        page: 1,
-        limit: 20,
+        managerId: undefined,
       }),
     );
   });
@@ -96,9 +94,9 @@ describe('RequestsListComponent', () => {
 
   it('should filter requests by status when status filter is set', async () => {
     const mockItems = [
-      { id: '1', status: 'OPEN', managerId: null },
-      { id: '2', status: 'CLOSED', managerId: null },
-      { id: '3', status: 'QUOTED', managerId: null },
+      { id: '1', status: RequestStatus.OPEN, managerId: null },
+      { id: '2', status: RequestStatus.CLOSED, managerId: null },
+      { id: '3', status: RequestStatus.QUOTED, managerId: null },
     ];
 
     requestsService.getList.mockReturnValue(
@@ -116,13 +114,13 @@ describe('RequestsListComponent', () => {
     newFixture.detectChanges();
     await newFixture.whenStable();
 
-    newComponent.statusFilter.set(['OPEN']);
+    newComponent.statusFilter.set([RequestStatus.OPEN]);
     newFixture.detectChanges();
     await newFixture.whenStable();
 
     const filtered = newComponent.requests();
 
     expect(filtered.length).toBe(1);
-    expect(filtered[0].status).toBe('OPEN');
+    expect(filtered[0].status).toBe(RequestStatus.OPEN);
   });
 });

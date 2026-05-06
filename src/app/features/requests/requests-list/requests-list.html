@@ -51,7 +51,9 @@
         <td *matCellDef="let element" mat-cell>
           {{ element.adults || '—' }}
           @if (element.children) {
-            <span class="text-gray-500">/ {{ element.children }} children</span>
+            <span class="text-gray-500" i18n="@@requestsListChildrenLabel"
+              >/ {{ element.children }} children</span
+            >
           }
         </td>
       </ng-container>
@@ -106,15 +108,4 @@
     </table>
   </div>
 
-  @if (totalElements() > pageSize) {
-    <mat-paginator
-      aria-label="Requests pagination"
-      i18n-aria-label="@@requestsListPaginatorAriaLabel"
-      [length]="totalElements()"
-      [pageIndex]="currentPage()"
-      [pageSize]="pageSize"
-      [showFirstLastButtons]="true"
-      (page)="onPageChange($event)"
-    />
-  }
 </div>
