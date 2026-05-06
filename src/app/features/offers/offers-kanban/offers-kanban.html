@@ -105,12 +105,14 @@
                   *cdkDragPreview
                   class="flex flex-col gap-1 rounded-lg border-2 border-primary bg-white p-3 shadow-lg min-w-[260px]"
                 >
-                  <span class="font-medium text-gray-900">{{ offer.destination || ('#' + offer.number) || '—' }}</span>
+                  <span class="font-medium text-gray-900">{{
+                    offer.destination || '#' + offer.number || '—'
+                  }}</span>
                   <span class="text-xs text-gray-500">{{ offer.total }} {{ offer.currency }}</span>
                 </div>
                 <div class="pointer-events-none">
                   <p class="font-medium text-gray-900">
-                    {{ offer.destination || ('#' + offer.number) || '—' }}
+                    {{ offer.destination || '#' + offer.number || '—' }}
                   </p>
                   <p class="mt-0.5 text-xs text-gray-600">{{ offer.total }} {{ offer.currency }}</p>
                   <p class="text-xs text-gray-500">{{ offer.updatedAt | date: 'dd MMM yyyy' }}</p>

@@ -61,9 +61,7 @@
 
       <ng-container matColumnDef="total">
         <th *matHeaderCellDef i18n="@@offersListColumnTotal" mat-header-cell>Total</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.total }} {{ element.currency }}
-        </td>
+        <td *matCellDef="let element" mat-cell>{{ element.total }} {{ element.currency }}</td>
       </ng-container>
 
       <ng-container matColumnDef="status">
