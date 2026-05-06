@@ -1,1 +1,7 @@
-/* Requests list */
+.table-row {
+  cursor: pointer;
+}
+
+.table-row:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}

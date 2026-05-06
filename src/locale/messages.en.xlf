@@ -3721,6 +3721,297 @@
           <context context-type="linenumber">42</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="offersKanbanTitle" datatype="html">
+        <source>Offers · Kanban</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListNewOfferCta" datatype="html">
+        <source>New offer</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.html</context>
+          <context context-type="linenumber">4,6</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">8,10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersKanbanStatusFilterDisabled" datatype="html">
+        <source>Status filter is disabled in Kanban view.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.html</context>
+          <context context-type="linenumber">39,44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersKanbanFirst100Banner" datatype="html">
+        <source>Showing only first 100 offers.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.html</context>
+          <context context-type="linenumber">46,51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusOptionDraft" datatype="html">
+        <source>Draft</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.ts</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusOptionSent" datatype="html">
+        <source>Sent</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.ts</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusOptionViewed" datatype="html">
+        <source>Viewed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusOptionAccepted" datatype="html">
+        <source>Accepted</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.ts</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusOptionRejected" datatype="html">
+        <source>Rejected</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.ts</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusOptionExpired" datatype="html">
+        <source>Expired</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.ts</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusKanbanDraft" datatype="html">
+        <source>Draft</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusKanbanSent" datatype="html">
+        <source>Sent</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusKanbanViewed" datatype="html">
+        <source>Viewed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusKanbanAccepted" datatype="html">
+        <source>Accepted</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">79</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusKanbanRejected" datatype="html">
+        <source>Rejected</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">84</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusKanbanExpired" datatype="html">
+        <source>Expired</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerKanbanInvalidTransitionError" datatype="html">
+        <source>Invalid status transition</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">342</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerKanbanForbiddenTransitionError" datatype="html">
+        <source>No permission to change status</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">346</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerKanbanDefaultTransitionError" datatype="html">
+        <source>Invalid status transition</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">354</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">366</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListFilterStatusLabel" datatype="html">
+        <source>Statuses</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list-filter-bar/offers-list-filter-bar.html</context>
+          <context context-type="linenumber">3,5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListFilterAgentLabel" datatype="html">
+        <source>Agent</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list-filter-bar/offers-list-filter-bar.html</context>
+          <context context-type="linenumber">17,19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListFilterAgentAllOption" datatype="html">
+        <source>All</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list-filter-bar/offers-list-filter-bar.html</context>
+          <context context-type="linenumber">22,23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListFilterCreatedFromLabel" datatype="html">
+        <source>Created from</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list-filter-bar/offers-list-filter-bar.html</context>
+          <context context-type="linenumber">31,34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListFilterCreatedToLabel" datatype="html">
+        <source>Created to</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list-filter-bar/offers-list-filter-bar.html</context>
+          <context context-type="linenumber">41,44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListFilterSearchLabel" datatype="html">
+        <source>Search</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list-filter-bar/offers-list-filter-bar.html</context>
+          <context context-type="linenumber">51,54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListFilterSearchPlaceholder" datatype="html">
+        <source>Client, destination, offer number</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list-filter-bar/offers-list-filter-bar.html</context>
+          <context context-type="linenumber">54,55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListHeadingTitle" datatype="html">
+        <source>Offers</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListColumnOfferNumber" datatype="html">
+        <source>Offer #</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">47,48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListColumnDestination" datatype="html">
+        <source>Destination</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">56,57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListColumnTotal" datatype="html">
+        <source>Total</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">63,64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListColumnStatus" datatype="html">
+        <source>Status</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">68,69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListColumnCreated" datatype="html">
+        <source>Created</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">75,76</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListColumnUpdated" datatype="html">
+        <source>Updated</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">82,83</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListLoading" datatype="html">
+        <source>Loading offers...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">99,101</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListLoadingAriaLabel" datatype="html">
+        <source>Loading offers</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">101,102</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListEmptyState" datatype="html">
+        <source>No offers found for the current filters</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">107,109</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListPaginatorAriaLabel" datatype="html">
+        <source>Offers pagination</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">117,118</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="selectOrganizationTitle" datatype="html">
         <source> Select Organization </source>
         <context-group purpose="location">
@@ -3743,7 +4034,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
-          <context context-type="linenumber">44,46</context>
+          <context context-type="linenumber">45,47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noOrganizationsFound" datatype="html">
@@ -3753,6 +4044,69 @@
           <context context-type="linenumber">22,24</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="requestFilterStatusLabel" datatype="html">
+        <source>Status</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.html</context>
+          <context context-type="linenumber">3,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestFilterManagerLabel" datatype="html">
+        <source>Manager</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.html</context>
+          <context context-type="linenumber">12,13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestFilterAllManagersOption" datatype="html">
+        <source>All managers</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.html</context>
+          <context context-type="linenumber">14,15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestFilterDepartureRangeLabel" datatype="html">
+        <source>Departure date range</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.html</context>
+          <context context-type="linenumber">22,23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestFilterDateFromPlaceholder" datatype="html">
+        <source>From</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestFilterDateToPlaceholder" datatype="html">
+        <source>To</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestStatusOptionOpen" datatype="html">
+        <source>Open</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.ts</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestStatusOptionQuoted" datatype="html">
+        <source>Quoted</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.ts</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestStatusOptionClosed" datatype="html">
+        <source>Closed</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="requestsListTitle" datatype="html">
         <source>Requests</source>
         <context-group purpose="location">
@@ -3760,25 +4114,109 @@
           <context context-type="linenumber">3,4</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="requestsListNewRequestCta" datatype="html">
+        <source>New request</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">8,11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListColumnDestination" datatype="html">
+        <source> Destination </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">28,30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListColumnDeparture" datatype="html">
+        <source>Departure</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">36,37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListColumnReturn" datatype="html">
+        <source>Return</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">43,44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListColumnAdults" datatype="html">
+        <source>Travelers</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">50,51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListChildrenLabel" datatype="html">
+        <source>/ <x id="INTERPOLATION" equiv-text="{{ element.children }}"/> children</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">55,56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListColumnStatus" datatype="html">
+        <source>Status</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">62,63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListColumnManager" datatype="html">
+        <source>Manager</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">69,70</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListColumnCreated" datatype="html">
+        <source>Created</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">76,77</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListLoading" datatype="html">
+        <source>Loading requests...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">95,97</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListLoadingAriaLabel" datatype="html">
+        <source>Loading requests</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">97,98</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListEmptyState" datatype="html">
+        <source>No requests for current filters</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">103,106</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="noOtherOrganizations" datatype="html">
         <source>No other organizations</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
-          <context context-type="linenumber">71,73</context>
+          <context context-type="linenumber">72,74</context>
         </context-group>
       </trans-unit>
       <trans-unit id="addOrganization" datatype="html">
         <source>Add organization</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
-          <context context-type="linenumber">78,80</context>
+          <context context-type="linenumber">79,81</context>
         </context-group>
       </trans-unit>
       <trans-unit id="logout" datatype="html">
         <source>Logout</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
-          <context context-type="linenumber">111,112</context>
+          <context context-type="linenumber">112,113</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dashboard" datatype="html">
