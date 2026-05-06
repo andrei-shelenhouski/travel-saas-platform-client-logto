@@ -1,107 +1,342 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
-import { rxResource } from '@angular/core/rxjs-interop';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
+import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatIcon } from '@angular/material/icon';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
+import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { OffersService } from '@app/services/offers.service';
-import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
-import type { OfferResponseDto } from '@app/shared/models';
-import { OfferStatus } from '@app/shared/models';
+import { OrganizationMembersService } from '@app/services/organization-members.service';
+import { PermissionService } from '@app/services/permission.service';
+import { RoleService } from '@app/services/role.service';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
+import { MAT_BUTTON_TOGGLES, MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
-type FilterTab = 'ALL' | OfferStatus;
+import { OffersListFilterBarComponent } from '../offers-list-filter-bar/offers-list-filter-bar';
 
-const FILTER_TABS: { value: FilterTab; label: string }[] = [
-  { value: 'ALL', label: 'All' },
-  { value: OfferStatus.DRAFT, label: 'Draft' },
-  { value: OfferStatus.SENT, label: 'Sent' },
-  { value: OfferStatus.VIEWED, label: 'Viewed' },
-  { value: OfferStatus.ACCEPTED, label: 'Accepted' },
-  { value: OfferStatus.REJECTED, label: 'Rejected' },
-  { value: OfferStatus.EXPIRED, label: 'Expired' },
+import type {
+  OfferResponseDto,
+  OfferStatus,
+  OrganizationMemberResponseDto,
+} from '@app/shared/models';
+
+const PAGE_SIZE = 20;
+const OFFERS_VIEW_STORAGE_KEY = 'offers_view';
+
+type OfferStatusOption = {
+  value: OfferStatus;
+  label: string;
+};
+
+type AgentOption = {
+  id: string;
+  name: string;
+};
+
+const OFFER_STATUS_OPTIONS: OfferStatusOption[] = [
+  { value: 'DRAFT', label: $localize`:@@offerStatusOptionDraft:Draft` },
+  { value: 'SENT', label: $localize`:@@offerStatusOptionSent:Sent` },
+  { value: 'VIEWED', label: $localize`:@@offerStatusOptionViewed:Viewed` },
+  { value: 'ACCEPTED', label: $localize`:@@offerStatusOptionAccepted:Accepted` },
+  { value: 'REJECTED', label: $localize`:@@offerStatusOptionRejected:Rejected` },
+  { value: 'EXPIRED', label: $localize`:@@offerStatusOptionExpired:Expired` },
 ];
 
-const STATUS_BADGE_CLASS: Record<string, string> = {
-  DRAFT: 'bg-gray-100 text-gray-800',
-  SENT: 'bg-blue-100 text-blue-800',
-  ACCEPTED: 'bg-green-100 text-green-800',
-  REJECTED: 'bg-red-100 text-red-800',
-  EXPIRED: 'bg-gray-100 text-gray-500',
-};
+const OFFER_STATUSES = new Set<OfferStatus>([
+  'DRAFT',
+  'SENT',
+  'VIEWED',
+  'ACCEPTED',
+  'REJECTED',
+  'EXPIRED',
+]);
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-offers-list',
-  imports: [RouterLink, ...MAT_BUTTONS, ...MAT_BUTTON_TOGGLES],
+  imports: [
+    ...MAT_BUTTON_TOGGLES,
+    ...MAT_BUTTONS,
+    ...MAT_FORM_BUTTONS,
+    DatePipe,
+    MatIcon,
+    MatPaginatorModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    PageHeading,
+    ReactiveFormsModule,
+    RouterLink,
+    OffersListFilterBarComponent,
+    StatusBadgeComponent,
+  ],
   templateUrl: './offers-list.html',
   styleUrl: './offers-list.scss',
+  host: {
+    class: 'flex flex-col h-full',
+  },
 })
 export class OffersListComponent {
   private readonly offersService = inject(OffersService);
+  private readonly membersService = inject(OrganizationMembersService);
+  private readonly permissionService = inject(PermissionService);
+  private readonly roleService = inject(RoleService);
   private readonly router = inject(Router);
-  private readonly data = rxResource({
-    stream: () => this.offersService.getList(),
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
+
+  readonly pageSize = PAGE_SIZE;
+
+  readonly statusOptions = OFFER_STATUS_OPTIONS;
+
+  readonly showAgentFilter = computed(() => !this.roleService.isAgent());
+
+  readonly currentPage = signal(0);
+  readonly statusFilter = signal<OfferStatus[]>([]);
+  readonly selectedAgentId = signal('');
+  readonly dateFromFilter = signal('');
+  readonly dateToFilter = signal('');
+  readonly searchFilter = signal('');
+  readonly searchControl = new FormControl('', { nonNullable: true });
+
+  private readonly hydratedFromQueryParams = signal(false);
+  private readonly applyingQueryParams = signal(false);
+
+  private readonly membersData = rxResource({
+    stream: () => this.membersService.findAll(),
   });
 
-  readonly filterTabs = FILTER_TABS;
-  readonly statusBadgeClass = STATUS_BADGE_CLASS;
+  readonly agentOptions = computed<AgentOption[]>(() => {
+    const members = this.membersData.value() ?? [];
+
+    return members
+      .filter((member) => this.isSalesAgent(member))
+      .map((member) => ({
+        id: member.userId,
+        name: member.name,
+      }))
+      .sort((a, b) => a.name.localeCompare(b.name, 'ru'));
+  });
+
+  private readonly effectiveAgentId = computed(() => {
+    if (this.showAgentFilter()) {
+      return this.selectedAgentId();
+    }
+
+    return this.permissionService.currentUserId() ?? '';
+  });
+
+  private readonly data = rxResource({
+    params: () => ({
+      page: this.currentPage(),
+      status: this.statusFilter(),
+      agentId: this.effectiveAgentId(),
+    }),
+    stream: ({ params }) => {
+      const { agentId, page, status } = params;
+
+      return this.offersService.getList({
+        page: page + 1,
+        limit: PAGE_SIZE,
+        status: status.length === 1 ? status[0] : undefined,
+        agentId: agentId || undefined,
+      });
+    },
+  });
 
   readonly offers = computed(() => this.data.value()?.items ?? []);
+  readonly totalElements = computed(() => this.data.value()?.total ?? 0);
   readonly loading = computed(() => this.data.isLoading());
+
+  private readonly redirectOnForbidden = effect(() => {
+    const err = this.data.error();
+
+    if (err instanceof HttpErrorResponse && err.status === 403) {
+      void this.router.navigate(['/app/dashboard']);
+    }
+  });
+
   readonly error = computed(() => {
     const err = this.data.error();
 
     if (err instanceof HttpErrorResponse) {
+      if (err.status === 403) {
+        return undefined;
+      }
+
       return err.error?.message ?? err.message ?? 'Failed to load offers';
     }
 
     return undefined;
   });
-  readonly activeFilter = signal<FilterTab>('ALL');
 
-  readonly filteredOffers = computed(() => {
-    const list = this.offers();
-    const filter = this.activeFilter();
+  protected readonly displayedColumns: (keyof OfferResponseDto)[] = [
+    'number',
+    'destination',
+    'total',
+    'status',
+    'createdAt',
+    'updatedAt',
+  ];
 
-    if (filter === 'ALL') {
-      return list;
-    }
-
-    return list.filter((o) => o.status === filter);
-  });
-
-  setFilter(value: FilterTab): void {
-    this.activeFilter.set(value);
+  constructor() {
+    this.syncStateFromQueryParams();
+    this.syncSearchDebounce();
+    this.syncQueryParamsFromState();
+    this.restoreSavedView();
   }
 
-  goToDetail(offer: OfferResponseDto): void {
-    this.router.navigate(['/app/offers', offer.id]);
+  onStatusFilterChange(statuses: OfferStatus[]): void {
+    this.statusFilter.set(statuses ?? []);
+    this.currentPage.set(0);
   }
 
-  formatDate(iso: string): string {
-    try {
-      return new Date(iso).toLocaleDateString(undefined, {
-        dateStyle: 'medium',
+  onAgentFilterChange(agentId: string): void {
+    this.selectedAgentId.set(agentId ?? '');
+    this.currentPage.set(0);
+  }
+
+  onDateFromChange(value: string): void {
+    this.dateFromFilter.set(value);
+    this.currentPage.set(0);
+  }
+
+  onDateToChange(value: string): void {
+    this.dateToFilter.set(value);
+    this.currentPage.set(0);
+  }
+
+  setPreferredView(view: 'table' | 'kanban'): void {
+    localStorage.setItem(OFFERS_VIEW_STORAGE_KEY, view);
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage.set(event.pageIndex);
+  }
+
+  navigateToOffer(id: string): void {
+    this.router.navigate(['/app/offers', id]);
+  }
+
+  private syncStateFromQueryParams(): void {
+    this.activatedRoute.queryParamMap
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((queryParams) => {
+        this.applyingQueryParams.set(true);
+
+        const page = Number(queryParams.get('page') ?? '0');
+        const status = this.parseStatus(queryParams.get('status'));
+        const agentId = queryParams.get('agentId') ?? '';
+        const dateFrom = queryParams.get('dateFrom') ?? '';
+        const dateTo = queryParams.get('dateTo') ?? '';
+        const search = queryParams.get('search') ?? '';
+
+        this.currentPage.set(Number.isFinite(page) && page > 0 ? page : 0);
+        this.statusFilter.set(status);
+        this.selectedAgentId.set(agentId);
+        this.dateFromFilter.set(dateFrom);
+        this.dateToFilter.set(dateTo);
+        this.searchFilter.set(search);
+        this.searchControl.setValue(search, { emitEvent: false });
+
+        this.hydratedFromQueryParams.set(true);
+        this.applyingQueryParams.set(false);
       });
-    } catch {
-      return iso;
-    }
   }
 
-  getStatusBadgeClass(status: string): string {
-    return STATUS_BADGE_CLASS[status] ?? 'bg-gray-100 text-gray-500';
+  private syncSearchDebounce(): void {
+    this.searchControl.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged(), takeUntilDestroyed(this.destroyRef))
+      .subscribe((searchValue) => {
+        const value = searchValue.trim();
+
+        if (value === this.searchFilter()) {
+          return;
+        }
+
+        this.searchFilter.set(value);
+        this.currentPage.set(0);
+      });
   }
 
-  rowClass(offer: OfferResponseDto): string {
-    const base = 'cursor-pointer hover:bg-gray-50 transition-colors';
+  private syncQueryParamsFromState(): void {
+    effect(() => {
+      if (!this.hydratedFromQueryParams()) {
+        return;
+      }
 
-    if (offer.status === OfferStatus.SENT || offer.status === OfferStatus.VIEWED) {
-      return `${base} bg-blue-50/50`;
+      if (this.applyingQueryParams()) {
+        return;
+      }
+
+      const status = this.statusFilter();
+      const agentId = this.effectiveAgentId();
+      const dateFrom = this.dateFromFilter();
+      const dateTo = this.dateToFilter();
+      const search = this.searchFilter();
+      const page = this.currentPage();
+
+      const queryParams: Record<string, string | number | undefined> = {
+        status: status.length > 0 ? status.join(',') : undefined,
+        agentId: agentId || undefined,
+        dateFrom: dateFrom || undefined,
+        dateTo: dateTo || undefined,
+        search: search || undefined,
+        page: page > 0 ? page : undefined,
+      };
+
+      void this.router.navigate([], {
+        relativeTo: this.activatedRoute,
+        queryParams,
+        replaceUrl: true,
+      });
+    });
+  }
+
+  private restoreSavedView(): void {
+    effect(() => {
+      if (!this.hydratedFromQueryParams()) {
+        return;
+      }
+
+      const preferred = localStorage.getItem(OFFERS_VIEW_STORAGE_KEY) ?? 'table';
+
+      if (preferred === 'kanban') {
+        void this.router.navigate(['/app/offers/kanban'], { replaceUrl: true });
+      }
+    });
+  }
+
+  private parseStatus(status: string | null): OfferStatus[] {
+    if (!status) {
+      return [];
     }
 
-    if (offer.status === OfferStatus.EXPIRED) {
-      return `${base} bg-amber-50/50`;
-    }
+    const statuses = status
+      .split(',')
+      .map((item) => item.trim() as OfferStatus)
+      .filter((item) => OFFER_STATUSES.has(item));
 
-    return base;
+    return Array.from(new Set(statuses));
+  }
+
+  private isSalesAgent(member: OrganizationMemberResponseDto): boolean {
+    const role = member.role;
+
+    return member.active && (role === 'AGENT' || role === 'SALES_AGENT' || role === 'ADMIN');
   }
 }

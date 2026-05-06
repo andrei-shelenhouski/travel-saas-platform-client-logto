@@ -1,55 +1,91 @@
-<div class="space-y-4">
-  <div class="flex flex-wrap items-center justify-between gap-4">
-    <div class="flex flex-wrap items-center gap-3">
-      <h2 class="text-lg font-semibold text-gray-900">Offers · Kanban</h2>
-      <mat-button-toggle-group
-        appearance="standard"
-        hideSingleSelectionIndicator
-        value="kanban"
+<app-page-heading title="Offers · Kanban" i18n-title="@@offersKanbanTitle">
+  <a matButton="filled" routerLink="/app/offers/new">
+    <mat-icon>add</mat-icon>
+    <span i18n="@@offersListNewOfferCta">New offer</span>
+  </a>
+  <mat-button-toggle-group appearance="standard" hideSingleSelectionIndicator value="kanban">
+    <mat-button-toggle routerLink="/app/offers" value="table" (click)="setPreferredView('table')">
+      <mat-icon>list</mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle
+      routerLink="/app/offers/kanban"
+      value="kanban"
+      (click)="setPreferredView('kanban')"
+    >
+      <mat-icon>view_kanban</mat-icon>
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+</app-page-heading>
+
+<div class="space-y-4 p-4">
+  <app-offers-list-filter-bar
+    [agentOptions]="agentOptions()"
+    [dateFromFilter]="dateFromFilter()"
+    [dateToFilter]="dateToFilter()"
+    [searchControl]="searchControl"
+    [selectedAgentId]="selectedAgentId()"
+    [showAgentFilter]="showAgentFilter()"
+    [statusFilter]="statusFilter()"
+    [statusOptions]="statusOptions"
+    (agentFilterChange)="onAgentFilterChange($event)"
+    (dateFromChange)="onDateFromChange($event)"
+    (dateToChange)="onDateToChange($event)"
+    (statusFilterChange)="onStatusFilterChange($event)"
+  />
+
+  @if (statusFilterWarning()) {
+    <p class="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+      <span i18n="@@offersKanbanStatusFilterDisabled"
+        >Status filter is disabled in Kanban view.</span
       >
-        <mat-button-toggle routerLink="/app/offers" value="list">List</mat-button-toggle>
-        <mat-button-toggle routerLink="/app/offers/kanban" value="kanban">Kanban</mat-button-toggle>
-      </mat-button-toggle-group>
-    </div>
-    <div class="flex flex-wrap items-center gap-3">
-      <span class="text-sm text-gray-500">Columns:</span>
-      @for (s of [OfferStatus.DRAFT, OfferStatus.SENT, OfferStatus.VIEWED, OfferStatus.ACCEPTED, OfferStatus.REJECTED, OfferStatus.EXPIRED]; track s) {
-        <label class="inline-flex items-center gap-1.5 text-sm">
-          <input
-            class="rounded border-gray-300"
-            type="checkbox"
-            [checked]="statusFilterChecked()[s] !== false"
-            (change)="setFilter(s, $any($event.target).checked)"
-          />
-          <app-status-badge variant="offer" [status]="s" />
-        </label>
-      }
-    </div>
-    <a color="primary" mat-flat-button routerLink="/app/offers/new">New offer</a>
-  </div>
+    </p>
+  }
+
+  @if (showTruncatedBanner()) {
+    <p class="rounded-md border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-800">
+      <span i18n="@@offersKanbanFirst100Banner">Showing only first 100 offers.</span>
+    </p>
+  }
 
   @if (error()) {
     <p class="text-sm text-red-600">{{ error() }}</p>
   }
 
   @if (loading()) {
-    <p class="text-sm text-gray-500">Loading offers…</p>
+    <div aria-live="polite" class="flex gap-4 overflow-x-auto pb-2">
+      @for (column of columns(); track column.status) {
+        <div
+          class="kanban-column flex min-w-[280px] flex-1 flex-col rounded-lg border border-gray-200 bg-gray-50/80 p-2"
+        >
+          <div class="mb-2 h-6 w-32 animate-pulse rounded bg-gray-200"></div>
+          @for (skeleton of skeletonRows; track skeleton) {
+            <div class="mb-2 rounded-lg border border-gray-200 bg-white p-3">
+              <div class="mb-2 h-4 w-3/4 animate-pulse rounded bg-gray-200"></div>
+              <div class="h-3 w-1/2 animate-pulse rounded bg-gray-100"></div>
+            </div>
+          }
+        </div>
+      }
+    </div>
   } @else {
-    <div
-      cdkDropListGroup
-      class="flex gap-4 overflow-x-auto pb-2"
-    >
+    <div cdkDropListGroup class="flex gap-4 overflow-x-auto pb-2">
       @for (column of columns(); track column.status) {
         <div
           cdkDropList
           class="kanban-column flex min-w-[280px] flex-1 flex-col rounded-lg border border-gray-200 bg-gray-50/80"
           [cdkDropListConnectedTo]="allListIds()"
           [cdkDropListData]="column.items"
+          [cdkDropListDisabled]="isDropDisabled(column.status)"
           [id]="column.status"
           (cdkDropListDropped)="onDrop($event, column.status)"
         >
-          <div class="flex items-center justify-between border-b border-gray-200 bg-white px-3 py-2 rounded-t-lg">
-            <app-status-badge variant="offer" [status]="column.status" />
+          <div
+            class="flex items-center justify-between border-b border-gray-200 bg-white px-3 py-2 rounded-t-lg"
+          >
+            <div class="flex items-center gap-2">
+              <span class="h-2.5 w-2.5 rounded-full" [style.background-color]="column.color"></span>
+              <span class="text-sm font-medium text-gray-700">{{ column.label }}</span>
+            </div>
             <span class="text-xs text-gray-500">{{ column.items.length }}</span>
           </div>
           <div class="flex-1 space-y-2 overflow-y-auto p-2 min-h-[120px]">
@@ -60,6 +96,7 @@
                 role="button"
                 tabindex="0"
                 [cdkDragData]="offer"
+                [cdkDragDisabled]="isDragDisabled(offer.status)"
                 (click)="goToOffer(offer)"
                 (keydown.enter)="goToOffer(offer)"
                 (keydown.space)="goToOffer(offer); $event.preventDefault()"
@@ -72,10 +109,12 @@
                   <span class="text-xs text-gray-500">{{ offer.total }} {{ offer.currency }}</span>
                 </div>
                 <div class="pointer-events-none">
-                  <span class="font-medium text-gray-900">{{ offer.destination || ('#' + offer.number) || '—' }}</span>
+                  <p class="font-medium text-gray-900">
+                    {{ offer.destination || ('#' + offer.number) || '—' }}
+                  </p>
+                  <p class="mt-0.5 text-xs text-gray-600">{{ offer.total }} {{ offer.currency }}</p>
+                  <p class="text-xs text-gray-500">{{ offer.updatedAt | date: 'dd MMM yyyy' }}</p>
                 </div>
-                <p class="mt-0.5 text-xs text-gray-600">{{ offer.total }} {{ offer.currency }}</p>
-                <p class="text-xs text-gray-500">{{ formatDate(offer.updatedAt) }}</p>
               </div>
             }
           </div>
