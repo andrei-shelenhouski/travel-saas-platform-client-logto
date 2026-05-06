@@ -145,15 +145,21 @@ export class OffersListComponent {
       page: this.currentPage(),
       status: this.statusFilter(),
       agentId: this.effectiveAgentId(),
+      dateFrom: this.dateFromFilter(),
+      dateTo: this.dateToFilter(),
+      search: this.searchFilter(),
     }),
     stream: ({ params }) => {
-      const { agentId, page, status } = params;
+      const { agentId, page, status, dateFrom, dateTo, search } = params;
 
       return this.offersService.getList({
         page: page + 1,
         limit: PAGE_SIZE,
-        status: status.length === 1 ? status[0] : undefined,
+        status: status.length > 0 ? status : undefined,
         agentId: agentId || undefined,
+        dateFrom: dateFrom || undefined,
+        dateTo: dateTo || undefined,
+        search: search || undefined,
       });
     },
   });

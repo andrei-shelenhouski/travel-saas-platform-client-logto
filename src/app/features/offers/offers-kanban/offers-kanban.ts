@@ -169,14 +169,22 @@ export class OffersKanbanComponent {
   private readonly data = rxResource({
     params: () => ({
       agentId: this.effectiveAgentId(),
+      status: this.statusFilter(),
+      dateFrom: this.dateFromFilter(),
+      dateTo: this.dateToFilter(),
+      search: this.searchFilter(),
     }),
     stream: ({ params }) => {
-      const { agentId } = params;
+      const { agentId, status, dateFrom, dateTo, search } = params;
 
       return this.offersService.getList({
         page: 1,
         limit: KANBAN_FETCH_LIMIT,
         agentId: agentId || undefined,
+        status: status.length > 0 ? status : undefined,
+        dateFrom: dateFrom || undefined,
+        dateTo: dateTo || undefined,
+        search: search || undefined,
       });
     },
   });
