@@ -1,1 +1,92 @@
-/* Request detail */
+.request-detail-page {
+  display: block;
+}
+
+.request-header-card,
+.request-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  padding: 1rem;
+}
+
+.request-header-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.request-header-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.request-header-label {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.request-header-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.request-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.request-card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.request-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.request-data-list {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.request-data-row {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.request-data-row dt {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.request-data-row dd {
+  margin: 0;
+  color: #111827;
+  font-size: 0.875rem;
+}
+
+.request-link {
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+.request-link:hover {
+  text-decoration: underline;
+}

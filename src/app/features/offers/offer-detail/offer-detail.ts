@@ -23,6 +23,7 @@ import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
 import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS, MAT_DIALOG } from '@app/shared/material-imports';
 import { OfferStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
@@ -68,6 +69,7 @@ const ACTION_LABELS: Record<OfferAction, string> = {
     RouterLink,
     OfferTimelineComponent,
     ConfirmationDialogComponent,
+    PageHeading,
     ...MAT_BUTTONS,
     ...MAT_DIALOG,
   ],

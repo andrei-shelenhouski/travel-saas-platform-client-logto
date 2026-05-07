@@ -14,11 +14,13 @@ import { EMPTY, forkJoin } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
 import { BookingsService } from '@app/services/bookings.service';
+import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { BookingStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import { AccommodationTableComponent } from './accommodation-table/accommodation-table';
-import { BookingHeaderComponent } from './booking-header/booking-header';
 import { CancellationDialogComponent } from './cancellation-dialog/cancellation-dialog';
 import { ClientSnapshotCardComponent } from './client-snapshot-card/client-snapshot-card';
 import { DocumentListComponent } from './document-list/document-list';
@@ -38,13 +40,15 @@ import type {
   selector: 'app-booking-detail',
   imports: [
     AccommodationTableComponent,
-    BookingHeaderComponent,
+    BookingStatusChipComponent,
     CancellationDialogComponent,
     ClientSnapshotCardComponent,
     DocumentListComponent,
     InvoiceListMiniComponent,
     OperationsSectionComponent,
+    PageHeading,
     TravelDetailsSectionComponent,
+    ...MAT_BUTTONS,
   ],
   templateUrl: './booking-detail.html',
   styleUrl: './booking-detail.scss',
@@ -54,6 +58,8 @@ export class BookingDetailComponent {
   private readonly router = inject(Router);
   private readonly bookingsService = inject(BookingsService);
   private readonly toast = inject(ToastService);
+
+  readonly BookingStatus = BookingStatus;
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
 
