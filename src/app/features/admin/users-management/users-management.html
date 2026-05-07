@@ -124,7 +124,13 @@
         <td [attr.colspan]="displayedColumns.length">
           <div class="m-10 text-center align-middle">
             @if (loading()) {
-              <mat-spinner diameter="32" />
+              <p class="pb-4" i18n="@@usersLoading">Loading users...</p>
+              <mat-spinner
+                aria-label="Loading users"
+                i18n-aria-label="@@usersLoadingAriaLabel"
+                class="mx-auto"
+                diameter="36"
+              />
             } @else {
               <p class="text-gray-500" i18n="@@usersEmptyState">
                 No users yet. Invite the first member.

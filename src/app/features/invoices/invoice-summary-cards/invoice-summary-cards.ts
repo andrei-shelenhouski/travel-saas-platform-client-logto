@@ -2,8 +2,6 @@ import { ChangeDetectionStrategy, Component, computed, input, output } from '@an
 
 import { InvoiceStatus } from '@app/shared/models';
 
-type CardVariant = 'draft' | 'pending' | 'overdue';
-
 @Component({
   selector: 'app-invoice-summary-cards',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -46,16 +44,6 @@ export class InvoiceSummaryCardsComponent {
 
   onOverdueClick(): void {
     this.statusesSelect.emit([InvoiceStatus.OVERDUE]);
-  }
-
-  protected cardClass(variant: CardVariant, active: boolean): string {
-    const classes: Record<CardVariant, string> = {
-      draft: 'summary-card summary-card--draft',
-      pending: 'summary-card summary-card--pending',
-      overdue: 'summary-card summary-card--overdue',
-    };
-
-    return active ? `${classes[variant]} summary-card--active` : classes[variant];
   }
 
   protected formatAmount(value: number): string {
