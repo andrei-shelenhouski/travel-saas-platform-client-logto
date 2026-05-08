@@ -278,6 +278,22 @@
           <context context-type="linenumber">43,45</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="usersLoading" datatype="html">
+        <source>Loading users...</source>
+        <target>Загрузка пользователей...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
+          <context context-type="linenumber">127,128</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersLoadingAriaLabel" datatype="html">
+        <source>Loading users</source>
+        <target>Загрузка пользователей</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
+          <context context-type="linenumber">129,130</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="usersEmptyState" datatype="html">
         <source> No users yet. Invite the first member. </source>
         <target> Пользователей пока нет. Пригласите первого участника. </target>
@@ -1292,6 +1308,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
           <context context-type="linenumber">66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="historyTabLabel" datatype="html">
+        <source>History</source>
+        <target>История</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
+          <context context-type="linenumber">96,99</context>
         </context-group>
       </trans-unit>
       <trans-unit id="leadsTabLabel" datatype="html">
@@ -3020,6 +3044,30 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-summary-cards/invoice-summary-cards.html</context>
           <context context-type="linenumber">36,37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceSummaryDraftHint" datatype="html">
+        <source>Click to filter</source>
+        <target>Нажмите для фильтрации</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-summary-cards/invoice-summary-cards.html</context>
+          <context context-type="linenumber">18,22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceSummaryPendingAmount" datatype="html">
+        <source>Amount:</source>
+        <target>Сумма:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-summary-cards/invoice-summary-cards.html</context>
+          <context context-type="linenumber">38,39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceSummaryOverdueAmount" datatype="html">
+        <source>Amount:</source>
+        <target>Сумма:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-summary-cards/invoice-summary-cards.html</context>
+          <context context-type="linenumber">60,61</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceSummaryOverdueValue" datatype="html">
