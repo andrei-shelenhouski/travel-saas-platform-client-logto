@@ -2501,15 +2501,18 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": "string",
-              "enum": [
-                "DRAFT",
-                "SENT",
-                "VIEWED",
-                "ACCEPTED",
-                "REJECTED",
-                "EXPIRED"
-              ]
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "DRAFT",
+                  "SENT",
+                  "VIEWED",
+                  "ACCEPTED",
+                  "REJECTED",
+                  "EXPIRED"
+                ]
+              }
             }
           },
           {
@@ -5963,6 +5966,10 @@
           "checkoutDate": {
             "type": "string",
             "format": "date"
+          },
+          "nights": {
+            "type": "integer",
+            "format": "int32"
           },
           "unitPrice": {
             "type": "number"

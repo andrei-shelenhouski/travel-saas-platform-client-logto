@@ -28,10 +28,8 @@ const BOOKINGS_STATS_URL = `${environment.baseUrl}/api/bookings/stats`;
 export class BookingsService {
   private readonly http = inject(HttpClient);
 
-  // eslint-disable-next-line complexity
   getList(params?: {
     page?: number;
-    size?: number;
     limit?: number;
     status?: BookingStatus | BookingStatus[];
     offerId?: string;
@@ -45,11 +43,7 @@ export class BookingsService {
       httpParams = httpParams.set('page', params.page);
     }
 
-    if (params?.size !== undefined) {
-      httpParams = httpParams.set('size', params.size);
-    }
-
-    if (params?.limit !== undefined && params?.size === undefined) {
+    if (params?.limit !== undefined) {
       httpParams = httpParams.set('limit', params.limit);
     }
 
