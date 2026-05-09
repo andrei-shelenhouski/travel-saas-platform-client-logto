@@ -48,7 +48,13 @@
           <div class="offer-header-main">
             <div>
               <p class="offer-header-label">Offer {{ displayOfferNumber() }}</p>
-              <h2 class="offer-header-title">{{ o.destination || 'Untitled offer' }}</h2>
+              <h2 class="offer-header-title">
+                @if (o.destination) {
+                  {{ o.destination }}
+                } @else {
+                  <span i18n="@@offerUntitled">Untitled offer</span>
+                }
+              </h2>
             </div>
             <div class="flex items-center gap-2">
               <span class="offer-version-badge">{{ displayVersion() }}</span>

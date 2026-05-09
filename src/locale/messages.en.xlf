@@ -437,6 +437,13 @@
           <context context-type="linenumber">18,19</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="bookingDetailsSubtitle" datatype="html">
+        <source>Booking details</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="5071191364211248740" datatype="html">
         <source>Confirm booking</source>
         <context-group purpose="location">
@@ -473,6 +480,20 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
           <context context-type="linenumber">249,250</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingNumberLabel" datatype="html">
+        <source>Booking number</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
+          <context context-type="linenumber">63,64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingIdLabel" datatype="html">
+        <source>ID:</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
+          <context context-type="linenumber">65,66</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5306146122851916248" datatype="html">
@@ -3686,6 +3707,13 @@
           <context context-type="linenumber">357</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="offerUntitled" datatype="html">
+        <source>Untitled offer</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offer-detail/offer-detail.html</context>
+          <context context-type="linenumber">55,57</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="offerPdfPreviewDialogTitle" datatype="html">
         <source>Offer <x id="INTERPOLATION" equiv-text="{{ data.offerNumber ?? data.offerId }}"/> PDF preview</source>
         <context-group purpose="location">
@@ -4042,6 +4070,20 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/onboarding/select-organization/select-organization.html</context>
           <context context-type="linenumber">22,24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestDepartDate" datatype="html">
+        <source>Depart date</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-detail/request-detail.html</context>
+          <context context-type="linenumber">45,46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestReturnDate" datatype="html">
+        <source>Return date</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-detail/request-detail.html</context>
+          <context context-type="linenumber">49,50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestFilterStatusLabel" datatype="html">
