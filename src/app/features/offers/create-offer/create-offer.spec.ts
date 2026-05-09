@@ -6,12 +6,12 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
-import { CreateOfferComponent } from './create-offer';
-
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { RequestsService } from '@app/services/requests.service';
 import { ToastService } from '@app/shared/services/toast.service';
+
+import { CreateOfferComponent } from './create-offer';
 
 import type { RequestResponseDto } from '@app/shared/models';
 
@@ -137,7 +137,9 @@ describe('CreateOfferComponent', () => {
     expect(firstAccommodation.controls.checkoutDate.hasError('required')).toBe(true);
     expect(offersServiceMock.create).not.toHaveBeenCalled();
 
-    const matErrors = fixture.nativeElement.querySelectorAll('mat-error') as NodeListOf<HTMLElement>;
+    const matErrors = fixture.nativeElement.querySelectorAll(
+      'mat-error',
+    ) as NodeListOf<HTMLElement>;
     const errorMessages = Array.from(matErrors).map((element) => element.textContent?.trim());
     const requiredMessages = errorMessages.filter((message) => message === 'Required');
 
