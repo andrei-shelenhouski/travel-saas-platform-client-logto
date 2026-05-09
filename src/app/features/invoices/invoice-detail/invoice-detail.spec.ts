@@ -1,3 +1,5 @@
+import { formatNumber } from '@angular/common';
+import { LOCALE_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
@@ -7,6 +9,7 @@ import { of } from 'rxjs';
 import { PublishInvoiceDialogComponent } from '@app/features/invoices/publish-invoice-dialog/publish-invoice-dialog';
 import { RecordPaymentModalComponent } from '@app/features/invoices/record-payment-modal/record-payment-modal';
 import { ActivitiesService } from '@app/services/activities.service';
+import { ClientsService } from '@app/services/clients.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { ToastService } from '@app/shared/services/toast.service';
@@ -30,6 +33,7 @@ describe('InvoiceDetailComponent', () => {
     deletePayment: ReturnType<typeof vi.fn>;
   };
 
+  let clientsService: { getById: ReturnType<typeof vi.fn> };
   let activitiesService: { findByEntity: ReturnType<typeof vi.fn> };
   let dialog: { open: ReturnType<typeof vi.fn> };
 
@@ -84,6 +88,34 @@ describe('InvoiceDetailComponent', () => {
       deletePayment: vi.fn(() => of(undefined)),
     };
 
+    clientsService = {
+      getById: vi.fn(() =>
+        of({
+          id: 'client-1',
+          organizationId: 'org-1',
+          type: 'PERSON',
+          fullName: 'UAT Test Client',
+          email: null,
+          phone: null,
+          telegramHandle: null,
+          notes: null,
+          companyName: null,
+          legalAddress: null,
+          unp: null,
+          okpo: null,
+          commissionPct: null,
+          iban: null,
+          bankName: null,
+          bik: null,
+          dataConsentGiven: true,
+          dataConsentDate: null,
+          createdAt: '2026-05-01T09:00:00Z',
+          updatedAt: '2026-05-01T09:00:00Z',
+          contacts: [],
+        }),
+      ),
+    };
+
     activitiesService = {
       findByEntity: vi.fn(() => of({ items: [], total: 0, page: 0, limit: 20 })),
     };
@@ -107,6 +139,10 @@ describe('InvoiceDetailComponent', () => {
         {
           provide: ActivitiesService,
           useValue: activitiesService,
+        },
+        {
+          provide: ClientsService,
+          useValue: clientsService,
         },
         {
           provide: ToastService,
@@ -148,6 +184,15 @@ describe('InvoiceDetailComponent', () => {
       expect.objectContaining({ data: { invoiceId: 'invoice-1', invoiceNumber: 'INV-001' } }),
     );
     expect(invoicesService.publish).not.toHaveBeenCalled();
+  });
+
+  it('resolves client name by client id when draft payload has no name fields', async () => {
+    void component.clientName();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(clientsService.getById).toHaveBeenCalledWith('client-1');
+    expect(component.clientName()).toBe('UAT Test Client');
   });
 
   it('downloads pdf for non-draft invoice', () => {
@@ -236,6 +281,34 @@ describe('InvoiceDetailComponent', () => {
 
     expect(dataReload).toHaveBeenCalled();
     expect(activitiesReload).toHaveBeenCalled();
+  });
+
+  it('formats line item unit price and total with currency', () => {
+    const locale = TestBed.inject(LOCALE_ID);
+
+    (component as unknown as { data: { set: (invoice: InvoiceResponseDto) => void } }).data.set({
+      ...makeInvoice('ISSUED'),
+      lineItems: [
+        {
+          id: 'line-1',
+          description: 'Test service',
+          unitPrice: 10650,
+          quantity: 1,
+          total: 10650,
+        },
+      ],
+    } as InvoiceResponseDto);
+    fixture.detectChanges();
+
+    const lineItemsTableText = (
+      fixture.nativeElement.querySelector('mat-table') as HTMLElement | null
+    )?.textContent;
+    const expectedFormattedAmount = `${formatNumber(10650, locale, '1.2-2')} BYN`;
+    const formattedOccurrences = (lineItemsTableText ?? '').match(
+      new RegExp(expectedFormattedAmount.replace('.', '\\.'), 'g'),
+    )?.length;
+
+    expect(formattedOccurrences).toBe(2);
   });
 
   it('opens delete payment confirmation', () => {

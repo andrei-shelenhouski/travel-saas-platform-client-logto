@@ -66,7 +66,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">141</context>
+          <context context-type="linenumber">150</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersInviteSending" datatype="html">
@@ -153,7 +153,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">72</context>
+          <context context-type="linenumber">81</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersInviteError" datatype="html">
@@ -171,7 +171,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">73</context>
+          <context context-type="linenumber">82</context>
         </context-group>
       </trans-unit>
       <trans-unit id="userManagement" datatype="html">
@@ -283,88 +283,102 @@
           <context context-type="linenumber">166,169</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="usersTotalSubtitleOne" datatype="html">
+        <source>Total: <x id="count" equiv-text="totalUsers"/> user</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">71</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersTotalSubtitleOther" datatype="html">
+        <source>Total: <x id="count" equiv-text="totalUsers"/> users</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">74</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="usersStatusActive" datatype="html">
         <source>Active</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">67</context>
+          <context context-type="linenumber">76</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersStatusInactive" datatype="html">
         <source>Inactive</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">68</context>
+          <context context-type="linenumber">77</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersRoleUpdated" datatype="html">
         <source>Role updated</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">119</context>
+          <context context-type="linenumber">128</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersUpdateRoleError" datatype="html">
         <source>Failed to update role</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">127</context>
+          <context context-type="linenumber">136</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersDeactivateTitle" datatype="html">
         <source>Deactivate user</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">138</context>
+          <context context-type="linenumber">147</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersDeactivateMessage" datatype="html">
         <source>Deactivate <x id="PH" equiv-text="user.fullName"/>? The user will immediately lose access to the system.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">139</context>
+          <context context-type="linenumber">148</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersDeactivateAction" datatype="html">
         <source>Deactivate</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">140</context>
+          <context context-type="linenumber">149</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersActivated" datatype="html">
         <source>User activated</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">160</context>
+          <context context-type="linenumber">169</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersActivateError" datatype="html">
         <source>Failed to activate user</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">169</context>
+          <context context-type="linenumber">178</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersDeactivated" datatype="html">
         <source>User deactivated</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">204</context>
+          <context context-type="linenumber">213</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersDeactivateError" datatype="html">
         <source>Failed to deactivate user</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">213</context>
+          <context context-type="linenumber">222</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersLoadError" datatype="html">
         <source>Failed to load users</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">243</context>
+          <context context-type="linenumber">252</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8348011332568414135" datatype="html">
@@ -441,25 +455,25 @@
         <source>Booking details</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
-          <context context-type="linenumber">25</context>
+          <context context-type="linenumber">26,27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5071191364211248740" datatype="html">
         <source>Confirm booking</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
-          <context context-type="linenumber">34,35</context>
+          <context context-type="linenumber">39,40</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2159130950882492111" datatype="html">
         <source>Cancel</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
-          <context context-type="linenumber">43,44</context>
+          <context context-type="linenumber">48,49</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
-          <context context-type="linenumber">54,55</context>
+          <context context-type="linenumber">59,60</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/cancellation-dialog/cancellation-dialog.html</context>
@@ -486,21 +500,21 @@
         <source>Booking number</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
-          <context context-type="linenumber">63,64</context>
+          <context context-type="linenumber">68,69</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingIdLabel" datatype="html">
         <source>ID:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
-          <context context-type="linenumber">65,66</context>
+          <context context-type="linenumber">71,72</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5306146122851916248" datatype="html">
         <source>Booking not found</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
-          <context context-type="linenumber">104,105</context>
+          <context context-type="linenumber">111,112</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingNotFoundTitle" datatype="html">
@@ -2259,168 +2273,168 @@
         <source> Quantity </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">349,350</context>
+          <context context-type="linenumber">353,354</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailColTotal" datatype="html">
         <source> Total </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">363,364</context>
+          <context context-type="linenumber">367,368</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailColTourCost" datatype="html">
         <source> Tour cost </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">377,378</context>
+          <context context-type="linenumber">385,386</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailColCommission" datatype="html">
         <source> Commission </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">391,392</context>
+          <context context-type="linenumber">403,404</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailColCommissionVat" datatype="html">
         <source> Commission VAT </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">405,406</context>
+          <context context-type="linenumber">421,422</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailColNetToPay" datatype="html">
         <source> Net to pay </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">419,420</context>
+          <context context-type="linenumber">439,440</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailNoLineItems" datatype="html">
         <source>No line items.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">431,435</context>
+          <context context-type="linenumber">453,457</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailPricingTitle" datatype="html">
         <source> Pricing </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">438,440</context>
+          <context context-type="linenumber">460,462</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailSubtotalLabel" datatype="html">
         <source>Subtotal</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">442,443</context>
+          <context context-type="linenumber">464,465</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailDiscountLabel" datatype="html">
         <source>Discount</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">449,450</context>
+          <context context-type="linenumber">471,472</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailCommissionVatLabel" datatype="html">
         <source>Commission VAT</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">457,458</context>
+          <context context-type="linenumber">479,480</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailTotalLabel" datatype="html">
         <source>Total</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">464,465</context>
+          <context context-type="linenumber">486,487</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailAmountInWordsLabel" datatype="html">
         <source> Amount in words </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">474,476</context>
+          <context context-type="linenumber">496,498</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailPaymentsTitle" datatype="html">
         <source> Payments </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">483,485</context>
+          <context context-type="linenumber">505,507</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailBtnDeletePayment" datatype="html">
         <source><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>delete<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Delete </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">514,516</context>
+          <context context-type="linenumber">536,538</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailPaidLabel" datatype="html">
         <source>Paid:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">523,524</context>
+          <context context-type="linenumber">545,546</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailRemainingLabel" datatype="html">
         <source>Remaining:</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">529,531</context>
+          <context context-type="linenumber">551,553</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailNoPayments" datatype="html">
         <source>No payments.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">540,544</context>
+          <context context-type="linenumber">562,566</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailActivityTitle" datatype="html">
         <source>Activity log</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">546,547</context>
+          <context context-type="linenumber">568,569</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailNotFound" datatype="html">
         <source>Invoice not found.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">551,556</context>
+          <context context-type="linenumber">573,578</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailDeletePaymentCancelLabel" datatype="html">
         <source>Cancel</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">559</context>
+          <context context-type="linenumber">581</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailDeletePaymentConfirmLabel" datatype="html">
         <source>Delete</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">561</context>
+          <context context-type="linenumber">583</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailDeletePaymentDialogTitle" datatype="html">
         <source>Delete payment</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">562,563</context>
+          <context context-type="linenumber">584,585</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailDeletePaymentMessage" datatype="html">
         <source>Delete payment of <x id="AMOUNT" equiv-text="this.pendingDeletePaymentLabel()"/>? This action is irreversible.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.ts</context>
-          <context context-type="linenumber">201</context>
+          <context context-type="linenumber">236</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceFilterStatusLabel" datatype="html">
@@ -3664,15 +3678,29 @@
           <context context-type="linenumber">37,40</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="createOfferCheckinDateRequiredError" datatype="html">
+        <source>Check-in date is required</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.html</context>
+          <context context-type="linenumber">194,196</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createOfferCheckoutDateRequiredError" datatype="html">
+        <source>Check-out date is required</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.html</context>
+          <context context-type="linenumber">211,213</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="offerPdfPreviewButton" datatype="html">
         <source> Preview PDF </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.html</context>
-          <context context-type="linenumber">370,372</context>
+          <context context-type="linenumber">386,388</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/offer-detail/offer-detail.html</context>
-          <context context-type="linenumber">31,33</context>
+          <context context-type="linenumber">27,29</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/offer-edit/offer-edit.html</context>
@@ -3711,7 +3739,21 @@
         <source>Untitled offer</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/offer-detail/offer-detail.html</context>
-          <context context-type="linenumber">55,57</context>
+          <context context-type="linenumber">51,53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerDetailPageTitle" datatype="html">
+        <source>Offer <x id="offerNumber" equiv-text="this.displayOfferNumber()"/></source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offer-detail/offer-detail.ts</context>
+          <context context-type="linenumber">155</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerDetailPageSubtitle" datatype="html">
+        <source>Offer details</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offer-detail/offer-detail.ts</context>
+          <context context-type="linenumber">157</context>
         </context-group>
       </trans-unit>
       <trans-unit id="offerPdfPreviewDialogTitle" datatype="html">
@@ -4072,18 +4114,39 @@
           <context context-type="linenumber">22,24</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="requestCreateOfferButton" datatype="html">
+        <source> Create offer </source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-detail/request-detail.html</context>
+          <context context-type="linenumber">24,26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestHeaderLabel" datatype="html">
+        <source>Travel request</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-detail/request-detail.html</context>
+          <context context-type="linenumber">32,33</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="requestDepartDate" datatype="html">
         <source>Depart date</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/request-detail/request-detail.html</context>
-          <context context-type="linenumber">45,46</context>
+          <context context-type="linenumber">55,56</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestReturnDate" datatype="html">
         <source>Return date</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/request-detail/request-detail.html</context>
-          <context context-type="linenumber">49,50</context>
+          <context context-type="linenumber">59,60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestDetailSubtitle" datatype="html">
+        <source>Travel request</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-detail/request-detail.ts</context>
+          <context context-type="linenumber">43</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestFilterStatusLabel" datatype="html">
@@ -4238,6 +4301,34 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
           <context context-type="linenumber">103,106</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="companyProfileDefaultPaymentTermsDaysLabel" datatype="html">
+        <source>Default payment term (days)</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/company-profile/company-profile.html</context>
+          <context context-type="linenumber">198,201</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="companyProfileDefaultPaymentTermsDaysHint" datatype="html">
+        <source>Used when creating a new invoice</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/company-profile/company-profile.html</context>
+          <context context-type="linenumber">208,210</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="companyProfileDefaultPaymentTermsDaysRequired" datatype="html">
+        <source>Required field</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/company-profile/company-profile.html</context>
+          <context context-type="linenumber">212,215</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="companyProfileDefaultPaymentTermsDaysRange" datatype="html">
+        <source>From 1 to 365 days</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/company-profile/company-profile.html</context>
+          <context context-type="linenumber">220,223</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noOtherOrganizations" datatype="html">

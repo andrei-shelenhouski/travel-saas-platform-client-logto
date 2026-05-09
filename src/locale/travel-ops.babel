@@ -357,23 +357,6 @@
                 </translations>
             </concept_node>
             <concept_node>
-                <name>3213927575781379768</name>
-                <definition_loaded>false</definition_loaded>
-                <description/>
-                <comment/>
-                <default_text/>
-                <translations>
-                    <translation>
-                        <language>en-US</language>
-                        <approved>false</approved>
-                    </translation>
-                    <translation>
-                        <language>ru-BY</language>
-                        <approved>false</approved>
-                    </translation>
-                </translations>
-            </concept_node>
-            <concept_node>
                 <name>3262236020277300799</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
@@ -1360,6 +1343,23 @@
                 </translations>
             </concept_node>
             <concept_node>
+                <name>bookingDetailsSubtitle</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
                 <name>bookingDocumentDeleteFailed</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
@@ -1530,6 +1530,23 @@
                 </translations>
             </concept_node>
             <concept_node>
+                <name>bookingIdLabel</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
                 <name>bookingLoadFailed</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
@@ -1565,6 +1582,23 @@
             </concept_node>
             <concept_node>
                 <name>bookingNumberColumn</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
+                <name>bookingNumberLabel</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
                 <comment/>
@@ -2465,6 +2499,74 @@
                 </translations>
             </concept_node>
             <concept_node>
+                <name>companyProfileDefaultPaymentTermsDaysHint</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
+                <name>companyProfileDefaultPaymentTermsDaysLabel</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
+                <name>companyProfileDefaultPaymentTermsDaysRange</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
+                <name>companyProfileDefaultPaymentTermsDaysRequired</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
                 <name>createClientBankNameLabel</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
@@ -2941,6 +3043,40 @@
                 </translations>
             </concept_node>
             <concept_node>
+                <name>createOfferCheckinDateRequiredError</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
+                <name>createOfferCheckoutDateRequiredError</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
                 <name>createOfferDestinationNotSet</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
@@ -3146,6 +3282,23 @@
             </concept_node>
             <concept_node>
                 <name>editClient</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
+                <name>historyTabLabel</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
                 <comment/>
@@ -5865,6 +6018,23 @@
                 </translations>
             </concept_node>
             <concept_node>
+                <name>invoiceSummaryDraftHint</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
                 <name>invoiceSummaryDraftTitle</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
@@ -5882,7 +6052,7 @@
                 </translations>
             </concept_node>
             <concept_node>
-                <name>invoiceSummaryDraftValue</name>
+                <name>invoiceSummaryOverdueAmount</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
                 <comment/>
@@ -5933,7 +6103,7 @@
                 </translations>
             </concept_node>
             <concept_node>
-                <name>invoiceSummaryOverdueValue</name>
+                <name>invoiceSummaryPendingAmount</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
                 <comment/>
@@ -5968,23 +6138,6 @@
             </concept_node>
             <concept_node>
                 <name>invoiceSummaryPendingTitle</name>
-                <definition_loaded>false</definition_loaded>
-                <description/>
-                <comment/>
-                <default_text/>
-                <translations>
-                    <translation>
-                        <language>en-US</language>
-                        <approved>false</approved>
-                    </translation>
-                    <translation>
-                        <language>ru-BY</language>
-                        <approved>false</approved>
-                    </translation>
-                </translations>
-            </concept_node>
-            <concept_node>
-                <name>invoiceSummaryPendingValue</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
                 <comment/>
@@ -7276,6 +7429,40 @@
                 </translations>
             </concept_node>
             <concept_node>
+                <name>offerDetailPageSubtitle</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
+                <name>offerDetailPageTitle</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
                 <name>offerKanbanDefaultTransitionError</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
@@ -7855,6 +8042,23 @@
             </concept_node>
             <concept_node>
                 <name>offerStatusWon</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
+                <name>offerUntitled</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
                 <comment/>
@@ -8840,6 +9044,57 @@
                 </translations>
             </concept_node>
             <concept_node>
+                <name>requestCreateOfferButton</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
+                <name>requestDepartDate</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
+                <name>requestDetailSubtitle</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
                 <name>requestFilterAllManagersOption</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
@@ -8926,6 +9181,40 @@
             </concept_node>
             <concept_node>
                 <name>requestFilterStatusLabel</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
+                <name>requestHeaderLabel</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
+                <name>requestReturnDate</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
                 <comment/>
@@ -9520,23 +9809,6 @@
                 </translations>
             </concept_node>
             <concept_node>
-                <name>userManagementDescription</name>
-                <definition_loaded>false</definition_loaded>
-                <description/>
-                <comment/>
-                <default_text/>
-                <translations>
-                    <translation>
-                        <language>en-US</language>
-                        <approved>false</approved>
-                    </translation>
-                    <translation>
-                        <language>ru-BY</language>
-                        <approved>false</approved>
-                    </translation>
-                </translations>
-            </concept_node>
-            <concept_node>
                 <name>usersActionsMenuAria</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
@@ -9572,23 +9844,6 @@
             </concept_node>
             <concept_node>
                 <name>usersActivated</name>
-                <definition_loaded>false</definition_loaded>
-                <description/>
-                <comment/>
-                <default_text/>
-                <translations>
-                    <translation>
-                        <language>en-US</language>
-                        <approved>false</approved>
-                    </translation>
-                    <translation>
-                        <language>ru-BY</language>
-                        <approved>false</approved>
-                    </translation>
-                </translations>
-            </concept_node>
-            <concept_node>
-                <name>usersBackToDashboard</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
                 <comment/>
@@ -10081,6 +10336,40 @@
                 </translations>
             </concept_node>
             <concept_node>
+                <name>usersLoading</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
+                <name>usersLoadingAriaLabel</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
                 <name>usersReactivateActionMenu</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
@@ -10218,6 +10507,40 @@
             </concept_node>
             <concept_node>
                 <name>usersStatusInactive</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
+                <name>usersTotalSubtitleOne</name>
+                <definition_loaded>false</definition_loaded>
+                <description/>
+                <comment/>
+                <default_text/>
+                <translations>
+                    <translation>
+                        <language>en-US</language>
+                        <approved>false</approved>
+                    </translation>
+                    <translation>
+                        <language>ru-BY</language>
+                        <approved>false</approved>
+                    </translation>
+                </translations>
+            </concept_node>
+            <concept_node>
+                <name>usersTotalSubtitleOther</name>
                 <definition_loaded>false</definition_loaded>
                 <description/>
                 <comment/>
