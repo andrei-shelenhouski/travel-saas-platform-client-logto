@@ -194,6 +194,16 @@
             </mat-form-field>
 
             <mat-form-field>
+              <mat-label>Срок оплаты по умолчанию (дней)</mat-label>
+              <mat-select formControlName="defaultPaymentTermsDays">
+                @for (days of paymentTermsDaysOptions; track days) {
+                  <mat-option [value]="days">{{ days }}</mat-option>
+                }
+              </mat-select>
+              <mat-hint>Используется при создании нового счёта</mat-hint>
+            </mat-form-field>
+
+            <mat-form-field>
               <mat-label>Комиссия по умолчанию (%)</mat-label>
               <input
                 formControlName="defaultCommissionPct"

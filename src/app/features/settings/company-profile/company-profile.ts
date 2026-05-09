@@ -69,6 +69,7 @@ export class CompanyProfileComponent implements PendingChangesComponent {
     invoicePrefix: ['INV-'],
     offerValidityDays: [7, [Validators.required, Validators.min(1), Validators.max(365)]],
     leadExpiryDays: [30, [Validators.required, Validators.min(1), Validators.max(365)]],
+    defaultPaymentTermsDays: [1, [Validators.required, Validators.min(1), Validators.max(365)]],
     defaultPaymentTerms: [''],
     defaultCommissionPct: [10.0, [Validators.min(0), Validators.max(100)]],
   });
@@ -83,6 +84,8 @@ export class CompanyProfileComponent implements PendingChangesComponent {
     { value: 'RU' as OrganizationLanguage, label: 'Русский' },
     { value: 'EN' as OrganizationLanguage, label: 'English' },
   ];
+
+  protected readonly paymentTermsDaysOptions = [1, 3, 7, 14, 30];
 
   constructor() {
     this.loadSettings();
@@ -133,6 +136,7 @@ export class CompanyProfileComponent implements PendingChangesComponent {
       invoicePrefix: data.invoicePrefix ?? 'INV-',
       offerValidityDays: data.offerValidityDays ?? 7,
       leadExpiryDays: data.leadExpiryDays ?? 30,
+      defaultPaymentTermsDays: data.defaultPaymentTermsDays ?? 1,
       defaultPaymentTerms: data.defaultPaymentTerms ?? '',
       defaultCommissionPct: data.defaultCommissionPct ?? 10.0,
     });
