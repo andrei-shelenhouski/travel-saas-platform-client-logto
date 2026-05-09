@@ -1,7 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-import { AccommodationDto } from '@app/shared/models';
+import type { BookingAccommodationDto } from '@app/shared/models';
 
 @Component({
   selector: 'app-accommodation-table',
@@ -11,9 +11,9 @@ import { AccommodationDto } from '@app/shared/models';
   styleUrl: './accommodation-table.scss',
 })
 export class AccommodationTableComponent {
-  readonly accommodationDetails = input<AccommodationDto[] | null | undefined>(null);
+  readonly accommodationDetails = input<BookingAccommodationDto[] | null | undefined>(null);
 
-  readonly rows = computed<AccommodationDto[]>(() => {
+  readonly rows = computed<BookingAccommodationDto[]>(() => {
     const details = this.accommodationDetails();
 
     if (!details) {

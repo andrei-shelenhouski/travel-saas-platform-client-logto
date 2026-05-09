@@ -363,6 +363,17 @@ export type AccommodationDto = {
   total?: number;
 };
 
+/** OpenAPI: BookingAccommodationDto. Accommodation in booking requests and responses. */
+export type BookingAccommodationDto = {
+  hotelName?: string;
+  roomType?: string;
+  mealPlan?: string;
+  checkinDate?: string;
+  checkoutDate?: string;
+  nights?: number;
+  total?: number;
+};
+
 /** OpenAPI: ServiceItemDto. Service line item in OfferResponse. */
 export type ServiceItemDto = {
   id?: string;
@@ -484,7 +495,7 @@ export type CreateBookingDto = {
   returnDate?: string;
   adults?: number;
   children?: number;
-  accommodationDetails?: AccommodationDto[];
+  accommodationDetails?: BookingAccommodationDto[];
   assignedBackofficeId?: string;
   internalNotes?: string;
 };
@@ -494,7 +505,7 @@ export type UpdateBookingDto = {
   supplierConfirmationNumber?: string;
   internalNotes?: string;
   assignedBackofficeId?: string;
-  accommodationDetails?: AccommodationDto[];
+  accommodationDetails?: BookingAccommodationDto[];
   destination?: string;
   departDate?: string;
   returnDate?: string;
@@ -535,7 +546,7 @@ export type BookingResponseDto = {
   returnDate?: string;
   adults?: number;
   children?: number;
-  accommodationDetails?: AccommodationDto[];
+  accommodationDetails?: BookingAccommodationDto[];
   supplierConfirmationNumber?: string;
   assignedBackofficeId?: string;
   assignedBackofficeName?: string;

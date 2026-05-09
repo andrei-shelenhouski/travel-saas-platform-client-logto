@@ -80,7 +80,7 @@ export class BookingsService {
     return this.http.get<BookingResponseDto>(`${BOOKINGS_URL}/${id}`);
   }
 
-  /** GET /api/bookings/stats. Returns counts by status (PENDING, CONFIRMED, PAID, CANCELLED per OpenAPI). */
+  /** GET /api/bookings/stats. Returns counts by status (PENDING_CONFIRMATION, CONFIRMED, IN_PROGRESS, COMPLETED, CANCELLED per OpenAPI). */
   getStatistics(): Observable<Record<string, number>> {
     return this.http.get<Record<string, number>>(BOOKINGS_STATS_URL);
   }

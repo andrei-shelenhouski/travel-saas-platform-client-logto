@@ -6823,6 +6823,35 @@
           }
         }
       },
+      "BookingAccommodationDto": {
+        "type": "object",
+        "properties": {
+          "hotelName": {
+            "type": "string"
+          },
+          "roomType": {
+            "type": "string"
+          },
+          "mealPlan": {
+            "type": "string"
+          },
+          "checkinDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "checkoutDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "nights": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "total": {
+            "type": "number"
+          }
+        }
+      },
       "UpdateBookingRequest": {
         "type": "object",
         "properties": {
@@ -6839,8 +6868,7 @@
           "accommodationDetails": {
             "type": "array",
             "items": {
-              "type": "object",
-              "additionalProperties": {}
+              "$ref": "#/components/schemas/BookingAccommodationDto"
             }
           },
           "destination": {
@@ -6908,8 +6936,7 @@
           "accommodationDetails": {
             "type": "array",
             "items": {
-              "type": "object",
-              "additionalProperties": {}
+              "$ref": "#/components/schemas/BookingAccommodationDto"
             }
           },
           "supplierConfirmationNumber": {
@@ -7774,8 +7801,7 @@
           "accommodationDetails": {
             "type": "array",
             "items": {
-              "type": "object",
-              "additionalProperties": {}
+              "$ref": "#/components/schemas/BookingAccommodationDto"
             }
           },
           "assignedBackofficeId": {
