@@ -337,7 +337,7 @@ describe('CreateInvoiceComponent', () => {
 
     expect(newRow.controls.commissionAmount.value).toBe(75);
     expect(newRow.controls.netToPay.value).toBe(425);
-    expect(newRow.controls.commissionVat.value).toBe(15);
+    expect(newRow.controls.commissionVat.value).toBe(12.5);
   });
 
   it('updates netToPay and commissionVat when default commission is applied programmatically for B2B_AGENT', async () => {
@@ -375,6 +375,28 @@ describe('CreateInvoiceComponent', () => {
 
     expect(row.controls.commissionAmount.value).toBe(240);
     expect(row.controls.netToPay.value).toBe(1760);
-    expect(row.controls.commissionVat.value).toBe(48);
+    expect(row.controls.commissionVat.value).toBe(40);
+  });
+
+  it('extracts VAT from VAT-inclusive commission amount for B2B mode', async () => {
+    await createComponent();
+
+    const cmp = component as unknown as {
+      form: CreateInvoiceComponent['form'];
+      lineItemsArray: CreateInvoiceComponent['lineItemsArray'];
+      onB2bTourCostInput: (index: number) => void;
+    };
+
+    cmp.form.controls.clientType.setValue(ClientType.B2B_AGENT);
+
+    const row = cmp.lineItemsArray.at(0);
+
+    row.controls.tourCost.setValue(16170);
+    row.controls.commissionPct.setValue(10);
+    cmp.onB2bTourCostInput(0);
+    fixture.detectChanges();
+
+    expect(row.controls.commissionAmount.value).toBe(1617);
+    expect(row.controls.commissionVat.value).toBeCloseTo(269.5, 2);
   });
 });

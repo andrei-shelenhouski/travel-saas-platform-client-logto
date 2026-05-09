@@ -755,8 +755,9 @@ export class CreateInvoiceComponent {
     const tourCost = this.toSafeNumber(row.controls.tourCost.value);
     const commissionAmount = this.toSafeNumber(row.controls.commissionAmount.value);
     const normalizedCommissionAmount = Math.max(0, commissionAmount);
+    const vatRate = 0.2;
     const netToPay = Math.max(0, tourCost - normalizedCommissionAmount);
-    const commissionVat = normalizedCommissionAmount * 0.2;
+    const commissionVat = (normalizedCommissionAmount * vatRate) / (1 + vatRate);
 
     row.controls.commissionAmount.updateValueAndValidity();
     row.controls.netToPay.setValue(netToPay);
