@@ -16,6 +16,21 @@ import { LeadDetailComponent } from './lead-detail';
 
 import type { ActivityListResponseDto, LeadResponseDto } from '@app/shared/models';
 
+const organizationMembersServiceMock = {
+  findAll: vi.fn(() =>
+    of([
+      {
+        id: 'member-1',
+        userId: 'user-1',
+        name: 'Andrei Shelenhouski',
+        email: 'andrei@example.com',
+        role: 'AGENT',
+        active: true,
+      },
+    ]),
+  ),
+};
+
 describe('LeadDetailComponent', () => {
   let component: LeadDetailComponent;
   let fixture: ComponentFixture<LeadDetailComponent>;
@@ -57,10 +72,7 @@ describe('LeadDetailComponent', () => {
           provide: OffersService,
           useValue: { getList: () => of({ items: [], total: 0, page: 1, limit: 100 }) },
         },
-        {
-          provide: OrganizationMembersService,
-          useValue: { findAll: () => of([]) },
-        },
+        { provide: OrganizationMembersService, useValue: organizationMembersServiceMock },
         {
           provide: RoleService,
           useValue: {
@@ -306,6 +318,54 @@ describe('LeadDetailComponent', () => {
     api.saveEditedTravelRequest('request-1');
 
     expect(requestsServiceMock.update).toHaveBeenCalledTimes(2);
+  });
+
+  it('shows resolved actor full name for user-triggered activity', () => {
+    const api = component as unknown as {
+      getActivityActor: (item: {
+        payload: Record<string, unknown> | null;
+        createdBy: string;
+      }) => string;
+    };
+
+    const actor = api.getActivityActor({
+      payload: null,
+      createdBy: 'user-1',
+    });
+
+    expect(actor).toBe('Andrei Shelenhouski');
+  });
+
+  it('falls back to createdBy value when actor cannot be resolved', () => {
+    const api = component as unknown as {
+      getActivityActor: (item: {
+        payload: Record<string, unknown> | null;
+        createdBy: string;
+      }) => string;
+    };
+
+    const actor = api.getActivityActor({
+      payload: null,
+      createdBy: 'be2ac944-f4a5-401e-b84f-a5acf01cdea3',
+    });
+
+    expect(actor).toBe('be2ac944-f4a5-401e-b84f-a5acf01cdea3');
+  });
+
+  it('keeps system actor label unchanged', () => {
+    const api = component as unknown as {
+      getActivityActor: (item: {
+        payload: Record<string, unknown> | null;
+        createdBy: string;
+      }) => string;
+    };
+
+    const actor = api.getActivityActor({
+      payload: null,
+      createdBy: 'system',
+    });
+
+    expect(actor).toBe('System action');
   });
 });
 

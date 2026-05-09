@@ -156,11 +156,7 @@ export class LeadDetailComponent {
 
   private readonly membersData = rxResource({
     stream: () => {
-      return this.membersService
-        .findAll()
-        .pipe(
-          map((items) => items.filter((member) => member.active && SALES_ROLES.has(member.role))),
-        );
+      return this.membersService.findAll();
     },
   });
 
@@ -332,7 +328,28 @@ export class LeadDetailComponent {
     },
   );
 
-  protected readonly filteredAgents = computed(() => this.membersData.value() ?? []);
+  protected readonly filteredAgents = computed(() => {
+    return (this.membersData.value() ?? []).filter((member) => {
+      return member.active && SALES_ROLES.has(member.role);
+    });
+  });
+
+  private readonly activityActorNameByUserId = computed(() => {
+    const actorNameByUserId = new Map<string, string>();
+
+    for (const member of this.membersData.value() ?? []) {
+      const userId = member.userId.trim();
+      const displayName = member.name.trim();
+
+      if (!userId || !displayName) {
+        continue;
+      }
+
+      actorNameByUserId.set(userId, displayName);
+    }
+
+    return actorNameByUserId;
+  });
 
   constructor() {
     effect(() => {
@@ -1017,7 +1034,24 @@ export class LeadDetailComponent {
       return actorName;
     }
 
-    return item.createdBy || 'System action';
+    const createdBy = item.createdBy?.trim() ?? '';
+    const normalizedCreatedBy = createdBy.toLowerCase();
+
+    if (normalizedCreatedBy === 'system' || normalizedCreatedBy === 'system action') {
+      return 'System action';
+    }
+
+    const resolvedActorName = this.activityActorNameByUserId().get(createdBy);
+
+    if (resolvedActorName) {
+      return resolvedActorName;
+    }
+
+    if (createdBy) {
+      return createdBy;
+    }
+
+    return 'Unknown user';
   }
 
   protected isSystemEvent(item: ActivityResponseDto): boolean {
