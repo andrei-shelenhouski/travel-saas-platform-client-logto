@@ -1051,7 +1051,7 @@ export class LeadDetailComponent {
       return createdBy;
     }
 
-    return 'Unknown user';
+    return 'System action';
   }
 
   protected isSystemEvent(item: ActivityResponseDto): boolean {

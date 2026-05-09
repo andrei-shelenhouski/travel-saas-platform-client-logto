@@ -367,6 +367,22 @@ describe('LeadDetailComponent', () => {
 
     expect(actor).toBe('System action');
   });
+
+  it('defaults to system actor label when createdBy is empty', () => {
+    const api = component as unknown as {
+      getActivityActor: (item: {
+        payload: Record<string, unknown> | null;
+        createdBy: string;
+      }) => string;
+    };
+
+    const actor = api.getActivityActor({
+      payload: null,
+      createdBy: '',
+    });
+
+    expect(actor).toBe('System action');
+  });
 });
 
 function createRequest(
