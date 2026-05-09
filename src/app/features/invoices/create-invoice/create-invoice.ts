@@ -109,6 +109,7 @@ export class CreateInvoiceComponent {
   protected readonly selectedClientCommissionPct = signal<number | null>(null);
   protected readonly defaultCommissionPct = signal<number | null>(null);
   protected readonly booking = signal<BookingResponseDto | null>(null);
+  private readonly initialInvoiceDate = this.todayIsoDate();
 
   protected readonly clientSearchControl = this.fb.nonNullable.control('');
   protected readonly form: InvoiceFormGroup = this.fb.group(
@@ -119,8 +120,11 @@ export class CreateInvoiceComponent {
         ClientType.INDIVIDUAL,
         Validators.required,
       ),
-      invoiceDate: this.fb.nonNullable.control(this.todayIsoDate(), Validators.required),
-      dueDate: this.fb.nonNullable.control(this.todayIsoDate(), Validators.required),
+      invoiceDate: this.fb.nonNullable.control(this.initialInvoiceDate, Validators.required),
+      dueDate: this.fb.nonNullable.control(
+        this.addDaysToIsoDate(this.initialInvoiceDate, 1),
+        Validators.required,
+      ),
       currency: this.fb.nonNullable.control('EUR', Validators.required),
       language: this.fb.nonNullable.control('EN', Validators.required),
       paymentTerms: this.fb.nonNullable.control(''),
@@ -496,10 +500,16 @@ export class CreateInvoiceComponent {
           settings.defaultLanguage && LANGUAGE_OPTIONS.includes(settings.defaultLanguage)
             ? settings.defaultLanguage
             : 'EN';
+        const paymentTermsDays = this.normalizePaymentTermsDays(settings.defaultPaymentTermsDays);
+        const dueDate = this.addDaysToIsoDate(
+          this.form.controls.invoiceDate.getRawValue(),
+          paymentTermsDays,
+        );
 
         this.defaultCommissionPct.set(settings.defaultCommissionPct ?? null);
         this.form.patchValue({
           currency,
+          dueDate,
           language,
           paymentTerms: settings.defaultPaymentTerms ?? '',
         });
@@ -877,5 +887,25 @@ export class CreateInvoiceComponent {
 
   private todayIsoDate(): string {
     return new Date().toISOString().slice(0, 10);
+  }
+
+  private addDaysToIsoDate(isoDate: string, daysToAdd: number): string {
+    const date = new Date(`${isoDate}T12:00:00.000Z`);
+
+    if (Number.isNaN(date.getTime())) {
+      return isoDate;
+    }
+
+    date.setUTCDate(date.getUTCDate() + daysToAdd);
+
+    return date.toISOString().slice(0, 10);
+  }
+
+  private normalizePaymentTermsDays(days: number | null | undefined): number {
+    if (typeof days !== 'number' || !Number.isFinite(days)) {
+      return 1;
+    }
+
+    return Math.max(1, Math.trunc(days));
   }
 }
