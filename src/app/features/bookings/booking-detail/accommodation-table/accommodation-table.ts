@@ -1,6 +1,8 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
+import { calculateNights } from '@app/features/offers/offer-builder.utils';
+
 import type { BookingAccommodationDto } from '@app/shared/models';
 
 @Component({
@@ -20,6 +22,19 @@ export class AccommodationTableComponent {
       return [];
     }
 
-    return details;
+    return details.map((detail) => {
+      if (detail.nights !== undefined && detail.nights !== null) {
+        return detail;
+      }
+
+      if (!detail.checkinDate || !detail.checkoutDate) {
+        return detail;
+      }
+
+      return {
+        ...detail,
+        nights: calculateNights(detail.checkinDate, detail.checkoutDate),
+      };
+    });
   });
 }

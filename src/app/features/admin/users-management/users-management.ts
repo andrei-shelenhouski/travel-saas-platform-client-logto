@@ -64,6 +64,15 @@ export class UsersManagementComponent {
 
   protected readonly currentUserId = computed(() => this.permissions.currentUserId() ?? null);
   protected readonly totalUsers = computed(() => this.users().length);
+  protected readonly usersSubtitle = computed(() => {
+    const totalUsers = this.totalUsers();
+
+    if (totalUsers === 1) {
+      return $localize`:@@usersTotalSubtitleOne:Total: ${totalUsers}:count: user`;
+    }
+
+    return $localize`:@@usersTotalSubtitleOther:Total: ${totalUsers}:count: users`;
+  });
   protected readonly activeStatusLabel = $localize`:@@usersStatusActive:Active`;
   protected readonly inactiveStatusLabel = $localize`:@@usersStatusInactive:Inactive`;
 

@@ -151,6 +151,10 @@ export class OfferDetailComponent {
   protected readonly displayOfferNumber = computed(
     () => this.offer()?.number ?? this.offer()?.id ?? '',
   );
+  protected readonly pageTitle = computed(
+    () => $localize`:@@offerDetailPageTitle:Offer ${this.displayOfferNumber()}:offerNumber:`,
+  );
+  protected readonly pageSubtitle = $localize`:@@offerDetailPageSubtitle:Offer details`;
   protected readonly displayVersion = computed(() => `v${this.offer()?.version ?? 1}`);
   protected readonly canSeeInternalNotes = computed(() => !this.permissions.isAgent());
   protected readonly hasVersionHistory = computed(() => !!this.offer()?.previousVersionId);

@@ -9,8 +9,18 @@
   } @else {
     @let r = request();
     @if (r) {
-      <app-page-heading subtitle="Travel request" [showBackButton]="true" [title]="r.destination">
-        <button color="primary" mat-flat-button type="button" (click)="createOffer()">
+      <app-page-heading
+        [subtitle]="travelRequestSubtitle"
+        [showBackButton]="true"
+        [title]="r.destination"
+      >
+        <button
+          color="primary"
+          i18n="@@requestCreateOfferButton"
+          mat-flat-button
+          type="button"
+          (click)="createOffer()"
+        >
           Create offer
         </button>
       </app-page-heading>
@@ -19,7 +29,7 @@
         <section class="request-header-card">
           <div class="request-header-main">
             <div>
-              <p class="request-header-label">Travel request</p>
+              <p class="request-header-label" i18n="@@requestHeaderLabel">Travel request</p>
               <h2 class="request-header-title">{{ r.destination }}</h2>
             </div>
             <span

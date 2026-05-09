@@ -40,6 +40,7 @@ export class RequestDetailComponent {
 
   readonly request = computed(() => this.data.value() ?? null);
   readonly loading = computed(() => this.data.isLoading());
+  readonly travelRequestSubtitle = $localize`:@@requestDetailSubtitle:Travel request`;
 
   constructor() {
     effect(() => {

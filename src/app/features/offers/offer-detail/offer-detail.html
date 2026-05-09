@@ -18,9 +18,9 @@
     @let o = offer();
     @if (o) {
       <app-page-heading
-        subtitle="Offer details"
+        [subtitle]="pageSubtitle"
         [showBackButton]="true"
-        [title]="'Offer ' + displayOfferNumber()"
+        [title]="pageTitle()"
       >
         <button
           i18n="@@offerPdfPreviewButton"
@@ -109,7 +109,7 @@
               </div>
               <div class="offer-data-row">
                 <dt>Offer date</dt>
-                <dd>{{ o.offerDate || o.createdAt | date: 'mediumDate' }}</dd>
+                <dd>{{ (o.offerDate || o.createdAt) | date: 'mediumDate' }}</dd>
               </div>
               <div class="offer-data-row">
                 <dt>Valid until</dt>
@@ -165,7 +165,7 @@
                     </td>
                     <td>{{ getAccommodationNights(row.checkinDate, row.checkoutDate) }}</td>
                     <td class="text-right">
-                      {{ row.unitPrice ?? 0 | number: '1.0-2' }} {{ o.currency }}
+                      {{ (row.unitPrice ?? 0) | number: '1.0-2' }} {{ o.currency }}
                     </td>
                   </tr>
                 } @empty {
@@ -200,7 +200,7 @@
                       <td>{{ row.description || '—' }}</td>
                       <td>{{ row.quantity ?? 0 }}</td>
                       <td class="text-right">
-                        {{ row.unitPrice ?? 0 | number: '1.0-2' }} {{ o.currency }}
+                        {{ (row.unitPrice ?? 0) | number: '1.0-2' }} {{ o.currency }}
                       </td>
                       <td class="text-right">
                         {{ (row.quantity ?? 0) * (row.unitPrice ?? 0) | number: '1.0-2' }}
@@ -221,16 +221,16 @@
             <dl class="offer-data-list">
               <div class="offer-data-row">
                 <dt>Subtotal</dt>
-                <dd>{{ o.subtotal ?? 0 | number: '1.0-2' }} {{ o.currency }}</dd>
+                <dd>{{ (o.subtotal ?? 0) | number: '1.0-2' }} {{ o.currency }}</dd>
               </div>
               <div class="offer-data-row">
                 <dt>Discount</dt>
-                <dd>{{ o.discountAmount ?? 0 | number: '1.0-2' }} {{ o.currency }}</dd>
+                <dd>{{ (o.discountAmount ?? 0) | number: '1.0-2' }} {{ o.currency }}</dd>
               </div>
               <div class="offer-data-row offer-pricing-total">
                 <dt class="font-semibold text-gray-900">Total</dt>
                 <dd class="text-base font-bold text-gray-900">
-                  {{ o.total ?? 0 | number: '1.0-2' }} {{ o.currency }}
+                  {{ (o.total ?? 0) | number: '1.0-2' }} {{ o.currency }}
                 </dd>
               </div>
             </dl>
