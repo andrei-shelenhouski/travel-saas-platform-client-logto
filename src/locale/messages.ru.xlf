@@ -278,6 +278,22 @@
           <context context-type="linenumber">43,45</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="usersLoading" datatype="html">
+        <source>Loading users...</source>
+        <target>Загрузка пользователей...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
+          <context context-type="linenumber">127,128</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersLoadingAriaLabel" datatype="html">
+        <source>Loading users</source>
+        <target>Загрузка пользователей</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
+          <context context-type="linenumber">129,130</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="usersEmptyState" datatype="html">
         <source> No users yet. Invite the first member. </source>
         <target> Пользователей пока нет. Пригласите первого участника. </target>
@@ -492,6 +508,30 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
           <context context-type="linenumber">18,19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingDetailsSubtitle" datatype="html">
+        <source>Booking details</source>
+        <target>Детали бронирования</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingNumberLabel" datatype="html">
+        <source>Booking number</source>
+        <target>Номер бронирования</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
+          <context context-type="linenumber">63,64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingIdLabel" datatype="html">
+        <source>ID:</source>
+        <target>ID:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
+          <context context-type="linenumber">65,66</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5306146122851916248" datatype="html">
@@ -1292,6 +1332,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
           <context context-type="linenumber">66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="historyTabLabel" datatype="html">
+        <source>History</source>
+        <target>История</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
+          <context context-type="linenumber">96,99</context>
         </context-group>
       </trans-unit>
       <trans-unit id="leadsTabLabel" datatype="html">
@@ -3022,6 +3070,30 @@
           <context context-type="linenumber">36,37</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="invoiceSummaryDraftHint" datatype="html">
+        <source>Click to filter</source>
+        <target>Нажмите для фильтрации</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-summary-cards/invoice-summary-cards.html</context>
+          <context context-type="linenumber">18,22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceSummaryPendingAmount" datatype="html">
+        <source>Amount:</source>
+        <target>Сумма:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-summary-cards/invoice-summary-cards.html</context>
+          <context context-type="linenumber">38,39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceSummaryOverdueAmount" datatype="html">
+        <source>Amount:</source>
+        <target>Сумма:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-summary-cards/invoice-summary-cards.html</context>
+          <context context-type="linenumber">60,61</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="invoiceSummaryOverdueValue" datatype="html">
         <source>Overdue: <x id="INTERPOLATION" equiv-text="{{ overdueCount() }}"/> / Amount: <x id="INTERPOLATION_1" equiv-text="{{ formatAmount(overdueAmount()) }}"/> <x id="INTERPOLATION_2" equiv-text="{{ currency() }}"/></source>
         <target>Просрочено: <x id="INTERPOLATION" equiv-text="{{ overdueCount() }}"/> / Сумма: <x id="INTERPOLATION_1" equiv-text="{{ formatAmount(overdueAmount()) }}"/> <x id="INTERPOLATION_2" equiv-text="{{ currency() }}"/></target>
@@ -4177,6 +4249,14 @@
           <context context-type="linenumber">357</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="offerUntitled" datatype="html">
+        <source>Untitled offer</source>
+        <target>Предложение без названия</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offer-detail/offer-detail.html</context>
+          <context context-type="linenumber">55,57</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="offerPdfPreviewDialogTitle" datatype="html">
         <source>Offer <x id="INTERPOLATION" equiv-text="{{ data.offerNumber ?? data.offerId }}"/> PDF preview</source>
         <target>Предложение <x id="INTERPOLATION" equiv-text="{{ data.offerNumber ?? data.offerId }}"/>: предпросмотр PDF</target>
@@ -4579,6 +4659,22 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/onboarding/select-organization/select-organization.html</context>
           <context context-type="linenumber">22,24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestDepartDate" datatype="html">
+        <source>Depart date</source>
+        <target>Дата отправления</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-detail/request-detail.html</context>
+          <context context-type="linenumber">45,46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestReturnDate" datatype="html">
+        <source>Return date</source>
+        <target>Дата возвращения</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-detail/request-detail.html</context>
+          <context context-type="linenumber">49,50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestFilterStatusLabel" datatype="html">

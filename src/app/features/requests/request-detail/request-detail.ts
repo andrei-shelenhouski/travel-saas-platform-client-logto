@@ -1,17 +1,20 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject } from '@angular/core';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 
 import { RequestsService } from '@app/services/requests.service';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
+
 import type { RequestResponseDto } from '@app/shared/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-request-detail',
-  imports: [RouterLink, ...MAT_BUTTONS],
+  imports: [RouterLink, ...MAT_BUTTONS, PageHeading],
   templateUrl: './request-detail.html',
   styleUrl: './request-detail.scss',
 })
@@ -37,6 +40,7 @@ export class RequestDetailComponent {
 
   readonly request = computed(() => this.data.value() ?? null);
   readonly loading = computed(() => this.data.isLoading());
+  readonly travelRequestSubtitle = $localize`:@@requestDetailSubtitle:Travel request`;
 
   constructor() {
     effect(() => {

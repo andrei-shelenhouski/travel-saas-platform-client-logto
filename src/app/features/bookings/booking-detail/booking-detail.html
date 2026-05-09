@@ -1,4 +1,4 @@
-<div class="space-y-4">
+<div class="booking-detail-page">
   @if (loading()) {
     <div class="flex justify-center py-12">
       <div
@@ -22,43 +22,88 @@
   } @else {
     @let b = booking();
     @if (b) {
-      <app-booking-header
-        [actionLoading]="actionLoading()"
-        [booking]="b"
-        (cancelBooking)="onCancelBooking()"
-        (confirmBooking)="onConfirmBooking()"
-      />
+      <app-page-heading
+        subtitle="Booking details"
+        i18n-subtitle="@@bookingDetailsSubtitle"
+        [showBackButton]="true"
+        [title]="b.number"
+      >
+        @if (b.status === BookingStatus.PENDING_CONFIRMATION) {
+          <button
+            color="primary"
+            mat-flat-button
+            type="button"
+            [disabled]="actionLoading()"
+            (click)="onConfirmBooking()"
+          >
+            <span i18n>Confirm booking</span>
+          </button>
+          <button
+            color="warn"
+            mat-stroked-button
+            type="button"
+            [disabled]="actionLoading()"
+            (click)="onCancelBooking()"
+          >
+            <span i18n>Cancel</span>
+          </button>
+        }
+        @if (b.status === BookingStatus.CONFIRMED) {
+          <button
+            color="warn"
+            mat-stroked-button
+            type="button"
+            [disabled]="actionLoading()"
+            (click)="onCancelBooking()"
+          >
+            <span i18n>Cancel</span>
+          </button>
+        }
+      </app-page-heading>
 
-      <div class="grid gap-4 lg:grid-cols-3">
-        <!-- Left column: main content -->
-        <div class="space-y-4 lg:col-span-2">
-          <app-client-snapshot-card [clientId]="b.clientId" [snapshot]="b.clientSnapshot" />
+      <div class="m-4">
+        <section class="booking-header-card">
+          <div class="booking-header-main">
+            <div>
+              <p class="booking-header-label" i18n="@@bookingNumberLabel">Booking number</p>
+              <h2 class="booking-header-title">{{ b.number }}</h2>
+              <p class="booking-header-subtitle">
+                <span i18n="@@bookingIdLabel">ID:</span> {{ b.id }}
+              </p>
+            </div>
+            <app-booking-status-chip [status]="b.status" />
+          </div>
+        </section>
 
-          <app-travel-details-section
-            [booking]="b"
-            [saving]="savingTravel()"
-            (save)="onSaveTravelDetails($event)"
-          />
+        <div class="booking-grid">
+          <div class="booking-grid-left space-y-4">
+            <app-client-snapshot-card [clientId]="b.clientId" [snapshot]="b.clientSnapshot" />
 
-          <app-accommodation-table [accommodationDetails]="b.accommodationDetails" />
+            <app-travel-details-section
+              [booking]="b"
+              [saving]="savingTravel()"
+              (save)="onSaveTravelDetails($event)"
+            />
 
-          <app-operations-section
-            [booking]="b"
-            [saving]="savingOps()"
-            (save)="onSaveOperations($event)"
-          />
-        </div>
+            <app-accommodation-table [accommodationDetails]="b.accommodationDetails" />
 
-        <!-- Right column: invoices + documents -->
-        <div class="space-y-4 lg:col-span-1">
-          <app-invoice-list-mini [booking]="b" [invoices]="invoices()" />
+            <app-operations-section
+              [booking]="b"
+              [saving]="savingOps()"
+              (save)="onSaveOperations($event)"
+            />
+          </div>
 
-          <app-document-list
-            [documents]="documents()"
-            [uploading]="uploading()"
-            (deleteDocument)="onDeleteDocument($event)"
-            (uploadFiles)="onUploadFiles($event)"
-          />
+          <div class="booking-grid-right space-y-4">
+            <app-invoice-list-mini [booking]="b" [invoices]="invoices()" />
+
+            <app-document-list
+              [documents]="documents()"
+              [uploading]="uploading()"
+              (deleteDocument)="onDeleteDocument($event)"
+              (uploadFiles)="onUploadFiles($event)"
+            />
+          </div>
         </div>
       </div>
     } @else {

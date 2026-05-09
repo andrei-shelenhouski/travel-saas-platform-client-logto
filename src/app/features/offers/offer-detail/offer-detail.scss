@@ -1,1 +1,155 @@
-/* Offer detail layout and status badge styles */
+.offer-detail-page {
+  display: block;
+}
+
+.offer-header-card,
+.offer-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  padding: 1rem;
+}
+
+.offer-header-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.offer-header-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.offer-header-label {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.offer-header-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.offer-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.offer-card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.offer-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.offer-data-list {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.offer-data-row {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.offer-data-row dt {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.offer-data-row dd {
+  margin: 0;
+  color: #111827;
+  font-size: 0.875rem;
+}
+
+.offer-link {
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+.offer-link:hover {
+  text-decoration: underline;
+}
+
+.offer-table-card {
+  overflow-x: auto;
+}
+
+.offer-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.offer-table thead {
+  background-color: #f9fafb;
+}
+
+.offer-table th {
+  padding: 0.75rem 0.5rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.offer-table th.text-right {
+  text-align: right;
+}
+
+.offer-table td {
+  padding: 0.75rem 0.5rem;
+  color: #111827;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.offer-table td.text-right {
+  text-align: right;
+}
+
+.offer-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.offer-table-empty {
+  padding: 1.5rem 0.5rem;
+  text-align: center;
+  color: #6b7280;
+}
+
+.offer-pricing-total {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.offer-version-badge {
+  display: inline-block;
+  border-radius: 9999px;
+  background-color: #f3f4f6;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #374151;
+}

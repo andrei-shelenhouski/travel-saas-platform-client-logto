@@ -157,7 +157,6 @@ export type OrganizationResponseDto = {
   id: string;
   name: string;
   defaultCurrency?: string;
-  offerValidityDays?: number;
   invoicePrefix?: string;
   invoiceNextNumber?: number;
   createdAt: string;
@@ -359,7 +358,19 @@ export type AccommodationDto = {
   mealPlan?: string;
   checkinDate?: string;
   checkoutDate?: string;
+  nights?: number;
   unitPrice?: number;
+  total?: number;
+};
+
+/** OpenAPI: BookingAccommodationDto. Accommodation in booking requests and responses. */
+export type BookingAccommodationDto = {
+  hotelName?: string;
+  roomType?: string;
+  mealPlan?: string;
+  checkinDate?: string;
+  checkoutDate?: string;
+  nights?: number;
   total?: number;
 };
 
@@ -484,7 +495,7 @@ export type CreateBookingDto = {
   returnDate?: string;
   adults?: number;
   children?: number;
-  accommodationDetails?: Record<string, unknown>[];
+  accommodationDetails?: BookingAccommodationDto[];
   assignedBackofficeId?: string;
   internalNotes?: string;
 };
@@ -494,7 +505,7 @@ export type UpdateBookingDto = {
   supplierConfirmationNumber?: string;
   internalNotes?: string;
   assignedBackofficeId?: string;
-  accommodationDetails?: Record<string, unknown>[];
+  accommodationDetails?: BookingAccommodationDto[];
   destination?: string;
   departDate?: string;
   returnDate?: string;
@@ -526,7 +537,7 @@ export type BookingResponseDto = {
   id: string;
   organizationId: string;
   number?: string;
-  offerId: string;
+  offerId?: string;
   leadId?: string;
   clientId: string;
   clientSnapshot?: Record<string, unknown>;
@@ -535,7 +546,7 @@ export type BookingResponseDto = {
   returnDate?: string;
   adults?: number;
   children?: number;
-  accommodationDetails?: Record<string, unknown>[];
+  accommodationDetails?: BookingAccommodationDto[];
   supplierConfirmationNumber?: string;
   assignedBackofficeId?: string;
   assignedBackofficeName?: string;

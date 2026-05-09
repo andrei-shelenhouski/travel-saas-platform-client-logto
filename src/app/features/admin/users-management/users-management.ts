@@ -2,15 +2,18 @@ import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { RouterLink } from '@angular/router';
+import { MatTableModule } from '@angular/material/table';
 
 import { finalize, forkJoin } from 'rxjs';
 
 import { PermissionService } from '@app/services/permission.service';
 import { UsersService } from '@app/services/users.service';
 import { ConfirmDialogComponent } from '@app/shared/components';
-import { MAT_FORM_BUTTONS, MAT_ICONS, MAT_MENU } from '@app/shared/material-imports';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { OrgRole } from '@app/shared/models';
 
 import { InviteUserDialogComponent } from './invite-user-dialog/invite-user-dialog';
@@ -28,19 +31,23 @@ const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-users-management',
-
   imports: [
     DatePipe,
-    RouterLink,
     ReactiveFormsModule,
     MatDialogModule,
     MatSnackBarModule,
+    MatIconModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    PageHeading,
     ...MAT_FORM_BUTTONS,
-    ...MAT_ICONS,
     ...MAT_MENU,
   ],
   templateUrl: './users-management.html',
   styleUrl: './users-management.scss',
+  host: {
+    class: 'flex flex-col h-full',
+  },
 })
 export class UsersManagementComponent {
   private readonly usersService = inject(UsersService);
@@ -56,8 +63,20 @@ export class UsersManagementComponent {
   protected readonly togglingActiveId = signal<string | null>(null);
 
   protected readonly currentUserId = computed(() => this.permissions.currentUserId() ?? null);
+  protected readonly totalUsers = computed(() => this.users().length);
+  protected readonly usersSubtitle = computed(() => {
+    const totalUsers = this.totalUsers();
+
+    if (totalUsers === 1) {
+      return $localize`:@@usersTotalSubtitleOne:Total: ${totalUsers}:count: user`;
+    }
+
+    return $localize`:@@usersTotalSubtitleOther:Total: ${totalUsers}:count: users`;
+  });
   protected readonly activeStatusLabel = $localize`:@@usersStatusActive:Active`;
   protected readonly inactiveStatusLabel = $localize`:@@usersStatusInactive:Inactive`;
+
+  protected readonly displayedColumns = ['user', 'email', 'role', 'status', 'joined', 'actions'];
 
   private readonly okLabel = $localize`:@@commonOk:OK`;
   private readonly closeLabel = $localize`:@@commonClose:Close`;

@@ -28,10 +28,8 @@ const BOOKINGS_STATS_URL = `${environment.baseUrl}/api/bookings/stats`;
 export class BookingsService {
   private readonly http = inject(HttpClient);
 
-  // eslint-disable-next-line complexity
   getList(params?: {
     page?: number;
-    size?: number;
     limit?: number;
     status?: BookingStatus | BookingStatus[];
     offerId?: string;
@@ -45,11 +43,7 @@ export class BookingsService {
       httpParams = httpParams.set('page', params.page);
     }
 
-    if (params?.size !== undefined) {
-      httpParams = httpParams.set('size', params.size);
-    }
-
-    if (params?.limit !== undefined && params?.size === undefined) {
+    if (params?.limit !== undefined) {
       httpParams = httpParams.set('limit', params.limit);
     }
 
@@ -86,7 +80,7 @@ export class BookingsService {
     return this.http.get<BookingResponseDto>(`${BOOKINGS_URL}/${id}`);
   }
 
-  /** GET /api/bookings/stats. Returns counts by status (PENDING, CONFIRMED, PAID, CANCELLED per OpenAPI). */
+  /** GET /api/bookings/stats. Returns counts by status (PENDING_CONFIRMATION, CONFIRMED, IN_PROGRESS, COMPLETED, CANCELLED per OpenAPI). */
   getStatistics(): Observable<Record<string, number>> {
     return this.http.get<Record<string, number>>(BOOKINGS_STATS_URL);
   }
