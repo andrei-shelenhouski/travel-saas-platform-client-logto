@@ -281,6 +281,28 @@ describe('InvoiceDetailComponent', () => {
     expect(activitiesReload).toHaveBeenCalled();
   });
 
+  it('formats line item unit price and total with currency', () => {
+    (component as unknown as { data: { set: (invoice: InvoiceResponseDto) => void } }).data.set({
+      ...makeInvoice('ISSUED'),
+      lineItems: [
+        {
+          id: 'line-1',
+          description: 'Test service',
+          unitPrice: 10650,
+          quantity: 1,
+          total: 10650,
+        },
+      ],
+    } as InvoiceResponseDto);
+    fixture.detectChanges();
+
+    const lineItemsTableText = (
+      fixture.nativeElement.querySelector('mat-table') as HTMLElement | null
+    )?.textContent;
+
+    expect(lineItemsTableText).toContain('10,650.00 BYN');
+  });
+
   it('opens delete payment confirmation', () => {
     (component as unknown as { data: { set: (invoice: InvoiceResponseDto) => void } }).data.set({
       ...makeInvoice('ISSUED'),
