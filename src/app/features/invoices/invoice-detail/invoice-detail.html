@@ -335,11 +335,11 @@
                   Unit price
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm text-gray-900">
-                  {{
-                    row.unitPrice !== null
-                      ? (row.unitPrice | number: '1.2-2') + ' ' + inv.currency
-                      : '—'
-                  }}
+                  @if (row.unitPrice !== null) {
+                    {{ row.unitPrice | number: '1.2-2' }} {{ inv.currency }}
+                  } @else {
+                    —
+                  }
                 </mat-cell>
               </ng-container>
 
@@ -367,9 +367,11 @@
                   Total
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm font-medium text-gray-900">
-                  {{
-                    row.total !== null ? (row.total | number: '1.2-2') + ' ' + inv.currency : '—'
-                  }}
+                  @if (row.total !== null) {
+                    {{ row.total | number: '1.2-2' }} {{ inv.currency }}
+                  } @else {
+                    —
+                  }
                 </mat-cell>
               </ng-container>
 
