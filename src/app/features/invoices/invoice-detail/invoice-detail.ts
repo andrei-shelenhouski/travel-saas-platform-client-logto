@@ -20,6 +20,7 @@ import { InvoicePdfPreviewModalComponent } from '@app/features/invoices/invoice-
 import { PublishInvoiceDialogComponent } from '@app/features/invoices/publish-invoice-dialog/publish-invoice-dialog';
 import { RecordPaymentModalComponent } from '@app/features/invoices/record-payment-modal/record-payment-modal';
 import { ActivitiesService } from '@app/services/activities.service';
+import { ClientsService } from '@app/services/clients.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { ActivityTimelineComponent } from '@app/shared/components/activity-timeline.component';
@@ -30,6 +31,7 @@ import { ToastService } from '@app/shared/services/toast.service';
 
 import type {
   ActivityTimelineItem,
+  ClientResponseDto,
   InvoiceResponseDto,
   PaymentResponseDto,
 } from '@app/shared/models';
@@ -79,6 +81,7 @@ export class InvoiceDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly invoicesService = inject(InvoicesService);
+  private readonly clientsService = inject(ClientsService);
   private readonly activitiesService = inject(ActivitiesService);
   private readonly dialog = inject(MatDialog);
   private readonly toast = inject(ToastService);
@@ -125,6 +128,31 @@ export class InvoiceDetailComponent {
   readonly invoice = computed(() => this.data.value() ?? null);
   readonly loading = computed(() => this.data.isLoading());
   readonly timelineItems = computed(() => this.activitiesData.value() ?? []);
+
+  private readonly unresolvedClientId = computed(() => {
+    const inv = this.invoice();
+
+    if (!inv) {
+      return null;
+    }
+
+    if (this.resolveClientNameFromInvoice(inv) !== null) {
+      return null;
+    }
+
+    return inv.clientId;
+  });
+
+  private readonly clientData = rxResource<ClientResponseDto, string | null>({
+    params: (): string | null => this.unresolvedClientId(),
+    stream: ({ params }) => {
+      if (params === null) {
+        return EMPTY;
+      }
+
+      return this.clientsService.getById(params);
+    },
+  });
 
   readonly invoiceActions = computed<string[]>(() => {
     const inv = this.invoice();
@@ -176,16 +204,23 @@ export class InvoiceDetailComponent {
   readonly clientName = computed<string>(() => {
     const inv = this.invoice();
 
-    if (!inv?.clientSnapshot) {
+    if (!inv) {
       return '—';
     }
-    try {
-      const snap = JSON.parse(inv.clientSnapshot) as { fullName?: string };
 
-      return snap.fullName ?? '—';
-    } catch {
-      return '—';
+    const nameFromInvoice = this.resolveClientNameFromInvoice(inv);
+
+    if (nameFromInvoice !== null) {
+      return nameFromInvoice;
     }
+
+    const fallbackClientName = this.resolveClientNameFromClient(this.clientData.value());
+
+    if (fallbackClientName !== null) {
+      return fallbackClientName;
+    }
+
+    return '—';
   });
 
   // ---- UI state ----
@@ -506,6 +541,56 @@ export class InvoiceDetailComponent {
   }
 
   // ---- Private helpers ----
+
+  private resolveClientNameFromInvoice(invoice: InvoiceResponseDto): string | null {
+    const directClientName = invoice.clientName?.trim();
+
+    if (directClientName) {
+      return directClientName;
+    }
+
+    const snapshotRaw = invoice.clientSnapshot?.trim();
+
+    if (!snapshotRaw) {
+      return null;
+    }
+
+    try {
+      const snapshot = JSON.parse(snapshotRaw) as {
+        fullName?: string | null;
+        companyName?: string | null;
+      };
+      const snapshotName = snapshot.fullName?.trim() ?? snapshot.companyName?.trim() ?? '';
+
+      if (snapshotName) {
+        return snapshotName;
+      }
+
+      return null;
+    } catch {
+      return snapshotRaw;
+    }
+  }
+
+  private resolveClientNameFromClient(client: ClientResponseDto | undefined): string | null {
+    if (!client) {
+      return null;
+    }
+
+    const fullName = client.fullName?.trim();
+
+    if (fullName) {
+      return fullName;
+    }
+
+    const companyName = client.companyName?.trim();
+
+    if (companyName) {
+      return companyName;
+    }
+
+    return null;
+  }
 
   private getInvoiceActions(status: string): string[] {
     switch (status) {
