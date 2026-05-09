@@ -1,3 +1,5 @@
+import { formatNumber } from '@angular/common';
+import { LOCALE_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
@@ -279,6 +281,34 @@ describe('InvoiceDetailComponent', () => {
 
     expect(dataReload).toHaveBeenCalled();
     expect(activitiesReload).toHaveBeenCalled();
+  });
+
+  it('formats line item unit price and total with currency', () => {
+    const locale = TestBed.inject(LOCALE_ID);
+
+    (component as unknown as { data: { set: (invoice: InvoiceResponseDto) => void } }).data.set({
+      ...makeInvoice('ISSUED'),
+      lineItems: [
+        {
+          id: 'line-1',
+          description: 'Test service',
+          unitPrice: 10650,
+          quantity: 1,
+          total: 10650,
+        },
+      ],
+    } as InvoiceResponseDto);
+    fixture.detectChanges();
+
+    const lineItemsTableText = (
+      fixture.nativeElement.querySelector('mat-table') as HTMLElement | null
+    )?.textContent;
+    const expectedFormattedAmount = `${formatNumber(10650, locale, '1.2-2')} BYN`;
+    const formattedOccurrences = (lineItemsTableText ?? '').match(
+      new RegExp(expectedFormattedAmount.replace('.', '\\.'), 'g'),
+    )?.length;
+
+    expect(formattedOccurrences).toBe(2);
   });
 
   it('opens delete payment confirmation', () => {
