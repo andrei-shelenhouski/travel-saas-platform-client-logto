@@ -10,8 +10,8 @@
     @let r = request();
     @if (r) {
       <app-page-heading
-        [subtitle]="travelRequestSubtitle"
         [showBackButton]="true"
+        [subtitle]="travelRequestSubtitle"
         [title]="r.destination"
       >
         <button
