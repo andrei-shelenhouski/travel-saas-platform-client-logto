@@ -34,6 +34,7 @@ describe('CompanyProfileComponent', () => {
     directorTitle: 'Director',
     offerValidityDays: 7,
     leadExpiryDays: 30,
+    defaultPaymentTermsDays: 14,
     defaultCommissionPct: 10.0,
   };
 
@@ -77,6 +78,7 @@ describe('CompanyProfileComponent', () => {
     expect(settingsService.get).toHaveBeenCalled();
     expect(component.form.value.name).toBe('Test Organization');
     expect(component.form.value.directorName).toBe('John Doe');
+    expect(component.form.value.defaultPaymentTermsDays).toBe(14);
   });
 
   it('should show error when loading settings fails', async () => {
@@ -106,12 +108,17 @@ describe('CompanyProfileComponent', () => {
     settingsService.update.mockReturnValue(of(mockSettings));
     const snackBarSpy = vi.spyOn(component['snackBar'], 'open');
 
-    component.form.patchValue({ name: 'Updated Organization' });
+    component.form.patchValue({ name: 'Updated Organization', defaultPaymentTermsDays: 30 });
 
     component.save();
 
     await vi.waitFor(() => {
-      expect(settingsService.update).toHaveBeenCalled();
+      expect(settingsService.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: 'Updated Organization',
+          defaultPaymentTermsDays: 30,
+        }),
+      );
       expect(snackBarSpy).toHaveBeenCalledWith('Настройки сохранены', 'OK', expect.any(Object));
     });
   });

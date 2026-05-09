@@ -2571,7 +2571,7 @@
         <target> Кол-во </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">349,350</context>
+          <context context-type="linenumber">353,354</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailColTotal" datatype="html">
@@ -2579,7 +2579,7 @@
         <target> Итого </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">363,364</context>
+          <context context-type="linenumber">367,368</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailColTourCost" datatype="html">
@@ -2587,7 +2587,7 @@
         <target> Стоимость тура </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">377,378</context>
+          <context context-type="linenumber">385,386</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailColCommission" datatype="html">
@@ -2595,7 +2595,7 @@
         <target> Комиссия </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">391,392</context>
+          <context context-type="linenumber">403,404</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailColCommissionVat" datatype="html">
@@ -2603,7 +2603,7 @@
         <target> НДС комиссии </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">405,406</context>
+          <context context-type="linenumber">421,422</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailColNetToPay" datatype="html">
@@ -2611,7 +2611,7 @@
         <target> К оплате </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">419,420</context>
+          <context context-type="linenumber">439,440</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailNoLineItems" datatype="html">
@@ -2619,7 +2619,7 @@
         <target>Нет позиций.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">431,435</context>
+          <context context-type="linenumber">453,457</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailPricingTitle" datatype="html">
@@ -2627,7 +2627,7 @@
         <target> Итоговая стоимость </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">438,440</context>
+          <context context-type="linenumber">460,462</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailSubtotalLabel" datatype="html">
@@ -2635,7 +2635,7 @@
         <target>Подытог</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">442,443</context>
+          <context context-type="linenumber">464,465</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailDiscountLabel" datatype="html">
@@ -2643,7 +2643,7 @@
         <target>Скидка</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">449,450</context>
+          <context context-type="linenumber">471,472</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailCommissionVatLabel" datatype="html">
@@ -2651,7 +2651,7 @@
         <target>НДС с комиссии</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">457,458</context>
+          <context context-type="linenumber">479,480</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailTotalLabel" datatype="html">
@@ -2659,7 +2659,7 @@
         <target>Итого</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">464,465</context>
+          <context context-type="linenumber">486,487</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailAmountInWordsLabel" datatype="html">
@@ -2667,7 +2667,7 @@
         <target> Сумма прописью </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">474,476</context>
+          <context context-type="linenumber">496,498</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailPaymentsTitle" datatype="html">
@@ -2675,7 +2675,7 @@
         <target> Платежи </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">483,485</context>
+          <context context-type="linenumber">505,507</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailBtnDeletePayment" datatype="html">
@@ -2683,7 +2683,7 @@
         <target><x id="START_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;mat-icon&gt;"/>delete<x id="CLOSE_TAG_MAT_ICON" ctype="x-mat_icon" equiv-text="&lt;/mat-icon&gt;"/> Удалить </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">514,516</context>
+          <context context-type="linenumber">536,538</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailPaidLabel" datatype="html">
@@ -2691,7 +2691,7 @@
         <target>Оплачено:</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">523,524</context>
+          <context context-type="linenumber">545,546</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailRemainingLabel" datatype="html">
@@ -2699,7 +2699,7 @@
         <target>Остаток:</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">529,531</context>
+          <context context-type="linenumber">551,553</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailNoPayments" datatype="html">
@@ -2707,7 +2707,7 @@
         <target>Платежей нет.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">540,544</context>
+          <context context-type="linenumber">562,566</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailActivityTitle" datatype="html">
@@ -2715,7 +2715,7 @@
         <target>История изменений</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">546,547</context>
+          <context context-type="linenumber">568,569</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailNotFound" datatype="html">
@@ -2723,7 +2723,7 @@
         <target>Счёт не найден.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">551,556</context>
+          <context context-type="linenumber">573,578</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailDeletePaymentCancelLabel" datatype="html">
@@ -2731,7 +2731,7 @@
         <target>Отмена</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">559</context>
+          <context context-type="linenumber">581</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailDeletePaymentConfirmLabel" datatype="html">
@@ -2739,7 +2739,7 @@
         <target>Удалить</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">561</context>
+          <context context-type="linenumber">583</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailDeletePaymentDialogTitle" datatype="html">
@@ -2747,7 +2747,7 @@
         <target>Удалить платёж</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
-          <context context-type="linenumber">562,563</context>
+          <context context-type="linenumber">584,585</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailDeletePaymentMessage" datatype="html">
@@ -4875,6 +4875,38 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
           <context context-type="linenumber">103,106</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="companyProfileDefaultPaymentTermsDaysLabel" datatype="html">
+        <source>Default payment term (days)</source>
+        <target>Срок оплаты по умолчанию (дней)</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/company-profile/company-profile.html</context>
+          <context context-type="linenumber">198,201</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="companyProfileDefaultPaymentTermsDaysHint" datatype="html">
+        <source>Used when creating a new invoice</source>
+        <target>Используется при создании нового счёта</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/company-profile/company-profile.html</context>
+          <context context-type="linenumber">208,210</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="companyProfileDefaultPaymentTermsDaysRequired" datatype="html">
+        <source>Required field</source>
+        <target>Обязательное поле</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/company-profile/company-profile.html</context>
+          <context context-type="linenumber">212,215</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="companyProfileDefaultPaymentTermsDaysRange" datatype="html">
+        <source>From 1 to 365 days</source>
+        <target>От 1 до 365 дней</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/company-profile/company-profile.html</context>
+          <context context-type="linenumber">220,223</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noOtherOrganizations" datatype="html">

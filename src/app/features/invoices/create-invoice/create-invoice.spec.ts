@@ -113,6 +113,7 @@ describe('CreateInvoiceComponent', () => {
               of({
                 defaultCurrency: 'USD',
                 defaultLanguage: 'EN',
+                defaultPaymentTermsDays: 1,
                 defaultPaymentTerms: 'Pay in 5 days',
               }),
             ),
@@ -159,6 +160,23 @@ describe('CreateInvoiceComponent', () => {
     ).toBe('booking-1');
     expect(bookingsService.getById).toHaveBeenCalledWith('booking-1');
     expect(lineItems.at(0).controls.description.value).toContain('Travel services');
+  });
+
+  it('defaults due date to invoice date plus configured payment terms days', async () => {
+    vi.useFakeTimers();
+
+    try {
+      vi.setSystemTime(new Date('2026-05-06T12:00:00.000Z'));
+
+      await createComponent();
+
+      const form = (component as unknown as { form: CreateInvoiceComponent['form'] }).form;
+
+      expect(form.controls.invoiceDate.value).toBe('2026-05-06');
+      expect(form.controls.dueDate.value).toBe('2026-05-07');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('calculates standard mode totals, validates due date, and sends total amount', async () => {

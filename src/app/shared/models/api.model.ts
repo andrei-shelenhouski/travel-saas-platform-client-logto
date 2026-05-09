@@ -206,6 +206,7 @@ export type UpdateOrganizationSettingsDto = {
   offerValidityDays?: number;
   leadExpiryDays?: number;
   defaultPaymentTerms?: string;
+  defaultPaymentTermsDays?: number;
   defaultCommissionPct?: number;
   agentAssignmentRule?: AgentAssignmentRule;
 };
@@ -234,6 +235,7 @@ export type OrganizationSettingsResponseDto = {
   offerValidityDays?: number;
   leadExpiryDays?: number;
   defaultPaymentTerms?: string;
+  defaultPaymentTermsDays?: number;
   defaultCommissionPct?: number;
   agentAssignmentRule?: AgentAssignmentRule;
   createdAt?: string;
