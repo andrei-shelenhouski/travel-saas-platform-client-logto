@@ -18,8 +18,9 @@ describe('AccommodationTableComponent', () => {
         hotelName: 'Hotel A',
         roomType: 'Standard',
         mealPlan: 'BB',
-        checkinDate: '2026-08-01',
-        checkoutDate: '2026-08-05',
+        checkIn: '2026-08-01',
+        checkOut: '2026-08-05',
+        nights: 4,
       },
     ]);
     fixture.detectChanges();

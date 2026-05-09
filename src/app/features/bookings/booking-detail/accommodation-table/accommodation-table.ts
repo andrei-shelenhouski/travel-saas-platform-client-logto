@@ -5,27 +5,22 @@ type AccommodationRow = {
   hotelName?: string;
   roomType?: string;
   mealPlan?: string;
-  checkinDate?: string;
-  checkoutDate?: string;
+  checkIn?: string;
+  checkOut?: string;
   nights?: number;
 };
 
 function toRow(raw: Record<string, unknown>): AccommodationRow {
-  const checkin = typeof raw['checkinDate'] === 'string' ? raw['checkinDate'] : undefined;
-  const checkout = typeof raw['checkoutDate'] === 'string' ? raw['checkoutDate'] : undefined;
-  let nights: number | undefined;
-
-  if (checkin && checkout) {
-    const diff = new Date(checkout).getTime() - new Date(checkin).getTime();
-    nights = Math.round(diff / 86_400_000);
-  }
+  const checkIn = typeof raw['checkIn'] === 'string' ? raw['checkIn'] : undefined;
+  const checkOut = typeof raw['checkOut'] === 'string' ? raw['checkOut'] : undefined;
+  const nights = typeof raw['nights'] === 'number' ? raw['nights'] : undefined;
 
   return {
     hotelName: typeof raw['hotelName'] === 'string' ? raw['hotelName'] : undefined,
     roomType: typeof raw['roomType'] === 'string' ? raw['roomType'] : undefined,
     mealPlan: typeof raw['mealPlan'] === 'string' ? raw['mealPlan'] : undefined,
-    checkinDate: checkin,
-    checkoutDate: checkout,
+    checkIn: checkIn,
+    checkOut: checkOut,
     nights,
   };
 }

@@ -20,10 +20,10 @@
             <td class="px-2 py-2">{{ row.roomType || '—' }}</td>
             <td class="px-2 py-2">{{ row.mealPlan || '—' }}</td>
             <td class="px-2 py-2">
-              {{ row.checkinDate ? (row.checkinDate | date: 'mediumDate') : '—' }}
+              {{ row.checkIn ? (row.checkIn | date: 'mediumDate') : '—' }}
             </td>
             <td class="px-2 py-2">
-              {{ row.checkoutDate ? (row.checkoutDate | date: 'mediumDate') : '—' }}
+              {{ row.checkOut ? (row.checkOut | date: 'mediumDate') : '—' }}
             </td>
             <td class="px-2 py-2 text-right">{{ row.nights ?? '—' }}</td>
           </tr>

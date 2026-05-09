@@ -22,7 +22,12 @@
   } @else {
     @let b = booking();
     @if (b) {
-      <app-page-heading i18n-subtitle="@@bookingDetailsSubtitle" subtitle="Booking details" [showBackButton]="true" [title]="b.number">
+      <app-page-heading
+        subtitle="Booking details"
+        i18n-subtitle="@@bookingDetailsSubtitle"
+        [showBackButton]="true"
+        [title]="b.number"
+      >
         @if (b.status === BookingStatus.PENDING_CONFIRMATION) {
           <button
             color="primary"
@@ -62,7 +67,9 @@
             <div>
               <p class="booking-header-label" i18n="@@bookingNumberLabel">Booking number</p>
               <h2 class="booking-header-title">{{ b.number }}</h2>
-              <p class="booking-header-subtitle"><span i18n="@@bookingIdLabel">ID:</span> {{ b.id }}</p>
+              <p class="booking-header-subtitle">
+                <span i18n="@@bookingIdLabel">ID:</span> {{ b.id }}
+              </p>
             </div>
             <app-booking-status-chip [status]="b.status" />
           </div>
