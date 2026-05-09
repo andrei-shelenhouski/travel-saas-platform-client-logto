@@ -5229,6 +5229,38 @@
           <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="companyProfileDefaultPaymentTermsDaysLabel" datatype="html">
+        <source>Default payment term (days)</source>
+        <target>Срок оплаты по умолчанию (дней)</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/company-profile/company-profile.html</context>
+          <context context-type="linenumber">203,204</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="companyProfileDefaultPaymentTermsDaysHint" datatype="html">
+        <source>Used when creating a new invoice</source>
+        <target>Используется при создании нового счёта</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/company-profile/company-profile.html</context>
+          <context context-type="linenumber">207,208</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="companyProfileDefaultPaymentTermsDaysRequired" datatype="html">
+        <source>Required field</source>
+        <target>Обязательное поле</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/company-profile/company-profile.html</context>
+          <context context-type="linenumber">211,212</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="companyProfileDefaultPaymentTermsDaysRange" datatype="html">
+        <source>From 1 to 365 days</source>
+        <target>От 1 до 365 дней</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/company-profile/company-profile.html</context>
+          <context context-type="linenumber">220,221</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

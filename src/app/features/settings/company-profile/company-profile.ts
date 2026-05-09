@@ -85,8 +85,6 @@ export class CompanyProfileComponent implements PendingChangesComponent {
     { value: 'EN' as OrganizationLanguage, label: 'English' },
   ];
 
-  protected readonly paymentTermsDaysOptions = [1, 3, 7, 14, 30];
-
   constructor() {
     this.loadSettings();
   }

@@ -164,16 +164,19 @@ describe('CreateInvoiceComponent', () => {
 
   it('defaults due date to invoice date plus configured payment terms days', async () => {
     vi.useFakeTimers();
-    vi.setSystemTime(new Date('2026-05-06T12:00:00.000Z'));
 
-    await createComponent();
+    try {
+      vi.setSystemTime(new Date('2026-05-06T12:00:00.000Z'));
 
-    const form = (component as unknown as { form: CreateInvoiceComponent['form'] }).form;
+      await createComponent();
 
-    expect(form.controls.invoiceDate.value).toBe('2026-05-06');
-    expect(form.controls.dueDate.value).toBe('2026-05-07');
+      const form = (component as unknown as { form: CreateInvoiceComponent['form'] }).form;
 
-    vi.useRealTimers();
+      expect(form.controls.invoiceDate.value).toBe('2026-05-06');
+      expect(form.controls.dueDate.value).toBe('2026-05-07');
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('calculates standard mode totals, validates due date, and sends total amount', async () => {

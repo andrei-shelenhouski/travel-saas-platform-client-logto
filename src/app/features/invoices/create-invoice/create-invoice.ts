@@ -500,19 +500,40 @@ export class CreateInvoiceComponent {
           settings.defaultLanguage && LANGUAGE_OPTIONS.includes(settings.defaultLanguage)
             ? settings.defaultLanguage
             : 'EN';
+        const currencyControl = this.form.controls.currency;
+        const languageControl = this.form.controls.language;
+        const dueDateControl = this.form.controls.dueDate;
+        const paymentTermsControl = this.form.controls.paymentTerms;
         const paymentTermsDays = this.normalizePaymentTermsDays(settings.defaultPaymentTermsDays);
         const dueDate = this.addDaysToIsoDate(
           this.form.controls.invoiceDate.getRawValue(),
           paymentTermsDays,
         );
+        const updates: {
+          currency?: string;
+          language?: string;
+          dueDate?: string;
+          paymentTerms?: string;
+        } = {};
+
+        if (currencyControl.pristine) {
+          updates.currency = currency;
+        }
+
+        if (languageControl.pristine) {
+          updates.language = language;
+        }
+
+        if (dueDateControl.pristine) {
+          updates.dueDate = dueDate;
+        }
+
+        if (paymentTermsControl.pristine) {
+          updates.paymentTerms = settings.defaultPaymentTerms ?? '';
+        }
 
         this.defaultCommissionPct.set(settings.defaultCommissionPct ?? null);
-        this.form.patchValue({
-          currency,
-          dueDate,
-          language,
-          paymentTerms: settings.defaultPaymentTerms ?? '',
-        });
+        this.form.patchValue(updates);
 
         this.loading.set(false);
       },
@@ -906,6 +927,6 @@ export class CreateInvoiceComponent {
       return 1;
     }
 
-    return Math.max(1, Math.trunc(days));
+    return Math.min(365, Math.max(1, Math.trunc(days)));
   }
 }
