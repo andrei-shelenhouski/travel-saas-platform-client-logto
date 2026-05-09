@@ -1035,7 +1035,7 @@ export class LeadDetailComponent {
     }
 
     const createdBy = item.createdBy?.trim() ?? '';
-    const normalizedCreatedBy = createdBy.toLowerCase();
+    const normalizedCreatedBy = this.normalizeActivityActor(createdBy);
 
     if (normalizedCreatedBy === 'system' || normalizedCreatedBy === 'system action') {
       return 'System action';
@@ -1055,9 +1055,13 @@ export class LeadDetailComponent {
   }
 
   protected isSystemEvent(item: ActivityResponseDto): boolean {
-    const createdBy = item.createdBy?.toLowerCase();
+    const createdBy = this.normalizeActivityActor(item.createdBy);
 
     return createdBy === 'system' || createdBy === 'system action';
+  }
+
+  private normalizeActivityActor(value: string | null | undefined): string {
+    return value?.trim().toLowerCase() ?? '';
   }
 
   private isTerminalStatus(status: string): boolean {

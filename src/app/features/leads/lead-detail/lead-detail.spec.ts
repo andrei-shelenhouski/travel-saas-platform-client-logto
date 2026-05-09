@@ -383,6 +383,26 @@ describe('LeadDetailComponent', () => {
 
     expect(actor).toBe('System action');
   });
+
+  it('treats createdBy with surrounding whitespace as system action', () => {
+    const api = component as unknown as {
+      getActivityActor: (item: {
+        payload: Record<string, unknown> | null;
+        createdBy: string;
+      }) => string;
+      isSystemEvent: (item: { createdBy: string }) => boolean;
+    };
+
+    const actor = api.getActivityActor({
+      payload: null,
+      createdBy: ' system ',
+    });
+
+    const isSystem = api.isSystemEvent({ createdBy: ' system ' });
+
+    expect(actor).toBe('System action');
+    expect(isSystem).toBe(true);
+  });
 });
 
 function createRequest(
