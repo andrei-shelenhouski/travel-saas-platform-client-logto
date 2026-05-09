@@ -6,12 +6,12 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
-import { CreateOfferComponent } from './create-offer';
-
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { RequestsService } from '@app/services/requests.service';
 import { ToastService } from '@app/shared/services/toast.service';
+
+import { CreateOfferComponent } from './create-offer';
 
 import type { RequestResponseDto } from '@app/shared/models';
 
@@ -101,6 +101,60 @@ describe('CreateOfferComponent', () => {
     expect(text).toContain('Trip request was not found');
     expect(fixture.componentInstance.form.controls.destination.value).toBe('');
     expect(fixture.componentInstance.form.controls.departureCity.value).toBe('');
+  });
+
+  it('keeps Save as Draft enabled and shows required date errors after submit', async () => {
+    await setup('request-1');
+
+    const firstAccommodation = fixture.componentInstance.accommodationsArray.at(0);
+
+    firstAccommodation.patchValue({
+      hotelName: 'Sunrise Hotel',
+      checkinDate: '',
+      checkoutDate: '',
+      unitPrice: 150,
+    });
+    fixture.detectChanges();
+
+    const submitButton = fixture.nativeElement.querySelector(
+      'button[type="submit"]',
+    ) as HTMLButtonElement | null;
+
+    expect(submitButton).not.toBeNull();
+
+    if (!submitButton) {
+      return;
+    }
+
+    expect(submitButton.disabled).toBe(false);
+
+    submitButton.click();
+    fixture.detectChanges();
+
+    expect(firstAccommodation.controls.checkinDate.touched).toBe(true);
+    expect(firstAccommodation.controls.checkoutDate.touched).toBe(true);
+    expect(firstAccommodation.controls.checkinDate.hasError('required')).toBe(true);
+    expect(firstAccommodation.controls.checkoutDate.hasError('required')).toBe(true);
+    expect(offersServiceMock.create).not.toHaveBeenCalled();
+
+    const checkinInput = fixture.nativeElement.querySelector(
+      'input[formControlName="checkinDate"]',
+    ) as HTMLElement | null;
+    const checkoutInput = fixture.nativeElement.querySelector(
+      'input[formControlName="checkoutDate"]',
+    ) as HTMLElement | null;
+
+    const checkinField = checkinInput?.closest('mat-form-field') as HTMLElement | null;
+    const checkoutField = checkoutInput?.closest('mat-form-field') as HTMLElement | null;
+
+    expect(checkinField).not.toBeNull();
+    expect(checkoutField).not.toBeNull();
+    expect(checkinField?.querySelector('mat-error')?.textContent).toContain(
+      'Check-in date is required',
+    );
+    expect(checkoutField?.querySelector('mat-error')?.textContent).toContain(
+      'Check-out date is required',
+    );
   });
 
   async function setup(requestId: string | null): Promise<void> {

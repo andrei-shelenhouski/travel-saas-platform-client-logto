@@ -4201,6 +4201,22 @@
           <context context-type="linenumber">37,40</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="createOfferCheckinDateRequiredError" datatype="html">
+        <source>Check-in date is required</source>
+        <target>Требуется дата заезда</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.html</context>
+          <context context-type="linenumber">194,198</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="createOfferCheckoutDateRequiredError" datatype="html">
+        <source>Check-out date is required</source>
+        <target>Требуется дата выезда</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.html</context>
+          <context context-type="linenumber">209,213</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="offerPdfPreviewButton" datatype="html">
         <source> Preview PDF </source>
         <target> Предварительный просмотр </target>
