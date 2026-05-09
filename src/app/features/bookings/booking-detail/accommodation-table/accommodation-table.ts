@@ -11,17 +11,13 @@ type AccommodationRow = {
 };
 
 function toRow(raw: Record<string, unknown>): AccommodationRow {
-  const checkIn = typeof raw['checkIn'] === 'string' ? raw['checkIn'] : undefined;
-  const checkOut = typeof raw['checkOut'] === 'string' ? raw['checkOut'] : undefined;
-  const nights = typeof raw['nights'] === 'number' ? raw['nights'] : undefined;
-
   return {
     hotelName: typeof raw['hotelName'] === 'string' ? raw['hotelName'] : undefined,
     roomType: typeof raw['roomType'] === 'string' ? raw['roomType'] : undefined,
     mealPlan: typeof raw['mealPlan'] === 'string' ? raw['mealPlan'] : undefined,
-    checkIn: checkIn,
-    checkOut: checkOut,
-    nights,
+    checkIn: typeof raw['checkIn'] === 'string' ? raw['checkIn'] : undefined,
+    checkOut: typeof raw['checkOut'] === 'string' ? raw['checkOut'] : undefined,
+    nights: typeof raw['nights'] === 'number' ? raw['nights'] : undefined,
   };
 }
 
