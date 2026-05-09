@@ -83,7 +83,7 @@ describe('BookingsListComponent', () => {
     expect(bookingsService.getList).toHaveBeenCalledWith(
       expect.objectContaining({
         page: 1,
-        size: 20,
+        limit: 20,
       }),
     );
   });

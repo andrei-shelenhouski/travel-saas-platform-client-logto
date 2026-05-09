@@ -3,70 +3,108 @@
   title="Requests"
   i18n-title="@@requestsListTitle"
 >
-  <a color="primary" mat-flat-button routerLink="/app/requests/new">Create request</a>
+  <button color="primary" mat-flat-button type="button" (click)="navigateToCreateRequest()">
+    <mat-icon>add</mat-icon>
+    <span i18n="@@requestsListNewRequestCta">New request</span>
+  </button>
 </app-page-heading>
 
-<div class="p-4">
+<div class="space-y-4 p-4">
+  <app-request-filter-bar
+    class="m-4"
+    [managerOptions]="managerOptions()"
+    [value]="filterValue()"
+    (filterChange)="onFilterChange($event)"
+  />
+
   @if (error()) {
-    <p class="text-sm text-red-600">{{ error() }}</p>
+    <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
   }
 
-  <div class="rounded-lg border border-gray-200 bg-white overflow-hidden">
-    <table class="min-w-full divide-y divide-gray-200">
-      <thead class="bg-gray-50">
-        <tr>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">
-            Destination
-          </th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Dates</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Adults</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-          <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
-        </tr>
-      </thead>
-      <tbody class="divide-y divide-gray-200">
-        @if (loading()) {
-          <tr>
-            <td class="px-4 py-12 text-center text-gray-500" colspan="5">
-              <div
-                aria-hidden="true"
-                class="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-              ></div>
-            </td>
-          </tr>
-        } @else if (requests().length === 0) {
-          <tr>
-            <td class="px-4 py-12 text-center text-gray-500" colspan="5">No requests yet.</td>
-          </tr>
-        } @else {
-          @for (req of requests(); track req.id) {
-            <tr class="cursor-pointer hover:bg-gray-50" (click)="goToDetail(req)">
-              <td class="px-4 py-3 text-sm font-medium text-gray-900">
-                {{ req.destination }}
-              </td>
-              <td class="px-4 py-3 text-sm text-gray-600">
-                {{ formatDate(req.departDate) }} – {{ formatDate(req.returnDate) }}
-              </td>
-              <td class="px-4 py-3 text-sm text-gray-600">
-                {{ req.adults }}
-                @if (req.children) {
-                  <span class="text-gray-500">/ {{ req.children }} children</span>
-                }
-              </td>
-              <td class="px-4 py-3">
-                <span
-                  class="inline-block rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800"
-                >
-                  {{ req.status }}
-                </span>
-              </td>
-              <td class="px-4 py-3 text-sm text-gray-600">
-                {{ formatDate(req.createdAt) }}
-              </td>
-            </tr>
+  <div class="table-wrap overflow-scroll">
+    <table mat-table [dataSource]="requests()">
+      <ng-container matColumnDef="destination">
+        <th *matHeaderCellDef i18n="@@requestsListColumnDestination" mat-header-cell>
+          Destination
+        </th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.destination || '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="departDate">
+        <th *matHeaderCellDef i18n="@@requestsListColumnDeparture" mat-header-cell>Departure</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ formatDate(element.departDate) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="returnDate">
+        <th *matHeaderCellDef i18n="@@requestsListColumnReturn" mat-header-cell>Return</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ formatDate(element.returnDate) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="adults">
+        <th *matHeaderCellDef i18n="@@requestsListColumnAdults" mat-header-cell>Travelers</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.adults || '—' }}
+          @if (element.children) {
+            <span class="text-gray-500" i18n="@@requestsListChildrenLabel"
+              >/ {{ element.children }} children</span
+            >
           }
-        }
-      </tbody>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th *matHeaderCellDef i18n="@@requestsListColumnStatus" mat-header-cell>Status</th>
+        <td *matCellDef="let element" mat-cell>
+          <app-request-status-chip [status]="element.status" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="managerName">
+        <th *matHeaderCellDef i18n="@@requestsListColumnManager" mat-header-cell>Manager</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.managerName || '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <th *matHeaderCellDef i18n="@@requestsListColumnCreated" mat-header-cell>Created</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ formatDate(element.createdAt) }}
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="displayedColumns" class="table-header-row" mat-header-row></tr>
+      <tr
+        *matRowDef="let row; columns: displayedColumns"
+        class="table-row"
+        mat-row
+        tabindex="0"
+        (click)="navigateToRequest(row.id)"
+        (keydown)="onRowKeydown($event, row.id)"
+      ></tr>
+      <tr *matNoDataRow>
+        <td [attr.colspan]="displayedColumns.length">
+          <div class="m-10 align-middle text-center">
+            @if (loading()) {
+              <p class="pb-4" i18n="@@requestsListLoading">Loading requests...</p>
+              <mat-spinner
+                aria-label="Loading requests"
+                i18n-aria-label="@@requestsListLoadingAriaLabel"
+                class="mx-auto"
+                diameter="36"
+              />
+            } @else {
+              <p i18n="@@requestsListEmptyState">No requests for current filters</p>
+            }
+          </div>
+        </td>
+      </tr>
     </table>
   </div>
 </div>

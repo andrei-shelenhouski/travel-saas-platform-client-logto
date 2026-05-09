@@ -1,42 +1,64 @@
-<div class="grid gap-3 md:grid-cols-3">
+<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
   <button
     aria-label="Filter by draft invoices"
     i18n-aria-label="@@invoiceSummaryDraftAriaLabel"
+    class="group flex flex-col rounded-xl border bg-white p-4 text-left shadow-sm transition hover:shadow-md"
     type="button"
-    [class]="cardClass('draft', isDraftActive())"
+    [class.border-gray-200]="!isDraftActive()"
+    [class.border-primary-500]="isDraftActive()"
+    [class.ring-2]="isDraftActive()"
+    [class.ring-primary-200]="isDraftActive()"
     (click)="onDraftClick()"
   >
-    <span class="summary-card__title" i18n="@@invoiceSummaryDraftTitle">Drafts</span>
-    <span class="summary-card__value" i18n="@@invoiceSummaryDraftValue"
-      >Drafts: {{ drafts() }}</span
-    >
+    <div class="flex items-center gap-2 text-gray-500">
+      <span aria-hidden="true" class="material-icons text-lg">edit_note</span>
+      <span class="text-sm font-medium" i18n="@@invoiceSummaryDraftTitle">Drafts</span>
+    </div>
+    <p class="mt-2 text-2xl font-bold text-primary">{{ drafts() }}</p>
+    <p class="mt-2 text-xs text-gray-500" i18n="@@invoiceSummaryDraftHint">Click to filter</p>
   </button>
 
   <button
     aria-label="Filter by pending invoices"
     i18n-aria-label="@@invoiceSummaryPendingAriaLabel"
+    class="group flex flex-col rounded-xl border bg-white p-4 text-left shadow-sm transition hover:shadow-md"
     type="button"
-    [class]="cardClass('pending', isPendingActive())"
+    [class.border-gray-200]="!isPendingActive()"
+    [class.border-primary-500]="isPendingActive()"
+    [class.ring-2]="isPendingActive()"
+    [class.ring-primary-200]="isPendingActive()"
     (click)="onPendingClick()"
   >
-    <span class="summary-card__title" i18n="@@invoiceSummaryPendingTitle">Pending payment</span>
-    <span class="summary-card__value" i18n="@@invoiceSummaryPendingValue"
-      >Pending payment: {{ pendingCount() }} / Amount: {{ formatAmount(pendingAmount()) }}
-      {{ currency() }}</span
-    >
+    <div class="flex items-center gap-2 text-gray-500">
+      <span aria-hidden="true" class="material-icons text-lg">schedule</span>
+      <span class="text-sm font-medium" i18n="@@invoiceSummaryPendingTitle">Pending payment</span>
+    </div>
+    <p class="mt-2 text-2xl font-bold text-primary">{{ pendingCount() }}</p>
+    <p class="mt-2 text-xs text-gray-500">
+      <span i18n="@@invoiceSummaryPendingAmount">Amount:</span>
+      {{ formatAmount(pendingAmount()) }} {{ currency() }}
+    </p>
   </button>
 
   <button
     aria-label="Filter by overdue invoices"
     i18n-aria-label="@@invoiceSummaryOverdueAriaLabel"
+    class="group flex flex-col rounded-xl border bg-white p-4 text-left shadow-sm transition hover:shadow-md"
     type="button"
-    [class]="cardClass('overdue', isOverdueActive())"
+    [class.border-gray-200]="!isOverdueActive()"
+    [class.border-primary-500]="isOverdueActive()"
+    [class.ring-2]="isOverdueActive()"
+    [class.ring-primary-200]="isOverdueActive()"
     (click)="onOverdueClick()"
   >
-    <span class="summary-card__title" i18n="@@invoiceSummaryOverdueTitle">Overdue</span>
-    <span class="summary-card__value" i18n="@@invoiceSummaryOverdueValue"
-      >Overdue: {{ overdueCount() }} / Amount: {{ formatAmount(overdueAmount()) }}
-      {{ currency() }}</span
-    >
+    <div class="flex items-center gap-2 text-gray-500">
+      <span aria-hidden="true" class="material-icons text-lg">warning</span>
+      <span class="text-sm font-medium" i18n="@@invoiceSummaryOverdueTitle">Overdue</span>
+    </div>
+    <p class="mt-2 text-2xl font-bold text-primary">{{ overdueCount() }}</p>
+    <p class="mt-2 text-xs text-gray-500">
+      <span i18n="@@invoiceSummaryOverdueAmount">Amount:</span>
+      {{ formatAmount(overdueAmount()) }} {{ currency() }}
+    </p>
   </button>
 </div>

@@ -23,6 +23,7 @@ import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
 import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS, MAT_DIALOG } from '@app/shared/material-imports';
 import { OfferStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
@@ -68,6 +69,7 @@ const ACTION_LABELS: Record<OfferAction, string> = {
     RouterLink,
     OfferTimelineComponent,
     ConfirmationDialogComponent,
+    PageHeading,
     ...MAT_BUTTONS,
     ...MAT_DIALOG,
   ],
@@ -149,6 +151,10 @@ export class OfferDetailComponent {
   protected readonly displayOfferNumber = computed(
     () => this.offer()?.number ?? this.offer()?.id ?? '',
   );
+  protected readonly pageTitle = computed(
+    () => $localize`:@@offerDetailPageTitle:Offer ${this.displayOfferNumber()}:offerNumber:`,
+  );
+  protected readonly pageSubtitle = $localize`:@@offerDetailPageSubtitle:Offer details`;
   protected readonly displayVersion = computed(() => `v${this.offer()?.version ?? 1}`);
   protected readonly canSeeInternalNotes = computed(() => !this.permissions.isAgent());
   protected readonly hasVersionHistory = computed(() => !!this.offer()?.previousVersionId);

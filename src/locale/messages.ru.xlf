@@ -2,6 +2,198 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
   <file datatype="plaintext" original="ng2.template" source-language="en-US" target-language="ru-BY">
     <body>
+      <trans-unit id="usersInviteDialogTitle" datatype="html">
+        <source>Invite user</source>
+        <target>Пригласить пользователя</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">1,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteEmailLabel" datatype="html">
+        <source>Email</source>
+        <target>Email</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">6,7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteEmailRequired" datatype="html">
+        <source>Email is required</source>
+        <target>Требуется email</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">10,13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteEmailInvalid" datatype="html">
+        <source>Enter a valid email</source>
+        <target>Введите корректный email</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">14,17</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteEmailDuplicate" datatype="html">
+        <source>A user with this email is already added</source>
+        <target>Пользователь с таким email уже добавлен</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">19,22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteFullNameLabel" datatype="html">
+        <source>Full name</source>
+        <target>Полное имя</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">25,26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteFullNameRequired" datatype="html">
+        <source>Full name is required</source>
+        <target>Требуется полное имя</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">29,31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteRoleLabel" datatype="html">
+        <source>Role</source>
+        <target>Роль</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">34,35</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="commonCancel" datatype="html">
+        <source>Cancel</source>
+        <target>Отмена</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.html</context>
+          <context context-type="linenumber">45,46</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">131</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteSending" datatype="html">
+        <source>Sending...</source>
+        <target>Отправка...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteSubmit" datatype="html">
+        <source>Invite</source>
+        <target>Пригласить</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleAdministrator" datatype="html">
+        <source>Administrator</source>
+        <target>Администратор</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleManager" datatype="html">
+        <source>Manager</source>
+        <target>Менеджер</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">35</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleAgent" datatype="html">
+        <source>Agent</source>
+        <target>Агент</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">36</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleSalesAgent" datatype="html">
+        <source>Sales agent</source>
+        <target>Агент по продажам</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">37</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleBackOffice" datatype="html">
+        <source>Back office</source>
+        <target>Бэк-офис</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">38</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteSuccess" datatype="html">
+        <source>Invitation sent. The user will get access on first sign-in.</source>
+        <target>Приглашение отправлено. Пользователь получит доступ при первом входе.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">61</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="commonOk" datatype="html">
+        <source>OK</source>
+        <target>OK</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">62</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersInviteError" datatype="html">
+        <source>Failed to invite user</source>
+        <target>Не удалось пригласить пользователя</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">78</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="commonClose" datatype="html">
+        <source>Close</source>
+        <target>Закрыть</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/invite-user-dialog/invite-user-dialog.ts</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">63</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="userManagement" datatype="html">
         <source>User management</source>
         <target>Пользователи</target>
@@ -15,107 +207,227 @@
         </context-group>
       </trans-unit>
       <trans-unit id="userManagementDescription" datatype="html">
-        <source> Manage organization members and roles. </source>
+        <source> Manage organization members and their access rights. </source>
         <target>Управляйте участниками организации и их ролями.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
           <context context-type="linenumber">6,9</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="backToDashboard" datatype="html">
+      <trans-unit id="usersInviteButton" datatype="html">
+        <source> + Invite user </source>
+        <target> + Пригласить пользователя </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
+          <context context-type="linenumber">17,19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersBackToDashboard" datatype="html">
         <source>Back to dashboard</source>
-        <target>Вернуться на рабочий стол</target>
+        <target>Назад к панели</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">14,17</context>
+          <context context-type="linenumber">20,24</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="inviteByEmail" datatype="html">
-        <source>Invite by email</source>
-        <target>Пригласить по электронной почте</target>
+      <trans-unit id="usersColumnUser" datatype="html">
+        <source>User</source>
+        <target>Пользователь</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">21,22</context>
+          <context context-type="linenumber">38,39</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="inviteByEmailDescription" datatype="html">
-        <source> The user must already have an account. Enter their email and choose a role. </source>
-        <target>У пользователя уже должна быть учетная запись. Введите его адрес электронной почты и выберите роль.</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">23,26</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="email" datatype="html">
+      <trans-unit id="usersColumnEmail" datatype="html">
         <source>Email</source>
-        <target>Электронная почта</target>
+        <target>Email</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">31,32</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">91,92</context>
+          <context context-type="linenumber">39,40</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="role" datatype="html">
+      <trans-unit id="usersColumnRole" datatype="html">
         <source>Role</source>
         <target>Роль</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">52,53</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">94,95</context>
+          <context context-type="linenumber">40,41</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="name" datatype="html">
-        <source>Name</source>
-        <target>Имя</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">88,89</context>
-        </context-group>
-      </trans-unit>
-      <trans-unit id="status" datatype="html">
+      <trans-unit id="usersColumnStatus" datatype="html">
         <source>Status</source>
         <target>Статус</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">97,98</context>
+          <context context-type="linenumber">41,42</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="actions" datatype="html">
+      <trans-unit id="usersColumnJoined" datatype="html">
+        <source>Joined</source>
+        <target>Присоединился</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
+          <context context-type="linenumber">42,43</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersColumnActions" datatype="html">
         <source>Actions</source>
         <target>Действия</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">101,102</context>
+          <context context-type="linenumber">43,45</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="noMembersFound" datatype="html">
-        <source>No members found.</source>
-        <target>Участники не найдены.</target>
+      <trans-unit id="usersLoading" datatype="html">
+        <source>Loading users...</source>
+        <target>Загрузка пользователей...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">109,111</context>
+          <context context-type="linenumber">127,128</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="you" datatype="html">
-        <source>(you)</source>
-        <target>(вы)</target>
+      <trans-unit id="usersLoadingAriaLabel" datatype="html">
+        <source>Loading users</source>
+        <target>Загрузка пользователей</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">118,119</context>
+          <context context-type="linenumber">129,130</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="updating" datatype="html">
-        <source>Updating…</source>
-        <target>Обновление…</target>
+      <trans-unit id="usersEmptyState" datatype="html">
+        <source> No users yet. Invite the first member. </source>
+        <target> Пользователей пока нет. Пригласите первого участника. </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">157,158</context>
+          <context context-type="linenumber">52,53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersCurrentUser" datatype="html">
+        <source> Current user </source>
+        <target> Текущий пользователь </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
+          <context context-type="linenumber">72,73</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersActionsMenuAria" datatype="html">
+        <source>Open actions menu</source>
+        <target>Открыть меню действий</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
+          <context context-type="linenumber">115,116</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersDeactivateActionMenu" datatype="html">
+        <source> Deactivate </source>
+        <target> Деактивировать </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
+          <context context-type="linenumber">144,146</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersReactivateActionMenu" datatype="html">
+        <source> Activate </source>
+        <target> Активировать </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
+          <context context-type="linenumber">154,157</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersStatusActive" datatype="html">
+        <source>Active</source>
+        <target>Активен</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">59</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersStatusInactive" datatype="html">
+        <source>Inactive</source>
+        <target>Неактивен</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">60</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleUpdated" datatype="html">
+        <source>Role updated</source>
+        <target>Роль обновлена</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">109</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersUpdateRoleError" datatype="html">
+        <source>Failed to update role</source>
+        <target>Не удалось обновить роль</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">117</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersDeactivateTitle" datatype="html">
+        <source>Deactivate user</source>
+        <target>Деактивировать пользователя</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">128</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersDeactivateMessage" datatype="html">
+        <source>Deactivate <x id="PH" equiv-text="user.fullName"/>? The user will immediately lose access to the system.</source>
+        <target>Деактивировать <x id="PH" equiv-text="user.fullName"/>? Пользователь немедленно потеряет доступ к системе.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">129</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersDeactivateAction" datatype="html">
+        <source>Deactivate</source>
+        <target>Деактивировать</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">130</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersActivated" datatype="html">
+        <source>User activated</source>
+        <target>Пользователь активирован</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">150</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersActivateError" datatype="html">
+        <source>Failed to activate user</source>
+        <target>Не удалось активировать пользователя</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">159</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersDeactivated" datatype="html">
+        <source>User deactivated</source>
+        <target>Пользователь деактивирован</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">194</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersDeactivateError" datatype="html">
+        <source>Failed to deactivate user</source>
+        <target>Не удалось деактивировать пользователя</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">203</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersLoadError" datatype="html">
+        <source>Failed to load users</source>
+        <target>Не удалось загрузить пользователей</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">233</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8348011332568414135" datatype="html">
@@ -196,6 +508,30 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
           <context context-type="linenumber">18,19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingDetailsSubtitle" datatype="html">
+        <source>Booking details</source>
+        <target>Детали бронирования</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
+          <context context-type="linenumber">25</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingNumberLabel" datatype="html">
+        <source>Booking number</source>
+        <target>Номер бронирования</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
+          <context context-type="linenumber">63,64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingIdLabel" datatype="html">
+        <source>ID:</source>
+        <target>ID:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
+          <context context-type="linenumber">65,66</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5306146122851916248" datatype="html">
@@ -488,7 +824,7 @@
       </trans-unit>
       <trans-unit id="7708270344948043036" datatype="html">
         <source> <x id="INTERPOLATION" equiv-text="{{ document().filename || 'Document' }}"/> </source>
-        <target><x id="INTERPOLATION" equiv-text="{{ document().filename || 'Document' }}"/></target>
+        <target> <x id="INTERPOLATION" equiv-text="{{ document().filename || 'Document' }}"/> </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/document-row/document-row.html</context>
           <context context-type="linenumber">6,8</context>
@@ -910,14 +1246,6 @@
           <context context-type="linenumber">118,119</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="backToClients" datatype="html">
-        <source>Back to clients</source>
-        <target>Назад к клиентам</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">15,17</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="editClient" datatype="html">
         <source>Edit client</source>
         <target>Редактировать клиента</target>
@@ -1004,6 +1332,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
           <context context-type="linenumber">66</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="historyTabLabel" datatype="html">
+        <source>History</source>
+        <target>История</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
+          <context context-type="linenumber">96,99</context>
         </context-group>
       </trans-unit>
       <trans-unit id="leadsTabLabel" datatype="html">
@@ -1467,7 +1803,7 @@
         <target>Клиенты</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">1</context>
+          <context context-type="linenumber">4</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListNewClientCta" datatype="html">
@@ -1475,11 +1811,11 @@
         <target>Новый клиент</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">4,6</context>
+          <context context-type="linenumber">8,10</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">95,97</context>
+          <context context-type="linenumber">99,101</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListHeaderName" datatype="html">
@@ -1487,7 +1823,7 @@
         <target>Имя</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">18,19</context>
+          <context context-type="linenumber">22,23</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListHeaderType" datatype="html">
@@ -1495,7 +1831,7 @@
         <target>Тип</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">28,29</context>
+          <context context-type="linenumber">32,33</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListHeaderPhone" datatype="html">
@@ -1503,7 +1839,7 @@
         <target>Телефон</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">35,36</context>
+          <context context-type="linenumber">39,40</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/leads-list/leads-list.html</context>
@@ -1515,7 +1851,7 @@
         <target>Электронная почта</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">42,43</context>
+          <context context-type="linenumber">46,47</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/leads-list/leads-list.html</context>
@@ -1527,7 +1863,7 @@
         <target> Дата создания </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">49,50</context>
+          <context context-type="linenumber">53,54</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListHeaderUpdatedAt" datatype="html">
@@ -1535,7 +1871,7 @@
         <target> Дата обновления </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">56,57</context>
+          <context context-type="linenumber">60,61</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/leads-list/leads-list.html</context>
@@ -1547,7 +1883,7 @@
         <target>Загрузка клиентов...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">73,75</context>
+          <context context-type="linenumber">77,79</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListLoadingAriaLabel" datatype="html">
@@ -1555,7 +1891,7 @@
         <target>Загрузка клиентов</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">75,76</context>
+          <context context-type="linenumber">79,80</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListNoData" datatype="html">
@@ -1563,7 +1899,7 @@
         <target> Упс, клиенты не найдены. Попробуйте изменить фильтры. </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">82,83</context>
+          <context context-type="linenumber">86,87</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListOrDivider" datatype="html">
@@ -1571,7 +1907,7 @@
         <target>или</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">85,88</context>
+          <context context-type="linenumber">89,92</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientsListPaginatorAriaLabel" datatype="html">
@@ -1579,7 +1915,7 @@
         <target>Пагинация клиентов</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/clients-list/clients-list.html</context>
-          <context context-type="linenumber">107,108</context>
+          <context context-type="linenumber">111,112</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceCreateHeadingTitle" datatype="html">
@@ -2734,6 +3070,30 @@
           <context context-type="linenumber">36,37</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="invoiceSummaryDraftHint" datatype="html">
+        <source>Click to filter</source>
+        <target>Нажмите для фильтрации</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-summary-cards/invoice-summary-cards.html</context>
+          <context context-type="linenumber">18,22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceSummaryPendingAmount" datatype="html">
+        <source>Amount:</source>
+        <target>Сумма:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-summary-cards/invoice-summary-cards.html</context>
+          <context context-type="linenumber">38,39</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceSummaryOverdueAmount" datatype="html">
+        <source>Amount:</source>
+        <target>Сумма:</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-summary-cards/invoice-summary-cards.html</context>
+          <context context-type="linenumber">60,61</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="invoiceSummaryOverdueValue" datatype="html">
         <source>Overdue: <x id="INTERPOLATION" equiv-text="{{ overdueCount() }}"/> / Amount: <x id="INTERPOLATION_1" equiv-text="{{ formatAmount(overdueAmount()) }}"/> <x id="INTERPOLATION_2" equiv-text="{{ currency() }}"/></source>
         <target>Просрочено: <x id="INTERPOLATION" equiv-text="{{ overdueCount() }}"/> / Сумма: <x id="INTERPOLATION_1" equiv-text="{{ formatAmount(overdueAmount()) }}"/> <x id="INTERPOLATION_2" equiv-text="{{ currency() }}"/></target>
@@ -3841,6 +4201,22 @@
           <context context-type="linenumber">37,40</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="offerPdfPreviewButton" datatype="html">
+        <source> Preview PDF </source>
+        <target> Предварительный просмотр </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.html</context>
+          <context context-type="linenumber">370,372</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offer-detail/offer-detail.html</context>
+          <context context-type="linenumber">76,78</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offer-edit/offer-edit.html</context>
+          <context context-type="linenumber">331,333</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="createOfferDestinationNotSet" datatype="html">
         <source>Destination not set</source>
         <target>Направление не указано</target>
@@ -3865,28 +4241,20 @@
           <context context-type="linenumber">258</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="offerPdfPreviewButton" datatype="html">
-        <source> Preview PDF </source>
-        <target> Предварительный просмотр </target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.html</context>
-          <context context-type="linenumber">339,341</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/offers/offer-detail/offer-detail.html</context>
-          <context context-type="linenumber">76,78</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/offers/offer-edit/offer-edit.html</context>
-          <context context-type="linenumber">331,333</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="offerPdfPreviewSaveDraftPrompt" datatype="html">
         <source>Save a draft before opening PDF preview.</source>
         <target>Сохраните черновик перед предпросмотром.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.ts</context>
-          <context context-type="linenumber">327</context>
+          <context context-type="linenumber">357</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerUntitled" datatype="html">
+        <source>Untitled offer</source>
+        <target>Предложение без названия</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offer-detail/offer-detail.html</context>
+          <context context-type="linenumber">55,57</context>
         </context-group>
       </trans-unit>
       <trans-unit id="offerPdfPreviewDialogTitle" datatype="html">
@@ -3929,6 +4297,334 @@
           <context context-type="linenumber">42</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="offersKanbanTitle" datatype="html">
+        <source>Offers · Kanban</source>
+        <target>Коммерческие предложения · Канбан</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.html</context>
+          <context context-type="linenumber">1</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListNewOfferCta" datatype="html">
+        <source>New offer</source>
+        <target>Новое КП</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.html</context>
+          <context context-type="linenumber">4,6</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">8,10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersKanbanStatusFilterDisabled" datatype="html">
+        <source>Status filter is disabled in Kanban view.</source>
+        <target>Фильтр статуса отключен в режиме Канбан.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.html</context>
+          <context context-type="linenumber">39,44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersKanbanFirst100Banner" datatype="html">
+        <source>Showing only first 100 offers.</source>
+        <target>Показаны только первые 100 предложений.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.html</context>
+          <context context-type="linenumber">46,51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusOptionDraft" datatype="html">
+        <source>Draft</source>
+        <target>Черновик</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.ts</context>
+          <context context-type="linenumber">52</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusOptionSent" datatype="html">
+        <source>Sent</source>
+        <target>Отправлено</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.ts</context>
+          <context context-type="linenumber">53</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusOptionViewed" datatype="html">
+        <source>Viewed</source>
+        <target>Просмотрено</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.ts</context>
+          <context context-type="linenumber">54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusOptionAccepted" datatype="html">
+        <source>Accepted</source>
+        <target>Принято</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.ts</context>
+          <context context-type="linenumber">55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusOptionRejected" datatype="html">
+        <source>Rejected</source>
+        <target>Отклонено</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.ts</context>
+          <context context-type="linenumber">56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusOptionExpired" datatype="html">
+        <source>Expired</source>
+        <target>Истекло</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">58</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.ts</context>
+          <context context-type="linenumber">57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusKanbanDraft" datatype="html">
+        <source>Draft</source>
+        <target>Черновик</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusKanbanSent" datatype="html">
+        <source>Sent</source>
+        <target>Отправлено</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusKanbanViewed" datatype="html">
+        <source>Viewed</source>
+        <target>Просмотрено</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">74</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusKanbanAccepted" datatype="html">
+        <source>Accepted</source>
+        <target>Принято</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">79</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusKanbanRejected" datatype="html">
+        <source>Rejected</source>
+        <target>Отклонено</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">84</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerStatusKanbanExpired" datatype="html">
+        <source>Expired</source>
+        <target>Истекло</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">89</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerKanbanInvalidTransitionError" datatype="html">
+        <source>Invalid status transition</source>
+        <target>Недопустимый переход статуса</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">342</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerKanbanForbiddenTransitionError" datatype="html">
+        <source>No permission to change status</source>
+        <target>Нет прав для изменения статуса</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">346</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offerKanbanDefaultTransitionError" datatype="html">
+        <source>Invalid status transition</source>
+        <target>Недопустимый переход статуса</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">354</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-kanban/offers-kanban.ts</context>
+          <context context-type="linenumber">366</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListFilterStatusLabel" datatype="html">
+        <source>Statuses</source>
+        <target>Статусы</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list-filter-bar/offers-list-filter-bar.html</context>
+          <context context-type="linenumber">3,5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListFilterAgentLabel" datatype="html">
+        <source>Agent</source>
+        <target>Агент</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list-filter-bar/offers-list-filter-bar.html</context>
+          <context context-type="linenumber">17,19</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListFilterAgentAllOption" datatype="html">
+        <source>All</source>
+        <target>Все</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list-filter-bar/offers-list-filter-bar.html</context>
+          <context context-type="linenumber">22,23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListFilterCreatedFromLabel" datatype="html">
+        <source>Created from</source>
+        <target>Создано с</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list-filter-bar/offers-list-filter-bar.html</context>
+          <context context-type="linenumber">31,34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListFilterCreatedToLabel" datatype="html">
+        <source>Created to</source>
+        <target>Создано по</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list-filter-bar/offers-list-filter-bar.html</context>
+          <context context-type="linenumber">41,44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListFilterSearchLabel" datatype="html">
+        <source>Search</source>
+        <target>Поиск</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list-filter-bar/offers-list-filter-bar.html</context>
+          <context context-type="linenumber">51,54</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListFilterSearchPlaceholder" datatype="html">
+        <source>Client, destination, offer number</source>
+        <target>Клиент, направление, номер КП</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list-filter-bar/offers-list-filter-bar.html</context>
+          <context context-type="linenumber">54,55</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListHeadingTitle" datatype="html">
+        <source>Offers</source>
+        <target>Коммерческие предложения</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListColumnOfferNumber" datatype="html">
+        <source>Offer #</source>
+        <target>КП #</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">47,48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListColumnDestination" datatype="html">
+        <source>Destination</source>
+        <target>Направление</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">56,57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListColumnTotal" datatype="html">
+        <source>Total</source>
+        <target>Всего</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">63,64</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListColumnStatus" datatype="html">
+        <source>Status</source>
+        <target>Статус</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">68,69</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListColumnCreated" datatype="html">
+        <source>Created</source>
+        <target>Создано</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">75,76</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListColumnUpdated" datatype="html">
+        <source>Updated</source>
+        <target>Обновлено</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">82,83</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListLoading" datatype="html">
+        <source>Loading offers...</source>
+        <target>Загрузка предложений...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">99,101</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListLoadingAriaLabel" datatype="html">
+        <source>Loading offers</source>
+        <target>Загрузка предложений</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">101,102</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListEmptyState" datatype="html">
+        <source>No offers found for the current filters</source>
+        <target>Нет предложений по текущим фильтрам</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">107,109</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="offersListPaginatorAriaLabel" datatype="html">
+        <source>Offers pagination</source>
+        <target>Пагинация предложений</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/offers/offers-list/offers-list.html</context>
+          <context context-type="linenumber">117,118</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="selectOrganizationTitle" datatype="html">
         <source> Select Organization </source>
         <target> Выберите организацию </target>
@@ -3954,7 +4650,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
-          <context context-type="linenumber">44,46</context>
+          <context context-type="linenumber">45,47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noOrganizationsFound" datatype="html">
@@ -3965,12 +4661,204 @@
           <context context-type="linenumber">22,24</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="requestDepartDate" datatype="html">
+        <source>Depart date</source>
+        <target>Дата отправления</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-detail/request-detail.html</context>
+          <context context-type="linenumber">45,46</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestReturnDate" datatype="html">
+        <source>Return date</source>
+        <target>Дата возвращения</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-detail/request-detail.html</context>
+          <context context-type="linenumber">49,50</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestFilterStatusLabel" datatype="html">
+        <source>Status</source>
+        <target>Статус</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.html</context>
+          <context context-type="linenumber">3,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestFilterManagerLabel" datatype="html">
+        <source>Manager</source>
+        <target>Менеджер</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.html</context>
+          <context context-type="linenumber">12,13</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestFilterAllManagersOption" datatype="html">
+        <source>All managers</source>
+        <target>Все менеджеры</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.html</context>
+          <context context-type="linenumber">14,15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestFilterDepartureRangeLabel" datatype="html">
+        <source>Departure date range</source>
+        <target>Диапазон дат выезда</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.html</context>
+          <context context-type="linenumber">22,23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestFilterDateFromPlaceholder" datatype="html">
+        <source>From</source>
+        <target>С</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.html</context>
+          <context context-type="linenumber">28</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestFilterDateToPlaceholder" datatype="html">
+        <source>To</source>
+        <target>По</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.html</context>
+          <context context-type="linenumber">34</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestStatusOptionOpen" datatype="html">
+        <source>Open</source>
+        <target>Открыто</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.ts</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestStatusOptionQuoted" datatype="html">
+        <source>Quoted</source>
+        <target>Расценено</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.ts</context>
+          <context context-type="linenumber">27</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestStatusOptionClosed" datatype="html">
+        <source>Closed</source>
+        <target>Закрыто</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/request-filter-bar/request-filter-bar.ts</context>
+          <context context-type="linenumber">31</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListTitle" datatype="html">
+        <source>Requests</source>
+        <target>Заявки</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">3,4</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListNewRequestCta" datatype="html">
+        <source>New request</source>
+        <target>Новая заявка</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">8,11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListColumnDestination" datatype="html">
+        <source> Destination </source>
+        <target> Направление </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">28,30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListColumnDeparture" datatype="html">
+        <source>Departure</source>
+        <target>Выезд</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">36,37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListColumnReturn" datatype="html">
+        <source>Return</source>
+        <target>Возвращение</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">43,44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListColumnAdults" datatype="html">
+        <source>Travelers</source>
+        <target>Путешественники</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">50,51</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListChildrenLabel" datatype="html">
+        <source>/ <x id="INTERPOLATION" equiv-text="{{ element.children }}"/> children</source>
+        <target>/ <x id="INTERPOLATION" equiv-text="{{ element.children }}"/> детей</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">55,56</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListColumnStatus" datatype="html">
+        <source>Status</source>
+        <target>Статус</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">62,63</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListColumnManager" datatype="html">
+        <source>Manager</source>
+        <target>Менеджер</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">69,70</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListColumnCreated" datatype="html">
+        <source>Created</source>
+        <target>Создано</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">76,77</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListLoading" datatype="html">
+        <source>Loading requests...</source>
+        <target>Загрузка заявок...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">95,97</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListLoadingAriaLabel" datatype="html">
+        <source>Loading requests</source>
+        <target>Загрузка заявок</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">97,98</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListEmptyState" datatype="html">
+        <source>No requests for current filters</source>
+        <target>Нет заявок по текущим фильтрам</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">103,106</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="noOtherOrganizations" datatype="html">
         <source>No other organizations</source>
         <target>Нет других организаций</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
-          <context context-type="linenumber">71,73</context>
+          <context context-type="linenumber">72,74</context>
         </context-group>
       </trans-unit>
       <trans-unit id="addOrganization" datatype="html">
@@ -3978,7 +4866,7 @@
         <target>Добавить организацию</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
-          <context context-type="linenumber">78,80</context>
+          <context context-type="linenumber">79,81</context>
         </context-group>
       </trans-unit>
       <trans-unit id="logout" datatype="html">
@@ -3986,7 +4874,7 @@
         <target>Выйти</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/main-layout.component.html</context>
-          <context context-type="linenumber">111,112</context>
+          <context context-type="linenumber">112,113</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dashboard" datatype="html">
@@ -4243,6 +5131,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/shared/components/offer-status-chip/offer-status-chip.ts</context>
           <context context-type="linenumber">30</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="pageHeadingBackLinkAria" datatype="html">
+        <source>Go back to previous page</source>
+        <target>Вернуться на предыдущую страницу</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/shared/components/page-heading/page-heading.html</context>
+          <context context-type="linenumber">4,5</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestStatusNew" datatype="html">

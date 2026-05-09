@@ -103,7 +103,7 @@ export class BookingsListComponent {
 
       return this.bookingsService.getList({
         page: page + 1,
-        size: PAGE_SIZE,
+        limit: PAGE_SIZE,
         status: status.length > 0 ? status : undefined,
         assignedBackofficeId: assignedBackofficeId || undefined,
         departDateFrom: departDateFrom || undefined,

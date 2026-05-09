@@ -1,4 +1,4 @@
-<div>
+<div class="client-detail-page">
   @if (loading()) {
     <div class="flex justify-center py-12">
       <div
@@ -14,491 +14,377 @@
         [subtitle]="typeLabel[c.type]"
         [title]="c.companyName ?? c.fullName"
       >
-        <a i18n="@@editClient" matButton [relativeTo]="route" [routerLink]="['edit']"
+        <a i18n="@@editClient" mat-stroked-button [relativeTo]="route" [routerLink]="['edit']"
           >Edit client</a
         >
-        <button i18n="@@createRequest" matButton="filled" type="button" (click)="createRequest()">
+        <button
+          color="primary"
+          i18n="@@createRequest"
+          mat-flat-button
+          type="button"
+          (click)="createRequest()"
+        >
           Create request
         </button>
       </app-page-heading>
 
-      <!-- Contact info card -->
-      <div class="rounded-lg border border-gray-200 bg-white p-4 mb-6">
-        <h2 class="text-sm font-semibold text-gray-900" i18n="@@clientDetailsHeading">Details</h2>
-        <dl class="mt-3 space-y-2 text-sm">
-          <div>
-            <dt class="text-gray-500" i18n="@@clientType">Type</dt>
-            <dd class="text-gray-900">{{ typeLabel[c.type] }}</dd>
-          </div>
-          @if (c.email) {
+      <div class="m-4">
+        <section class="client-header-card">
+          <div class="client-header-main">
             <div>
-              <dt class="text-gray-500" i18n="@@clientEmail">Email</dt>
-              <dd class="text-gray-900">{{ c.email }}</dd>
+              <p class="client-header-label">{{ typeLabel[c.type] }}</p>
+              <h2 class="client-header-title">{{ c.companyName ?? c.fullName }}</h2>
             </div>
-          }
-          @if (c.phone) {
-            <div>
-              <dt class="text-gray-500" i18n="@@clientPhone">Phone</dt>
-              <dd class="text-gray-900">{{ c.phone }}</dd>
-            </div>
-          }
-          @if (c.notes) {
-            <div>
-              <dt class="text-gray-500" i18n="@@clientNotes">Notes</dt>
-              <dd class="whitespace-pre-wrap text-gray-900">{{ c.notes }}</dd>
-            </div>
-          }
-          <div>
-            <dt class="text-gray-500" i18n="@@clientCreated">Created</dt>
-            <dd class="text-gray-900">{{ formatDate(c.createdAt) }}</dd>
           </div>
-          <div>
-            <dt class="text-gray-500" i18n="@@clientId">ID</dt>
-            <dd class="font-mono text-xs text-gray-600">{{ c.id }}</dd>
-          </div>
-        </dl>
-        <div class="mt-4">
-          @if (tagsLoading()) {
-            <p class="text-sm text-gray-500" i18n="@@loadingTags">Loading tags…</p>
-          } @else {
-            <app-tag-selector
-              label="Tags"
-              i18n-label="@@tagsLabel"
-              [selected]="clientTags()"
-              (selectionChange)="onTagsChange($event)"
-            />
-          }
+        </section>
+
+        <div class="client-grid">
+          <section class="client-card">
+            <div class="client-card-header">
+              <h2 class="client-card-title" i18n="@@clientDetailsHeading">Details</h2>
+            </div>
+
+            <dl class="client-data-list">
+              <div class="client-data-row">
+                <dt i18n="@@clientType">Type</dt>
+                <dd>{{ typeLabel[c.type] }}</dd>
+              </div>
+              @if (c.email) {
+                <div class="client-data-row">
+                  <dt i18n="@@clientEmail">Email</dt>
+                  <dd>{{ c.email }}</dd>
+                </div>
+              }
+              @if (c.phone) {
+                <div class="client-data-row">
+                  <dt i18n="@@clientPhone">Phone</dt>
+                  <dd>{{ c.phone }}</dd>
+                </div>
+              }
+              @if (c.notes) {
+                <div class="client-data-row">
+                  <dt i18n="@@clientNotes">Notes</dt>
+                  <dd class="whitespace-pre-wrap">{{ c.notes }}</dd>
+                </div>
+              }
+              <div class="client-data-row">
+                <dt i18n="@@clientCreated">Created</dt>
+                <dd>{{ formatDate(c.createdAt) }}</dd>
+              </div>
+              <div class="client-data-row">
+                <dt i18n="@@clientId">ID</dt>
+                <dd class="font-mono text-xs text-gray-600">{{ c.id }}</dd>
+              </div>
+            </dl>
+
+            <div class="mt-4">
+              @if (tagsLoading()) {
+                <p class="text-sm text-gray-500" i18n="@@loadingTags">Loading tags…</p>
+              } @else {
+                <app-tag-selector
+                  label="Tags"
+                  i18n-label="@@tagsLabel"
+                  [selected]="clientTags()"
+                  (selectionChange)="onTagsChange($event)"
+                />
+              }
+            </div>
+          </section>
+
+          <section class="client-card client-history-card">
+            <div class="client-card-header">
+              <h2 class="client-card-title" i18n="@@historyTabLabel">History</h2>
+            </div>
+
+            <mat-tab-group
+              animationDuration="0ms"
+              [selectedIndex]="selectedTabIndex()"
+              (selectedIndexChange)="onSelectedTabChange($event)"
+            >
+              <!-- Leads tab -->
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <span i18n="@@leadsTabLabel">Leads</span>
+                </ng-template>
+                @if (leadsLoading()) {
+                  <div class="flex justify-center py-12">
+                    <div
+                      aria-hidden="true"
+                      class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+                    ></div>
+                  </div>
+                } @else if (leads().length === 0) {
+                  <div class="client-history-empty">
+                    <p i18n="@@noLeadsMessage">No leads</p>
+                  </div>
+                } @else {
+                  <div class="overflow-x-auto">
+                    <table class="client-history-table">
+                      <thead>
+                        <tr>
+                          <th i18n="@@leadNumberColumn">Lead #</th>
+                          <th i18n="@@statusColumn">Status</th>
+                          <th i18n="@@createdColumn">Created</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (lead of leads(); track lead.id) {
+                          <tr
+                            tabindex="0"
+                            (click)="goToLead(lead)"
+                            (keydown.enter)="goToLead(lead)"
+                            (keydown.space)="goToLead(lead); $event.preventDefault()"
+                          >
+                            <td class="font-medium">{{ lead.number }}</td>
+                            <td>
+                              <app-lead-status-chip [status]="lead.status" />
+                            </td>
+                            <td class="text-gray-600">{{ formatDateShort(lead.createdAt) }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                }
+              </mat-tab>
+
+              <!-- Requests tab -->
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <span i18n="@@requestsTabLabel">Requests</span>
+                </ng-template>
+                @if (requestsLoading()) {
+                  <div class="flex justify-center py-12">
+                    <div
+                      aria-hidden="true"
+                      class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+                    ></div>
+                  </div>
+                } @else if (requests().length === 0) {
+                  <div class="client-history-empty">
+                    <p i18n="@@noRequestsMessage">No requests</p>
+                  </div>
+                } @else {
+                  <div class="overflow-x-auto">
+                    <table class="client-history-table">
+                      <thead>
+                        <tr>
+                          <th i18n="@@destinationColumn">Destination</th>
+                          <th i18n="@@datesColumn">Dates</th>
+                          <th i18n="@@travelersColumn">Travelers</th>
+                          <th i18n="@@statusColumn">Status</th>
+                          <th i18n="@@offersCountColumn">Offers</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (req of requests(); track req.id) {
+                          <tr
+                            tabindex="0"
+                            (click)="goToRequest(req)"
+                            (keydown.enter)="goToRequest(req)"
+                            (keydown.space)="goToRequest(req); $event.preventDefault()"
+                          >
+                            <td class="font-medium">{{ req.destination ?? '—' }}</td>
+                            <td class="text-gray-600">
+                              {{ formatDateShort(req.departDate) }} –
+                              {{ formatDateShort(req.returnDate) }}
+                            </td>
+                            <td class="text-gray-600">
+                              {{ req.adults ?? 0 }} + {{ req.children ?? 0 }}
+                            </td>
+                            <td>
+                              <app-request-status-chip [status]="req.status" />
+                            </td>
+                            <td class="text-gray-600">{{ req.offersCount ?? 0 }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                }
+              </mat-tab>
+
+              <!-- Offers tab -->
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <span i18n="@@offersTabLabel">Offers</span>
+                </ng-template>
+                @if (offersLoading()) {
+                  <div class="flex justify-center py-12">
+                    <div
+                      aria-hidden="true"
+                      class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+                    ></div>
+                  </div>
+                } @else if (offers().length === 0) {
+                  <div class="client-history-empty">
+                    <p i18n="@@noOffersMessage">No offers</p>
+                  </div>
+                } @else {
+                  <div class="overflow-x-auto">
+                    <table class="client-history-table">
+                      <thead>
+                        <tr>
+                          <th i18n="@@offerNumberColumn">Offer #</th>
+                          <th i18n="@@destinationColumn">Destination</th>
+                          <th i18n="@@totalPriceColumn">Total</th>
+                          <th i18n="@@statusColumn">Status</th>
+                          <th i18n="@@createdColumn">Created</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (offer of offers(); track offer.id) {
+                          <tr
+                            tabindex="0"
+                            (click)="goToOffer(offer)"
+                            (keydown.enter)="goToOffer(offer)"
+                            (keydown.space)="goToOffer(offer); $event.preventDefault()"
+                          >
+                            <td class="font-medium">{{ offer.offerNumber ?? '—' }}</td>
+                            <td class="text-gray-600">{{ offer.destination ?? '—' }}</td>
+                            <td>
+                              @if (offer.totalPrice !== null && offer.totalPrice !== undefined) {
+                                {{ offer.totalPrice }} {{ offer.currency ?? '' }}
+                              } @else {
+                                —
+                              }
+                            </td>
+                            <td>
+                              <app-offer-status-chip [status]="offer.status" />
+                            </td>
+                            <td class="text-gray-600">{{ formatDateShort(offer.createdAt) }}</td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                }
+              </mat-tab>
+
+              <!-- Bookings tab -->
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <span i18n="@@bookingsTabLabel">Bookings</span>
+                </ng-template>
+                @if (bookingsLoading()) {
+                  <div class="flex justify-center py-12">
+                    <div
+                      aria-hidden="true"
+                      class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+                    ></div>
+                  </div>
+                } @else if (bookings().length === 0) {
+                  <div class="client-history-empty">
+                    <p i18n="@@noBookingsMessage">No bookings</p>
+                  </div>
+                } @else {
+                  <div class="overflow-x-auto">
+                    <table class="client-history-table">
+                      <thead>
+                        <tr>
+                          <th i18n="@@bookingNumberColumn">Booking #</th>
+                          <th i18n="@@destinationColumn">Destination</th>
+                          <th i18n="@@datesColumn">Dates</th>
+                          <th i18n="@@statusColumn">Status</th>
+                          <th i18n="@@totalPriceColumn">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (booking of bookings(); track booking.id) {
+                          <tr
+                            tabindex="0"
+                            (click)="goToBooking(booking)"
+                            (keydown.enter)="goToBooking(booking)"
+                            (keydown.space)="goToBooking(booking); $event.preventDefault()"
+                          >
+                            <td class="font-medium">{{ booking.bookingNumber ?? '—' }}</td>
+                            <td class="text-gray-600">{{ booking.destination ?? '—' }}</td>
+                            <td class="text-gray-600">
+                              {{ formatDateShort(booking.departDate) }} –
+                              {{ formatDateShort(booking.returnDate) }}
+                            </td>
+                            <td>
+                              <app-booking-status-chip [status]="booking.status" />
+                            </td>
+                            <td>
+                              @if (
+                                booking.totalPrice !== null && booking.totalPrice !== undefined
+                              ) {
+                                {{ booking.totalPrice }} {{ booking.currency ?? '' }}
+                              } @else {
+                                —
+                              }
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                }
+              </mat-tab>
+
+              <!-- Invoices tab -->
+              <mat-tab>
+                <ng-template mat-tab-label>
+                  <span i18n="@@invoicesTabLabel">Invoices</span>
+                </ng-template>
+                @if (invoicesLoading()) {
+                  <div class="flex justify-center py-12">
+                    <div
+                      aria-hidden="true"
+                      class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+                    ></div>
+                  </div>
+                } @else if (invoices().length === 0) {
+                  <div class="client-history-empty">
+                    <p i18n="@@noInvoicesMessage">No invoices</p>
+                  </div>
+                } @else {
+                  <div class="overflow-x-auto">
+                    <table class="client-history-table">
+                      <thead>
+                        <tr>
+                          <th i18n="@@invoiceNumberColumn">Invoice #</th>
+                          <th i18n="@@invoiceDateColumn">Invoice Date</th>
+                          <th i18n="@@dueDateColumn">Due Date</th>
+                          <th i18n="@@statusColumn">Status</th>
+                          <th i18n="@@totalPriceColumn">Total</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (invoice of invoices(); track invoice.id) {
+                          <tr
+                            tabindex="0"
+                            (click)="goToInvoice(invoice)"
+                            (keydown.enter)="goToInvoice(invoice)"
+                            (keydown.space)="goToInvoice(invoice); $event.preventDefault()"
+                          >
+                            <td class="font-medium">{{ invoice.number }}</td>
+                            <td class="text-gray-600">
+                              {{ formatDateShort(invoice.invoiceDate) }}
+                            </td>
+                            <td class="text-gray-600">{{ formatDateShort(invoice.dueDate) }}</td>
+                            <td>
+                              <app-invoice-status-chip [status]="invoice.status" />
+                            </td>
+                            <td>
+                              @if (invoice.total !== null && invoice.total !== undefined) {
+                                {{ invoice.total }} {{ invoice.currency }}
+                              } @else {
+                                —
+                              }
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                }
+              </mat-tab>
+            </mat-tab-group>
+          </section>
         </div>
       </div>
-
-      <!-- History tabs -->
-      <mat-tab-group
-        animationDuration="0ms"
-        [selectedIndex]="selectedTabIndex()"
-        (selectedIndexChange)="onSelectedTabChange($event)"
-      >
-        <!-- Leads tab -->
-        <!-- Leads tab -->
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span i18n="@@leadsTabLabel">Leads</span>
-          </ng-template>
-          @if (leadsLoading()) {
-            <div class="flex justify-center py-12">
-              <div
-                aria-hidden="true"
-                class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-              ></div>
-            </div>
-          } @else if (leads().length === 0) {
-            <div class="px-4 py-8 text-center">
-              <p class="text-sm text-gray-500" i18n="@@noLeadsMessage">No leads</p>
-            </div>
-          } @else {
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@leadNumberColumn"
-                    >
-                      Lead #
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@statusColumn"
-                    >
-                      Status
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@createdColumn"
-                    >
-                      Created
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 bg-white">
-                  @for (lead of leads(); track lead.id) {
-                    <tr
-                      class="cursor-pointer hover:bg-gray-50"
-                      tabindex="0"
-                      (click)="goToLead(lead)"
-                      (keydown.enter)="goToLead(lead)"
-                      (keydown.space)="goToLead(lead); $event.preventDefault()"
-                    >
-                      <td class="px-4 py-3 text-sm font-medium text-gray-900">
-                        {{ lead.number }}
-                      </td>
-                      <td class="px-4 py-3">
-                        <app-lead-status-chip [status]="lead.status" />
-                      </td>
-                      <td class="px-4 py-3 text-sm text-gray-600">
-                        {{ formatDateShort(lead.createdAt) }}
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          }
-        </mat-tab>
-
-        <!-- Requests tab -->
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span i18n="@@requestsTabLabel">Requests</span>
-          </ng-template>
-          @if (requestsLoading()) {
-            <div class="flex justify-center py-12">
-              <div
-                aria-hidden="true"
-                class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-              ></div>
-            </div>
-          } @else if (requests().length === 0) {
-            <div class="px-4 py-8 text-center">
-              <p class="text-sm text-gray-500" i18n="@@noRequestsMessage">No requests</p>
-            </div>
-          } @else {
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@destinationColumn"
-                    >
-                      Destination
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@datesColumn"
-                    >
-                      Dates
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@travelersColumn"
-                    >
-                      Travelers
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@statusColumn"
-                    >
-                      Status
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@offersCountColumn"
-                    >
-                      Offers
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 bg-white">
-                  @for (req of requests(); track req.id) {
-                    <tr
-                      class="cursor-pointer hover:bg-gray-50"
-                      tabindex="0"
-                      (click)="goToRequest(req)"
-                      (keydown.enter)="goToRequest(req)"
-                      (keydown.space)="goToRequest(req); $event.preventDefault()"
-                    >
-                      <td class="px-4 py-3 text-sm font-medium text-gray-900">
-                        {{ req.destination ?? '—' }}
-                      </td>
-                      <td class="px-4 py-3 text-sm text-gray-600">
-                        {{ formatDateShort(req.departDate) }} –
-                        {{ formatDateShort(req.returnDate) }}
-                      </td>
-                      <td class="px-4 py-3 text-sm text-gray-600">
-                        {{ req.adults ?? 0 }} + {{ req.children ?? 0 }}
-                      </td>
-                      <td class="px-4 py-3">
-                        <app-request-status-chip [status]="req.status" />
-                      </td>
-                      <td class="px-4 py-3 text-sm text-gray-600">
-                        {{ req.offersCount ?? 0 }}
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          }
-        </mat-tab>
-
-        <!-- Offers tab -->
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span i18n="@@offersTabLabel">Offers</span>
-          </ng-template>
-          @if (offersLoading()) {
-            <div class="flex justify-center py-12">
-              <div
-                aria-hidden="true"
-                class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-              ></div>
-            </div>
-          } @else if (offers().length === 0) {
-            <div class="px-4 py-8 text-center">
-              <p class="text-sm text-gray-500" i18n="@@noOffersMessage">No offers</p>
-            </div>
-          } @else {
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@offerNumberColumn"
-                    >
-                      Offer #
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@destinationColumn"
-                    >
-                      Destination
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@totalPriceColumn"
-                    >
-                      Total
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@statusColumn"
-                    >
-                      Status
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@createdColumn"
-                    >
-                      Created
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 bg-white">
-                  @for (offer of offers(); track offer.id) {
-                    <tr
-                      class="cursor-pointer hover:bg-gray-50"
-                      tabindex="0"
-                      (click)="goToOffer(offer)"
-                      (keydown.enter)="goToOffer(offer)"
-                      (keydown.space)="goToOffer(offer); $event.preventDefault()"
-                    >
-                      <td class="px-4 py-3 text-sm font-medium text-gray-900">
-                        {{ offer.offerNumber ?? '—' }}
-                      </td>
-                      <td class="px-4 py-3 text-sm text-gray-600">
-                        {{ offer.destination ?? '—' }}
-                      </td>
-                      <td class="px-4 py-3 text-sm text-gray-900">
-                        @if (offer.totalPrice !== null && offer.totalPrice !== undefined) {
-                          {{ offer.totalPrice }} {{ offer.currency ?? '' }}
-                        } @else {
-                          —
-                        }
-                      </td>
-                      <td class="px-4 py-3">
-                        <app-offer-status-chip [status]="offer.status" />
-                      </td>
-                      <td class="px-4 py-3 text-sm text-gray-600">
-                        {{ formatDateShort(offer.createdAt) }}
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          }
-        </mat-tab>
-
-        <!-- Bookings tab -->
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span i18n="@@bookingsTabLabel">Bookings</span>
-          </ng-template>
-          @if (bookingsLoading()) {
-            <div class="flex justify-center py-12">
-              <div
-                aria-hidden="true"
-                class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-              ></div>
-            </div>
-          } @else if (bookings().length === 0) {
-            <div class="px-4 py-8 text-center">
-              <p class="text-sm text-gray-500" i18n="@@noBookingsMessage">No bookings</p>
-            </div>
-          } @else {
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@bookingNumberColumn"
-                    >
-                      Booking #
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@destinationColumn"
-                    >
-                      Destination
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@datesColumn"
-                    >
-                      Dates
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@statusColumn"
-                    >
-                      Status
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@totalPriceColumn"
-                    >
-                      Total
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 bg-white">
-                  @for (booking of bookings(); track booking.id) {
-                    <tr
-                      class="cursor-pointer hover:bg-gray-50"
-                      tabindex="0"
-                      (click)="goToBooking(booking)"
-                      (keydown.enter)="goToBooking(booking)"
-                      (keydown.space)="goToBooking(booking); $event.preventDefault()"
-                    >
-                      <td class="px-4 py-3 text-sm font-medium text-gray-900">
-                        {{ booking.bookingNumber ?? '—' }}
-                      </td>
-                      <td class="px-4 py-3 text-sm text-gray-600">
-                        {{ booking.destination ?? '—' }}
-                      </td>
-                      <td class="px-4 py-3 text-sm text-gray-600">
-                        {{ formatDateShort(booking.departDate) }} –
-                        {{ formatDateShort(booking.returnDate) }}
-                      </td>
-                      <td class="px-4 py-3">
-                        <app-booking-status-chip [status]="booking.status" />
-                      </td>
-                      <td class="px-4 py-3 text-sm text-gray-900">
-                        @if (booking.totalPrice !== null && booking.totalPrice !== undefined) {
-                          {{ booking.totalPrice }} {{ booking.currency ?? '' }}
-                        } @else {
-                          —
-                        }
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          }
-        </mat-tab>
-
-        <!-- Invoices tab -->
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <span i18n="@@invoicesTabLabel">Invoices</span>
-          </ng-template>
-          @if (invoicesLoading()) {
-            <div class="flex justify-center py-12">
-              <div
-                aria-hidden="true"
-                class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-              ></div>
-            </div>
-          } @else if (invoices().length === 0) {
-            <div class="px-4 py-8 text-center">
-              <p class="text-sm text-gray-500" i18n="@@noInvoicesMessage">No invoices</p>
-            </div>
-          } @else {
-            <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                  <tr>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@invoiceNumberColumn"
-                    >
-                      Invoice #
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@invoiceDateColumn"
-                    >
-                      Invoice Date
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@dueDateColumn"
-                    >
-                      Due Date
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@statusColumn"
-                    >
-                      Status
-                    </th>
-                    <th
-                      class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase"
-                      i18n="@@totalPriceColumn"
-                    >
-                      Total
-                    </th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-200 bg-white">
-                  @for (invoice of invoices(); track invoice.id) {
-                    <tr
-                      class="cursor-pointer hover:bg-gray-50"
-                      tabindex="0"
-                      (click)="goToInvoice(invoice)"
-                      (keydown.enter)="goToInvoice(invoice)"
-                      (keydown.space)="goToInvoice(invoice); $event.preventDefault()"
-                    >
-                      <td class="px-4 py-3 text-sm font-medium text-gray-900">
-                        {{ invoice.number }}
-                      </td>
-                      <td class="px-4 py-3 text-sm text-gray-600">
-                        {{ formatDateShort(invoice.invoiceDate) }}
-                      </td>
-                      <td class="px-4 py-3 text-sm text-gray-600">
-                        {{ formatDateShort(invoice.dueDate) }}
-                      </td>
-                      <td class="px-4 py-3">
-                        <app-invoice-status-chip [status]="invoice.status" />
-                      </td>
-                      <td class="px-4 py-3 text-sm text-gray-900">
-                        @if (invoice.total !== null && invoice.total !== undefined) {
-                          {{ invoice.total }} {{ invoice.currency }}
-                        } @else {
-                          —
-                        }
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
-          }
-        </mat-tab>
-      </mat-tab-group>
     } @else {
       <p class="text-gray-500" i18n="@@clientNotFound">Client not found.</p>
     }

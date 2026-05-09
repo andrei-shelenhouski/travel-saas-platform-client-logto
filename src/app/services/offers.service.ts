@@ -21,18 +21,28 @@ const OFFERS_STATS_URL = `${environment.baseUrl}/api/offers/stats`;
 export class OffersService {
   private readonly http = inject(HttpClient);
 
+  // eslint-disable-next-line complexity
   getList(params?: {
-    status?: OfferStatus;
+    status?: OfferStatus | OfferStatus[];
     requestId?: string;
     leadId?: string;
     agentId?: string;
     page?: number;
     limit?: number;
+    dateFrom?: string;
+    dateTo?: string;
+    search?: string;
   }): Observable<PaginatedOfferResponseDto> {
     let httpParams = new HttpParams();
 
     if (params?.status !== undefined) {
-      httpParams = httpParams.set('status', params.status);
+      const statuses = Array.isArray(params.status)
+        ? params.status.filter((value) => Boolean(value))
+        : [params.status];
+
+      for (const status of statuses) {
+        httpParams = httpParams.append('status', status);
+      }
     }
 
     if (params?.requestId !== undefined) {
@@ -53,6 +63,18 @@ export class OffersService {
 
     if (params?.limit !== undefined) {
       httpParams = httpParams.set('limit', params.limit);
+    }
+
+    if (params?.dateFrom !== undefined) {
+      httpParams = httpParams.set('dateFrom', params.dateFrom);
+    }
+
+    if (params?.dateTo !== undefined) {
+      httpParams = httpParams.set('dateTo', params.dateTo);
+    }
+
+    if (params?.search !== undefined) {
+      httpParams = httpParams.set('search', params.search);
     }
 
     return this.http.get<PaginatedOfferResponseDto>(OFFERS_URL, { params: httpParams });

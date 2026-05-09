@@ -1,159 +1,170 @@
-<div class="users-page p-4">
-  <header class="users-page__header">
-    <div>
-      <h1 class="users-page__title" i18n="@@userManagement">User management</h1>
-      <p class="users-page__description" i18n="@@userManagementDescription">
-        Manage organization members and their access rights.
-      </p>
-    </div>
-    <div class="users-page__actions">
-      <button
-        color="primary"
-        i18n="@@usersInviteButton"
-        mat-flat-button
-        type="button"
-        (click)="openInviteDialog()"
-      >
-        + Invite user
-      </button>
-      <a i18n="@@usersBackToDashboard" mat-stroked-button routerLink="/app/dashboard"
-        >Back to dashboard</a
-      >
-    </div>
-  </header>
+<app-page-heading
+  title="User management"
+  i18n-title="@@userManagement"
+  [subtitle]="usersSubtitle()"
+>
+  <button
+    color="primary"
+    i18n="@@usersInviteButton"
+    matButton="filled"
+    type="button"
+    (click)="openInviteDialog()"
+  >
+    <mat-icon>add</mat-icon>
+    <span>Invite user</span>
+  </button>
+</app-page-heading>
 
+<div class="space-y-4 p-4">
   @if (error()) {
-    <div class="users-page__error">{{ error() }}</div>
+    <p class="mb-4 text-sm text-red-600">{{ error() }}</p>
   }
 
-  <section class="users-table">
-    @if (loading()) {
-      <div class="users-table__loading">
-        <div aria-hidden="true" class="users-table__spinner"></div>
-      </div>
-    } @else {
-      <table class="users-table__table">
-        <thead>
-          <tr>
-            <th i18n="@@usersColumnUser">User</th>
-            <th i18n="@@usersColumnEmail">Email</th>
-            <th i18n="@@usersColumnRole">Role</th>
-            <th i18n="@@usersColumnStatus">Status</th>
-            <th i18n="@@usersColumnJoined">Joined</th>
-            <th class="users-table__actions-column" i18n="@@usersColumnActions">Actions</th>
-          </tr>
-        </thead>
+  <div class="table-wrap overflow-scroll">
+    <table mat-table [dataSource]="users()" [multiTemplateDataRows]="true">
+      <ng-container matColumnDef="user">
+        <th *matHeaderCellDef i18n="@@usersColumnUser" mat-header-cell>User</th>
+        <td *matCellDef="let element" mat-cell>
+          <div class="flex items-center gap-3">
+            <span
+              aria-hidden="true"
+              class="inline-flex h-8 w-8 items-center justify-center rounded-full text-white text-xs font-bold"
+              [style.background-color]="getAvatarColor(element.id)"
+            >
+              {{ getInitials(element.fullName) }}
+            </span>
+            <div>
+              <div class="text-sm font-semibold">{{ element.fullName }}</div>
+              @if (isCurrentUser(element)) {
+                <div class="text-xs text-gray-500" i18n="@@usersCurrentUser">Current user</div>
+              }
+            </div>
+          </div>
+        </td>
+      </ng-container>
 
-        <tbody>
-          @if (users().length === 0) {
-            <tr>
-              <td colspan="6">
-                <div class="users-table__empty" i18n="@@usersEmptyState">
-                  No users yet. Invite the first member.
-                </div>
-              </td>
-            </tr>
-          } @else {
-            @for (user of users(); track user.id) {
-              <tr>
-                <td>
-                  <div class="users-table__identity">
-                    <span
-                      aria-hidden="true"
-                      class="users-table__avatar"
-                      [style.background-color]="getAvatarColor(user.id)"
-                    >
-                      {{ getInitials(user.fullName) }}
-                    </span>
-                    <div>
-                      <div class="users-table__name">{{ user.fullName }}</div>
-                      @if (isCurrentUser(user)) {
-                        <div class="users-table__current-user" i18n="@@usersCurrentUser">
-                          Current user
-                        </div>
-                      }
-                    </div>
-                  </div>
-                </td>
-
-                <td>
-                  <span class="users-table__email" [title]="user.email">{{ user.email }}</span>
-                </td>
-
-                <td>
-                  <mat-form-field
-                    appearance="outline"
-                    class="users-table__role-select"
-                    subscriptSizing="dynamic"
-                  >
-                    <mat-select
-                      [disabled]="!canChangeRole(user) || updatingRoleId() === user.id"
-                      [value]="user.role"
-                      (selectionChange)="onRoleChange(user, $event.value)"
-                    >
-                      @for (option of roleOptions; track option.value) {
-                        <mat-option [value]="option.value">{{ option.label }}</mat-option>
-                      }
-                    </mat-select>
-                  </mat-form-field>
-                </td>
-
-                <td>
-                  <span
-                    class="users-table__status"
-                    [class.users-table__status--active]="user.isActive"
-                    [class.users-table__status--inactive]="!user.isActive"
-                  >
-                    {{ getStatusLabel(user.isActive) }}
-                  </span>
-                </td>
-
-                <td>{{ user.joinedAt | date: 'dd.MM.yyyy' }}</td>
-
-                <td class="users-table__actions-column">
-                  <button
-                    aria-label="Open actions menu"
-                    i18n-aria-label="@@usersActionsMenuAria"
-                    mat-icon-button
-                    type="button"
-                    [disabled]="togglingActiveId() === user.id"
-                    [matMenuTriggerData]="{ user: user }"
-                    [matMenuTriggerFor]="actionsMenu"
-                  >
-                    <mat-icon>more_vert</mat-icon>
-                  </button>
-                </td>
-              </tr>
-            }
-          }
-        </tbody>
-      </table>
-    }
-  </section>
-
-  <mat-menu #actionsMenu="matMenu">
-    <ng-template let-user="user" matMenuContent>
-      @if (user.isActive) {
-        @if (!isCurrentUser(user)) {
-          <button
-            i18n="@@usersDeactivateActionMenu"
-            mat-menu-item
-            type="button"
-            (click)="openDeactivateDialog(user)"
+      <ng-container matColumnDef="email">
+        <th *matHeaderCellDef i18n="@@usersColumnEmail" mat-header-cell>Email</th>
+        <td *matCellDef="let element" mat-cell>
+          <span
+            class="block max-w-[260px] overflow-hidden text-ellipsis whitespace-nowrap"
+            [title]="element.email"
           >
-            Deactivate
+            {{ element.email }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="role">
+        <th *matHeaderCellDef i18n="@@usersColumnRole" mat-header-cell>Role</th>
+        <td *matCellDef="let element" mat-cell>
+          <mat-form-field appearance="outline" class="role-field" subscriptSizing="dynamic">
+            <mat-select
+              [disabled]="!canChangeRole(element) || updatingRoleId() === element.id"
+              [value]="element.role"
+              (selectionChange)="onRoleChange(element, $event.value)"
+            >
+              @for (option of roleOptions; track option.value) {
+                <mat-option [value]="option.value">{{ option.label }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th *matHeaderCellDef i18n="@@usersColumnStatus" mat-header-cell>Status</th>
+        <td *matCellDef="let element" mat-cell>
+          <span
+            class="inline-block rounded-full px-2.5 py-1 text-xs font-semibold"
+            [class.bg-gray-100]="!element.isActive"
+            [class.bg-green-100]="element.isActive"
+            [class.text-gray-800]="!element.isActive"
+            [class.text-green-800]="element.isActive"
+          >
+            {{ getStatusLabel(element.isActive) }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="joined">
+        <th *matHeaderCellDef i18n="@@usersColumnJoined" mat-header-cell>Joined</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.joinedAt | date: 'dd MMM yyyy' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th
+          *matHeaderCellDef
+          class="w-[88px] text-center"
+          i18n="@@usersColumnActions"
+          mat-header-cell
+        >
+          Actions
+        </th>
+        <td *matCellDef="let element" class="text-center" mat-cell>
+          <button
+            aria-label="Open actions menu"
+            i18n-aria-label="@@usersActionsMenuAria"
+            mat-icon-button
+            type="button"
+            [disabled]="togglingActiveId() === element.id || isCurrentUser(element)"
+            [matMenuTriggerData]="{ user: element }"
+            [matMenuTriggerFor]="actionsMenu"
+          >
+            <mat-icon>more_vert</mat-icon>
           </button>
-        }
-      } @else {
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="displayedColumns" class="table-header-row" mat-header-row></tr>
+      <tr *matRowDef="let row; columns: displayedColumns" class="table-row" mat-row></tr>
+      <tr *matNoDataRow>
+        <td [attr.colspan]="displayedColumns.length">
+          <div class="m-10 text-center align-middle">
+            @if (loading()) {
+              <p class="pb-4" i18n="@@usersLoading">Loading users...</p>
+              <mat-spinner
+                aria-label="Loading users"
+                i18n-aria-label="@@usersLoadingAriaLabel"
+                class="mx-auto"
+                diameter="36"
+              />
+            } @else {
+              <p class="text-gray-500" i18n="@@usersEmptyState">
+                No users yet. Invite the first member.
+              </p>
+            }
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<mat-menu #actionsMenu="matMenu">
+  <ng-template let-user="user" matMenuContent>
+    @if (user.isActive) {
+      @if (!isCurrentUser(user)) {
         <button
-          i18n="@@usersReactivateActionMenu"
+          i18n="@@usersDeactivateActionMenu"
           mat-menu-item
           type="button"
-          (click)="reactivateUser(user.id)"
+          (click)="openDeactivateDialog(user)"
         >
-          Activate
+          Deactivate
         </button>
       }
-    </ng-template>
-  </mat-menu>
-</div>
+    } @else {
+      <button
+        i18n="@@usersReactivateActionMenu"
+        mat-menu-item
+        type="button"
+        (click)="reactivateUser(user.id)"
+      >
+        Activate
+      </button>
+    }
+  </ng-template>
+</mat-menu>

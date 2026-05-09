@@ -1,2 +1,138 @@
-// Client detail component styles
-// Material tabs are used with default styling
+.client-detail-page {
+  display: block;
+}
+
+.client-header-card,
+.client-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  padding: 1rem;
+}
+
+.client-header-card {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.client-header-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.client-header-label {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.client-header-title {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.client-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.client-card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.client-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.client-data-list {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.client-data-row {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: 0.75rem;
+  align-items: start;
+}
+
+.client-data-row dt {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.client-data-row dd {
+  margin: 0;
+  color: #111827;
+  font-size: 0.875rem;
+}
+
+.client-link {
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+.client-link:hover {
+  text-decoration: underline;
+}
+
+.client-history-card {
+  margin-top: 1rem;
+}
+
+.client-history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.client-history-table thead {
+  background-color: #f9fafb;
+}
+
+.client-history-table th {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.client-history-table td {
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #111827;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.client-history-table tbody tr {
+  cursor: pointer;
+  transition: background-color 150ms;
+}
+
+.client-history-table tbody tr:hover {
+  background-color: #f9fafb;
+}
+
+.client-history-empty {
+  padding: 2rem;
+  text-align: center;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
