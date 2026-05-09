@@ -186,6 +186,12 @@
                 >
                   <mat-label>Check-in</mat-label>
                   <input formControlName="checkinDate" matInput type="date" />
+                  @if (
+                    row.controls.checkinDate.hasError('required') &&
+                    row.controls.checkinDate.touched
+                  ) {
+                    <mat-error>Required</mat-error>
+                  }
                 </mat-form-field>
 
                 <mat-form-field
@@ -195,6 +201,12 @@
                 >
                   <mat-label>Check-out</mat-label>
                   <input formControlName="checkoutDate" matInput type="date" />
+                  @if (
+                    row.controls.checkoutDate.hasError('required') &&
+                    row.controls.checkoutDate.touched
+                  ) {
+                    <mat-error>Required</mat-error>
+                  }
                 </mat-form-field>
 
                 <mat-form-field
@@ -369,7 +381,7 @@
         >
           Preview PDF
         </button>
-        <button color="primary" mat-flat-button type="submit" [disabled]="saving() || form.invalid">
+        <button color="primary" mat-flat-button type="submit" [disabled]="saving()">
           @if (saving()) {
             <span
               aria-hidden="true"

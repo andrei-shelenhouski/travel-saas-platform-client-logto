@@ -103,6 +103,47 @@ describe('CreateOfferComponent', () => {
     expect(fixture.componentInstance.form.controls.departureCity.value).toBe('');
   });
 
+  it('keeps Save as Draft enabled and shows required date errors after submit', async () => {
+    await setup('request-1');
+
+    const firstAccommodation = fixture.componentInstance.accommodationsArray.at(0);
+
+    firstAccommodation.patchValue({
+      hotelName: 'Sunrise Hotel',
+      checkinDate: '',
+      checkoutDate: '',
+      unitPrice: 150,
+    });
+    fixture.detectChanges();
+
+    const submitButton = fixture.nativeElement.querySelector(
+      'button[type="submit"]',
+    ) as HTMLButtonElement | null;
+
+    expect(submitButton).not.toBeNull();
+
+    if (!submitButton) {
+      return;
+    }
+
+    expect(submitButton.disabled).toBe(false);
+
+    submitButton.click();
+    fixture.detectChanges();
+
+    expect(firstAccommodation.controls.checkinDate.touched).toBe(true);
+    expect(firstAccommodation.controls.checkoutDate.touched).toBe(true);
+    expect(firstAccommodation.controls.checkinDate.hasError('required')).toBe(true);
+    expect(firstAccommodation.controls.checkoutDate.hasError('required')).toBe(true);
+    expect(offersServiceMock.create).not.toHaveBeenCalled();
+
+    const matErrors = fixture.nativeElement.querySelectorAll('mat-error') as NodeListOf<HTMLElement>;
+    const errorMessages = Array.from(matErrors).map((element) => element.textContent?.trim());
+    const requiredMessages = errorMessages.filter((message) => message === 'Required');
+
+    expect(requiredMessages).toHaveLength(2);
+  });
+
   async function setup(requestId: string | null): Promise<void> {
     await TestBed.configureTestingModule({
       imports: [CreateOfferComponent],
