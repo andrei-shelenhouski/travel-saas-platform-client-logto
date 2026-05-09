@@ -137,13 +137,24 @@ describe('CreateOfferComponent', () => {
     expect(firstAccommodation.controls.checkoutDate.hasError('required')).toBe(true);
     expect(offersServiceMock.create).not.toHaveBeenCalled();
 
-    const matErrors = fixture.nativeElement.querySelectorAll(
-      'mat-error',
-    ) as NodeListOf<HTMLElement>;
-    const errorMessages = Array.from(matErrors).map((element) => element.textContent?.trim());
-    const requiredMessages = errorMessages.filter((message) => message === 'Required');
+    const checkinInput = fixture.nativeElement.querySelector(
+      'input[formControlName="checkinDate"]',
+    ) as HTMLElement | null;
+    const checkoutInput = fixture.nativeElement.querySelector(
+      'input[formControlName="checkoutDate"]',
+    ) as HTMLElement | null;
 
-    expect(requiredMessages).toHaveLength(2);
+    const checkinField = checkinInput?.closest('mat-form-field') as HTMLElement | null;
+    const checkoutField = checkoutInput?.closest('mat-form-field') as HTMLElement | null;
+
+    expect(checkinField).not.toBeNull();
+    expect(checkoutField).not.toBeNull();
+    expect(checkinField?.querySelector('mat-error')?.textContent).toContain(
+      'Check-in date is required',
+    );
+    expect(checkoutField?.querySelector('mat-error')?.textContent).toContain(
+      'Check-out date is required',
+    );
   });
 
   async function setup(requestId: string | null): Promise<void> {

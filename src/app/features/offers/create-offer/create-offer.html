@@ -190,7 +190,9 @@
                     row.controls.checkinDate.hasError('required') &&
                     row.controls.checkinDate.touched
                   ) {
-                    <mat-error>Required</mat-error>
+                    <mat-error i18n="@@createOfferCheckinDateRequiredError"
+                      >Check-in date is required</mat-error
+                    >
                   }
                 </mat-form-field>
 
@@ -205,7 +207,9 @@
                     row.controls.checkoutDate.hasError('required') &&
                     row.controls.checkoutDate.touched
                   ) {
-                    <mat-error>Required</mat-error>
+                    <mat-error i18n="@@createOfferCheckoutDateRequiredError"
+                      >Check-out date is required</mat-error
+                    >
                   }
                 </mat-form-field>
 
