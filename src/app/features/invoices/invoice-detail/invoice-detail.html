@@ -335,7 +335,11 @@
                   Unit price
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm text-gray-900">
-                  {{ row.unitPrice != null ? (row.unitPrice | number: '1.2-2') + ' ' + inv.currency : '—' }}
+                  {{
+                    row.unitPrice !== null
+                      ? (row.unitPrice | number: '1.2-2') + ' ' + inv.currency
+                      : '—'
+                  }}
                 </mat-cell>
               </ng-container>
 
@@ -363,7 +367,9 @@
                   Total
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm font-medium text-gray-900">
-                  {{ row.total != null ? (row.total | number: '1.2-2') + ' ' + inv.currency : '—' }}
+                  {{
+                    row.total !== null ? (row.total | number: '1.2-2') + ' ' + inv.currency : '—'
+                  }}
                 </mat-cell>
               </ng-container>
 
@@ -377,7 +383,11 @@
                   Tour cost
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm text-gray-900">
-                  {{ row.tourCost ?? '—' }}
+                  {{
+                    row.tourCost !== null
+                      ? (row.tourCost | number: '1.2-2') + ' ' + inv.currency
+                      : '—'
+                  }}
                 </mat-cell>
               </ng-container>
 
@@ -391,7 +401,11 @@
                   Commission
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm text-gray-900">
-                  {{ row.commissionAmount ?? '—' }}
+                  {{
+                    row.commissionAmount !== null
+                      ? (row.commissionAmount | number: '1.2-2') + ' ' + inv.currency
+                      : '—'
+                  }}
                 </mat-cell>
               </ng-container>
 
@@ -405,7 +419,11 @@
                   Commission VAT
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm text-gray-900">
-                  {{ row.commissionVat ?? '—' }}
+                  {{
+                    row.commissionVat !== null
+                      ? (row.commissionVat | number: '1.2-2') + ' ' + inv.currency
+                      : '—'
+                  }}
                 </mat-cell>
               </ng-container>
 
@@ -419,7 +437,9 @@
                   Net to pay
                 </mat-header-cell>
                 <mat-cell *matCellDef="let row" class="text-sm font-medium text-gray-900">
-                  {{ row.total ?? '—' }}
+                  {{
+                    row.total !== null ? (row.total | number: '1.2-2') + ' ' + inv.currency : '—'
+                  }}
                 </mat-cell>
               </ng-container>
 
