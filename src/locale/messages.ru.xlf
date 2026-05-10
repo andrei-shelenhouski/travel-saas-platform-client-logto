@@ -2014,6 +2014,14 @@
           <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="invoiceEditHeadingTitle" datatype="html">
+        <source>Edit Invoice</source>
+        <target>Редактировать счёт</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/create-invoice/create-invoice.html</context>
+          <context context-type="linenumber">2,5</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="invoiceCreateBackToList" datatype="html">
         <source>Back to invoices</source>
         <target>Назад к счетам</target>
@@ -2334,6 +2342,14 @@
           <context context-type="linenumber">352,355</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="invoiceEditSaveButton" datatype="html">
+        <source>Save changes</source>
+        <target>Сохранить изменения</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/create-invoice/create-invoice.html</context>
+          <context context-type="linenumber">354,356</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="invoiceCreateCancelButton" datatype="html">
         <source> Cancel </source>
         <target> Отмена </target>
@@ -2508,6 +2524,106 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
           <context context-type="linenumber">182,183</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditLineItemsTitle" datatype="html">
+        <source> Line items </source>
+        <target> Позиции </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
+          <context context-type="linenumber">190,192</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditAddLineItem" datatype="html">
+        <source>Add line item</source>
+        <target>Добавить позицию</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
+          <context context-type="linenumber">194,196</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditLineItemRow" datatype="html">
+        <source> Row <x id="INTERPOLATION" equiv-text="{{ $index + 1 }}"/> </source>
+        <target> Строка <x id="INTERPOLATION" equiv-text="{{ $index + 1 }}"/> </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
+          <context context-type="linenumber">203,204</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditDescriptionLabel" datatype="html">
+        <source>Description</source>
+        <target>Описание</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
+          <context context-type="linenumber">217,218</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditServiceDateFromLabel" datatype="html">
+        <source>Service from</source>
+        <target>Услуга с</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
+          <context context-type="linenumber">222,223</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditServiceDateToLabel" datatype="html">
+        <source>Service to</source>
+        <target>Услуга по</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
+          <context context-type="linenumber">227,228</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditTravelersLabel" datatype="html">
+        <source>Travelers</source>
+        <target>Туристы</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
+          <context context-type="linenumber">232,233</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditUnitPriceLabel" datatype="html">
+        <source>Unit price</source>
+        <target>Цена за единицу</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
+          <context context-type="linenumber">240,242</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditQuantityLabel" datatype="html">
+        <source>Quantity</source>
+        <target>Количество</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
+          <context context-type="linenumber">252,254</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditTotalLabel" datatype="html">
+        <source>Total</source>
+        <target>Итого</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
+          <context context-type="linenumber">264,265</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
+          <context context-type="linenumber">297,298</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditTourCostLabel" datatype="html">
+        <source>Tour cost</source>
+        <target>Стоимость тура</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
+          <context context-type="linenumber">271,273</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceDetailEditCommissionAmountLabel" datatype="html">
+        <source>Commission amount</source>
+        <target>Сумма комиссии</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.html</context>
+          <context context-type="linenumber">284,286</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDetailSaveLoading" datatype="html">

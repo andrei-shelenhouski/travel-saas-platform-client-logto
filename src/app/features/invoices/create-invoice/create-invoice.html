@@ -1,6 +1,16 @@
-<app-page-heading title="Create Invoice" i18n-title="@@invoiceCreateHeadingTitle">
-  <a i18n="@@invoiceCreateBackToList" mat-button routerLink="/app/invoices">Back to invoices</a>
-</app-page-heading>
+@if (isEditMode) {
+  <app-page-heading title="Edit Invoice" i18n-title="@@invoiceEditHeadingTitle">
+    <a
+      i18n="@@invoiceCreateBackToList"
+      mat-button
+      [routerLink]="['/app/invoices', invoiceId]"
+    >Back to invoices</a>
+  </app-page-heading>
+} @else {
+  <app-page-heading title="Create Invoice" i18n-title="@@invoiceCreateHeadingTitle">
+    <a i18n="@@invoiceCreateBackToList" mat-button routerLink="/app/invoices">Back to invoices</a>
+  </app-page-heading>
+}
 
 <div class="space-y-6 p-4">
   @if (error()) {
@@ -348,6 +358,8 @@
       >
         @if (saving()) {
           <span i18n="@@invoiceCreateSavingButton">Saving...</span>
+        } @else if (isEditMode) {
+          <span i18n="@@invoiceEditSaveButton">Save changes</span>
         } @else {
           <span i18n="@@invoiceCreateSaveDraftButton">Save draft</span>
         }

@@ -60,6 +60,39 @@ function createBooking(overrides: Partial<BookingResponseDto> = {}): BookingResp
   };
 }
 
+function createInvoice(overrides: Partial<InvoiceResponseDto> = {}): InvoiceResponseDto {
+  return {
+    id: 'invoice-1',
+    number: 'INV-001',
+    bookingId: 'booking-1',
+    clientId: 'client-1',
+    clientType: ClientType.INDIVIDUAL,
+    invoiceDate: '2026-05-01',
+    dueDate: '2026-05-08',
+    currency: 'EUR',
+    language: 'EN',
+    paymentTerms: 'Net 7',
+    internalNotes: 'Test note',
+    status: 'DRAFT',
+    lineItems: [
+      {
+        id: 'li-1',
+        sortOrder: 0,
+        description: 'Hotel accommodation',
+        serviceDateFrom: '2026-05-01',
+        serviceDateTo: '2026-05-05',
+        travelers: '2 adults',
+        unitPrice: 200,
+        quantity: 3,
+        tourCost: 600,
+      },
+    ],
+    createdAt: '2026-01-01T00:00:00Z',
+    updatedAt: '2026-01-01T00:00:00Z',
+    ...overrides,
+  };
+}
+
 describe('CreateInvoiceComponent', () => {
   let fixture: ComponentFixture<CreateInvoiceComponent>;
   let component: CreateInvoiceComponent;
@@ -73,9 +106,14 @@ describe('CreateInvoiceComponent', () => {
   };
   let invoicesService: {
     create: ReturnType<typeof vi.fn>;
+    getById: ReturnType<typeof vi.fn>;
+    update: ReturnType<typeof vi.fn>;
   };
 
-  async function createComponent(queryParams: Record<string, string> = {}): Promise<void> {
+  async function createComponent(
+    queryParams: Record<string, string> = {},
+    routeParams: Record<string, string> = {},
+  ): Promise<void> {
     bookingsService = {
       getById: vi.fn(() => of(createBooking())),
     };
@@ -86,7 +124,9 @@ describe('CreateInvoiceComponent', () => {
     };
 
     invoicesService = {
-      create: vi.fn(() => of({ id: 'invoice-1' } as unknown as InvoiceResponseDto)),
+      create: vi.fn(() => of(createInvoice())),
+      getById: vi.fn(() => of(createInvoice())),
+      update: vi.fn(() => of(createInvoice())),
     };
 
     await TestBed.configureTestingModule({
@@ -130,6 +170,7 @@ describe('CreateInvoiceComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
+              paramMap: convertToParamMap(routeParams),
               queryParamMap: convertToParamMap(queryParams),
             },
           },
@@ -416,5 +457,58 @@ describe('CreateInvoiceComponent', () => {
 
     expect(row.controls.commissionAmount.value).toBe(1617);
     expect(row.controls.commissionVat.value).toBeCloseTo(269.5, 2);
+  });
+
+  it('loads existing invoice and patches form in edit mode', async () => {
+    await createComponent({}, { id: 'invoice-1' });
+
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(invoicesService.getById).toHaveBeenCalledWith('invoice-1');
+
+    const cmp = component as unknown as {
+      form: CreateInvoiceComponent['form'];
+      lineItemsArray: CreateInvoiceComponent['lineItemsArray'];
+    };
+
+    expect(cmp.form.controls.invoiceDate.value).toBe('2026-05-01');
+    expect(cmp.form.controls.dueDate.value).toBe('2026-05-08');
+    expect(cmp.form.controls.currency.value).toBe('EUR');
+    expect(cmp.form.controls.language.value).toBe('EN');
+    expect(cmp.form.controls.paymentTerms.value).toBe('Net 7');
+    expect(cmp.form.controls.internalNotes.value).toBe('Test note');
+    expect(cmp.lineItemsArray.length).toBe(1);
+    expect(cmp.lineItemsArray.at(0).controls.description.value).toBe('Hotel accommodation');
+  });
+
+  it('calls update service and navigates to detail on submit in edit mode', async () => {
+    await createComponent({}, { id: 'invoice-1' });
+
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+    const cmp = component as unknown as {
+      form: CreateInvoiceComponent['form'];
+      lineItemsArray: CreateInvoiceComponent['lineItemsArray'];
+      onSubmit: () => void;
+    };
+
+    cmp.form.controls.invoiceDate.setValue('2026-05-01');
+    cmp.form.controls.dueDate.setValue('2026-05-08');
+    cmp.lineItemsArray.at(0).controls.description.setValue('Hotel accommodation');
+    cmp.lineItemsArray.at(0).controls.unitPrice.setValue(200);
+    cmp.lineItemsArray.at(0).controls.quantity.setValue(3);
+    cmp.form.controls.clientId.setValue('client-1');
+
+    cmp.onSubmit();
+
+    expect(invoicesService.update).toHaveBeenCalledWith(
+      'invoice-1',
+      expect.objectContaining({ invoiceDate: '2026-05-01', dueDate: '2026-05-08' }),
+    );
+    expect(navigateSpy).toHaveBeenCalledWith(['/app/invoices', 'invoice-1']);
   });
 });
