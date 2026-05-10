@@ -155,6 +155,7 @@ export class OfferEditComponent implements OnInit {
     return calculateOfferPricing({
       accommodations: (value.accommodations ?? []).map((row) => ({
         unitPrice: toSafeNumber(row?.unitPrice),
+        quantity: calculateNights(String(row?.checkinDate ?? ''), String(row?.checkoutDate ?? '')),
       })),
       services: (value.services ?? []).map((row) => ({
         unitPrice: toSafeNumber(row?.unitPrice),
@@ -351,7 +352,10 @@ export class OfferEditComponent implements OnInit {
       return 0;
     }
 
-    return Math.max(0, toSafeNumber(row.controls.unitPrice.value));
+    return (
+      Math.max(0, toSafeNumber(row.controls.unitPrice.value)) *
+      Math.max(0, this.accommodationNights(index))
+    );
   }
 
   serviceTotal(index: number): number {

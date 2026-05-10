@@ -17,7 +17,7 @@ describe('offer-builder utils', () => {
 
   it('calculates totals with percentage discount', () => {
     const summary = calculateOfferPricing({
-      accommodations: [{ unitPrice: 400 }],
+      accommodations: [{ unitPrice: 100, quantity: 4 }],
       services: [{ unitPrice: 50, quantity: 2 }],
       discountMode: 'PCT',
       discountValue: 10,
@@ -31,7 +31,7 @@ describe('offer-builder utils', () => {
 
   it('calculates totals with amount discount', () => {
     const summary = calculateOfferPricing({
-      accommodations: [{ unitPrice: 300 }],
+      accommodations: [{ unitPrice: 75, quantity: 4 }],
       services: [{ unitPrice: 25, quantity: 4 }],
       discountMode: 'AMOUNT',
       discountValue: 80,

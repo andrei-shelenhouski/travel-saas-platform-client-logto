@@ -3,7 +3,7 @@ import type { AccommodationRequest, ServiceItemRequest } from '@app/shared/model
 export type DiscountMode = 'PCT' | 'AMOUNT';
 
 export type OfferPricingInput = {
-  accommodations: { unitPrice: number }[];
+  accommodations: { unitPrice: number; quantity: number }[];
   services: { unitPrice: number; quantity: number }[];
   discountMode: DiscountMode;
   discountValue: number;
@@ -42,7 +42,7 @@ export function calculateNights(checkinDate: string, checkoutDate: string): numb
 
 export function calculateOfferPricing(input: OfferPricingInput): OfferPricingSummary {
   const accommodationSubtotal = input.accommodations.reduce((sum, row) => {
-    return sum + Math.max(0, toSafeNumber(row.unitPrice));
+    return sum + Math.max(0, toSafeNumber(row.unitPrice)) * Math.max(0, toSafeNumber(row.quantity));
   }, 0);
 
   const serviceSubtotal = input.services.reduce((sum, row) => {
