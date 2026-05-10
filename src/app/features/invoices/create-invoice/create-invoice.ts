@@ -26,6 +26,13 @@ import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_AUTOCOMPLETE, MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
+import {
+  addDaysToIsoDate,
+  normalizeInvoiceCurrency,
+  normalizeInvoiceLanguage,
+  normalizePaymentTermsDays,
+  todayIsoDate,
+} from '@app/shared/utils/invoice-defaults';
 
 import type {
   BookingResponseDto,
@@ -109,7 +116,7 @@ export class CreateInvoiceComponent {
   protected readonly selectedClientCommissionPct = signal<number | null>(null);
   protected readonly defaultCommissionPct = signal<number | null>(null);
   protected readonly booking = signal<BookingResponseDto | null>(null);
-  private readonly initialInvoiceDate = this.todayIsoDate();
+  private readonly initialInvoiceDate = todayIsoDate();
 
   protected readonly clientSearchControl = this.fb.nonNullable.control('');
   protected readonly form: InvoiceFormGroup = this.fb.group(
@@ -122,7 +129,7 @@ export class CreateInvoiceComponent {
       ),
       invoiceDate: this.fb.nonNullable.control(this.initialInvoiceDate, Validators.required),
       dueDate: this.fb.nonNullable.control(
-        this.addDaysToIsoDate(this.initialInvoiceDate, 1),
+        addDaysToIsoDate(this.initialInvoiceDate, 1),
         Validators.required,
       ),
       currency: this.fb.nonNullable.control('EUR', Validators.required),
@@ -492,20 +499,14 @@ export class CreateInvoiceComponent {
   private loadDefaults(): void {
     this.organizationSettingsService.get().subscribe({
       next: (settings) => {
-        const currency =
-          settings.defaultCurrency && CURRENCY_OPTIONS.includes(settings.defaultCurrency)
-            ? settings.defaultCurrency
-            : 'EUR';
-        const language =
-          settings.defaultLanguage && LANGUAGE_OPTIONS.includes(settings.defaultLanguage)
-            ? settings.defaultLanguage
-            : 'EN';
+        const currency = normalizeInvoiceCurrency(settings.defaultCurrency);
+        const language = normalizeInvoiceLanguage(settings.defaultLanguage);
         const currencyControl = this.form.controls.currency;
         const languageControl = this.form.controls.language;
         const dueDateControl = this.form.controls.dueDate;
         const paymentTermsControl = this.form.controls.paymentTerms;
-        const paymentTermsDays = this.normalizePaymentTermsDays(settings.defaultPaymentTermsDays);
-        const dueDate = this.addDaysToIsoDate(
+        const paymentTermsDays = normalizePaymentTermsDays(settings.defaultPaymentTermsDays);
+        const dueDate = addDaysToIsoDate(
           this.form.controls.invoiceDate.getRawValue(),
           paymentTermsDays,
         );
@@ -906,27 +907,4 @@ export class CreateInvoiceComponent {
     return 0;
   }
 
-  private todayIsoDate(): string {
-    return new Date().toISOString().slice(0, 10);
-  }
-
-  private addDaysToIsoDate(isoDate: string, daysToAdd: number): string {
-    const date = new Date(`${isoDate}T12:00:00.000Z`);
-
-    if (Number.isNaN(date.getTime())) {
-      return isoDate;
-    }
-
-    date.setUTCDate(date.getUTCDate() + daysToAdd);
-
-    return date.toISOString().slice(0, 10);
-  }
-
-  private normalizePaymentTermsDays(days: number | null | undefined): number {
-    if (typeof days !== 'number' || !Number.isFinite(days)) {
-      return 1;
-    }
-
-    return Math.min(365, Math.max(1, Math.trunc(days)));
-  }
 }

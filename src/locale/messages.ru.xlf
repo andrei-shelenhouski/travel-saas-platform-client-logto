@@ -5357,6 +5357,46 @@
           <context context-type="linenumber">22</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="invoiceCreateNoBillableItems" datatype="html">
+        <source>This booking has no billable items. Please create the invoice manually.</source>
+        <target>В этом бронировании нет позиций для выставления счета. Пожалуйста, создайте счет вручную.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.ts</context>
+          <context context-type="linenumber">132</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceCreateFromBookingFailed" datatype="html">
+        <source>Failed to create invoice from booking</source>
+        <target>Не удалось создать счет из бронирования</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.ts</context>
+          <context context-type="linenumber">139</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceCreateFromBookingCreating" datatype="html">
+        <source>Creating...</source>
+        <target>Создание...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.html</context>
+          <context context-type="linenumber">20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceCreateAutoButton" datatype="html">
+        <source>Create invoice</source>
+        <target>Создать счет</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.html</context>
+          <context context-type="linenumber">22</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceCreateManualButton" datatype="html">
+        <source>Create manually</source>
+        <target>Создать вручную</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.html</context>
+          <context context-type="linenumber">30</context>
+        </context-group>
+      </trans-unit>
     </body>
   </file>
 </xliff>

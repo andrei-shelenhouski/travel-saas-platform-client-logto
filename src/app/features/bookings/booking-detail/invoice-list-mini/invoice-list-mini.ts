@@ -10,15 +10,17 @@ import { InvoicesService } from '@app/services/invoices.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { RoleService } from '@app/services/role.service';
 import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
-import { BookingStatus } from '@app/shared/models';
+import { BookingStatus, ClientType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
+import {
+  addDaysToIsoDate,
+  normalizeInvoiceCurrency,
+  normalizeInvoiceLanguage,
+  normalizePaymentTermsDays,
+  todayIsoDate,
+} from '@app/shared/utils/invoice-defaults';
 
-import type {
-  BookingResponseDto,
-  ClientType,
-  CreateInvoiceDto,
-  InvoiceResponseDto,
-} from '@app/shared/models';
+import type { BookingResponseDto, ClientType as ClientTypeValue, CreateInvoiceDto, InvoiceResponseDto } from '@app/shared/models';
 
 const INVOICE_STATUS_CLASSES: Record<string, string> = {
   DRAFT: 'bg-gray-100 text-gray-700',
@@ -77,20 +79,20 @@ export class InvoiceListMiniComponent {
     this.createInvoiceError.set('');
     this.creatingInvoice.set(true);
 
-    const invoiceDate = this.todayIsoDate();
+    const invoiceDate = todayIsoDate();
     const defaults$ = this.organizationSettingsService.get().pipe(
       map((settings) => {
-        const paymentTermsDays = this.normalizePaymentTermsDays(settings.defaultPaymentTermsDays);
+        const paymentTermsDays = normalizePaymentTermsDays(settings.defaultPaymentTermsDays);
 
         return {
-          dueDate: this.addDaysToIsoDate(invoiceDate, paymentTermsDays),
-          language: this.normalizeLanguage(settings.defaultLanguage),
-          fallbackCurrency: this.normalizeCurrency(settings.defaultCurrency),
+          dueDate: addDaysToIsoDate(invoiceDate, paymentTermsDays),
+          language: normalizeInvoiceLanguage(settings.defaultLanguage),
+          fallbackCurrency: normalizeInvoiceCurrency(settings.defaultCurrency),
         };
       }),
       catchError(() => {
         return of({
-          dueDate: this.addDaysToIsoDate(invoiceDate, 1),
+          dueDate: addDaysToIsoDate(invoiceDate, 1),
           language: 'EN',
           fallbackCurrency: 'EUR',
         });
@@ -108,7 +110,9 @@ export class InvoiceListMiniComponent {
             clientType: this.normalizeClientType(client.type),
             invoiceDate,
             dueDate: defaults.dueDate,
-            currency: this.normalizeCurrency(booking.currency) || defaults.fallbackCurrency,
+            currency: booking.currency
+              ? normalizeInvoiceCurrency(booking.currency)
+              : defaults.fallbackCurrency,
             language: defaults.language,
           };
 
@@ -144,63 +148,19 @@ export class InvoiceListMiniComponent {
     return INVOICE_STATUS_LABELS[status] ?? status;
   }
 
-  private normalizeClientType(type: string): ClientType {
-    if (type === 'B2B_AGENT') {
-      return 'B2B_AGENT';
+  private normalizeClientType(type: unknown): ClientTypeValue {
+    if (type === ClientType.B2B_AGENT) {
+      return ClientType.B2B_AGENT;
     }
 
-    if (type === 'COMPANY') {
-      return 'COMPANY';
+    if (type === ClientType.COMPANY) {
+      return ClientType.COMPANY;
     }
 
-    if (type === 'AGENT') {
-      return 'AGENT';
+    if (type === ClientType.AGENT) {
+      return ClientType.AGENT;
     }
 
-    return 'INDIVIDUAL';
-  }
-
-  private normalizeCurrency(currency: string | null | undefined): string {
-    const value = currency?.trim().toUpperCase();
-
-    if (!value) {
-      return '';
-    }
-
-    return value;
-  }
-
-  private normalizeLanguage(language: string | null | undefined): string {
-    const value = language?.trim().toUpperCase();
-
-    if (!value) {
-      return 'EN';
-    }
-
-    return value;
-  }
-
-  private todayIsoDate(): string {
-    return new Date().toISOString().slice(0, 10);
-  }
-
-  private addDaysToIsoDate(isoDate: string, daysToAdd: number): string {
-    const date = new Date(`${isoDate}T12:00:00.000Z`);
-
-    if (Number.isNaN(date.getTime())) {
-      return isoDate;
-    }
-
-    date.setUTCDate(date.getUTCDate() + daysToAdd);
-
-    return date.toISOString().slice(0, 10);
-  }
-
-  private normalizePaymentTermsDays(days: number | null | undefined): number {
-    if (typeof days !== 'number' || !Number.isFinite(days)) {
-      return 1;
-    }
-
-    return Math.min(365, Math.max(1, Math.trunc(days)));
+    return ClientType.INDIVIDUAL;
   }
 }

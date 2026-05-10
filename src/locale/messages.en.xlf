@@ -438,45 +438,45 @@
         </context-group>
       </trans-unit>
       <trans-unit id="bookingAdditionalServicesTitle" datatype="html">
-        <source>Additional Services</source>
+        <source> Additional Services </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.html</context>
-          <context context-type="linenumber">2,5</context>
+          <context context-type="linenumber">3,6</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingAdditionalServicesType" datatype="html">
         <source>Service Type</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.html</context>
-          <context context-type="linenumber">8,9</context>
+          <context context-type="linenumber">10,11</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingAdditionalServicesDescription" datatype="html">
-        <source>Description</source>
+        <source> Description </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.html</context>
-          <context context-type="linenumber">9,10</context>
+          <context context-type="linenumber">12,14</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingAdditionalServicesQty" datatype="html">
-        <source>Qty</source>
+        <source> Qty </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.html</context>
-          <context context-type="linenumber">11</context>
+          <context context-type="linenumber">15,17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingAdditionalServicesUnitPrice" datatype="html">
-        <source>Unit Price</source>
+        <source> Unit Price </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.html</context>
-          <context context-type="linenumber">11,12</context>
+          <context context-type="linenumber">18,20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingAdditionalServicesTotal" datatype="html">
-        <source>Total</source>
+        <source> Total </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.html</context>
-          <context context-type="linenumber">12,15</context>
+          <context context-type="linenumber">21,24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingServiceTypeTransfer" datatype="html">
@@ -820,67 +820,95 @@
           <context context-type="linenumber">3,4</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="3833335631928489785" datatype="html">
+      <trans-unit id="invoiceCreateFromBookingCreating" datatype="html">
+        <source>Creating...</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.html</context>
+          <context context-type="linenumber">21,23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceCreateAutoButton" datatype="html">
         <source>Create invoice</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.html</context>
-          <context context-type="linenumber">11,12</context>
+          <context context-type="linenumber">23,26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceCreateManualButton" datatype="html">
+        <source>Create manually</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.html</context>
+          <context context-type="linenumber">32,36</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3956938367326645834" datatype="html">
         <source>Invoice #<x id="INTERPOLATION" equiv-text="{{ invoice.number }}"/></source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.html</context>
-          <context context-type="linenumber">23,24</context>
+          <context context-type="linenumber">49,50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="9117740843475037430" datatype="html">
         <source>No invoices created</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.html</context>
-          <context context-type="linenumber">41,43</context>
+          <context context-type="linenumber">67,69</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceStatusDraft" datatype="html">
         <source>Draft</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.ts</context>
-          <context context-type="linenumber">20</context>
+          <context context-type="linenumber">35</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceStatusIssued" datatype="html">
         <source>Issued</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.ts</context>
-          <context context-type="linenumber">21</context>
+          <context context-type="linenumber">36</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceStatusPaid" datatype="html">
         <source>Paid</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.ts</context>
-          <context context-type="linenumber">22</context>
+          <context context-type="linenumber">37</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceStatusPartiallyPaid" datatype="html">
         <source>Partially paid</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.ts</context>
-          <context context-type="linenumber">23</context>
+          <context context-type="linenumber">38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceStatusOverdue" datatype="html">
         <source>Overdue</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.ts</context>
-          <context context-type="linenumber">24</context>
+          <context context-type="linenumber">39</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceStatusCancelled" datatype="html">
         <source>Cancelled</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.ts</context>
-          <context context-type="linenumber">25</context>
+          <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceCreateNoBillableItems" datatype="html">
+        <source>This booking has no billable items. Please create the invoice manually.</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.ts</context>
+          <context context-type="linenumber">130</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="invoiceCreateFromBookingFailed" datatype="html">
+        <source>Failed to create invoice from booking</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/invoice-list-mini/invoice-list-mini.ts</context>
+          <context context-type="linenumber">137</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7457179823984196306" datatype="html">

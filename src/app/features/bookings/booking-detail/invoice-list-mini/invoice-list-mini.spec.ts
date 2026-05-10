@@ -112,7 +112,7 @@ describe('InvoiceListMiniComponent', () => {
     expect(manualLink?.textContent).toContain('Create manually');
   });
 
-  it('allows create invoice only for manager or back office roles', () => {
+  it('allows create invoice for manager, admin, and back office roles', () => {
     roleSignal.set('Back Office');
     fixture.detectChanges();
 
@@ -121,7 +121,12 @@ describe('InvoiceListMiniComponent', () => {
     roleSignal.set('Admin');
     fixture.detectChanges();
 
-    expect(component.canCreateInvoice()).toBe(false);
+    expect(component.canCreateInvoice()).toBe(true);
+
+    roleSignal.set('Manager');
+    fixture.detectChanges();
+
+    expect(component.canCreateInvoice()).toBe(true);
   });
 
   it('does not allow create invoice for cancelled booking', () => {
@@ -206,5 +211,25 @@ describe('InvoiceListMiniComponent', () => {
     expect(component.createInvoiceError()).toBe('');
     expect(toastService.showError).toHaveBeenCalled();
     expect(component.creatingInvoice()).toBe(false);
+  });
+
+  it('falls back to EUR when booking and settings currencies are invalid', () => {
+    organizationSettingsService.get.mockReturnValue(
+      of({
+        defaultLanguage: 'RU',
+        defaultCurrency: '',
+        defaultPaymentTermsDays: 7,
+      }),
+    );
+    fixture.componentRef.setInput('booking', createBooking({ currency: '' }));
+    fixture.detectChanges();
+
+    component.onCreateInvoice();
+
+    expect(invoicesService.create).toHaveBeenCalledWith(
+      expect.objectContaining({
+        currency: 'EUR',
+      }),
+    );
   });
 });
