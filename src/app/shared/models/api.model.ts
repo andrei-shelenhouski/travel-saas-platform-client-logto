@@ -376,6 +376,15 @@ export type BookingAccommodationDto = {
   total?: number;
 };
 
+/** OpenAPI: BookingServiceSnapshotEntry. Additional services in BookingResponse. */
+export type BookingServiceSnapshotEntryDto = {
+  serviceType?: string;
+  description?: string;
+  quantity?: number;
+  unitPrice?: number;
+  total?: number;
+};
+
 /** OpenAPI: ServiceItemDto. Service line item in OfferResponse. */
 export type ServiceItemDto = {
   id?: string;
@@ -546,9 +555,11 @@ export type BookingResponseDto = {
   destination?: string;
   departDate?: string;
   returnDate?: string;
+  currency?: string;
   adults?: number;
   children?: number;
   accommodationDetails?: BookingAccommodationDto[];
+  servicesSnapshot?: BookingServiceSnapshotEntryDto[] | null;
   supplierConfirmationNumber?: string;
   assignedBackofficeId?: string;
   assignedBackofficeName?: string;
@@ -687,7 +698,7 @@ export type UpdateInvoiceDto = {
 
 export type CreateInvoiceDto = {
   bookingId?: string;
-  clientId: string;
+  clientId?: string;
   clientType: ClientType;
   language?: string;
   invoiceDate: string;
@@ -695,7 +706,7 @@ export type CreateInvoiceDto = {
   currency: string;
   paymentTerms?: string;
   internalNotes?: string;
-  lineItems: CreateInvoiceLineItemDto[];
+  lineItems?: CreateInvoiceLineItemDto[];
 };
 
 export type InvoiceLineItemResponseDto = {

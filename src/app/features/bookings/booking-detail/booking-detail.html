@@ -87,6 +87,13 @@
 
             <app-accommodation-table [accommodationDetails]="b.accommodationDetails" />
 
+            @if (b.servicesSnapshot?.length) {
+              <app-additional-services-table
+                [currency]="b.currency"
+                [services]="b.servicesSnapshot"
+              />
+            }
+
             <app-operations-section
               [booking]="b"
               [saving]="savingOps()"

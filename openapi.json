@@ -6949,6 +6949,15 @@
               "$ref": "#/components/schemas/BookingAccommodationDto"
             }
           },
+          "servicesSnapshot": {
+            "type": [
+              "array",
+              "null"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/BookingServiceSnapshotEntry"
+            }
+          },
           "supplierConfirmationNumber": {
             "type": "string"
           },
@@ -6994,6 +7003,27 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "BookingServiceSnapshotEntry": {
+        "type": "object",
+        "properties": {
+          "serviceType": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "unitPrice": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
           }
         }
       },
@@ -7568,17 +7598,14 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/CreateLineItemRequest"
-            },
-            "minItems": 1
+            }
           }
         },
         "required": [
-          "clientId",
           "clientType",
           "currency",
           "dueDate",
-          "invoiceDate",
-          "lineItems"
+          "invoiceDate"
         ]
       },
       "RecordPaymentRequest": {
