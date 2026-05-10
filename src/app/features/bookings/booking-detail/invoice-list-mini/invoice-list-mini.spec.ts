@@ -1,5 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { signal, type WritableSignal } from '@angular/core';
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 
@@ -9,11 +9,12 @@ import { ClientsService } from '@app/services/clients.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { RoleService } from '@app/services/role.service';
-import { ToastService } from '@app/shared/services/toast.service';
 import { BookingStatus } from '@app/shared/models';
+import { ToastService } from '@app/shared/services/toast.service';
 
 import { InvoiceListMiniComponent } from './invoice-list-mini';
 
+import type { WritableSignal } from '@angular/core';
 import type { BookingResponseDto, InvoiceResponseDto } from '@app/shared/models';
 
 function createBooking(overrides: Partial<BookingResponseDto> = {}): BookingResponseDto {
@@ -175,10 +176,11 @@ describe('InvoiceListMiniComponent', () => {
 
   it('shows inline no billable items error for 422 response', () => {
     invoicesService.create.mockReturnValue(
-      throwError(() =>
-        new HttpErrorResponse({
-          status: 422,
-        }),
+      throwError(
+        () =>
+          new HttpErrorResponse({
+            status: 422,
+          }),
       ),
     );
 
@@ -191,10 +193,11 @@ describe('InvoiceListMiniComponent', () => {
 
   it('shows snackbar for non-422 errors', () => {
     invoicesService.create.mockReturnValue(
-      throwError(() =>
-        new HttpErrorResponse({
-          status: 500,
-        }),
+      throwError(
+        () =>
+          new HttpErrorResponse({
+            status: 500,
+          }),
       ),
     );
 

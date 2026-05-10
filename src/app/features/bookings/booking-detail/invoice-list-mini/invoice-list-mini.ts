@@ -63,7 +63,7 @@ export class InvoiceListMiniComponent {
 
     return (
       this.booking().status !== BookingStatus.CANCELLED &&
-      (role === 'Manager' || role === 'Back Office')
+      (role === 'Manager' || role === 'Admin' || role === 'Back Office')
     );
   });
 
