@@ -31,7 +31,7 @@ describe('AdditionalServicesTableComponent', () => {
   });
 
   it('should render service row data', () => {
-    const text = fixture.nativeElement.textContent;
+    const text = fixture.nativeElement.textContent?.replace(/\s+/g, ' ').trim() ?? '';
 
     expect(text).toContain('Transfer');
     expect(text).toContain('Airport transfer');

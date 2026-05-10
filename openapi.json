@@ -6950,7 +6950,10 @@
             }
           },
           "servicesSnapshot": {
-            "type": "array",
+            "type": [
+              "array",
+              "null"
+            ],
             "items": {
               "$ref": "#/components/schemas/BookingServiceSnapshotEntry"
             }

@@ -698,7 +698,7 @@ export type UpdateInvoiceDto = {
 
 export type CreateInvoiceDto = {
   bookingId?: string;
-  clientId: string;
+  clientId?: string;
   clientType: ClientType;
   language?: string;
   invoiceDate: string;
@@ -706,7 +706,7 @@ export type CreateInvoiceDto = {
   currency: string;
   paymentTerms?: string;
   internalNotes?: string;
-  lineItems: CreateInvoiceLineItemDto[];
+  lineItems?: CreateInvoiceLineItemDto[];
 };
 
 export type InvoiceLineItemResponseDto = {
