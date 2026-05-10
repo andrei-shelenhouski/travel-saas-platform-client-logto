@@ -494,6 +494,102 @@
           <context context-type="linenumber">32,33</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="bookingAdditionalServicesTitle" datatype="html">
+        <source> Additional Services </source>
+        <target> Доп. услуги </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.html</context>
+          <context context-type="linenumber">3,6</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingAdditionalServicesType" datatype="html">
+        <source>Service Type</source>
+        <target>Тип услуги</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.html</context>
+          <context context-type="linenumber">10,11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingAdditionalServicesDescription" datatype="html">
+        <source> Description </source>
+        <target> Описание </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.html</context>
+          <context context-type="linenumber">12,14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingAdditionalServicesQty" datatype="html">
+        <source>Qty</source>
+        <target>Кол-во</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.html</context>
+          <context context-type="linenumber">15</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingAdditionalServicesUnitPrice" datatype="html">
+        <source> Unit Price </source>
+        <target> Цена за ед. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.html</context>
+          <context context-type="linenumber">16,18</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingAdditionalServicesTotal" datatype="html">
+        <source>Total</source>
+        <target>Итого</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.html</context>
+          <context context-type="linenumber">18,21</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingServiceTypeTransfer" datatype="html">
+        <source>Transfer</source>
+        <target>Трансфер</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.ts</context>
+          <context context-type="linenumber">7</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingServiceTypeExcursion" datatype="html">
+        <source>Excursion</source>
+        <target>Экскурсия</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.ts</context>
+          <context context-type="linenumber">8</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingServiceTypeVisa" datatype="html">
+        <source>Visa</source>
+        <target>Виза</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.ts</context>
+          <context context-type="linenumber">9</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingServiceTypeInsurance" datatype="html">
+        <source>Insurance</source>
+        <target>Страховка</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.ts</context>
+          <context context-type="linenumber">10</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingServiceTypeFlight" datatype="html">
+        <source>Flight</source>
+        <target>Перелет</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.ts</context>
+          <context context-type="linenumber">11</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="bookingServiceTypeOther" datatype="html">
+        <source>Other</source>
+        <target>Другое</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.ts</context>
+          <context context-type="linenumber">12</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="bookingDetailInvalidUrlHint" datatype="html">
         <source> Check the URL or return to the bookings list. </source>
         <target>Проверьте адрес или вернитесь к списку бронирований.</target>

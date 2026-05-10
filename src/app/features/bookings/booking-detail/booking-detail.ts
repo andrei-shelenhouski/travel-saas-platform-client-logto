@@ -21,6 +21,7 @@ import { BookingStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import { AccommodationTableComponent } from './accommodation-table/accommodation-table';
+import { AdditionalServicesTableComponent } from './additional-services-table/additional-services-table';
 import { CancellationDialogComponent } from './cancellation-dialog/cancellation-dialog';
 import { ClientSnapshotCardComponent } from './client-snapshot-card/client-snapshot-card';
 import { DocumentListComponent } from './document-list/document-list';
@@ -40,6 +41,7 @@ import type {
   selector: 'app-booking-detail',
   imports: [
     AccommodationTableComponent,
+    AdditionalServicesTableComponent,
     BookingStatusChipComponent,
     CancellationDialogComponent,
     ClientSnapshotCardComponent,
