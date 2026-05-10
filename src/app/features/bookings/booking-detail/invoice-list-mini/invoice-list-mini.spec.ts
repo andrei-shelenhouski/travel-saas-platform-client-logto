@@ -104,6 +104,13 @@ describe('InvoiceListMiniComponent', () => {
     expect(component.canCreateInvoice()).toBe(true);
   });
 
+  it('shows manual invoice creation link', () => {
+    const nativeElement = fixture.nativeElement as HTMLElement;
+    const manualLink = nativeElement.querySelector('a[mat-button][href*="/app/invoices/new"]');
+
+    expect(manualLink?.textContent).toContain('Create manually');
+  });
+
   it('allows create invoice only for manager or back office roles', () => {
     roleSignal.set('Back Office');
     fixture.detectChanges();

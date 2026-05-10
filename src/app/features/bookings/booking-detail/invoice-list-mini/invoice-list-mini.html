@@ -2,26 +2,36 @@
   <div class="flex items-center justify-between">
     <h2 class="text-sm font-semibold text-gray-900" i18n>Invoices</h2>
     @if (canCreateInvoice()) {
-      <button
-        mat-stroked-button
-        type="button"
-        [disabled]="creatingInvoice()"
-        (click)="onCreateInvoice()"
-      >
-        @if (!creatingInvoice()) {
-          <mat-icon>add</mat-icon>
-        }
+      <div class="flex items-center gap-2">
+        <button
+          mat-stroked-button
+          type="button"
+          [disabled]="creatingInvoice()"
+          (click)="onCreateInvoice()"
+        >
+          @if (!creatingInvoice()) {
+            <mat-icon>add</mat-icon>
+          }
 
-        @if (creatingInvoice()) {
-          <div
-            aria-hidden="true"
-            class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-          ></div>
-          <span i18n="@@invoiceCreateFromBookingCreating">Creating...</span>
-        } @else {
-          <span i18n>Create invoice</span>
-        }
-      </button>
+          @if (creatingInvoice()) {
+            <div
+              aria-hidden="true"
+              class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
+            ></div>
+            <span i18n="@@invoiceCreateFromBookingCreating">Creating...</span>
+          } @else {
+            <span i18n="@@invoiceCreateAutoButton">Create invoice</span>
+          }
+        </button>
+
+        <a
+          i18n="@@invoiceCreateManualButton"
+          mat-button
+          [queryParams]="{ bookingId: booking().id }"
+          [routerLink]="['/app/invoices/new']"
+          >Create manually</a
+        >
+      </div>
     }
   </div>
 
