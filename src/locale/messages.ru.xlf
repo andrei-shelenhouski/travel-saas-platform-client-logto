@@ -519,11 +519,11 @@
         </context-group>
       </trans-unit>
       <trans-unit id="bookingAdditionalServicesQty" datatype="html">
-        <source>Qty</source>
+        <source> Qty </source>
         <target>Кол-во</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.html</context>
-          <context context-type="linenumber">15</context>
+          <context context-type="linenumber">15,17</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingAdditionalServicesUnitPrice" datatype="html">
@@ -531,15 +531,15 @@
         <target> Цена за ед. </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.html</context>
-          <context context-type="linenumber">16,18</context>
+          <context context-type="linenumber">18,20</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingAdditionalServicesTotal" datatype="html">
-        <source>Total</source>
+        <source> Total </source>
         <target>Итого</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/additional-services-table/additional-services-table.html</context>
-          <context context-type="linenumber">18,21</context>
+          <context context-type="linenumber">21,24</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingServiceTypeTransfer" datatype="html">
@@ -675,7 +675,7 @@
         <target>Бронирование не найдено</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.html</context>
-          <context context-type="linenumber">111,112</context>
+          <context context-type="linenumber">118,119</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingNotFoundTitle" datatype="html">
@@ -683,7 +683,7 @@
         <target>Бронирование не найдено</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">103</context>
+          <context context-type="linenumber">105</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingLoadFailed" datatype="html">
@@ -691,11 +691,11 @@
         <target>Не удалось загрузить бронирование</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">109</context>
+          <context context-type="linenumber">111</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">113</context>
+          <context context-type="linenumber">115</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingStatusUpdateFailed" datatype="html">
@@ -703,7 +703,7 @@
         <target>Не удалось обновить статус бронирования</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">147</context>
+          <context context-type="linenumber">149</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingCancellationFailed" datatype="html">
@@ -711,7 +711,7 @@
         <target>Не удалось отменить бронирование</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">172</context>
+          <context context-type="linenumber">174</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingTravelDetailsUpdated" datatype="html">
@@ -719,7 +719,7 @@
         <target>Детали тура обновлены</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">195</context>
+          <context context-type="linenumber">197</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingSaveFailed" datatype="html">
@@ -727,11 +727,11 @@
         <target>Не удалось сохранить изменения</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">199</context>
+          <context context-type="linenumber">201</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">222</context>
+          <context context-type="linenumber">224</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingOperationsUpdated" datatype="html">
@@ -739,7 +739,7 @@
         <target>Операционные данные обновлены</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">218</context>
+          <context context-type="linenumber">220</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingFilesUploaded" datatype="html">
@@ -747,7 +747,7 @@
         <target>Загружено файлов: <x id="uploadedCount" equiv-text="uploaded.length"/></target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">246</context>
+          <context context-type="linenumber">248</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingFileUploadFailed" datatype="html">
@@ -755,7 +755,7 @@
         <target>Не удалось загрузить файл</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">251</context>
+          <context context-type="linenumber">253</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingDocumentDeleted" datatype="html">
@@ -763,7 +763,7 @@
         <target>Документ удален</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">273</context>
+          <context context-type="linenumber">275</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingDocumentDeleteFailed" datatype="html">
@@ -771,7 +771,7 @@
         <target>Не удалось удалить документ</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/booking-detail.ts</context>
-          <context context-type="linenumber">277</context>
+          <context context-type="linenumber">279</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4936527822743442211" datatype="html">
@@ -4310,7 +4310,7 @@
         <target>Запрос на поездку не найден. Заполните детали поездки вручную и продолжайте создание предложения.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.ts</context>
-          <context context-type="linenumber">249</context>
+          <context context-type="linenumber">250</context>
         </context-group>
       </trans-unit>
       <trans-unit id="createOfferRequestLoadFailed" datatype="html">
@@ -4318,7 +4318,7 @@
         <target>Не удалось загрузить данные запроса.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.ts</context>
-          <context context-type="linenumber">258</context>
+          <context context-type="linenumber">259</context>
         </context-group>
       </trans-unit>
       <trans-unit id="offerPdfPreviewSaveDraftPrompt" datatype="html">
@@ -4326,7 +4326,7 @@
         <target>Сохраните черновик перед предпросмотром.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/offers/create-offer/create-offer.ts</context>
-          <context context-type="linenumber">357</context>
+          <context context-type="linenumber">361</context>
         </context-group>
       </trans-unit>
       <trans-unit id="offerUntitled" datatype="html">
