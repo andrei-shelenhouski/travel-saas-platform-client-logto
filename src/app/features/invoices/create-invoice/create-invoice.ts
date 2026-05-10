@@ -906,5 +906,4 @@ export class CreateInvoiceComponent {
 
     return 0;
   }
-
 }

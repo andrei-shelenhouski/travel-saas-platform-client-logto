@@ -20,7 +20,12 @@ import {
   todayIsoDate,
 } from '@app/shared/utils/invoice-defaults';
 
-import type { BookingResponseDto, ClientType as ClientTypeValue, CreateInvoiceDto, InvoiceResponseDto } from '@app/shared/models';
+import type {
+  BookingResponseDto,
+  ClientType as ClientTypeValue,
+  CreateInvoiceDto,
+  InvoiceResponseDto,
+} from '@app/shared/models';
 
 const INVOICE_STATUS_CLASSES: Record<string, string> = {
   DRAFT: 'bg-gray-100 text-gray-700',
