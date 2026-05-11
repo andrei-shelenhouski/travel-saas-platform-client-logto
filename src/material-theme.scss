@@ -22,12 +22,6 @@ html {
     )
   );
 
-  // @include mat.theme-overrides(
-  //   (
-  //     primary: map.get(theme-colors.$primary-palette, 60),
-  //   )
-  // );
-
   @include mat.card-overrides(
     (
       outlined-container-color: #fff,

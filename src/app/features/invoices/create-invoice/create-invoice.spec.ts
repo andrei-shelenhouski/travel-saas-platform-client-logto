@@ -242,7 +242,7 @@ describe('CreateInvoiceComponent', () => {
     expect(cmp.lineItemsArray.at(0).controls.total.value).toBe(300);
     expect(cmp.pricingSummary().subtotal).toBe(300);
 
-    cmp.form.controls.dueDate.setValue('2026-05-10');
+    cmp.form.controls.dueDate.setValue(cmp.form.controls.invoiceDate.value);
     cmp.lineItemsArray.at(0).controls.description.setValue('Transfer service');
     cmp.onSubmit();
 

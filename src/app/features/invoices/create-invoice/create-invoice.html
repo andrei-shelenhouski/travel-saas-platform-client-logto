@@ -1,10 +1,6 @@
 @if (isEditMode) {
   <app-page-heading title="Edit Invoice" i18n-title="@@invoiceEditHeadingTitle">
-    <a
-      i18n="@@invoiceCreateBackToList"
-      mat-button
-      [routerLink]="['/app/invoices', invoiceId]"
-    >Back to invoices</a>
+    <a i18n="@@invoiceCreateBackToList" mat-button routerLink="/app/invoices">Back to invoices</a>
   </app-page-heading>
 } @else {
   <app-page-heading title="Create Invoice" i18n-title="@@invoiceCreateHeadingTitle">

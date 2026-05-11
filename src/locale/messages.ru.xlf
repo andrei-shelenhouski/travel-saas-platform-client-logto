@@ -2820,7 +2820,7 @@
       </trans-unit>
       <trans-unit id="invoiceDetailDeletePaymentMessage" datatype="html">
         <source>Delete payment of <x id="AMOUNT" equiv-text="amount"/>?</source>
-        <target>Удалить платёж на <x id="AMOUNT" equiv-text="this.pendingDeletePaymentLabel()"/>? Это действие необратимо.</target>
+        <target>Удалить платёж на <x id="AMOUNT" equiv-text="amount"/>?</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/invoices/invoice-detail/invoice-detail.ts</context>
           <context context-type="linenumber">235</context>
