@@ -230,6 +230,14 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'invoices/:id/edit',
+        canDeactivate: [pendingChangesGuard],
+        loadComponent: () =>
+          import('@app/features/invoices/create-invoice/create-invoice').then(
+            (m) => m.CreateInvoiceComponent,
+          ),
+      },
+      {
         path: 'invoices/:id',
         loadComponent: () =>
           import('@app/features/invoices/invoice-detail/invoice-detail').then(

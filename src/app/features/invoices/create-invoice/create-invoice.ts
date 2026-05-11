@@ -26,6 +26,19 @@ import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_AUTOCOMPLETE, MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
+import {
+  addDaysToIsoDate,
+  normalizeInvoiceCurrency,
+  normalizeInvoiceLanguage,
+  normalizePaymentTermsDays,
+  todayIsoDate,
+} from '@app/shared/utils/invoice-defaults';
+
+import {
+  dueDateAfterInvoiceDateValidator,
+  minLineItemsValidator,
+  toSafeNumber,
+} from './create-invoice.utils';
 
 import type {
   BookingResponseDto,
@@ -33,7 +46,9 @@ import type {
   ClientType as ClientTypeValue,
   CreateInvoiceDto,
   CreateInvoiceLineItemDto,
+  InvoiceResponseDto,
   PaginatedClientResponseDto,
+  UpdateInvoiceDto,
 } from '@app/shared/models';
 
 type InvoiceLineItemFormGroup = FormGroup<{
@@ -94,6 +109,8 @@ export class CreateInvoiceComponent {
   private readonly location = inject(Location);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  protected readonly invoiceId: string | null = this.route.snapshot.paramMap.get('id');
+  protected readonly isEditMode = this.invoiceId !== null;
   private readonly bookingsService = inject(BookingsService);
   private readonly clientsService = inject(ClientsService);
   private readonly invoicesService = inject(InvoicesService);
@@ -109,7 +126,7 @@ export class CreateInvoiceComponent {
   protected readonly selectedClientCommissionPct = signal<number | null>(null);
   protected readonly defaultCommissionPct = signal<number | null>(null);
   protected readonly booking = signal<BookingResponseDto | null>(null);
-  private readonly initialInvoiceDate = this.todayIsoDate();
+  private readonly initialInvoiceDate = todayIsoDate();
 
   protected readonly clientSearchControl = this.fb.nonNullable.control('');
   protected readonly form: InvoiceFormGroup = this.fb.group(
@@ -122,7 +139,7 @@ export class CreateInvoiceComponent {
       ),
       invoiceDate: this.fb.nonNullable.control(this.initialInvoiceDate, Validators.required),
       dueDate: this.fb.nonNullable.control(
-        this.addDaysToIsoDate(this.initialInvoiceDate, 1),
+        addDaysToIsoDate(this.initialInvoiceDate, 1),
         Validators.required,
       ),
       currency: this.fb.nonNullable.control('EUR', Validators.required),
@@ -130,10 +147,10 @@ export class CreateInvoiceComponent {
       paymentTerms: this.fb.nonNullable.control(''),
       internalNotes: this.fb.nonNullable.control(''),
       lineItems: this.fb.array<InvoiceLineItemFormGroup>([], {
-        validators: [this.minLineItemsValidator],
+        validators: [minLineItemsValidator],
       }),
     },
-    { validators: [this.dueDateAfterInvoiceDateValidator] },
+    { validators: [dueDateAfterInvoiceDateValidator] },
   );
 
   private readonly clientSearchQuery = toSignal(
@@ -169,8 +186,13 @@ export class CreateInvoiceComponent {
   protected readonly languageOptions = LANGUAGE_OPTIONS;
 
   constructor() {
-    this.loadDefaults();
-    this.loadBookingFromQuery();
+    if (this.isEditMode) {
+      this.loadInvoiceForEdit();
+      this.clientSearchControl.disable();
+    } else {
+      this.loadDefaults();
+      this.loadBookingFromQuery();
+    }
 
     if (this.lineItemsArray.length === 0) {
       this.resetLineItems();
@@ -334,8 +356,7 @@ export class CreateInvoiceComponent {
     }
 
     const total =
-      this.toSafeNumber(row.controls.unitPrice.value) *
-      this.toSafeNumber(row.controls.quantity.value);
+      toSafeNumber(row.controls.unitPrice.value) * toSafeNumber(row.controls.quantity.value);
 
     row.controls.total.setValue(total);
   }
@@ -347,10 +368,10 @@ export class CreateInvoiceComponent {
       return;
     }
 
-    const tourCost = this.toSafeNumber(row.controls.tourCost.value);
+    const tourCost = toSafeNumber(row.controls.tourCost.value);
     const commissionPct = Math.min(
       100,
-      Math.max(0, this.toSafeNumber(row.controls.commissionPct.value)),
+      Math.max(0, toSafeNumber(row.controls.commissionPct.value)),
     );
     const commissionAmount = (tourCost * commissionPct) / 100;
 
@@ -368,8 +389,8 @@ export class CreateInvoiceComponent {
       return;
     }
 
-    const tourCost = this.toSafeNumber(row.controls.tourCost.value);
-    const commissionAmount = Math.max(0, this.toSafeNumber(row.controls.commissionAmount.value));
+    const tourCost = toSafeNumber(row.controls.tourCost.value);
+    const commissionAmount = Math.max(0, toSafeNumber(row.controls.commissionAmount.value));
     const commissionPct = tourCost > 0 ? (commissionAmount / tourCost) * 100 : 0;
 
     row.controls.commissionAmount.setValue(commissionAmount);
@@ -410,21 +431,35 @@ export class CreateInvoiceComponent {
       return;
     }
 
-    const dto = this.buildCreateInvoiceDto();
-
     this.saving.set(true);
-    this.invoicesService.create(dto).subscribe({
-      next: (created) => {
-        this.form.markAsPristine();
-        this.toast.showSuccess('Invoice draft saved');
-        this.router.navigate(['/app/invoices', created.id]);
-      },
-      error: (err) => {
-        this.error.set(err.error?.message ?? err.message ?? 'Failed to create invoice');
-        this.saving.set(false);
-      },
-      complete: () => this.saving.set(false),
-    });
+
+    if (this.isEditMode) {
+      this.invoicesService.update(this.invoiceId!, this.buildUpdateInvoiceDto()).subscribe({
+        next: () => {
+          this.form.markAsPristine();
+          this.toast.showSuccess('Invoice updated');
+          this.router.navigate(['/app/invoices', this.invoiceId]);
+        },
+        error: (err) => {
+          this.error.set(err.error?.message ?? err.message ?? 'Failed to update invoice');
+          this.saving.set(false);
+        },
+        complete: () => this.saving.set(false),
+      });
+    } else {
+      this.invoicesService.create(this.buildCreateInvoiceDto()).subscribe({
+        next: (created) => {
+          this.form.markAsPristine();
+          this.toast.showSuccess('Invoice draft saved');
+          this.router.navigate(['/app/invoices', created.id]);
+        },
+        error: (err) => {
+          this.error.set(err.error?.message ?? err.message ?? 'Failed to create invoice');
+          this.saving.set(false);
+        },
+        complete: () => this.saving.set(false),
+      });
+    }
   }
 
   protected onCancel(): void {
@@ -460,13 +495,13 @@ export class CreateInvoiceComponent {
 
     if (this.form.controls.clientType.value === ClientType.B2B_AGENT) {
       const totalCommission = lineItems.reduce((sum, item) => {
-        return sum + this.toSafeNumber(item.commissionAmount);
+        return sum + toSafeNumber(item.commissionAmount);
       }, 0);
       const subtotal = lineItems.reduce((sum, item) => {
-        return sum + this.toSafeNumber(item.netToPay);
+        return sum + toSafeNumber(item.netToPay);
       }, 0);
       const totalVat = lineItems.reduce((sum, item) => {
-        return sum + this.toSafeNumber(item.commissionVat);
+        return sum + toSafeNumber(item.commissionVat);
       }, 0);
 
       return {
@@ -478,7 +513,7 @@ export class CreateInvoiceComponent {
     }
 
     const subtotal = lineItems.reduce((sum, item) => {
-      return sum + this.toSafeNumber(item.total);
+      return sum + toSafeNumber(item.total);
     }, 0);
 
     return {
@@ -492,20 +527,14 @@ export class CreateInvoiceComponent {
   private loadDefaults(): void {
     this.organizationSettingsService.get().subscribe({
       next: (settings) => {
-        const currency =
-          settings.defaultCurrency && CURRENCY_OPTIONS.includes(settings.defaultCurrency)
-            ? settings.defaultCurrency
-            : 'EUR';
-        const language =
-          settings.defaultLanguage && LANGUAGE_OPTIONS.includes(settings.defaultLanguage)
-            ? settings.defaultLanguage
-            : 'EN';
+        const currency = normalizeInvoiceCurrency(settings.defaultCurrency);
+        const language = normalizeInvoiceLanguage(settings.defaultLanguage);
         const currencyControl = this.form.controls.currency;
         const languageControl = this.form.controls.language;
         const dueDateControl = this.form.controls.dueDate;
         const paymentTermsControl = this.form.controls.paymentTerms;
-        const paymentTermsDays = this.normalizePaymentTermsDays(settings.defaultPaymentTermsDays);
-        const dueDate = this.addDaysToIsoDate(
+        const paymentTermsDays = normalizePaymentTermsDays(settings.defaultPaymentTermsDays);
+        const dueDate = addDaysToIsoDate(
           this.form.controls.invoiceDate.getRawValue(),
           paymentTermsDays,
         );
@@ -565,6 +594,80 @@ export class CreateInvoiceComponent {
       },
       error: (err) => {
         this.error.set(err.error?.message ?? err.message ?? 'Failed to load booking data');
+      },
+    });
+  }
+
+  private loadInvoiceForEdit(): void {
+    this.invoicesService.getById(this.invoiceId!).subscribe({
+      next: (invoice) => {
+        this.patchFormFromInvoice(invoice);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        this.error.set(err.error?.message ?? err.message ?? 'Failed to load invoice');
+        this.loading.set(false);
+      },
+    });
+  }
+
+  private patchFormFromInvoice(invoice: InvoiceResponseDto): void {
+    this.form.patchValue({
+      bookingId: invoice.bookingId ?? '',
+      clientId: invoice.clientId,
+      clientType: this.normalizeClientType(invoice.clientType ?? ''),
+      invoiceDate: invoice.invoiceDate,
+      dueDate: invoice.dueDate,
+      currency: invoice.currency,
+      language: invoice.language ?? '',
+      paymentTerms: invoice.paymentTerms ?? '',
+      internalNotes: invoice.internalNotes ?? '',
+    });
+
+    const items = invoice.lineItems ?? [];
+    const targetLength = Math.max(items.length, 1);
+
+    while (this.lineItemsArray.length < targetLength) {
+      this.lineItemsArray.push(this.createLineItemGroup(this.lineItemsArray.length));
+    }
+
+    while (this.lineItemsArray.length > targetLength) {
+      this.lineItemsArray.removeAt(this.lineItemsArray.length - 1);
+    }
+
+    items.forEach((item, index) => {
+      this.lineItemsArray.at(index).patchValue({
+        description: item.description ?? '',
+        serviceDateFrom: item.serviceDateFrom ?? '',
+        serviceDateTo: item.serviceDateTo ?? '',
+        travelers: item.travelers ?? '',
+        unitPrice: item.unitPrice ?? null,
+        quantity: item.quantity ?? 1,
+        tourCost: item.tourCost ?? null,
+        commissionAmount: item.commissionAmount ?? null,
+      });
+    });
+
+    this.syncLineItemSortOrder();
+    this.applyLineItemModeValidators();
+
+    for (let index = 0; index < this.lineItemsArray.length; index++) {
+      this.recalculateRow(index);
+    }
+
+    this.loadClientForEdit(invoice.clientId);
+    this.form.markAsPristine();
+  }
+
+  private loadClientForEdit(clientId: string): void {
+    this.clientsService.getById(clientId).subscribe({
+      next: (client) => {
+        this.selectedClient.set(client);
+        this.selectedClientCommissionPct.set(client.commissionPct ?? null);
+        this.clientSearchControl.setValue(this.clientDisplayName(client), { emitEvent: false });
+      },
+      error: (err) => {
+        this.error.set(err.error?.message ?? err.message ?? 'Failed to load client details');
       },
     });
   }
@@ -730,8 +833,8 @@ export class CreateInvoiceComponent {
         return null;
       }
 
-      const tourCost = this.toSafeNumber(parent.controls.tourCost.value);
-      const commissionAmount = this.toSafeNumber(control.value);
+      const tourCost = toSafeNumber(parent.controls.tourCost.value);
+      const commissionAmount = toSafeNumber(control.value);
 
       if (commissionAmount <= tourCost) {
         return null;
@@ -739,37 +842,6 @@ export class CreateInvoiceComponent {
 
       return { commissionExceedsTourCost: true };
     };
-  }
-
-  private dueDateAfterInvoiceDateValidator(control: AbstractControl): ValidationErrors | null {
-    if (!(control instanceof FormGroup)) {
-      return null;
-    }
-
-    const invoiceDate = String(control.get('invoiceDate')?.value ?? '');
-    const dueDate = String(control.get('dueDate')?.value ?? '');
-
-    if (!invoiceDate || !dueDate) {
-      return null;
-    }
-
-    if (dueDate >= invoiceDate) {
-      return null;
-    }
-
-    return { dueDateBeforeInvoiceDate: true };
-  }
-
-  private minLineItemsValidator(control: AbstractControl): ValidationErrors | null {
-    if (!(control instanceof FormArray)) {
-      return null;
-    }
-
-    if (control.length > 0) {
-      return null;
-    }
-
-    return { minItems: true };
   }
 
   private recalculateRow(index: number): void {
@@ -783,8 +855,8 @@ export class CreateInvoiceComponent {
   }
 
   private updateB2bCalculatedFields(row: InvoiceLineItemFormGroup): void {
-    const tourCost = this.toSafeNumber(row.controls.tourCost.value);
-    const commissionAmount = this.toSafeNumber(row.controls.commissionAmount.value);
+    const tourCost = toSafeNumber(row.controls.tourCost.value);
+    const commissionAmount = toSafeNumber(row.controls.commissionAmount.value);
     const normalizedCommissionAmount = Math.max(0, commissionAmount);
     const vatRate = 0.2;
     const netToPay = Math.max(0, tourCost - normalizedCommissionAmount);
@@ -793,6 +865,32 @@ export class CreateInvoiceComponent {
     row.controls.commissionAmount.updateValueAndValidity();
     row.controls.netToPay.setValue(netToPay);
     row.controls.commissionVat.setValue(commissionVat);
+  }
+
+  private buildUpdateInvoiceDto(): UpdateInvoiceDto {
+    const value = this.form.getRawValue();
+    const lineItems = value.lineItems.map((row, index) => this.mapLineItemForDto(row, index));
+
+    const dto: UpdateInvoiceDto = {
+      invoiceDate: value.invoiceDate,
+      dueDate: value.dueDate,
+      currency: value.currency,
+      language: value.language,
+      lineItems,
+    };
+
+    const paymentTerms = value.paymentTerms.trim();
+    const internalNotes = value.internalNotes.trim();
+
+    if (paymentTerms.length > 0) {
+      dto.paymentTerms = paymentTerms;
+    }
+
+    if (internalNotes.length > 0) {
+      dto.internalNotes = internalNotes;
+    }
+
+    return dto;
   }
 
   private buildCreateInvoiceDto(): CreateInvoiceDto {
@@ -842,11 +940,11 @@ export class CreateInvoiceComponent {
     };
 
     if (isB2bMode) {
-      dto.tourCost = this.toSafeNumber(row.tourCost);
-      dto.commissionAmount = this.toSafeNumber(row.commissionAmount);
+      dto.tourCost = toSafeNumber(row.tourCost);
+      dto.commissionAmount = toSafeNumber(row.commissionAmount);
     } else {
-      const unitPrice = this.toSafeNumber(row.unitPrice);
-      const quantity = Math.max(1, this.toSafeNumber(row.quantity));
+      const unitPrice = toSafeNumber(row.unitPrice);
+      const quantity = Math.max(1, toSafeNumber(row.quantity));
 
       dto.unitPrice = unitPrice;
       dto.quantity = quantity;
@@ -872,7 +970,7 @@ export class CreateInvoiceComponent {
         return true;
       }
 
-      if (this.toSafeNumber(value.total) > 0 || this.toSafeNumber(value.netToPay) > 0) {
+      if (toSafeNumber(value.total) > 0 || toSafeNumber(value.netToPay) > 0) {
         return true;
       }
     }
@@ -894,39 +992,5 @@ export class CreateInvoiceComponent {
     }
 
     return ClientType.INDIVIDUAL;
-  }
-
-  private toSafeNumber(value: number | string | null | undefined): number {
-    const num = Number(value);
-
-    if (Number.isFinite(num)) {
-      return num;
-    }
-
-    return 0;
-  }
-
-  private todayIsoDate(): string {
-    return new Date().toISOString().slice(0, 10);
-  }
-
-  private addDaysToIsoDate(isoDate: string, daysToAdd: number): string {
-    const date = new Date(`${isoDate}T12:00:00.000Z`);
-
-    if (Number.isNaN(date.getTime())) {
-      return isoDate;
-    }
-
-    date.setUTCDate(date.getUTCDate() + daysToAdd);
-
-    return date.toISOString().slice(0, 10);
-  }
-
-  private normalizePaymentTermsDays(days: number | null | undefined): number {
-    if (typeof days !== 'number' || !Number.isFinite(days)) {
-      return 1;
-    }
-
-    return Math.min(365, Math.max(1, Math.trunc(days)));
   }
 }

@@ -31,7 +31,7 @@
           </span>
         </div>
 
-        @if (!editing() && !cancelDialogOpen()) {
+        @if (!cancelDialogOpen()) {
           <div class="flex flex-wrap items-center gap-2">
             <button
               i18n="@@invoiceDetailBtnPreviewPdf"
@@ -48,7 +48,7 @@
                 mat-stroked-button
                 type="button"
                 [disabled]="actionLoading()"
-                (click)="startEdit()"
+                (click)="goToEditPage()"
               >
                 <mat-icon>edit</mat-icon>
                 Edit
@@ -151,129 +151,68 @@
         </div>
       }
 
-      <!-- ===== EDIT FORM ===== -->
-      @if (editing()) {
-        <div class="rounded-lg border border-gray-200 bg-white p-4">
-          <h2 class="text-sm font-semibold text-gray-900" i18n="@@invoiceDetailEditFormTitle">
-            Edit invoice
-          </h2>
-          <div class="mt-3 grid max-w-lg grid-cols-1 gap-3 sm:grid-cols-2" [formGroup]="editForm">
-            <mat-form-field subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailEditInvoiceDateLabel">Invoice date</mat-label>
-              <input formControlName="invoiceDate" matInput type="date" />
-            </mat-form-field>
-            <mat-form-field subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailEditDueDateLabel">Due date</mat-label>
-              <input formControlName="dueDate" matInput type="date" />
-            </mat-form-field>
-            <mat-form-field subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailEditCurrencyLabel">Currency</mat-label>
-              <input formControlName="currency" matInput maxlength="3" />
-            </mat-form-field>
-            <mat-form-field subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailEditLanguageLabel">Language</mat-label>
-              <input formControlName="language" matInput />
-            </mat-form-field>
-            <mat-form-field class="sm:col-span-2" subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailEditPaymentTermsLabel">Payment terms</mat-label>
-              <input formControlName="paymentTerms" matInput />
-            </mat-form-field>
-            <mat-form-field class="sm:col-span-2" subscriptSizing="dynamic">
-              <mat-label i18n="@@invoiceDetailEditInternalNotesLabel">Internal notes</mat-label>
-              <textarea formControlName="internalNotes" matInput rows="3"></textarea>
-            </mat-form-field>
+      <!-- ===== INVOICE DETAILS CARD ===== -->
+      <div class="rounded-lg border border-gray-200 bg-white p-4">
+        <h2 class="text-sm font-semibold text-gray-900" i18n="@@invoiceDetailCardTitle">
+          Invoice details
+        </h2>
+        <dl class="mt-3 grid grid-cols-1 gap-x-6 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
+          <div>
+            <dt class="text-gray-500" i18n="@@invoiceDetailClientLabel">Client</dt>
+            <dd class="font-medium text-gray-900">{{ clientName() }}</dd>
           </div>
-          <div class="mt-3 flex gap-2">
-            <button
-              color="primary"
-              mat-flat-button
-              type="button"
-              [disabled]="actionLoading()"
-              (click)="saveEdit()"
-            >
-              @if (actionLoading()) {
-                <span i18n="@@invoiceDetailSaveLoading">Saving...</span>
+          <div>
+            <dt class="text-gray-500" i18n="@@invoiceDetailClientTypeLabel">Client type</dt>
+            <dd class="text-gray-900">{{ inv.clientType ?? '—' }}</dd>
+          </div>
+          <div>
+            <dt class="text-gray-500" i18n="@@invoiceDetailInvoiceDateLabel">Invoice date</dt>
+            <dd class="text-gray-900">{{ formatDateOnly(inv.invoiceDate) }}</dd>
+          </div>
+          <div>
+            <dt class="text-gray-500" i18n="@@invoiceDetailDueDateLabel">Due date</dt>
+            <dd class="text-gray-900">{{ formatDateOnly(inv.dueDate) }}</dd>
+          </div>
+          <div>
+            <dt class="text-gray-500" i18n="@@invoiceDetailCurrencyLabel">Currency</dt>
+            <dd class="text-gray-900">{{ inv.currency }}</dd>
+          </div>
+          <div>
+            <dt class="text-gray-500" i18n="@@invoiceDetailLanguageLabel">Language</dt>
+            <dd class="text-gray-900">{{ inv.language || '—' }}</dd>
+          </div>
+          <div>
+            <dt class="text-gray-500" i18n="@@invoiceDetailPaymentTermsLabel">Payment terms</dt>
+            <dd class="text-gray-900">{{ inv.paymentTerms || '—' }}</dd>
+          </div>
+          <div>
+            <dt class="text-gray-500" i18n="@@invoiceDetailBookingLabel">Booking</dt>
+            <dd>
+              @if (inv.bookingId) {
+                <a class="text-primary underline" [routerLink]="['/app/bookings', inv.bookingId]">
+                  {{ inv.bookingId }}
+                </a>
               } @else {
-                <span i18n="@@invoiceDetailBtnSave">Save</span>
+                <span class="text-gray-900">—</span>
               }
-            </button>
-            <button
-              i18n="@@invoiceDetailBtnCancelEdit"
-              mat-stroked-button
-              type="button"
-              [disabled]="actionLoading()"
-              (click)="cancelEdit()"
-            >
-              Cancel
-            </button>
+            </dd>
           </div>
-        </div>
-      } @else {
-        <!-- ===== INVOICE DETAILS CARD ===== -->
-        <div class="rounded-lg border border-gray-200 bg-white p-4">
-          <h2 class="text-sm font-semibold text-gray-900" i18n="@@invoiceDetailCardTitle">
-            Invoice details
-          </h2>
-          <dl class="mt-3 grid grid-cols-1 gap-x-6 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-3">
-            <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailClientLabel">Client</dt>
-              <dd class="font-medium text-gray-900">{{ clientName() }}</dd>
+          @if (inv.cancellationReason) {
+            <div class="sm:col-span-2 lg:col-span-3">
+              <dt class="text-gray-500" i18n="@@invoiceDetailCancellationReasonLabel">
+                Cancellation reason
+              </dt>
+              <dd class="text-red-700">{{ inv.cancellationReason }}</dd>
             </div>
-            <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailClientTypeLabel">Client type</dt>
-              <dd class="text-gray-900">{{ inv.clientType ?? '—' }}</dd>
+          }
+          @if (inv.internalNotes) {
+            <div class="sm:col-span-2 lg:col-span-3">
+              <dt class="text-gray-500" i18n="@@invoiceDetailInternalNotesLabel">Internal notes</dt>
+              <dd class="text-gray-900">{{ inv.internalNotes }}</dd>
             </div>
-            <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailInvoiceDateLabel">Invoice date</dt>
-              <dd class="text-gray-900">{{ formatDateOnly(inv.invoiceDate) }}</dd>
-            </div>
-            <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailDueDateLabel">Due date</dt>
-              <dd class="text-gray-900">{{ formatDateOnly(inv.dueDate) }}</dd>
-            </div>
-            <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailCurrencyLabel">Currency</dt>
-              <dd class="text-gray-900">{{ inv.currency }}</dd>
-            </div>
-            <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailLanguageLabel">Language</dt>
-              <dd class="text-gray-900">{{ inv.language || '—' }}</dd>
-            </div>
-            <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailPaymentTermsLabel">Payment terms</dt>
-              <dd class="text-gray-900">{{ inv.paymentTerms || '—' }}</dd>
-            </div>
-            <div>
-              <dt class="text-gray-500" i18n="@@invoiceDetailBookingLabel">Booking</dt>
-              <dd>
-                @if (inv.bookingId) {
-                  <a class="text-primary underline" [routerLink]="['/app/bookings', inv.bookingId]">
-                    {{ inv.bookingId }}
-                  </a>
-                } @else {
-                  <span class="text-gray-900">—</span>
-                }
-              </dd>
-            </div>
-            @if (inv.cancellationReason) {
-              <div class="sm:col-span-2 lg:col-span-3">
-                <dt class="text-gray-500" i18n="@@invoiceDetailCancellationReasonLabel">
-                  Cancellation reason
-                </dt>
-                <dd class="text-red-700">{{ inv.cancellationReason }}</dd>
-              </div>
-            }
-            @if (inv.internalNotes) {
-              <div class="sm:col-span-2 lg:col-span-3">
-                <dt class="text-gray-500" i18n="@@invoiceDetailInternalNotesLabel">
-                  Internal notes
-                </dt>
-                <dd class="text-gray-900">{{ inv.internalNotes }}</dd>
-              </div>
-            }
-          </dl>
-        </div>
-      }
+          }
+        </dl>
+      </div>
 
       <!-- ===== LINE ITEMS TABLE ===== -->
       <div class="rounded-lg border border-gray-200 bg-white p-4">
