@@ -23,6 +23,7 @@ const MOCK_BOOKING: BookingResponseDto = {
   destination: 'Turkey, Antalya',
   departDate: '2026-07-01',
   returnDate: '2026-07-14',
+  currency: 'BYN',
   adults: 2,
   children: 1,
   status: BookingStatus.CONFIRMED,
@@ -183,5 +184,46 @@ describe('BookingDetailComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     expect(bookingsService.deleteDocument).toHaveBeenCalledWith('booking-1', 'doc-1');
+  });
+
+  it('renders additional services section when servicesSnapshot has entries', async () => {
+    bookingsService.getById.mockReturnValue(
+      of({
+        ...MOCK_BOOKING,
+        servicesSnapshot: [
+          {
+            serviceType: 'TRANSFER',
+            description: 'Airport transfer',
+            quantity: 1,
+            unitPrice: 120,
+            total: 120,
+          },
+        ],
+      }),
+    );
+
+    fixture = TestBed.createComponent(BookingDetailComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const servicesSection = fixture.nativeElement.querySelector('app-additional-services-table');
+
+    expect(servicesSection).toBeTruthy();
+  });
+
+  it('hides additional services section when servicesSnapshot is null', async () => {
+    bookingsService.getById.mockReturnValue(of({ ...MOCK_BOOKING, servicesSnapshot: null }));
+
+    fixture = TestBed.createComponent(BookingDetailComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const servicesSection = fixture.nativeElement.querySelector('app-additional-services-table');
+
+    expect(servicesSection).toBeFalsy();
   });
 });

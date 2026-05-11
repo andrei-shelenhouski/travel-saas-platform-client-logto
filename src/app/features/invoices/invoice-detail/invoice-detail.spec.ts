@@ -2,7 +2,7 @@ import { formatNumber } from '@angular/common';
 import { LOCALE_ID } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 
 import { of } from 'rxjs';
 
@@ -309,6 +309,19 @@ describe('InvoiceDetailComponent', () => {
     )?.length;
 
     expect(formattedOccurrences).toBe(2);
+  });
+
+  it('navigates to dedicated edit page', async () => {
+    const router = TestBed.inject(Router);
+    const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
+
+    (component as unknown as { data: { set: (invoice: InvoiceResponseDto) => void } }).data.set(
+      makeInvoice('DRAFT'),
+    );
+
+    component.goToEditPage();
+
+    expect(navigateSpy).toHaveBeenCalledWith(['/app/invoices', 'invoice-1', 'edit']);
   });
 
   it('opens delete payment confirmation', () => {

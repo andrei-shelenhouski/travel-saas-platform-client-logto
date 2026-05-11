@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
@@ -85,7 +85,6 @@ export class InvoiceDetailComponent {
   private readonly activitiesService = inject(ActivitiesService);
   private readonly dialog = inject(MatDialog);
   private readonly toast = inject(ToastService);
-  private readonly fb = inject(FormBuilder);
   readonly permissions = inject(PermissionService);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
@@ -226,28 +225,19 @@ export class InvoiceDetailComponent {
   // ---- UI state ----
 
   readonly actionLoading = signal(false);
-  readonly editing = signal(false);
   readonly cancelDialogOpen = signal(false);
   readonly deletePaymentConfirmOpen = signal(false);
   readonly pendingDeletePaymentId = signal<string | null>(null);
   readonly pendingDeletePaymentLabel = signal<string>('');
-  readonly deletePaymentMessage = computed(
-    () =>
-      $localize`:@@invoiceDetailDeletePaymentMessage:Delete payment of ${this.pendingDeletePaymentLabel()}:AMOUNT:? This action is irreversible.`,
-  );
+  readonly deletePaymentMessage = computed(() => {
+    const amount = this.pendingDeletePaymentLabel();
+
+    return $localize`:@@invoiceDetailDeletePaymentMessage:Delete payment of ${amount}:AMOUNT:?`;
+  });
 
   // ---- Forms ----
 
-  readonly editForm = this.fb.nonNullable.group({
-    invoiceDate: [''],
-    dueDate: [''],
-    currency: [''],
-    language: [''],
-    paymentTerms: [''],
-    internalNotes: [''],
-  });
-
-  readonly cancelReasonControl = this.fb.nonNullable.control('');
+  readonly cancelReasonControl = new FormControl('', { nonNullable: true });
 
   constructor() {
     effect(() => {
@@ -305,69 +295,14 @@ export class InvoiceDetailComponent {
 
   // ---- Edit ----
 
-  startEdit(): void {
+  goToEditPage(): void {
     const inv = this.invoice();
 
     if (!inv) {
       return;
     }
-    this.editForm.patchValue({
-      invoiceDate: this.formatDateOnly(inv.invoiceDate),
-      dueDate: this.formatDateOnly(inv.dueDate),
-      currency: inv.currency ?? '',
-      language: inv.language ?? '',
-      paymentTerms: inv.paymentTerms ?? '',
-      internalNotes: inv.internalNotes ?? '',
-    });
-    this.editing.set(true);
-  }
 
-  cancelEdit(): void {
-    this.editing.set(false);
-  }
-
-  saveEdit(): void {
-    const inv = this.invoice();
-
-    if (!inv || this.actionLoading()) {
-      return;
-    }
-    this.actionLoading.set(true);
-    const v = this.editForm.getRawValue();
-    const dto: Parameters<typeof this.invoicesService.update>[1] = {};
-
-    if (v.invoiceDate.trim()) {
-      dto.invoiceDate = v.invoiceDate.trim();
-    }
-
-    if (v.dueDate.trim()) {
-      dto.dueDate = v.dueDate.trim();
-    }
-
-    if (v.currency.trim()) {
-      dto.currency = v.currency.trim().toUpperCase();
-    }
-
-    if (v.language.trim()) {
-      dto.language = v.language.trim();
-    }
-
-    if (v.paymentTerms.trim()) {
-      dto.paymentTerms = v.paymentTerms.trim();
-    }
-
-    if (v.internalNotes.trim()) {
-      dto.internalNotes = v.internalNotes.trim();
-    }
-    this.invoicesService.update(inv.id, dto).subscribe({
-      next: (updated) => {
-        this.data.set(updated);
-        this.editing.set(false);
-      },
-      error: (err) =>
-        this.toast.showError(err.error?.message ?? err.message ?? 'Ошибка обновления'),
-      complete: () => this.actionLoading.set(false),
-    });
+    this.router.navigate(['/app/invoices', inv.id, 'edit']);
   }
 
   // ---- Publish ----
@@ -398,7 +333,7 @@ export class InvoiceDetailComponent {
   // ---- Cancel ----
 
   openCancelDialog(): void {
-    this.cancelReasonControl.reset('');
+    this.cancelReasonControl.setValue('');
     this.cancelDialogOpen.set(true);
   }
 

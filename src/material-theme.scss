@@ -15,10 +15,29 @@ html {
     (
       color: (
         primary: theme-colors.$primary-palette,
-        tertiary: mat.$azure-palette,
+        tertiary: theme-colors.$tertiary-palette,
       ),
       typography: 'Montserrat',
       density: 0,
+    )
+  );
+
+  @include mat.card-overrides(
+    (
+      outlined-container-color: #fff,
+      outlined-outline-color: #e0e0e0,
+    )
+  );
+
+  @include mat.form-field-overrides(
+    (
+      outlined-outline-color: #e0e0e0,
+    )
+  );
+
+  @include mat.divider-overrides(
+    (
+      color: #e0e0e0,
     )
   );
 
