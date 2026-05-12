@@ -10,11 +10,12 @@ import { LeadsService } from '@app/services/leads.service';
 import { MeService } from '@app/services/me.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { RoleService } from '@app/services/role.service';
+import { ClientType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import { CreateLeadComponent } from './create-lead';
 
-import type { LeadResponseDto } from '@app/shared/models';
+import type { ClientResponseDto, LeadResponseDto } from '@app/shared/models';
 
 describe('CreateLeadComponent', () => {
   let component: CreateLeadComponent;
@@ -91,6 +92,30 @@ describe('CreateLeadComponent', () => {
     api.form.controls.contactEmail.markAsTouched();
 
     expect(api.form.hasError('phoneOrEmailRequired')).toBe(true);
+  });
+
+  it('includes company name for B2B and agent clients in search labels', () => {
+    const api = component as unknown as {
+      clientDisplayFn: (client: ClientResponseDto | string | null) => string;
+    };
+
+    const b2bLabel = api.clientDisplayFn(
+      createClientResponse({
+        type: ClientType.B2B_AGENT,
+        fullName: 'Alice Agent',
+        companyName: 'Skyline Travel',
+      }),
+    );
+    const agentLabel = api.clientDisplayFn(
+      createClientResponse({
+        type: ClientType.AGENT,
+        fullName: 'Bob Broker',
+        companyName: 'Orbit Partners',
+      }),
+    );
+
+    expect(b2bLabel).toBe('Skyline Travel (Alice Agent)');
+    expect(agentLabel).toBe('Orbit Partners (Bob Broker)');
   });
 
   it('submits and navigates to detail with self assignment for sales agent', () => {
@@ -188,6 +213,33 @@ function createLeadResponse(overrides: Partial<LeadResponseDto> = {}): LeadRespo
     convertedToClientId: null,
     createdAt: '2026-04-28T12:00:00.000Z',
     updatedAt: '2026-04-28T12:00:00.000Z',
+    ...overrides,
+  };
+}
+
+function createClientResponse(overrides: Partial<ClientResponseDto> = {}): ClientResponseDto {
+  return {
+    id: 'client-1',
+    organizationId: 'org-1',
+    type: ClientType.INDIVIDUAL,
+    fullName: 'John Doe',
+    email: null,
+    phone: null,
+    telegramHandle: null,
+    notes: null,
+    companyName: null,
+    legalAddress: null,
+    unp: null,
+    okpo: null,
+    commissionPct: null,
+    iban: null,
+    bankName: null,
+    bik: null,
+    dataConsentGiven: true,
+    dataConsentDate: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    contacts: [],
     ...overrides,
   };
 }

@@ -36,6 +36,7 @@ import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientResponseDto, CreateLeadDto, LeadResponseDto, OrgRole } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
+import { formatClientSearchLabel } from '@app/shared/utils/client-display';
 
 type CreateLeadForm = FormGroup<{
   clientId: FormControl<string>;
@@ -181,7 +182,7 @@ export class CreateLeadComponent {
       return client;
     }
 
-    return client.fullName ?? '';
+    return formatClientSearchLabel(client);
   }
 
   protected onAutocompleteSelected(event: MatAutocompleteSelectedEvent): void {
@@ -348,7 +349,7 @@ export class CreateLeadComponent {
     this.contactLocked.set(true);
     this.noClientsFound.set(false);
 
-    this.clientSearch.setValue(client.fullName ?? '', { emitEvent: false });
+    this.clientSearch.setValue(this.clientDisplayFn(client), { emitEvent: false });
     this.form.patchValue(
       {
         clientId: client.id,

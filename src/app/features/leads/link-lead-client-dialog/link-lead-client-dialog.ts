@@ -14,7 +14,9 @@ import { debounceTime, distinctUntilChanged, finalize, of, switchMap } from 'rxj
 import { ClientsService } from '@app/services/clients.service';
 import { LeadsService } from '@app/services/leads.service';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
-import { LeadResponseDto } from '@app/shared/models';
+import { formatClientSearchLabel } from '@app/shared/utils/client-display';
+
+import type { ClientResponseDto, LeadResponseDto } from '@app/shared/models';
 
 export type LinkLeadClientDialogData = {
   leadId: string;
@@ -41,9 +43,7 @@ export class LinkLeadClientDialogComponent {
   protected readonly data = inject<LinkLeadClientDialogData>(MAT_DIALOG_DATA);
 
   protected readonly search = this.fb.nonNullable.control('');
-  protected readonly options = signal<
-    { id: string; fullName: string | null; phone: string | null; email: string | null }[]
-  >([]);
+  protected readonly options = signal<ClientResponseDto[]>([]);
   protected readonly selectedClientId = signal<string>('');
   protected readonly loadingOptions = signal(false);
   protected readonly submitting = signal(false);
@@ -84,13 +84,10 @@ export class LinkLeadClientDialogComponent {
   }
 
   protected onSelected(event: MatAutocompleteSelectedEvent): void {
-    const client = event.option.value as {
-      id: string;
-      fullName: string | null;
-    };
+    const client = event.option.value as ClientResponseDto;
 
     this.selectedClientId.set(client.id);
-    this.search.setValue(client.fullName ?? '', { emitEvent: false });
+    this.search.setValue(this.displayClientLabel(client), { emitEvent: false });
     this.errorMessage.set('');
   }
 
@@ -122,7 +119,7 @@ export class LinkLeadClientDialogComponent {
     });
   }
 
-  protected displayClientLabel(option: { fullName: string | null } | string | null): string {
+  protected displayClientLabel(option: ClientResponseDto | string | null): string {
     if (!option) {
       return '';
     }
@@ -131,7 +128,7 @@ export class LinkLeadClientDialogComponent {
       return option;
     }
 
-    return option.fullName ?? '';
+    return formatClientSearchLabel(option);
   }
 
   private resolveErrorMessage(error: unknown): string {

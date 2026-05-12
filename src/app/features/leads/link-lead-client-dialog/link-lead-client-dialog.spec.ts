@@ -6,8 +6,11 @@ import { of } from 'rxjs';
 
 import { ClientsService } from '@app/services/clients.service';
 import { LeadsService } from '@app/services/leads.service';
+import { ClientType } from '@app/shared/models';
 
 import { LinkLeadClientDialogComponent } from './link-lead-client-dialog';
+
+import type { ClientResponseDto } from '@app/shared/models';
 
 describe('LinkLeadClientDialogComponent', () => {
   let component: LinkLeadClientDialogComponent;
@@ -89,4 +92,55 @@ describe('LinkLeadClientDialogComponent', () => {
     expect(leadsServiceMock.linkClient).toHaveBeenCalledWith('lead-1', { clientId: 'client-1' });
     expect(dialogRefSpy.close).toHaveBeenCalled();
   });
+
+  it('includes company name for B2B and agent labels', () => {
+    const api = component as unknown as {
+      displayClientLabel: (option: ClientResponseDto | string | null) => string;
+    };
+
+    const b2bLabel = api.displayClientLabel(
+      createClientResponse({
+        type: ClientType.B2B_AGENT,
+        fullName: 'Alice Agent',
+        companyName: 'Skyline Travel',
+      }),
+    );
+    const agentLabel = api.displayClientLabel(
+      createClientResponse({
+        type: ClientType.AGENT,
+        fullName: 'Bob Broker',
+        companyName: 'Orbit Partners',
+      }),
+    );
+
+    expect(b2bLabel).toBe('Skyline Travel (Alice Agent)');
+    expect(agentLabel).toBe('Orbit Partners (Bob Broker)');
+  });
 });
+
+function createClientResponse(overrides: Partial<ClientResponseDto> = {}): ClientResponseDto {
+  return {
+    id: 'client-1',
+    organizationId: 'org-1',
+    type: ClientType.INDIVIDUAL,
+    fullName: 'John Doe',
+    email: null,
+    phone: null,
+    telegramHandle: null,
+    notes: null,
+    companyName: null,
+    legalAddress: null,
+    unp: null,
+    okpo: null,
+    commissionPct: null,
+    iban: null,
+    bankName: null,
+    bik: null,
+    dataConsentGiven: true,
+    dataConsentDate: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    contacts: [],
+    ...overrides,
+  };
+}

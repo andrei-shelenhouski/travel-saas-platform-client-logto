@@ -26,6 +26,7 @@ import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_AUTOCOMPLETE, MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
+import { formatClientSearchLabel } from '@app/shared/utils/client-display';
 import {
   addDaysToIsoDate,
   normalizeInvoiceCurrency,
@@ -467,11 +468,7 @@ export class CreateInvoiceComponent {
   }
 
   protected clientDisplayName(client: ClientResponseDto): string {
-    if (client.type === ClientType.COMPANY && client.companyName) {
-      return client.companyName;
-    }
-
-    return client.fullName ?? client.companyName ?? client.id;
+    return formatClientSearchLabel(client);
   }
 
   protected trackByClientId(_: number, client: ClientResponseDto): string {
