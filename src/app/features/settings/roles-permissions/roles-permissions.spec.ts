@@ -165,6 +165,38 @@ describe('RolesPermissionsComponent', () => {
     expect(component['roleForm'].controls.name.hasError('duplicate')).toBe(true);
   });
 
+  it('preserves non-boolean errors when clearing duplicate-name validation', () => {
+    const nameControl = component['roleForm'].controls.name;
+
+    nameControl.setErrors({
+      duplicate: true,
+      maxlength: {
+        requiredLength: 120,
+        actualLength: 121,
+      },
+    });
+
+    component['clearDuplicateNameError']();
+
+    expect(nameControl.hasError('duplicate')).toBe(false);
+    expect(nameControl.getError('maxlength')).toEqual({
+      requiredLength: 120,
+      actualLength: 121,
+    });
+  });
+
+  it('does not create a role when trimmed name is empty', () => {
+    component['startCreateRole']();
+    component['roleForm'].controls.name.setValue('   ');
+    component['roleForm'].controls.description.setValue('Team operations');
+
+    component['saveChanges']();
+
+    expect(rolesApi.createRole).not.toHaveBeenCalled();
+    expect(component['roleForm'].controls.name.hasError('required')).toBe(true);
+    expect(component['roleForm'].controls.name.touched).toBe(true);
+  });
+
   it('opens confirmation dialog and deletes role after confirmation', () => {
     dialogOpenSpy.mockReturnValueOnce({ afterClosed: () => of(true) } as never);
 

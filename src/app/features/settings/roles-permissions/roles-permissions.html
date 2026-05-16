@@ -56,22 +56,26 @@
               </button>
 
               @if (!isSystemRole(role)) {
-                <button
-                  aria-label="Delete role"
-                  i18n-aria-label="@@rolesPermissionsDeleteRoleAria"
-                  mat-icon-button
-                  type="button"
-                  [disabled]="isDeleteDisabled(role) || deletingRoleId() === role.id"
+                <span
+                  class="role-delete-tooltip-trigger"
                   [matTooltip]="deleteTooltip(role)"
                   [matTooltipDisabled]="!isDeleteDisabled(role)"
-                  (click)="confirmDeleteRole(role, $event)"
                 >
-                  @if (deletingRoleId() === role.id) {
-                    <mat-progress-spinner diameter="18" mode="indeterminate" />
-                  } @else {
-                    <mat-icon fontSet="material-icons">delete</mat-icon>
-                  }
-                </button>
+                  <button
+                    aria-label="Delete role"
+                    i18n-aria-label="@@rolesPermissionsDeleteRoleAria"
+                    mat-icon-button
+                    type="button"
+                    [disabled]="isDeleteDisabled(role) || deletingRoleId() === role.id"
+                    (click)="confirmDeleteRole(role, $event)"
+                  >
+                    @if (deletingRoleId() === role.id) {
+                      <mat-progress-spinner diameter="18" mode="indeterminate" />
+                    } @else {
+                      <mat-icon fontSet="material-icons">delete</mat-icon>
+                    }
+                  </button>
+                </span>
               }
             </li>
           }

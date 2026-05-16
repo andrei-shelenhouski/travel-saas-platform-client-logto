@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -155,11 +155,11 @@ export class RolesPermissionsComponent {
       return;
     }
 
-    const nextErrors: Record<string, true> = {};
+    const nextErrors: ValidationErrors = {};
 
     for (const [errorKey, errorValue] of Object.entries(errors)) {
-      if (errorKey !== 'duplicate' && errorValue === true) {
-        nextErrors[errorKey] = true;
+      if (errorKey !== 'duplicate') {
+        nextErrors[errorKey] = errorValue;
       }
     }
 
@@ -308,10 +308,18 @@ export class RolesPermissionsComponent {
       return;
     }
 
-    const rawName = this.roleForm.controls.name.getRawValue().trim();
+    const nameControl = this.roleForm.controls.name;
+    const rawName = nameControl.getRawValue().trim();
     const rawDescription = this.roleForm.controls.description.getRawValue().trim();
     const description = rawDescription.length > 0 ? rawDescription : undefined;
     const permissions = this.toPermissionArray(this.selectedPermissions());
+
+    if (rawName.length === 0) {
+      nameControl.setErrors({ ...(nameControl.errors ?? {}), required: true });
+      nameControl.markAsTouched();
+
+      return;
+    }
 
     this.creating.set(true);
     this.clearDuplicateNameError();
