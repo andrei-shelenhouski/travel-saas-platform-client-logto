@@ -20,7 +20,11 @@
     </section>
   } @else {
     <div class="content-grid">
-      <aside aria-label="Role list" i18n-aria-label="@@rolesPermissionsRoleListAria" class="roles-panel">
+      <aside
+        aria-label="Role list"
+        i18n-aria-label="@@rolesPermissionsRoleListAria"
+        class="roles-panel"
+      >
         <header class="panel-header">
           <h2 i18n="@@rolesPermissionsRoleListTitle">Roles</h2>
           <p i18n="@@rolesPermissionsRoleListSubtitle">Select a role to edit permissions.</p>
@@ -106,7 +110,9 @@
                   (input)="clearDuplicateNameError()"
                 />
                 @if (roleForm.controls.name.hasError('required')) {
-                  <mat-error i18n="@@rolesPermissionsNameRequired">Role name is required.</mat-error>
+                  <mat-error i18n="@@rolesPermissionsNameRequired"
+                    >Role name is required.</mat-error
+                  >
                 }
                 @if (roleForm.controls.name.hasError('maxlength')) {
                   <mat-error i18n="@@rolesPermissionsNameLength"

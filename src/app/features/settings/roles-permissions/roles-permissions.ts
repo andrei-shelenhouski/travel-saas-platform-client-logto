@@ -290,7 +290,10 @@ export class RolesPermissionsComponent {
         next: (roleDetail) => this.setSelectedRole(roleDetail),
         error: (error: unknown) => {
           this.snackBar.open(
-            this.resolveErrorMessage(error, $localize`:@@rolesPermissionsDetailLoadError:Failed to load role details`),
+            this.resolveErrorMessage(
+              error,
+              $localize`:@@rolesPermissionsDetailLoadError:Failed to load role details`,
+            ),
             this.closeLabel,
             { duration: 5000 },
           );
@@ -351,7 +354,10 @@ export class RolesPermissionsComponent {
           }
 
           this.snackBar.open(
-            this.resolveErrorMessage(error, $localize`:@@rolesPermissionsCreateError:Failed to create role`),
+            this.resolveErrorMessage(
+              error,
+              $localize`:@@rolesPermissionsCreateError:Failed to create role`,
+            ),
             this.closeLabel,
             { duration: 5000 },
           );
@@ -384,7 +390,10 @@ export class RolesPermissionsComponent {
         },
         error: (error: unknown) => {
           this.snackBar.open(
-            this.resolveErrorMessage(error, $localize`:@@rolesPermissionsSaveError:Failed to update permissions`),
+            this.resolveErrorMessage(
+              error,
+              $localize`:@@rolesPermissionsSaveError:Failed to update permissions`,
+            ),
             this.closeLabel,
             { duration: 5000 },
           );
@@ -415,9 +424,13 @@ export class RolesPermissionsComponent {
             }
           }
 
-          this.snackBar.open($localize`:@@rolesPermissionsDeleteSuccess:Role deleted`, this.okLabel, {
-            duration: 3000,
-          });
+          this.snackBar.open(
+            $localize`:@@rolesPermissionsDeleteSuccess:Role deleted`,
+            this.okLabel,
+            {
+              duration: 3000,
+            },
+          );
         },
         error: (error: unknown) => {
           if (this.getErrorStatus(error) === 409) {
@@ -429,7 +442,10 @@ export class RolesPermissionsComponent {
           }
 
           this.snackBar.open(
-            this.resolveErrorMessage(error, $localize`:@@rolesPermissionsDeleteError:Failed to delete role`),
+            this.resolveErrorMessage(
+              error,
+              $localize`:@@rolesPermissionsDeleteError:Failed to delete role`,
+            ),
             this.closeLabel,
             { duration: 5000 },
           );
