@@ -1,5 +1,4 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 
@@ -8,13 +7,12 @@ import { of, Subject, throwError } from 'rxjs';
 import { ClientsService } from '@app/services/clients.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
-import { RoleService } from '@app/services/role.service';
+import { PermissionService } from '@app/services/permission.service';
 import { BookingStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import { InvoiceListMiniComponent } from './invoice-list-mini';
 
-import type { WritableSignal } from '@angular/core';
 import type { BookingResponseDto, InvoiceResponseDto } from '@app/shared/models';
 
 function createBooking(overrides: Partial<BookingResponseDto> = {}): BookingResponseDto {
@@ -41,10 +39,9 @@ describe('InvoiceListMiniComponent', () => {
   let organizationSettingsService: {
     get: ReturnType<typeof vi.fn>;
   };
-  let roleService: {
-    roleOrDefault: WritableSignal<string>;
+  let permissionService: {
+    canCreateInvoice: ReturnType<typeof vi.fn>;
   };
-  let roleSignal: WritableSignal<string>;
   let toastService: {
     showError: ReturnType<typeof vi.fn>;
   };
@@ -68,10 +65,8 @@ describe('InvoiceListMiniComponent', () => {
       ),
     };
 
-    roleSignal = signal('Manager');
-
-    roleService = {
-      roleOrDefault: roleSignal,
+    permissionService = {
+      canCreateInvoice: vi.fn(() => true),
     };
 
     toastService = {
@@ -85,7 +80,7 @@ describe('InvoiceListMiniComponent', () => {
         { provide: ClientsService, useValue: clientsService },
         { provide: InvoicesService, useValue: invoicesService },
         { provide: OrganizationSettingsService, useValue: organizationSettingsService },
-        { provide: RoleService, useValue: roleService },
+        { provide: PermissionService, useValue: permissionService },
         { provide: ToastService, useValue: toastService },
       ],
     }).compileComponents();
@@ -112,21 +107,16 @@ describe('InvoiceListMiniComponent', () => {
     expect(manualLink?.textContent).toContain('Create manually');
   });
 
-  it('allows create invoice for manager, admin, and back office roles', () => {
-    roleSignal.set('Back Office');
+  it('does not allow create invoice when permission is missing', () => {
+    permissionService.canCreateInvoice.mockReturnValue(false);
+
+    fixture = TestBed.createComponent(InvoiceListMiniComponent);
+    component = fixture.componentInstance;
+    fixture.componentRef.setInput('booking', createBooking({ currency: 'BYN' }));
+    fixture.componentRef.setInput('invoices', []);
     fixture.detectChanges();
 
-    expect(component.canCreateInvoice()).toBe(true);
-
-    roleSignal.set('Admin');
-    fixture.detectChanges();
-
-    expect(component.canCreateInvoice()).toBe(true);
-
-    roleSignal.set('Manager');
-    fixture.detectChanges();
-
-    expect(component.canCreateInvoice()).toBe(true);
+    expect(component.canCreateInvoice()).toBe(false);
   });
 
   it('does not allow create invoice for cancelled booking', () => {

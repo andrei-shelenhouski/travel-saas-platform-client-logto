@@ -23,7 +23,6 @@ import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badg
 import { LeadsService } from '@app/services/leads.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { RoleService } from '@app/services/role.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import { MAT_BUTTON_TOGGLES, MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
@@ -104,7 +103,6 @@ export class LeadsListComponent {
   private readonly leadsService = inject(LeadsService);
   private readonly membersService = inject(OrganizationMembersService);
   private readonly permissionService = inject(PermissionService);
-  private readonly roleService = inject(RoleService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
@@ -114,7 +112,8 @@ export class LeadsListComponent {
   readonly statusOptions = LEAD_STATUS_OPTIONS;
   readonly clientTypeOptions = CLIENT_TYPE_OPTIONS;
 
-  readonly showAgentFilter = computed(() => !this.roleService.isAgent());
+  readonly showAgentFilter = computed(() => this.permissionService.canViewAllLeads());
+  readonly canCreateLead = computed(() => this.permissionService.canCreateLead());
 
   readonly currentPage = signal(0);
   readonly statusFilter = signal<LeadStatus[]>([]);

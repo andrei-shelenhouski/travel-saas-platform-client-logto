@@ -61,6 +61,7 @@ export class UsersManagementComponent {
   protected readonly error = signal<string | null>(null);
   protected readonly updatingRoleId = signal<string | null>(null);
   protected readonly togglingActiveId = signal<string | null>(null);
+  protected readonly canInviteMembers = computed(() => this.permissions.canInviteMembers());
 
   protected readonly currentUserId = computed(() => this.permissions.currentUserId() ?? null);
   protected readonly totalUsers = computed(() => this.users().length);

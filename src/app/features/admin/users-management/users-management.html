@@ -3,16 +3,18 @@
   i18n-title="@@userManagement"
   [subtitle]="usersSubtitle()"
 >
-  <button
-    color="primary"
-    i18n="@@usersInviteButton"
-    matButton="filled"
-    type="button"
-    (click)="openInviteDialog()"
-  >
-    <mat-icon>add</mat-icon>
-    <span>Invite user</span>
-  </button>
+  @if (canInviteMembers()) {
+    <button
+      color="primary"
+      i18n="@@usersInviteButton"
+      matButton="filled"
+      type="button"
+      (click)="openInviteDialog()"
+    >
+      <mat-icon>add</mat-icon>
+      <span>Invite user</span>
+    </button>
+  }
 </app-page-heading>
 
 <div class="space-y-4 p-4">

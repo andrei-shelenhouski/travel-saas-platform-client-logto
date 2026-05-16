@@ -54,7 +54,7 @@
                 Edit
               </button>
             }
-            @if (hasAction('publish')) {
+            @if (hasAction('publish') && canPublishInvoice()) {
               <button
                 color="primary"
                 i18n="@@invoiceDetailBtnPublish"
@@ -67,7 +67,7 @@
                 Publish
               </button>
             }
-            @if (hasAction('record_payment')) {
+            @if (hasAction('record_payment') && canRecordInvoicePayment()) {
               <button
                 color="primary"
                 i18n="@@invoiceDetailBtnRecordPayment"
@@ -92,7 +92,7 @@
                 Download PDF
               </button>
             }
-            @if (hasAction('cancel') && permissions.canDeleteInvoice()) {
+            @if (hasAction('cancel') && canCancelInvoice()) {
               <button
                 color="warn"
                 i18n="@@invoiceDetailBtnCancel"

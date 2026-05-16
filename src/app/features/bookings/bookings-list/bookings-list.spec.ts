@@ -5,8 +5,7 @@ import { of } from 'rxjs';
 
 import { BookingsService } from '@app/services/bookings.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
-import { RoleService } from '@app/services/role.service';
-import { OrgRole } from '@app/shared/models';
+import { PermissionService } from '@app/services/permission.service';
 
 import { BookingsListComponent } from './bookings-list';
 
@@ -34,10 +33,9 @@ describe('BookingsListComponent', () => {
           useValue: { findAll: () => of([]) },
         },
         {
-          provide: RoleService,
+          provide: PermissionService,
           useValue: {
-            roleOrDefault: () => 'Agent',
-            rawRole: () => OrgRole.BACK_OFFICE,
+            canCreateOffer: () => true,
           },
         },
       ],
@@ -67,7 +65,7 @@ describe('BookingsListComponent', () => {
     expect(component.statusFilter()).toEqual(['CONFIRMED']);
   });
 
-  it('should expose create button for back office role', () => {
+  it('should expose create button when permission is granted', () => {
     expect(component.showCreateBookingButton()).toBe(true);
   });
 

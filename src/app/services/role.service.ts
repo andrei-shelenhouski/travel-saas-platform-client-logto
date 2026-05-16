@@ -1,6 +1,8 @@
 import { computed, inject, Injectable } from '@angular/core';
 
+import { AuthService } from '@app/auth/auth.service';
 import { OrgRole } from '@app/shared/models';
+import { PermissionKey } from '@app/shared/models';
 import { MeService } from './me.service';
 import { OrganizationStateService } from './organization-state.service';
 
@@ -46,6 +48,7 @@ export function orgRoleToLabel(role: string): string {
  */
 @Injectable({ providedIn: 'root' })
 export class RoleService {
+  private readonly authService = inject(AuthService);
   private readonly meService = inject(MeService);
   private readonly orgState = inject(OrganizationStateService);
 
@@ -88,14 +91,14 @@ export class RoleService {
   readonly roleOrDefault = computed<AppRole | string>(() => this.role() ?? 'Manager');
 
   isAdmin(): boolean {
-    return this.roleOrDefault() === 'Admin';
+    return this.authService.hasPermission(PermissionKey.ROLES_VIEW);
   }
 
   isAgent(): boolean {
-    return this.roleOrDefault() === 'Agent';
+    return !this.authService.hasPermission(PermissionKey.LEADS_VIEW_ALL);
   }
 
   isManager(): boolean {
-    return this.roleOrDefault() === 'Manager';
+    return this.authService.hasPermission(PermissionKey.LEADS_ASSIGN);
   }
 }

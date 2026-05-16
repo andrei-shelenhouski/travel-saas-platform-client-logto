@@ -14,6 +14,7 @@ import { EMPTY, forkJoin } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
 import { BookingsService } from '@app/services/bookings.service';
+import { PermissionService } from '@app/services/permission.service';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
@@ -59,6 +60,7 @@ export class BookingDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly bookingsService = inject(BookingsService);
+  private readonly permissions = inject(PermissionService);
   private readonly toast = inject(ToastService);
 
   readonly BookingStatus = BookingStatus;
@@ -90,6 +92,7 @@ export class BookingDetailComponent {
   readonly booking = computed(() => this.allData.value()?.booking ?? null);
   readonly invoices = computed(() => this.allData.value()?.invoices ?? []);
   readonly documents = computed(() => this.allData.value()?.documents ?? []);
+  readonly canViewInvoices = computed(() => this.permissions.canViewInvoices());
   readonly loading = computed(() => this.allData.isLoading());
   readonly loadError = computed(() => this.allData.error());
   readonly loadNotFound = computed(() => {

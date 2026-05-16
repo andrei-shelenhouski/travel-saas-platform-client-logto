@@ -162,6 +162,9 @@ export class InvoiceDetailComponent {
 
     return this.getInvoiceActions(inv.status);
   });
+  readonly canPublishInvoice = computed(() => this.permissions.canPublishInvoice());
+  readonly canRecordInvoicePayment = computed(() => this.permissions.canRecordInvoicePayment());
+  readonly canCancelInvoice = computed(() => this.permissions.canDeleteInvoice());
 
   readonly isB2bAgent = computed(() => this.invoice()?.clientType === 'B2B_AGENT');
 
@@ -269,7 +272,7 @@ export class InvoiceDetailComponent {
     const status = this.invoice()?.status;
 
     return (
-      (status === 'ISSUED' || status === 'PARTIALLY_PAID') && this.permissions.canDeleteInvoice()
+      (status === 'ISSUED' || status === 'PARTIALLY_PAID') && this.canRecordInvoicePayment()
     );
   }
 

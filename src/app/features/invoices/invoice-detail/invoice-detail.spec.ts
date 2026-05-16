@@ -150,7 +150,11 @@ describe('InvoiceDetailComponent', () => {
         },
         {
           provide: PermissionService,
-          useValue: { canDeleteInvoice: () => true },
+          useValue: {
+            canDeleteInvoice: () => true,
+            canPublishInvoice: () => true,
+            canRecordInvoicePayment: () => true,
+          },
         },
         {
           provide: MatDialog,

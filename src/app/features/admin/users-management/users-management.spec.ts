@@ -63,7 +63,13 @@ describe('UsersManagementComponent', () => {
         provideRouter([]),
         provideNoopAnimations(),
         { provide: UsersService, useValue: usersService },
-        { provide: PermissionService, useValue: { currentUserId: () => 'me-user-id' } },
+        {
+          provide: PermissionService,
+          useValue: {
+            currentUserId: () => 'me-user-id',
+            canInviteMembers: () => true,
+          },
+        },
       ],
     }).compileComponents();
 

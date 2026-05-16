@@ -2,16 +2,17 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
 import { AuthService } from '@app/auth/auth.service';
-import { PermissionService } from '@app/services/permission.service';
 
-export const adminGuard: CanActivateFn = async () => {
+import type { Permission } from '@app/shared/models';
+
+export const permissionGuard: CanActivateFn = async (route) => {
   const auth = inject(AuthService);
-  const permissions = inject(PermissionService);
   const router = inject(Router);
+  const requiredPermission = route.data?.['permission'] as Permission | undefined;
 
   await auth.whenReady();
 
-  if (permissions.isAdmin()) {
+  if (!requiredPermission || auth.hasPermission(requiredPermission)) {
     return true;
   }
 

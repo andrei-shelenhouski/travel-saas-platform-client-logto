@@ -5,8 +5,8 @@ import { of, throwError } from 'rxjs';
 
 import { BookingsService } from '@app/services/bookings.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
-import { RoleService } from '@app/services/role.service';
-import { BookingStatus, OrgRole } from '@app/shared/models';
+import { PermissionService } from '@app/services/permission.service';
+import { BookingStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import { BookingDetailComponent } from './booking-detail';
@@ -74,13 +74,11 @@ describe('BookingDetailComponent', () => {
           useValue: { findAll: () => of([]) },
         },
         {
-          provide: RoleService,
+          provide: PermissionService,
           useValue: {
-            roleOrDefault: () => 'Manager',
-            rawRole: () => OrgRole.MANAGER,
-            isAdmin: () => false,
-            isAgent: () => false,
-            isManager: () => true,
+            canViewInvoices: () => true,
+            canCreateInvoice: () => true,
+            canUpdateBookings: () => true,
           },
         },
         {

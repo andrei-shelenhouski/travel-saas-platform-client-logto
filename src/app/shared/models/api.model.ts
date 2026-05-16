@@ -59,14 +59,48 @@ export const OrgRole = {
 } as const;
 export type OrgRole = (typeof OrgRole)[keyof typeof OrgRole];
 
+export const PermissionKey = {
+  SETTINGS_UPDATE: 'settings:update',
+  MEMBERS_INVITE: 'members:invite',
+  ROLES_VIEW: 'roles:view',
+  LEADS_CREATE: 'leads:create',
+  LEADS_ASSIGN: 'leads:assign',
+  LEADS_VIEW_ALL: 'leads:view:all',
+  OFFERS_CREATE: 'offers:create',
+  OFFERS_VIEW_ALL: 'offers:view:all',
+  REQUESTS_VIEW_ALL: 'requests:view:all',
+  OFFERS_DELETE: 'offers:delete',
+  LEADS_DELETE: 'leads:delete',
+  BOOKINGS_DELETE: 'bookings:delete',
+  BOOKINGS_UPDATE: 'bookings:update',
+  INVOICES_VIEW: 'invoices:view',
+  INVOICES_CREATE: 'invoices:create',
+  INVOICES_PUBLISH: 'invoices:publish',
+  INVOICES_RECORD_PAYMENT: 'invoices:record_payment',
+  INVOICES_CANCEL: 'invoices:cancel',
+} as const;
+export type Permission =
+  | (typeof PermissionKey)[keyof typeof PermissionKey]
+  | (string & Record<never, never>);
+
 /** OpenAPI: OrgMembership. Organization membership entry in UserResponse. */
 export type OrganizationWithRoleDto = {
   id: string;
   name: string;
   role: OrgRole;
+  roleId?: string;
+  roleName?: string;
+  permissions?: ReadonlySet<Permission>;
   // Compatibility aliases for existing app code.
   organizationId: string;
   organizationName: string;
+};
+
+export type OrganizationWithRoleApiDto = Omit<
+  OrganizationWithRoleDto,
+  'organizationId' | 'organizationName' | 'permissions'
+> & {
+  permissions?: Permission[];
 };
 
 /** OpenAPI: UserResponse. GET /api/me response. */
@@ -80,6 +114,10 @@ export type MeResponseDto = {
   name?: string;
   createdAt?: string;
   active?: boolean;
+};
+
+export type MeResponseApiDto = Omit<MeResponseDto, 'organizations'> & {
+  organizations: OrganizationWithRoleApiDto[];
 };
 
 /** Legacy alias for components that only need id + name. */

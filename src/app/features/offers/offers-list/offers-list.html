@@ -3,10 +3,12 @@
   i18n-title="@@offersListHeadingTitle"
   [subtitle]="'Total: ' + totalElements() + ' offers'"
 >
-  <a matButton="filled" routerLink="/app/offers/new">
-    <mat-icon>add</mat-icon>
-    <span i18n="@@offersListNewOfferCta">New offer</span>
-  </a>
+  @if (canCreateOffer()) {
+    <a matButton="filled" routerLink="/app/offers/new">
+      <mat-icon>add</mat-icon>
+      <span i18n="@@offersListNewOfferCta">New offer</span>
+    </a>
+  }
   <mat-button-toggle-group appearance="standard" hideSingleSelectionIndicator value="table">
     <mat-button-toggle routerLink="/app/offers" value="table" (click)="setPreferredView('table')">
       <mat-icon>list</mat-icon>

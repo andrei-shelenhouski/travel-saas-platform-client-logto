@@ -7,7 +7,6 @@ import { of } from 'rxjs';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { RoleService } from '@app/services/role.service';
 
 import { OffersListFilterBarComponent } from '../offers-list-filter-bar/offers-list-filter-bar';
 import { OffersListComponent } from './offers-list';
@@ -35,12 +34,8 @@ describe('OffersListComponent', () => {
           provide: PermissionService,
           useValue: {
             currentUserId: () => null,
-          },
-        },
-        {
-          provide: RoleService,
-          useValue: {
-            isAgent: () => false,
+            canViewAllOffers: () => true,
+            canCreateOffer: () => true,
           },
         },
       ],
