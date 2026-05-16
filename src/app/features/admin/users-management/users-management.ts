@@ -8,8 +8,10 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 
 import { finalize, forkJoin } from 'rxjs';
+import { catchError, of } from 'rxjs';
 
 import { PermissionService } from '@app/services/permission.service';
+import { RolesApiService } from '@app/services/roles-api.service';
 import { UsersService } from '@app/services/users.service';
 import { ConfirmDialogComponent } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
@@ -18,9 +20,15 @@ import { OrgRole } from '@app/shared/models';
 
 import { InviteUserDialogComponent } from './invite-user-dialog/invite-user-dialog';
 
-import type { OrgUserResponseDto } from '@app/shared/models';
+import type { OrgUserResponseDto, RoleSummaryResponseDto } from '@app/shared/models';
 
-const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
+type RoleOption = {
+  value: string;
+  label: string;
+  roleId?: string;
+};
+
+const SYSTEM_ROLE_OPTIONS: RoleOption[] = [
   { value: 'ADMIN', label: $localize`:@@usersRoleAdministrator:Administrator` },
   { value: 'MANAGER', label: $localize`:@@usersRoleManager:Manager` },
   { value: 'AGENT', label: $localize`:@@usersRoleAgent:Agent` },
@@ -51,11 +59,16 @@ const ROLE_OPTIONS: { value: OrgRole; label: string }[] = [
 })
 export class UsersManagementComponent {
   private readonly usersService = inject(UsersService);
+  private readonly rolesApi = inject(RolesApiService);
   private readonly permissions = inject(PermissionService);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
 
-  protected readonly roleOptions = ROLE_OPTIONS;
+  protected readonly customRoleOptions = signal<RoleOption[]>([]);
+  protected readonly roleOptions = computed(() => [
+    ...SYSTEM_ROLE_OPTIONS,
+    ...this.customRoleOptions(),
+  ]);
   protected readonly users = signal<OrgUserResponseDto[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
@@ -107,16 +120,41 @@ export class UsersManagementComponent {
     return !this.isCurrentUser(user) && user.isActive;
   }
 
-  protected onRoleChange(user: OrgUserResponseDto, role: OrgRole): void {
-    const isUnchanged = user.role === role;
+  protected roleSelectionValue(user: OrgUserResponseDto): string {
+    const roleId = user.roleId?.trim();
+
+    if (roleId) {
+      return roleId;
+    }
+
+    const roleName = user.roleName?.trim();
+
+    if (roleName) {
+      const customRoleOption = this.customRoleOptions().find((option) => option.label === roleName);
+
+      if (customRoleOption) {
+        return customRoleOption.value;
+      }
+    }
+
+    return user.role;
+  }
+
+  protected onRoleChange(user: OrgUserResponseDto, roleValue: string): void {
+    const isUnchanged = this.roleSelectionValue(user) === roleValue;
 
     if (isUnchanged || !this.canChangeRole(user)) {
       return;
     }
 
+    const customRoleOption = this.customRoleOptions().find((option) => option.value === roleValue);
+    const payload = customRoleOption
+      ? { roleId: customRoleOption.roleId ?? customRoleOption.value }
+      : { role: roleValue as OrgRole };
+
     this.updatingRoleId.set(user.id);
     this.usersService
-      .changeRole(user.id, { role })
+      .changeRole(user.id, payload)
       .pipe(finalize(() => this.updatingRoleId.set(null)))
       .subscribe({
         next: (updatedUser) => {
@@ -228,13 +266,18 @@ export class UsersManagementComponent {
     this.loading.set(true);
     this.error.set(null);
 
-    forkJoin([
-      this.usersService.getList({ isActive: true, limit: 200 }),
-      this.usersService.getList({ isActive: false, limit: 200 }),
-    ])
+    forkJoin({
+      activeUsers: this.usersService.getList({ isActive: true, limit: 200 }),
+      inactiveUsers: this.usersService.getList({ isActive: false, limit: 200 }),
+      roles: this.rolesApi
+        .listRoles()
+        .pipe(catchError(() => of<RoleSummaryResponseDto[]>([]))),
+    })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: ([activeUsers, inactiveUsers]) => {
+        next: ({ activeUsers, inactiveUsers, roles }) => {
+          this.customRoleOptions.set(this.toCustomRoleOptions(roles));
+
           const merged = [...activeUsers.items, ...inactiveUsers.items];
           const deduplicated = Array.from(new Map(merged.map((item) => [item.id, item])).values());
 
@@ -252,5 +295,23 @@ export class UsersManagementComponent {
           this.error.set(message);
         },
       });
+  }
+
+  private toCustomRoleOptions(roles: RoleSummaryResponseDto[]): RoleOption[] {
+    const customRoleOptions: RoleOption[] = [];
+
+    for (const role of roles) {
+      if (role.isSystem ?? role.system) {
+        continue;
+      }
+
+      customRoleOptions.push({
+        value: role.id,
+        label: role.name,
+        roleId: role.id,
+      });
+    }
+
+    return customRoleOptions.sort((left, right) => left.label.localeCompare(right.label));
   }
 }

@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 import { PermissionService } from '@app/services/permission.service';
+import { RolesApiService } from '@app/services/roles-api.service';
 import { UsersService } from '@app/services/users.service';
 
 import { UsersManagementComponent } from './users-management';
@@ -20,6 +21,9 @@ describe('UsersManagementComponent', () => {
     changeRole: ReturnType<typeof vi.fn>;
     deactivate: ReturnType<typeof vi.fn>;
     reactivate: ReturnType<typeof vi.fn>;
+  };
+  let rolesApi: {
+    listRoles: ReturnType<typeof vi.fn>;
   };
 
   const activeUser: OrgUserResponseDto = {
@@ -57,12 +61,22 @@ describe('UsersManagementComponent', () => {
       reactivate: vi.fn(() => of({ ...inactiveUser, isActive: true })),
     };
 
+    rolesApi = {
+      listRoles: vi.fn(() =>
+        of([
+          { id: 'role-admin', name: 'Admin', isSystem: true },
+          { id: 'role-custom', name: 'Senior Agent', isSystem: false },
+        ]),
+      ),
+    };
+
     await TestBed.configureTestingModule({
       imports: [UsersManagementComponent],
       providers: [
         provideRouter([]),
         provideNoopAnimations(),
         { provide: UsersService, useValue: usersService },
+        { provide: RolesApiService, useValue: rolesApi },
         {
           provide: PermissionService,
           useValue: {
@@ -88,9 +102,14 @@ describe('UsersManagementComponent', () => {
   });
 
   it('should load active and inactive users on init', () => {
+    expect(rolesApi.listRoles).toHaveBeenCalled();
     expect(usersService.getList).toHaveBeenCalledWith({ isActive: true, limit: 200 });
     expect(usersService.getList).toHaveBeenCalledWith({ isActive: false, limit: 200 });
     expect(component['users']().length).toBe(2);
+  });
+
+  it('should include custom roles in selector options', () => {
+    expect(component['roleOptions']().some((option) => option.value === 'role-custom')).toBe(true);
   });
 
   it('should disable role change for current user row', () => {
@@ -109,6 +128,12 @@ describe('UsersManagementComponent', () => {
     expect(component['snackBar'].open).toHaveBeenCalledWith('Role updated', 'OK', {
       duration: 3500,
     });
+  });
+
+  it('should send roleId payload in change role request for custom role', () => {
+    component['onRoleChange'](activeUser, 'role-custom');
+
+    expect(usersService.changeRole).toHaveBeenCalledWith('u-1', { roleId: 'role-custom' });
   });
 
   it('should deactivate user after confirmation', () => {

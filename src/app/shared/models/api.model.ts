@@ -139,7 +139,9 @@ export type OrgUserResponseDto = {
   appUserId: string;
   email: string;
   fullName: string;
-  role: OrgRole;
+  role: OrgRole | (string & Record<never, never>);
+  roleId?: string;
+  roleName?: string;
   isActive: boolean;
   joinedAt: string;
   lastLoginAt?: string;
@@ -187,7 +189,8 @@ export type AddOrganizationMemberDto = {
 
 /** OpenAPI: ChangeRoleRequest. PUT /api/users/{id}/role body. */
 export type ChangeRoleRequestDto = {
-  role: OrgRole;
+  role?: OrgRole | (string & Record<never, never>);
+  roleId?: string;
 };
 
 /** OpenAPI: PermissionKeyResponse. */
