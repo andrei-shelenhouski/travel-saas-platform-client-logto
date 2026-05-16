@@ -1,0 +1,204 @@
+<app-page-heading
+  subtitle="Manage organization access levels through role permissions"
+  i18n-subtitle="@@rolesPermissionsSubtitle"
+  title="Roles & Permissions"
+  i18n-title="@@rolesPermissionsTitle"
+></app-page-heading>
+
+<div class="roles-permissions-page">
+  @if (pageLoading()) {
+    <section aria-live="polite" class="state-card">
+      <mat-progress-spinner diameter="44" mode="indeterminate" />
+      <p i18n="@@rolesPermissionsLoading">Loading roles and permissions...</p>
+    </section>
+  } @else if (loadError(); as loadErrorMessage) {
+    <section aria-live="assertive" class="state-card state-card--error">
+      <p>{{ loadErrorMessage }}</p>
+      <button i18n="@@rolesPermissionsRetry" mat-stroked-button type="button" (click)="reload()">
+        Retry
+      </button>
+    </section>
+  } @else {
+    <div class="content-grid">
+      <aside aria-label="Role list" i18n-aria-label="@@rolesPermissionsRoleListAria" class="roles-panel">
+        <header class="panel-header">
+          <h2 i18n="@@rolesPermissionsRoleListTitle">Roles</h2>
+          <p i18n="@@rolesPermissionsRoleListSubtitle">Select a role to edit permissions.</p>
+        </header>
+
+        <ul class="roles-list">
+          @for (role of roles(); track role.id) {
+            <li
+              class="role-item"
+              [class.role-item--active]="role.id === selectedRoleId() && !creatingRole()"
+            >
+              <button class="role-select" type="button" (click)="selectRole(role.id)">
+                <span class="role-name">{{ role.name }}</span>
+
+                <span class="role-meta">
+                  @if (isSystemRole(role)) {
+                    <span class="role-chip role-chip--system">
+                      <mat-icon aria-hidden="true" fontSet="material-icons">lock</mat-icon>
+                      <span i18n="@@rolesPermissionsSystemBadge">System</span>
+                    </span>
+                  } @else {
+                    <span class="role-chip role-chip--custom" i18n="@@rolesPermissionsCustomBadge"
+                      >Custom</span
+                    >
+                  }
+
+                  <span class="member-count">{{ roleMemberCountLabel(role) }}</span>
+                </span>
+              </button>
+
+              @if (!isSystemRole(role)) {
+                <button
+                  aria-label="Delete role"
+                  i18n-aria-label="@@rolesPermissionsDeleteRoleAria"
+                  mat-icon-button
+                  type="button"
+                  [disabled]="isDeleteDisabled(role) || deletingRoleId() === role.id"
+                  [matTooltip]="deleteTooltip(role)"
+                  [matTooltipDisabled]="!isDeleteDisabled(role)"
+                  (click)="confirmDeleteRole(role, $event)"
+                >
+                  @if (deletingRoleId() === role.id) {
+                    <mat-progress-spinner diameter="18" mode="indeterminate" />
+                  } @else {
+                    <mat-icon fontSet="material-icons">delete</mat-icon>
+                  }
+                </button>
+              }
+            </li>
+          }
+        </ul>
+
+        @if (deleteError(); as deleteErrorMessage) {
+          <p class="inline-error" role="alert">{{ deleteErrorMessage }}</p>
+        }
+
+        <button
+          class="new-role-button"
+          i18n="@@rolesPermissionsNewRoleAction"
+          mat-stroked-button
+          type="button"
+          (click)="startCreateRole()"
+        >
+          + New Role
+        </button>
+      </aside>
+
+      <section class="editor-panel">
+        @if (roleLoading()) {
+          <section aria-live="polite" class="state-card">
+            <mat-progress-spinner diameter="36" mode="indeterminate" />
+            <p i18n="@@rolesPermissionsDetailLoading">Loading role details...</p>
+          </section>
+        } @else if (hasActiveEditor()) {
+          <form class="editor-form" [formGroup]="roleForm" (ngSubmit)="saveChanges()">
+            <header class="editor-header">
+              <mat-form-field>
+                <mat-label i18n="@@rolesPermissionsNameLabel">Role name</mat-label>
+                <input
+                  formControlName="name"
+                  matInput
+                  [readonly]="selectedRoleIsSystem() && !creatingRole()"
+                  (input)="clearDuplicateNameError()"
+                />
+                @if (roleForm.controls.name.hasError('required')) {
+                  <mat-error i18n="@@rolesPermissionsNameRequired">Role name is required.</mat-error>
+                }
+                @if (roleForm.controls.name.hasError('maxlength')) {
+                  <mat-error i18n="@@rolesPermissionsNameLength"
+                    >Role name must be at most 120 characters.</mat-error
+                  >
+                }
+                @if (roleForm.controls.name.hasError('duplicate')) {
+                  <mat-error i18n="@@rolesPermissionsDuplicateName"
+                    >A role with this name already exists.</mat-error
+                  >
+                }
+              </mat-form-field>
+
+              <mat-form-field>
+                <mat-label i18n="@@rolesPermissionsDescriptionLabel">Description</mat-label>
+                <textarea
+                  formControlName="description"
+                  matInput
+                  rows="2"
+                  [readonly]="selectedRoleIsSystem() && !creatingRole()"
+                ></textarea>
+                @if (roleForm.controls.description.hasError('maxlength')) {
+                  <mat-error i18n="@@rolesPermissionsDescriptionLength"
+                    >Description must be at most 240 characters.</mat-error
+                  >
+                }
+              </mat-form-field>
+            </header>
+
+            <section class="permission-matrix">
+              @for (group of matrixGroups(); track group.module) {
+                <article class="matrix-group">
+                  <h3>{{ group.module }}</h3>
+
+                  <ul class="permission-list">
+                    @for (permission of group.permissions; track permission.key) {
+                      <li class="permission-item">
+                        <mat-checkbox
+                          [checked]="isPermissionChecked(permission.key)"
+                          [disabled]="saving() || creating()"
+                          (change)="onPermissionToggle(permission.key, $event)"
+                        >
+                          <span class="permission-key">{{ permission.key }}</span>
+                        </mat-checkbox>
+
+                        @if (permission.description) {
+                          <p class="permission-description">{{ permission.description }}</p>
+                        }
+                      </li>
+                    }
+                  </ul>
+                </article>
+              }
+            </section>
+
+            <footer class="editor-actions">
+              @if (creatingRole()) {
+                <button color="primary" mat-flat-button type="submit" [disabled]="creating()">
+                  @if (creating()) {
+                    <span class="action-spinner">
+                      <mat-progress-spinner diameter="18" mode="indeterminate" />
+                      <span i18n="@@rolesPermissionsCreating">Creating...</span>
+                    </span>
+                  } @else {
+                    <span i18n="@@rolesPermissionsCreateAction">Create</span>
+                  }
+                </button>
+              } @else {
+                <button
+                  color="primary"
+                  mat-flat-button
+                  type="submit"
+                  [disabled]="saving() || selectedRoleDetail() === null"
+                >
+                  @if (saving()) {
+                    <span class="action-spinner">
+                      <mat-progress-spinner diameter="18" mode="indeterminate" />
+                      <span i18n="@@rolesPermissionsSaving">Saving...</span>
+                    </span>
+                  } @else {
+                    <span i18n="@@rolesPermissionsSaveAction">Save changes</span>
+                  }
+                </button>
+              }
+            </footer>
+          </form>
+        } @else {
+          <section aria-live="polite" class="state-card">
+            <p i18n="@@rolesPermissionsEmptyState">Select a role to view permissions.</p>
+          </section>
+        }
+      </section>
+    </div>
+  }
+</div>
