@@ -4977,6 +4977,310 @@
           <context context-type="linenumber">220,223</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="rolesPermissionsSubtitle" datatype="html">
+        <source>Manage organization access levels through role permissions</source>
+        <target>Управляйте уровнями доступа организации через права ролей</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">2,3</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsTitle" datatype="html">
+        <source>Roles &amp; Permissions</source>
+        <target>Роли и права</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">4,5</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsLoading" datatype="html">
+        <source>Loading roles and permissions...</source>
+        <target>Загрузка ролей и прав...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">12,14</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsRetry" datatype="html">
+        <source> Retry </source>
+        <target> Повторить </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">18,20</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsRoleListAria" datatype="html">
+        <source>Role list</source>
+        <target>Список ролей</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsRoleListTitle" datatype="html">
+        <source>Roles</source>
+        <target>Роли</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">25,26</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsRoleListSubtitle" datatype="html">
+        <source>Select a role to edit permissions.</source>
+        <target>Выберите роль, чтобы изменить права.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">26,29</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsSystemBadge" datatype="html">
+        <source>System</source>
+        <target>Системная</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">42,44</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsCustomBadge" datatype="html">
+        <source>Custom</source>
+        <target>Пользовательская</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">46,48</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsDeleteRoleAria" datatype="html">
+        <source>Delete role</source>
+        <target>Удалить роль</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">56,57</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsNewRoleAction" datatype="html">
+        <source> + New Role </source>
+        <target> + Новая роль </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">87,91</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsDetailLoading" datatype="html">
+        <source>Loading role details...</source>
+        <target>Загрузка данных роли...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">95,97</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsNameLabel" datatype="html">
+        <source>Role name</source>
+        <target>Название роли</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">101,103</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsNameRequired" datatype="html">
+        <source>Role name is required.</source>
+        <target>Название роли обязательно.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">109,111</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsNameLength" datatype="html">
+        <source>Role name must be at most 120 characters.</source>
+        <target>Название роли должно быть не длиннее 120 символов.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">113,115</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsDuplicateName" datatype="html">
+        <source>A role with this name already exists.</source>
+        <target>Роль с таким названием уже существует.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">118,120</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsDescriptionLabel" datatype="html">
+        <source>Description</source>
+        <target>Описание</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">124,126</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsDescriptionLength" datatype="html">
+        <source>Description must be at most 240 characters.</source>
+        <target>Описание должно быть не длиннее 240 символов.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">133,135</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsCreating" datatype="html">
+        <source>Creating...</source>
+        <target>Создание...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">171,173</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsCreateAction" datatype="html">
+        <source>Create</source>
+        <target>Создать</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">174,176</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsSaving" datatype="html">
+        <source>Saving...</source>
+        <target>Сохранение...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">187,189</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsSaveAction" datatype="html">
+        <source>Save changes</source>
+        <target>Сохранить изменения</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">190,192</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsEmptyState" datatype="html">
+        <source>Select a role to view permissions.</source>
+        <target>Выберите роль, чтобы просмотреть права.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.html</context>
+          <context context-type="linenumber">198,201</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsDeleteWithMembers" datatype="html">
+        <source>Remove member assignments first</source>
+        <target>Сначала снимите назначения участников</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
+          <context context-type="linenumber">113</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsMemberCountOne" datatype="html">
+        <source><x id="memberCount" equiv-text="memberCount"/> member</source>
+        <target><x id="memberCount" equiv-text="memberCount"/> участник</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
+          <context context-type="linenumber">201</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsMemberCountOther" datatype="html">
+        <source><x id="memberCount" equiv-text="memberCount"/> members</source>
+        <target><x id="memberCount" equiv-text="memberCount"/> участников</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
+          <context context-type="linenumber">204</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsDeleteConfirmTitle" datatype="html">
+        <source>Delete role</source>
+        <target>Удалить роль</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
+          <context context-type="linenumber">229</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsDeleteConfirmMessage" datatype="html">
+        <source>Delete role &apos;<x id="roleName" equiv-text="role.name"/>&apos;? This cannot be undone.</source>
+        <target>Удалить роль «<x id="roleName" equiv-text="role.name"/>»? Это действие нельзя отменить.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
+          <context context-type="linenumber">230</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsDeleteConfirmAction" datatype="html">
+        <source>Delete</source>
+        <target>Удалить</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
+          <context context-type="linenumber">231</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsLoadError" datatype="html">
+        <source>Failed to load roles and permissions</source>
+        <target>Не удалось загрузить роли и права</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
+          <context context-type="linenumber">276</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsDetailLoadError" datatype="html">
+        <source>Failed to load role details</source>
+        <target>Не удалось загрузить данные роли</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
+          <context context-type="linenumber">293</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsCreateSuccess" datatype="html">
+        <source>Role created</source>
+        <target>Роль создана</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
+          <context context-type="linenumber">338</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsCreateError" datatype="html">
+        <source>Failed to create role</source>
+        <target>Не удалось создать роль</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
+          <context context-type="linenumber">354</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsSaveSuccess" datatype="html">
+        <source>Permissions updated</source>
+        <target>Права обновлены</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
+          <context context-type="linenumber">380</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsSaveError" datatype="html">
+        <source>Failed to update permissions</source>
+        <target>Не удалось обновить права</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
+          <context context-type="linenumber">387</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsDeleteSuccess" datatype="html">
+        <source>Role deleted</source>
+        <target>Роль удалена</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
+          <context context-type="linenumber">418</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsDeleteConflict" datatype="html">
+        <source>Remove all member assignments before deleting this role.</source>
+        <target>Перед удалением роли снимите все назначения участников.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
+          <context context-type="linenumber">425</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsDeleteError" datatype="html">
+        <source>Failed to delete role</source>
+        <target>Не удалось удалить роль</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
+          <context context-type="linenumber">432</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="noOtherOrganizations" datatype="html">
         <source>No other organizations</source>
         <target>Нет других организаций</target>
@@ -5055,6 +5359,14 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/layout/main-layout.component.ts</context>
           <context context-type="linenumber">40</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="rolesPermissionsNav" datatype="html">
+        <source>Roles &amp; Permissions</source>
+        <target>Роли и права</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/main-layout.component.ts</context>
+          <context context-type="linenumber">50</context>
         </context-group>
       </trans-unit>
       <trans-unit id="settings" datatype="html">

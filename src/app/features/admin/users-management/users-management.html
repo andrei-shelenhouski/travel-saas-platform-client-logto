@@ -63,10 +63,10 @@
           <mat-form-field appearance="outline" class="role-field" subscriptSizing="dynamic">
             <mat-select
               [disabled]="!canChangeRole(element) || updatingRoleId() === element.id"
-              [value]="element.role"
+              [value]="roleSelectionValue(element)"
               (selectionChange)="onRoleChange(element, $event.value)"
             >
-              @for (option of roleOptions; track option.value) {
+              @for (option of roleOptions(); track option.value) {
                 <mat-option [value]="option.value">{{ option.label }}</mat-option>
               }
             </mat-select>
