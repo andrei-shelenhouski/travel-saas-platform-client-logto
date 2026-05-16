@@ -32,6 +32,7 @@ describe('MainLayoutComponent', () => {
           useValue: {
             firebaseUser: () => null,
             userData: () => null,
+            hasPermission: () => true,
             signOut: vi.fn().mockResolvedValue(undefined),
           },
         },

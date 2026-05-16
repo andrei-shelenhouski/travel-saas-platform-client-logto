@@ -21,7 +21,6 @@ import { OffersListFilterBarComponent } from '@app/features/offers/offers-list-f
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { RoleService } from '@app/services/role.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
 import { OfferStatus } from '@app/shared/models';
@@ -117,7 +116,6 @@ export class OffersKanbanComponent {
   private readonly offersService = inject(OffersService);
   private readonly membersService = inject(OrganizationMembersService);
   private readonly permissionService = inject(PermissionService);
-  private readonly roleService = inject(RoleService);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
@@ -140,7 +138,8 @@ export class OffersKanbanComponent {
     EXPIRED: [],
   });
 
-  readonly showAgentFilter = computed(() => !this.roleService.isAgent());
+  readonly showAgentFilter = computed(() => this.permissionService.canViewAllOffers());
+  readonly canCreateOffer = computed(() => this.permissionService.canCreateOffer());
 
   private readonly membersData = rxResource({
     stream: () => this.membersService.findAll(),

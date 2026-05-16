@@ -57,6 +57,7 @@ describe('OfferDetailComponent', () => {
   const permissionServiceMock = {
     canDeleteOffer: vi.fn(() => true),
     isAgent: vi.fn(() => false),
+    canViewAllOffers: vi.fn(() => true),
   };
 
   const toastServiceMock = {

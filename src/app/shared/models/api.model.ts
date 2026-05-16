@@ -59,14 +59,48 @@ export const OrgRole = {
 } as const;
 export type OrgRole = (typeof OrgRole)[keyof typeof OrgRole];
 
+export const PermissionKey = {
+  SETTINGS_UPDATE: 'settings:update',
+  MEMBERS_INVITE: 'members:invite',
+  ROLES_VIEW: 'roles:view',
+  LEADS_CREATE: 'leads:create',
+  LEADS_ASSIGN: 'leads:assign',
+  LEADS_VIEW_ALL: 'leads:view:all',
+  OFFERS_CREATE: 'offers:create',
+  OFFERS_VIEW_ALL: 'offers:view:all',
+  REQUESTS_VIEW_ALL: 'requests:view:all',
+  OFFERS_DELETE: 'offers:delete',
+  LEADS_DELETE: 'leads:delete',
+  BOOKINGS_DELETE: 'bookings:delete',
+  BOOKINGS_UPDATE: 'bookings:update',
+  INVOICES_VIEW: 'invoices:view',
+  INVOICES_CREATE: 'invoices:create',
+  INVOICES_PUBLISH: 'invoices:publish',
+  INVOICES_RECORD_PAYMENT: 'invoices:record_payment',
+  INVOICES_CANCEL: 'invoices:cancel',
+} as const;
+export type Permission =
+  | (typeof PermissionKey)[keyof typeof PermissionKey]
+  | (string & Record<never, never>);
+
 /** OpenAPI: OrgMembership. Organization membership entry in UserResponse. */
 export type OrganizationWithRoleDto = {
   id: string;
   name: string;
   role: OrgRole;
+  roleId?: string;
+  roleName?: string;
+  permissions?: ReadonlySet<Permission>;
   // Compatibility aliases for existing app code.
   organizationId: string;
   organizationName: string;
+};
+
+export type OrganizationWithRoleApiDto = Omit<
+  OrganizationWithRoleDto,
+  'organizationId' | 'organizationName' | 'permissions'
+> & {
+  permissions?: Permission[];
 };
 
 /** OpenAPI: UserResponse. GET /api/me response. */
@@ -80,6 +114,10 @@ export type MeResponseDto = {
   name?: string;
   createdAt?: string;
   active?: boolean;
+};
+
+export type MeResponseApiDto = Omit<MeResponseDto, 'organizations'> & {
+  organizations: OrganizationWithRoleApiDto[];
 };
 
 /** Legacy alias for components that only need id + name. */
@@ -143,6 +181,77 @@ export type UpdateOrganizationMemberRoleDto = {
 export type AddOrganizationMemberDto = {
   email: string;
   role: OrgRole;
+};
+
+// ----- Roles and permissions -----
+
+/** OpenAPI: ChangeRoleRequest. PUT /api/users/{id}/role body. */
+export type ChangeRoleRequestDto = {
+  role: OrgRole;
+};
+
+/** OpenAPI: PermissionKeyResponse. */
+export type PermissionKeyResponseDto = {
+  key?: Permission;
+  description?: string;
+};
+
+/** OpenAPI: PermissionGroupResponse. GET /api/permissions item. */
+export type PermissionGroupResponseDto = {
+  module?: string;
+  permissions?: PermissionKeyResponseDto[];
+};
+
+/** OpenAPI: RolePermissionResponse. */
+export type RolePermissionResponseDto = {
+  key?: Permission;
+  module?: string;
+  description?: string;
+};
+
+/** OpenAPI: RoleSummaryResponse. GET /api/roles item. */
+export type RoleSummaryResponseDto = {
+  id: string;
+  name: string;
+  description?: string;
+  permissionCount?: number;
+  memberCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  system?: boolean;
+  isSystem?: boolean;
+};
+
+/** OpenAPI: RoleDetailResponse. */
+export type RoleDetailResponseDto = {
+  id: string;
+  name: string;
+  description?: string;
+  permissions?: RolePermissionResponseDto[];
+  memberCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  system?: boolean;
+  isSystem?: boolean;
+};
+
+/** OpenAPI: CreateRoleRequest. POST /api/roles body. */
+export type CreateRoleRequestDto = {
+  name: string;
+  description?: string;
+  permissions: Permission[];
+};
+
+/** OpenAPI: UpdateRoleRequest. PUT /api/roles/{id} body. */
+export type UpdateRoleRequestDto = {
+  name: string;
+  description?: string;
+  permissions: Permission[];
+};
+
+/** OpenAPI: ReplacePermissionsRequest. PUT /api/roles/{id}/permissions body. */
+export type ReplacePermissionsRequestDto = {
+  permissions: Permission[];
 };
 
 // ----- Organizations -----
@@ -559,7 +668,7 @@ export type BookingResponseDto = {
   adults?: number;
   children?: number;
   accommodationDetails?: BookingAccommodationDto[];
-  servicesSnapshot?: BookingServiceSnapshotEntryDto[] | null;
+  servicesSnapshot?: BookingServiceSnapshotEntryDto[];
   supplierConfirmationNumber?: string;
   assignedBackofficeId?: string;
   assignedBackofficeName?: string;

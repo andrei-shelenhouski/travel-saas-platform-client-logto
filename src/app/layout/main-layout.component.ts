@@ -19,14 +19,15 @@ import { OrganizationStateService } from '@app/services/organization-state.servi
 import { PermissionService } from '@app/services/permission.service';
 import { orgRoleToLabel } from '@app/services/role.service';
 import { MAT_BUTTONS, MAT_MENU, MAT_NAV_LIST } from '@app/shared/material-imports';
+import { PermissionKey } from '@app/shared/models';
 
-import type { OrganizationWithRoleDto } from '@app/shared/models';
+import type { OrganizationWithRoleDto, Permission } from '@app/shared/models';
 
 type MainNavLink = {
   path: string;
   icon: string;
   label: string;
-  adminOnly?: boolean;
+  requiredPermission?: Permission;
   sectionMargin?: boolean;
 };
 
@@ -37,18 +38,24 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
   { path: '/app/requests', icon: 'alt_route', label: $localize`:@@requests:Requests` },
   { path: '/app/offers', icon: 'send', label: $localize`:@@offers:Offers` },
   { path: '/app/bookings', icon: 'flight', label: $localize`:@@bookings:Bookings` },
-  { path: '/app/invoices', icon: 'description', label: $localize`:@@invoices:Invoices` },
+  {
+    path: '/app/invoices',
+    icon: 'description',
+    label: $localize`:@@invoices:Invoices`,
+    requiredPermission: PermissionKey.INVOICES_VIEW,
+  },
   {
     path: '/app/settings/users',
     icon: 'manage_accounts',
     label: $localize`:@@userManagement:User management`,
-    adminOnly: true,
+    requiredPermission: PermissionKey.ROLES_VIEW,
     sectionMargin: true,
   },
   {
     path: '/app/settings',
     icon: 'settings',
     label: $localize`:@@settings:Settings`,
+    requiredPermission: PermissionKey.SETTINGS_UPDATE,
   },
 ];
 
@@ -77,7 +84,9 @@ export class MainLayoutComponent implements OnInit {
   readonly orgMenuTrigger = viewChild.required<MatMenuTrigger>('orgMenuTrigger');
 
   readonly navLinks = computed(() =>
-    MAIN_NAV_LINKS.filter((link) => !link.adminOnly || this.permissions.isAdmin()),
+    MAIN_NAV_LINKS.filter(
+      (link) => !link.requiredPermission || this.authService.hasPermission(link.requiredPermission),
+    ),
   );
 
   readonly organizations = signal<OrganizationWithRoleDto[]>([]);
@@ -170,8 +179,14 @@ export class MainLayoutComponent implements OnInit {
       });
   }
 
-  orgRoleLabel(role: string): string {
-    return orgRoleToLabel(role);
+  orgRoleLabel(org: OrganizationWithRoleDto): string {
+    const roleName = org.roleName?.trim();
+
+    if (roleName) {
+      return roleName;
+    }
+
+    return orgRoleToLabel(org.role);
   }
 
   switchOrganization(org: OrganizationWithRoleDto): void {
@@ -180,7 +195,11 @@ export class MainLayoutComponent implements OnInit {
 
       return;
     }
-    this.orgState.setActiveOrganization(org.organizationId, org.organizationName, org.role);
+    this.orgState.setActiveOrganization(
+      org.organizationId,
+      org.organizationName,
+      org.roleName ?? org.role,
+    );
     this.outletReloadKey.update((k) => k + 1);
     this.meService
       .getMe()

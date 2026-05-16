@@ -31,7 +31,7 @@ import { ClientsService } from '@app/services/clients.service';
 import { LeadsService } from '@app/services/leads.service';
 import { MeService } from '@app/services/me.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
-import { RoleService } from '@app/services/role.service';
+import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientResponseDto, CreateLeadDto, LeadResponseDto, OrgRole } from '@app/shared/models';
@@ -124,7 +124,7 @@ export class CreateLeadComponent {
   private readonly leadsService = inject(LeadsService);
   private readonly membersService = inject(OrganizationMembersService);
   private readonly meService = inject(MeService);
-  private readonly roleService = inject(RoleService);
+  private readonly permissionService = inject(PermissionService);
   private readonly router = inject(Router);
   private readonly toast = inject(ToastService);
 
@@ -161,9 +161,7 @@ export class CreateLeadComponent {
   protected readonly selectedClient = signal<ClientResponseDto | null>(null);
   protected readonly contactLocked = signal(false);
 
-  protected readonly showAssignAgent = computed(
-    () => this.roleService.isAdmin() || this.roleService.isManager(),
-  );
+  protected readonly showAssignAgent = computed(() => this.permissionService.canAssignLead());
   protected readonly selfUserId = computed(() => this.meService.getMeData()?.id ?? '');
   protected readonly agentOptions = signal<AgentOption[]>([]);
 

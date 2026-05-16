@@ -9,7 +9,7 @@ import { ClientsService } from '@app/services/clients.service';
 import { LeadsService } from '@app/services/leads.service';
 import { MeService } from '@app/services/me.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
-import { RoleService } from '@app/services/role.service';
+import { PermissionService } from '@app/services/permission.service';
 import { ClientType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
@@ -32,9 +32,8 @@ describe('CreateLeadComponent', () => {
     getMe: vi.fn(() => of({ id: 'agent-self', organizations: [] })),
   };
 
-  const roleServiceMock = {
-    isAdmin: vi.fn(() => false),
-    isManager: vi.fn(() => false),
+  const permissionServiceMock = {
+    canAssignLead: vi.fn(() => false),
   };
 
   const clientsServiceMock = {
@@ -59,7 +58,7 @@ describe('CreateLeadComponent', () => {
         { provide: LeadsService, useValue: leadsServiceMock },
         { provide: ClientsService, useValue: clientsServiceMock },
         { provide: MeService, useValue: meServiceMock },
-        { provide: RoleService, useValue: roleServiceMock },
+        { provide: PermissionService, useValue: permissionServiceMock },
         { provide: OrganizationMembersService, useValue: membersServiceMock },
         { provide: ToastService, useValue: toastMock },
       ],

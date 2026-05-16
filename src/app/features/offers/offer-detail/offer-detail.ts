@@ -156,7 +156,7 @@ export class OfferDetailComponent {
   );
   protected readonly pageSubtitle = $localize`:@@offerDetailPageSubtitle:Offer details`;
   protected readonly displayVersion = computed(() => `v${this.offer()?.version ?? 1}`);
-  protected readonly canSeeInternalNotes = computed(() => !this.permissions.isAgent());
+  protected readonly canSeeInternalNotes = computed(() => this.permissions.canViewAllOffers());
   protected readonly hasVersionHistory = computed(() => !!this.offer()?.previousVersionId);
   protected readonly bookingIdFromOffer = computed(() => {
     const current = this.offer();

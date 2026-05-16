@@ -8,7 +8,7 @@ import { catchError, finalize, forkJoin, map, of, switchMap } from 'rxjs';
 import { ClientsService } from '@app/services/clients.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
-import { RoleService } from '@app/services/role.service';
+import { PermissionService } from '@app/services/permission.service';
 import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { BookingStatus, ClientType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
@@ -57,7 +57,7 @@ export class InvoiceListMiniComponent {
   private readonly clientsService = inject(ClientsService);
   private readonly invoicesService = inject(InvoicesService);
   private readonly organizationSettingsService = inject(OrganizationSettingsService);
-  private readonly roleService = inject(RoleService);
+  private readonly permissions = inject(PermissionService);
   private readonly toast = inject(ToastService);
 
   readonly invoices = input<InvoiceResponseDto[]>([]);
@@ -66,12 +66,7 @@ export class InvoiceListMiniComponent {
   readonly createInvoiceError = signal('');
 
   readonly canCreateInvoice = computed(() => {
-    const role = this.roleService.roleOrDefault();
-
-    return (
-      this.booking().status !== BookingStatus.CANCELLED &&
-      (role === 'Manager' || role === 'Admin' || role === 'Back Office')
-    );
+    return this.booking().status !== BookingStatus.CANCELLED && this.permissions.canCreateInvoice();
   });
 
   onCreateInvoice(): void {

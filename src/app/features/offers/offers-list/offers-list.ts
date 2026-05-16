@@ -22,7 +22,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { RoleService } from '@app/services/role.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import { MAT_BUTTON_TOGGLES, MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
@@ -94,7 +93,6 @@ export class OffersListComponent {
   private readonly offersService = inject(OffersService);
   private readonly membersService = inject(OrganizationMembersService);
   private readonly permissionService = inject(PermissionService);
-  private readonly roleService = inject(RoleService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
@@ -103,7 +101,8 @@ export class OffersListComponent {
 
   readonly statusOptions = OFFER_STATUS_OPTIONS;
 
-  readonly showAgentFilter = computed(() => !this.roleService.isAgent());
+  readonly showAgentFilter = computed(() => this.permissionService.canViewAllOffers());
+  readonly canCreateOffer = computed(() => this.permissionService.canCreateOffer());
 
   readonly currentPage = signal(0);
   readonly statusFilter = signal<OfferStatus[]>([]);

@@ -10,10 +10,11 @@ import {
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { EMPTY, forkJoin } from 'rxjs';
+import { EMPTY, forkJoin, of } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
 import { BookingsService } from '@app/services/bookings.service';
+import { PermissionService } from '@app/services/permission.service';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
@@ -59,6 +60,7 @@ export class BookingDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly bookingsService = inject(BookingsService);
+  private readonly permissions = inject(PermissionService);
   private readonly toast = inject(ToastService);
 
   readonly BookingStatus = BookingStatus;
@@ -71,17 +73,29 @@ export class BookingDetailComponent {
       invoices: InvoiceResponseDto[];
       documents: BookingDocumentResponseDto[];
     },
-    string | null
+    {
+      id: string | null;
+      canViewInvoices: boolean;
+    }
   >({
-    params: (): string | null => this.routeId() ?? null,
-    stream: ({ params: id }) => {
+    params: () => ({
+      id: this.routeId() ?? null,
+      canViewInvoices: this.permissions.canViewInvoices(),
+    }),
+    stream: ({ params }) => {
+      const { canViewInvoices, id } = params;
+
       if (!id) {
         return EMPTY;
       }
 
+      const invoices$ = canViewInvoices
+        ? this.bookingsService.listInvoices(id).pipe(map((response) => response.items))
+        : of([]);
+
       return forkJoin({
         booking: this.bookingsService.getById(id),
-        invoices: this.bookingsService.listInvoices(id).pipe(map((response) => response.items)),
+        invoices: invoices$,
         documents: this.bookingsService.listDocuments(id),
       });
     },
@@ -90,6 +104,7 @@ export class BookingDetailComponent {
   readonly booking = computed(() => this.allData.value()?.booking ?? null);
   readonly invoices = computed(() => this.allData.value()?.invoices ?? []);
   readonly documents = computed(() => this.allData.value()?.documents ?? []);
+  readonly canViewInvoices = computed(() => this.permissions.canViewInvoices());
   readonly loading = computed(() => this.allData.isLoading());
   readonly loadError = computed(() => this.allData.error());
   readonly loadNotFound = computed(() => {

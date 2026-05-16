@@ -35,7 +35,6 @@ import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
-import { RoleService } from '@app/services/role.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
@@ -119,7 +118,6 @@ export class LeadDetailComponent {
   private readonly requestsService = inject(RequestsService);
   private readonly offersService = inject(OffersService);
   private readonly membersService = inject(OrganizationMembersService);
-  private readonly roleService = inject(RoleService);
   private readonly toast = inject(ToastService);
 
   protected readonly permissions = inject(PermissionService);
@@ -175,7 +173,7 @@ export class LeadDetailComponent {
   protected readonly error = computed(() => this.data.error());
 
   protected readonly canReassign = computed(() => {
-    return this.roleService.isAdmin() || this.roleService.isManager();
+    return this.permissions.canAssignLead();
   });
 
   protected readonly canManageLeadClient = computed(() => {
@@ -792,7 +790,7 @@ export class LeadDetailComponent {
   }
 
   protected canCreateOfferForRequest(status: string): boolean {
-    return !REQUEST_TERMINAL_STATUSES.has(status);
+    return !REQUEST_TERMINAL_STATUSES.has(status) && this.permissions.canCreateOffer();
   }
 
   protected getRequestStatusClass(status: string | null | undefined): string {

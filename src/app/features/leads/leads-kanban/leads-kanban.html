@@ -1,8 +1,10 @@
 <app-page-heading title="Leads · Kanban" i18n-title="@@leadsKanbanTitle">
-  <a matButton="filled" routerLink="/app/leads/new">
-    <mat-icon>add</mat-icon>
-    <span i18n="@@leadsListNewLeadCta">New lead</span>
-  </a>
+  @if (canCreateLead()) {
+    <a matButton="filled" routerLink="/app/leads/new">
+      <mat-icon>add</mat-icon>
+      <span i18n="@@leadsListNewLeadCta">New lead</span>
+    </a>
+  }
   <mat-button-toggle-group appearance="standard" hideSingleSelectionIndicator value="kanban">
     <mat-button-toggle routerLink="/app/leads" value="table" (click)="setPreferredView('table')">
       <mat-icon>list</mat-icon>

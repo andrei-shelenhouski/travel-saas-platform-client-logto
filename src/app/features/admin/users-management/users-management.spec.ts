@@ -17,7 +17,7 @@ describe('UsersManagementComponent', () => {
   let dialogOpenSpy: ReturnType<typeof vi.spyOn>;
   let usersService: {
     getList: ReturnType<typeof vi.fn>;
-    update: ReturnType<typeof vi.fn>;
+    changeRole: ReturnType<typeof vi.fn>;
     deactivate: ReturnType<typeof vi.fn>;
     reactivate: ReturnType<typeof vi.fn>;
   };
@@ -52,7 +52,7 @@ describe('UsersManagementComponent', () => {
           limit: 200,
         }),
       ),
-      update: vi.fn(() => of({ ...activeUser, role: 'ADMIN' })),
+      changeRole: vi.fn(() => of({ ...activeUser, role: 'ADMIN' })),
       deactivate: vi.fn(() => of({ ...activeUser, isActive: false })),
       reactivate: vi.fn(() => of({ ...inactiveUser, isActive: true })),
     };
@@ -63,7 +63,13 @@ describe('UsersManagementComponent', () => {
         provideRouter([]),
         provideNoopAnimations(),
         { provide: UsersService, useValue: usersService },
-        { provide: PermissionService, useValue: { currentUserId: () => 'me-user-id' } },
+        {
+          provide: PermissionService,
+          useValue: {
+            currentUserId: () => 'me-user-id',
+            canInviteMembers: () => true,
+          },
+        },
       ],
     }).compileComponents();
 
@@ -96,13 +102,10 @@ describe('UsersManagementComponent', () => {
     expect(component['canChangeRole'](currentUser)).toBe(false);
   });
 
-  it('should send fullName and role in update payload', () => {
+  it('should send role-only payload in change role request', () => {
     component['onRoleChange'](activeUser, 'ADMIN');
 
-    expect(usersService.update).toHaveBeenCalledWith('u-1', {
-      fullName: 'Active User',
-      role: 'ADMIN',
-    });
+    expect(usersService.changeRole).toHaveBeenCalledWith('u-1', { role: 'ADMIN' });
     expect(component['snackBar'].open).toHaveBeenCalledWith('Role updated', 'OK', {
       duration: 3500,
     });

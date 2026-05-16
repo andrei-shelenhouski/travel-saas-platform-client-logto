@@ -2,20 +2,63 @@ import { computed, inject, Injectable } from '@angular/core';
 
 import { AuthService } from '@app/auth/auth.service';
 import { MeService } from '@app/services/me.service';
-import { RoleService } from './role.service';
+import { PermissionKey } from '@app/shared/models';
+
+import { OrganizationStateService } from './organization-state.service';
+import { orgRoleToLabel } from './role.service';
 
 /**
- * Role-based permissions for UI (hide/disable convert, delete) and list filtering.
- * Admin: full access. Manager: convert + delete. Agent: no convert, no delete, filter to own.
+ * Centralized permission-key checks for UI visibility and action gating.
  */
 @Injectable({ providedIn: 'root' })
 export class PermissionService {
-  private readonly roleService = inject(RoleService);
   private readonly authService = inject(AuthService);
   private readonly meService = inject(MeService);
+  private readonly orgState = inject(OrganizationStateService);
 
-  readonly isAdmin = computed(() => this.roleService.isAdmin());
-  readonly isAgent = computed(() => this.roleService.isAgent());
+  readonly canUpdateSettings = computed(() =>
+    this.authService.hasPermission(PermissionKey.SETTINGS_UPDATE),
+  );
+  readonly canInviteMembers = computed(() =>
+    this.authService.hasPermission(PermissionKey.MEMBERS_INVITE),
+  );
+  readonly canViewRoles = computed(() => this.authService.hasPermission(PermissionKey.ROLES_VIEW));
+  readonly canCreateLead = computed(() =>
+    this.authService.hasPermission(PermissionKey.LEADS_CREATE),
+  );
+  readonly canAssignLead = computed(() =>
+    this.authService.hasPermission(PermissionKey.LEADS_ASSIGN),
+  );
+  readonly canViewAllLeads = computed(() =>
+    this.authService.hasPermission(PermissionKey.LEADS_VIEW_ALL),
+  );
+  readonly canCreateOffer = computed(() =>
+    this.authService.hasPermission(PermissionKey.OFFERS_CREATE),
+  );
+  readonly canViewAllOffers = computed(() =>
+    this.authService.hasPermission(PermissionKey.OFFERS_VIEW_ALL),
+  );
+  readonly canViewAllRequests = computed(() =>
+    this.authService.hasPermission(PermissionKey.REQUESTS_VIEW_ALL),
+  );
+  readonly canViewInvoices = computed(() =>
+    this.authService.hasPermission(PermissionKey.INVOICES_VIEW),
+  );
+  readonly canCreateInvoice = computed(() =>
+    this.authService.hasPermission(PermissionKey.INVOICES_CREATE),
+  );
+  readonly canPublishInvoice = computed(() =>
+    this.authService.hasPermission(PermissionKey.INVOICES_PUBLISH),
+  );
+  readonly canRecordInvoicePayment = computed(() =>
+    this.authService.hasPermission(PermissionKey.INVOICES_RECORD_PAYMENT),
+  );
+  readonly canUpdateBookings = computed(() =>
+    this.authService.hasPermission(PermissionKey.BOOKINGS_UPDATE),
+  );
+
+  readonly isAdmin = computed(() => this.canViewRoles());
+  readonly isAgent = computed(() => !this.canViewAllLeads());
 
   /** Current user ID (from GET /api/me id). Used for "own records" filter and managerId. */
   readonly currentUserId = computed(() => {
@@ -24,47 +67,55 @@ export class PermissionService {
     return me?.id;
   });
 
-  /** Can convert lead to client. Admin + Manager only. */
-  readonly canConvertLead = computed(() => {
-    const r = this.roleService.roleOrDefault();
+  /** Backward-compatible alias used by existing components/tests. */
+  readonly canConvertLead = computed(() => this.canAssignLead());
 
-    return r === 'Admin' || r === 'Manager';
-  });
+  readonly canDeleteOffer = computed(() =>
+    this.authService.hasPermission(PermissionKey.OFFERS_DELETE),
+  );
 
-  /** Can delete offers. Admin + Manager; Agent cannot. */
-  readonly canDeleteOffer = computed(() => {
-    const r = this.roleService.roleOrDefault();
+  readonly canDeleteLead = computed(() =>
+    this.authService.hasPermission(PermissionKey.LEADS_DELETE),
+  );
 
-    return r === 'Admin' || r === 'Manager';
-  });
+  readonly canDeleteBooking = computed(() =>
+    this.authService.hasPermission(PermissionKey.BOOKINGS_DELETE),
+  );
 
-  /** Can delete leads. Admin + Manager; Agent cannot. */
-  readonly canDeleteLead = computed(() => {
-    const r = this.roleService.roleOrDefault();
-
-    return r === 'Admin' || r === 'Manager';
-  });
-
-  /** Can delete bookings. Admin + Manager; Agent cannot. */
-  readonly canDeleteBooking = computed(() => {
-    const r = this.roleService.roleOrDefault();
-
-    return r === 'Admin' || r === 'Manager';
-  });
-
-  /** Can delete invoices. Admin + Manager; Agent cannot. */
-  readonly canDeleteInvoice = computed(() => {
-    const r = this.roleService.roleOrDefault();
-
-    return r === 'Admin' || r === 'Manager';
-  });
+  readonly canDeleteInvoice = computed(() =>
+    this.authService.hasPermission(PermissionKey.INVOICES_CANCEL),
+  );
 
   /** Whether to filter lists to current user's records (e.g. requests by managerId). */
-  readonly filterToOwnRecords = computed(() => this.roleService.isAgent());
+  readonly filterToOwnRecords = computed(() => !this.canViewAllRequests());
 
   readonly roleLabel = computed(() => {
-    const r = this.roleService.roleOrDefault();
+    const meData = this.meService.getMeData();
+    const activeOrganizationId = this.orgState.getActiveOrganization();
+    const fallbackRole = this.orgState.getActiveOrganizationRole();
 
-    return r === 'Admin' ? 'Admin' : r === 'Agent' ? 'Agent' : 'Manager';
+    if (!meData || !activeOrganizationId) {
+      return fallbackRole ? orgRoleToLabel(fallbackRole) : 'Manager';
+    }
+
+    const activeOrganization = meData.organizations.find(
+      (organization) => organization.organizationId === activeOrganizationId,
+    );
+
+    if (!activeOrganization) {
+      return fallbackRole ? orgRoleToLabel(fallbackRole) : 'Manager';
+    }
+
+    const roleName = activeOrganization.roleName?.trim();
+
+    if (roleName) {
+      return roleName;
+    }
+
+    if (activeOrganization.role) {
+      return orgRoleToLabel(activeOrganization.role);
+    }
+
+    return fallbackRole ? orgRoleToLabel(fallbackRole) : 'Manager';
   });
 }

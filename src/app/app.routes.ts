@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
 
 import { authGuard } from '@app/auth/auth.guard';
-import { adminGuard } from '@app/guards/admin.guard';
 import { appGuard } from '@app/guards/app.guard';
 import { pendingChangesGuard } from '@app/guards/pending-changes.guard';
+import { permissionGuard } from '@app/guards/permission.guard';
+import { PermissionKey } from '@app/shared/models';
 
 export const routes: Routes = [
   {
@@ -100,6 +101,8 @@ export const routes: Routes = [
       // Leads
       {
         path: 'leads/new',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.LEADS_CREATE },
         loadComponent: () =>
           import('@app/features/leads/create-lead/create-lead').then((m) => m.CreateLeadComponent),
       },
@@ -174,6 +177,8 @@ export const routes: Routes = [
       // Offers: /app/offers/:id (more specific first)
       {
         path: 'offers/new',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.OFFERS_CREATE },
         canDeactivate: [pendingChangesGuard],
         loadComponent: () =>
           import('@app/features/offers/create-offer/create-offer').then(
@@ -223,6 +228,8 @@ export const routes: Routes = [
       // Invoices
       {
         path: 'invoices/new',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.INVOICES_CREATE },
         canDeactivate: [pendingChangesGuard],
         loadComponent: () =>
           import('@app/features/invoices/create-invoice/create-invoice').then(
@@ -231,6 +238,8 @@ export const routes: Routes = [
       },
       {
         path: 'invoices/:id/edit',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.INVOICES_CREATE },
         canDeactivate: [pendingChangesGuard],
         loadComponent: () =>
           import('@app/features/invoices/create-invoice/create-invoice').then(
@@ -239,6 +248,8 @@ export const routes: Routes = [
       },
       {
         path: 'invoices/:id',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.INVOICES_VIEW },
         loadComponent: () =>
           import('@app/features/invoices/invoice-detail/invoice-detail').then(
             (m) => m.InvoiceDetailComponent,
@@ -246,6 +257,8 @@ export const routes: Routes = [
       },
       {
         path: 'invoices',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.INVOICES_VIEW },
         loadComponent: () =>
           import('@app/features/invoices/invoices-list/invoices-list').then(
             (m) => m.InvoicesListComponent,
@@ -257,7 +270,8 @@ export const routes: Routes = [
           import('@app/features/settings/company-profile/company-profile').then(
             (m) => m.CompanyProfileComponent,
           ),
-        canActivate: [adminGuard],
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.SETTINGS_UPDATE },
         canDeactivate: [pendingChangesGuard],
       },
       {
@@ -266,7 +280,8 @@ export const routes: Routes = [
           import('@app/features/admin/users-management/users-management').then(
             (m) => m.UsersManagementComponent,
           ),
-        canActivate: [adminGuard],
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.ROLES_VIEW },
       },
       {
         path: 'organizations/new',

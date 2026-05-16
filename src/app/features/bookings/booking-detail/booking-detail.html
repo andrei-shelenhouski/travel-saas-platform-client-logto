@@ -102,7 +102,9 @@
           </div>
 
           <div class="booking-grid-right space-y-4">
-            <app-invoice-list-mini [booking]="b" [invoices]="invoices()" />
+            @if (canViewInvoices()) {
+              <app-invoice-list-mini [booking]="b" [invoices]="invoices()" />
+            }
 
             <app-document-list
               [documents]="documents()"

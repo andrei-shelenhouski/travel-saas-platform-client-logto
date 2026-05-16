@@ -57,12 +57,40 @@ export class SelectOrganizationComponent implements OnInit {
       });
   }
 
-  roleLabel(role: string): string {
-    return orgRoleToLabel(role);
+  roleLabel(org: OrganizationWithRoleDto): string {
+    const roleName = org.roleName?.trim();
+
+    if (roleName) {
+      return roleName;
+    }
+
+    return orgRoleToLabel(org.role);
+  }
+
+  roleBadgeClass(org: OrganizationWithRoleDto): string {
+    const role = org.role;
+
+    if (role === 'ADMIN') {
+      return 'bg-violet-100 text-violet-800';
+    }
+
+    if (role === 'MANAGER') {
+      return 'bg-sky-100 text-sky-800';
+    }
+
+    if (role === 'BACK_OFFICE') {
+      return 'bg-teal-100 text-teal-800';
+    }
+
+    return 'bg-amber-100 text-amber-800';
   }
 
   select(org: OrganizationWithRoleDto): void {
-    this.orgState.setActiveOrganization(org.organizationId, org.organizationName, org.role);
+    this.orgState.setActiveOrganization(
+      org.organizationId,
+      org.organizationName,
+      org.roleName ?? org.role,
+    );
     this.meService.clearMeData();
     this.router.navigate(['/app/dashboard']);
   }
