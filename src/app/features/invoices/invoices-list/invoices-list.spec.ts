@@ -112,9 +112,8 @@ describe('InvoicesListComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    const newInvoiceButton = fixture.debugElement.query(
-      By.css('button[mat-flat-button]'),
-    )?.nativeElement as HTMLButtonElement | undefined;
+    const newInvoiceButton = fixture.debugElement.query(By.css('button[mat-flat-button]'))
+      ?.nativeElement as HTMLButtonElement | undefined;
 
     expect(newInvoiceButton).toBeUndefined();
   });
