@@ -228,6 +228,8 @@ export const routes: Routes = [
       // Invoices
       {
         path: 'invoices/new',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.INVOICES_CREATE },
         canDeactivate: [pendingChangesGuard],
         loadComponent: () =>
           import('@app/features/invoices/create-invoice/create-invoice').then(
@@ -236,6 +238,8 @@ export const routes: Routes = [
       },
       {
         path: 'invoices/:id/edit',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.INVOICES_CREATE },
         canDeactivate: [pendingChangesGuard],
         loadComponent: () =>
           import('@app/features/invoices/create-invoice/create-invoice').then(
@@ -244,6 +248,8 @@ export const routes: Routes = [
       },
       {
         path: 'invoices/:id',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.INVOICES_VIEW },
         loadComponent: () =>
           import('@app/features/invoices/invoice-detail/invoice-detail').then(
             (m) => m.InvoiceDetailComponent,
@@ -251,6 +257,8 @@ export const routes: Routes = [
       },
       {
         path: 'invoices',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.INVOICES_VIEW },
         loadComponent: () =>
           import('@app/features/invoices/invoices-list/invoices-list').then(
             (m) => m.InvoicesListComponent,

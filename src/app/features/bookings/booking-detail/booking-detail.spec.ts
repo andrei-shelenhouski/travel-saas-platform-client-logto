@@ -43,6 +43,11 @@ describe('BookingDetailComponent', () => {
     uploadDocument: ReturnType<typeof vi.fn>;
     deleteDocument: ReturnType<typeof vi.fn>;
   };
+  let permissionService: {
+    canViewInvoices: ReturnType<typeof vi.fn>;
+    canCreateInvoice: ReturnType<typeof vi.fn>;
+    canUpdateBookings: ReturnType<typeof vi.fn>;
+  };
 
   beforeEach(async () => {
     bookingsService = {
@@ -53,6 +58,11 @@ describe('BookingDetailComponent', () => {
       update: vi.fn(() => of(MOCK_BOOKING)),
       uploadDocument: vi.fn(() => of({ id: 'doc-1', filename: 'test.pdf' })),
       deleteDocument: vi.fn(() => of(undefined)),
+    };
+    permissionService = {
+      canViewInvoices: vi.fn(() => true),
+      canCreateInvoice: vi.fn(() => true),
+      canUpdateBookings: vi.fn(() => true),
     };
 
     await TestBed.configureTestingModule({
@@ -75,11 +85,7 @@ describe('BookingDetailComponent', () => {
         },
         {
           provide: PermissionService,
-          useValue: {
-            canViewInvoices: () => true,
-            canCreateInvoice: () => true,
-            canUpdateBookings: () => true,
-          },
+          useValue: permissionService,
         },
         {
           provide: ToastService,
@@ -212,7 +218,7 @@ describe('BookingDetailComponent', () => {
   });
 
   it('hides additional services section when servicesSnapshot is null', async () => {
-    bookingsService.getById.mockReturnValue(of({ ...MOCK_BOOKING, servicesSnapshot: null }));
+    bookingsService.getById.mockReturnValue(of({ ...MOCK_BOOKING }));
 
     fixture = TestBed.createComponent(BookingDetailComponent);
     component = fixture.componentInstance;
@@ -223,5 +229,22 @@ describe('BookingDetailComponent', () => {
     const servicesSection = fixture.nativeElement.querySelector('app-additional-services-table');
 
     expect(servicesSection).toBeFalsy();
+  });
+
+  it('should not fetch invoices when user cannot view invoices', async () => {
+    permissionService.canViewInvoices.mockReturnValue(false);
+    bookingsService.getById.mockClear();
+    bookingsService.listDocuments.mockClear();
+    bookingsService.listInvoices.mockClear();
+
+    fixture = TestBed.createComponent(BookingDetailComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(bookingsService.getById).toHaveBeenCalledWith('booking-1');
+    expect(bookingsService.listDocuments).toHaveBeenCalledWith('booking-1');
+    expect(bookingsService.listInvoices).not.toHaveBeenCalled();
   });
 });

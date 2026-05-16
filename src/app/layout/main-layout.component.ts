@@ -38,7 +38,12 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
   { path: '/app/requests', icon: 'alt_route', label: $localize`:@@requests:Requests` },
   { path: '/app/offers', icon: 'send', label: $localize`:@@offers:Offers` },
   { path: '/app/bookings', icon: 'flight', label: $localize`:@@bookings:Bookings` },
-  { path: '/app/invoices', icon: 'description', label: $localize`:@@invoices:Invoices` },
+  {
+    path: '/app/invoices',
+    icon: 'description',
+    label: $localize`:@@invoices:Invoices`,
+    requiredPermission: PermissionKey.INVOICES_VIEW,
+  },
   {
     path: '/app/settings/users',
     icon: 'manage_accounts',

@@ -10,7 +10,7 @@ import {
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { EMPTY, forkJoin } from 'rxjs';
+import { EMPTY, forkJoin, of } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
 import { BookingsService } from '@app/services/bookings.service';
@@ -73,17 +73,29 @@ export class BookingDetailComponent {
       invoices: InvoiceResponseDto[];
       documents: BookingDocumentResponseDto[];
     },
-    string | null
+    {
+      id: string | null;
+      canViewInvoices: boolean;
+    }
   >({
-    params: (): string | null => this.routeId() ?? null,
-    stream: ({ params: id }) => {
+    params: () => ({
+      id: this.routeId() ?? null,
+      canViewInvoices: this.permissions.canViewInvoices(),
+    }),
+    stream: ({ params }) => {
+      const { canViewInvoices, id } = params;
+
       if (!id) {
         return EMPTY;
       }
 
+      const invoices$ = canViewInvoices
+        ? this.bookingsService.listInvoices(id).pipe(map((response) => response.items))
+        : of([]);
+
       return forkJoin({
         booking: this.bookingsService.getById(id),
-        invoices: this.bookingsService.listInvoices(id).pipe(map((response) => response.items)),
+        invoices: invoices$,
         documents: this.bookingsService.listDocuments(id),
       });
     },

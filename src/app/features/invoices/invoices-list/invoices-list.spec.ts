@@ -5,6 +5,7 @@ import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
 
 import { InvoicesService } from '@app/services/invoices.service';
+import { PermissionService } from '@app/services/permission.service';
 import { InvoiceStatus } from '@app/shared/models';
 
 import { InvoiceSummaryCardsComponent } from '../invoice-summary-cards/invoice-summary-cards';
@@ -16,6 +17,9 @@ describe('InvoicesListComponent', () => {
   let invoicesService: {
     getList: ReturnType<typeof vi.fn>;
     getSummary: ReturnType<typeof vi.fn>;
+  };
+  let permissionService: {
+    canCreateInvoice: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(async () => {
@@ -32,6 +36,9 @@ describe('InvoicesListComponent', () => {
         }),
       ),
     };
+    permissionService = {
+      canCreateInvoice: vi.fn(() => true),
+    };
 
     await TestBed.configureTestingModule({
       imports: [InvoicesListComponent],
@@ -40,6 +47,10 @@ describe('InvoicesListComponent', () => {
         {
           provide: InvoicesService,
           useValue: invoicesService,
+        },
+        {
+          provide: PermissionService,
+          useValue: permissionService,
         },
       ],
     }).compileComponents();
@@ -90,5 +101,21 @@ describe('InvoicesListComponent', () => {
       (component as unknown as { statusFilter: () => InvoiceStatus[] }).statusFilter(),
     ).toEqual([InvoiceStatus.ISSUED, InvoiceStatus.PARTIALLY_PAID]);
     expect((component as unknown as { currentPage: () => number }).currentPage()).toBe(0);
+  });
+
+  it('should hide "New invoice" button when user cannot create invoices', async () => {
+    permissionService.canCreateInvoice.mockReturnValue(false);
+
+    fixture = TestBed.createComponent(InvoicesListComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const newInvoiceButton = fixture.debugElement.query(
+      By.css('button[mat-flat-button]'),
+    )?.nativeElement as HTMLButtonElement | undefined;
+
+    expect(newInvoiceButton).toBeUndefined();
   });
 });

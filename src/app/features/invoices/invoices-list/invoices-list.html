@@ -3,10 +3,12 @@
   title="Invoices"
   i18n-title="@@invoiceListHeadingTitle"
 >
-  <button color="primary" mat-flat-button type="button" (click)="navigateToCreateInvoice()">
-    <mat-icon>add</mat-icon>
-    <span i18n="@@invoiceListNewInvoiceCta">New invoice</span>
-  </button>
+  @if (canCreateInvoice()) {
+    <button color="primary" mat-flat-button type="button" (click)="navigateToCreateInvoice()">
+      <mat-icon>add</mat-icon>
+      <span i18n="@@invoiceListNewInvoiceCta">New invoice</span>
+    </button>
+  }
 </app-page-heading>
 
 <div class="space-y-4 p-4">
