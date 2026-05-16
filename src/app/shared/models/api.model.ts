@@ -183,6 +183,77 @@ export type AddOrganizationMemberDto = {
   role: OrgRole;
 };
 
+// ----- Roles and permissions -----
+
+/** OpenAPI: ChangeRoleRequest. PUT /api/users/{id}/role body. */
+export type ChangeRoleRequestDto = {
+  role: OrgRole;
+};
+
+/** OpenAPI: PermissionKeyResponse. */
+export type PermissionKeyResponseDto = {
+  key?: Permission;
+  description?: string;
+};
+
+/** OpenAPI: PermissionGroupResponse. GET /api/permissions item. */
+export type PermissionGroupResponseDto = {
+  module?: string;
+  permissions?: PermissionKeyResponseDto[];
+};
+
+/** OpenAPI: RolePermissionResponse. */
+export type RolePermissionResponseDto = {
+  key?: Permission;
+  module?: string;
+  description?: string;
+};
+
+/** OpenAPI: RoleSummaryResponse. GET /api/roles item. */
+export type RoleSummaryResponseDto = {
+  id: string;
+  name: string;
+  description?: string;
+  permissionCount?: number;
+  memberCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  system?: boolean;
+  isSystem?: boolean;
+};
+
+/** OpenAPI: RoleDetailResponse. */
+export type RoleDetailResponseDto = {
+  id: string;
+  name: string;
+  description?: string;
+  permissions?: RolePermissionResponseDto[];
+  memberCount?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  system?: boolean;
+  isSystem?: boolean;
+};
+
+/** OpenAPI: CreateRoleRequest. POST /api/roles body. */
+export type CreateRoleRequestDto = {
+  name: string;
+  description?: string;
+  permissions: Permission[];
+};
+
+/** OpenAPI: UpdateRoleRequest. PUT /api/roles/{id} body. */
+export type UpdateRoleRequestDto = {
+  name: string;
+  description?: string;
+  permissions: Permission[];
+};
+
+/** OpenAPI: ReplacePermissionsRequest. PUT /api/roles/{id}/permissions body. */
+export type ReplacePermissionsRequestDto = {
+  permissions: Permission[];
+};
+
 // ----- Organizations -----
 
 export type CreateOrganizationDto = {
@@ -597,7 +668,7 @@ export type BookingResponseDto = {
   adults?: number;
   children?: number;
   accommodationDetails?: BookingAccommodationDto[];
-  servicesSnapshot?: BookingServiceSnapshotEntryDto[] | null;
+  servicesSnapshot?: BookingServiceSnapshotEntryDto[];
   supplierConfirmationNumber?: string;
   assignedBackofficeId?: string;
   assignedBackofficeName?: string;

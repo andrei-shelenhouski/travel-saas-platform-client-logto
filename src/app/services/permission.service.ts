@@ -3,6 +3,7 @@ import { computed, inject, Injectable } from '@angular/core';
 import { AuthService } from '@app/auth/auth.service';
 import { MeService } from '@app/services/me.service';
 import { PermissionKey } from '@app/shared/models';
+
 import { OrganizationStateService } from './organization-state.service';
 import { orgRoleToLabel } from './role.service';
 
@@ -22,8 +23,12 @@ export class PermissionService {
     this.authService.hasPermission(PermissionKey.MEMBERS_INVITE),
   );
   readonly canViewRoles = computed(() => this.authService.hasPermission(PermissionKey.ROLES_VIEW));
-  readonly canCreateLead = computed(() => this.authService.hasPermission(PermissionKey.LEADS_CREATE));
-  readonly canAssignLead = computed(() => this.authService.hasPermission(PermissionKey.LEADS_ASSIGN));
+  readonly canCreateLead = computed(() =>
+    this.authService.hasPermission(PermissionKey.LEADS_CREATE),
+  );
+  readonly canAssignLead = computed(() =>
+    this.authService.hasPermission(PermissionKey.LEADS_ASSIGN),
+  );
   readonly canViewAllLeads = computed(() =>
     this.authService.hasPermission(PermissionKey.LEADS_VIEW_ALL),
   );
@@ -69,7 +74,9 @@ export class PermissionService {
     this.authService.hasPermission(PermissionKey.OFFERS_DELETE),
   );
 
-  readonly canDeleteLead = computed(() => this.authService.hasPermission(PermissionKey.LEADS_DELETE));
+  readonly canDeleteLead = computed(() =>
+    this.authService.hasPermission(PermissionKey.LEADS_DELETE),
+  );
 
   readonly canDeleteBooking = computed(() =>
     this.authService.hasPermission(PermissionKey.BOOKINGS_DELETE),

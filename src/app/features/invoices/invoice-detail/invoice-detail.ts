@@ -271,9 +271,7 @@ export class InvoiceDetailComponent {
   canDeletePayment(): boolean {
     const status = this.invoice()?.status;
 
-    return (
-      (status === 'ISSUED' || status === 'PARTIALLY_PAID') && this.canRecordInvoicePayment()
-    );
+    return (status === 'ISSUED' || status === 'PARTIALLY_PAID') && this.canRecordInvoicePayment();
   }
 
   formatDateOnly(iso: string | null | undefined): string {

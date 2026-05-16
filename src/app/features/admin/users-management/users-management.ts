@@ -116,10 +116,7 @@ export class UsersManagementComponent {
 
     this.updatingRoleId.set(user.id);
     this.usersService
-      .update(user.id, {
-        fullName: user.fullName,
-        role,
-      })
+      .changeRole(user.id, { role })
       .pipe(finalize(() => this.updatingRoleId.set(null)))
       .subscribe({
         next: (updatedUser) => {
