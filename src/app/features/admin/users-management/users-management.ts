@@ -7,8 +7,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 
-import { finalize, forkJoin } from 'rxjs';
-import { catchError, of } from 'rxjs';
+import { catchError, finalize, forkJoin, of } from 'rxjs';
 
 import { PermissionService } from '@app/services/permission.service';
 import { RolesApiService } from '@app/services/roles-api.service';
@@ -269,9 +268,7 @@ export class UsersManagementComponent {
     forkJoin({
       activeUsers: this.usersService.getList({ isActive: true, limit: 200 }),
       inactiveUsers: this.usersService.getList({ isActive: false, limit: 200 }),
-      roles: this.rolesApi
-        .listRoles()
-        .pipe(catchError(() => of<RoleSummaryResponseDto[]>([]))),
+      roles: this.rolesApi.listRoles().pipe(catchError(() => of<RoleSummaryResponseDto[]>([]))),
     })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
