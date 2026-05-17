@@ -5183,7 +5183,7 @@
       </trans-unit>
       <trans-unit id="rolesPermissionsDeleteConfirmMessage" datatype="html">
         <source>Delete role '<x id="PH" equiv-text="name"/>'? This cannot be undone.</source>
-        <target>Удалить роль «<x id="roleName" equiv-text="role.name"/>»? Это действие нельзя отменить.</target>
+        <target>Удалить роль «<x id="PH" equiv-text="name"/>»? Это действие нельзя отменить.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
           <context context-type="linenumber">231</context>
