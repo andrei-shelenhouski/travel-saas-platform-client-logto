@@ -17,11 +17,11 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { BookingsService } from '@app/services/bookings.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
-import { RoleService } from '@app/services/role.service';
+import { PermissionService } from '@app/services/permission.service';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
-import { BookingStatus, OrgRole } from '@app/shared/models';
+import { BookingStatus } from '@app/shared/models';
 
 import { BookingFilterBarComponent } from '../booking-filter-bar/booking-filter-bar';
 
@@ -61,7 +61,7 @@ const BOOKING_STATUSES = new Set<BookingStatus>([
 export class BookingsListComponent {
   private readonly bookingsService = inject(BookingsService);
   private readonly membersService = inject(OrganizationMembersService);
-  private readonly roleService = inject(RoleService);
+  private readonly permissions = inject(PermissionService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
@@ -119,12 +119,7 @@ export class BookingsListComponent {
     departDateTo: this.departDateTo(),
   }));
 
-  readonly showCreateBookingButton = computed(() => {
-    const role = this.roleService.roleOrDefault();
-    const rawRole = this.roleService.rawRole();
-
-    return role === 'Admin' || role === 'Manager' || rawRole === OrgRole.BACK_OFFICE;
-  });
+  readonly showCreateBookingButton = computed(() => this.permissions.canCreateOffer());
 
   readonly bookings = computed(() => this.data.value()?.items ?? []);
   readonly totalElements = computed(() => this.data.value()?.total ?? 0);

@@ -6,6 +6,7 @@ import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 
 import type {
+  ChangeRoleRequestDto,
   InviteUserRequestDto,
   OrgRole,
   OrgUserResponseDto,
@@ -65,6 +66,11 @@ export class UsersService {
   /** PUT /api/users/{id}. Update fullName and/or role. */
   update(id: string, dto: UpdateUserRequestDto): Observable<OrgUserResponseDto> {
     return this.http.put<OrgUserResponseDto>(`${USERS_URL}/${id}`, dto);
+  }
+
+  /** PUT /api/users/{id}/role. Update role without changing profile fields. */
+  changeRole(id: string, dto: ChangeRoleRequestDto): Observable<OrgUserResponseDto> {
+    return this.http.put<OrgUserResponseDto>(`${USERS_URL}/${id}/role`, dto);
   }
 
   /** PUT /api/users/{id}/deactivate. */

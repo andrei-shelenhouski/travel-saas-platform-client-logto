@@ -11,7 +11,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 import { OrganizationMembersService } from '@app/services/organization-members.service';
-import { RoleService } from '@app/services/role.service';
+import { PermissionService } from '@app/services/permission.service';
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { BookingStatus, OrgRole } from '@app/shared/models';
 
@@ -27,7 +27,7 @@ import type { BookingResponseDto, UpdateBookingDto } from '@app/shared/models';
 export class OperationsSectionComponent {
   private readonly fb = inject(FormBuilder);
   private readonly membersService = inject(OrganizationMembersService);
-  private readonly roleService = inject(RoleService);
+  private readonly permissions = inject(PermissionService);
 
   readonly booking = input.required<BookingResponseDto>();
   readonly saving = input<boolean>(false);
@@ -43,10 +43,7 @@ export class OperationsSectionComponent {
   });
 
   readonly canAssignBackOffice = computed(() => {
-    const r = this.roleService.roleOrDefault();
-    const raw = this.roleService.rawRole();
-
-    return r === 'Admin' || r === 'Manager' || raw === OrgRole.BACK_OFFICE;
+    return this.permissions.canUpdateBookings();
   });
 
   private readonly membersData = rxResource({

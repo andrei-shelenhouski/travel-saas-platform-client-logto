@@ -24,7 +24,7 @@
     >
       @for (option of options(); track option.id) {
         <mat-option [value]="option">
-          {{ option.fullName ?? 'Unnamed client' }}
+          {{ displayClientLabel(option) }}
           <span class="client-option-meta">{{ option.phone || option.email || '' }}</span>
         </mat-option>
       } @empty {

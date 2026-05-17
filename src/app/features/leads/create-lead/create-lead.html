@@ -67,7 +67,7 @@
     >
       @for (client of clientOptions(); track client.id) {
         <mat-option [value]="client">
-          {{ client.fullName ?? 'Unnamed client' }}
+          {{ clientDisplayFn(client) }}
           <span class="ml-2 text-xs text-gray-500">{{ client.phone || client.email || '' }}</span>
         </mat-option>
       }

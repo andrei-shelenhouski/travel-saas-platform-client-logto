@@ -9,7 +9,6 @@ import { vi } from 'vitest';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { RoleService } from '@app/services/role.service';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import { OffersKanbanComponent } from './offers-kanban';
@@ -39,8 +38,14 @@ describe('OffersKanbanComponent', () => {
         provideRouter([]),
         { provide: OffersService, useValue: offersServiceMock },
         { provide: OrganizationMembersService, useValue: { findAll: () => of([]) } },
-        { provide: PermissionService, useValue: { currentUserId: () => null } },
-        { provide: RoleService, useValue: { isAgent: () => false } },
+        {
+          provide: PermissionService,
+          useValue: {
+            currentUserId: () => null,
+            canViewAllOffers: () => true,
+            canCreateOffer: () => true,
+          },
+        },
         { provide: ToastService, useValue: toastServiceMock },
       ],
     }).compileComponents();

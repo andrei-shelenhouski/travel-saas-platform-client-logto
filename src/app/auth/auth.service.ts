@@ -11,10 +11,17 @@ import {
 
 import { catchError, from, of, switchMap } from 'rxjs';
 
+import { MeService } from '@app/services/me.service';
+import { OrganizationStateService } from '@app/services/organization-state.service';
+
+import type { Permission } from '@app/shared/models';
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly auth = inject(Auth);
   private readonly provider = new GoogleAuthProvider();
+  private readonly meService = inject(MeService);
+  private readonly organizationStateService = inject(OrganizationStateService);
   readonly firebaseUser = toSignal(user(this.auth), { initialValue: null });
   private readonly firebaseIdTokenResult = toSignal(
     user(this.auth).pipe(
@@ -48,5 +55,24 @@ export class AuthService {
 
   signOut(): Promise<void> {
     return firebaseSignOut(this.auth);
+  }
+
+  hasPermission(permission: Permission): boolean {
+    const meData = this.meService.getMeData();
+    const activeOrganizationId = this.organizationStateService.getActiveOrganization();
+
+    if (!meData || !activeOrganizationId) {
+      return false;
+    }
+
+    const activeOrganization = meData.organizations.find(
+      (organization) => organization.organizationId === activeOrganizationId,
+    );
+
+    if (!activeOrganization) {
+      return false;
+    }
+
+    return activeOrganization.permissions?.has(permission) ?? false;
   }
 }

@@ -5,7 +5,7 @@ import { map, Observable, tap } from 'rxjs';
 
 import { environment } from '@environments/environment';
 
-import type { MeResponseDto } from '@app/shared/models';
+import type { MeResponseApiDto, MeResponseDto, Permission } from '@app/shared/models';
 
 const ME_URL = `${environment.baseUrl}/api/me`;
 
@@ -19,13 +19,14 @@ export class MeService {
 
   /** Call GET /api/me (no org header). Stores result for onboarding and role. */
   getMe(): Observable<MeResponseDto> {
-    return this.http.get<MeResponseDto>(ME_URL).pipe(
+    return this.http.get<MeResponseApiDto>(ME_URL).pipe(
       map((res) => ({
         ...res,
         organizations: (res.organizations ?? []).map((organization) => ({
           ...organization,
           organizationId: organization.id,
           organizationName: organization.name,
+          permissions: new Set<Permission>(organization.permissions ?? []),
         })),
       })),
       tap((res) => {

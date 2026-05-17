@@ -7,7 +7,6 @@ import { of } from 'rxjs';
 import { LeadsService } from '@app/services/leads.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { RoleService } from '@app/services/role.service';
 
 import { LeadsListFilterBarComponent } from '../leads-list-filter-bar/leads-list-filter-bar';
 import { LeadsListComponent } from './leads-list';
@@ -35,12 +34,8 @@ describe('LeadsListComponent', () => {
           provide: PermissionService,
           useValue: {
             currentUserId: () => null,
-          },
-        },
-        {
-          provide: RoleService,
-          useValue: {
-            isAgent: () => false,
+            canViewAllLeads: () => true,
+            canCreateLead: () => true,
           },
         },
       ],

@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { OrganizationMembersService } from '@app/services/organization-members.service';
-import { RoleService } from '@app/services/role.service';
-import { BookingStatus, OrgRole } from '@app/shared/models';
+import { PermissionService } from '@app/services/permission.service';
+import { BookingStatus } from '@app/shared/models';
 
 import { OperationsSectionComponent } from './operations-section';
 
@@ -23,10 +23,9 @@ describe('OperationsSectionComponent', () => {
           },
         },
         {
-          provide: RoleService,
+          provide: PermissionService,
           useValue: {
-            roleOrDefault: () => 'Manager',
-            rawRole: () => OrgRole.MANAGER,
+            canUpdateBookings: () => true,
           },
         },
       ],

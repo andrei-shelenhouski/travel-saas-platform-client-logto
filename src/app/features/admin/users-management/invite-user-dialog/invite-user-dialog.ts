@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { finalize } from 'rxjs';
@@ -9,7 +9,14 @@ import { finalize } from 'rxjs';
 import { UsersService } from '@app/services/users.service';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
-import type { OrgRole } from '@app/shared/models';
+export type InviteUserRoleOption = {
+  value: string;
+  label: string;
+};
+
+type InviteUserDialogData = {
+  roleOptions: readonly InviteUserRoleOption[];
+};
 
 type InviteDialogResult = { invited: true };
 
@@ -25,26 +32,31 @@ export class InviteUserDialogComponent {
   private readonly fb = inject(FormBuilder);
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialogRef = inject(MatDialogRef<InviteUserDialogComponent, InviteDialogResult>);
+  private readonly dialogData = inject<InviteUserDialogData | null>(MAT_DIALOG_DATA, {
+    optional: true,
+  });
 
   protected readonly saving = signal(false);
   protected readonly sendingLabel = $localize`:@@usersInviteSending:Sending...`;
   protected readonly inviteLabel = $localize`:@@usersInviteSubmit:Invite`;
 
-  protected readonly roles: readonly { value: OrgRole; label: string }[] = [
-    { value: 'ADMIN', label: $localize`:@@usersRoleAdministrator:Administrator` },
-    { value: 'MANAGER', label: $localize`:@@usersRoleManager:Manager` },
-    { value: 'AGENT', label: $localize`:@@usersRoleAgent:Agent` },
-    { value: 'SALES_AGENT', label: $localize`:@@usersRoleSalesAgent:Sales agent` },
-    { value: 'BACK_OFFICE', label: $localize`:@@usersRoleBackOffice:Back office` },
-  ];
+  protected readonly roles = this.dialogData?.roleOptions ?? [];
+  protected readonly hasRoleOptions = this.roles.length > 0;
 
   protected readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     fullName: ['', [Validators.required]],
-    role: ['SALES_AGENT' as OrgRole, [Validators.required]],
+    roleId: [
+      { value: this.roles[0]?.value ?? '', disabled: !this.hasRoleOptions },
+      [Validators.required],
+    ],
   });
 
   protected save(): void {
+    if (!this.hasRoleOptions) {
+      return;
+    }
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
 

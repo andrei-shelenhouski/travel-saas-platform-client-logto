@@ -57,7 +57,7 @@
                 <span class="flex w-full items-center justify-between gap-3">
                   <span class="flex min-w-0 flex-col">
                     <span class="truncate">{{ org.organizationName }}</span>
-                    <span class="text-xs text-gray-500">{{ orgRoleLabel(org.role) }}</span>
+                    <span class="text-xs text-gray-500">{{ orgRoleLabel(org) }}</span>
                   </span>
                   @if (org.organizationId === activeOrgId) {
                     <mat-icon class="!text-primary-600 shrink-0" fontSet="material-icons"

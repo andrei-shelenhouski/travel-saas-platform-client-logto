@@ -341,6 +341,32 @@ describe('CreateInvoiceComponent', () => {
     expect(cmp.form.controls.clientId.value).toBe('client-typed');
   });
 
+  it('includes company name for B2B and agent client display labels', async () => {
+    await createComponent();
+
+    const api = component as unknown as {
+      clientDisplayName: (client: ClientResponseDto) => string;
+    };
+
+    const b2bLabel = api.clientDisplayName(
+      createClient({
+        type: ClientType.B2B_AGENT,
+        fullName: 'Alice Agent',
+        companyName: 'Skyline Travel',
+      }),
+    );
+    const agentLabel = api.clientDisplayName(
+      createClient({
+        type: ClientType.AGENT,
+        fullName: 'Bob Broker',
+        companyName: 'Orbit Partners',
+      }),
+    );
+
+    expect(b2bLabel).toBe('Skyline Travel (Alice Agent)');
+    expect(agentLabel).toBe('Orbit Partners (Bob Broker)');
+  });
+
   it('reactively updates isB2bMode signal when clientType toggles between INDIVIDUAL and B2B_AGENT', async () => {
     await createComponent();
 

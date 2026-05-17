@@ -32,7 +32,7 @@
 
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label i18n="@@usersInviteRoleLabel">Role</mat-label>
-      <mat-select formControlName="role">
+      <mat-select formControlName="roleId">
         @for (role of roles; track role.value) {
           <mat-option [value]="role.value">{{ role.label }}</mat-option>
         }
@@ -43,7 +43,13 @@
 
 <mat-dialog-actions align="end">
   <button i18n="@@commonCancel" mat-button mat-dialog-close type="button">Cancel</button>
-  <button color="primary" mat-flat-button type="button" [disabled]="saving()" (click)="save()">
+  <button
+    color="primary"
+    mat-flat-button
+    type="button"
+    [disabled]="saving() || !hasRoleOptions"
+    (click)="save()"
+  >
     {{ saving() ? sendingLabel : inviteLabel }}
   </button>
 </mat-dialog-actions>

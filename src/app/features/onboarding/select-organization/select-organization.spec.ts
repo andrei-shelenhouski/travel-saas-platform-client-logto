@@ -98,11 +98,11 @@ describe('SelectOrganizationComponent', () => {
   });
 
   it('should return correct role labels', () => {
-    expect(component.roleLabel('ADMIN')).toBe('Admin');
-    expect(component.roleLabel('MANAGER')).toBe('Manager');
-    expect(component.roleLabel('SALES_AGENT')).toBe('Sales Agent');
-    expect(component.roleLabel('BACK_OFFICE')).toBe('Back Office');
-    expect(component.roleLabel('AGENT')).toBe('Agent');
+    expect(component.roleLabel({ ...ORG_ADMIN, role: 'ADMIN' })).toBe('Admin');
+    expect(component.roleLabel({ ...ORG_ADMIN, role: 'MANAGER' })).toBe('Manager');
+    expect(component.roleLabel({ ...ORG_ADMIN, role: 'SALES_AGENT' })).toBe('Sales Agent');
+    expect(component.roleLabel({ ...ORG_ADMIN, role: 'BACK_OFFICE' })).toBe('Back Office');
+    expect(component.roleLabel({ ...ORG_ADMIN, role: 'AGENT' })).toBe('Agent');
   });
 
   it('should set active org with role and navigate to /app/dashboard on select', () => {

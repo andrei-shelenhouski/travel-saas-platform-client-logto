@@ -9,7 +9,6 @@ import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
-import { RoleService } from '@app/services/role.service';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import { LeadDetailComponent } from './lead-detail';
@@ -74,16 +73,11 @@ describe('LeadDetailComponent', () => {
         },
         { provide: OrganizationMembersService, useValue: organizationMembersServiceMock },
         {
-          provide: RoleService,
-          useValue: {
-            isAdmin: () => false,
-            isManager: () => true,
-          },
-        },
-        {
           provide: PermissionService,
           useValue: {
             canConvertLead: () => false,
+            canAssignLead: () => true,
+            canCreateOffer: () => true,
           },
         },
         {

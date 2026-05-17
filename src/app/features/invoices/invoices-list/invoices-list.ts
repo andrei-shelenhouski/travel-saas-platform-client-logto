@@ -20,6 +20,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
 import { InvoicesService } from '@app/services/invoices.service';
+import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { ClientType, InvoiceStatus } from '@app/shared/models';
@@ -60,11 +61,13 @@ const CLIENT_TYPES = new Set<ClientType>(Object.values(ClientType));
 })
 export class InvoicesListComponent {
   private readonly invoicesService = inject(InvoicesService);
+  private readonly permissions = inject(PermissionService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly pageSize = PAGE_SIZE;
+  protected readonly canCreateInvoice = computed(() => this.permissions.canCreateInvoice());
 
   protected readonly currentPage = signal(0);
   protected readonly statusFilter = signal<InvoiceStatus[]>([]);

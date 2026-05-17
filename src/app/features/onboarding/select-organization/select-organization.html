@@ -43,17 +43,9 @@
                 <div class="flex shrink-0 items-center gap-2">
                   <span
                     class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-                    [class]="
-                      org.role === 'ADMIN'
-                        ? 'bg-violet-100 text-violet-800'
-                        : org.role === 'MANAGER'
-                          ? 'bg-sky-100 text-sky-800'
-                          : org.role === 'BACK_OFFICE'
-                            ? 'bg-teal-100 text-teal-800'
-                            : 'bg-amber-100 text-amber-800'
-                    "
+                    [class]="roleBadgeClass(org)"
                   >
-                    {{ roleLabel(org.role) }}
+                    {{ roleLabel(org) }}
                   </span>
                   <span class="material-icons text-base text-gray-400 group-hover:text-primary-500"
                     >arrow_forward_ios</span
