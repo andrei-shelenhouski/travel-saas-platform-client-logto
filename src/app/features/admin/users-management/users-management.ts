@@ -152,7 +152,10 @@ export class UsersManagementComponent {
 
     const customRoleOption = this.customRoleOptions().find((option) => option.value === roleValue);
     const payload = customRoleOption
-      ? { role: user.role, roleId: customRoleOption.roleId ?? customRoleOption.value }
+      ? {
+          role: customRoleOption.value,
+          roleId: customRoleOption.roleId ?? customRoleOption.value,
+        }
       : { role: roleValue as OrgRole };
 
     this.updatingRoleId.set(user.id);

@@ -134,7 +134,7 @@ describe('UsersManagementComponent', () => {
     component['onRoleChange'](activeUser, 'role-custom');
 
     expect(usersService.changeRole).toHaveBeenCalledWith('u-1', {
-      role: 'MANAGER',
+      role: 'role-custom',
       roleId: 'role-custom',
     });
   });
