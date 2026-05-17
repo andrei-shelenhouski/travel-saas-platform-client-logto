@@ -189,7 +189,7 @@ export type AddOrganizationMemberDto = {
 
 /** OpenAPI: ChangeRoleRequest. PUT /api/users/{id}/role body. */
 export type ChangeRoleRequestDto = {
-  role?: OrgRole | (string & Record<never, never>);
+  role: OrgRole | (string & Record<never, never>);
   roleId?: string;
 };
 

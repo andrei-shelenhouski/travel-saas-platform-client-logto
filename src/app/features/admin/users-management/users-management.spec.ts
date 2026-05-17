@@ -133,7 +133,10 @@ describe('UsersManagementComponent', () => {
   it('should send roleId payload in change role request for custom role', () => {
     component['onRoleChange'](activeUser, 'role-custom');
 
-    expect(usersService.changeRole).toHaveBeenCalledWith('u-1', { roleId: 'role-custom' });
+    expect(usersService.changeRole).toHaveBeenCalledWith('u-1', {
+      role: 'MANAGER',
+      roleId: 'role-custom',
+    });
   });
 
   it('should deactivate user after confirmation', () => {

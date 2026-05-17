@@ -139,7 +139,11 @@ export class UsersManagementComponent {
     return user.role;
   }
 
-  protected onRoleChange(user: OrgUserResponseDto, roleValue: string): void {
+  protected onRoleChange(user: OrgUserResponseDto, roleValue: string | null): void {
+    if (!roleValue) {
+      return;
+    }
+
     const isUnchanged = this.roleSelectionValue(user) === roleValue;
 
     if (isUnchanged || !this.canChangeRole(user)) {
@@ -148,7 +152,7 @@ export class UsersManagementComponent {
 
     const customRoleOption = this.customRoleOptions().find((option) => option.value === roleValue);
     const payload = customRoleOption
-      ? { roleId: customRoleOption.roleId ?? customRoleOption.value }
+      ? { role: user.role, roleId: customRoleOption.roleId ?? customRoleOption.value }
       : { role: roleValue as OrgRole };
 
     this.updatingRoleId.set(user.id);
@@ -176,11 +180,15 @@ export class UsersManagementComponent {
   }
 
   protected openDeactivateDialog(user: OrgUserResponseDto): void {
+    const deactivateMessage = $localize`:@@usersDeactivateMessage:Deactivate ${
+      user.fullName
+    }? The user will immediately lose access to the system.`;
+
     this.dialog
       .open(ConfirmDialogComponent, {
         data: {
           title: $localize`:@@usersDeactivateTitle:Deactivate user`,
-          message: $localize`:@@usersDeactivateMessage:Deactivate ${user.fullName}? The user will immediately lose access to the system.`,
+          message: deactivateMessage,
           confirmLabel: $localize`:@@usersDeactivateAction:Deactivate`,
           cancelLabel: $localize`:@@commonCancel:Cancel`,
           confirmColor: 'warn',
