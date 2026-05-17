@@ -284,6 +284,15 @@ export const routes: Routes = [
         data: { permission: PermissionKey.ROLES_VIEW },
       },
       {
+        path: 'settings/roles',
+        loadComponent: () =>
+          import('@app/features/settings/roles-permissions/roles-permissions').then(
+            (m) => m.RolesPermissionsComponent,
+          ),
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.ROLES_VIEW },
+      },
+      {
         path: 'organizations/new',
         loadComponent: () =>
           import('@app/features/onboarding/create-organization/create-organization').then(

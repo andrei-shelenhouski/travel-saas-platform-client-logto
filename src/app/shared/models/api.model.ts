@@ -139,7 +139,9 @@ export type OrgUserResponseDto = {
   appUserId: string;
   email: string;
   fullName: string;
-  role: OrgRole;
+  role: OrgRole | (string & Record<never, never>);
+  roleId?: string;
+  roleName?: string;
   isActive: boolean;
   joinedAt: string;
   lastLoginAt?: string;
@@ -151,13 +153,13 @@ export type PaginatedOrgUserResponseDto = PaginatedDto<OrgUserResponseDto>;
 export type InviteUserRequestDto = {
   email: string;
   fullName: string;
-  role: OrgRole;
+  roleId: string;
 };
 
 /** OpenAPI: UpdateUserRequest. PUT /api/users/{id} body. */
 export type UpdateUserRequestDto = {
   fullName: string;
-  role: OrgRole;
+  roleId: string;
 };
 
 // ----- Organization members -----
@@ -174,20 +176,20 @@ export type OrganizationMemberResponseDto = {
 
 /** OpenAPI: UpdateMemberRoleRequest. PATCH /api/organization-members/{id}/role body. */
 export type UpdateOrganizationMemberRoleDto = {
-  role: OrgRole;
+  roleId: string;
 };
 
 /** OpenAPI: AddMemberRequest. POST /api/organization-members body. */
 export type AddOrganizationMemberDto = {
   email: string;
-  role: OrgRole;
+  roleId: string;
 };
 
 // ----- Roles and permissions -----
 
 /** OpenAPI: ChangeRoleRequest. PUT /api/users/{id}/role body. */
 export type ChangeRoleRequestDto = {
-  role: OrgRole;
+  roleId: string;
 };
 
 /** OpenAPI: PermissionKeyResponse. */

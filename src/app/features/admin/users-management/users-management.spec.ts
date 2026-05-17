@@ -2,9 +2,10 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { PermissionService } from '@app/services/permission.service';
+import { RolesApiService } from '@app/services/roles-api.service';
 import { UsersService } from '@app/services/users.service';
 
 import { UsersManagementComponent } from './users-management';
@@ -21,6 +22,9 @@ describe('UsersManagementComponent', () => {
     deactivate: ReturnType<typeof vi.fn>;
     reactivate: ReturnType<typeof vi.fn>;
   };
+  let rolesApi: {
+    listRoles: ReturnType<typeof vi.fn>;
+  };
 
   const activeUser: OrgUserResponseDto = {
     id: 'u-1',
@@ -28,6 +32,8 @@ describe('UsersManagementComponent', () => {
     email: 'active@example.com',
     fullName: 'Active User',
     role: 'MANAGER',
+    roleId: 'role-manager',
+    roleName: 'Manager',
     isActive: true,
     joinedAt: '2025-01-01T10:00:00.000Z',
   };
@@ -38,6 +44,8 @@ describe('UsersManagementComponent', () => {
     email: 'inactive@example.com',
     fullName: 'Inactive User',
     role: 'BACK_OFFICE',
+    roleId: 'role-back-office',
+    roleName: 'Back office',
     isActive: false,
     joinedAt: '2025-01-02T10:00:00.000Z',
   };
@@ -52,9 +60,22 @@ describe('UsersManagementComponent', () => {
           limit: 200,
         }),
       ),
-      changeRole: vi.fn(() => of({ ...activeUser, role: 'ADMIN' })),
+      changeRole: vi.fn(() => of({ ...activeUser, role: 'ADMIN', roleId: 'role-admin' })),
       deactivate: vi.fn(() => of({ ...activeUser, isActive: false })),
       reactivate: vi.fn(() => of({ ...inactiveUser, isActive: true })),
+    };
+
+    rolesApi = {
+      listRoles: vi.fn(() =>
+        of([
+          { id: 'role-admin', name: 'ADMIN', isSystem: true },
+          { id: 'role-manager', name: 'MANAGER', isSystem: true },
+          { id: 'role-agent', name: 'AGENT', isSystem: true },
+          { id: 'role-sales-agent', name: 'SALES_AGENT', isSystem: true },
+          { id: 'role-back-office', name: 'BACK_OFFICE', isSystem: true },
+          { id: 'role-custom', name: 'Senior Agent', isSystem: false },
+        ]),
+      ),
     };
 
     await TestBed.configureTestingModule({
@@ -63,6 +84,7 @@ describe('UsersManagementComponent', () => {
         provideRouter([]),
         provideNoopAnimations(),
         { provide: UsersService, useValue: usersService },
+        { provide: RolesApiService, useValue: rolesApi },
         {
           provide: PermissionService,
           useValue: {
@@ -88,9 +110,43 @@ describe('UsersManagementComponent', () => {
   });
 
   it('should load active and inactive users on init', () => {
+    expect(rolesApi.listRoles).toHaveBeenCalled();
     expect(usersService.getList).toHaveBeenCalledWith({ isActive: true, limit: 200 });
     expect(usersService.getList).toHaveBeenCalledWith({ isActive: false, limit: 200 });
     expect(component['users']().length).toBe(2);
+  });
+
+  it('should include custom roles in selector options', () => {
+    expect(component['roleOptions']().some((option) => option.value === 'role-custom')).toBe(true);
+  });
+
+  it('should use role name label for non-system role options', () => {
+    const customRoleOption = component['roleOptions']().find(
+      (option) => option.value === 'role-custom',
+    );
+
+    expect(customRoleOption?.label).toBe('Senior Agent');
+  });
+
+  it('should pass non-system role name labels to invite dialog select options', () => {
+    component['openInviteDialog']();
+
+    const lastDialogCall = dialogOpenSpy.mock.calls.at(-1);
+
+    expect(lastDialogCall).toBeTruthy();
+
+    const dialogConfig = lastDialogCall?.[1] as
+      | {
+          data?: {
+            roleOptions?: { value: string; label: string }[];
+          };
+        }
+      | undefined;
+    const customRoleOption = dialogConfig?.data?.roleOptions?.find(
+      (option) => option.value === 'role-custom',
+    );
+
+    expect(customRoleOption?.label).toBe('Senior Agent');
   });
 
   it('should disable role change for current user row', () => {
@@ -102,13 +158,19 @@ describe('UsersManagementComponent', () => {
     expect(component['canChangeRole'](currentUser)).toBe(false);
   });
 
-  it('should send role-only payload in change role request', () => {
-    component['onRoleChange'](activeUser, 'ADMIN');
+  it('should send roleId payload in change role request', () => {
+    component['onRoleChange'](activeUser, 'role-admin');
 
-    expect(usersService.changeRole).toHaveBeenCalledWith('u-1', { role: 'ADMIN' });
+    expect(usersService.changeRole).toHaveBeenCalledWith('u-1', { roleId: 'role-admin' });
     expect(component['snackBar'].open).toHaveBeenCalledWith('Role updated', 'OK', {
       duration: 3500,
     });
+  });
+
+  it('should send roleId payload in change role request for custom role', () => {
+    component['onRoleChange'](activeUser, 'role-custom');
+
+    expect(usersService.changeRole).toHaveBeenCalledWith('u-1', { roleId: 'role-custom' });
   });
 
   it('should deactivate user after confirmation', () => {
@@ -128,5 +190,20 @@ describe('UsersManagementComponent', () => {
     expect(component['snackBar'].open).toHaveBeenCalledWith('User activated', 'OK', {
       duration: 3500,
     });
+  });
+
+  it('should disable invites and role changes when role IDs are unavailable', () => {
+    rolesApi.listRoles.mockReturnValueOnce(throwError(() => ({ message: 'roles unavailable' })));
+
+    component['loadUsers']();
+
+    expect(component['error']()).toBe('roles unavailable');
+    expect(component['roleOptions']()).toEqual([]);
+    expect(component['canInviteUsers']()).toBe(false);
+    expect(component['canChangeRole'](activeUser)).toBe(false);
+
+    component['openInviteDialog']();
+
+    expect(dialogOpenSpy).not.toHaveBeenCalled();
   });
 });

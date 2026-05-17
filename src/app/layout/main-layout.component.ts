@@ -45,11 +45,17 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
     requiredPermission: PermissionKey.INVOICES_VIEW,
   },
   {
+    path: '/app/settings/roles',
+    icon: 'admin_panel_settings',
+    label: $localize`:@@rolesPermissionsNav:Roles & Permissions`,
+    requiredPermission: PermissionKey.ROLES_VIEW,
+    sectionMargin: true,
+  },
+  {
     path: '/app/settings/users',
     icon: 'manage_accounts',
     label: $localize`:@@userManagement:User management`,
     requiredPermission: PermissionKey.ROLES_VIEW,
-    sectionMargin: true,
   },
   {
     path: '/app/settings',

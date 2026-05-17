@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
@@ -15,6 +15,10 @@ describe('InviteUserDialogComponent', () => {
   let usersService: { invite: ReturnType<typeof vi.fn> };
   let dialogRef: { close: ReturnType<typeof vi.fn> };
   let snackBar: { open: ReturnType<typeof vi.fn> };
+  const roleOptions = [
+    { value: 'role-manager-id', label: 'Manager' },
+    { value: 'role-agent-id', label: 'Agent' },
+  ];
 
   beforeEach(async () => {
     usersService = {
@@ -34,6 +38,7 @@ describe('InviteUserDialogComponent', () => {
         { provide: UsersService, useValue: usersService },
         { provide: MatDialogRef, useValue: dialogRef },
         { provide: MatSnackBar, useValue: snackBar },
+        { provide: MAT_DIALOG_DATA, useValue: { roleOptions } },
       ],
     }).compileComponents();
 
@@ -50,7 +55,7 @@ describe('InviteUserDialogComponent', () => {
     component['form'].setValue({
       email: 'new.user@example.com',
       fullName: 'New User',
-      role: 'MANAGER',
+      roleId: 'role-manager-id',
     });
 
     component['save']();
@@ -58,7 +63,7 @@ describe('InviteUserDialogComponent', () => {
     expect(usersService.invite).toHaveBeenCalledWith({
       email: 'new.user@example.com',
       fullName: 'New User',
-      role: 'MANAGER',
+      roleId: 'role-manager-id',
     });
     expect(dialogRef.close).toHaveBeenCalledWith({ invited: true });
   });
@@ -70,7 +75,7 @@ describe('InviteUserDialogComponent', () => {
     component['form'].setValue({
       email: 'existing@example.com',
       fullName: 'Existing User',
-      role: 'MANAGER',
+      roleId: 'role-manager-id',
     });
 
     component['save']();

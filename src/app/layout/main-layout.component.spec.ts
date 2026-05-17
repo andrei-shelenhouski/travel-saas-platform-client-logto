@@ -7,6 +7,7 @@ import { MeService } from '@app/services/me.service';
 import { OrganizationStateService } from '@app/services/organization-state.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RoleService } from '@app/services/role.service';
+import { PermissionKey } from '@app/shared/models';
 
 import { MainLayoutComponent } from './main-layout.component';
 
@@ -21,8 +22,11 @@ const mockMeData = {
 describe('MainLayoutComponent', () => {
   let component: MainLayoutComponent;
   let fixture: ComponentFixture<MainLayoutComponent>;
+  let rolesViewAllowed: boolean;
 
   beforeEach(async () => {
+    rolesViewAllowed = true;
+
     await TestBed.configureTestingModule({
       imports: [MainLayoutComponent, NoopAnimationsModule],
       providers: [
@@ -32,7 +36,8 @@ describe('MainLayoutComponent', () => {
           useValue: {
             firebaseUser: () => null,
             userData: () => null,
-            hasPermission: () => true,
+            hasPermission: (permission: string) =>
+              permission !== PermissionKey.ROLES_VIEW || rolesViewAllowed,
             signOut: vi.fn().mockResolvedValue(undefined),
           },
         },
@@ -98,5 +103,22 @@ describe('MainLayoutComponent', () => {
 
   it('should show "Admin" role label from persisted role', () => {
     expect(component.activeOrgRoleLabel()).toBe('Admin');
+  });
+
+  it('should show Roles & Permissions nav link when roles:view is allowed', () => {
+    expect(component.navLinks().some((link) => link.path === '/app/settings/roles')).toBe(true);
+  });
+
+  it('should hide Roles & Permissions nav link when roles:view is missing', () => {
+    rolesViewAllowed = false;
+
+    const restrictedFixture = TestBed.createComponent(MainLayoutComponent);
+    const restrictedComponent = restrictedFixture.componentInstance;
+
+    restrictedFixture.detectChanges();
+
+    expect(restrictedComponent.navLinks().some((link) => link.path === '/app/settings/roles')).toBe(
+      false,
+    );
   });
 });

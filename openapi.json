@@ -5873,20 +5873,14 @@
             "type": "string",
             "minLength": 1
           },
-          "role": {
+          "roleId": {
             "type": "string",
-            "enum": [
-              "ADMIN",
-              "MANAGER",
-              "AGENT",
-              "SALES_AGENT",
-              "BACK_OFFICE"
-            ]
+            "format": "uuid"
           }
         },
         "required": [
           "fullName",
-          "role"
+          "roleId"
         ]
       },
       "OrgUserResponse": {
@@ -5932,19 +5926,13 @@
       "ChangeRoleRequest": {
         "type": "object",
         "properties": {
-          "role": {
+          "roleId": {
             "type": "string",
-            "enum": [
-              "ADMIN",
-              "MANAGER",
-              "AGENT",
-              "SALES_AGENT",
-              "BACK_OFFICE"
-            ]
+            "format": "uuid"
           }
         },
         "required": [
-          "role"
+          "roleId"
         ]
       },
       "UpdateOrganizationSettingsRequest": {
@@ -7642,21 +7630,15 @@
             "type": "string",
             "minLength": 1
           },
-          "role": {
+          "roleId": {
             "type": "string",
-            "enum": [
-              "ADMIN",
-              "MANAGER",
-              "AGENT",
-              "SALES_AGENT",
-              "BACK_OFFICE"
-            ]
+            "format": "uuid"
           }
         },
         "required": [
           "email",
           "fullName",
-          "role"
+          "roleId"
         ]
       },
       "Tag": {
@@ -7811,20 +7793,14 @@
             "type": "string",
             "minLength": 1
           },
-          "role": {
+          "roleId": {
             "type": "string",
-            "enum": [
-              "ADMIN",
-              "MANAGER",
-              "AGENT",
-              "SALES_AGENT",
-              "BACK_OFFICE"
-            ]
+            "format": "uuid"
           }
         },
         "required": [
           "email",
-          "role"
+          "roleId"
         ]
       },
       "MemberResponse": {
@@ -8462,19 +8438,13 @@
       "UpdateMemberRoleRequest": {
         "type": "object",
         "properties": {
-          "role": {
+          "roleId": {
             "type": "string",
-            "enum": [
-              "ADMIN",
-              "MANAGER",
-              "AGENT",
-              "SALES_AGENT",
-              "BACK_OFFICE"
-            ]
+            "format": "uuid"
           }
         },
         "required": [
-          "role"
+          "roleId"
         ]
       },
       "LinkLeadClientRequest": {
