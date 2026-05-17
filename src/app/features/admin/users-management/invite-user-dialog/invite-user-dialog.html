@@ -32,7 +32,7 @@
 
     <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label i18n="@@usersInviteRoleLabel">Role</mat-label>
-      <mat-select formControlName="role">
+      <mat-select formControlName="roleId">
         @for (role of roles; track role.value) {
           <mat-option [value]="role.value">{{ role.label }}</mat-option>
         }

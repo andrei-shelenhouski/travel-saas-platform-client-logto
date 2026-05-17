@@ -50,7 +50,7 @@ describe('InviteUserDialogComponent', () => {
     component['form'].setValue({
       email: 'new.user@example.com',
       fullName: 'New User',
-      role: 'MANAGER',
+      roleId: 'MANAGER',
     });
 
     component['save']();
@@ -58,7 +58,7 @@ describe('InviteUserDialogComponent', () => {
     expect(usersService.invite).toHaveBeenCalledWith({
       email: 'new.user@example.com',
       fullName: 'New User',
-      role: 'MANAGER',
+      roleId: 'MANAGER',
     });
     expect(dialogRef.close).toHaveBeenCalledWith({ invited: true });
   });
@@ -70,7 +70,7 @@ describe('InviteUserDialogComponent', () => {
     component['form'].setValue({
       email: 'existing@example.com',
       fullName: 'Existing User',
-      role: 'MANAGER',
+      roleId: 'MANAGER',
     });
 
     component['save']();

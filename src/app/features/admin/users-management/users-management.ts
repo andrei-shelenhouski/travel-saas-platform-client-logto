@@ -19,20 +19,40 @@ import { OrgRole } from '@app/shared/models';
 
 import { InviteUserDialogComponent } from './invite-user-dialog/invite-user-dialog';
 
+import type { InviteUserRoleOption } from './invite-user-dialog/invite-user-dialog';
+
 import type { OrgUserResponseDto, RoleSummaryResponseDto } from '@app/shared/models';
 
-type RoleOption = {
-  value: string;
-  label: string;
-  roleId?: string;
+type RoleOption = InviteUserRoleOption & {
+  systemRole?: OrgRole;
 };
 
 const SYSTEM_ROLE_OPTIONS: RoleOption[] = [
-  { value: 'ADMIN', label: $localize`:@@usersRoleAdministrator:Administrator` },
-  { value: 'MANAGER', label: $localize`:@@usersRoleManager:Manager` },
-  { value: 'AGENT', label: $localize`:@@usersRoleAgent:Agent` },
-  { value: 'SALES_AGENT', label: $localize`:@@usersRoleSalesAgent:Sales agent` },
-  { value: 'BACK_OFFICE', label: $localize`:@@usersRoleBackOffice:Back office` },
+  {
+    value: OrgRole.ADMIN,
+    label: $localize`:@@usersRoleAdministrator:Administrator`,
+    systemRole: OrgRole.ADMIN,
+  },
+  {
+    value: OrgRole.MANAGER,
+    label: $localize`:@@usersRoleManager:Manager`,
+    systemRole: OrgRole.MANAGER,
+  },
+  {
+    value: OrgRole.AGENT,
+    label: $localize`:@@usersRoleAgent:Agent`,
+    systemRole: OrgRole.AGENT,
+  },
+  {
+    value: OrgRole.SALES_AGENT,
+    label: $localize`:@@usersRoleSalesAgent:Sales agent`,
+    systemRole: OrgRole.SALES_AGENT,
+  },
+  {
+    value: OrgRole.BACK_OFFICE,
+    label: $localize`:@@usersRoleBackOffice:Back office`,
+    systemRole: OrgRole.BACK_OFFICE,
+  },
 ];
 
 @Component({
@@ -63,11 +83,16 @@ export class UsersManagementComponent {
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
 
-  protected readonly customRoleOptions = signal<RoleOption[]>([]);
-  protected readonly roleOptions = computed(() => [
-    ...SYSTEM_ROLE_OPTIONS,
-    ...this.customRoleOptions(),
-  ]);
+  protected readonly apiRoleOptions = signal<RoleOption[]>([]);
+  protected readonly roleOptions = computed(() => {
+    const roleOptions = this.apiRoleOptions();
+
+    if (roleOptions.length > 0) {
+      return roleOptions;
+    }
+
+    return SYSTEM_ROLE_OPTIONS;
+  });
   protected readonly users = signal<OrgUserResponseDto[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
@@ -99,8 +124,18 @@ export class UsersManagementComponent {
   }
 
   protected openInviteDialog(): void {
+    const roleOptions = this.roleOptions().map((option) => ({
+      value: option.value,
+      label: option.label,
+    }));
+
     this.dialog
-      .open(InviteUserDialogComponent, { width: '520px' })
+      .open(InviteUserDialogComponent, {
+        width: '520px',
+        data: {
+          roleOptions,
+        },
+      })
       .afterClosed()
       .subscribe((result?: { invited?: boolean }) => {
         if (result?.invited) {
@@ -120,6 +155,7 @@ export class UsersManagementComponent {
   }
 
   protected roleSelectionValue(user: OrgUserResponseDto): string {
+    const roleOptions = this.roleOptions();
     const roleId = user.roleId?.trim();
 
     if (roleId) {
@@ -129,11 +165,17 @@ export class UsersManagementComponent {
     const roleName = user.roleName?.trim();
 
     if (roleName) {
-      const customRoleOption = this.customRoleOptions().find((option) => option.label === roleName);
+      const roleByName = roleOptions.find((option) => option.label === roleName);
 
-      if (customRoleOption) {
-        return customRoleOption.value;
+      if (roleByName) {
+        return roleByName.value;
       }
+    }
+
+    const roleBySystemRole = roleOptions.find((option) => option.systemRole === user.role);
+
+    if (roleBySystemRole) {
+      return roleBySystemRole.value;
     }
 
     return user.role;
@@ -150,13 +192,7 @@ export class UsersManagementComponent {
       return;
     }
 
-    const customRoleOption = this.customRoleOptions().find((option) => option.value === roleValue);
-    const payload = customRoleOption
-      ? {
-          role: customRoleOption.value,
-          roleId: customRoleOption.roleId ?? customRoleOption.value,
-        }
-      : { role: roleValue as OrgRole };
+    const payload = { roleId: roleValue };
 
     this.updatingRoleId.set(user.id);
     this.usersService
@@ -284,7 +320,7 @@ export class UsersManagementComponent {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: ({ activeUsers, inactiveUsers, roles }) => {
-          this.customRoleOptions.set(this.toCustomRoleOptions(roles));
+          this.apiRoleOptions.set(this.toRoleOptions(roles));
 
           const merged = [...activeUsers.items, ...inactiveUsers.items];
           const deduplicated = Array.from(new Map(merged.map((item) => [item.id, item])).values());
@@ -305,21 +341,62 @@ export class UsersManagementComponent {
       });
   }
 
-  private toCustomRoleOptions(roles: RoleSummaryResponseDto[]): RoleOption[] {
-    const customRoleOptions: RoleOption[] = [];
+  private toRoleOptions(roles: RoleSummaryResponseDto[]): RoleOption[] {
+    const roleOptions: RoleOption[] = [];
 
     for (const role of roles) {
-      if (role.isSystem ?? role.system) {
-        continue;
-      }
+      const isSystemRole = role.isSystem ?? role.system;
+      const systemRole = isSystemRole ? this.resolveSystemRole(role) : undefined;
+      const label = !isSystemRole || !systemRole ? role.name : this.systemRoleLabel(systemRole);
 
-      customRoleOptions.push({
+      roleOptions.push({
         value: role.id,
-        label: role.name,
-        roleId: role.id,
+        label,
+        systemRole,
       });
     }
 
-    return customRoleOptions.sort((left, right) => left.label.localeCompare(right.label));
+    return roleOptions.sort((left, right) => left.label.localeCompare(right.label));
+  }
+
+  private resolveSystemRole(role: RoleSummaryResponseDto): OrgRole | undefined {
+    if (!(role.isSystem ?? role.system)) {
+      return undefined;
+    }
+
+    const normalizedName = role.name.trim().replace(/\s+/g, '_').toUpperCase();
+
+    switch (normalizedName) {
+      case 'ADMIN':
+      case 'ADMINISTRATOR':
+        return OrgRole.ADMIN;
+      case 'MANAGER':
+        return OrgRole.MANAGER;
+      case 'AGENT':
+        return OrgRole.AGENT;
+      case 'SALES_AGENT':
+        return OrgRole.SALES_AGENT;
+      case 'BACK_OFFICE':
+        return OrgRole.BACK_OFFICE;
+      default:
+        return undefined;
+    }
+  }
+
+  private systemRoleLabel(role: OrgRole): string {
+    switch (role) {
+      case OrgRole.ADMIN:
+        return $localize`:@@usersRoleAdministrator:Administrator`;
+      case OrgRole.MANAGER:
+        return $localize`:@@usersRoleManager:Manager`;
+      case OrgRole.AGENT:
+        return $localize`:@@usersRoleAgent:Agent`;
+      case OrgRole.SALES_AGENT:
+        return $localize`:@@usersRoleSalesAgent:Sales agent`;
+      case OrgRole.BACK_OFFICE:
+        return $localize`:@@usersRoleBackOffice:Back office`;
+      default:
+        return role;
+    }
   }
 }

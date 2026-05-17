@@ -32,6 +32,8 @@ describe('UsersManagementComponent', () => {
     email: 'active@example.com',
     fullName: 'Active User',
     role: 'MANAGER',
+    roleId: 'role-manager',
+    roleName: 'Manager',
     isActive: true,
     joinedAt: '2025-01-01T10:00:00.000Z',
   };
@@ -42,6 +44,8 @@ describe('UsersManagementComponent', () => {
     email: 'inactive@example.com',
     fullName: 'Inactive User',
     role: 'BACK_OFFICE',
+    roleId: 'role-back-office',
+    roleName: 'Back office',
     isActive: false,
     joinedAt: '2025-01-02T10:00:00.000Z',
   };
@@ -56,7 +60,7 @@ describe('UsersManagementComponent', () => {
           limit: 200,
         }),
       ),
-      changeRole: vi.fn(() => of({ ...activeUser, role: 'ADMIN' })),
+      changeRole: vi.fn(() => of({ ...activeUser, role: 'ADMIN', roleId: 'role-admin' })),
       deactivate: vi.fn(() => of({ ...activeUser, isActive: false })),
       reactivate: vi.fn(() => of({ ...inactiveUser, isActive: true })),
     };
@@ -64,7 +68,11 @@ describe('UsersManagementComponent', () => {
     rolesApi = {
       listRoles: vi.fn(() =>
         of([
-          { id: 'role-admin', name: 'Admin', isSystem: true },
+          { id: 'role-admin', name: 'ADMIN', isSystem: true },
+          { id: 'role-manager', name: 'MANAGER', isSystem: true },
+          { id: 'role-agent', name: 'AGENT', isSystem: true },
+          { id: 'role-sales-agent', name: 'SALES_AGENT', isSystem: true },
+          { id: 'role-back-office', name: 'BACK_OFFICE', isSystem: true },
           { id: 'role-custom', name: 'Senior Agent', isSystem: false },
         ]),
       ),
@@ -112,6 +120,35 @@ describe('UsersManagementComponent', () => {
     expect(component['roleOptions']().some((option) => option.value === 'role-custom')).toBe(true);
   });
 
+  it('should use role name label for non-system role options', () => {
+    const customRoleOption = component['roleOptions']().find(
+      (option) => option.value === 'role-custom',
+    );
+
+    expect(customRoleOption?.label).toBe('Senior Agent');
+  });
+
+  it('should pass non-system role name labels to invite dialog select options', () => {
+    component['openInviteDialog']();
+
+    const lastDialogCall = dialogOpenSpy.mock.calls.at(-1);
+
+    expect(lastDialogCall).toBeTruthy();
+
+    const dialogConfig = lastDialogCall?.[1] as
+      | {
+          data?: {
+            roleOptions?: { value: string; label: string }[];
+          };
+        }
+      | undefined;
+    const customRoleOption = dialogConfig?.data?.roleOptions?.find(
+      (option) => option.value === 'role-custom',
+    );
+
+    expect(customRoleOption?.label).toBe('Senior Agent');
+  });
+
   it('should disable role change for current user row', () => {
     const currentUser: OrgUserResponseDto = {
       ...activeUser,
@@ -121,10 +158,10 @@ describe('UsersManagementComponent', () => {
     expect(component['canChangeRole'](currentUser)).toBe(false);
   });
 
-  it('should send role-only payload in change role request', () => {
-    component['onRoleChange'](activeUser, 'ADMIN');
+  it('should send roleId payload in change role request', () => {
+    component['onRoleChange'](activeUser, 'role-admin');
 
-    expect(usersService.changeRole).toHaveBeenCalledWith('u-1', { role: 'ADMIN' });
+    expect(usersService.changeRole).toHaveBeenCalledWith('u-1', { roleId: 'role-admin' });
     expect(component['snackBar'].open).toHaveBeenCalledWith('Role updated', 'OK', {
       duration: 3500,
     });
@@ -133,10 +170,7 @@ describe('UsersManagementComponent', () => {
   it('should send roleId payload in change role request for custom role', () => {
     component['onRoleChange'](activeUser, 'role-custom');
 
-    expect(usersService.changeRole).toHaveBeenCalledWith('u-1', {
-      role: 'role-custom',
-      roleId: 'role-custom',
-    });
+    expect(usersService.changeRole).toHaveBeenCalledWith('u-1', { roleId: 'role-custom' });
   });
 
   it('should deactivate user after confirmation', () => {
