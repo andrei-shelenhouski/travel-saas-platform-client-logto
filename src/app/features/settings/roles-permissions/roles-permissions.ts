@@ -353,10 +353,10 @@ export class RolesPermissionsComponent {
         },
         error: (error: unknown) => {
           if (this.getErrorStatus(error) === 409) {
-            const nameControl = this.roleForm.controls.name;
+            const nameCtrl = this.roleForm.controls.name;
 
-            nameControl.setErrors({ ...nameControl.errors, duplicate: true });
-            nameControl.markAsTouched();
+            nameCtrl.setErrors({ ...nameCtrl.errors, duplicate: true });
+            nameCtrl.markAsTouched();
 
             return;
           }
