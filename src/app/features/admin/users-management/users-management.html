@@ -9,6 +9,7 @@
       i18n="@@usersInviteButton"
       matButton="filled"
       type="button"
+      [disabled]="!canInviteUsers()"
       (click)="openInviteDialog()"
     >
       <mat-icon>add</mat-icon>

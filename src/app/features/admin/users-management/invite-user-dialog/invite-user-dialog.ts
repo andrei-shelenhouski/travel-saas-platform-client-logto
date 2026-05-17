@@ -8,7 +8,6 @@ import { finalize } from 'rxjs';
 
 import { UsersService } from '@app/services/users.service';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
-import { OrgRole } from '@app/shared/models';
 
 export type InviteUserRoleOption = {
   value: string;
@@ -16,18 +15,10 @@ export type InviteUserRoleOption = {
 };
 
 type InviteUserDialogData = {
-  roleOptions?: readonly InviteUserRoleOption[];
+  roleOptions: readonly InviteUserRoleOption[];
 };
 
 type InviteDialogResult = { invited: true };
-
-const DEFAULT_ROLE_OPTIONS: readonly InviteUserRoleOption[] = [
-  { value: OrgRole.ADMIN, label: $localize`:@@usersRoleAdministrator:Administrator` },
-  { value: OrgRole.MANAGER, label: $localize`:@@usersRoleManager:Manager` },
-  { value: OrgRole.AGENT, label: $localize`:@@usersRoleAgent:Agent` },
-  { value: OrgRole.SALES_AGENT, label: $localize`:@@usersRoleSalesAgent:Sales agent` },
-  { value: OrgRole.BACK_OFFICE, label: $localize`:@@usersRoleBackOffice:Back office` },
-];
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,17 +40,23 @@ export class InviteUserDialogComponent {
   protected readonly sendingLabel = $localize`:@@usersInviteSending:Sending...`;
   protected readonly inviteLabel = $localize`:@@usersInviteSubmit:Invite`;
 
-  protected readonly roles = this.dialogData?.roleOptions?.length
-    ? this.dialogData.roleOptions
-    : DEFAULT_ROLE_OPTIONS;
+  protected readonly roles = this.dialogData?.roleOptions ?? [];
+  protected readonly hasRoleOptions = this.roles.length > 0;
 
   protected readonly form = this.fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
     fullName: ['', [Validators.required]],
-    roleId: [this.roles[0]?.value ?? OrgRole.SALES_AGENT, [Validators.required]],
+    roleId: [
+      { value: this.roles[0]?.value ?? '', disabled: !this.hasRoleOptions },
+      [Validators.required],
+    ],
   });
 
   protected save(): void {
+    if (!this.hasRoleOptions) {
+      return;
+    }
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
 

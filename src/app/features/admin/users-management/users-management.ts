@@ -27,34 +27,6 @@ type RoleOption = InviteUserRoleOption & {
   systemRole?: OrgRole;
 };
 
-const SYSTEM_ROLE_OPTIONS: RoleOption[] = [
-  {
-    value: OrgRole.ADMIN,
-    label: $localize`:@@usersRoleAdministrator:Administrator`,
-    systemRole: OrgRole.ADMIN,
-  },
-  {
-    value: OrgRole.MANAGER,
-    label: $localize`:@@usersRoleManager:Manager`,
-    systemRole: OrgRole.MANAGER,
-  },
-  {
-    value: OrgRole.AGENT,
-    label: $localize`:@@usersRoleAgent:Agent`,
-    systemRole: OrgRole.AGENT,
-  },
-  {
-    value: OrgRole.SALES_AGENT,
-    label: $localize`:@@usersRoleSalesAgent:Sales agent`,
-    systemRole: OrgRole.SALES_AGENT,
-  },
-  {
-    value: OrgRole.BACK_OFFICE,
-    label: $localize`:@@usersRoleBackOffice:Back office`,
-    systemRole: OrgRole.BACK_OFFICE,
-  },
-];
-
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-users-management',
@@ -84,21 +56,17 @@ export class UsersManagementComponent {
   private readonly snackBar = inject(MatSnackBar);
 
   protected readonly apiRoleOptions = signal<RoleOption[]>([]);
-  protected readonly roleOptions = computed(() => {
-    const roleOptions = this.apiRoleOptions();
-
-    if (roleOptions.length > 0) {
-      return roleOptions;
-    }
-
-    return SYSTEM_ROLE_OPTIONS;
-  });
+  protected readonly roleOptions = computed(() => this.apiRoleOptions());
+  protected readonly hasRoleOptions = computed(() => this.apiRoleOptions().length > 0);
   protected readonly users = signal<OrgUserResponseDto[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
   protected readonly updatingRoleId = signal<string | null>(null);
   protected readonly togglingActiveId = signal<string | null>(null);
   protected readonly canInviteMembers = computed(() => this.permissions.canInviteMembers());
+  protected readonly canInviteUsers = computed(
+    () => this.canInviteMembers() && this.hasRoleOptions(),
+  );
 
   protected readonly currentUserId = computed(() => this.permissions.currentUserId() ?? null);
   protected readonly totalUsers = computed(() => this.users().length);
@@ -124,6 +92,10 @@ export class UsersManagementComponent {
   }
 
   protected openInviteDialog(): void {
+    if (!this.canInviteUsers()) {
+      return;
+    }
+
     const roleOptions = this.roleOptions().map((option) => ({
       value: option.value,
       label: option.label,
@@ -151,7 +123,7 @@ export class UsersManagementComponent {
   }
 
   protected canChangeRole(user: OrgUserResponseDto): boolean {
-    return !this.isCurrentUser(user) && user.isActive;
+    return !this.isCurrentUser(user) && user.isActive && this.hasRoleOptions();
   }
 
   protected roleSelectionValue(user: OrgUserResponseDto): string {
@@ -315,7 +287,15 @@ export class UsersManagementComponent {
     forkJoin({
       activeUsers: this.usersService.getList({ isActive: true, limit: 200 }),
       inactiveUsers: this.usersService.getList({ isActive: false, limit: 200 }),
-      roles: this.rolesApi.listRoles().pipe(catchError(() => of<RoleSummaryResponseDto[]>([]))),
+      roles: this.rolesApi.listRoles().pipe(
+        catchError((error: unknown) => {
+          this.error.set(
+            this.resolveErrorMessage(error, $localize`:@@usersLoadError:Failed to load users`),
+          );
+
+          return of<RoleSummaryResponseDto[]>([]);
+        }),
+      ),
     })
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
@@ -339,6 +319,24 @@ export class UsersManagementComponent {
           this.error.set(message);
         },
       });
+  }
+
+  private resolveErrorMessage(error: unknown, fallbackMessage: string): string {
+    if (typeof error !== 'object' || error === null) {
+      return fallbackMessage;
+    }
+
+    if ('error' in error && typeof error.error === 'object' && error.error !== null) {
+      if ('message' in error.error && typeof error.error.message === 'string') {
+        return error.error.message;
+      }
+    }
+
+    if ('message' in error && typeof error.message === 'string') {
+      return error.message;
+    }
+
+    return fallbackMessage;
   }
 
   private toRoleOptions(roles: RoleSummaryResponseDto[]): RoleOption[] {

@@ -110,7 +110,7 @@ export class RolesPermissionsComponent {
     return this.isSystemRole(selectedRole);
   });
 
-  private readonly deleteWithMembersTooltip = $localize`:@@rolesPermissionsDeleteWithMembers:Remove member assignments first`;
+  private readonly deleteTooltipText = $localize`:@@rolesPermissionsDeleteWithMembers:Remove member assignments first`;
   private readonly okLabel = $localize`:@@commonOk:OK`;
   private readonly closeLabel = $localize`:@@commonClose:Close`;
 
@@ -124,15 +124,19 @@ export class RolesPermissionsComponent {
 
   protected selectRole(roleId: string): void {
     const selectedRoleId = this.selectedRoleId();
+    const selectedRoleDetailId = this.selectedRoleDetail()?.id;
 
     this.creatingRole.set(false);
-    this.selectedRoleId.set(roleId);
     this.deleteError.set(null);
     this.clearDuplicateNameError();
 
-    if (selectedRoleId === roleId && this.selectedRoleDetail()?.id === roleId) {
+    if (selectedRoleId === roleId && selectedRoleDetailId === roleId) {
       return;
     }
+
+    this.selectedRoleId.set(roleId);
+    this.selectedRoleDetail.set(null);
+    this.selectedPermissions.set(new Set());
 
     this.loadRoleDetail(roleId);
   }
@@ -210,7 +214,7 @@ export class RolesPermissionsComponent {
 
   protected deleteTooltip(role: RoleSummaryResponseDto): string {
     if (this.isDeleteDisabled(role)) {
-      return this.deleteWithMembersTooltip;
+      return this.deleteTooltipText;
     }
 
     return '';
@@ -223,11 +227,14 @@ export class RolesPermissionsComponent {
       return;
     }
 
+    const name = role.name;
+    const message = $localize`:@@rolesPermissionsDeleteConfirmMessage:Delete role '${name}'? This cannot be undone.`;
+
     this.dialog
       .open(ConfirmDialogComponent, {
         data: {
           title: $localize`:@@rolesPermissionsDeleteConfirmTitle:Delete role`,
-          message: $localize`:@@rolesPermissionsDeleteConfirmMessage:Delete role '${role.name}:roleName:'? This cannot be undone.`,
+          message,
           confirmLabel: $localize`:@@rolesPermissionsDeleteConfirmAction:Delete`,
           cancelLabel: $localize`:@@commonCancel:Cancel`,
           confirmColor: 'warn',

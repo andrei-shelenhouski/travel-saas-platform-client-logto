@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 
 import { PermissionService } from '@app/services/permission.service';
 import { RolesApiService } from '@app/services/roles-api.service';
@@ -190,5 +190,20 @@ describe('UsersManagementComponent', () => {
     expect(component['snackBar'].open).toHaveBeenCalledWith('User activated', 'OK', {
       duration: 3500,
     });
+  });
+
+  it('should disable invites and role changes when role IDs are unavailable', () => {
+    rolesApi.listRoles.mockReturnValueOnce(throwError(() => ({ message: 'roles unavailable' })));
+
+    component['loadUsers']();
+
+    expect(component['error']()).toBe('roles unavailable');
+    expect(component['roleOptions']()).toEqual([]);
+    expect(component['canInviteUsers']()).toBe(false);
+    expect(component['canChangeRole'](activeUser)).toBe(false);
+
+    component['openInviteDialog']();
+
+    expect(dialogOpenSpy).not.toHaveBeenCalled();
   });
 });

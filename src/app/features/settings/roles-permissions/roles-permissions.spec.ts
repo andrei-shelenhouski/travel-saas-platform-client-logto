@@ -197,6 +197,22 @@ describe('RolesPermissionsComponent', () => {
     expect(component['roleForm'].controls.name.touched).toBe(true);
   });
 
+  it('clears stale editor state if selected role details fail to load', () => {
+    rolesApi.getRole.mockImplementation((id: string) => {
+      if (id === 'role-custom') {
+        return throwError(() => ({ message: 'detail load failed' }));
+      }
+
+      return of(roleDetails[id]);
+    });
+
+    component['selectRole']('role-custom');
+
+    expect(component['selectedRoleId']()).toBe('role-custom');
+    expect(component['selectedRoleDetail']()).toBeNull();
+    expect(component['selectedPermissions']().size).toBe(0);
+  });
+
   it('opens confirmation dialog and deletes role after confirmation', () => {
     dialogOpenSpy.mockReturnValueOnce({ afterClosed: () => of(true) } as never);
 
