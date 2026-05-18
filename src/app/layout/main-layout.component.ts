@@ -192,7 +192,11 @@ export class MainLayoutComponent implements OnInit {
       return roleName;
     }
 
-    return orgRoleToLabel(org.role);
+    if (org.role) {
+      return orgRoleToLabel(org.role);
+    }
+
+    return 'Member';
   }
 
   switchOrganization(org: OrganizationWithRoleDto): void {

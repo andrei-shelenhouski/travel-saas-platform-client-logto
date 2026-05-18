@@ -302,6 +302,30 @@
           <context context-type="linenumber">83</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="usersRoleChangeTitle" datatype="html">
+        <source>Change role</source>
+        <target>Изменить роль</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">101</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleChangeAction" datatype="html">
+        <source>Change</source>
+        <target>Изменить</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">102</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleChangeForbidden" datatype="html">
+        <source>You don&apos;t have permission to change roles.</source>
+        <target>У вас нет прав для изменения ролей.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">104</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="usersRoleUpdated" datatype="html">
         <source>Role updated</source>
         <target>Роль обновлена</target>
@@ -316,6 +340,30 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
           <context context-type="linenumber">186</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleSelfChangeForbidden" datatype="html">
+        <source>You can&apos;t change your own role.</source>
+        <target>Вы не можете изменить собственную роль.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">108</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleLastAdminProtected" datatype="html">
+        <source>This org must have at least one admin. Assign another admin first.</source>
+        <target>В организации должен быть хотя бы один администратор. Сначала назначьте другого администратора.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">110</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="usersRoleChangeMessage" datatype="html">
+        <source>Change role for <x id="fullName" equiv-text="user.fullName"/> to <x id="roleName" equiv-text="roleLabel"/>? Their access will update immediately.</source>
+        <target>Изменить роль пользователя <x id="fullName" equiv-text="user.fullName"/> на <x id="roleName" equiv-text="roleLabel"/>? Доступ обновится немедленно.</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
+          <context context-type="linenumber">217</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersDeactivateMessage" datatype="html">
