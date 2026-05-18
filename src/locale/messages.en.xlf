@@ -66,7 +66,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">100</context>
+          <context context-type="linenumber">101</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
@@ -106,7 +106,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">98</context>
+          <context context-type="linenumber">99</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
@@ -128,7 +128,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">99</context>
+          <context context-type="linenumber">100</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/settings/roles-permissions/roles-permissions.ts</context>
@@ -248,42 +248,42 @@
         <source>Total: <x id="count" equiv-text="totalUsers"/> user</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">88</context>
+          <context context-type="linenumber">89</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersTotalSubtitleOther" datatype="html">
         <source>Total: <x id="count" equiv-text="totalUsers"/> users</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">91</context>
+          <context context-type="linenumber">92</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersStatusActive" datatype="html">
         <source>Active</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">93</context>
+          <context context-type="linenumber">94</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersStatusInactive" datatype="html">
         <source>Inactive</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">94</context>
+          <context context-type="linenumber">95</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersRoleChangeTitle" datatype="html">
         <source>Change role</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">101</context>
+          <context context-type="linenumber">102</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersRoleChangeAction" datatype="html">
         <source>Change</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">102</context>
+          <context context-type="linenumber">103</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersRoleChangeForbidden" datatype="html">
@@ -297,21 +297,21 @@
         <source>Failed to update role</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">106</context>
+          <context context-type="linenumber">105</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersRoleSelfChangeForbidden" datatype="html">
         <source>You can&apos;t change your own role.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">108</context>
+          <context context-type="linenumber">106</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersRoleLastAdminProtected" datatype="html">
         <source>This org must have at least one admin. Assign another admin first.</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">110</context>
+          <context context-type="linenumber">107</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersRoleChangeMessage" datatype="html">
@@ -392,35 +392,35 @@
         <source>Administrator</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">571</context>
+          <context context-type="linenumber">573</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersRoleManager" datatype="html">
         <source>Manager</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">573</context>
+          <context context-type="linenumber">575</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersRoleAgent" datatype="html">
         <source>Agent</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">575</context>
+          <context context-type="linenumber">577</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersRoleSalesAgent" datatype="html">
         <source>Sales agent</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">577</context>
+          <context context-type="linenumber">579</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersRoleBackOffice" datatype="html">
         <source>Back office</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.ts</context>
-          <context context-type="linenumber">579</context>
+          <context context-type="linenumber">581</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8348011332568414135" datatype="html">
@@ -4214,6 +4214,17 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/onboarding/select-organization/select-organization.html</context>
           <context context-type="linenumber">22,24</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="organizationRoleMember" datatype="html">
+        <source>Member</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/onboarding/select-organization/select-organization.ts</context>
+          <context context-type="linenumber">33</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/layout/main-layout.component.ts</context>
+          <context context-type="linenumber">100</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestCreateOfferButton" datatype="html">

@@ -65,7 +65,7 @@
             @if (canChangeRole(element)) {
               <mat-form-field appearance="outline" class="role-field" subscriptSizing="dynamic">
                 <mat-select
-                  [disabled]="updatingRoleId() === element.id"
+                  [disabled]="isRoleUpdateInFlight()"
                   [value]="roleSelectionValue(element)"
                   (selectionChange)="onRoleChange(element, $event.value)"
                 >
@@ -75,7 +75,7 @@
                 </mat-select>
 
                 @if (updatingRoleId() === element.id) {
-                  <mat-progress-spinner diameter="16" matSuffix mode="indeterminate" />
+                  <mat-progress-spinner aria-hidden="true" diameter="16" matSuffix mode="indeterminate" />
                 }
               </mat-form-field>
             } @else {

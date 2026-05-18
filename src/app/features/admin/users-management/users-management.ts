@@ -72,6 +72,7 @@ export class UsersManagementComponent {
   protected readonly error = signal<string | null>(null);
   protected readonly roleUpdateErrors = signal<Record<string, string>>({});
   protected readonly updatingRoleId = signal<string | null>(null);
+  protected readonly isRoleUpdateInFlight = computed(() => this.updatingRoleId() !== null);
   protected readonly togglingActiveId = signal<string | null>(null);
   protected readonly canInviteMembers = computed(() => this.permissions.canInviteMembers());
   protected readonly canUpdateMembers = computed(() => this.permissions.canUpdateMembers());
@@ -206,8 +207,9 @@ export class UsersManagementComponent {
     }
 
     const isUnchanged = this.roleSelectionValue(user) === roleValue;
+    const isRoleUpdateInFlight = this.isRoleUpdateInFlight();
 
-    if (isUnchanged || !this.canChangeRole(user)) {
+    if (isRoleUpdateInFlight || isUnchanged || !this.canChangeRole(user)) {
       return;
     }
 

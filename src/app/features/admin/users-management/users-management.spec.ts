@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 
 import { PermissionService } from '@app/services/permission.service';
 import { RolesApiService } from '@app/services/roles-api.service';
@@ -53,6 +53,14 @@ describe('UsersManagementComponent', () => {
     roleName: 'Back office',
     isActive: false,
     joinedAt: '2025-01-02T10:00:00.000Z',
+  };
+
+  const secondActiveUser: OrgUserResponseDto = {
+    ...activeUser,
+    id: 'u-3',
+    appUserId: 'second-user',
+    email: 'second@example.com',
+    fullName: 'Second Active User',
   };
 
   beforeEach(async () => {
@@ -214,6 +222,26 @@ describe('UsersManagementComponent', () => {
     component['onRoleChange'](activeUser, 'role-custom');
 
     expect(usersService.changeRole).toHaveBeenCalledWith('u-1', { roleId: 'role-custom' });
+  });
+
+  it('should ignore additional role changes while role update is in flight', () => {
+    const pendingRoleUpdate$ = new Subject<OrgUserResponseDto>();
+
+    usersService.changeRole.mockReturnValueOnce(pendingRoleUpdate$);
+    dialogOpenSpy.mockReturnValue({
+      afterClosed: () => of(true),
+    } as never);
+
+    component['onRoleChange'](activeUser, 'role-admin');
+    component['onRoleChange'](secondActiveUser, 'role-admin');
+
+    expect(dialogOpenSpy).toHaveBeenCalledTimes(1);
+    expect(usersService.changeRole).toHaveBeenCalledTimes(1);
+    expect(component['updatingRoleId']()).toBe('u-1');
+
+    pendingRoleUpdate$.complete();
+
+    expect(component['updatingRoleId']()).toBeNull();
   });
 
   it('should not call role change API when confirmation is canceled', () => {

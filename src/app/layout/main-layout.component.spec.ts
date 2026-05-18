@@ -11,6 +11,8 @@ import { PermissionKey } from '@app/shared/models';
 
 import { MainLayoutComponent } from './main-layout.component';
 
+import type { OrganizationWithRoleDto } from '@app/shared/models';
+
 const mockMeData = {
   id: '',
   email: 'test@example.com',
@@ -120,5 +122,16 @@ describe('MainLayoutComponent', () => {
     expect(restrictedComponent.navLinks().some((link) => link.path === '/app/settings/roles')).toBe(
       false,
     );
+  });
+
+  it('should fallback to member label when org role is missing', () => {
+    const orgWithoutRole: OrganizationWithRoleDto = {
+      id: 'org-2',
+      name: 'No Role Org',
+      organizationId: 'org-2',
+      organizationName: 'No Role Org',
+    };
+
+    expect(component.orgRoleLabel(orgWithoutRole)).toBe('Member');
   });
 });

@@ -97,6 +97,7 @@ export class MainLayoutComponent implements OnInit {
 
   readonly organizations = signal<OrganizationWithRoleDto[]>([]);
   readonly orgSwitcherLoading = signal(false);
+  private readonly orgMemberRoleLabel = $localize`:@@organizationRoleMember:Member`;
 
   /** Bumped on org switch so the primary `router-outlet` remounts and reloads the current route. */
   readonly outletReloadKey = signal(0);
@@ -196,7 +197,7 @@ export class MainLayoutComponent implements OnInit {
       return orgRoleToLabel(org.role);
     }
 
-    return 'Member';
+    return this.orgMemberRoleLabel;
   }
 
   switchOrganization(org: OrganizationWithRoleDto): void {
