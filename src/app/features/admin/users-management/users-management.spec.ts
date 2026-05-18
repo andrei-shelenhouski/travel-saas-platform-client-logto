@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 
-import { of, throwError } from 'rxjs';
+import { of, Subject, throwError } from 'rxjs';
 
 import { PermissionService } from '@app/services/permission.service';
 import { RolesApiService } from '@app/services/roles-api.service';
@@ -24,6 +24,11 @@ describe('UsersManagementComponent', () => {
   };
   let rolesApi: {
     listRoles: ReturnType<typeof vi.fn>;
+  };
+  let permissionService: {
+    currentUserId: ReturnType<typeof vi.fn>;
+    canInviteMembers: ReturnType<typeof vi.fn>;
+    canUpdateMembers: ReturnType<typeof vi.fn>;
   };
 
   const activeUser: OrgUserResponseDto = {
@@ -48,6 +53,14 @@ describe('UsersManagementComponent', () => {
     roleName: 'Back office',
     isActive: false,
     joinedAt: '2025-01-02T10:00:00.000Z',
+  };
+
+  const secondActiveUser: OrgUserResponseDto = {
+    ...activeUser,
+    id: 'u-3',
+    appUserId: 'second-user',
+    email: 'second@example.com',
+    fullName: 'Second Active User',
   };
 
   beforeEach(async () => {
@@ -78,6 +91,12 @@ describe('UsersManagementComponent', () => {
       ),
     };
 
+    permissionService = {
+      currentUserId: vi.fn(() => 'me-user-id'),
+      canInviteMembers: vi.fn(() => true),
+      canUpdateMembers: vi.fn(() => true),
+    };
+
     await TestBed.configureTestingModule({
       imports: [UsersManagementComponent],
       providers: [
@@ -85,13 +104,7 @@ describe('UsersManagementComponent', () => {
         provideNoopAnimations(),
         { provide: UsersService, useValue: usersService },
         { provide: RolesApiService, useValue: rolesApi },
-        {
-          provide: PermissionService,
-          useValue: {
-            currentUserId: () => 'me-user-id',
-            canInviteMembers: () => true,
-          },
-        },
+        { provide: PermissionService, useValue: permissionService },
       ],
     }).compileComponents();
 
@@ -118,6 +131,17 @@ describe('UsersManagementComponent', () => {
 
   it('should include custom roles in selector options', () => {
     expect(component['roleOptions']().some((option) => option.value === 'role-custom')).toBe(true);
+  });
+
+  it('should sort system roles before custom roles', () => {
+    expect(component['roleOptions']().map((option) => option.value)).toEqual([
+      'role-admin',
+      'role-manager',
+      'role-sales-agent',
+      'role-back-office',
+      'role-agent',
+      'role-custom',
+    ]);
   });
 
   it('should use role name label for non-system role options', () => {
@@ -158,7 +182,30 @@ describe('UsersManagementComponent', () => {
     expect(component['canChangeRole'](currentUser)).toBe(false);
   });
 
-  it('should send roleId payload in change role request', () => {
+  it('should disable role change when members:update permission is missing', () => {
+    permissionService.canUpdateMembers.mockReturnValue(false);
+
+    const restrictedFixture = TestBed.createComponent(UsersManagementComponent);
+    const restrictedComponent = restrictedFixture.componentInstance;
+
+    vi.spyOn(restrictedComponent['dialog'], 'open').mockReturnValue({
+      afterClosed: () => of(false),
+    } as never);
+    vi.spyOn(restrictedComponent['snackBar'], 'open').mockReturnValue({
+      dismiss: vi.fn(),
+      afterDismissed: () => of(undefined),
+    } as never);
+
+    restrictedFixture.detectChanges();
+
+    expect(restrictedComponent['canChangeRole'](activeUser)).toBe(false);
+  });
+
+  it('should send roleId payload in change role request after confirmation', () => {
+    dialogOpenSpy.mockReturnValueOnce({
+      afterClosed: () => of(true),
+    } as never);
+
     component['onRoleChange'](activeUser, 'role-admin');
 
     expect(usersService.changeRole).toHaveBeenCalledWith('u-1', { roleId: 'role-admin' });
@@ -167,10 +214,58 @@ describe('UsersManagementComponent', () => {
     });
   });
 
-  it('should send roleId payload in change role request for custom role', () => {
+  it('should send roleId payload in change role request for custom role after confirmation', () => {
+    dialogOpenSpy.mockReturnValueOnce({
+      afterClosed: () => of(true),
+    } as never);
+
     component['onRoleChange'](activeUser, 'role-custom');
 
     expect(usersService.changeRole).toHaveBeenCalledWith('u-1', { roleId: 'role-custom' });
+  });
+
+  it('should ignore additional role changes while role update is in flight', () => {
+    const pendingRoleUpdate$ = new Subject<OrgUserResponseDto>();
+
+    usersService.changeRole.mockReturnValueOnce(pendingRoleUpdate$);
+    dialogOpenSpy.mockReturnValue({
+      afterClosed: () => of(true),
+    } as never);
+
+    component['onRoleChange'](activeUser, 'role-admin');
+    component['onRoleChange'](secondActiveUser, 'role-admin');
+
+    expect(dialogOpenSpy).toHaveBeenCalledTimes(1);
+    expect(usersService.changeRole).toHaveBeenCalledTimes(1);
+    expect(component['updatingRoleId']()).toBe('u-1');
+
+    pendingRoleUpdate$.complete();
+
+    expect(component['updatingRoleId']()).toBeNull();
+  });
+
+  it('should not call role change API when confirmation is canceled', () => {
+    component['onRoleChange'](activeUser, 'role-admin');
+
+    expect(usersService.changeRole).not.toHaveBeenCalled();
+  });
+
+  it('should show inline row error for last admin protection conflict', () => {
+    usersService.changeRole.mockReturnValueOnce(
+      throwError(() => ({
+        status: 409,
+        error: { message: 'LAST_ADMIN_PROTECTED' },
+      })),
+    );
+    dialogOpenSpy.mockReturnValueOnce({
+      afterClosed: () => of(true),
+    } as never);
+
+    component['onRoleChange'](activeUser, 'role-admin');
+
+    expect(component['roleUpdateErrorMessage']('u-1')).toBe(
+      'This org must have at least one admin. Assign another admin first.',
+    );
   });
 
   it('should deactivate user after confirmation', () => {

@@ -24,7 +24,16 @@ import type { InviteUserRoleOption } from './invite-user-dialog/invite-user-dial
 import type { OrgUserResponseDto, RoleSummaryResponseDto } from '@app/shared/models';
 
 type RoleOption = InviteUserRoleOption & {
+  isSystemRole: boolean;
   systemRole?: OrgRole;
+};
+
+const SYSTEM_ROLE_ORDER: Record<OrgRole, number> = {
+  [OrgRole.ADMIN]: 0,
+  [OrgRole.MANAGER]: 1,
+  [OrgRole.SALES_AGENT]: 2,
+  [OrgRole.BACK_OFFICE]: 3,
+  [OrgRole.AGENT]: 4,
 };
 
 @Component({
@@ -61,9 +70,12 @@ export class UsersManagementComponent {
   protected readonly users = signal<OrgUserResponseDto[]>([]);
   protected readonly loading = signal(true);
   protected readonly error = signal<string | null>(null);
+  protected readonly roleUpdateErrors = signal<Record<string, string>>({});
   protected readonly updatingRoleId = signal<string | null>(null);
+  protected readonly isRoleUpdateInFlight = computed(() => this.updatingRoleId() !== null);
   protected readonly togglingActiveId = signal<string | null>(null);
   protected readonly canInviteMembers = computed(() => this.permissions.canInviteMembers());
+  protected readonly canUpdateMembers = computed(() => this.permissions.canUpdateMembers());
   protected readonly canInviteUsers = computed(
     () => this.canInviteMembers() && this.hasRoleOptions(),
   );
@@ -86,6 +98,13 @@ export class UsersManagementComponent {
 
   private readonly okLabel = $localize`:@@commonOk:OK`;
   private readonly closeLabel = $localize`:@@commonClose:Close`;
+  private readonly cancelLabel = $localize`:@@commonCancel:Cancel`;
+  private readonly roleConfirmTitle = $localize`:@@usersRoleChangeTitle:Change role`;
+  private readonly roleConfirmLabel = $localize`:@@usersRoleChangeAction:Change`;
+  private readonly roleForbiddenError = $localize`:@@usersRoleChangeForbidden:You don't have permission to change roles.`;
+  private readonly roleGenericError = $localize`:@@usersUpdateRoleError:Failed to update role`;
+  private readonly roleSelfChangeError = $localize`:@@usersRoleSelfChangeForbidden:You can't change your own role.`;
+  private readonly roleLastAdminError = $localize`:@@usersRoleLastAdminProtected:This org must have at least one admin. Assign another admin first.`;
 
   constructor() {
     this.loadUsers();
@@ -123,7 +142,36 @@ export class UsersManagementComponent {
   }
 
   protected canChangeRole(user: OrgUserResponseDto): boolean {
-    return !this.isCurrentUser(user) && user.isActive && this.hasRoleOptions();
+    return (
+      this.canUpdateMembers() && !this.isCurrentUser(user) && user.isActive && this.hasRoleOptions()
+    );
+  }
+
+  protected roleBadgeLabel(user: OrgUserResponseDto): string {
+    const roleValue = this.roleSelectionValue(user);
+    const roleByValue = this.roleOptions().find((option) => option.value === roleValue);
+
+    if (roleByValue) {
+      return roleByValue.label;
+    }
+
+    const roleName = user.roleName?.trim();
+
+    if (roleName) {
+      return roleName;
+    }
+
+    const systemRole = this.resolveSystemRoleName(user.role);
+
+    if (systemRole) {
+      return this.systemRoleLabel(systemRole);
+    }
+
+    return user.role;
+  }
+
+  protected roleUpdateErrorMessage(userId: string): string | null {
+    return this.roleUpdateErrors()[userId] ?? null;
   }
 
   protected roleSelectionValue(user: OrgUserResponseDto): string {
@@ -159,34 +207,31 @@ export class UsersManagementComponent {
     }
 
     const isUnchanged = this.roleSelectionValue(user) === roleValue;
+    const isRoleUpdateInFlight = this.isRoleUpdateInFlight();
 
-    if (isUnchanged || !this.canChangeRole(user)) {
+    if (isRoleUpdateInFlight || isUnchanged || !this.canChangeRole(user)) {
       return;
     }
 
-    const payload = { roleId: roleValue };
+    const roleLabel = this.resolveRoleLabel(roleValue);
+    const roleChangeMessage = $localize`:@@usersRoleChangeMessage:Change role for ${user.fullName}:fullName: to ${roleLabel}:roleName:? Their access will update immediately.`;
 
-    this.updatingRoleId.set(user.id);
-    this.usersService
-      .changeRole(user.id, payload)
-      .pipe(finalize(() => this.updatingRoleId.set(null)))
-      .subscribe({
-        next: (updatedUser) => {
-          this.users.update((items) =>
-            items.map((item) => (item.id === updatedUser.id ? updatedUser : item)),
-          );
-          this.snackBar.open($localize`:@@usersRoleUpdated:Role updated`, this.okLabel, {
-            duration: 3500,
-          });
-        },
-        error: (err) => {
-          const message =
-            err.error?.message ??
-            err.message ??
-            $localize`:@@usersUpdateRoleError:Failed to update role`;
+    this.clearRoleUpdateError(user.id);
 
-          this.snackBar.open(message, this.closeLabel, { duration: 5000 });
+    this.dialog
+      .open(ConfirmDialogComponent, {
+        data: {
+          title: this.roleConfirmTitle,
+          message: roleChangeMessage,
+          confirmLabel: this.roleConfirmLabel,
+          cancelLabel: this.cancelLabel,
         },
+      })
+      .afterClosed()
+      .subscribe((confirmed: boolean | undefined) => {
+        if (confirmed) {
+          this.submitRoleChange(user, roleValue);
+        }
       });
   }
 
@@ -339,22 +384,159 @@ export class UsersManagementComponent {
     return fallbackMessage;
   }
 
+  private submitRoleChange(user: OrgUserResponseDto, roleValue: string): void {
+    const payload = { roleId: roleValue };
+
+    this.updatingRoleId.set(user.id);
+    this.usersService
+      .changeRole(user.id, payload)
+      .pipe(finalize(() => this.updatingRoleId.set(null)))
+      .subscribe({
+        next: (updatedUser) => {
+          this.clearRoleUpdateError(updatedUser.id);
+          this.users.update((items) =>
+            items.map((item) => (item.id === updatedUser.id ? updatedUser : item)),
+          );
+          this.snackBar.open($localize`:@@usersRoleUpdated:Role updated`, this.okLabel, {
+            duration: 3500,
+          });
+        },
+        error: (error) => {
+          this.handleRoleChangeError(user.id, error);
+        },
+      });
+  }
+
+  private handleRoleChangeError(userId: string, error: unknown): void {
+    const status = this.resolveErrorStatus(error);
+    const code = this.resolveRoleChangeErrorCode(error);
+
+    if (code === 'LAST_ADMIN_PROTECTED') {
+      this.setRoleUpdateError(userId, this.roleLastAdminError);
+
+      return;
+    }
+
+    if (code === 'SELF_ROLE_CHANGE_FORBIDDEN') {
+      this.snackBar.open(this.roleSelfChangeError, this.closeLabel, { duration: 5000 });
+
+      return;
+    }
+
+    if (status === 403) {
+      this.snackBar.open(this.roleForbiddenError, this.closeLabel, { duration: 5000 });
+
+      return;
+    }
+
+    this.snackBar.open(this.roleGenericError, this.closeLabel, { duration: 5000 });
+  }
+
+  private resolveRoleChangeErrorCode(error: unknown): string | null {
+    if (typeof error !== 'object' || error === null) {
+      return null;
+    }
+
+    if ('error' in error && typeof error.error === 'object' && error.error !== null) {
+      if ('message' in error.error && typeof error.error.message === 'string') {
+        return error.error.message.trim().toUpperCase();
+      }
+    }
+
+    if ('message' in error && typeof error.message === 'string') {
+      return error.message.trim().toUpperCase();
+    }
+
+    return null;
+  }
+
+  private resolveErrorStatus(error: unknown): number | null {
+    if (typeof error !== 'object' || error === null) {
+      return null;
+    }
+
+    if ('status' in error && typeof error.status === 'number') {
+      return error.status;
+    }
+
+    return null;
+  }
+
+  private setRoleUpdateError(userId: string, message: string): void {
+    this.roleUpdateErrors.update((errors) => ({
+      ...errors,
+      [userId]: message,
+    }));
+  }
+
+  private clearRoleUpdateError(userId: string): void {
+    this.roleUpdateErrors.update((errors) => {
+      if (!(userId in errors)) {
+        return errors;
+      }
+
+      const nextErrors = { ...errors };
+
+      delete nextErrors[userId];
+
+      return nextErrors;
+    });
+  }
+
+  private resolveRoleLabel(roleValue: string): string {
+    const roleOption = this.roleOptions().find((option) => option.value === roleValue);
+
+    if (roleOption) {
+      return roleOption.label;
+    }
+
+    return roleValue;
+  }
+
   private toRoleOptions(roles: RoleSummaryResponseDto[]): RoleOption[] {
     const roleOptions: RoleOption[] = [];
 
     for (const role of roles) {
-      const isSystemRole = role.isSystem ?? role.system;
+      const isSystemRole = Boolean(role.isSystem ?? role.system);
       const systemRole = isSystemRole ? this.resolveSystemRole(role) : undefined;
       const label = !isSystemRole || !systemRole ? role.name : this.systemRoleLabel(systemRole);
 
       roleOptions.push({
         value: role.id,
         label,
+        isSystemRole,
         systemRole,
       });
     }
 
-    return roleOptions.sort((left, right) => left.label.localeCompare(right.label));
+    return roleOptions.sort((left, right) => this.compareRoleOptions(left, right));
+  }
+
+  private compareRoleOptions(left: RoleOption, right: RoleOption): number {
+    if (left.isSystemRole && right.isSystemRole) {
+      const leftOrder = left.systemRole
+        ? SYSTEM_ROLE_ORDER[left.systemRole]
+        : Number.MAX_SAFE_INTEGER;
+      const rightOrder = right.systemRole
+        ? SYSTEM_ROLE_ORDER[right.systemRole]
+        : Number.MAX_SAFE_INTEGER;
+
+      if (leftOrder !== rightOrder) {
+        return leftOrder - rightOrder;
+      }
+
+      return left.label.localeCompare(right.label);
+    }
+
+    if (left.isSystemRole) {
+      return -1;
+    }
+
+    if (right.isSystemRole) {
+      return 1;
+    }
+
+    return left.label.localeCompare(right.label);
   }
 
   private resolveSystemRole(role: RoleSummaryResponseDto): OrgRole | undefined {
@@ -362,7 +544,11 @@ export class UsersManagementComponent {
       return undefined;
     }
 
-    const normalizedName = role.name.trim().replace(/\s+/g, '_').toUpperCase();
+    return this.resolveSystemRoleName(role.name);
+  }
+
+  private resolveSystemRoleName(roleName: string): OrgRole | undefined {
+    const normalizedName = roleName.trim().replace(/\s+/g, '_').toUpperCase();
 
     switch (normalizedName) {
       case 'ADMIN':
