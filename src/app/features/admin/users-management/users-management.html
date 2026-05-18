@@ -75,7 +75,12 @@
                 </mat-select>
 
                 @if (updatingRoleId() === element.id) {
-                  <mat-progress-spinner aria-hidden="true" diameter="16" matSuffix mode="indeterminate" />
+                  <mat-progress-spinner
+                    aria-hidden="true"
+                    diameter="16"
+                    matSuffix
+                    mode="indeterminate"
+                  />
                 }
               </mat-form-field>
             } @else {
