@@ -9,6 +9,8 @@ import { OrganizationStateService } from '@app/services/organization-state.servi
 
 import { SelectOrganizationComponent } from './select-organization';
 
+import type { OrganizationWithRoleDto } from '@app/shared/models';
+
 const ORG_ADMIN = {
   id: 'org-1',
   name: 'Plus Tours',
@@ -103,6 +105,17 @@ describe('SelectOrganizationComponent', () => {
     expect(component.roleLabel({ ...ORG_ADMIN, role: 'SALES_AGENT' })).toBe('Sales Agent');
     expect(component.roleLabel({ ...ORG_ADMIN, role: 'BACK_OFFICE' })).toBe('Back Office');
     expect(component.roleLabel({ ...ORG_ADMIN, role: 'AGENT' })).toBe('Agent');
+  });
+
+  it('should fallback to member label when role is missing', () => {
+    const orgWithoutRole: OrganizationWithRoleDto = {
+      id: 'org-3',
+      name: 'No Role Org',
+      organizationId: 'org-3',
+      organizationName: 'No Role Org',
+    };
+
+    expect(component.roleLabel(orgWithoutRole)).toBe('Member');
   });
 
   it('should set active org with role and navigate to /app/dashboard on select', () => {

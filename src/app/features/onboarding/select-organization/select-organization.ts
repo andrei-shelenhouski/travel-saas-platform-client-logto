@@ -30,6 +30,7 @@ export class SelectOrganizationComponent implements OnInit {
   private readonly orgState = inject(OrganizationStateService);
   private readonly router = inject(Router);
   protected readonly isLoading = signal(false);
+  private readonly orgMemberRoleLabel = $localize`:@@organizationRoleMember:Member`;
 
   protected readonly organizations = computed<OrganizationWithRoleDto[]>(() => {
     return this.meService.getMeData()?.organizations ?? ([] as OrganizationWithRoleDto[]);
@@ -64,7 +65,11 @@ export class SelectOrganizationComponent implements OnInit {
       return roleName;
     }
 
-    return orgRoleToLabel(org.role);
+    if (org.role) {
+      return orgRoleToLabel(org.role);
+    }
+
+    return this.orgMemberRoleLabel;
   }
 
   roleBadgeClass(org: OrganizationWithRoleDto): string {

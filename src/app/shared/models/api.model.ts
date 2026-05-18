@@ -62,6 +62,7 @@ export type OrgRole = (typeof OrgRole)[keyof typeof OrgRole];
 export const PermissionKey = {
   SETTINGS_UPDATE: 'settings:update',
   MEMBERS_INVITE: 'members:invite',
+  MEMBERS_UPDATE: 'members:update',
   ROLES_VIEW: 'roles:view',
   LEADS_CREATE: 'leads:create',
   LEADS_ASSIGN: 'leads:assign',
@@ -87,7 +88,8 @@ export type Permission =
 export type OrganizationWithRoleDto = {
   id: string;
   name: string;
-  role: OrgRole;
+  // Legacy field present in older payloads; not guaranteed by current OpenAPI.
+  role?: OrgRole | (string & Record<never, never>);
   roleId?: string;
   roleName?: string;
   permissions?: ReadonlySet<Permission>;
@@ -170,7 +172,7 @@ export type OrganizationMemberResponseDto = {
   userId: string;
   name: string;
   email: string;
-  role: OrgRole;
+  role: OrgRole | (string & Record<never, never>);
   active: boolean;
 };
 
