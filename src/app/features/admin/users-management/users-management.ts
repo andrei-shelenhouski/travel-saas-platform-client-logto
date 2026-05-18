@@ -100,14 +100,10 @@ export class UsersManagementComponent {
   private readonly cancelLabel = $localize`:@@commonCancel:Cancel`;
   private readonly roleConfirmTitle = $localize`:@@usersRoleChangeTitle:Change role`;
   private readonly roleConfirmLabel = $localize`:@@usersRoleChangeAction:Change`;
-  private readonly roleForbiddenError =
-    $localize`:@@usersRoleChangeForbidden:You don't have permission to change roles.`;
-  private readonly roleGenericError =
-    $localize`:@@usersUpdateRoleError:Failed to update role`;
-  private readonly roleSelfChangeError =
-    $localize`:@@usersRoleSelfChangeForbidden:You can't change your own role.`;
-  private readonly roleLastAdminError =
-    $localize`:@@usersRoleLastAdminProtected:This org must have at least one admin. Assign another admin first.`;
+  private readonly roleForbiddenError = $localize`:@@usersRoleChangeForbidden:You don't have permission to change roles.`;
+  private readonly roleGenericError = $localize`:@@usersUpdateRoleError:Failed to update role`;
+  private readonly roleSelfChangeError = $localize`:@@usersRoleSelfChangeForbidden:You can't change your own role.`;
+  private readonly roleLastAdminError = $localize`:@@usersRoleLastAdminProtected:This org must have at least one admin. Assign another admin first.`;
 
   constructor() {
     this.loadUsers();
@@ -145,7 +141,9 @@ export class UsersManagementComponent {
   }
 
   protected canChangeRole(user: OrgUserResponseDto): boolean {
-    return this.canUpdateMembers() && !this.isCurrentUser(user) && user.isActive && this.hasRoleOptions();
+    return (
+      this.canUpdateMembers() && !this.isCurrentUser(user) && user.isActive && this.hasRoleOptions()
+    );
   }
 
   protected roleBadgeLabel(user: OrgUserResponseDto): string {
@@ -514,7 +512,9 @@ export class UsersManagementComponent {
 
   private compareRoleOptions(left: RoleOption, right: RoleOption): number {
     if (left.isSystemRole && right.isSystemRole) {
-      const leftOrder = left.systemRole ? SYSTEM_ROLE_ORDER[left.systemRole] : Number.MAX_SAFE_INTEGER;
+      const leftOrder = left.systemRole
+        ? SYSTEM_ROLE_ORDER[left.systemRole]
+        : Number.MAX_SAFE_INTEGER;
       const rightOrder = right.systemRole
         ? SYSTEM_ROLE_ORDER[right.systemRole]
         : Number.MAX_SAFE_INTEGER;
