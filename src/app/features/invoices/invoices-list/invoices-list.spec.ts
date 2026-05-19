@@ -9,7 +9,7 @@ import { PermissionService } from '@app/services/permission.service';
 import { InvoiceStatus } from '@app/shared/models';
 
 import { InvoiceSummaryCardsComponent } from '../invoice-summary-cards/invoice-summary-cards';
-import { InvoicesListComponent } from './invoices-list';
+import { InvoicesListComponent, PAGE_SIZE } from './invoices-list';
 
 describe('InvoicesListComponent', () => {
   let component: InvoicesListComponent;
@@ -24,7 +24,7 @@ describe('InvoicesListComponent', () => {
 
   beforeEach(async () => {
     invoicesService = {
-      getList: vi.fn(() => of({ items: [], total: 0, page: 0, limit: 20 })),
+      getList: vi.fn(() => of({ items: [], total: 0, page: 0, limit: PAGE_SIZE })),
       getSummary: vi.fn(() =>
         of({
           drafts: 0,
@@ -68,7 +68,7 @@ describe('InvoicesListComponent', () => {
     expect(invoicesService.getList).toHaveBeenCalledWith(
       expect.objectContaining({
         page: 1,
-        limit: 20,
+        limit: PAGE_SIZE,
       }),
     );
   });

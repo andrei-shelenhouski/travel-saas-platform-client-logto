@@ -9,7 +9,7 @@ import { OrganizationMembersService } from '@app/services/organization-members.s
 import { PermissionService } from '@app/services/permission.service';
 
 import { LeadsListFilterBarComponent } from '../leads-list-filter-bar/leads-list-filter-bar';
-import { LeadsListComponent } from './leads-list';
+import { LeadsListComponent, PAGE_SIZE } from './leads-list';
 
 describe('LeadsListComponent', () => {
   let component: LeadsListComponent;
@@ -24,7 +24,7 @@ describe('LeadsListComponent', () => {
         provideRouter([]),
         {
           provide: LeadsService,
-          useValue: { findAll: () => of({ items: [], total: 0, page: 1, limit: 20 }) },
+          useValue: { findAll: () => of({ items: [], total: 0, page: 1, limit: PAGE_SIZE }) },
         },
         {
           provide: OrganizationMembersService,

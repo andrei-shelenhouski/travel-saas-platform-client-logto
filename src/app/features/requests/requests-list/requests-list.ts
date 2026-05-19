@@ -29,7 +29,7 @@ import type {
   RequestListFilterValue,
 } from '../request-filter-bar/request-filter-bar';
 
-const PAGE_SIZE = 20;
+export const PAGE_SIZE = 20;
 
 const REQUEST_STATUSES = new Set<RequestStatus>([
   RequestStatus.OPEN,
@@ -77,7 +77,7 @@ export class RequestsListComponent {
     stream: () => this.membersService.findAll(),
   });
 
-  readonly managerOptions = computed<ManagerOption[]>(() => {
+  protected readonly managerOptions = computed<ManagerOption[]>(() => {
     const members = this.membersData.value() ?? [];
 
     return members
@@ -100,7 +100,7 @@ export class RequestsListComponent {
     },
   });
 
-  readonly filterValue = computed<RequestListFilterValue>(() => ({
+  protected readonly filterValue = computed<RequestListFilterValue>(() => ({
     status: this.statusFilter(),
     managerId: this.managerId(),
     departDateFrom: this.departDateFrom(),
@@ -129,8 +129,8 @@ export class RequestsListComponent {
     return list;
   });
 
-  readonly totalElements = computed(() => this.data.value()?.total ?? 0);
-  readonly loading = computed(() => this.data.isLoading());
+  protected readonly totalElements = computed(() => this.data.value()?.total ?? 0);
+  protected readonly loading = computed(() => this.data.isLoading());
 
   protected readonly displayedColumns: (keyof (RequestResponseDto & { actions: string }))[] = [
     'destination',
@@ -147,7 +147,7 @@ export class RequestsListComponent {
     this.syncQueryParamsFromState();
   }
 
-  readonly error = computed(() => {
+  protected readonly error = computed(() => {
     const err = this.data.error();
 
     if (err instanceof HttpErrorResponse) {
@@ -204,13 +204,13 @@ export class RequestsListComponent {
       .subscribe((queryParams) => {
         this.applyingQueryParams.set(true);
 
-        const page = Number(queryParams.get('page') ?? '0');
+        const page = Number(queryParams.get('page') ?? '1');
         const status = this.parseStatus(queryParams.get('status'));
         const managerId = queryParams.get('managerId') ?? '';
         const departDateFrom = queryParams.get('departDateFrom') ?? '';
         const departDateTo = queryParams.get('departDateTo') ?? '';
 
-        this.currentPage.set(Number.isFinite(page) && page > 0 ? page : 0);
+        this.currentPage.set(Number.isFinite(page) && page > 1 ? page - 1 : 0);
         this.statusFilter.set(status);
         this.managerId.set(managerId);
         this.departDateFrom.set(departDateFrom);
@@ -238,7 +238,7 @@ export class RequestsListComponent {
       const departDateTo = this.departDateTo();
 
       const queryParams: Record<string, string | number | undefined> = {
-        page: page > 0 ? page : undefined,
+        page: page > 0 ? page + 1 : undefined,
         status: status.length > 0 ? status.join(',') : undefined,
         managerId: managerId || undefined,
         departDateFrom: departDateFrom || undefined,

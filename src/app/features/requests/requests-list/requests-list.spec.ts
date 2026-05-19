@@ -7,7 +7,7 @@ import { OrganizationMembersService } from '@app/services/organization-members.s
 import { RequestsService } from '@app/services/requests.service';
 import { RequestStatus } from '@app/shared/models';
 
-import { RequestsListComponent } from './requests-list';
+import { PAGE_SIZE, RequestsListComponent } from './requests-list';
 
 describe('RequestsListComponent', () => {
   let component: RequestsListComponent;
@@ -17,7 +17,7 @@ describe('RequestsListComponent', () => {
 
   beforeEach(async () => {
     requestsService = {
-      getList: vi.fn(() => of({ items: [], total: 0, page: 0, limit: 20 })),
+      getList: vi.fn(() => of({ items: [], total: 0, page: 0, limit: PAGE_SIZE })),
     };
 
     await TestBed.configureTestingModule({
@@ -69,7 +69,7 @@ describe('RequestsListComponent', () => {
     expect(requestsService.getList).toHaveBeenCalledWith(
       expect.objectContaining({
         page: 1,
-        limit: 20,
+        limit: PAGE_SIZE,
         managerId: undefined,
       }),
     );
@@ -79,7 +79,7 @@ describe('RequestsListComponent', () => {
     component.onPageChange({
       length: 100,
       pageIndex: 2,
-      pageSize: 20,
+      pageSize: PAGE_SIZE,
       previousPageIndex: 1,
     });
 
@@ -89,7 +89,7 @@ describe('RequestsListComponent', () => {
     expect(requestsService.getList).toHaveBeenCalledWith(
       expect.objectContaining({
         page: 3,
-        limit: 20,
+        limit: PAGE_SIZE,
       }),
     );
   });
@@ -108,7 +108,7 @@ describe('RequestsListComponent', () => {
     expect(requestsService.getList).toHaveBeenLastCalledWith(
       expect.objectContaining({
         page: 1,
-        limit: 20,
+        limit: PAGE_SIZE,
         managerId: 'manager-42',
       }),
     );
@@ -137,7 +137,7 @@ describe('RequestsListComponent', () => {
         items: mockItems,
         total: 3,
         page: 1,
-        limit: 20,
+        limit: PAGE_SIZE,
       }),
     );
 

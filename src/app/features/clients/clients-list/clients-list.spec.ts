@@ -8,7 +8,7 @@ import { vi } from 'vitest';
 import { ClientsService } from '@app/services/clients.service';
 import { ClientType } from '@app/shared/models';
 
-import { ClientsListComponent } from './clients-list';
+import { ClientsListComponent, PAGE_SIZE } from './clients-list';
 
 import type { ClientResponseDto, PaginatedClientResponseDto } from '@app/shared/models';
 function createClient(overrides: Partial<ClientResponseDto> = {}): ClientResponseDto {
@@ -38,7 +38,7 @@ function createClient(overrides: Partial<ClientResponseDto> = {}): ClientRespons
   };
 }
 
-const EMPTY_PAGE: PaginatedClientResponseDto = { items: [], total: 0, page: 1, limit: 20 };
+const EMPTY_PAGE: PaginatedClientResponseDto = { items: [], total: 0, page: 1, limit: PAGE_SIZE };
 
 const ONE_CLIENT_PAGE: PaginatedClientResponseDto = {
   items: [
@@ -50,7 +50,7 @@ const ONE_CLIENT_PAGE: PaginatedClientResponseDto = {
   ],
   total: 1,
   page: 1,
-  limit: 20,
+  limit: PAGE_SIZE,
 };
 
 describe('ClientsListComponent', () => {
