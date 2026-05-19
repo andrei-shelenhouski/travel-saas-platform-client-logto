@@ -37,12 +37,14 @@ import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientResponseDto, CreateLeadDto, LeadResponseDto, OrgRole } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 import { formatClientSearchLabel } from '@app/shared/utils/client-display';
+import { atLeastOneContactValidator } from '../leads.validators';
 
 type CreateLeadForm = FormGroup<{
   clientId: FormControl<string>;
   clientName: FormControl<string>;
   contactEmail: FormControl<string>;
   contactPhone: FormControl<string>;
+  contactTelegram: FormControl<string>;
   destination: FormControl<string>;
   departDateFrom: FormControl<string>;
   departDateTo: FormControl<string>;
@@ -67,18 +69,6 @@ function trimmedRequired(control: AbstractControl): ValidationErrors | null {
   const s = typeof control.value === 'string' ? control.value.trim() : '';
 
   return s ? null : { required: true };
-}
-
-function phoneOrEmailRequiredValidator(control: AbstractControl): ValidationErrors | null {
-  const group = control as CreateLeadForm;
-  const phone = group.controls.contactPhone.value.trim();
-  const email = group.controls.contactEmail.value.trim();
-
-  if (phone || email) {
-    return null;
-  }
-
-  return { phoneOrEmailRequired: true };
 }
 
 function dateRangeValidator(control: AbstractControl): ValidationErrors | null {
@@ -134,6 +124,7 @@ export class CreateLeadComponent {
       clientName: ['', trimmedRequired],
       contactEmail: ['', Validators.email],
       contactPhone: ['', Validators.pattern(/^\+?\d{10,15}$/)],
+      contactTelegram: [''],
       destination: ['', trimmedRequired],
       departDateFrom: [''],
       departDateTo: [''],
@@ -145,7 +136,7 @@ export class CreateLeadComponent {
       assignedAgentId: [''],
     },
     {
-      validators: [phoneOrEmailRequiredValidator, dateRangeValidator],
+      validators: [atLeastOneContactValidator, dateRangeValidator],
     },
   );
   protected readonly clientSearch = this.fb.nonNullable.control('');
@@ -207,6 +198,7 @@ export class CreateLeadComponent {
     this.form.controls.clientName.enable({ emitEvent: false });
     this.form.controls.contactPhone.enable({ emitEvent: false });
     this.form.controls.contactEmail.enable({ emitEvent: false });
+    this.form.controls.contactTelegram.enable({ emitEvent: false });
   }
 
   protected disableNewClientMode(): void {
@@ -218,6 +210,16 @@ export class CreateLeadComponent {
     this.form.controls.clientName.enable({ emitEvent: false });
     this.form.controls.contactPhone.enable({ emitEvent: false });
     this.form.controls.contactEmail.enable({ emitEvent: false });
+    this.form.controls.contactTelegram.enable({ emitEvent: false });
+  }
+
+  protected showContactGroupError(): boolean {
+    return (
+      this.form.hasError('atLeastOneContactRequired') &&
+      (this.form.controls.contactPhone.touched ||
+        this.form.controls.contactEmail.touched ||
+        this.form.controls.contactTelegram.touched)
+    );
   }
 
   protected hasServerError(controlName: keyof CreateLeadForm['controls']): boolean {
@@ -260,6 +262,10 @@ export class CreateLeadComponent {
 
     if (values.contactEmail.trim()) {
       dto.contactEmail = values.contactEmail.trim();
+    }
+
+    if (values.contactTelegram.trim()) {
+      dto.contactTelegram = values.contactTelegram.trim();
     }
 
     if (values.departDateFrom) {
@@ -354,6 +360,7 @@ export class CreateLeadComponent {
         clientName: client.fullName ?? '',
         contactEmail,
         contactPhone,
+        contactTelegram: client.telegramHandle ?? '',
       },
       { emitEvent: false },
     );
@@ -361,6 +368,7 @@ export class CreateLeadComponent {
     this.form.controls.clientName.disable({ emitEvent: false });
     this.form.controls.contactPhone.disable({ emitEvent: false });
     this.form.controls.contactEmail.disable({ emitEvent: false });
+    this.form.controls.contactTelegram.disable({ emitEvent: false });
   }
 
   private pickClientPhone(client: ClientResponseDto): string {
