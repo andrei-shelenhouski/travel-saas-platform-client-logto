@@ -121,9 +121,6 @@
       @if (form.controls.contactPhone.hasError('pattern') && form.controls.contactPhone.touched) {
         <mat-error i18n>Enter a valid phone number</mat-error>
       }
-      @if (form.hasError('atLeastOneContactRequired') && form.controls.contactPhone.touched) {
-        <mat-error i18n>Please provide at least one contact: phone, email, or Telegram.</mat-error>
-      }
       @if (hasServerError('contactPhone')) {
         <mat-error>{{ serverErrorText('contactPhone') }}</mat-error>
       }
@@ -143,9 +140,6 @@
       @if (form.controls.contactEmail.hasError('email') && form.controls.contactEmail.touched) {
         <mat-error i18n>Enter a valid email</mat-error>
       }
-      @if (form.hasError('atLeastOneContactRequired') && form.controls.contactEmail.touched) {
-        <mat-error i18n>Please provide at least one contact: phone, email, or Telegram.</mat-error>
-      }
       @if (hasServerError('contactEmail')) {
         <mat-error>{{ serverErrorText('contactEmail') }}</mat-error>
       }
@@ -161,13 +155,16 @@
         i18n-placeholder
         [readonly]="contactLocked()"
       />
-      @if (form.hasError('atLeastOneContactRequired') && form.controls.contactTelegram.touched) {
-        <mat-error i18n>Please provide at least one contact: phone, email, or Telegram.</mat-error>
-      }
       @if (hasServerError('contactTelegram')) {
         <mat-error>{{ serverErrorText('contactTelegram') }}</mat-error>
       }
     </mat-form-field>
+
+    @if (showContactGroupError()) {
+      <p class="lg:col-span-3 -mt-2 text-sm text-red-600" i18n>
+        Please provide at least one contact: phone, email, or Telegram.
+      </p>
+    }
 
     <mat-form-field appearance="outline" class="lg:col-span-2" subscriptSizing="dynamic">
       <mat-label i18n>Destination</mat-label>

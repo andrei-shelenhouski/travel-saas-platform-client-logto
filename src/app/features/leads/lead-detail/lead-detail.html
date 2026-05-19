@@ -205,12 +205,6 @@
                   ) {
                     <mat-error i18n>Enter a valid phone number</mat-error>
                   }
-                  @if (
-                    travelForm.hasError('atLeastOneContactRequired') &&
-                    travelForm.controls.contactPhone.touched
-                  ) {
-                    <mat-error i18n>Please provide at least one contact: phone, email, or Telegram.</mat-error>
-                  }
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
@@ -228,12 +222,6 @@
                   ) {
                     <mat-error i18n>Enter a valid email</mat-error>
                   }
-                  @if (
-                    travelForm.hasError('atLeastOneContactRequired') &&
-                    travelForm.controls.contactEmail.touched
-                  ) {
-                    <mat-error i18n>Please provide at least one contact: phone, email, or Telegram.</mat-error>
-                  }
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
@@ -245,13 +233,13 @@
                     placeholder="@handle or t.me/..."
                     i18n-placeholder
                   />
-                  @if (
-                    travelForm.hasError('atLeastOneContactRequired') &&
-                    travelForm.controls.contactTelegram.touched
-                  ) {
-                    <mat-error i18n>Please provide at least one contact: phone, email, or Telegram.</mat-error>
-                  }
                 </mat-form-field>
+
+                @if (showTravelContactGroupError()) {
+                  <p class="col-span-3 -mt-2 text-sm text-red-600" i18n>
+                    Please provide at least one contact: phone, email, or Telegram.
+                  </p>
+                }
 
                 <mat-form-field appearance="outline">
                   <mat-label>Destination</mat-label>

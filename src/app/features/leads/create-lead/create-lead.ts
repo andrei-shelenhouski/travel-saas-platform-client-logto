@@ -213,6 +213,15 @@ export class CreateLeadComponent {
     this.form.controls.contactTelegram.enable({ emitEvent: false });
   }
 
+  protected showContactGroupError(): boolean {
+    return (
+      this.form.hasError('atLeastOneContactRequired') &&
+      (this.form.controls.contactPhone.touched ||
+        this.form.controls.contactEmail.touched ||
+        this.form.controls.contactTelegram.touched)
+    );
+  }
+
   protected hasServerError(controlName: keyof CreateLeadForm['controls']): boolean {
     const control = this.form.controls[controlName];
 

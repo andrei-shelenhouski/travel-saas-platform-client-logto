@@ -544,6 +544,15 @@ export class LeadDetailComponent {
     });
   }
 
+  protected showTravelContactGroupError(): boolean {
+    return (
+      this.travelForm.hasError('atLeastOneContactRequired') &&
+      (this.travelForm.controls.contactPhone.touched ||
+        this.travelForm.controls.contactEmail.touched ||
+        this.travelForm.controls.contactTelegram.touched)
+    );
+  }
+
   protected startEditTravelDetails(): void {
     const lead = this.lead();
 
