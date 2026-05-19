@@ -111,6 +111,7 @@ function createLead(overrides: Partial<LeadResponseDto> = {}): LeadResponseDto {
     clientType: 'INDIVIDUAL',
     contactPhone: null,
     contactEmail: null,
+    contactTelegram: null,
     companyName: null,
     destination: 'Rome',
     departDateFrom: '2026-07-01',

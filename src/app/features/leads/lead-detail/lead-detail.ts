@@ -40,6 +40,7 @@ import { StatusBadgeComponent } from '@app/shared/components/status-badge.compon
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { LeadStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
+import { atLeastOneContactValidator } from '../leads.validators';
 
 import type {
   ActivityListResponseDto,
@@ -273,16 +274,26 @@ export class LeadDetailComponent {
   protected readonly deletingRequestId = signal<string | null>(null);
   protected readonly expandedNotesRequestId = signal<string | null>(null);
 
-  protected readonly travelForm = this.formBuilder.group({
-    destination: this.formBuilder.control<string>(''),
-    departDateFrom: this.formBuilder.control<string>(''),
-    departDateTo: this.formBuilder.control<string>(''),
-    returnDateFrom: this.formBuilder.control<string>(''),
-    returnDateTo: this.formBuilder.control<string>(''),
-    adults: this.formBuilder.control<number | null>(null),
-    children: this.formBuilder.control<number | null>(null),
-    notes: this.formBuilder.control<string>(''),
-  });
+  protected readonly travelForm = this.formBuilder.group(
+    {
+      contactPhone: this.formBuilder.control<string>('', {
+        validators: [Validators.pattern(/^\+?\d{10,15}$/)],
+      }),
+      contactEmail: this.formBuilder.control<string>('', {
+        validators: [Validators.email],
+      }),
+      contactTelegram: this.formBuilder.control<string>(''),
+      destination: this.formBuilder.control<string>(''),
+      departDateFrom: this.formBuilder.control<string>(''),
+      departDateTo: this.formBuilder.control<string>(''),
+      returnDateFrom: this.formBuilder.control<string>(''),
+      returnDateTo: this.formBuilder.control<string>(''),
+      adults: this.formBuilder.control<number | null>(null),
+      children: this.formBuilder.control<number | null>(null),
+      notes: this.formBuilder.control<string>(''),
+    },
+    { validators: [atLeastOneContactValidator] },
+  );
 
   protected readonly addRequestForm = this.formBuilder.group(
     {
@@ -533,6 +544,15 @@ export class LeadDetailComponent {
     });
   }
 
+  protected showTravelContactGroupError(): boolean {
+    return (
+      this.travelForm.hasError('atLeastOneContactRequired') &&
+      (this.travelForm.controls.contactPhone.touched ||
+        this.travelForm.controls.contactEmail.touched ||
+        this.travelForm.controls.contactTelegram.touched)
+    );
+  }
+
   protected startEditTravelDetails(): void {
     const lead = this.lead();
 
@@ -561,9 +581,18 @@ export class LeadDetailComponent {
       return;
     }
 
+    if (this.travelForm.invalid) {
+      this.travelForm.markAllAsTouched();
+
+      return;
+    }
+
     this.savingTravelDetails.set(true);
     this.leadsService
       .update(lead.id, {
+        contactPhone: (this.travelForm.controls.contactPhone.value ?? '').trim() || null,
+        contactEmail: (this.travelForm.controls.contactEmail.value ?? '').trim() || null,
+        contactTelegram: (this.travelForm.controls.contactTelegram.value ?? '').trim() || null,
         destination: this.normalizeText(this.travelForm.controls.destination.value),
         departDateFrom: this.normalizeText(this.travelForm.controls.departDateFrom.value),
         departDateTo: this.normalizeText(this.travelForm.controls.departDateTo.value),
@@ -1068,6 +1097,9 @@ export class LeadDetailComponent {
 
   private patchTravelForm(lead: LeadResponseDto): void {
     this.travelForm.patchValue({
+      contactPhone: lead.contactPhone ?? '',
+      contactEmail: lead.contactEmail ?? '',
+      contactTelegram: lead.contactTelegram ?? '',
       destination: lead.destination ?? '',
       departDateFrom: this.asDateInputValue(lead.departDateFrom),
       departDateTo: this.asDateInputValue(lead.departDateTo),

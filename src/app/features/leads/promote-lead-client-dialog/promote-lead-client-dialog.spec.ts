@@ -101,6 +101,7 @@ function createLead(): LeadResponseDto {
     clientType: 'INDIVIDUAL',
     contactPhone: '+375291112233',
     contactEmail: 'alex@example.com',
+    contactTelegram: null,
     companyName: null,
     destination: 'Istanbul',
     departDateFrom: '2026-06-10',
