@@ -416,9 +416,9 @@ export type UpdateLeadDto = {
   adults?: number;
   children?: number;
   notes?: string;
-  contactPhone?: string;
-  contactEmail?: string;
-  contactTelegram?: string;
+  contactPhone?: string | null;
+  contactEmail?: string | null;
+  contactTelegram?: string | null;
 };
 
 export type UpdateLeadStatusDto = {

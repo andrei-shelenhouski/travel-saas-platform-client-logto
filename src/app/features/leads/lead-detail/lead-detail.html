@@ -106,17 +106,15 @@
                   <dt>Email</dt>
                   <dd>{{ l.contactEmail ?? '—' }}</dd>
                 </div>
-                @if (l.contactTelegram) {
-                  <div class="lead-data-row">
-                    <dt>
-                      <span class="flex items-center gap-1">
-                        <mat-icon class="text-base leading-none">send</mat-icon>
-                        <span i18n>Telegram</span>
-                      </span>
-                    </dt>
-                    <dd>{{ l.contactTelegram }}</dd>
-                  </div>
-                }
+                <div class="lead-data-row">
+                  <dt>
+                    <span class="flex items-center gap-1">
+                      <mat-icon class="text-base leading-none">send</mat-icon>
+                      <span i18n>Telegram</span>
+                    </span>
+                  </dt>
+                  <dd>{{ l.contactTelegram ?? '—' }}</dd>
+                </div>
                 <div class="lead-data-row">
                   <dt>Profile</dt>
                   <dd>
@@ -155,17 +153,15 @@
                     <dt>Email</dt>
                     <dd>{{ l.contactEmail ?? '—' }}</dd>
                   </div>
-                  @if (l.contactTelegram) {
-                    <div class="lead-data-row">
-                      <dt>
-                        <span class="flex items-center gap-1">
-                          <mat-icon class="text-base leading-none">send</mat-icon>
-                          <span i18n>Telegram</span>
-                        </span>
-                      </dt>
-                      <dd>{{ l.contactTelegram }}</dd>
-                    </div>
-                  }
+                  <div class="lead-data-row">
+                    <dt>
+                      <span class="flex items-center gap-1">
+                        <mat-icon class="text-base leading-none">send</mat-icon>
+                        <span i18n>Telegram</span>
+                      </span>
+                    </dt>
+                    <dd>{{ l.contactTelegram ?? '—' }}</dd>
+                  </div>
                 </dl>
 
                 @if (canManageLeadClient()) {
@@ -231,6 +227,12 @@
                     travelForm.controls.contactEmail.touched
                   ) {
                     <mat-error i18n>Enter a valid email</mat-error>
+                  }
+                  @if (
+                    travelForm.hasError('atLeastOneContactRequired') &&
+                    travelForm.controls.contactEmail.touched
+                  ) {
+                    <mat-error i18n>Please provide at least one contact: phone, email, or Telegram.</mat-error>
                   }
                 </mat-form-field>
 

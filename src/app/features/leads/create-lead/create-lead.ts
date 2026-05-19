@@ -351,6 +351,7 @@ export class CreateLeadComponent {
         clientName: client.fullName ?? '',
         contactEmail,
         contactPhone,
+        contactTelegram: client.telegramHandle ?? '',
       },
       { emitEvent: false },
     );

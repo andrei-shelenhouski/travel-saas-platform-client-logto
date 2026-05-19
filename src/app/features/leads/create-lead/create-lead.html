@@ -143,6 +143,9 @@
       @if (form.controls.contactEmail.hasError('email') && form.controls.contactEmail.touched) {
         <mat-error i18n>Enter a valid email</mat-error>
       }
+      @if (form.hasError('atLeastOneContactRequired') && form.controls.contactEmail.touched) {
+        <mat-error i18n>Please provide at least one contact: phone, email, or Telegram.</mat-error>
+      }
       @if (hasServerError('contactEmail')) {
         <mat-error>{{ serverErrorText('contactEmail') }}</mat-error>
       }
