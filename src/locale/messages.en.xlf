@@ -185,63 +185,63 @@
         <source>Status</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">97,98</context>
+          <context context-type="linenumber">102,103</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersColumnJoined" datatype="html">
         <source>Joined</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">112,113</context>
+          <context context-type="linenumber">117,118</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersColumnActions" datatype="html">
         <source> Actions </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">125,127</context>
+          <context context-type="linenumber">130,132</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersActionsMenuAria" datatype="html">
         <source>Open actions menu</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">129,130</context>
+          <context context-type="linenumber">134,135</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersLoading" datatype="html">
         <source>Loading users...</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">148,149</context>
+          <context context-type="linenumber">153,154</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersLoadingAriaLabel" datatype="html">
         <source>Loading users</source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">150,151</context>
+          <context context-type="linenumber">155,156</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersEmptyState" datatype="html">
         <source> No users yet. Invite the first member. </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">157,158</context>
+          <context context-type="linenumber">162,163</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersDeactivateActionMenu" datatype="html">
         <source> Deactivate </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">177,180</context>
+          <context context-type="linenumber">182,185</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersReactivateActionMenu" datatype="html">
         <source> Activate </source>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/admin/users-management/users-management.html</context>
-          <context context-type="linenumber">187,190</context>
+          <context context-type="linenumber">192,195</context>
         </context-group>
       </trans-unit>
       <trans-unit id="usersTotalSubtitleOne" datatype="html">
@@ -4414,6 +4414,13 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
           <context context-type="linenumber">103,106</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="requestsListPaginatorAriaLabel" datatype="html">
+        <source>Requests pagination</source>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
+          <context context-type="linenumber">113,114</context>
         </context-group>
       </trans-unit>
       <trans-unit id="companyProfileDefaultPaymentTermsDaysLabel" datatype="html">

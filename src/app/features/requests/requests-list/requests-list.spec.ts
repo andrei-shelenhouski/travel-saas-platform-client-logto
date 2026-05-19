@@ -4,7 +4,6 @@ import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 
 import { OrganizationMembersService } from '@app/services/organization-members.service';
-import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
 import { RequestStatus } from '@app/shared/models';
 
@@ -32,13 +31,6 @@ describe('RequestsListComponent', () => {
         {
           provide: OrganizationMembersService,
           useValue: { findAll: () => of([]) },
-        },
-        {
-          provide: PermissionService,
-          useValue: {
-            filterToOwnRecords: vi.fn(() => false),
-            currentUserId: vi.fn(() => null),
-          },
         },
       ],
     }).compileComponents();
@@ -73,10 +65,51 @@ describe('RequestsListComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/app/requests', 'request-1']);
   });
 
-  it('should request data without pagination', () => {
+  it('should request data with default pagination', () => {
     expect(requestsService.getList).toHaveBeenCalledWith(
       expect.objectContaining({
+        page: 1,
+        limit: 20,
         managerId: undefined,
+      }),
+    );
+  });
+
+  it('should request selected page', async () => {
+    component.onPageChange({
+      length: 100,
+      pageIndex: 2,
+      pageSize: 20,
+      previousPageIndex: 1,
+    });
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(requestsService.getList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        page: 3,
+        limit: 20,
+      }),
+    );
+  });
+
+  it('should request data for selected manager', async () => {
+    component.onFilterChange({
+      status: [],
+      managerId: 'manager-42',
+      departDateFrom: '',
+      departDateTo: '',
+    });
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(requestsService.getList).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        page: 1,
+        limit: 20,
+        managerId: 'manager-42',
       }),
     );
   });

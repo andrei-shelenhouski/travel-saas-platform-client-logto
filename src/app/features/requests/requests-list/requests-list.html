@@ -107,4 +107,16 @@
       </tr>
     </table>
   </div>
+
+  @if (totalElements() > pageSize) {
+    <mat-paginator
+      aria-label="Requests pagination"
+      i18n-aria-label="@@requestsListPaginatorAriaLabel"
+      [length]="totalElements()"
+      [pageIndex]="currentPage()"
+      [pageSize]="pageSize"
+      [showFirstLastButtons]="true"
+      (page)="onPageChange($event)"
+    />
+  }
 </div>
