@@ -34,7 +34,7 @@ import type {
   OrganizationMemberResponseDto,
 } from '@app/shared/models';
 
-const PAGE_SIZE = 20;
+export const PAGE_SIZE = 20;
 const OFFERS_VIEW_STORAGE_KEY = 'offers_view';
 
 type OfferStatusOption = {
@@ -97,12 +97,12 @@ export class OffersListComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly pageSize = PAGE_SIZE;
+  protected readonly pageSize = PAGE_SIZE;
 
-  readonly statusOptions = OFFER_STATUS_OPTIONS;
+  protected readonly statusOptions = OFFER_STATUS_OPTIONS;
 
-  readonly showAgentFilter = computed(() => this.permissionService.canViewAllOffers());
-  readonly canCreateOffer = computed(() => this.permissionService.canCreateOffer());
+  protected readonly showAgentFilter = computed(() => this.permissionService.canViewAllOffers());
+  protected readonly canCreateOffer = computed(() => this.permissionService.canCreateOffer());
 
   readonly currentPage = signal(0);
   readonly statusFilter = signal<OfferStatus[]>([]);
@@ -119,7 +119,7 @@ export class OffersListComponent {
     stream: () => this.membersService.findAll(),
   });
 
-  readonly agentOptions = computed<AgentOption[]>(() => {
+  protected readonly agentOptions = computed<AgentOption[]>(() => {
     const members = this.membersData.value() ?? [];
 
     return members
@@ -163,19 +163,11 @@ export class OffersListComponent {
     },
   });
 
-  readonly offers = computed(() => this.data.value()?.items ?? []);
-  readonly totalElements = computed(() => this.data.value()?.total ?? 0);
-  readonly loading = computed(() => this.data.isLoading());
+  protected readonly offers = computed(() => this.data.value()?.items ?? []);
+  protected readonly totalElements = computed(() => this.data.value()?.total ?? 0);
+  protected readonly loading = computed(() => this.data.isLoading());
 
-  private readonly redirectOnForbidden = effect(() => {
-    const err = this.data.error();
-
-    if (err instanceof HttpErrorResponse && err.status === 403) {
-      void this.router.navigate(['/app/dashboard']);
-    }
-  });
-
-  readonly error = computed(() => {
+  protected readonly error = computed(() => {
     const err = this.data.error();
 
     if (err instanceof HttpErrorResponse) {
@@ -203,6 +195,14 @@ export class OffersListComponent {
     this.syncSearchDebounce();
     this.syncQueryParamsFromState();
     this.restoreSavedView();
+
+    effect(() => {
+      const err = this.data.error();
+
+      if (err instanceof HttpErrorResponse && err.status === 403) {
+        void this.router.navigate(['/app/dashboard']);
+      }
+    });
   }
 
   onStatusFilterChange(statuses: OfferStatus[]): void {
@@ -243,14 +243,14 @@ export class OffersListComponent {
       .subscribe((queryParams) => {
         this.applyingQueryParams.set(true);
 
-        const page = Number(queryParams.get('page') ?? '0');
+        const page = Number(queryParams.get('page') ?? '1');
         const status = this.parseStatus(queryParams.get('status'));
         const agentId = queryParams.get('agentId') ?? '';
         const dateFrom = queryParams.get('dateFrom') ?? '';
         const dateTo = queryParams.get('dateTo') ?? '';
         const search = queryParams.get('search') ?? '';
 
-        this.currentPage.set(Number.isFinite(page) && page > 0 ? page : 0);
+        this.currentPage.set(Number.isFinite(page) && page > 1 ? page - 1 : 0);
         this.statusFilter.set(status);
         this.selectedAgentId.set(agentId);
         this.dateFromFilter.set(dateFrom);
@@ -301,7 +301,7 @@ export class OffersListComponent {
         dateFrom: dateFrom || undefined,
         dateTo: dateTo || undefined,
         search: search || undefined,
-        page: page > 0 ? page : undefined,
+        page: page > 0 ? page + 1 : undefined,
       };
 
       void this.router.navigate([], {

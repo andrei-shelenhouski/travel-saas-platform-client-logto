@@ -28,7 +28,7 @@ import { BookingFilterBarComponent } from '../booking-filter-bar/booking-filter-
 import type { BookingResponseDto } from '@app/shared/models';
 import type { BookingListFilterValue, StaffOption } from '../booking-filter-bar/booking-filter-bar';
 
-const PAGE_SIZE = 20;
+export const PAGE_SIZE = 20;
 
 const BOOKING_STATUSES = new Set<BookingStatus>([
   BookingStatus.PENDING_CONFIRMATION,
@@ -66,7 +66,7 @@ export class BookingsListComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly pageSize = PAGE_SIZE;
+  protected readonly pageSize = PAGE_SIZE;
 
   readonly currentPage = signal(0);
   readonly statusFilter = signal<BookingStatus[]>([]);
@@ -81,7 +81,7 @@ export class BookingsListComponent {
     stream: () => this.membersService.findAll(),
   });
 
-  readonly staffOptions = computed<StaffOption[]>(() => {
+  protected readonly staffOptions = computed<StaffOption[]>(() => {
     const members = this.membersData.value() ?? [];
 
     return members
@@ -112,7 +112,7 @@ export class BookingsListComponent {
     },
   });
 
-  readonly filterValue = computed<BookingListFilterValue>(() => ({
+  protected readonly filterValue = computed<BookingListFilterValue>(() => ({
     status: this.statusFilter(),
     assignedBackofficeId: this.assignedBackofficeId(),
     departDateFrom: this.departDateFrom(),
@@ -121,9 +121,9 @@ export class BookingsListComponent {
 
   readonly showCreateBookingButton = computed(() => this.permissions.canCreateOffer());
 
-  readonly bookings = computed(() => this.data.value()?.items ?? []);
-  readonly totalElements = computed(() => this.data.value()?.total ?? 0);
-  readonly loading = computed(() => this.data.isLoading());
+  protected readonly bookings = computed(() => this.data.value()?.items ?? []);
+  protected readonly totalElements = computed(() => this.data.value()?.total ?? 0);
+  protected readonly loading = computed(() => this.data.isLoading());
 
   protected readonly displayedColumns: (keyof (BookingResponseDto & { actions: string }))[] = [
     'number',
@@ -140,7 +140,7 @@ export class BookingsListComponent {
     this.syncQueryParamsFromState();
   }
 
-  readonly error = computed(() => {
+  protected readonly error = computed(() => {
     const err = this.data.error();
 
     if (err instanceof HttpErrorResponse) {
@@ -204,13 +204,13 @@ export class BookingsListComponent {
       .subscribe((queryParams) => {
         this.applyingQueryParams.set(true);
 
-        const page = Number(queryParams.get('page') ?? '0');
+        const page = Number(queryParams.get('page') ?? '1');
         const status = this.parseStatus(queryParams.get('status'));
         const assignedBackofficeId = queryParams.get('assignedBackofficeId') ?? '';
         const departDateFrom = queryParams.get('departDateFrom') ?? '';
         const departDateTo = queryParams.get('departDateTo') ?? '';
 
-        this.currentPage.set(Number.isFinite(page) && page >= 0 ? page : 0);
+        this.currentPage.set(Number.isFinite(page) && page > 1 ? page - 1 : 0);
         this.statusFilter.set(status);
         this.assignedBackofficeId.set(assignedBackofficeId);
         this.departDateFrom.set(departDateFrom);
@@ -238,7 +238,7 @@ export class BookingsListComponent {
       const departDateTo = this.departDateTo();
 
       const queryParams: Record<string, string | number | undefined> = {
-        page: page > 0 ? page : undefined,
+        page: page > 0 ? page + 1 : undefined,
         status: status.length > 0 ? status.join(',') : undefined,
         assignedBackofficeId: assignedBackofficeId || undefined,
         departDateFrom: departDateFrom || undefined,

@@ -4,11 +4,10 @@ import { provideRouter, Router } from '@angular/router';
 import { of } from 'rxjs';
 
 import { OrganizationMembersService } from '@app/services/organization-members.service';
-import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
 import { RequestStatus } from '@app/shared/models';
 
-import { RequestsListComponent } from './requests-list';
+import { PAGE_SIZE, RequestsListComponent } from './requests-list';
 
 describe('RequestsListComponent', () => {
   let component: RequestsListComponent;
@@ -18,7 +17,7 @@ describe('RequestsListComponent', () => {
 
   beforeEach(async () => {
     requestsService = {
-      getList: vi.fn(() => of({ items: [], total: 0, page: 0, limit: 20 })),
+      getList: vi.fn(() => of({ items: [], total: 0, page: 0, limit: PAGE_SIZE })),
     };
 
     await TestBed.configureTestingModule({
@@ -32,13 +31,6 @@ describe('RequestsListComponent', () => {
         {
           provide: OrganizationMembersService,
           useValue: { findAll: () => of([]) },
-        },
-        {
-          provide: PermissionService,
-          useValue: {
-            filterToOwnRecords: vi.fn(() => false),
-            currentUserId: vi.fn(() => null),
-          },
         },
       ],
     }).compileComponents();
@@ -73,10 +65,51 @@ describe('RequestsListComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/app/requests', 'request-1']);
   });
 
-  it('should request data without pagination', () => {
+  it('should request data with default pagination', () => {
     expect(requestsService.getList).toHaveBeenCalledWith(
       expect.objectContaining({
+        page: 1,
+        limit: PAGE_SIZE,
         managerId: undefined,
+      }),
+    );
+  });
+
+  it('should request selected page', async () => {
+    component.onPageChange({
+      length: 100,
+      pageIndex: 2,
+      pageSize: PAGE_SIZE,
+      previousPageIndex: 1,
+    });
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(requestsService.getList).toHaveBeenCalledWith(
+      expect.objectContaining({
+        page: 3,
+        limit: PAGE_SIZE,
+      }),
+    );
+  });
+
+  it('should request data for selected manager', async () => {
+    component.onFilterChange({
+      status: [],
+      managerId: 'manager-42',
+      departDateFrom: '',
+      departDateTo: '',
+    });
+
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(requestsService.getList).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        page: 1,
+        limit: PAGE_SIZE,
+        managerId: 'manager-42',
       }),
     );
   });
@@ -104,7 +137,7 @@ describe('RequestsListComponent', () => {
         items: mockItems,
         total: 3,
         page: 1,
-        limit: 20,
+        limit: PAGE_SIZE,
       }),
     );
 

@@ -7,7 +7,7 @@ import { BookingsService } from '@app/services/bookings.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 
-import { BookingsListComponent } from './bookings-list';
+import { BookingsListComponent, PAGE_SIZE } from './bookings-list';
 
 describe('BookingsListComponent', () => {
   let component: BookingsListComponent;
@@ -17,7 +17,7 @@ describe('BookingsListComponent', () => {
 
   beforeEach(async () => {
     bookingsService = {
-      getList: vi.fn(() => of({ items: [], total: 0, page: 0, limit: 20 })),
+      getList: vi.fn(() => of({ items: [], total: 0, page: 0, limit: PAGE_SIZE })),
     };
 
     await TestBed.configureTestingModule({
@@ -81,7 +81,7 @@ describe('BookingsListComponent', () => {
     expect(bookingsService.getList).toHaveBeenCalledWith(
       expect.objectContaining({
         page: 1,
-        limit: 20,
+        limit: PAGE_SIZE,
       }),
     );
   });
