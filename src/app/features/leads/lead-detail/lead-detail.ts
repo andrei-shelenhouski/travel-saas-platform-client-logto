@@ -40,6 +40,7 @@ import { StatusBadgeComponent } from '@app/shared/components/status-badge.compon
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { LeadStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
+import { atLeastOneContactValidator } from '../leads.validators';
 
 import type {
   ActivityListResponseDto,
@@ -63,18 +64,6 @@ type LeadDetailLoadData = {
   offers: OfferResponseDto[];
   activities: ActivityListResponseDto;
 };
-
-function atLeastOneContactValidator(control: AbstractControl): ValidationErrors | null {
-  const phone = String(control.get('contactPhone')?.value ?? '').trim();
-  const email = String(control.get('contactEmail')?.value ?? '').trim();
-  const telegram = String(control.get('contactTelegram')?.value ?? '').trim();
-
-  if (phone || email || telegram) {
-    return null;
-  }
-
-  return { atLeastOneContactRequired: true };
-}
 
 const SALES_ROLES = new Set(['AGENT', 'SALES_AGENT', 'ADMIN', 'MANAGER']);
 const TERMINAL_STATUSES = new Set<string>([LeadStatus.WON, LeadStatus.LOST, LeadStatus.EXPIRED]);

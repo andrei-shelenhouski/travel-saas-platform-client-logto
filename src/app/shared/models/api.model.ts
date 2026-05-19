@@ -384,7 +384,7 @@ export type LeadResponseDto = {
   clientType: string | null;
   contactPhone: string | null;
   contactEmail: string | null;
-  contactTelegram?: string | null;
+  contactTelegram: string | null;
   companyName: string | null;
   destination: string | null;
   departDateFrom: string | null;

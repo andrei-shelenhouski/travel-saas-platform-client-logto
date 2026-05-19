@@ -37,6 +37,7 @@ import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientResponseDto, CreateLeadDto, LeadResponseDto, OrgRole } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 import { formatClientSearchLabel } from '@app/shared/utils/client-display';
+import { atLeastOneContactValidator } from '../leads.validators';
 
 type CreateLeadForm = FormGroup<{
   clientId: FormControl<string>;
@@ -68,19 +69,6 @@ function trimmedRequired(control: AbstractControl): ValidationErrors | null {
   const s = typeof control.value === 'string' ? control.value.trim() : '';
 
   return s ? null : { required: true };
-}
-
-function atLeastOneContactValidator(control: AbstractControl): ValidationErrors | null {
-  const group = control as CreateLeadForm;
-  const phone = group.controls.contactPhone.value.trim();
-  const email = group.controls.contactEmail.value.trim();
-  const telegram = group.controls.contactTelegram.value.trim();
-
-  if (phone || email || telegram) {
-    return null;
-  }
-
-  return { atLeastOneContactRequired: true };
 }
 
 function dateRangeValidator(control: AbstractControl): ValidationErrors | null {

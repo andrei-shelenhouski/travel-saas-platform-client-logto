@@ -111,7 +111,7 @@
                     <dt>
                       <span class="flex items-center gap-1">
                         <mat-icon class="text-base leading-none">send</mat-icon>
-                        Telegram
+                        <span i18n>Telegram</span>
                       </span>
                     </dt>
                     <dd>{{ l.contactTelegram }}</dd>
@@ -160,7 +160,7 @@
                       <dt>
                         <span class="flex items-center gap-1">
                           <mat-icon class="text-base leading-none">send</mat-icon>
-                          Telegram
+                          <span i18n>Telegram</span>
                         </span>
                       </dt>
                       <dd>{{ l.contactTelegram }}</dd>
@@ -195,56 +195,59 @@
             @if (editingTravelDetails()) {
               <form class="travel-form" [formGroup]="travelForm" (ngSubmit)="saveTravelDetails()">
                 <mat-form-field appearance="outline">
-                  <mat-label>Phone</mat-label>
+                  <mat-label i18n>Phone</mat-label>
                   <input
                     formControlName="contactPhone"
                     matInput
                     placeholder="+375291234567"
+                    i18n-placeholder
                     type="tel"
                   />
                   @if (
                     travelForm.controls.contactPhone.hasError('pattern') &&
                     travelForm.controls.contactPhone.touched
                   ) {
-                    <mat-error>Enter a valid phone number</mat-error>
+                    <mat-error i18n>Enter a valid phone number</mat-error>
                   }
                   @if (
                     travelForm.hasError('atLeastOneContactRequired') &&
                     travelForm.controls.contactPhone.touched
                   ) {
-                    <mat-error>Please provide at least one contact: phone, email, or Telegram.</mat-error>
+                    <mat-error i18n>Please provide at least one contact: phone, email, or Telegram.</mat-error>
                   }
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
-                  <mat-label>Email</mat-label>
+                  <mat-label i18n>Email</mat-label>
                   <input
                     formControlName="contactEmail"
                     matInput
                     placeholder="client@example.com"
+                    i18n-placeholder
                     type="email"
                   />
                   @if (
                     travelForm.controls.contactEmail.hasError('email') &&
                     travelForm.controls.contactEmail.touched
                   ) {
-                    <mat-error>Enter a valid email</mat-error>
+                    <mat-error i18n>Enter a valid email</mat-error>
                   }
                 </mat-form-field>
 
                 <mat-form-field appearance="outline">
-                  <mat-label>Telegram</mat-label>
+                  <mat-label i18n>Telegram</mat-label>
                   <mat-icon matPrefix>send</mat-icon>
                   <input
                     formControlName="contactTelegram"
                     matInput
                     placeholder="@handle or t.me/..."
+                    i18n-placeholder
                   />
                   @if (
                     travelForm.hasError('atLeastOneContactRequired') &&
                     travelForm.controls.contactTelegram.touched
                   ) {
-                    <mat-error>Please provide at least one contact: phone, email, or Telegram.</mat-error>
+                    <mat-error i18n>Please provide at least one contact: phone, email, or Telegram.</mat-error>
                   }
                 </mat-form-field>
 
