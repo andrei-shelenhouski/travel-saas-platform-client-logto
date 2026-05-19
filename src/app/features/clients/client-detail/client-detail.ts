@@ -350,18 +350,6 @@ export class ClientDetailComponent {
     this.router.navigate(['/app/invoices', invoice.id]);
   }
 
-  createRequest(): void {
-    const c = this.client();
-
-    if (!c) {
-      return;
-    }
-
-    this.router.navigate(['/app/requests/new'], {
-      queryParams: { clientId: c.id },
-    });
-  }
-
   formatDate(iso: string | null | undefined): string {
     if (!iso) {
       return '—';

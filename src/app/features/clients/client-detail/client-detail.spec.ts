@@ -187,34 +187,6 @@ describe('ClientDetailComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/invoices', 'invoice-1']);
   });
 
-  it('should navigate to create request with clientId query param', () => {
-    const paramMap = new Map([['id', 'client-1']]);
-
-    paramMapSubject.next(paramMap);
-    fixture.detectChanges();
-
-    // Wait for rxResource to load
-    const untracked = TestBed.runInInjectionContext(() => {
-      const componentWithData = component as unknown as { data: { value: () => unknown } };
-
-      return componentWithData.data.value();
-    });
-
-    if (!untracked) {
-      // Resource hasn't loaded yet — this test needs the client signal to be populated
-      // Skip or mark as pending until we can properly mock rxResource
-      expect(true).toBe(true);
-
-      return;
-    }
-
-    component.createRequest();
-
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/requests/new'], {
-      queryParams: { clientId: 'client-1' },
-    });
-  });
-
   it('should load the next tab data on tab change', () => {
     const paramMap = new Map([['id', 'client-1']]);
 

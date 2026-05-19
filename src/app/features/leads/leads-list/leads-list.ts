@@ -34,7 +34,7 @@ import type {
   LeadStatus,
   OrganizationMemberResponseDto,
 } from '@app/shared/models';
-const PAGE_SIZE = 20;
+export const PAGE_SIZE = 20;
 const LEADS_VIEW_STORAGE_KEY = 'leads_view';
 
 type LeadStatusOption = {
@@ -107,13 +107,13 @@ export class LeadsListComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly pageSize = PAGE_SIZE;
+  protected readonly pageSize = PAGE_SIZE;
 
-  readonly statusOptions = LEAD_STATUS_OPTIONS;
-  readonly clientTypeOptions = CLIENT_TYPE_OPTIONS;
+  protected readonly statusOptions = LEAD_STATUS_OPTIONS;
+  protected readonly clientTypeOptions = CLIENT_TYPE_OPTIONS;
 
-  readonly showAgentFilter = computed(() => this.permissionService.canViewAllLeads());
-  readonly canCreateLead = computed(() => this.permissionService.canCreateLead());
+  protected readonly showAgentFilter = computed(() => this.permissionService.canViewAllLeads());
+  protected readonly canCreateLead = computed(() => this.permissionService.canCreateLead());
 
   readonly currentPage = signal(0);
   readonly statusFilter = signal<LeadStatus[]>([]);
@@ -131,7 +131,7 @@ export class LeadsListComponent {
     stream: () => this.membersService.findAll(),
   });
 
-  readonly agentOptions = computed<AgentOption[]>(() => {
+  protected readonly agentOptions = computed<AgentOption[]>(() => {
     const members = this.membersData.value() ?? [];
 
     return members
@@ -177,9 +177,9 @@ export class LeadsListComponent {
     },
   });
 
-  readonly leads = computed(() => this.data.value()?.items ?? []);
-  readonly totalElements = computed(() => this.data.value()?.total ?? 0);
-  readonly loading = computed(() => this.data.isLoading());
+  protected readonly leads = computed(() => this.data.value()?.items ?? []);
+  protected readonly totalElements = computed(() => this.data.value()?.total ?? 0);
+  protected readonly loading = computed(() => this.data.isLoading());
 
   private readonly redirectOnForbidden = effect(() => {
     const err = this.data.error();
@@ -189,7 +189,7 @@ export class LeadsListComponent {
     }
   });
 
-  readonly error = computed(() => {
+  protected readonly error = computed(() => {
     const err = this.data.error();
 
     if (err instanceof HttpErrorResponse) {
@@ -286,7 +286,7 @@ export class LeadsListComponent {
       .subscribe((queryParams) => {
         this.applyingQueryParams.set(true);
 
-        const page = Number(queryParams.get('page') ?? '0');
+        const page = Number(queryParams.get('page') ?? '1');
         const status = this.parseStatus(queryParams.get('status'));
         const agentId = queryParams.get('agentId') ?? '';
         const clientType = queryParams.get('clientType') ?? '';
@@ -294,7 +294,7 @@ export class LeadsListComponent {
         const dateTo = queryParams.get('dateTo') ?? '';
         const search = queryParams.get('search') ?? '';
 
-        this.currentPage.set(Number.isFinite(page) && page > 0 ? page : 0);
+        this.currentPage.set(Number.isFinite(page) && page > 1 ? page - 1 : 0);
         this.statusFilter.set(status);
         this.selectedAgentId.set(agentId);
         this.clientTypeFilter.set(clientType);
@@ -348,7 +348,7 @@ export class LeadsListComponent {
         dateFrom: dateFrom || undefined,
         dateTo: dateTo || undefined,
         search: search || undefined,
-        page: page > 0 ? page : undefined,
+        page: page > 0 ? page + 1 : undefined,
       };
 
       void this.router.navigate([], {

@@ -9,13 +9,12 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatIcon } from '@angular/material/icon';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { OrganizationMembersService } from '@app/services/organization-members.service';
-import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { RequestStatusChipComponent } from '@app/shared/components/request-status-chip/request-status-chip';
@@ -30,7 +29,7 @@ import type {
   RequestListFilterValue,
 } from '../request-filter-bar/request-filter-bar';
 
-const PAGE_SIZE = 20;
+export const PAGE_SIZE = 20;
 
 const REQUEST_STATUSES = new Set<RequestStatus>([
   RequestStatus.OPEN,
@@ -45,7 +44,7 @@ const REQUEST_STATUSES = new Set<RequestStatus>([
     ...MAT_BUTTONS,
     RequestFilterBarComponent,
     RequestStatusChipComponent,
-    MatIcon,
+    MatPaginatorModule,
     MatProgressSpinnerModule,
     MatTableModule,
     PageHeading,
@@ -59,11 +58,13 @@ const REQUEST_STATUSES = new Set<RequestStatus>([
 export class RequestsListComponent {
   private readonly requestsService = inject(RequestsService);
   private readonly membersService = inject(OrganizationMembersService);
-  private readonly permissions = inject(PermissionService);
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
+  protected readonly pageSize = PAGE_SIZE;
+
+  readonly currentPage = signal(0);
   readonly statusFilter = signal<RequestStatus[]>([]);
   readonly managerId = signal('');
   readonly departDateFrom = signal('');
@@ -76,7 +77,7 @@ export class RequestsListComponent {
     stream: () => this.membersService.findAll(),
   });
 
-  readonly managerOptions = computed<ManagerOption[]>(() => {
+  protected readonly managerOptions = computed<ManagerOption[]>(() => {
     const members = this.membersData.value() ?? [];
 
     return members
@@ -87,26 +88,19 @@ export class RequestsListComponent {
 
   private readonly data = rxResource({
     params: () => ({
+      page: this.currentPage(),
       managerId: this.managerId(),
     }),
     stream: ({ params }) => {
-      let effectiveManagerId = params.managerId || undefined;
-
-      if (this.permissions.filterToOwnRecords()) {
-        const uid = this.permissions.currentUserId();
-
-        if (uid) {
-          effectiveManagerId = uid;
-        }
-      }
-
       return this.requestsService.getList({
-        managerId: effectiveManagerId,
+        page: params.page + 1,
+        limit: PAGE_SIZE,
+        managerId: params.managerId || undefined,
       });
     },
   });
 
-  readonly filterValue = computed<RequestListFilterValue>(() => ({
+  protected readonly filterValue = computed<RequestListFilterValue>(() => ({
     status: this.statusFilter(),
     managerId: this.managerId(),
     departDateFrom: this.departDateFrom(),
@@ -135,8 +129,8 @@ export class RequestsListComponent {
     return list;
   });
 
-  readonly totalElements = computed(() => this.data.value()?.total ?? 0);
-  readonly loading = computed(() => this.data.isLoading());
+  protected readonly totalElements = computed(() => this.data.value()?.total ?? 0);
+  protected readonly loading = computed(() => this.data.isLoading());
 
   protected readonly displayedColumns: (keyof (RequestResponseDto & { actions: string }))[] = [
     'destination',
@@ -153,7 +147,7 @@ export class RequestsListComponent {
     this.syncQueryParamsFromState();
   }
 
-  readonly error = computed(() => {
+  protected readonly error = computed(() => {
     const err = this.data.error();
 
     if (err instanceof HttpErrorResponse) {
@@ -168,14 +162,15 @@ export class RequestsListComponent {
     this.managerId.set(value.managerId);
     this.departDateFrom.set(value.departDateFrom);
     this.departDateTo.set(value.departDateTo);
+    this.currentPage.set(0);
+  }
+
+  onPageChange(event: PageEvent): void {
+    this.currentPage.set(event.pageIndex);
   }
 
   navigateToRequest(id: string): void {
     this.router.navigate(['/app/requests', id]);
-  }
-
-  navigateToCreateRequest(): void {
-    this.router.navigate(['/app/requests/new']);
   }
 
   onRowKeydown(event: KeyboardEvent, id: string): void {
@@ -209,11 +204,13 @@ export class RequestsListComponent {
       .subscribe((queryParams) => {
         this.applyingQueryParams.set(true);
 
+        const page = Number(queryParams.get('page') ?? '1');
         const status = this.parseStatus(queryParams.get('status'));
         const managerId = queryParams.get('managerId') ?? '';
         const departDateFrom = queryParams.get('departDateFrom') ?? '';
         const departDateTo = queryParams.get('departDateTo') ?? '';
 
+        this.currentPage.set(Number.isFinite(page) && page > 1 ? page - 1 : 0);
         this.statusFilter.set(status);
         this.managerId.set(managerId);
         this.departDateFrom.set(departDateFrom);
@@ -234,12 +231,14 @@ export class RequestsListComponent {
         return;
       }
 
+      const page = this.currentPage();
       const status = this.statusFilter();
       const managerId = this.managerId();
       const departDateFrom = this.departDateFrom();
       const departDateTo = this.departDateTo();
 
       const queryParams: Record<string, string | number | undefined> = {
+        page: page > 0 ? page + 1 : undefined,
         status: status.length > 0 ? status.join(',') : undefined,
         managerId: managerId || undefined,
         departDateFrom: departDateFrom || undefined,

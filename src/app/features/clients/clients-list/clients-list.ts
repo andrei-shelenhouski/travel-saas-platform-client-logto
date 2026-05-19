@@ -28,7 +28,7 @@ import { ClientTypeBadgeComponent } from '../client-type-badge/client-type-badge
 
 import type { ClientResponseDto } from '@app/shared/models';
 
-const PAGE_SIZE = 20;
+export const PAGE_SIZE = 20;
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -55,9 +55,9 @@ export class ClientsListComponent {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
 
-  readonly pageSize = PAGE_SIZE;
+  protected readonly pageSize = PAGE_SIZE;
 
-  readonly activeFilter = signal<ClientFilterValue>({ type: 'ALL', search: '' });
+  protected readonly activeFilter = signal<ClientFilterValue>({ type: 'ALL', search: '' });
   readonly currentPage = signal(0);
 
   private readonly data = rxResource({
@@ -77,9 +77,9 @@ export class ClientsListComponent {
     },
   });
 
-  readonly clients = computed(() => this.data.value()?.items ?? []);
-  readonly totalElements = computed(() => this.data.value()?.total ?? 0);
-  readonly loading = computed(() => this.data.isLoading());
+  protected readonly clients = computed(() => this.data.value()?.items ?? []);
+  protected readonly totalElements = computed(() => this.data.value()?.total ?? 0);
+  protected readonly loading = computed(() => this.data.isLoading());
 
   private readonly redirectOnForbidden = effect(() => {
     const err = this.data.error();
@@ -89,7 +89,7 @@ export class ClientsListComponent {
     }
   });
 
-  readonly error = computed(() => {
+  protected readonly error = computed(() => {
     const err = this.data.error();
 
     if (err instanceof HttpErrorResponse) {

@@ -31,7 +31,7 @@ import { InvoiceSummaryCardsComponent } from '../invoice-summary-cards/invoice-s
 
 import type { InvoiceResponseDto, InvoiceSummaryResponseDto } from '@app/shared/models';
 
-const PAGE_SIZE = 20;
+export const PAGE_SIZE = 20;
 const INVOICE_STATUSES = new Set<InvoiceStatus>(Object.values(InvoiceStatus));
 const CLIENT_TYPES = new Set<ClientType>(Object.values(ClientType));
 
@@ -250,7 +250,7 @@ export class InvoicesListComponent {
       .subscribe((queryParams) => {
         this.applyingQueryParams.set(true);
 
-        const page = Number(queryParams.get('page') ?? '0');
+        const page = Number(queryParams.get('page') ?? '1');
         const status = this.parseStatus(queryParams.get('status'));
         const clientType = queryParams.get('clientType') ?? '';
         const dateFrom = queryParams.get('dateFrom') ?? '';
@@ -258,7 +258,7 @@ export class InvoicesListComponent {
         const currency = queryParams.get('currency') ?? '';
         const search = queryParams.get('search') ?? '';
 
-        this.currentPage.set(Number.isFinite(page) && page > 0 ? page : 0);
+        this.currentPage.set(Number.isFinite(page) && page > 1 ? page - 1 : 0);
         this.statusFilter.set(status);
         this.clientTypeFilter.set(clientType);
         this.dateFromFilter.set(dateFrom);
@@ -312,7 +312,7 @@ export class InvoicesListComponent {
         dateTo: dateTo || undefined,
         currency: currency || undefined,
         search: search || undefined,
-        page: page > 0 ? page : undefined,
+        page: page > 0 ? page + 1 : undefined,
       };
 
       void this.router.navigate([], {

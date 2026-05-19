@@ -9,7 +9,7 @@ import { OrganizationMembersService } from '@app/services/organization-members.s
 import { PermissionService } from '@app/services/permission.service';
 
 import { OffersListFilterBarComponent } from '../offers-list-filter-bar/offers-list-filter-bar';
-import { OffersListComponent } from './offers-list';
+import { OffersListComponent, PAGE_SIZE } from './offers-list';
 
 describe('OffersListComponent', () => {
   let component: OffersListComponent;
@@ -24,7 +24,7 @@ describe('OffersListComponent', () => {
         provideRouter([]),
         {
           provide: OffersService,
-          useValue: { getList: () => of({ items: [], total: 0, page: 1, limit: 20 }) },
+          useValue: { getList: () => of({ items: [], total: 0, page: 1, limit: PAGE_SIZE }) },
         },
         {
           provide: OrganizationMembersService,
