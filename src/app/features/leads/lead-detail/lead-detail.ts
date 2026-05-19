@@ -590,9 +590,9 @@ export class LeadDetailComponent {
     this.savingTravelDetails.set(true);
     this.leadsService
       .update(lead.id, {
-        contactPhone: this.travelForm.controls.contactPhone.value.trim() || null,
-        contactEmail: this.travelForm.controls.contactEmail.value.trim() || null,
-        contactTelegram: this.travelForm.controls.contactTelegram.value.trim() || null,
+        contactPhone: (this.travelForm.controls.contactPhone.value ?? '').trim() || null,
+        contactEmail: (this.travelForm.controls.contactEmail.value ?? '').trim() || null,
+        contactTelegram: (this.travelForm.controls.contactTelegram.value ?? '').trim() || null,
         destination: this.normalizeText(this.travelForm.controls.destination.value),
         departDateFrom: this.normalizeText(this.travelForm.controls.departDateFrom.value),
         departDateTo: this.normalizeText(this.travelForm.controls.departDateTo.value),
