@@ -9,7 +9,6 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
@@ -45,7 +44,6 @@ const REQUEST_STATUSES = new Set<RequestStatus>([
     ...MAT_BUTTONS,
     RequestFilterBarComponent,
     RequestStatusChipComponent,
-    MatIcon,
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatTableModule,
