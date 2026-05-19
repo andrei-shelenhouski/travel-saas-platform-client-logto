@@ -175,10 +175,6 @@ export class RequestsListComponent {
     this.router.navigate(['/app/requests', id]);
   }
 
-  navigateToCreateRequest(): void {
-    this.router.navigate(['/app/requests/new']);
-  }
-
   onRowKeydown(event: KeyboardEvent, id: string): void {
     const key = event.key;
 

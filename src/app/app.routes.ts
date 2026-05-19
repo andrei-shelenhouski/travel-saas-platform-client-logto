@@ -154,13 +154,6 @@ export const routes: Routes = [
       },
       // Requests: /app/requests/:id
       {
-        path: 'requests/new',
-        loadComponent: () =>
-          import('@app/features/requests/create-request/create-request').then(
-            (m) => m.CreateRequestComponent,
-          ),
-      },
-      {
         path: 'requests/:id',
         loadComponent: () =>
           import('@app/features/requests/request-detail/request-detail').then(
