@@ -697,10 +697,6 @@
           <context context-type="sourcefile">src/app/features/bookings/booking-detail/travel-details-section/travel-details-section.html</context>
           <context context-type="linenumber">31,32</context>
         </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">249,250</context>
-        </context-group>
       </trans-unit>
       <trans-unit id="bookingNumberLabel" datatype="html">
         <source>Booking number</source>
@@ -904,6 +900,10 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
           <context context-type="linenumber">111</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/lead-detail/lead-detail.html</context>
+          <context context-type="linenumber">194</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4733307402565258070" datatype="html">
@@ -1143,7 +1143,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">257,258</context>
+          <context context-type="linenumber">274,275</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8846099596784148650" datatype="html">
@@ -1167,7 +1167,7 @@
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">155</context>
+          <context context-type="linenumber">170</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7917723851542871054" datatype="html">
@@ -1422,20 +1422,12 @@
           <context context-type="linenumber">18,20</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="createRequest" datatype="html">
-        <source> Create request </source>
-        <target>Создать запрос</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">27,29</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="clientDetailsHeading" datatype="html">
         <source>Details</source>
         <target>Детали клиента</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">44,47</context>
+          <context context-type="linenumber">35,38</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientType" datatype="html">
@@ -1443,7 +1435,7 @@
         <target>Тип клиента</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">49,50</context>
+          <context context-type="linenumber">40,41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientEmail" datatype="html">
@@ -1451,7 +1443,7 @@
         <target>Электронная почта</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">54,55</context>
+          <context context-type="linenumber">45,46</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientPhone" datatype="html">
@@ -1459,7 +1451,7 @@
         <target>Телефон</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">60,61</context>
+          <context context-type="linenumber">51,52</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientNotes" datatype="html">
@@ -1467,7 +1459,7 @@
         <target>Заметки</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">66,67</context>
+          <context context-type="linenumber">57,58</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientCreated" datatype="html">
@@ -1475,7 +1467,7 @@
         <target>Создан</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">71,72</context>
+          <context context-type="linenumber">62,63</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientId" datatype="html">
@@ -1483,7 +1475,7 @@
         <target>ID</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">76</context>
+          <context context-type="linenumber">67</context>
         </context-group>
       </trans-unit>
       <trans-unit id="loadingTags" datatype="html">
@@ -1491,7 +1483,7 @@
         <target>Загрузка тегов…</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">82,83</context>
+          <context context-type="linenumber">73,74</context>
         </context-group>
       </trans-unit>
       <trans-unit id="tagsLabel" datatype="html">
@@ -1499,7 +1491,7 @@
         <target>Теги</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">86</context>
+          <context context-type="linenumber">77</context>
         </context-group>
       </trans-unit>
       <trans-unit id="historyTabLabel" datatype="html">
@@ -1507,7 +1499,7 @@
         <target>История</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">96,99</context>
+          <context context-type="linenumber">87,90</context>
         </context-group>
       </trans-unit>
       <trans-unit id="leadsTabLabel" datatype="html">
@@ -1515,7 +1507,7 @@
         <target>Лиды</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">107,108</context>
+          <context context-type="linenumber">98,99</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noLeadsMessage" datatype="html">
@@ -1523,7 +1515,7 @@
         <target>Нет лидов</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">118,119</context>
+          <context context-type="linenumber">109,110</context>
         </context-group>
       </trans-unit>
       <trans-unit id="leadNumberColumn" datatype="html">
@@ -1531,7 +1523,7 @@
         <target> Лид № </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">125,126</context>
+          <context context-type="linenumber">116,117</context>
         </context-group>
       </trans-unit>
       <trans-unit id="statusColumn" datatype="html">
@@ -1539,23 +1531,23 @@
         <target> Статус </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">126,127</context>
+          <context context-type="linenumber">117,118</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">175,176</context>
+          <context context-type="linenumber">166,167</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">231,232</context>
+          <context context-type="linenumber">222,223</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">288,289</context>
+          <context context-type="linenumber">279,280</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">350,351</context>
+          <context context-type="linenumber">341,342</context>
         </context-group>
       </trans-unit>
       <trans-unit id="createdColumn" datatype="html">
@@ -1563,11 +1555,11 @@
         <target> Создано </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">127,128</context>
+          <context context-type="linenumber">118,119</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">232,233</context>
+          <context context-type="linenumber">223,224</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestsTabLabel" datatype="html">
@@ -1575,7 +1567,7 @@
         <target>Запросы</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">154,155</context>
+          <context context-type="linenumber">145,146</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noRequestsMessage" datatype="html">
@@ -1583,7 +1575,7 @@
         <target>Нет запросов</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">165,167</context>
+          <context context-type="linenumber">156,158</context>
         </context-group>
       </trans-unit>
       <trans-unit id="destinationColumn" datatype="html">
@@ -1591,15 +1583,15 @@
         <target> Направление </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">172,173</context>
+          <context context-type="linenumber">163,164</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">229,230</context>
+          <context context-type="linenumber">220,221</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">286,287</context>
+          <context context-type="linenumber">277,278</context>
         </context-group>
       </trans-unit>
       <trans-unit id="datesColumn" datatype="html">
@@ -1607,11 +1599,11 @@
         <target> Даты </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">173,174</context>
+          <context context-type="linenumber">164,165</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">287,288</context>
+          <context context-type="linenumber">278,279</context>
         </context-group>
       </trans-unit>
       <trans-unit id="travelersColumn" datatype="html">
@@ -1619,7 +1611,7 @@
         <target> Путешественники </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">174,175</context>
+          <context context-type="linenumber">165,166</context>
         </context-group>
       </trans-unit>
       <trans-unit id="offersCountColumn" datatype="html">
@@ -1627,7 +1619,7 @@
         <target> Предложения </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">176,177</context>
+          <context context-type="linenumber">167,168</context>
         </context-group>
       </trans-unit>
       <trans-unit id="offersTabLabel" datatype="html">
@@ -1635,7 +1627,7 @@
         <target>Предложения</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">210,211</context>
+          <context context-type="linenumber">201,202</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noOffersMessage" datatype="html">
@@ -1643,7 +1635,7 @@
         <target>Нет предложений</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">221,223</context>
+          <context context-type="linenumber">212,214</context>
         </context-group>
       </trans-unit>
       <trans-unit id="offerNumberColumn" datatype="html">
@@ -1651,7 +1643,7 @@
         <target> Предложение № </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">228,229</context>
+          <context context-type="linenumber">219,220</context>
         </context-group>
       </trans-unit>
       <trans-unit id="totalPriceColumn" datatype="html">
@@ -1659,15 +1651,15 @@
         <target> Итого </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">230,231</context>
+          <context context-type="linenumber">221,222</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">289,290</context>
+          <context context-type="linenumber">280,281</context>
         </context-group>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">351,352</context>
+          <context context-type="linenumber">342,343</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingsTabLabel" datatype="html">
@@ -1675,7 +1667,7 @@
         <target>Бронирования</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">267,268</context>
+          <context context-type="linenumber">258,259</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noBookingsMessage" datatype="html">
@@ -1683,7 +1675,7 @@
         <target>Нет бронирований</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">278,280</context>
+          <context context-type="linenumber">269,271</context>
         </context-group>
       </trans-unit>
       <trans-unit id="bookingNumberColumn" datatype="html">
@@ -1691,7 +1683,7 @@
         <target> Бронирование № </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">285,286</context>
+          <context context-type="linenumber">276,277</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoicesTabLabel" datatype="html">
@@ -1699,7 +1691,7 @@
         <target>Счета</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">329,330</context>
+          <context context-type="linenumber">320,321</context>
         </context-group>
       </trans-unit>
       <trans-unit id="noInvoicesMessage" datatype="html">
@@ -1707,7 +1699,7 @@
         <target>Нет счетов</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">340,342</context>
+          <context context-type="linenumber">331,333</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceNumberColumn" datatype="html">
@@ -1715,7 +1707,7 @@
         <target> Счёт № </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">347,348</context>
+          <context context-type="linenumber">338,339</context>
         </context-group>
       </trans-unit>
       <trans-unit id="invoiceDateColumn" datatype="html">
@@ -1723,7 +1715,7 @@
         <target> Дата счёта </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">348,349</context>
+          <context context-type="linenumber">339,340</context>
         </context-group>
       </trans-unit>
       <trans-unit id="dueDateColumn" datatype="html">
@@ -1731,7 +1723,7 @@
         <target> Срок оплаты </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">349,350</context>
+          <context context-type="linenumber">340,341</context>
         </context-group>
       </trans-unit>
       <trans-unit id="clientNotFound" datatype="html">
@@ -1739,7 +1731,7 @@
         <target>Клиент не найден.</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/clients/client-detail/client-detail.html</context>
-          <context context-type="linenumber">389,393</context>
+          <context context-type="linenumber">380,384</context>
         </context-group>
       </trans-unit>
       <trans-unit id="createClientSelectTypeLabel" datatype="html">
@@ -3557,6 +3549,14 @@
           <context context-type="linenumber">1</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="886140722731304732" datatype="html">
+        <source>Back to leads</source>
+        <target>Назад к лидам</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
+          <context context-type="linenumber">4,5</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="2933156807327070484" datatype="html">
         <source>Client search</source>
         <target>Поиск клиента</target>
@@ -3644,6 +3644,10 @@
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
           <context context-type="linenumber">116,117</context>
         </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/lead-detail/lead-detail.html</context>
+          <context context-type="linenumber">198,199</context>
+        </context-group>
       </trans-unit>
       <trans-unit id="1613287617321741904" datatype="html">
         <source>Enter a valid phone number</source>
@@ -3652,17 +3656,9 @@
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
           <context context-type="linenumber">122</context>
         </context-group>
-      </trans-unit>
-      <trans-unit id="1449575472710830408" datatype="html">
-        <source>Phone or email is required</source>
-        <target>Требуется телефон или email</target>
         <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">125</context>
-        </context-group>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">147</context>
+          <context context-type="sourcefile">src/app/features/leads/lead-detail/lead-detail.html</context>
+          <context context-type="linenumber">206</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4768749765465246664" datatype="html">
@@ -3670,7 +3666,11 @@
         <target>Электронная почта</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">133</context>
+          <context context-type="linenumber">130</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/lead-detail/lead-detail.html</context>
+          <context context-type="linenumber">211</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2739603215886165502" datatype="html">
@@ -3678,7 +3678,11 @@
         <target>client@example.com</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">138,139</context>
+          <context context-type="linenumber">135,136</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/lead-detail/lead-detail.html</context>
+          <context context-type="linenumber">215,216</context>
         </context-group>
       </trans-unit>
       <trans-unit id="508057353462157470" datatype="html">
@@ -3686,7 +3690,55 @@
         <target>Введите корректный адрес электронной почты</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">144</context>
+          <context context-type="linenumber">141</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/lead-detail/lead-detail.html</context>
+          <context context-type="linenumber">223</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="3618113761309540743" datatype="html">
+        <source>Telegram</source>
+        <target>Телеграм</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
+          <context context-type="linenumber">149</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/lead-detail/lead-detail.html</context>
+          <context context-type="linenumber">113,114</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/lead-detail/lead-detail.html</context>
+          <context context-type="linenumber">160,161</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/lead-detail/lead-detail.html</context>
+          <context context-type="linenumber">228</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="7103959112814702564" datatype="html">
+        <source>@handle or t.me/...</source>
+        <target>@handle или t.me/...</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
+          <context context-type="linenumber">154,155</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/lead-detail/lead-detail.html</context>
+          <context context-type="linenumber">233,234</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="5475764244545752835" datatype="html">
+        <source> Please provide at least one contact: phone, email, or Telegram. </source>
+        <target> Укажите хотя бы один контакт: телефон, email или Telegram. </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
+          <context context-type="linenumber">165,166</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/lead-detail/lead-detail.html</context>
+          <context context-type="linenumber">240</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5394210302028233318" datatype="html">
@@ -3694,7 +3746,7 @@
         <target>Требуется направление</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">158</context>
+          <context context-type="linenumber">173</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8070798179315538646" datatype="html">
@@ -3702,7 +3754,7 @@
         <target>Выезд с</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">166</context>
+          <context context-type="linenumber">181</context>
         </context-group>
       </trans-unit>
       <trans-unit id="894365836920397401" datatype="html">
@@ -3710,7 +3762,7 @@
         <target>Выезд по</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">174</context>
+          <context context-type="linenumber">189</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4864903405680531464" datatype="html">
@@ -3718,7 +3770,7 @@
         <target>Дата выезда по должна быть не раньше даты выезда с</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">177</context>
+          <context context-type="linenumber">192</context>
         </context-group>
       </trans-unit>
       <trans-unit id="7390329192600689282" datatype="html">
@@ -3726,7 +3778,7 @@
         <target>Возвращение с</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">185</context>
+          <context context-type="linenumber">200</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3518184621953740973" datatype="html">
@@ -3734,7 +3786,7 @@
         <target>Дата возвращения должна быть не раньше даты выезда</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">188</context>
+          <context context-type="linenumber">203</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3804802803864306393" datatype="html">
@@ -3742,7 +3794,7 @@
         <target>Возвращение по</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">196</context>
+          <context context-type="linenumber">211</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5674559636104858599" datatype="html">
@@ -3750,7 +3802,7 @@
         <target>Взрослые</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">204</context>
+          <context context-type="linenumber">219</context>
         </context-group>
       </trans-unit>
       <trans-unit id="5891802386836734920" datatype="html">
@@ -3758,7 +3810,7 @@
         <target>Взрослых должно быть не меньше 1</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">207</context>
+          <context context-type="linenumber">222</context>
         </context-group>
       </trans-unit>
       <trans-unit id="4705822664965381735" datatype="html">
@@ -3766,7 +3818,7 @@
         <target>Дети</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">215</context>
+          <context context-type="linenumber">230</context>
         </context-group>
       </trans-unit>
       <trans-unit id="2513973022190705481" datatype="html">
@@ -3774,7 +3826,7 @@
         <target>Количество детей не может быть отрицательным</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">218</context>
+          <context context-type="linenumber">233</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8104421162933956065" datatype="html">
@@ -3782,7 +3834,7 @@
         <target>Заметки</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">226</context>
+          <context context-type="linenumber">241</context>
         </context-group>
       </trans-unit>
       <trans-unit id="1060559829413256778" datatype="html">
@@ -3790,7 +3842,7 @@
         <target>Назначить</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">235</context>
+          <context context-type="linenumber">250</context>
         </context-group>
       </trans-unit>
       <trans-unit id="8406787523492971076" datatype="html">
@@ -3798,7 +3850,15 @@
         <target>Не назначено</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">237</context>
+          <context context-type="linenumber">252</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="2330577642930707695" datatype="html">
+        <source> Cancel </source>
+        <target> Отмена </target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
+          <context context-type="linenumber">265,266</context>
         </context-group>
       </trans-unit>
       <trans-unit id="3407061818321766940" datatype="html">
@@ -3806,7 +3866,7 @@
         <target>Сохранение...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/create-lead/create-lead.html</context>
-          <context context-type="linenumber">254,255</context>
+          <context context-type="linenumber">271,272</context>
         </context-group>
       </trans-unit>
       <trans-unit id="leadsKanbanTitle" datatype="html">
@@ -4909,20 +4969,12 @@
           <context context-type="linenumber">3,4</context>
         </context-group>
       </trans-unit>
-      <trans-unit id="requestsListNewRequestCta" datatype="html">
-        <source>New request</source>
-        <target>Новая заявка</target>
-        <context-group purpose="location">
-          <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
-          <context context-type="linenumber">8,11</context>
-        </context-group>
-      </trans-unit>
       <trans-unit id="requestsListColumnDestination" datatype="html">
         <source> Destination </source>
         <target> Направление </target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
-          <context context-type="linenumber">28,30</context>
+          <context context-type="linenumber">25,27</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestsListColumnDeparture" datatype="html">
@@ -4930,7 +4982,7 @@
         <target>Выезд</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
-          <context context-type="linenumber">36,37</context>
+          <context context-type="linenumber">33,34</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestsListColumnReturn" datatype="html">
@@ -4938,7 +4990,7 @@
         <target>Возвращение</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
-          <context context-type="linenumber">43,44</context>
+          <context context-type="linenumber">40,41</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestsListColumnAdults" datatype="html">
@@ -4946,7 +4998,7 @@
         <target>Путешественники</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
-          <context context-type="linenumber">50,51</context>
+          <context context-type="linenumber">47,48</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestsListChildrenLabel" datatype="html">
@@ -4954,7 +5006,7 @@
         <target>/ <x id="INTERPOLATION" equiv-text="{{ element.children }}"/> детей</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
-          <context context-type="linenumber">55,56</context>
+          <context context-type="linenumber">52,53</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestsListColumnStatus" datatype="html">
@@ -4962,7 +5014,7 @@
         <target>Статус</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
-          <context context-type="linenumber">62,63</context>
+          <context context-type="linenumber">59,60</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestsListColumnManager" datatype="html">
@@ -4970,7 +5022,7 @@
         <target>Менеджер</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
-          <context context-type="linenumber">69,70</context>
+          <context context-type="linenumber">66,67</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestsListColumnCreated" datatype="html">
@@ -4978,7 +5030,7 @@
         <target>Создано</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
-          <context context-type="linenumber">76,77</context>
+          <context context-type="linenumber">73,74</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestsListLoading" datatype="html">
@@ -4986,7 +5038,7 @@
         <target>Загрузка заявок...</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
-          <context context-type="linenumber">95,97</context>
+          <context context-type="linenumber">92,94</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestsListLoadingAriaLabel" datatype="html">
@@ -4994,7 +5046,7 @@
         <target>Загрузка заявок</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
-          <context context-type="linenumber">97,98</context>
+          <context context-type="linenumber">94,95</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestsListEmptyState" datatype="html">
@@ -5002,7 +5054,7 @@
         <target>Нет заявок по текущим фильтрам</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
-          <context context-type="linenumber">103,106</context>
+          <context context-type="linenumber">100,103</context>
         </context-group>
       </trans-unit>
       <trans-unit id="requestsListPaginatorAriaLabel" datatype="html">
@@ -5010,7 +5062,7 @@
         <target>Пагинация заявок</target>
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/requests/requests-list/requests-list.html</context>
-          <context context-type="linenumber">113,114</context>
+          <context context-type="linenumber">110,111</context>
         </context-group>
       </trans-unit>
       <trans-unit id="companyProfileDefaultPaymentTermsDaysLabel" datatype="html">
