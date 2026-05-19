@@ -6700,6 +6700,9 @@
           },
           "contactEmail": {
             "type": "string"
+          },
+          "contactTelegram": {
+            "type": "string"
           }
         }
       },
@@ -6740,6 +6743,9 @@
             "type": "string"
           },
           "contactEmail": {
+            "type": "string"
+          },
+          "contactTelegram": {
             "type": "string"
           },
           "companyName": {
@@ -7929,6 +7935,9 @@
             "type": "string"
           },
           "contactEmail": {
+            "type": "string"
+          },
+          "contactTelegram": {
             "type": "string"
           },
           "destination": {

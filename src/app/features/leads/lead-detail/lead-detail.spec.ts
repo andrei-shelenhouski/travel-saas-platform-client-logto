@@ -397,6 +397,48 @@ describe('LeadDetailComponent', () => {
     expect(actor).toBe('System action');
     expect(isSystem).toBe(true);
   });
+
+  it('travel form fails validation when all contact fields are blank', async () => {
+    await fixture.whenStable();
+
+    const api = component as unknown as {
+      startEditTravelDetails: () => void;
+      travelForm: {
+        patchValue: (value: Record<string, unknown>) => void;
+        hasError: (error: string) => boolean;
+        controls: {
+          contactPhone: { markAsTouched: () => void };
+          contactEmail: { markAsTouched: () => void };
+          contactTelegram: { markAsTouched: () => void };
+        };
+      };
+    };
+
+    api.startEditTravelDetails();
+    api.travelForm.patchValue({ contactPhone: '', contactEmail: '', contactTelegram: '' });
+    api.travelForm.controls.contactPhone.markAsTouched();
+    api.travelForm.controls.contactEmail.markAsTouched();
+    api.travelForm.controls.contactTelegram.markAsTouched();
+
+    expect(api.travelForm.hasError('atLeastOneContactRequired')).toBe(true);
+  });
+
+  it('travel form passes validation when only Telegram is provided', async () => {
+    await fixture.whenStable();
+
+    const api = component as unknown as {
+      startEditTravelDetails: () => void;
+      travelForm: {
+        patchValue: (value: Record<string, unknown>) => void;
+        hasError: (error: string) => boolean;
+      };
+    };
+
+    api.startEditTravelDetails();
+    api.travelForm.patchValue({ contactPhone: '', contactEmail: '', contactTelegram: '@handle' });
+
+    expect(api.travelForm.hasError('atLeastOneContactRequired')).toBe(false);
+  });
 });
 
 function createRequest(
@@ -453,6 +495,7 @@ function createLead(overrides: Partial<LeadResponseDto> = {}): LeadResponseDto {
     clientType: 'INDIVIDUAL',
     contactPhone: '+375291112233',
     contactEmail: 'alex@example.com',
+    contactTelegram: null,
     companyName: null,
     destination: 'Istanbul',
     departDateFrom: '2026-06-10',

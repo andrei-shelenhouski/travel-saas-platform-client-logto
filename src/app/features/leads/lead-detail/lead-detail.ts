@@ -64,6 +64,18 @@ type LeadDetailLoadData = {
   activities: ActivityListResponseDto;
 };
 
+function atLeastOneContactValidator(control: AbstractControl): ValidationErrors | null {
+  const phone = String(control.get('contactPhone')?.value ?? '').trim();
+  const email = String(control.get('contactEmail')?.value ?? '').trim();
+  const telegram = String(control.get('contactTelegram')?.value ?? '').trim();
+
+  if (phone || email || telegram) {
+    return null;
+  }
+
+  return { atLeastOneContactRequired: true };
+}
+
 const SALES_ROLES = new Set(['AGENT', 'SALES_AGENT', 'ADMIN', 'MANAGER']);
 const TERMINAL_STATUSES = new Set<string>([LeadStatus.WON, LeadStatus.LOST, LeadStatus.EXPIRED]);
 const REQUEST_TERMINAL_STATUSES = new Set<string>(['CLOSED']);
@@ -273,16 +285,26 @@ export class LeadDetailComponent {
   protected readonly deletingRequestId = signal<string | null>(null);
   protected readonly expandedNotesRequestId = signal<string | null>(null);
 
-  protected readonly travelForm = this.formBuilder.group({
-    destination: this.formBuilder.control<string>(''),
-    departDateFrom: this.formBuilder.control<string>(''),
-    departDateTo: this.formBuilder.control<string>(''),
-    returnDateFrom: this.formBuilder.control<string>(''),
-    returnDateTo: this.formBuilder.control<string>(''),
-    adults: this.formBuilder.control<number | null>(null),
-    children: this.formBuilder.control<number | null>(null),
-    notes: this.formBuilder.control<string>(''),
-  });
+  protected readonly travelForm = this.formBuilder.group(
+    {
+      contactPhone: this.formBuilder.control<string>('', {
+        validators: [Validators.pattern(/^\+?\d{10,15}$/)],
+      }),
+      contactEmail: this.formBuilder.control<string>('', {
+        validators: [Validators.email],
+      }),
+      contactTelegram: this.formBuilder.control<string>(''),
+      destination: this.formBuilder.control<string>(''),
+      departDateFrom: this.formBuilder.control<string>(''),
+      departDateTo: this.formBuilder.control<string>(''),
+      returnDateFrom: this.formBuilder.control<string>(''),
+      returnDateTo: this.formBuilder.control<string>(''),
+      adults: this.formBuilder.control<number | null>(null),
+      children: this.formBuilder.control<number | null>(null),
+      notes: this.formBuilder.control<string>(''),
+    },
+    { validators: [atLeastOneContactValidator] },
+  );
 
   protected readonly addRequestForm = this.formBuilder.group(
     {
@@ -561,9 +583,18 @@ export class LeadDetailComponent {
       return;
     }
 
+    if (this.travelForm.invalid) {
+      this.travelForm.markAllAsTouched();
+
+      return;
+    }
+
     this.savingTravelDetails.set(true);
     this.leadsService
       .update(lead.id, {
+        contactPhone: this.normalizeText(this.travelForm.controls.contactPhone.value),
+        contactEmail: this.normalizeText(this.travelForm.controls.contactEmail.value),
+        contactTelegram: this.normalizeText(this.travelForm.controls.contactTelegram.value),
         destination: this.normalizeText(this.travelForm.controls.destination.value),
         departDateFrom: this.normalizeText(this.travelForm.controls.departDateFrom.value),
         departDateTo: this.normalizeText(this.travelForm.controls.departDateTo.value),
@@ -1068,6 +1099,9 @@ export class LeadDetailComponent {
 
   private patchTravelForm(lead: LeadResponseDto): void {
     this.travelForm.patchValue({
+      contactPhone: lead.contactPhone ?? '',
+      contactEmail: lead.contactEmail ?? '',
+      contactTelegram: lead.contactTelegram ?? '',
       destination: lead.destination ?? '',
       departDateFrom: this.asDateInputValue(lead.departDateFrom),
       departDateTo: this.asDateInputValue(lead.departDateTo),

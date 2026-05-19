@@ -76,7 +76,7 @@ describe('CreateLeadComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('requires either phone or email', () => {
+  it('shows at-least-one-contact error when all three contacts are empty', () => {
     const api = component as unknown as {
       form: CreateLeadComponent['form'];
     };
@@ -86,11 +86,29 @@ describe('CreateLeadComponent', () => {
       destination: 'Antalya',
       contactPhone: '',
       contactEmail: '',
+      contactTelegram: '',
     });
     api.form.controls.contactPhone.markAsTouched();
     api.form.controls.contactEmail.markAsTouched();
+    api.form.controls.contactTelegram.markAsTouched();
 
-    expect(api.form.hasError('phoneOrEmailRequired')).toBe(true);
+    expect(api.form.hasError('atLeastOneContactRequired')).toBe(true);
+  });
+
+  it('passes validation when only Telegram is provided', () => {
+    const api = component as unknown as {
+      form: CreateLeadComponent['form'];
+    };
+
+    api.form.patchValue({
+      clientName: 'Alex Johnson',
+      destination: 'Antalya',
+      contactPhone: '',
+      contactEmail: '',
+      contactTelegram: '@testhandle',
+    });
+
+    expect(api.form.hasError('atLeastOneContactRequired')).toBe(false);
   });
 
   it('includes company name for B2B and agent clients in search labels', () => {
@@ -195,6 +213,7 @@ function createLeadResponse(overrides: Partial<LeadResponseDto> = {}): LeadRespo
     clientType: 'INDIVIDUAL',
     contactPhone: '+375291234567',
     contactEmail: null,
+    contactTelegram: null,
     companyName: null,
     destination: 'Antalya',
     departDateFrom: null,

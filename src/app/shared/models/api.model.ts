@@ -363,6 +363,7 @@ export type CreateLeadDto = {
   clientName?: string;
   contactPhone?: string;
   contactEmail?: string;
+  contactTelegram?: string;
   destination?: string;
   departDateFrom?: string;
   departDateTo?: string;
@@ -383,6 +384,7 @@ export type LeadResponseDto = {
   clientType: string | null;
   contactPhone: string | null;
   contactEmail: string | null;
+  contactTelegram?: string | null;
   companyName: string | null;
   destination: string | null;
   departDateFrom: string | null;
@@ -416,6 +418,7 @@ export type UpdateLeadDto = {
   notes?: string;
   contactPhone?: string;
   contactEmail?: string;
+  contactTelegram?: string;
 };
 
 export type UpdateLeadStatusDto = {
