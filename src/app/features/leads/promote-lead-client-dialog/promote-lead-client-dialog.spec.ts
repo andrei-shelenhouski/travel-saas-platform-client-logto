@@ -59,6 +59,10 @@ describe('PromoteLeadClientDialogComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('prefills Telegram handle from lead', () => {
+    expect(component['form'].controls.telegramHandle.value).toBe('@alex_travel');
+  });
+
   it('submits form and closes dialog with updated lead', () => {
     component['form'].patchValue({
       type: ClientType.INDIVIDUAL,
@@ -70,6 +74,12 @@ describe('PromoteLeadClientDialogComponent', () => {
     component['submit']();
 
     expect(leadsServiceMock.promoteToClient).toHaveBeenCalledTimes(1);
+    expect(leadsServiceMock.promoteToClient).toHaveBeenCalledWith(
+      'lead-1',
+      expect.objectContaining({
+        telegramHandle: '@alex_travel',
+      }),
+    );
     expect(dialogRefSpy.close).toHaveBeenCalled();
   });
 
@@ -101,7 +111,7 @@ function createLead(): LeadResponseDto {
     clientType: 'INDIVIDUAL',
     contactPhone: '+375291112233',
     contactEmail: 'alex@example.com',
-    contactTelegram: null,
+    contactTelegram: '@alex_travel',
     companyName: null,
     destination: 'Istanbul',
     departDateFrom: '2026-06-10',
