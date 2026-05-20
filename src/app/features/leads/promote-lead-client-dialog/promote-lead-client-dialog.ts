@@ -54,7 +54,7 @@ export class PromoteLeadClientDialogComponent {
     fullName: [this.data.lead.clientName ?? '', Validators.required],
     phone: [this.data.lead.contactPhone ?? ''],
     email: [this.data.lead.contactEmail ?? '', Validators.email],
-    telegramHandle: [''],
+    telegramHandle: [this.data.lead.contactTelegram ?? ''],
     notes: [''],
     companyName: [this.data.lead.companyName ?? ''],
     legalAddress: [''],

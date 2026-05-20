@@ -1,7 +1,7 @@
 <app-page-heading title="New lead" i18n-title="@@leadsNewLeadTitle">
   <a matButton="filled" routerLink="/app/leads">
     <span aria-hidden="true" class="material-icons text-base">chevron_left</span>
-    <span>Back to leads</span>
+    <span i18n>Back to leads</span>
   </a>
 </app-page-heading>
 
@@ -161,7 +161,7 @@
     </mat-form-field>
 
     @if (showContactGroupError()) {
-      <p class="lg:col-span-3 -mt-2 text-sm text-red-600" i18n>
+      <p class="lg:col-span-2 -mt-2 text-sm text-red-600" i18n>
         Please provide at least one contact: phone, email, or Telegram.
       </p>
     }
@@ -261,7 +261,9 @@
     }
 
     <div class="flex flex-wrap gap-3 pt-2 lg:col-span-2">
-      <a i18n mat-stroked-button routerLink="/app/leads" [attr.aria-disabled]="loading()">Cancel</a>
+      <button mat-stroked-button routerLink="/app/leads" type="button" [disabled]="loading()">
+        <span i18n>Cancel</span>
+      </button>
       <button color="primary" mat-flat-button type="submit" [disabled]="loading()">
         @if (loading()) {
           <span class="inline-flex items-center gap-2">
