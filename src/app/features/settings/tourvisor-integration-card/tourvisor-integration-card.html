@@ -24,8 +24,7 @@
               <span i18n="@@tourvisorTitle">TourVisor</span>
             }
           </mat-card-title>
-          <mat-card-subtitle
-            i18n="@@tourvisorSubtitle"
+          <mat-card-subtitle i18n="@@tourvisorSubtitle"
             >Import client inquiries from your TourVisor account.</mat-card-subtitle
           >
         </mat-card-header>
@@ -50,7 +49,14 @@
               <div class="detail-row">
                 <span class="detail-label" i18n="@@tourvisorDefaultAgentLabel">Default agent</span>
                 <span class="detail-value">{{ selectedAgentLabel() }}</span>
-                <button i18n="@@tourvisorDefaultAgentChange" mat-button type="button" (click)="openEditForm()">Change</button>
+                <button
+                  i18n="@@tourvisorDefaultAgentChange"
+                  mat-button
+                  type="button"
+                  (click)="openEditForm()"
+                >
+                  Change
+                </button>
               </div>
 
               <div class="detail-row">
@@ -98,7 +104,12 @@
               </mat-form-field>
 
               <div class="help-row">
-                <button i18n="@@tourvisorFindAuthkey" mat-button type="button" [matTooltip]="authkeyHelpText">
+                <button
+                  i18n="@@tourvisorFindAuthkey"
+                  mat-button
+                  type="button"
+                  [matTooltip]="authkeyHelpText"
+                >
                   Where do I find this?
                 </button>
               </div>
