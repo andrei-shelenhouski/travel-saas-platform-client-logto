@@ -6702,7 +6702,9 @@
             "type": "string"
           },
           "contactTelegram": {
-            "type": "string"
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 0
           }
         }
       },
@@ -6726,7 +6728,8 @@
               "TELEGRAM",
               "WEBSITE",
               "AGENT",
-              "OTHER"
+              "OTHER",
+              "TOURVISOR"
             ]
           },
           "clientId": {
@@ -7938,7 +7941,9 @@
             "type": "string"
           },
           "contactTelegram": {
-            "type": "string"
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 0
           },
           "destination": {
             "type": "string"
@@ -8776,7 +8781,8 @@
               "TELEGRAM",
               "WEBSITE",
               "AGENT",
-              "OTHER"
+              "OTHER",
+              "TOURVISOR"
             ]
           },
           "dateFrom": {

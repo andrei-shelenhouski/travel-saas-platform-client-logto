@@ -1,0 +1,107 @@
+.integrations-page {
+  min-height: 100%;
+}
+
+.content {
+  margin: 0 auto;
+  max-width: 60rem;
+  padding: 1rem;
+}
+
+.state-card {
+  align-items: center;
+  border: 1px solid #d1d5db;
+  border-radius: 0.75rem;
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  min-height: 10rem;
+  padding: 1rem;
+}
+
+.integration-card {
+  border-radius: 0.75rem;
+}
+
+.connected-title {
+  align-items: center;
+  color: #0f766e;
+  display: inline-flex;
+  gap: 0.5rem;
+}
+
+.status-line {
+  color: #334155;
+  margin: 0 0 1rem;
+}
+
+.details-grid {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  display: grid;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+}
+
+.detail-row {
+  align-items: center;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: minmax(7rem, auto) minmax(0, 1fr) auto;
+}
+
+.detail-label {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.detail-value {
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.connect-form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.help-row {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.actions-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.inline-error {
+  color: #b91c1c;
+  margin: 0 0 0.75rem;
+}
+
+.inline-success {
+  color: #047857;
+  margin: 0 0 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .detail-row {
+    grid-template-columns: 1fr;
+  }
+
+  .actions-row {
+    justify-content: stretch;
+  }
+
+  .actions-row > button {
+    width: 100%;
+  }
+}

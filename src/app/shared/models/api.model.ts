@@ -16,6 +16,7 @@ export const LeadSource = {
   WEBSITE: 'WEBSITE',
   AGENT: 'AGENT',
   OTHER: 'OTHER',
+  TOURVISOR: 'TOURVISOR',
 } as const;
 export type LeadSource = (typeof LeadSource)[keyof typeof LeadSource];
 
@@ -353,6 +354,29 @@ export type OrganizationSettingsResponseDto = {
   agentAssignmentRule?: AgentAssignmentRule;
   createdAt?: string;
   updatedAt?: string;
+};
+
+/**
+ * TourVisor integration settings.
+ * Backend contract from issue #89 until these endpoints are included in openapi.json.
+ */
+export type TourvisorIntegrationSettingsResponseDto = {
+  connected: boolean;
+  defaultAgentId?: string | null;
+  lastPolledAt?: string | null;
+  lastWebhookAt?: string | null;
+  ingestOrderTypes?: number[];
+};
+
+export type UpdateTourvisorIntegrationSettingsDto = {
+  authkey: string;
+  defaultAgentId?: string | null;
+  ingestOrderTypes?: number[];
+};
+
+export type TourvisorIntegrationTestResponseDto = {
+  ok: boolean;
+  error?: string;
 };
 
 // ----- Leads -----
