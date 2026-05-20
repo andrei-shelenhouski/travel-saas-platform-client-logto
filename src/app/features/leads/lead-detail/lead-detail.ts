@@ -40,6 +40,7 @@ import { StatusBadgeComponent } from '@app/shared/components/status-badge.compon
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { LeadStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
+
 import { atLeastOneContactValidator } from '../leads.validators';
 
 import type {

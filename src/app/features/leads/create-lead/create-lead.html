@@ -157,8 +157,7 @@
         [readonly]="contactLocked()"
       />
       @if (
-        form.controls.contactTelegram.hasError('maxlength') &&
-        form.controls.contactTelegram.touched
+        form.controls.contactTelegram.hasError('maxlength') && form.controls.contactTelegram.touched
       ) {
         <mat-error>Telegram username must be at most 60 characters</mat-error>
       }

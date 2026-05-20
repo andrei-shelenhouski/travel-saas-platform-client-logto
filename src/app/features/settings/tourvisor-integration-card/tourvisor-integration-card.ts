@@ -2,8 +2,8 @@ import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   computed,
+  DestroyRef,
   inject,
   signal,
 } from '@angular/core';
@@ -216,9 +216,7 @@ export class TourvisorIntegrationCardComponent {
             defaultAgentId: normalized.defaultAgentId ?? '',
           });
           this.toast.showSuccess(
-            wasConnected
-              ? 'TourVisor settings were updated.'
-              : 'TourVisor connected successfully.',
+            wasConnected ? 'TourVisor settings were updated.' : 'TourVisor connected successfully.',
           );
         },
         error: (error: unknown) => {
