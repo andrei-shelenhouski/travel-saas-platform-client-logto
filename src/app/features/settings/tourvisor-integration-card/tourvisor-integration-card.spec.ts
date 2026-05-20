@@ -32,6 +32,10 @@ describe('TourvisorIntegrationCardComponent', () => {
     open: ReturnType<typeof vi.fn>;
   };
 
+  let membersService: {
+    findAll: ReturnType<typeof vi.fn>;
+  };
+
   let toast: {
     showSuccess: ReturnType<typeof vi.fn>;
     showError: ReturnType<typeof vi.fn>;
@@ -52,6 +56,21 @@ describe('TourvisorIntegrationCardComponent', () => {
       open: vi.fn(() => ({ afterClosed: () => of(true) })),
     };
 
+    membersService = {
+      findAll: vi.fn(() =>
+        of([
+          {
+            id: 'member-1',
+            userId: 'user-1',
+            name: 'Alice Agent',
+            email: 'alice@example.com',
+            role: 'AGENT',
+            active: true,
+          },
+        ]),
+      ),
+    };
+
     toast = {
       showSuccess: vi.fn(),
       showError: vi.fn(),
@@ -70,19 +89,7 @@ describe('TourvisorIntegrationCardComponent', () => {
         },
         {
           provide: OrganizationMembersService,
-          useValue: {
-            findAll: () =>
-              of([
-                {
-                  id: 'member-1',
-                  userId: 'user-1',
-                  name: 'Alice Agent',
-                  email: 'alice@example.com',
-                  role: 'AGENT',
-                  active: true,
-                },
-              ]),
-          },
+          useValue: membersService,
         },
         { provide: TourvisorIntegrationService, useValue: integrationService },
         { provide: MatDialog, useValue: dialog },
@@ -109,6 +116,20 @@ describe('TourvisorIntegrationCardComponent', () => {
     };
 
     api.form.controls.authkey.setValue('');
+
+    api.saveIntegrationSettings();
+
+    expect(integrationService.upsertSettings).not.toHaveBeenCalled();
+    expect(api.form.controls.authkey.hasError('required')).toBe(true);
+  });
+
+  it('rejects whitespace-only authkey before submitting connect form', () => {
+    const api = component as unknown as {
+      form: TourvisorIntegrationCardComponent['form'];
+      saveIntegrationSettings: () => void;
+    };
+
+    api.form.controls.authkey.setValue('   ');
 
     api.saveIntegrationSettings();
 
@@ -231,6 +252,25 @@ describe('TourvisorIntegrationCardComponent', () => {
     expect((nonAdminFixture.nativeElement as HTMLElement).textContent).toContain(
       'Only admins can manage integrations.',
     );
+  });
+
+  it('shows toast error when loading agent options fails', () => {
+    fixture.destroy();
+    membersService.findAll.mockReturnValue(
+      throwError(
+        () =>
+          new HttpErrorResponse({
+            status: 500,
+            error: { message: 'Agent service unavailable' },
+          }),
+      ),
+    );
+
+    const failingFixture = TestBed.createComponent(TourvisorIntegrationCardComponent);
+
+    failingFixture.detectChanges();
+
+    expect(toast.showError).toHaveBeenCalledWith('Agent service unavailable');
   });
 });
 

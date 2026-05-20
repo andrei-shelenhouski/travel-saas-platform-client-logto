@@ -159,7 +159,7 @@
       @if (
         form.controls.contactTelegram.hasError('maxlength') && form.controls.contactTelegram.touched
       ) {
-        <mat-error>Telegram username must be at most 60 characters</mat-error>
+        <mat-error i18n="@@telegramMaxLengthError">Telegram username must be at most 60 characters</mat-error>
       }
       @if (hasServerError('contactTelegram')) {
         <mat-error>{{ serverErrorText('contactTelegram') }}</mat-error>

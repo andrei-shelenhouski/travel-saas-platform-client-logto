@@ -4,12 +4,12 @@
   <section class="content">
     @if (!isAdmin()) {
       <section aria-live="polite" class="state-card">
-        <p>Only admins can manage integrations.</p>
+        <p i18n="@@tourvisorAdminOnly">Only admins can manage integrations.</p>
       </section>
     } @else if (loading()) {
       <section aria-live="polite" class="state-card">
         <mat-progress-spinner diameter="36" mode="indeterminate" />
-        <p>Loading TourVisor integration settings...</p>
+        <p i18n="@@tourvisorLoading">Loading TourVisor integration settings...</p>
       </section>
     } @else {
       <mat-card appearance="outlined" class="integration-card">
@@ -18,13 +18,14 @@
             @if (isConnected() && !showSettingsForm()) {
               <span class="connected-title">
                 <mat-icon aria-hidden="true" fontSet="material-icons">check_circle</mat-icon>
-                <span>TourVisor Connected</span>
+                <span i18n="@@tourvisorConnectedTitle">TourVisor Connected</span>
               </span>
             } @else {
-              <span>TourVisor</span>
+              <span i18n="@@tourvisorTitle">TourVisor</span>
             }
           </mat-card-title>
           <mat-card-subtitle
+            i18n="@@tourvisorSubtitle"
             >Import client inquiries from your TourVisor account.</mat-card-subtitle
           >
         </mat-card-header>
@@ -35,7 +36,7 @@
           }
 
           @if (connectionTestState() === 'valid') {
-            <p class="inline-success">Valid authkey.</p>
+            <p class="inline-success" i18n="@@tourvisorAuthkeyValid">Valid authkey.</p>
           }
 
           @if (connectionTestState() === 'invalid' && connectionTestMessage(); as testError) {
@@ -47,15 +48,14 @@
 
             <div class="details-grid">
               <div class="detail-row">
-                <span class="detail-label">Default agent</span>
+                <span class="detail-label" i18n="@@tourvisorDefaultAgentLabel">Default agent</span>
                 <span class="detail-value">{{ selectedAgentLabel() }}</span>
-                <button mat-button type="button" (click)="openEditForm()">Change</button>
+                <button i18n="@@tourvisorDefaultAgentChange" mat-button type="button" (click)="openEditForm()">Change</button>
               </div>
 
               <div class="detail-row">
-                <span class="detail-label">Order types</span>
+                <span class="detail-label" i18n="@@tourvisorOrderTypesLabel">Order types</span>
                 <span class="detail-value">{{ ingestOrderTypesLabel() }}</span>
-                <button mat-button type="button" (click)="openEditForm()">Configure</button>
               </div>
             </div>
 
@@ -67,9 +67,9 @@
                 (click)="syncNow()"
               >
                 @if (syncing()) {
-                  <span>Syncing...</span>
+                  <span i18n="@@tourvisorSyncing">Syncing...</span>
                 } @else {
-                  <span>Sync Now</span>
+                  <span i18n="@@tourvisorSyncNow">Sync Now</span>
                 }
               </button>
 
@@ -81,32 +81,32 @@
                 (click)="confirmDisconnect()"
               >
                 @if (disconnecting()) {
-                  <span>Disconnecting...</span>
+                  <span i18n="@@tourvisorDisconnecting">Disconnecting...</span>
                 } @else {
-                  <span>Disconnect</span>
+                  <span i18n="@@tourvisorDisconnect">Disconnect</span>
                 }
               </button>
             </div>
           } @else {
             <form class="connect-form" [formGroup]="form" (ngSubmit)="saveIntegrationSettings()">
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>API Key (authkey)</mat-label>
+                <mat-label i18n="@@tourvisorApiKeyLabel">API Key (authkey)</mat-label>
                 <input autocomplete="off" formControlName="authkey" matInput type="text" />
                 @if (form.controls.authkey.hasError('required') && form.controls.authkey.touched) {
-                  <mat-error>Authkey is required.</mat-error>
+                  <mat-error i18n="@@tourvisorAuthkeyRequired">Authkey is required.</mat-error>
                 }
               </mat-form-field>
 
               <div class="help-row">
-                <button mat-button type="button" [matTooltip]="authkeyHelpText">
+                <button i18n="@@tourvisorFindAuthkey" mat-button type="button" [matTooltip]="authkeyHelpText">
                   Where do I find this?
                 </button>
               </div>
 
               <mat-form-field appearance="outline" class="full-width">
-                <mat-label>Default agent</mat-label>
+                <mat-label i18n="@@tourvisorDefaultAgentLabel">Default agent</mat-label>
                 <mat-select formControlName="defaultAgentId">
-                  <mat-option value="">Unassigned</mat-option>
+                  <mat-option i18n="@@tourvisorUnassigned" value="">Unassigned</mat-option>
                   @for (agent of agentOptions(); track agent.id) {
                     <mat-option [value]="agent.id">{{ agent.name }}</mat-option>
                   }
@@ -116,7 +116,7 @@
               <div class="actions-row">
                 @if (isConnected() && editingConnectedSettings()) {
                   <button mat-button type="button" [disabled]="saving()" (click)="cancelEditForm()">
-                    <span>Cancel</span>
+                    <span i18n="@@cancel">Cancel</span>
                   </button>
 
                   <button
@@ -126,20 +126,20 @@
                     (click)="testStoredConnection()"
                   >
                     @if (testing()) {
-                      <span>Testing...</span>
+                      <span i18n="@@tourvisorTesting">Testing...</span>
                     } @else {
-                      <span>Test connection</span>
+                      <span i18n="@@tourvisorTestConnection">Test connection</span>
                     }
                   </button>
                 }
 
                 <button color="primary" mat-flat-button type="submit" [disabled]="saving()">
                   @if (saving()) {
-                    <span>Saving...</span>
+                    <span i18n="@@saving">Saving...</span>
                   } @else if (isConnected()) {
-                    <span>Save</span>
+                    <span i18n="@@save">Save</span>
                   } @else {
-                    <span>Connect</span>
+                    <span i18n="@@connect">Connect</span>
                   }
                 </button>
               </div>

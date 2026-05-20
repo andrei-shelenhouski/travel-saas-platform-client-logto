@@ -5,6 +5,7 @@ import {
   computed,
   DestroyRef,
   inject,
+  LOCALE_ID,
   signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -56,22 +57,22 @@ const SALES_ROLES = new Set<string>([OrgRole.ADMIN, OrgRole.AGENT, OrgRole.SALES
 export class TourvisorIntegrationCardComponent {
   private readonly fb = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly locale = inject(LOCALE_ID);
   private readonly membersService = inject(OrganizationMembersService);
   private readonly permissions = inject(PermissionService);
   private readonly integrationService = inject(TourvisorIntegrationService);
   private readonly dialog = inject(MatDialog);
   private readonly toast = inject(ToastService);
 
-  private readonly relativeTimeFormatter = new Intl.RelativeTimeFormat('en', {
+  private readonly relativeTimeFormatter = new Intl.RelativeTimeFormat(this.locale, {
     numeric: 'auto',
   });
 
   private refreshTimerId: ReturnType<typeof setTimeout> | null = null;
 
-  protected readonly pageTitle = 'Integrations';
-  protected readonly pageSubtitle = 'Connect and manage external lead ingestion providers.';
-  protected readonly authkeyHelpText =
-    'Open TourVisor account settings, then copy the authkey from integration access settings.';
+  protected readonly pageTitle = $localize`:@@integrations:Integrations`;
+  protected readonly pageSubtitle = $localize`:@@tourvisorPageSubtitle:Connect and manage external lead ingestion providers.`;
+  protected readonly authkeyHelpText = $localize`:@@tourvisorAuthkeyHelp:Open TourVisor account settings, then copy the authkey from integration access settings.`;
 
   protected readonly loading = signal(true);
   protected readonly saving = signal(false);
@@ -194,6 +195,14 @@ export class TourvisorIntegrationCardComponent {
     const wasConnected = this.isConnected();
     const authkey = formValue.authkey.trim();
     const defaultAgentId = formValue.defaultAgentId.trim();
+
+    if (!authkey) {
+      this.form.controls.authkey.setErrors({ required: true });
+      this.form.controls.authkey.markAsTouched();
+
+      return;
+    }
+
     const dto: UpdateTourvisorIntegrationSettingsDto = {
       authkey,
       defaultAgentId: defaultAgentId ? defaultAgentId : null,
@@ -357,6 +366,10 @@ export class TourvisorIntegrationCardComponent {
           .sort((left, right) => left.name.localeCompare(right.name));
 
         this.agentOptions.set(options);
+      },
+      error: (error: unknown) => {
+        this.agentOptions.set([]);
+        this.toast.showError(this.getErrorMessage(error, 'Failed to load agent list.'));
       },
     });
   }
