@@ -230,9 +230,16 @@
                   <input
                     formControlName="contactTelegram"
                     matInput
+                    maxlength="60"
                     placeholder="@handle or t.me/..."
                     i18n-placeholder
                   />
+                  @if (
+                    travelForm.controls.contactTelegram.hasError('maxlength') &&
+                    travelForm.controls.contactTelegram.touched
+                  ) {
+                    <mat-error>Telegram username must be at most 60 characters</mat-error>
+                  }
                 </mat-form-field>
 
                 @if (showTravelContactGroupError()) {

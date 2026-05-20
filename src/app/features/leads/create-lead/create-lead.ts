@@ -124,7 +124,7 @@ export class CreateLeadComponent {
       clientName: ['', trimmedRequired],
       contactEmail: ['', Validators.email],
       contactPhone: ['', Validators.pattern(/^\+?\d{10,15}$/)],
-      contactTelegram: [''],
+      contactTelegram: ['', Validators.maxLength(60)],
       destination: ['', trimmedRequired],
       departDateFrom: [''],
       departDateTo: [''],

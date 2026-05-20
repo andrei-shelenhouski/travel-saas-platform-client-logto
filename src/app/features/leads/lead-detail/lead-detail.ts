@@ -282,7 +282,9 @@ export class LeadDetailComponent {
       contactEmail: this.formBuilder.control<string>('', {
         validators: [Validators.email],
       }),
-      contactTelegram: this.formBuilder.control<string>(''),
+      contactTelegram: this.formBuilder.control<string>('', {
+        validators: [Validators.maxLength(60)],
+      }),
       destination: this.formBuilder.control<string>(''),
       departDateFrom: this.formBuilder.control<string>(''),
       departDateTo: this.formBuilder.control<string>(''),

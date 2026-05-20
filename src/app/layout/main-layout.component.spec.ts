@@ -111,6 +111,12 @@ describe('MainLayoutComponent', () => {
     expect(component.navLinks().some((link) => link.path === '/app/settings/roles')).toBe(true);
   });
 
+  it('should show Integrations nav link when roles:view is allowed', () => {
+    expect(component.navLinks().some((link) => link.path === '/app/settings/integrations')).toBe(
+      true,
+    );
+  });
+
   it('should hide Roles & Permissions nav link when roles:view is missing', () => {
     rolesViewAllowed = false;
 
@@ -122,6 +128,19 @@ describe('MainLayoutComponent', () => {
     expect(restrictedComponent.navLinks().some((link) => link.path === '/app/settings/roles')).toBe(
       false,
     );
+  });
+
+  it('should hide Integrations nav link when roles:view is missing', () => {
+    rolesViewAllowed = false;
+
+    const restrictedFixture = TestBed.createComponent(MainLayoutComponent);
+    const restrictedComponent = restrictedFixture.componentInstance;
+
+    restrictedFixture.detectChanges();
+
+    expect(
+      restrictedComponent.navLinks().some((link) => link.path === '/app/settings/integrations'),
+    ).toBe(false);
   });
 
   it('should fallback to member label when org role is missing', () => {

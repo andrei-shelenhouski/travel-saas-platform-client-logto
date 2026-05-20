@@ -277,6 +277,15 @@ export const routes: Routes = [
         data: { permission: PermissionKey.ROLES_VIEW },
       },
       {
+        path: 'settings/integrations',
+        loadComponent: () =>
+          import('@app/features/settings/tourvisor-integration-card/tourvisor-integration-card').then(
+            (m) => m.TourvisorIntegrationCardComponent,
+          ),
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.ROLES_VIEW },
+      },
+      {
         path: 'settings/roles',
         loadComponent: () =>
           import('@app/features/settings/roles-permissions/roles-permissions').then(

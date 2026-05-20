@@ -111,6 +111,21 @@ describe('CreateLeadComponent', () => {
     expect(api.form.hasError('atLeastOneContactRequired')).toBe(false);
   });
 
+  it('validates telegram length against API max of 60 chars', () => {
+    const api = component as unknown as {
+      form: CreateLeadComponent['form'];
+    };
+
+    api.form.patchValue({
+      clientName: 'Alex Johnson',
+      destination: 'Antalya',
+      contactTelegram: `@${'a'.repeat(60)}`,
+    });
+    api.form.controls.contactTelegram.markAsTouched();
+
+    expect(api.form.controls.contactTelegram.hasError('maxlength')).toBe(true);
+  });
+
   it('includes company name for B2B and agent clients in search labels', () => {
     const api = component as unknown as {
       clientDisplayFn: (client: ClientResponseDto | string | null) => string;

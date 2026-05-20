@@ -58,6 +58,12 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
     requiredPermission: PermissionKey.ROLES_VIEW,
   },
   {
+    path: '/app/settings/integrations',
+    icon: 'hub',
+    label: 'Integrations',
+    requiredPermission: PermissionKey.ROLES_VIEW,
+  },
+  {
     path: '/app/settings',
     icon: 'settings',
     label: $localize`:@@settings:Settings`,
