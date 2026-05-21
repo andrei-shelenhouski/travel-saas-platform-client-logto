@@ -68,6 +68,9 @@ describe('LeadsListComponent', () => {
     filterBarComponent.clientTypeFilterChange.emit('COMPANY');
     expect(component.clientTypeFilter()).toBe('COMPANY');
 
+    filterBarComponent.sourceFilterChange.emit('TOURVISOR');
+    expect(component.sourceFilter()).toBe('TOURVISOR');
+
     filterBarComponent.dateFromChange.emit('2026-01-01');
     expect(component.dateFromFilter()).toBe('2026-01-01');
 

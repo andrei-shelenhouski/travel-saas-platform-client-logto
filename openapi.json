@@ -29,16 +29,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -46,6 +36,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -89,16 +89,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -106,6 +96,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -151,16 +151,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -168,6 +158,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -203,16 +203,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -220,6 +210,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -255,16 +255,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -272,6 +262,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -296,16 +296,6 @@
         ],
         "operationId": "getSettings",
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -313,6 +303,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -345,16 +345,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -362,6 +352,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -375,6 +375,128 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/settings/integrations/tourvisor": {
+      "get": {
+        "tags": [
+          "tourvisor-integration-settings-controller"
+        ],
+        "operationId": "getStatus",
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TourvisorIntegrationStatusResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "tourvisor-integration-settings-controller"
+        ],
+        "operationId": "upsert",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertTourvisorIntegrationRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TourvisorIntegrationStatusResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "tourvisor-integration-settings-controller"
+        ],
+        "operationId": "disconnect",
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -397,16 +519,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -414,6 +526,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -457,16 +579,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -474,6 +586,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -507,16 +629,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -524,6 +636,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -562,16 +684,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -579,6 +691,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -614,16 +736,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -631,6 +743,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -674,16 +796,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -691,6 +803,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -724,16 +846,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -741,6 +853,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -769,16 +891,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -786,6 +898,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -829,16 +951,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -846,6 +958,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -879,16 +1001,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -896,6 +1008,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -934,16 +1056,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -951,6 +1063,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -986,16 +1108,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1003,6 +1115,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1046,16 +1168,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1063,6 +1175,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1096,16 +1218,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1113,6 +1225,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1151,16 +1273,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1168,6 +1280,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1203,16 +1325,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1220,6 +1332,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1263,16 +1385,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1280,6 +1392,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1315,16 +1437,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1332,6 +1444,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1377,16 +1499,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1394,6 +1506,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1429,16 +1551,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1446,6 +1558,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1489,16 +1611,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1506,6 +1618,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1539,16 +1661,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1556,6 +1668,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1603,16 +1725,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1620,6 +1732,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1662,16 +1784,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1679,6 +1791,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1707,16 +1829,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1724,6 +1836,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1767,16 +1889,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1784,6 +1896,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1817,16 +1939,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1834,6 +1946,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1872,16 +1994,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1889,6 +2001,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1913,16 +2035,6 @@
         ],
         "operationId": "list",
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1930,6 +2042,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -1965,16 +2087,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -1982,6 +2094,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2044,16 +2166,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2061,6 +2173,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2093,16 +2215,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2110,6 +2222,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2144,16 +2266,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2161,6 +2273,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2196,16 +2318,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2213,6 +2325,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2261,16 +2383,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2278,6 +2390,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2295,16 +2417,6 @@
         ],
         "operationId": "getLogo",
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2312,6 +2424,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2352,6 +2474,17 @@
           }
         },
         "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
           "400": {
             "description": "Bad Request",
             "content": {
@@ -2362,6 +2495,19 @@
               }
             }
           },
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/settings/integrations/tourvisor/test": {
+      "post": {
+        "tags": [
+          "tourvisor-integration-settings-controller"
+        ],
+        "operationId": "testConnection",
+        "responses": {
           "409": {
             "description": "Conflict",
             "content": {
@@ -2369,6 +2515,57 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/TourvisorTestResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/settings/integrations/tourvisor/sync": {
+      "post": {
+        "tags": [
+          "tourvisor-integration-settings-controller"
+        ],
+        "operationId": "triggerSync",
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2386,16 +2583,6 @@
         ],
         "operationId": "listRoles",
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2403,6 +2590,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2438,16 +2635,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2455,6 +2642,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2507,16 +2704,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2524,6 +2711,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2556,16 +2753,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2573,6 +2760,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2607,16 +2804,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2624,6 +2811,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2648,16 +2845,6 @@
         ],
         "operationId": "listMembers",
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2665,6 +2852,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2700,16 +2897,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2717,6 +2904,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2741,16 +2938,6 @@
         ],
         "operationId": "list_4",
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2758,6 +2945,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2793,16 +2990,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2810,6 +2997,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2891,16 +3088,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2908,6 +3095,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2940,16 +3137,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -2957,6 +3144,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -2992,16 +3189,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3009,6 +3196,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3043,16 +3240,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3060,6 +3247,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3092,16 +3289,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3109,6 +3296,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3154,16 +3351,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3171,6 +3358,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3206,16 +3403,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3223,6 +3410,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3257,16 +3454,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3274,6 +3461,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3306,16 +3503,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3323,6 +3510,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3358,16 +3555,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3375,6 +3562,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3421,16 +3618,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3438,6 +3625,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3472,16 +3669,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3489,6 +3676,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3523,16 +3720,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3540,6 +3727,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3553,6 +3750,59 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/integrations/tourvisor/webhook/{orgId}": {
+      "post": {
+        "tags": [
+          "tourvisor-webhook-controller"
+        ],
+        "operationId": "receiveWebhook",
+        "parameters": [
+          {
+            "name": "orgId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -3591,16 +3841,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3608,6 +3848,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3643,16 +3893,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3660,6 +3900,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3694,16 +3944,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3711,6 +3951,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3743,16 +3993,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3760,6 +4000,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3805,16 +4055,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3822,6 +4062,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3901,16 +4151,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3918,6 +4158,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -3950,16 +4200,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -3967,6 +4207,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4002,16 +4252,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4019,6 +4259,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4073,16 +4323,6 @@
           }
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4090,6 +4330,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4141,16 +4391,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4158,6 +4398,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4191,16 +4441,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4208,6 +4448,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4253,16 +4503,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4270,6 +4510,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4315,16 +4565,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4332,6 +4572,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4377,16 +4627,6 @@
           "required": true
         },
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4394,6 +4634,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4429,16 +4679,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4446,6 +4686,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4479,16 +4729,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4496,6 +4736,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4524,16 +4774,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4541,6 +4781,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4568,16 +4818,6 @@
         ],
         "operationId": "stats",
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4585,6 +4825,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4613,16 +4863,6 @@
         ],
         "operationId": "listPermissions",
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4630,6 +4870,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4668,16 +4918,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4685,6 +4925,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4710,16 +4960,6 @@
         ],
         "operationId": "stats_1",
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4727,6 +4967,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4755,16 +5005,6 @@
         ],
         "operationId": "me",
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4772,6 +5012,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4815,16 +5065,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4832,6 +5072,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4856,16 +5106,6 @@
         ],
         "operationId": "stats_2",
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4873,6 +5113,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4912,16 +5162,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4929,6 +5169,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4954,16 +5204,6 @@
         ],
         "operationId": "summary",
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -4971,6 +5211,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -4995,16 +5245,6 @@
         ],
         "operationId": "get",
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5012,6 +5252,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5047,16 +5297,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5064,6 +5304,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5097,16 +5347,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5114,6 +5354,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5150,16 +5400,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5167,6 +5407,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5210,16 +5460,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5227,6 +5467,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5270,16 +5520,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5287,6 +5527,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5330,16 +5580,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5347,6 +5587,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5390,16 +5640,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5407,6 +5647,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5450,16 +5700,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5467,6 +5707,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5491,16 +5741,6 @@
         ],
         "operationId": "stats_3",
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5508,6 +5748,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5547,16 +5797,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5564,6 +5804,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5599,16 +5849,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5616,6 +5856,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5661,16 +5911,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5678,6 +5918,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5706,16 +5956,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5723,6 +5963,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5760,16 +6010,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5777,6 +6017,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -5814,16 +6064,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "*/*": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResponse"
-                }
-              }
-            }
-          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -5831,6 +6071,16 @@
                 "schema": {
                   "type": "object",
                   "additionalProperties": {}
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "*/*": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
                 }
               }
             }
@@ -6140,6 +6390,56 @@
           "updatedAt": {
             "type": "string",
             "format": "date-time"
+          }
+        }
+      },
+      "UpsertTourvisorIntegrationRequest": {
+        "type": "object",
+        "properties": {
+          "authkey": {
+            "type": "string",
+            "minLength": 1
+          },
+          "defaultAgentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "ingestOrderTypes": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        },
+        "required": [
+          "authkey"
+        ]
+      },
+      "TourvisorIntegrationStatusResponse": {
+        "type": "object",
+        "properties": {
+          "connected": {
+            "type": "boolean"
+          },
+          "defaultAgentId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lastPolledAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastWebhookAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "ingestOrderTypes": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32"
+            }
           }
         }
       },
@@ -6702,7 +7002,9 @@
             "type": "string"
           },
           "contactTelegram": {
-            "type": "string"
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 0
           }
         }
       },
@@ -6726,7 +7028,8 @@
               "TELEGRAM",
               "WEBSITE",
               "AGENT",
-              "OTHER"
+              "OTHER",
+              "TOURVISOR"
             ]
           },
           "clientId": {
@@ -7676,6 +7979,17 @@
           }
         }
       },
+      "TourvisorTestResponse": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "error": {
+            "type": "string"
+          }
+        }
+      },
       "CreateRoleRequest": {
         "type": "object",
         "properties": {
@@ -7938,7 +8252,9 @@
             "type": "string"
           },
           "contactTelegram": {
-            "type": "string"
+            "type": "string",
+            "maxLength": 60,
+            "minLength": 0
           },
           "destination": {
             "type": "string"
@@ -8776,7 +9092,8 @@
               "TELEGRAM",
               "WEBSITE",
               "AGENT",
-              "OTHER"
+              "OTHER",
+              "TOURVISOR"
             ]
           },
           "dateFrom": {

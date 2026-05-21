@@ -37,6 +37,7 @@ import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientResponseDto, CreateLeadDto, LeadResponseDto, OrgRole } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 import { formatClientSearchLabel } from '@app/shared/utils/client-display';
+
 import { atLeastOneContactValidator } from '../leads.validators';
 
 type CreateLeadForm = FormGroup<{
@@ -124,7 +125,7 @@ export class CreateLeadComponent {
       clientName: ['', trimmedRequired],
       contactEmail: ['', Validators.email],
       contactPhone: ['', Validators.pattern(/^\+?\d{10,15}$/)],
-      contactTelegram: [''],
+      contactTelegram: ['', Validators.maxLength(60)],
       destination: ['', trimmedRequired],
       departDateFrom: [''],
       departDateTo: [''],

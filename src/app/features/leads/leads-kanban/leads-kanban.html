@@ -29,12 +29,15 @@
     [searchControl]="searchControl"
     [selectedAgentId]="selectedAgentId()"
     [showAgentFilter]="showAgentFilter()"
+    [sourceFilter]="sourceFilter()"
+    [sourceOptions]="sourceOptions"
     [statusFilter]="statusFilter()"
     [statusOptions]="statusOptions"
     (agentFilterChange)="onAgentFilterChange($event)"
     (clientTypeFilterChange)="onClientTypeFilterChange($event)"
     (dateFromChange)="onDateFromChange($event)"
     (dateToChange)="onDateToChange($event)"
+    (sourceFilterChange)="onSourceFilterChange($event)"
     (statusFilterChange)="onStatusFilterChange($event)"
   />
 
@@ -119,12 +122,15 @@
                   <div class="min-w-0">
                     <span class="font-medium text-gray-900">{{ lead.clientName }}</span>
                   </div>
-                  <span
-                    class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-700"
-                    [attr.aria-label]="lead.assignedAgentName || 'Unassigned'"
-                  >
-                    {{ getAgentInitials(lead.assignedAgentName) }}
-                  </span>
+                  <div class="flex items-center gap-2">
+                    <app-lead-source-badge size="compact" [source]="lead.source" />
+                    <span
+                      class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-700"
+                      [attr.aria-label]="lead.assignedAgentName || 'Unassigned'"
+                    >
+                      {{ getAgentInitials(lead.assignedAgentName) }}
+                    </span>
+                  </div>
                 </div>
                 @if (lead.destination) {
                   <p class="mt-0.5 text-xs text-gray-500 truncate">

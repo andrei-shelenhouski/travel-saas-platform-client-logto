@@ -1,0 +1,15 @@
+@if (badge(); as sourceBadge) {
+  <span
+    class="lead-source-badge"
+    [class.lead-source-badge-compact]="size() === 'compact'"
+    [style.background-color]="sourceBadge.backgroundColor"
+    [style.color]="sourceBadge.color"
+  >
+    <mat-icon class="lead-source-icon" [style.color]="sourceBadge.color">{{
+      sourceBadge.icon
+    }}</mat-icon>
+    <span>{{ sourceBadge.label }}</span>
+  </span>
+} @else {
+  <span class="lead-source-empty">—</span>
+}

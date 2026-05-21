@@ -55,7 +55,19 @@
               <p class="lead-header-label">Lead number</p>
               <h1 class="lead-header-title">{{ l.number }}</h1>
             </div>
-            <app-status-badge variant="lead" [status]="l.status" />
+            <div class="lead-header-side">
+              <app-lead-source-badge [source]="l.source" />
+              <app-status-badge variant="lead" [status]="l.status" />
+            </div>
+          </div>
+          <div class="lead-header-meta">
+            @if (getTourvisorExternalLeadId(l); as externalLeadId) {
+              <p class="lead-header-meta-note">
+                <mat-icon>language</mat-icon>
+                <span i18n="@@leadDetailTourvisorOrderLabel">TourVisor order #</span>
+                <strong>{{ externalLeadId }}</strong>
+              </p>
+            }
           </div>
         </section>
 
@@ -230,9 +242,18 @@
                   <input
                     formControlName="contactTelegram"
                     matInput
+                    maxlength="60"
                     placeholder="@handle or t.me/..."
                     i18n-placeholder
                   />
+                  @if (
+                    travelForm.controls.contactTelegram.hasError('maxlength') &&
+                    travelForm.controls.contactTelegram.touched
+                  ) {
+                    <mat-error i18n="@@telegramMaxLengthError"
+                      >Telegram username must be at most 60 characters</mat-error
+                    >
+                  }
                 </mat-form-field>
 
                 @if (showTravelContactGroupError()) {
@@ -311,7 +332,9 @@
                 </div>
                 <div class="lead-data-row">
                   <dt>Notes</dt>
-                  <dd class="whitespace-pre-wrap">{{ l.notes ?? '—' }}</dd>
+                  <dd class="whitespace-pre-wrap markdown-body">
+                    <div [innerHTML]="l.notes ?? '—' | markdown"></div>
+                  </dd>
                 </div>
               </dl>
             }
@@ -581,11 +604,11 @@
                       @if (request.notes) {
                         <div class="request-notes-container">
                           <p
-                            class="request-notes"
+                            class="request-notes markdown-body"
                             [class.request-notes-expanded]="isNotesExpanded(request.id)"
-                          >
-                            {{ request.notes }}
-                          </p>
+                            [class.whitespace-pre-wrap]="isNotesExpanded(request.id)"
+                            [innerHTML]="request.notes | markdown"
+                          ></p>
                           @if (request.notes.length > 80) {
                             <button
                               class="request-notes-toggle"

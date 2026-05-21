@@ -439,6 +439,34 @@ describe('LeadDetailComponent', () => {
 
     expect(api.travelForm.hasError('atLeastOneContactRequired')).toBe(false);
   });
+
+  it('returns TourVisor external lead id when source and id are present', () => {
+    const api = component as unknown as {
+      getTourvisorExternalLeadId: (lead: LeadResponseDto | null) => string | null;
+    };
+    const lead = {
+      ...createLead({ source: 'TOURVISOR' }),
+      externalLeadId: 'TV-9001',
+    } as LeadResponseDto;
+
+    const externalLeadId = api.getTourvisorExternalLeadId(lead);
+
+    expect(externalLeadId).toBe('TV-9001');
+  });
+
+  it('returns null TourVisor external id when source is not TourVisor', () => {
+    const api = component as unknown as {
+      getTourvisorExternalLeadId: (lead: LeadResponseDto | null) => string | null;
+    };
+    const lead = {
+      ...createLead({ source: 'MANUAL' }),
+      externalLeadId: 'TV-9001',
+    } as LeadResponseDto;
+
+    const externalLeadId = api.getTourvisorExternalLeadId(lead);
+
+    expect(externalLeadId).toBeNull();
+  });
 });
 
 function createRequest(

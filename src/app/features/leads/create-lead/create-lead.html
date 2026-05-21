@@ -151,10 +151,18 @@
       <input
         formControlName="contactTelegram"
         matInput
+        maxlength="60"
         placeholder="@handle or t.me/..."
         i18n-placeholder
         [readonly]="contactLocked()"
       />
+      @if (
+        form.controls.contactTelegram.hasError('maxlength') && form.controls.contactTelegram.touched
+      ) {
+        <mat-error i18n="@@telegramMaxLengthError"
+          >Telegram username must be at most 60 characters</mat-error
+        >
+      }
       @if (hasServerError('contactTelegram')) {
         <mat-error>{{ serverErrorText('contactTelegram') }}</mat-error>
       }

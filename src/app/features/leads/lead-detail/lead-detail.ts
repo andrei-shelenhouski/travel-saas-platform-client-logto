@@ -27,6 +27,7 @@ import { catchError, finalize, map } from 'rxjs/operators';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
 import { AssignDialogComponent } from '@app/features/leads/assign-dialog/assign-dialog';
+import { LeadSourceBadgeComponent } from '@app/features/leads/lead-source-badge/lead-source-badge';
 import { LinkLeadClientDialogComponent } from '@app/features/leads/link-lead-client-dialog/link-lead-client-dialog';
 // eslint-disable-next-line max-len
 import { PromoteLeadClientDialogComponent } from '@app/features/leads/promote-lead-client-dialog/promote-lead-client-dialog';
@@ -39,7 +40,9 @@ import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { LeadStatus } from '@app/shared/models';
+import { MarkdownPipe } from '@app/shared/pipes/markdown-pipe';
 import { ToastService } from '@app/shared/services/toast.service';
+
 import { atLeastOneContactValidator } from '../leads.validators';
 
 import type {
@@ -49,7 +52,6 @@ import type {
   OfferResponseDto,
   RequestResponseDto,
 } from '@app/shared/models';
-
 type LeadAction = 'assign' | 'to_in_progress' | 'to_offer_sent' | 'mark_lost';
 
 type LeadWithBooking = LeadResponseDto & {
@@ -105,7 +107,9 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     ...MAT_MENU,
     StatusBadgeComponent,
     ClientTypeBadgeComponent,
+    LeadSourceBadgeComponent,
     PageHeading,
+    MarkdownPipe,
   ],
   templateUrl: './lead-detail.html',
   styleUrl: './lead-detail.scss',
@@ -282,7 +286,9 @@ export class LeadDetailComponent {
       contactEmail: this.formBuilder.control<string>('', {
         validators: [Validators.email],
       }),
-      contactTelegram: this.formBuilder.control<string>(''),
+      contactTelegram: this.formBuilder.control<string>('', {
+        validators: [Validators.maxLength(60)],
+      }),
       destination: this.formBuilder.control<string>(''),
       departDateFrom: this.formBuilder.control<string>(''),
       departDateTo: this.formBuilder.control<string>(''),
@@ -974,6 +980,23 @@ export class LeadDetailComponent {
     }
 
     return parts.map((part) => part[0]?.toUpperCase() ?? '').join('');
+  }
+
+  protected getTourvisorExternalLeadId(lead: LeadResponseDto | null): string | null {
+    if (!lead || lead.source !== 'TOURVISOR') {
+      return null;
+    }
+
+    const dynamicLead = lead as Record<string, unknown>;
+    const externalLeadId = dynamicLead['externalLeadId'] ?? dynamicLead['external_lead_id'];
+
+    if (typeof externalLeadId === 'string') {
+      const trimmed = externalLeadId.trim();
+
+      return trimmed.length > 0 ? trimmed : null;
+    }
+
+    return null;
   }
 
   protected formatDateRange(

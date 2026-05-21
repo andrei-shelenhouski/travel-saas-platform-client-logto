@@ -11,4 +11,15 @@ describe('app.routes', () => {
     expect(settingsRolesRoute?.canActivate).toContain(permissionGuard);
     expect(settingsRolesRoute?.data?.['permission']).toBe(PermissionKey.ROLES_VIEW);
   });
+
+  it('guards settings/integrations with roles:view permission', () => {
+    const appRoute = routes.find((route) => route.path === 'app');
+    const integrationsRoute = appRoute?.children?.find(
+      (route) => route.path === 'settings/integrations',
+    );
+
+    expect(integrationsRoute).toBeTruthy();
+    expect(integrationsRoute?.canActivate).toContain(permissionGuard);
+    expect(integrationsRoute?.data?.['permission']).toBe(PermissionKey.ROLES_VIEW);
+  });
 });
