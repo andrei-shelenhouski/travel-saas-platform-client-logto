@@ -24,6 +24,12 @@ describe('LeadsListFilterBarComponent', () => {
       { value: 'COMPANY', label: 'Company' },
       { value: 'INDIVIDUAL', label: 'Individual' },
     ]);
+    fixture.componentRef.setInput('sourceFilter', 'INSTAGRAM_ADS');
+    fixture.componentRef.setInput('sourceOptions', [
+      { value: 'MANUAL', label: 'Manual' },
+      { value: 'INSTAGRAM_ADS', label: 'Instagram ads' },
+      { value: 'TOURVISOR', label: 'TourVisor' },
+    ]);
     fixture.componentRef.setInput('dateFromFilter', '2026-01-01');
     fixture.componentRef.setInput('dateToFilter', '2026-01-31');
     fixture.componentRef.setInput('searchControl', new FormControl('john', { nonNullable: true }));
@@ -48,18 +54,21 @@ describe('LeadsListFilterBarComponent', () => {
     const statusFilterEmit = vi.spyOn(component.statusFilterChange, 'emit');
     const agentFilterEmit = vi.spyOn(component.agentFilterChange, 'emit');
     const clientTypeFilterEmit = vi.spyOn(component.clientTypeFilterChange, 'emit');
+    const sourceFilterEmit = vi.spyOn(component.sourceFilterChange, 'emit');
     const dateFromEmit = vi.spyOn(component.dateFromChange, 'emit');
     const dateToEmit = vi.spyOn(component.dateToChange, 'emit');
 
     component.onStatusSelectionChange(['ASSIGNED']);
     component.onAgentSelectionChange('agent-2');
     component.onClientTypeSelectionChange('INDIVIDUAL');
+    component.onSourceSelectionChange('TOURVISOR');
     component.onDateFromInputChange('2026-02-01');
     component.onDateToInputChange('2026-02-28');
 
     expect(statusFilterEmit).toHaveBeenCalledWith(['ASSIGNED']);
     expect(agentFilterEmit).toHaveBeenCalledWith('agent-2');
     expect(clientTypeFilterEmit).toHaveBeenCalledWith('INDIVIDUAL');
+    expect(sourceFilterEmit).toHaveBeenCalledWith('TOURVISOR');
     expect(dateFromEmit).toHaveBeenCalledWith('2026-02-01');
     expect(dateToEmit).toHaveBeenCalledWith('2026-02-28');
   });

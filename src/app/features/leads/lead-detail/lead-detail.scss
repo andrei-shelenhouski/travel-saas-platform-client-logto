@@ -22,7 +22,38 @@
 .lead-header-main {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  width: 100%;
   gap: 0.75rem;
+}
+
+.lead-header-side {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lead-header-meta {
+  width: 100%;
+}
+
+.lead-header-meta-note {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.875rem;
+  color: #14532d;
+  background: #ecfdf3;
+  border: 1px solid #bbf7d0;
+  border-radius: 0.5rem;
+  padding: 0.35rem 0.6rem;
+}
+
+.lead-header-meta-note mat-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
 }
 
 .lead-header-label {

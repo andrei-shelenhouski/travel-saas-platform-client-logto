@@ -1,0 +1,33 @@
+.lead-source-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0.25rem 0.5rem;
+  white-space: nowrap;
+}
+
+.lead-source-badge-compact {
+  font-size: 0.6875rem;
+  padding: 0.2rem 0.45rem;
+}
+
+.lead-source-icon {
+  font-size: 0.95rem;
+  height: 0.95rem;
+  width: 0.95rem;
+}
+
+.lead-source-badge-compact .lead-source-icon {
+  font-size: 0.85rem;
+  height: 0.85rem;
+  width: 0.85rem;
+}
+
+.lead-source-empty {
+  color: #9ca3af;
+  font-size: 0.75rem;
+}

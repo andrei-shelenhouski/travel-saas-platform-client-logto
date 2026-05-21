@@ -20,6 +20,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
+import { LeadSourceBadgeComponent } from '@app/features/leads/lead-source-badge/lead-source-badge';
 import { LeadsService } from '@app/services/leads.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
@@ -31,6 +32,7 @@ import { LeadsListFilterBarComponent } from '../leads-list-filter-bar/leads-list
 
 import type {
   LeadResponseDto,
+  LeadSource,
   LeadStatus,
   OrganizationMemberResponseDto,
 } from '@app/shared/models';
@@ -45,6 +47,11 @@ type LeadStatusOption = {
 type AgentOption = {
   id: string;
   name: string;
+};
+
+type SourceOption = {
+  value: LeadSource | string;
+  label: string;
 };
 
 const LEAD_STATUS_OPTIONS: LeadStatusOption[] = [
@@ -62,6 +69,12 @@ const CLIENT_TYPE_OPTIONS = [
   { value: 'COMPANY', label: $localize`:@@leadClientTypeCompany:Company` },
   { value: 'B2B_AGENT', label: $localize`:@@leadClientTypeB2BAgent:B2B agent` },
   { value: 'AGENT', label: $localize`:@@leadClientTypeAgent:Agent` },
+];
+
+const LEAD_SOURCE_OPTIONS: SourceOption[] = [
+  { value: 'MANUAL', label: $localize`:@@leadSourceManual:Manual` },
+  { value: 'INSTAGRAM_ADS', label: $localize`:@@leadSourceInstagramAds:Instagram ads` },
+  { value: 'TOURVISOR', label: $localize`:@@leadSourceTourvisor:TourVisor` },
 ];
 
 const LEAD_STATUSES = new Set<LeadStatus>([
@@ -90,6 +103,7 @@ const LEAD_STATUSES = new Set<LeadStatus>([
     ReactiveFormsModule,
     RouterLink,
     ClientTypeBadgeComponent,
+    LeadSourceBadgeComponent,
     LeadsListFilterBarComponent,
     StatusBadgeComponent,
   ],
@@ -111,6 +125,7 @@ export class LeadsListComponent {
 
   protected readonly statusOptions = LEAD_STATUS_OPTIONS;
   protected readonly clientTypeOptions = CLIENT_TYPE_OPTIONS;
+  protected readonly sourceOptions = LEAD_SOURCE_OPTIONS;
 
   protected readonly showAgentFilter = computed(() => this.permissionService.canViewAllLeads());
   protected readonly canCreateLead = computed(() => this.permissionService.canCreateLead());
@@ -119,6 +134,7 @@ export class LeadsListComponent {
   readonly statusFilter = signal<LeadStatus[]>([]);
   readonly selectedAgentId = signal('');
   readonly clientTypeFilter = signal('');
+  readonly sourceFilter = signal('');
   readonly dateFromFilter = signal('');
   readonly dateToFilter = signal('');
   readonly searchFilter = signal('');
@@ -157,12 +173,13 @@ export class LeadsListComponent {
       status: this.statusFilter(),
       agentId: this.effectiveAgentId(),
       clientType: this.clientTypeFilter(),
+      source: this.sourceFilter(),
       dateFrom: this.dateFromFilter(),
       dateTo: this.dateToFilter(),
       search: this.searchFilter(),
     }),
     stream: ({ params }) => {
-      const { agentId, clientType, dateFrom, dateTo, page, search, status } = params;
+      const { agentId, clientType, dateFrom, dateTo, page, search, source, status } = params;
 
       return this.leadsService.findAll({
         page: page + 1,
@@ -170,6 +187,7 @@ export class LeadsListComponent {
         status: status.length > 0 ? status : undefined,
         agentId: agentId || undefined,
         clientType: clientType || undefined,
+        source: source || undefined,
         dateFrom: dateFrom || undefined,
         dateTo: dateTo || undefined,
         search: search || undefined,
@@ -243,6 +261,11 @@ export class LeadsListComponent {
     this.currentPage.set(0);
   }
 
+  onSourceFilterChange(source: string): void {
+    this.sourceFilter.set(source ?? '');
+    this.currentPage.set(0);
+  }
+
   onDateFromChange(value: string): void {
     this.dateFromFilter.set(value);
     this.currentPage.set(0);
@@ -290,6 +313,7 @@ export class LeadsListComponent {
         const status = this.parseStatus(queryParams.get('status'));
         const agentId = queryParams.get('agentId') ?? '';
         const clientType = queryParams.get('clientType') ?? '';
+        const source = queryParams.get('source') ?? '';
         const dateFrom = queryParams.get('dateFrom') ?? '';
         const dateTo = queryParams.get('dateTo') ?? '';
         const search = queryParams.get('search') ?? '';
@@ -298,6 +322,7 @@ export class LeadsListComponent {
         this.statusFilter.set(status);
         this.selectedAgentId.set(agentId);
         this.clientTypeFilter.set(clientType);
+        this.sourceFilter.set(source);
         this.dateFromFilter.set(dateFrom);
         this.dateToFilter.set(dateTo);
         this.searchFilter.set(search);
@@ -336,6 +361,7 @@ export class LeadsListComponent {
       const status = this.statusFilter();
       const agentId = this.effectiveAgentId();
       const clientType = this.clientTypeFilter();
+      const source = this.sourceFilter();
       const dateFrom = this.dateFromFilter();
       const dateTo = this.dateToFilter();
       const search = this.searchFilter();
@@ -345,6 +371,7 @@ export class LeadsListComponent {
         status: status.length > 0 ? status.join(',') : undefined,
         agentId: agentId || undefined,
         clientType: clientType || undefined,
+        source: source || undefined,
         dateFrom: dateFrom || undefined,
         dateTo: dateTo || undefined,
         search: search || undefined,

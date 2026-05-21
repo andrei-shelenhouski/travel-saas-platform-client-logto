@@ -27,6 +27,7 @@ import { catchError, finalize, map } from 'rxjs/operators';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
 import { AssignDialogComponent } from '@app/features/leads/assign-dialog/assign-dialog';
+import { LeadSourceBadgeComponent } from '@app/features/leads/lead-source-badge/lead-source-badge';
 import { LinkLeadClientDialogComponent } from '@app/features/leads/link-lead-client-dialog/link-lead-client-dialog';
 // eslint-disable-next-line max-len
 import { PromoteLeadClientDialogComponent } from '@app/features/leads/promote-lead-client-dialog/promote-lead-client-dialog';
@@ -106,6 +107,7 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     ...MAT_MENU,
     StatusBadgeComponent,
     ClientTypeBadgeComponent,
+    LeadSourceBadgeComponent,
     PageHeading,
   ],
   templateUrl: './lead-detail.html',
@@ -977,6 +979,23 @@ export class LeadDetailComponent {
     }
 
     return parts.map((part) => part[0]?.toUpperCase() ?? '').join('');
+  }
+
+  protected getTourvisorExternalLeadId(lead: LeadResponseDto | null): string | null {
+    if (!lead || lead.source !== 'TOURVISOR') {
+      return null;
+    }
+
+    const dynamicLead = lead as Record<string, unknown>;
+    const externalLeadId = dynamicLead['externalLeadId'] ?? dynamicLead['external_lead_id'];
+
+    if (typeof externalLeadId === 'string') {
+      const trimmed = externalLeadId.trim();
+
+      return trimmed.length > 0 ? trimmed : null;
+    }
+
+    return null;
   }
 
   protected formatDateRange(

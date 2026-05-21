@@ -34,7 +34,7 @@ export class LeadsService {
     status?: LeadStatus | LeadStatus[];
     agentId?: string;
     clientType?: string;
-    source?: LeadSource;
+    source?: LeadSource | string;
     dateFrom?: string;
     dateTo?: string;
     search?: string;

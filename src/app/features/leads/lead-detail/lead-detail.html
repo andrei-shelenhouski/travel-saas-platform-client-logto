@@ -55,7 +55,19 @@
               <p class="lead-header-label">Lead number</p>
               <h1 class="lead-header-title">{{ l.number }}</h1>
             </div>
-            <app-status-badge variant="lead" [status]="l.status" />
+            <div class="lead-header-side">
+              <app-lead-source-badge [source]="l.source" />
+              <app-status-badge variant="lead" [status]="l.status" />
+            </div>
+          </div>
+          <div class="lead-header-meta">
+            @if (getTourvisorExternalLeadId(l); as externalLeadId) {
+              <p class="lead-header-meta-note">
+                <mat-icon>language</mat-icon>
+                <span i18n="@@leadDetailTourvisorOrderLabel">TourVisor order #</span>
+                <strong>{{ externalLeadId }}</strong>
+              </p>
+            }
           </div>
         </section>
 
