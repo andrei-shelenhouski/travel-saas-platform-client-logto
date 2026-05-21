@@ -20,6 +20,11 @@ type ClientTypeOption = {
   label: string;
 };
 
+type SourceOption = {
+  value: string;
+  label: string;
+};
+
 @Component({
   selector: 'app-leads-list-filter-bar',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -35,6 +40,8 @@ export class LeadsListFilterBarComponent {
   readonly agentOptions = input.required<AgentOption[]>();
   readonly clientTypeFilter = input.required<string>();
   readonly clientTypeOptions = input.required<ClientTypeOption[]>();
+  readonly sourceFilter = input.required<string>();
+  readonly sourceOptions = input.required<SourceOption[]>();
   readonly dateFromFilter = input.required<string>();
   readonly dateToFilter = input.required<string>();
   readonly searchControl = input.required<FormControl<string>>();
@@ -42,6 +49,7 @@ export class LeadsListFilterBarComponent {
   readonly statusFilterChange = output<LeadStatus[]>();
   readonly agentFilterChange = output<string>();
   readonly clientTypeFilterChange = output<string>();
+  readonly sourceFilterChange = output<string>();
   readonly dateFromChange = output<string>();
   readonly dateToChange = output<string>();
 
@@ -55,6 +63,10 @@ export class LeadsListFilterBarComponent {
 
   onClientTypeSelectionChange(clientType: string): void {
     this.clientTypeFilterChange.emit(clientType ?? '');
+  }
+
+  onSourceSelectionChange(source: string): void {
+    this.sourceFilterChange.emit(source ?? '');
   }
 
   onDateFromInputChange(value: string): void {

@@ -99,6 +99,19 @@ describe('LeadsKanbanComponent', () => {
     expect(lead.status).toBe('NEW');
     expect(showErrorSpy).toHaveBeenCalledWith('Invalid status transition');
   });
+
+  it('forwards source filter to leads API query', () => {
+    const findAllSpy = vi.spyOn(leadsServiceMock, 'findAll');
+
+    component.onSourceFilterChange('TOURVISOR');
+    fixture.detectChanges();
+
+    expect(findAllSpy).toHaveBeenLastCalledWith(
+      expect.objectContaining({
+        source: 'TOURVISOR',
+      }),
+    );
+  });
 });
 
 function createLead(overrides: Partial<LeadResponseDto> = {}): LeadResponseDto {

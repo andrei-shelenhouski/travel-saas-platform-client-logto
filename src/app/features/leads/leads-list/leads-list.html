@@ -33,12 +33,15 @@
     [searchControl]="searchControl"
     [selectedAgentId]="selectedAgentId()"
     [showAgentFilter]="showAgentFilter()"
+    [sourceFilter]="sourceFilter()"
+    [sourceOptions]="sourceOptions"
     [statusFilter]="statusFilter()"
     [statusOptions]="statusOptions"
     (agentFilterChange)="onAgentFilterChange($event)"
     (clientTypeFilterChange)="onClientTypeFilterChange($event)"
     (dateFromChange)="onDateFromChange($event)"
     (dateToChange)="onDateToChange($event)"
+    (sourceFilterChange)="onSourceFilterChange($event)"
     (statusFilterChange)="onStatusFilterChange($event)"
   />
 
@@ -135,7 +138,7 @@
       <ng-container matColumnDef="source">
         <th *matHeaderCellDef i18n="@@clientsListHeaderSource" mat-header-cell>Source</th>
         <td *matCellDef="let element" mat-cell>
-          {{ element.source ?? '—' }}
+          <app-lead-source-badge [source]="element.source" />
         </td>
       </ng-container>
 

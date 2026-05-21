@@ -17,13 +17,14 @@ import { Router, RouterLink } from '@angular/router';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
+import { LeadSourceBadgeComponent } from '@app/features/leads/lead-source-badge/lead-source-badge';
 import { LeadsListFilterBarComponent } from '@app/features/leads/leads-list-filter-bar/leads-list-filter-bar';
 import { LeadsService } from '@app/services/leads.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
-import { LeadStatus } from '@app/shared/models';
+import { LeadSource, LeadStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import type { LeadResponseDto, LeadStatus as LeadStatusType } from '@app/shared/models';
@@ -41,6 +42,11 @@ type AgentOption = {
 
 type ClientTypeOption = {
   value: string;
+  label: string;
+};
+
+type SourceOption = {
+  value: LeadSource | string;
   label: string;
 };
 
@@ -68,6 +74,12 @@ const CLIENT_TYPE_OPTIONS: ClientTypeOption[] = [
   { value: 'COMPANY', label: $localize`:@@leadClientTypeCompany:Company` },
   { value: 'B2B_AGENT', label: $localize`:@@leadClientTypeB2BAgent:B2B agent` },
   { value: 'AGENT', label: $localize`:@@leadClientTypeAgent:Agent` },
+];
+
+const LEAD_SOURCE_OPTIONS: SourceOption[] = [
+  { value: 'MANUAL', label: $localize`:@@leadSourceManual:Manual` },
+  { value: 'INSTAGRAM_ADS', label: $localize`:@@leadSourceInstagramAds:Instagram ads` },
+  { value: 'TOURVISOR', label: $localize`:@@leadSourceTourvisor:TourVisor` },
 ];
 
 const KANBAN_COLUMNS: KanbanColumnConfig[] = [
@@ -110,6 +122,7 @@ const TERMINAL_STATUSES = new Set<LeadStatusType>([
     DatePipe,
     RouterLink,
     LeadsListFilterBarComponent,
+    LeadSourceBadgeComponent,
     MatIconModule,
     ...MAT_BUTTONS,
     ...MAT_BUTTON_TOGGLES,
@@ -128,9 +141,11 @@ export class LeadsKanbanComponent {
 
   readonly statusOptions = LEAD_STATUS_OPTIONS;
   readonly clientTypeOptions = CLIENT_TYPE_OPTIONS;
+  readonly sourceOptions = LEAD_SOURCE_OPTIONS;
   readonly statusFilter = signal<LeadStatusType[]>([]);
   readonly selectedAgentId = signal('');
   readonly clientTypeFilter = signal('');
+  readonly sourceFilter = signal('');
   readonly dateFromFilter = signal('');
   readonly dateToFilter = signal('');
   readonly searchFilter = signal('');
@@ -178,18 +193,20 @@ export class LeadsKanbanComponent {
     params: () => ({
       agentId: this.effectiveAgentId(),
       clientType: this.clientTypeFilter(),
+      source: this.sourceFilter(),
       dateFrom: this.dateFromFilter(),
       dateTo: this.dateToFilter(),
       search: this.searchFilter(),
     }),
     stream: ({ params }) => {
-      const { agentId, clientType, dateFrom, dateTo, search } = params;
+      const { agentId, clientType, dateFrom, dateTo, search, source } = params;
 
       return this.leadsService.findAll({
         page: 1,
         limit: KANBAN_FETCH_LIMIT,
         agentId: agentId || undefined,
         clientType: clientType || undefined,
+        source: source || undefined,
         dateFrom: dateFrom || undefined,
         dateTo: dateTo || undefined,
         search: search || undefined,
@@ -266,6 +283,10 @@ export class LeadsKanbanComponent {
 
   onClientTypeFilterChange(clientType: string): void {
     this.clientTypeFilter.set(clientType ?? '');
+  }
+
+  onSourceFilterChange(source: string): void {
+    this.sourceFilter.set(source ?? '');
   }
 
   onDateFromChange(value: string): void {

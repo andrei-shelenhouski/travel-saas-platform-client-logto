@@ -9,6 +9,7 @@
 
 export const LeadSource = {
   MANUAL: 'MANUAL',
+  INSTAGRAM_ADS: 'INSTAGRAM_ADS',
   PHONE: 'PHONE',
   EMAIL: 'EMAIL',
   WHATSAPP: 'WHATSAPP',
@@ -356,11 +357,8 @@ export type OrganizationSettingsResponseDto = {
   updatedAt?: string;
 };
 
-/**
- * TourVisor integration settings.
- * Backend contract from issue #89 until these endpoints are included in openapi.json.
- */
-export type TourvisorIntegrationSettingsResponseDto = {
+/** OpenAPI: TourvisorIntegrationStatusResponse. */
+export type TourvisorIntegrationStatusResponseDto = {
   connected: boolean;
   defaultAgentId?: string | null;
   lastPolledAt?: string | null;
@@ -368,16 +366,23 @@ export type TourvisorIntegrationSettingsResponseDto = {
   ingestOrderTypes?: number[];
 };
 
-export type UpdateTourvisorIntegrationSettingsDto = {
+/** OpenAPI: UpsertTourvisorIntegrationRequest. */
+export type UpsertTourvisorIntegrationRequestDto = {
   authkey: string;
   defaultAgentId?: string | null;
   ingestOrderTypes?: number[];
 };
 
-export type TourvisorIntegrationTestResponseDto = {
+/** OpenAPI: TourvisorTestResponse. */
+export type TourvisorTestResponseDto = {
   ok: boolean;
   error?: string;
 };
+
+// Backward-compatible aliases.
+export type TourvisorIntegrationSettingsResponseDto = TourvisorIntegrationStatusResponseDto;
+export type UpdateTourvisorIntegrationSettingsDto = UpsertTourvisorIntegrationRequestDto;
+export type TourvisorIntegrationTestResponseDto = TourvisorTestResponseDto;
 
 // ----- Leads -----
 

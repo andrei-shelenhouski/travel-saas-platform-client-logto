@@ -3869,6 +3869,62 @@
           <context context-type="linenumber">271,272</context>
         </context-group>
       </trans-unit>
+      <trans-unit id="leadDetailTourvisorOrderLabel" datatype="html">
+        <source>TourVisor order #</source>
+        <target>Номер заказа TourVisor #</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/lead-detail/lead-detail.html</context>
+          <context context-type="linenumber">67,68</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="leadSourceManual" datatype="html">
+        <source>Manual</source>
+        <target>Вручную</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/lead-source-badge/lead-source-badge.ts</context>
+          <context context-type="linenumber">17</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/leads-kanban/leads-kanban.ts</context>
+          <context context-type="linenumber">80</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/leads-list/leads-list.ts</context>
+          <context context-type="linenumber">75</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="leadSourceInstagramAds" datatype="html">
+        <source>Instagram ads</source>
+        <target>Реклама Instagram</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/lead-source-badge/lead-source-badge.ts</context>
+          <context context-type="linenumber">23</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/leads-kanban/leads-kanban.ts</context>
+          <context context-type="linenumber">81</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/leads-list/leads-list.ts</context>
+          <context context-type="linenumber">76</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="leadSourceTourvisor" datatype="html">
+        <source>TourVisor</source>
+        <target>TourVisor</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/lead-source-badge/lead-source-badge.ts</context>
+          <context context-type="linenumber">29</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/leads-kanban/leads-kanban.ts</context>
+          <context context-type="linenumber">82</context>
+        </context-group>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/leads-list/leads-list.ts</context>
+          <context context-type="linenumber">77</context>
+        </context-group>
+      </trans-unit>
       <trans-unit id="leadsKanbanTitle" datatype="html">
         <source>Leads · Kanban</source>
         <target>Лиды · Канбан</target>
@@ -4175,6 +4231,22 @@
         <context-group purpose="location">
           <context context-type="sourcefile">src/app/features/leads/leads-list-filter-bar/leads-list-filter-bar.html</context>
           <context context-type="linenumber">36,37</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="leadsListFilterSourceLabel" datatype="html">
+        <source>Source</source>
+        <target>Источник</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/leads-list-filter-bar/leads-list-filter-bar.html</context>
+          <context context-type="linenumber">44,45</context>
+        </context-group>
+      </trans-unit>
+      <trans-unit id="leadsListFilterSourceAllOption" datatype="html">
+        <source>All</source>
+        <target>Все</target>
+        <context-group purpose="location">
+          <context context-type="sourcefile">src/app/features/leads/leads-list-filter-bar/leads-list-filter-bar.html</context>
+          <context context-type="linenumber">46,47</context>
         </context-group>
       </trans-unit>
       <trans-unit id="leadsListFilterCreatedFromLabel" datatype="html">

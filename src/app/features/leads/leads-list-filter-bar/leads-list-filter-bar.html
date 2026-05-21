@@ -41,6 +41,16 @@
   </mat-form-field>
 
   <mat-form-field>
+    <mat-label i18n="@@leadsListFilterSourceLabel">Source</mat-label>
+    <mat-select [value]="sourceFilter()" (selectionChange)="onSourceSelectionChange($event.value)">
+      <mat-option i18n="@@leadsListFilterSourceAllOption" value="">All</mat-option>
+      @for (source of sourceOptions(); track source.value) {
+        <mat-option [value]="source.value">{{ source.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
     <mat-label i18n="@@leadsListFilterCreatedFromLabel">Created from</mat-label>
     <input
       matInput
