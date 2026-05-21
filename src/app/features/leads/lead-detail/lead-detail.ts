@@ -40,6 +40,7 @@ import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { LeadStatus } from '@app/shared/models';
+import { MarkdownPipe } from '@app/shared/pipes/markdown-pipe';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import { atLeastOneContactValidator } from '../leads.validators';
@@ -51,7 +52,6 @@ import type {
   OfferResponseDto,
   RequestResponseDto,
 } from '@app/shared/models';
-
 type LeadAction = 'assign' | 'to_in_progress' | 'to_offer_sent' | 'mark_lost';
 
 type LeadWithBooking = LeadResponseDto & {
@@ -109,6 +109,7 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     ClientTypeBadgeComponent,
     LeadSourceBadgeComponent,
     PageHeading,
+    MarkdownPipe,
   ],
   templateUrl: './lead-detail.html',
   styleUrl: './lead-detail.scss',

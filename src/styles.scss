@@ -55,3 +55,14 @@ html {
     margin-left: 0.5rem;
   }
 }
+
+.markdown-body {
+  a {
+    color: var(--color-primary);
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

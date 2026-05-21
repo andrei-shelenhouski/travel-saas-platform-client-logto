@@ -226,13 +226,13 @@ export class LeadsListComponent {
     name: string;
   }))[] = [
     'number',
+    'source',
     'name',
     'clientType',
     'contactPhone',
     'contactEmail',
     'destination',
     'dates',
-    'source',
     'status',
     'assignedAgentName',
     'createdAt',

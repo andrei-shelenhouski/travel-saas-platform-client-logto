@@ -112,6 +112,7 @@
   margin: 0;
   color: #111827;
   font-size: 0.875rem;
+  word-break: break-word;
 }
 
 .lead-link {
@@ -286,6 +287,7 @@
 
 .request-notes-expanded {
   -webkit-line-clamp: unset;
+  word-break: break-word;
 }
 
 .request-notes-toggle {
