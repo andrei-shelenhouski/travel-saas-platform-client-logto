@@ -1,0 +1,66 @@
+<form class="contract-form" [formGroup]="form" (ngSubmit)="submit()">
+  @if (submitError()) {
+    <p class="contract-form-error" role="alert">{{ submitError() }}</p>
+  }
+
+  @if (allowClientIdEdit() && !isEditMode()) {
+    <mat-form-field class="w-full" subscriptSizing="dynamic">
+      <mat-label i18n="@@contractsFormClientIdLabel">Client ID</mat-label>
+      <input formControlName="clientId" matInput type="text" />
+      @if (form.controls.clientId.hasError('required') && form.controls.clientId.touched) {
+        <mat-error i18n="@@contractsFormClientIdRequired">Client ID is required</mat-error>
+      }
+    </mat-form-field>
+  }
+
+  <mat-form-field class="w-full" subscriptSizing="dynamic">
+    <mat-label i18n="@@contractsFormNumberLabel">Contract number</mat-label>
+    <input formControlName="contractNumber" matInput maxlength="100" type="text" />
+    @if (
+      form.controls.contractNumber.hasError('required') && form.controls.contractNumber.touched
+    ) {
+      <mat-error i18n="@@contractsFormNumberRequired">Contract number is required</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field class="w-full" subscriptSizing="dynamic">
+    <mat-label i18n="@@contractsFormSignedAtLabel">Signed at</mat-label>
+    <input formControlName="signedAt" matInput type="date" />
+    @if (form.controls.signedAt.hasError('required') && form.controls.signedAt.touched) {
+      <mat-error i18n="@@contractsFormSignedAtRequired">Signed date is required</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field class="w-full" subscriptSizing="dynamic">
+    <mat-label i18n="@@contractsFormExpiresAtLabel">Expires at</mat-label>
+    <input formControlName="expiresAt" matInput type="date" />
+  </mat-form-field>
+
+  <mat-form-field class="w-full" subscriptSizing="dynamic">
+    <mat-label i18n="@@contractsFormSignatureMethodLabel">Signature method</mat-label>
+    <mat-select formControlName="signatureMethod">
+      <mat-option i18n="@@contractsSignatureMethodNone" [value]="null">Not specified</mat-option>
+      @for (option of signatureMethodOptions; track option.value) {
+        <mat-option [value]="option.value">{{ option.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field class="w-full" subscriptSizing="dynamic">
+    <mat-label i18n="@@contractsFormNotesLabel">Notes</mat-label>
+    <textarea formControlName="notes" matInput rows="3"></textarea>
+  </mat-form-field>
+
+  <div class="contract-form-actions">
+    <button mat-button type="button" [disabled]="saving()" (click)="cancel()">
+      <span i18n="@@contractsFormCancelButton">Cancel</span>
+    </button>
+    <button matButton="filled" type="submit" [disabled]="saving()">
+      @if (isEditMode()) {
+        <span i18n="@@contractsFormSaveButton">Save changes</span>
+      } @else {
+        <span i18n="@@contractsFormCreateButton">Create contract</span>
+      }
+    </button>
+  </div>
+</form>

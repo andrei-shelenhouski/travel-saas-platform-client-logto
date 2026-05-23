@@ -4,6 +4,10 @@
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 1rem;
+  padding: 1rem;
+  background-color: #fff;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 0.5rem;
 
   > * {
     width: 100%;

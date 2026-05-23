@@ -21,6 +21,7 @@ npm run refresh-openapi  # pull latest OpenAPI spec from localhost:3000
 **Multi-tenancy:** Every API request requires `X-Organization-Id` header (injected by `orgAuthInterceptor`). The active org is held in `OrganizationStateService` and persisted to `localStorage`. If no org is set, the interceptor redirects to `/onboarding/check`.
 
 **HTTP:** All requests go to `environment.baseUrl` (`localhost:8080` in dev). Two interceptors are registered globally:
+
 - `orgAuthInterceptor` — attaches `Authorization: Bearer <token>` and `X-Organization-Id`
 - `errorHandlerInterceptor` — global error handling
 
@@ -42,9 +43,9 @@ npm run refresh-openapi  # pull latest OpenAPI spec from localhost:3000
 
 ## Path Aliases
 
-| Alias | Resolves to |
-|---|---|
-| `@app/*` | `src/app/*` |
+| Alias             | Resolves to          |
+| ----------------- | -------------------- |
+| `@app/*`          | `src/app/*`          |
 | `@environments/*` | `src/environments/*` |
 
 ## Testing
@@ -61,3 +62,26 @@ Tests use **Vitest** (not Karma or Jest). Test files are co-located with source 
 - Auth: Google provider only
 - Dev: Auth emulator on `localhost:9099`, AppCheck disabled in emulator mode
 - Analytics: enabled in production via `ScreenTrackingService` / `UserTrackingService`
+
+## Backend API
+
+The backend exposes an OpenAPI spec at `http://localhost:8080/v3/api-docs` (JSON) and Swagger UI at
+`http://localhost:8080/swagger-ui.html`.
+
+When you need to understand an endpoint, request/response shape, or available routes, fetch the live spec:
+
+```bash
+curl http://localhost:8080/v3/api-docs | jq .
+
+Auth headers
+
+All requests to /api/** (except /api/integrations/**) require:
+- Authorization: Bearer <firebase-id-token>
+- X-Organization-Id: <uuid> — the active organization
+
+Integration endpoints (/api/integrations/v1/**) use X-Api-Key: <key> instead.
+
+Base URL
+
+http://localhost:8080 locally. Set via VITE_API_BASE_URL (or equivalent) in .env.
+```

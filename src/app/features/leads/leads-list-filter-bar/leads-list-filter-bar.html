@@ -1,5 +1,5 @@
-<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-  <mat-form-field>
+<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 leads-list-filter-bar">
+  <mat-form-field subscriptSizing="dynamic">
     <mat-label i18n="@@leadsListFilterStatusLabel">Statuses</mat-label>
     <mat-select
       multiple
@@ -13,7 +13,7 @@
   </mat-form-field>
 
   @if (showAgentFilter()) {
-    <mat-form-field>
+    <mat-form-field subscriptSizing="dynamic">
       <mat-label i18n="@@leadsListFilterAgentLabel">Agent</mat-label>
       <mat-select
         [value]="selectedAgentId()"
@@ -27,7 +27,7 @@
     </mat-form-field>
   }
 
-  <mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
     <mat-label i18n="@@leadsListFilterClientTypeLabel">Client type</mat-label>
     <mat-select
       [value]="clientTypeFilter()"
@@ -40,7 +40,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
     <mat-label i18n="@@leadsListFilterSourceLabel">Source</mat-label>
     <mat-select [value]="sourceFilter()" (selectionChange)="onSourceSelectionChange($event.value)">
       <mat-option i18n="@@leadsListFilterSourceAllOption" value="">All</mat-option>
@@ -50,7 +50,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
     <mat-label i18n="@@leadsListFilterCreatedFromLabel">Created from</mat-label>
     <input
       matInput
@@ -60,7 +60,7 @@
     />
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
     <mat-label i18n="@@leadsListFilterCreatedToLabel">Created to</mat-label>
     <input
       matInput
@@ -70,8 +70,9 @@
     />
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field class="search-form-field" subscriptSizing="dynamic">
     <mat-label i18n="@@leadsListFilterSearchLabel">Search</mat-label>
+    <mat-icon matPrefix>search</mat-icon>
     <input
       matInput
       placeholder="Client, phone, email, lead number"

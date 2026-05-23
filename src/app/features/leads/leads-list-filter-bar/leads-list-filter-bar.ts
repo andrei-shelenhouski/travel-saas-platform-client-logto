@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatIconModule } from '@angular/material/icon';
 
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
 import type { LeadStatus } from '@app/shared/models';
-
 type LeadStatusOption = {
   value: LeadStatus;
   label: string;
@@ -28,7 +28,7 @@ type SourceOption = {
 @Component({
   selector: 'app-leads-list-filter-bar',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [...MAT_FORM_BUTTONS, ReactiveFormsModule],
+  imports: [...MAT_FORM_BUTTONS, ReactiveFormsModule, MatIconModule],
   templateUrl: './leads-list-filter-bar.html',
   styleUrl: './leads-list-filter-bar.scss',
 })

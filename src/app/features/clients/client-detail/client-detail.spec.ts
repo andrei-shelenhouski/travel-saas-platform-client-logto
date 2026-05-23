@@ -1,10 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatDialog } from '@angular/material/dialog';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute, provideRouter, Router } from '@angular/router';
 
 import { of, Subject } from 'rxjs';
 
 import { ClientsService } from '@app/services/clients.service';
+import { ContractsService } from '@app/services/contracts.service';
 import { TagsService } from '@app/services/tags.service';
 import { ClientType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
@@ -37,6 +39,13 @@ describe('ClientDetailComponent', () => {
     attach: ReturnType<typeof vi.fn>;
     detach: ReturnType<typeof vi.fn>;
   };
+  let mockContractsService: {
+    getByClient: ReturnType<typeof vi.fn>;
+    terminate: ReturnType<typeof vi.fn>;
+  };
+  let mockDialog: {
+    open: ReturnType<typeof vi.fn>;
+  };
   let mockToastService: {
     showError: ReturnType<typeof vi.fn>;
     showSuccess: ReturnType<typeof vi.fn>;
@@ -63,6 +72,11 @@ describe('ClientDetailComponent', () => {
     iban: null,
     bankName: null,
     bik: null,
+    trademark: null,
+    registrationCert: null,
+    taxationType: null,
+    directorName: null,
+    rataMember: null,
     dataConsentGiven: false,
     dataConsentDate: null,
     createdAt: '2026-01-01T00:00:00Z',
@@ -89,6 +103,17 @@ describe('ClientDetailComponent', () => {
       detach: vi.fn(),
     };
 
+    mockContractsService = {
+      getByClient: vi.fn(() => of({ items: [], total: 0, page: 1, limit: 20 })),
+      terminate: vi.fn(() => of(mockClient)),
+    };
+
+    mockDialog = {
+      open: vi.fn(() => ({
+        afterClosed: () => of(undefined),
+      })),
+    };
+
     mockToastService = {
       showError: vi.fn(),
       showSuccess: vi.fn(),
@@ -104,8 +129,10 @@ describe('ClientDetailComponent', () => {
         provideRouter([]),
         provideNoopAnimations(),
         { provide: ClientsService, useValue: mockClientsService },
+        { provide: ContractsService, useValue: mockContractsService },
         { provide: TagsService, useValue: mockTagsService },
         { provide: ToastService, useValue: mockToastService },
+        { provide: MatDialog, useValue: mockDialog },
         { provide: Router, useValue: mockRouter },
         {
           provide: ActivatedRoute,
@@ -203,6 +230,30 @@ describe('ClientDetailComponent', () => {
     // The service is called reactively, not directly in onSelectedTabChange.
     // We should verify the trigger was set rather than the service call.
     expect(mockClientsService.getRequests).toHaveBeenCalledWith('client-1', { page: 1, limit: 20 });
+  });
+
+  it('loads contracts when B2B contracts tab is selected', async () => {
+    const paramMap = new Map([['id', 'client-1']]);
+
+    mockClientsService.getById.mockReturnValue(
+      of({
+        ...mockClient,
+        type: ClientType.B2B_AGENT,
+      }),
+    );
+
+    paramMapSubject.next(paramMap);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    component.onSelectedTabChange(5);
+    fixture.detectChanges();
+
+    expect(mockContractsService.getByClient).toHaveBeenCalledWith('client-1', {
+      page: 1,
+      limit: 20,
+    });
   });
 
   it('should format date correctly', () => {

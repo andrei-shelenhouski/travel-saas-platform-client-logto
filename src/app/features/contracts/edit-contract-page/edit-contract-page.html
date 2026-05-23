@@ -1,0 +1,16 @@
+<app-page-heading title="Edit contract" i18n-title="@@contractsEditPageTitle" />
+
+<section class="contract-edit-shell">
+  @if (loading()) {
+    <p i18n="@@contractsEditLoading">Loading contract...</p>
+  } @else if (contract()) {
+    <app-contract-form
+      [initialContract]="contract()"
+      [mode]="'edit'"
+      [saving]="saving()"
+      [submitError]="submitError()"
+      (cancelled)="cancel()"
+      (updateSubmitted)="onUpdateSubmitted($event)"
+    />
+  }
+</section>

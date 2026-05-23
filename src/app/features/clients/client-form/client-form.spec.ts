@@ -26,6 +26,11 @@ function createClient(overrides: Partial<ClientResponseDto> = {}): ClientRespons
     iban: null,
     bankName: null,
     bik: null,
+    trademark: null,
+    registrationCert: null,
+    taxationType: null,
+    directorName: null,
+    rataMember: null,
     dataConsentGiven: true,
     dataConsentDate: '2026-04-01',
     createdAt: '2026-04-01T10:00:00Z',
@@ -128,5 +133,41 @@ describe('ClientFormComponent', () => {
     component.selectType(ClientType.INDIVIDUAL);
 
     expect(component.selectedType()).toBe(ClientType.B2B_AGENT);
+  });
+
+  it('includes B2B requisites in payload for B2B agent', async () => {
+    await createComponent();
+    let emitted: CreateClientDto | null = null;
+
+    component.createSubmitted.subscribe((dto) => {
+      emitted = dto;
+    });
+
+    component.selectType(ClientType.B2B_AGENT);
+    component.form.patchValue({
+      fullName: 'Agent Contact',
+      companyName: 'Travel Partner',
+      legalAddress: 'Minsk',
+      trademark: 'Sunline',
+      registrationCert: 'AB-12345',
+      taxationType: 'USN',
+      directorName: 'Ivan Ivanov',
+      rataMember: true,
+      dataConsentGiven: true,
+      dataConsentDate: '2026-04-27',
+    });
+
+    component.submit();
+
+    expect(emitted).toEqual(
+      expect.objectContaining({
+        type: ClientType.B2B_AGENT,
+        trademark: 'Sunline',
+        registrationCert: 'AB-12345',
+        taxationType: 'USN',
+        directorName: 'Ivan Ivanov',
+        rataMember: true,
+      }),
+    );
   });
 });

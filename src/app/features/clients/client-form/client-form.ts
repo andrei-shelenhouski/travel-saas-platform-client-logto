@@ -95,6 +95,11 @@ export class ClientFormComponent {
     iban: [''],
     bankName: [''],
     bik: [''],
+    trademark: ['', Validators.maxLength(200)],
+    registrationCert: ['', Validators.maxLength(100)],
+    taxationType: ['', Validators.maxLength(60)],
+    directorName: ['', Validators.maxLength(200)],
+    rataMember: [false],
   });
 
   readonly commissionPctCtrl = this.fb.control<number | null>({ value: null, disabled: true });
@@ -203,6 +208,7 @@ export class ClientFormComponent {
     this.form.controls.dataConsentDate.updateValueAndValidity({ emitEvent: false });
   }
 
+  // eslint-disable-next-line complexity
   private patchForm(client: ClientResponseDto | null): void {
     if (client === null) {
       return;
@@ -228,6 +234,11 @@ export class ClientFormComponent {
       iban: client.iban ?? '',
       bankName: client.bankName ?? '',
       bik: client.bik ?? '',
+      trademark: client.trademark ?? '',
+      registrationCert: client.registrationCert ?? '',
+      taxationType: client.taxationType ?? '',
+      directorName: client.directorName ?? '',
+      rataMember: client.rataMember ?? false,
     });
   }
 
@@ -293,6 +304,26 @@ export class ClientFormComponent {
       if (value.bik.trim()) {
         dto.bik = value.bik.trim();
       }
+
+      if (type === ClientType.B2B_AGENT) {
+        if (value.trademark.trim()) {
+          dto.trademark = value.trademark.trim();
+        }
+
+        if (value.registrationCert.trim()) {
+          dto.registrationCert = value.registrationCert.trim();
+        }
+
+        if (value.taxationType.trim()) {
+          dto.taxationType = value.taxationType.trim();
+        }
+
+        if (value.directorName.trim()) {
+          dto.directorName = value.directorName.trim();
+        }
+
+        dto.rataMember = value.rataMember;
+      }
     }
 
     return dto;
@@ -345,6 +376,26 @@ export class ClientFormComponent {
 
       if (value.bik.trim()) {
         dto.bik = value.bik.trim();
+      }
+
+      if (type === ClientType.B2B_AGENT) {
+        if (value.trademark.trim()) {
+          dto.trademark = value.trademark.trim();
+        }
+
+        if (value.registrationCert.trim()) {
+          dto.registrationCert = value.registrationCert.trim();
+        }
+
+        if (value.taxationType.trim()) {
+          dto.taxationType = value.taxationType.trim();
+        }
+
+        if (value.directorName.trim()) {
+          dto.directorName = value.directorName.trim();
+        }
+
+        dto.rataMember = value.rataMember;
       }
     }
 

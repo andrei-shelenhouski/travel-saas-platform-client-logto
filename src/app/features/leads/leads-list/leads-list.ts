@@ -226,6 +226,7 @@ export class LeadsListComponent {
     name: string;
   }))[] = [
     'number',
+    'status',
     'source',
     'name',
     'clientType',
@@ -233,7 +234,6 @@ export class LeadsListComponent {
     'contactEmail',
     'destination',
     'dates',
-    'status',
     'assignedAgentName',
     'createdAt',
     'updatedAt',
