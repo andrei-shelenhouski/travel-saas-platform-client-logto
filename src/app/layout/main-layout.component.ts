@@ -35,6 +35,12 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
   { path: '/app/dashboard', icon: 'dashboard', label: $localize`:@@dashboard:Dashboard` },
   { path: '/app/leads', icon: 'inbox', label: $localize`:@@leads:Leads` },
   { path: '/app/clients', icon: 'group', label: $localize`:@@clients:Clients` },
+  {
+    path: '/app/contracts',
+    icon: 'description',
+    label: $localize`:@@contracts:Contracts`,
+    requiredPermission: PermissionKey.CONTRACTS_VIEW,
+  },
   { path: '/app/requests', icon: 'alt_route', label: $localize`:@@requests:Requests` },
   { path: '/app/offers', icon: 'send', label: $localize`:@@offers:Offers` },
   { path: '/app/bookings', icon: 'flight', label: $localize`:@@bookings:Bookings` },

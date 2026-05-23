@@ -1,0 +1,94 @@
+<app-page-heading
+  subtitle="Review contract details and lifecycle"
+  i18n-subtitle="@@contractsViewPageSubtitle"
+  title="Contract details"
+  i18n-title="@@contractsViewPageTitle"
+/>
+
+<section class="contract-view-shell">
+  @if (loading()) {
+    <p i18n="@@contractsViewLoading">Loading contract...</p>
+  } @else if (error()) {
+    <p class="contract-view-error" role="alert">{{ error() }}</p>
+  } @else if (contract(); as current) {
+    <div class="contract-view-actions">
+      <button
+        i18n="@@contractsBackAction"
+        mat-stroked-button
+        type="button"
+        [routerLink]="['/app/contracts']"
+      >
+        Back to contracts
+      </button>
+      <a
+        i18n="@@contractsOpenClientAction"
+        mat-stroked-button
+        [routerLink]="['/app/clients', current.clientId]"
+      >
+        Open client
+      </a>
+      @if (canUpdateContracts()) {
+        <button
+          i18n="@@contractsActionEdit"
+          matButton="filled"
+          type="button"
+          [disabled]="!canManageContract()"
+          (click)="goToEdit()"
+        >
+          Edit
+        </button>
+        <button
+          color="warn"
+          i18n="@@contractsActionTerminate"
+          mat-stroked-button
+          type="button"
+          [disabled]="!canManageContract()"
+          (click)="terminate()"
+        >
+          Terminate
+        </button>
+      }
+    </div>
+
+    <dl class="contract-view-grid">
+      <div>
+        <dt i18n="@@contractsColumnNumber">Number</dt>
+        <dd>{{ current.contractNumber }}</dd>
+      </div>
+      <div>
+        <dt i18n="@@contractsColumnSignedAt">Signed at</dt>
+        <dd>{{ current.signedAt | date: 'dd MMM yyyy' }}</dd>
+      </div>
+      <div>
+        <dt i18n="@@contractsColumnExpiresAt">Expires at</dt>
+        <dd>{{ current.expiresAt ? (current.expiresAt | date: 'dd MMM yyyy') : '—' }}</dd>
+      </div>
+      <div>
+        <dt i18n="@@contractsColumnSignatureMethod">Signature method</dt>
+        <dd>{{ signatureMethodLabel(current.signatureMethod) }}</dd>
+      </div>
+      <div>
+        <dt i18n="@@contractsColumnStatus">Status</dt>
+        <dd>
+          <span [class]="statusClass(current.status)">{{ current.status }}</span>
+        </dd>
+      </div>
+      <div>
+        <dt i18n="@@contractsColumnClient">Client</dt>
+        <dd>{{ current.client?.fullName || current.client?.companyName || current.clientId }}</dd>
+      </div>
+      <div class="full-width">
+        <dt i18n="@@contractsColumnNotes">Notes</dt>
+        <dd>{{ current.notes || '—' }}</dd>
+      </div>
+      <div>
+        <dt i18n="@@contractsListCreatedAt">Created</dt>
+        <dd>{{ current.createdAt | date: 'dd MMM yyyy, HH:mm' }}</dd>
+      </div>
+      <div>
+        <dt i18n="@@contractsListUpdatedAt">Updated</dt>
+        <dd>{{ current.updatedAt | date: 'dd MMM yyyy, HH:mm' }}</dd>
+      </div>
+    </dl>
+  }
+</section>

@@ -7,15 +7,20 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { MatDialog } from '@angular/material/dialog';
+import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EMPTY, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
+import { AuthService } from '@app/auth/auth.service';
+import { ContractFormDialogComponent } from '@app/features/clients/contract-form-dialog/contract-form-dialog';
 import { InvoiceStatusChipComponent } from '@app/features/invoices/invoice-status-chip/invoice-status-chip';
 import { ActivitiesService } from '@app/services/activities.service';
 import { ClientsService } from '@app/services/clients.service';
 import { CommentsService } from '@app/services/comments.service';
+import { ContractsService } from '@app/services/contracts.service';
 import { TagsService } from '@app/services/tags.service';
 import {
   BookingStatusChipComponent,
@@ -24,26 +29,48 @@ import {
   RequestStatusChipComponent,
   TagSelectorComponent,
 } from '@app/shared/components';
+import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { MAT_BUTTONS, MAT_TABS } from '@app/shared/material-imports';
-import { ClientType, EntityType } from '@app/shared/models';
+import { MAT_BUTTONS, MAT_MENU, MAT_TABS } from '@app/shared/material-imports';
+import {
+  ClientType,
+  ContractStatus,
+  EntityType,
+  PermissionKey,
+  SignatureMethod,
+} from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import type {
   BookingSummaryDto,
   ClientResponseDto,
+  ContractResponseDto,
   InvoiceResponseDto,
   LeadResponseDto,
   OfferSummaryDto,
   TravelRequestSummaryDto,
 } from '@app/shared/models';
+
 const TYPE_LABEL: Record<string, string> = {
   [ClientType.INDIVIDUAL]: 'Individual',
   [ClientType.COMPANY]: 'Company',
   [ClientType.B2B_AGENT]: 'B2B Agent',
 };
 
-type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices';
+const CONTRACT_STATUS_CLASS: Record<string, string> = {
+  [ContractStatus.ACTIVE]: 'contract-status contract-status-active',
+  [ContractStatus.EXPIRED]: 'contract-status contract-status-expired',
+  [ContractStatus.TERMINATED]: 'contract-status contract-status-terminated',
+};
+
+const SIGNATURE_METHOD_LABEL: Record<string, string> = {
+  [SignatureMethod.ORIGINAL_MAIL]: 'Mail',
+  [SignatureMethod.ORIGINAL_COURIER]: 'Courier',
+  [SignatureMethod.DIGITAL_PODPIS]: 'Podpis.by',
+  [SignatureMethod.OTHER]: 'Other',
+};
+
+type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices' | 'contracts';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,7 +83,9 @@ type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices
     OfferStatusChipComponent,
     BookingStatusChipComponent,
     InvoiceStatusChipComponent,
+    MatPaginatorModule,
     ...MAT_BUTTONS,
+    ...MAT_MENU,
     ...MAT_TABS,
     PageHeading,
   ],
@@ -69,10 +98,13 @@ type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices
 export class ClientDetailComponent {
   protected readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
   private readonly clientsService = inject(ClientsService);
+  private readonly contractsService = inject(ContractsService);
   private readonly activitiesService = inject(ActivitiesService);
   private readonly commentsService = inject(CommentsService);
   private readonly tagsService = inject(TagsService);
+  private readonly dialog = inject(MatDialog);
   private readonly toast = inject(ToastService);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
@@ -189,6 +221,36 @@ export class ClientDetailComponent {
     },
   });
 
+  readonly contractsPageSize = 20;
+  readonly contractsPageIndex = signal(0);
+
+  private readonly contractsLoadTrigger = signal(0);
+  private readonly contractsRefreshTrigger = signal(0);
+  private readonly contractsData = rxResource<
+    { items: ContractResponseDto[]; total: number },
+    [string | null, number, number, number]
+  >({
+    params: () =>
+      [
+        this.routeId() ?? null,
+        this.contractsLoadTrigger(),
+        this.contractsPageIndex(),
+        this.contractsRefreshTrigger(),
+      ] as [string | null, number, number, number],
+    stream: ({ params }) => {
+      const [clientId, trigger, pageIndex] = params;
+
+      if (clientId === null || trigger === 0) {
+        return of({ items: [], total: 0 });
+      }
+
+      return this.contractsService.getByClient(clientId, {
+        page: pageIndex + 1,
+        limit: this.contractsPageSize,
+      });
+    },
+  });
+
   readonly typeLabel = TYPE_LABEL;
   readonly client = computed(() => this.data.value() ?? null);
   readonly loading = computed(() => this.data.isLoading());
@@ -211,6 +273,20 @@ export class ClientDetailComponent {
 
   readonly invoices = computed(() => this.invoicesData.value() ?? []);
   readonly invoicesLoading = computed(() => this.invoicesData.isLoading());
+
+  readonly isB2BAgent = computed(() => this.client()?.type === ClientType.B2B_AGENT);
+  readonly canViewContracts = computed(() =>
+    this.authService.hasPermission(PermissionKey.CONTRACTS_VIEW),
+  );
+  readonly canCreateContracts = computed(() =>
+    this.authService.hasPermission(PermissionKey.CONTRACTS_CREATE),
+  );
+  readonly canUpdateContracts = computed(() =>
+    this.authService.hasPermission(PermissionKey.CONTRACTS_UPDATE),
+  );
+  readonly contracts = computed(() => this.contractsData.value()?.items ?? []);
+  readonly contractsTotal = computed(() => this.contractsData.value()?.total ?? 0);
+  readonly contractsLoading = computed(() => this.contractsData.isLoading());
 
   readonly clientTags = computed<string[]>(() => {
     const tags = this.entityTagsData.value() ?? [];
@@ -239,6 +315,11 @@ export class ClientDetailComponent {
 
   onSelectedTabChange(index: number): void {
     const tabs: ClientHistoryTab[] = ['leads', 'requests', 'offers', 'bookings', 'invoices'];
+
+    if (this.isB2BAgent() && this.canViewContracts()) {
+      tabs.push('contracts');
+    }
+
     const tab = tabs[index];
 
     if (!tab) {
@@ -258,7 +339,13 @@ export class ClientDetailComponent {
       this.bookingsLoadTrigger.set(1);
     } else if (tab === 'invoices' && this.invoicesLoadTrigger() === 0) {
       this.invoicesLoadTrigger.set(1);
+    } else if (tab === 'contracts' && this.contractsLoadTrigger() === 0) {
+      this.contractsLoadTrigger.set(1);
     }
+  }
+
+  onContractsPageChange(event: PageEvent): void {
+    this.contractsPageIndex.set(event.pageIndex);
   }
 
   onTagsChange(tags: string[]): void {
@@ -375,5 +462,116 @@ export class ClientDetailComponent {
     } catch {
       return iso;
     }
+  }
+
+  contractStatusClass(status: string | null | undefined): string {
+    if (!status) {
+      return 'contract-status contract-status-expired';
+    }
+
+    return CONTRACT_STATUS_CLASS[status] ?? 'contract-status contract-status-expired';
+  }
+
+  contractSignatureLabel(method: string | null | undefined): string {
+    if (!method) {
+      return '—';
+    }
+
+    return SIGNATURE_METHOD_LABEL[method] ?? method;
+  }
+
+  canManageContract(contract: ContractResponseDto): boolean {
+    return this.canUpdateContracts() && contract.status === ContractStatus.ACTIVE;
+  }
+
+  openCreateContractDialog(): void {
+    const clientId = this.client()?.id;
+
+    if (!clientId) {
+      return;
+    }
+
+    this.dialog
+      .open(ContractFormDialogComponent, {
+        width: '640px',
+        maxWidth: '95vw',
+        data: {
+          clientId,
+          mode: 'create',
+        },
+      })
+      .afterClosed()
+      .subscribe((created) => {
+        if (!created) {
+          return;
+        }
+
+        this.refreshContracts();
+      });
+  }
+
+  openEditContractDialog(contract: ContractResponseDto): void {
+    if (!this.canManageContract(contract)) {
+      return;
+    }
+
+    this.dialog
+      .open(ContractFormDialogComponent, {
+        width: '640px',
+        maxWidth: '95vw',
+        data: {
+          clientId: contract.clientId,
+          mode: 'edit',
+          contract,
+        },
+      })
+      .afterClosed()
+      .subscribe((updated) => {
+        if (!updated) {
+          return;
+        }
+
+        this.refreshContracts();
+      });
+  }
+
+  terminateContract(contract: ContractResponseDto): void {
+    if (!this.canManageContract(contract)) {
+      return;
+    }
+
+    this.dialog
+      .open(ConfirmDialogComponent, {
+        data: {
+          title: $localize`:@@contractsTerminateConfirmTitle:Terminate contract`,
+          message: $localize`:@@contractsTerminateConfirmMessage:Are you sure you want to terminate contract ${contract.contractNumber}? This action cannot be undone.`,
+          confirmLabel: $localize`:@@contractsTerminateConfirmAction:Terminate`,
+          cancelLabel: $localize`:@@contractsTerminateCancelAction:Cancel`,
+          confirmColor: 'warn',
+        },
+      })
+      .afterClosed()
+      .subscribe((confirmed) => {
+        if (!confirmed) {
+          return;
+        }
+
+        this.contractsService.terminate(contract.id).subscribe({
+          next: () => {
+            this.refreshContracts();
+          },
+          error: () => {
+            this.toast.showError('Failed to terminate contract');
+          },
+        });
+      });
+  }
+
+  private refreshContracts(): void {
+    if (this.contractsLoadTrigger() === 0) {
+      this.contractsLoadTrigger.set(1);
+    }
+
+    this.contractsRefreshTrigger.update((value) => value + 1);
   }
 }

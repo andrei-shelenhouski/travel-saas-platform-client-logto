@@ -117,6 +117,41 @@
         }
 
         @if (type === ClientType.B2B_AGENT) {
+          <section class="agent-requisites-section">
+            <h3 class="agent-requisites-title" i18n="@@createClientAgentRequisitesTitle">
+              Agent requisites
+            </h3>
+
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <mat-form-field class="w-full" subscriptSizing="dynamic">
+                <mat-label i18n="@@createClientTrademarkLabel">Trademark</mat-label>
+                <input formControlName="trademark" matInput maxlength="200" type="text" />
+              </mat-form-field>
+
+              <mat-form-field class="w-full" subscriptSizing="dynamic">
+                <mat-label i18n="@@createClientRegistrationCertLabel"
+                  >Registration certificate</mat-label
+                >
+                <input formControlName="registrationCert" matInput maxlength="100" type="text" />
+              </mat-form-field>
+            </div>
+
+            <mat-form-field class="w-full" subscriptSizing="dynamic">
+              <mat-label i18n="@@createClientTaxationTypeLabel">Taxation type</mat-label>
+              <input formControlName="taxationType" matInput maxlength="60" type="text" />
+            </mat-form-field>
+
+            <mat-form-field class="w-full" subscriptSizing="dynamic">
+              <mat-label i18n="@@createClientDirectorNameLabel">Director full name</mat-label>
+              <input formControlName="directorName" matInput maxlength="200" type="text" />
+              <mat-hint i18n="@@createClientDirectorNameHint">Legal signatory</mat-hint>
+            </mat-form-field>
+
+            <mat-checkbox formControlName="rataMember">
+              <span i18n="@@createClientRataMemberLabel">Valid RATA member</span>
+            </mat-checkbox>
+          </section>
+
           <mat-form-field class="w-48" subscriptSizing="dynamic">
             <mat-label i18n="@@createClientCommissionLabel">Agent commission, %</mat-label>
             <input matInput type="number" [formControl]="commissionPctCtrl" />

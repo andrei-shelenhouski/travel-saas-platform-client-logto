@@ -143,6 +143,27 @@ describe('MainLayoutComponent', () => {
     ).toBe(false);
   });
 
+  it('should show Contracts nav link when contracts:view is allowed', () => {
+    expect(component.navLinks().some((link) => link.path === '/app/contracts')).toBe(true);
+  });
+
+  it('should hide Contracts nav link when contracts:view is missing', () => {
+    const authService = TestBed.inject(AuthService);
+
+    vi.spyOn(authService, 'hasPermission').mockImplementation(
+      (permission: string) => permission !== PermissionKey.CONTRACTS_VIEW,
+    );
+
+    const restrictedFixture = TestBed.createComponent(MainLayoutComponent);
+    const restrictedComponent = restrictedFixture.componentInstance;
+
+    restrictedFixture.detectChanges();
+
+    expect(restrictedComponent.navLinks().some((link) => link.path === '/app/contracts')).toBe(
+      false,
+    );
+  });
+
   it('should fallback to member label when org role is missing', () => {
     const orgWithoutRole: OrganizationWithRoleDto = {
       id: 'org-2',
