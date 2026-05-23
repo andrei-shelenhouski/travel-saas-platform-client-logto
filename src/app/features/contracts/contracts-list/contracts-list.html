@@ -126,13 +126,6 @@
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="notes">
-        <th *matHeaderCellDef mat-header-cell>Заметки</th>
-        <td *matCellDef="let element" mat-cell>
-          <div class="notes-cell">{{ textOrDash(element.notes) }}</div>
-        </td>
-      </ng-container>
-
       <ng-container matColumnDef="createdBy">
         <th *matHeaderCellDef mat-header-cell>Создал</th>
         <td *matCellDef="let element" mat-cell>

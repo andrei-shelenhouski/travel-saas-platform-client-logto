@@ -4,10 +4,13 @@
   title="Редактировать договор"
 />
 
-<section class="contract-edit-shell">
+<section class="contract-edit-shell" [attr.aria-busy]="loading()">
   @if (loading()) {
-    <div class="contract-edit-loading" aria-hidden="true">
+    <div class="contract-edit-loading">
       <div class="contract-edit-loading-spinner"></div>
+      <p class="contract-edit-loading-text" role="status" aria-live="polite">
+        Загрузка договора...
+      </p>
     </div>
   } @else if (contract()) {
     <div class="contract-edit-card">

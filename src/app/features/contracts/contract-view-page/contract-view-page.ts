@@ -189,6 +189,7 @@ export class ContractViewPageComponent implements OnInit {
       },
       error: (err) => {
         this.error.set(err.error?.message ?? err.message ?? 'Не удалось загрузить договор');
+        this.loading.set(false);
       },
       complete: () => {
         this.loading.set(false);

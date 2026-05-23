@@ -1,25 +1,15 @@
-.contract-link {
-  color: #0f172a;
+.link {
+  color: var(--color-primary);
   text-decoration: none;
   border: none;
   background: transparent;
   padding: 0;
   cursor: pointer;
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-.link {
-  color: var(--color-primary);
-  text-decoration: none;
+  font: inherit;
 
   &:hover {
     text-decoration: underline;
   }
-}
-
-.client-link:hover {
-  text-decoration: underline;
 }
 
 .contract-status {
@@ -47,7 +37,3 @@
   color: #991b1b;
 }
 
-.notes-cell {
-  max-width: 20rem;
-  white-space-collapse: preserve-breaks;
-}

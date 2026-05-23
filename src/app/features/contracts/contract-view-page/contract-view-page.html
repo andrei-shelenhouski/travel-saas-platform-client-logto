@@ -29,10 +29,11 @@
   }
 </app-page-heading>
 
-<section class="contract-view-shell">
+<section class="contract-view-shell" [attr.aria-busy]="loading()">
   @if (loading()) {
-    <div class="contract-view-loading" aria-hidden="true">
+    <div class="contract-view-loading">
       <div class="contract-view-loading-spinner"></div>
+      <p class="contract-loading-text" role="status" aria-live="polite">Загрузка договора...</p>
     </div>
   } @else if (error()) {
     <section class="contract-view-error-card" role="alert">
@@ -47,7 +48,7 @@
       <section class="contract-header-card">
         <div>
           <p class="contract-header-label">Номер договора</p>
-          <h1 class="contract-header-title">{{ current.contractNumber }}</h1>
+          <h2 class="contract-header-title">{{ current.contractNumber }}</h2>
         </div>
         <div class="contract-header-side">
           <span [class]="statusClass(current.status)">{{ current.status }}</span>

@@ -105,7 +105,6 @@ export class ContractsListComponent {
     'updatedAt',
     'signatureMethod',
     'status',
-    // 'notes',
     'createdBy',
     'actions',
   ];
