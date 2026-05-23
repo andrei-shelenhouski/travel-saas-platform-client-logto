@@ -349,9 +349,7 @@ export class OffersKanbanComponent {
         return err.error.message;
       }
 
-      return (
-        err.message || 'Недопустимый переход статуса'
-      );
+      return err.message || 'Недопустимый переход статуса';
     }
 
     if (typeof err === 'object' && err !== null && 'message' in err) {

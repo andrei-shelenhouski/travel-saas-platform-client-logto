@@ -1,4 +1,18 @@
 .contract-create-shell {
-  max-width: 44rem;
+  padding: 0 1rem 1rem;
+}
+
+.contract-create-card {
+  max-width: 46rem;
+  margin: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background: #ffffff;
   padding: 1rem;
+}
+
+.contract-create-note {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  color: #4b5563;
 }

@@ -17,13 +17,14 @@ import {
 } from '@app/shared/components/confirm-dialog.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
-import { ClientType, ContractStatus, PermissionKey } from '@app/shared/models';
+import { ContractStatus, PermissionKey } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import {
   ContractsFilterBarComponent,
   ContractsFilterValue,
 } from '../contracts-filter-bar/contracts-filter-bar';
+import { boolLabel, clientTypeLabel, textOrDash } from '../contracts-format.utils';
 
 import type { ContractResponseDto } from '@app/shared/models';
 
@@ -89,20 +90,25 @@ export class ContractsListComponent {
   protected readonly contracts = computed(() => this.data.value()?.items ?? []);
   protected readonly totalElements = computed(() => this.data.value()?.total ?? 0);
   protected readonly loading = computed(() => this.data.isLoading());
+  readonly clientTypeLabel = clientTypeLabel;
+  readonly boolLabel = boolLabel;
+  readonly textOrDash = textOrDash;
 
   protected readonly displayedColumns: string[] = [
     'contract',
     'client',
     'clientType',
     'clientContacts',
-    'clientB2B',
+    'registrationCert',
+    'taxationType',
+    'directorName',
+    'rataMember',
     'signedAt',
     'expiresAt',
     'createdAt',
     'updatedAt',
     'signatureMethod',
     'status',
-    'notes',
     'createdBy',
     'actions',
   ];
@@ -204,44 +210,6 @@ export class ContractsListComponent {
     }
 
     return contract.clientId;
-  }
-
-  clientTypeLabel(type: string | undefined): string {
-    if (type === ClientType.INDIVIDUAL) {
-      return 'Физ. лицо';
-    }
-
-    if (type === ClientType.COMPANY) {
-      return 'Компания';
-    }
-
-    if (type === ClientType.B2B_AGENT) {
-      return 'B2B агент';
-    }
-
-    if (type === ClientType.AGENT) {
-      return 'Агент';
-    }
-
-    return '—';
-  }
-
-  boolLabel(value: boolean | null | undefined): string {
-    if (value === null || value === undefined) {
-      return '—';
-    }
-
-    return value ? 'Да' : 'Нет';
-  }
-
-  textOrDash(value: string | null | undefined): string {
-    const normalizedValue = value?.trim();
-
-    if (normalizedValue) {
-      return normalizedValue;
-    }
-
-    return '—';
   }
 
   statusClass(status: string): string {

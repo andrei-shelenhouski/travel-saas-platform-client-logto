@@ -21,6 +21,8 @@ import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ContractStatus, PermissionKey } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
+import { boolLabel, clientTypeLabel, textOrDash } from '../contracts-format.utils';
+
 import type { ContractResponseDto } from '@app/shared/models';
 
 const SIGNATURE_METHOD_LABEL: Record<string, string> = {
@@ -52,6 +54,9 @@ export class ContractViewPageComponent implements OnInit {
   readonly canUpdateContracts = computed(() =>
     this.authService.hasPermission(PermissionKey.CONTRACTS_UPDATE),
   );
+  readonly clientTypeLabel = clientTypeLabel;
+  readonly boolLabel = boolLabel;
+  readonly textOrDash = textOrDash;
 
   readonly canManageContract = computed(() => {
     const contract = this.contract();
@@ -151,6 +156,7 @@ export class ContractViewPageComponent implements OnInit {
       },
       error: (err) => {
         this.error.set(err.error?.message ?? err.message ?? 'Не удалось загрузить договор');
+        this.loading.set(false);
       },
       complete: () => {
         this.loading.set(false);

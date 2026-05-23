@@ -1,39 +1,15 @@
-.contract-link {
-  color: #0f172a;
+.link {
+  color: var(--color-primary);
   text-decoration: none;
   border: none;
   background: transparent;
   padding: 0;
   cursor: pointer;
-  font-size: 0.875rem;
-  font-weight: 600;
-}
+  font: inherit;
 
-.contract-link:hover {
-  text-decoration: underline;
-}
-
-.client-link {
-  color: #1d4ed8;
-  text-decoration: none;
-  border: none;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-  font-size: 0.75rem;
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    Liberation Mono,
-    Courier New,
-    monospace;
-}
-
-.client-link:hover {
-  text-decoration: underline;
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .contract-status {
@@ -59,12 +35,4 @@
 .contract-status-terminated {
   background: #fee2e2;
   color: #991b1b;
-}
-
-.notes-cell {
-  max-width: 22rem;
-  white-space: normal;
-  word-break: break-word;
-  color: #334155;
-  font-size: 0.75rem;
 }

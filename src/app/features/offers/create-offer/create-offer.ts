@@ -253,12 +253,7 @@ export class CreateOfferComponent implements OnInit {
             return;
           }
 
-          this.error.set(
-            this.getErrorMessage(
-              err,
-              'Не удалось загрузить данные запроса.',
-            ),
-          );
+          this.error.set(this.getErrorMessage(err, 'Не удалось загрузить данные запроса.'));
         },
       });
   }
@@ -357,9 +352,7 @@ export class CreateOfferComponent implements OnInit {
     const requestId = this.requestId();
 
     if (!requestId) {
-      this.toast.showError(
-        'Сохраните черновик перед предпросмотром.',
-      );
+      this.toast.showError('Сохраните черновик перед предпросмотром.');
 
       return;
     }

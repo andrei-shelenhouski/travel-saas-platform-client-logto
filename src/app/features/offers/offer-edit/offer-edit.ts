@@ -183,7 +183,9 @@ export class OfferEditComponent implements OnInit {
     this.offersService.getById(id).subscribe({
       next: (o) => this.handleLoadedOffer(o),
       error: (err) => {
-        this.toast.showError(err.error?.message ?? err.message ?? 'Не удалось загрузить предложение');
+        this.toast.showError(
+          err.error?.message ?? err.message ?? 'Не удалось загрузить предложение',
+        );
         this.router.navigate(['/app/offers']);
       },
       complete: () => this.loading.set(false),

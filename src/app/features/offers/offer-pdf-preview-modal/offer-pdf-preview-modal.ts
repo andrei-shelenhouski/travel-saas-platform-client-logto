@@ -38,9 +38,7 @@ export class OfferPdfPreviewModalComponent implements OnInit, OnDestroy {
 
   protected readonly loading = signal(true);
   protected readonly error = signal(false);
-  protected readonly errorMessage = signal(
-    'Не удалось загрузить PDF. Попробуйте еще раз.',
-  );
+  protected readonly errorMessage = signal('Не удалось загрузить PDF. Попробуйте еще раз.');
   protected readonly pdfUrl = signal<SafeResourceUrl | null>(null);
 
   private blobUrl: string | null = null;

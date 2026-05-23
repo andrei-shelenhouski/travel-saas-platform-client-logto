@@ -1,13 +1,23 @@
-<app-page-heading title="Создать договор" />
+<app-page-heading
+  subtitle="Заполните реквизиты и параметры подписания"
+  title="Создать договор"
+  [showBackButton]="true"
+/>
 
 <section class="contract-create-shell">
-  <app-contract-form
-    [allowClientIdEdit]="true"
-    [clientId]="initialClientId()"
-    [mode]="'create'"
-    [saving]="saving()"
-    [submitError]="submitError()"
-    (cancelled)="cancel()"
-    (createSubmitted)="onCreateSubmitted($event)"
-  />
+  <div class="contract-create-card">
+    <p class="contract-create-note">
+      Договор будет доступен в карточке клиента сразу после создания.
+    </p>
+
+    <app-contract-form
+      [allowClientIdEdit]="true"
+      [clientId]="initialClientId()"
+      [mode]="'create'"
+      [saving]="saving()"
+      [submitError]="submitError()"
+      (cancelled)="cancel()"
+      (createSubmitted)="onCreateSubmitted($event)"
+    />
+  </div>
 </section>

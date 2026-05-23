@@ -60,20 +60,14 @@ export class PublishInvoiceDialogComponent {
     this.invoicesService.publish(this.data.invoiceId).subscribe({
       next: (invoice) => {
         this.dialogRef.close({ published: true, invoice });
-        this.snackBar.open(
-          'Счёт опубликован и выставлен клиенту.',
-          'OK',
-          { duration: 4000 },
-        );
+        this.snackBar.open('Счёт опубликован и выставлен клиенту.', 'OK', { duration: 4000 });
       },
       error: () => {
         this.loading.set(false);
         this.dialogRef.disableClose = false;
-        this.snackBar.open(
-          'Ошибка при публикации. Попробуйте ещё раз.',
-          'Закрыть',
-          { duration: 5000 },
-        );
+        this.snackBar.open('Ошибка при публикации. Попробуйте ещё раз.', 'Закрыть', {
+          duration: 5000,
+        });
       },
     });
   }

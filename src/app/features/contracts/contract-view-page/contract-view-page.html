@@ -1,88 +1,150 @@
 <app-page-heading
   subtitle="Детали и жизненный цикл договора"
   title="Договор"
-/>
+  [showBackButton]="true"
+>
+  @if (contract(); as current) {
+    <a mat-stroked-button [routerLink]="['/app/clients', current.clientId]"> Открыть клиента </a>
 
-<section class="contract-view-shell">
-  @if (loading()) {
-    <p>Загрузка договора...</p>
-  } @else if (error()) {
-    <p class="contract-view-error" role="alert">{{ error() }}</p>
-  } @else if (contract(); as current) {
-    <div class="contract-view-actions">
+    @if (canUpdateContracts()) {
       <button
+        color="primary"
+        mat-flat-button
+        type="button"
+        [disabled]="!canManageContract()"
+        (click)="goToEdit()"
+      >
+        Редактировать
+      </button>
+      <button
+        color="warn"
         mat-stroked-button
         type="button"
-        [routerLink]="['/app/contracts']"
+        [disabled]="!canManageContract()"
+        (click)="terminate()"
       >
+        Расторгнуть
+      </button>
+    }
+  }
+</app-page-heading>
+
+<section class="contract-view-shell" [attr.aria-busy]="loading()">
+  @if (loading()) {
+    <div class="contract-view-loading">
+      <div class="contract-view-loading-spinner"></div>
+      <p aria-live="polite" class="contract-loading-text" role="status">Загрузка договора...</p>
+    </div>
+  } @else if (error()) {
+    <section class="contract-view-error-card" role="alert">
+      <h2 class="contract-view-error-title">Не удалось загрузить договор</h2>
+      <p class="contract-view-error-text">{{ error() }}</p>
+      <button color="primary" mat-flat-button type="button" [routerLink]="['/app/contracts']">
         Назад к договорам
       </button>
-      <a
-        mat-stroked-button
-        [routerLink]="['/app/clients', current.clientId]"
-      >
-        Открыть клиента
-      </a>
-      @if (canUpdateContracts()) {
-        <button
-          matButton="filled"
-          type="button"
-          [disabled]="!canManageContract()"
-          (click)="goToEdit()"
-        >
-          Редактировать
-        </button>
-        <button
-          color="warn"
-          mat-stroked-button
-          type="button"
-          [disabled]="!canManageContract()"
-          (click)="terminate()"
-        >
-          Расторгнуть
-        </button>
-      }
-    </div>
-
-    <dl class="contract-view-grid">
-      <div>
-        <dt>Номер</dt>
-        <dd>{{ current.contractNumber }}</dd>
-      </div>
-      <div>
-        <dt>Дата подписания</dt>
-        <dd>{{ current.signedAt | date: 'dd MMM yyyy' }}</dd>
-      </div>
-      <div>
-        <dt>Действует до</dt>
-        <dd>{{ current.expiresAt ? (current.expiresAt | date: 'dd MMM yyyy') : '—' }}</dd>
-      </div>
-      <div>
-        <dt>Способ подписания</dt>
-        <dd>{{ signatureMethodLabel(current.signatureMethod) }}</dd>
-      </div>
-      <div>
-        <dt>Статус</dt>
-        <dd>
+    </section>
+  } @else if (contract(); as current) {
+    <div class="contract-view-content">
+      <section class="contract-header-card">
+        <div>
+          <p class="contract-header-label">Номер договора</p>
+          <h2 class="contract-header-title">{{ current.contractNumber }}</h2>
+        </div>
+        <div class="contract-header-side">
           <span [class]="statusClass(current.status)">{{ current.status }}</span>
-        </dd>
+        </div>
+      </section>
+
+      <div class="contract-view-grid">
+        <section class="contract-card">
+          <h2 class="contract-card-title">Основные данные</h2>
+          <dl class="contract-data-list">
+            <div class="contract-data-row">
+              <dt>Дата подписания</dt>
+              <dd>{{ current.signedAt | date: 'dd MMM yyyy' }}</dd>
+            </div>
+            <div class="contract-data-row">
+              <dt>Действует до</dt>
+              <dd>{{ current.expiresAt ? (current.expiresAt | date: 'dd MMM yyyy') : '—' }}</dd>
+            </div>
+            <div class="contract-data-row">
+              <dt>Способ подписания</dt>
+              <dd>{{ signatureMethodLabel(current.signatureMethod) }}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="contract-card">
+          <h2 class="contract-card-title">Клиент</h2>
+          <dl class="contract-data-list">
+            <div class="contract-data-row">
+              <dt>Профиль</dt>
+              <dd>
+                {{ current.client?.fullName || current.client?.companyName || current.clientId }}
+              </dd>
+            </div>
+            <div class="contract-data-row">
+              <dt>Тип клиента</dt>
+              <dd>{{ clientTypeLabel(current.client?.type) }}</dd>
+            </div>
+            <div class="contract-data-row">
+              <dt>Компания</dt>
+              <dd>{{ textOrDash(current.client?.companyName) }}</dd>
+            </div>
+            <div class="contract-data-row">
+              <dt>Торговая марка</dt>
+              <dd>{{ textOrDash(current.client?.trademark) }}</dd>
+            </div>
+            <div class="contract-data-row">
+              <dt>Email</dt>
+              <dd>{{ textOrDash(current.client?.email) }}</dd>
+            </div>
+            <div class="contract-data-row">
+              <dt>Телефон</dt>
+              <dd>{{ textOrDash(current.client?.phone) }}</dd>
+            </div>
+            <div class="contract-data-row">
+              <dt>Рег. свидетельство</dt>
+              <dd>{{ textOrDash(current.client?.registrationCert) }}</dd>
+            </div>
+            <div class="contract-data-row">
+              <dt>Налогообложение</dt>
+              <dd>{{ textOrDash(current.client?.taxationType) }}</dd>
+            </div>
+            <div class="contract-data-row">
+              <dt>Директор</dt>
+              <dd>{{ textOrDash(current.client?.directorName) }}</dd>
+            </div>
+            <div class="contract-data-row">
+              <dt>Член RATA</dt>
+              <dd>{{ boolLabel(current.client?.rataMember) }}</dd>
+            </div>
+            <div class="contract-data-row">
+              <dt>ID клиента</dt>
+              <dd>{{ current.clientId }}</dd>
+            </div>
+          </dl>
+        </section>
+
+        <section class="contract-card contract-card-wide">
+          <h2 class="contract-card-title">Заметки</h2>
+          <p class="contract-notes">{{ current.notes || '—' }}</p>
+        </section>
+
+        <section class="contract-card contract-card-wide">
+          <h2 class="contract-card-title">История</h2>
+          <dl class="contract-data-list">
+            <div class="contract-data-row">
+              <dt>Создан</dt>
+              <dd>{{ current.createdAt | date: 'dd MMM yyyy, HH:mm' }}</dd>
+            </div>
+            <div class="contract-data-row">
+              <dt>Обновлён</dt>
+              <dd>{{ current.updatedAt | date: 'dd MMM yyyy, HH:mm' }}</dd>
+            </div>
+          </dl>
+        </section>
       </div>
-      <div>
-        <dt>Клиент</dt>
-        <dd>{{ current.client?.fullName || current.client?.companyName || current.clientId }}</dd>
-      </div>
-      <div class="full-width">
-        <dt>Заметки</dt>
-        <dd>{{ current.notes || '—' }}</dd>
-      </div>
-      <div>
-        <dt>Создан</dt>
-        <dd>{{ current.createdAt | date: 'dd MMM yyyy, HH:mm' }}</dd>
-      </div>
-      <div>
-        <dt>Обновлён</dt>
-        <dd>{{ current.updatedAt | date: 'dd MMM yyyy, HH:mm' }}</dd>
-      </div>
-    </dl>
+    </div>
   }
 </section>
