@@ -403,16 +403,18 @@
                 }
               </mat-tab>
 
-              @if (isB2BAgent()) {
+              @if (isB2BAgent() && canViewContracts()) {
                 <mat-tab>
                   <ng-template mat-tab-label>
                     <span i18n="@@contractsTabLabel">Contracts</span>
                   </ng-template>
 
                   <div class="contracts-tab-header">
-                    <button matButton="filled" type="button" (click)="openCreateContractDialog()">
-                      <span i18n="@@contractsAddButton">Add contract</span>
-                    </button>
+                    @if (canCreateContracts()) {
+                      <button matButton="filled" type="button" (click)="openCreateContractDialog()">
+                        <span i18n="@@contractsAddButton">Add contract</span>
+                      </button>
+                    }
                   </div>
 
                   @if (contractsLoading()) {
@@ -425,9 +427,11 @@
                   } @else if (contracts().length === 0) {
                     <div class="client-history-empty">
                       <p i18n="@@contractsEmptyState">Contracts are not added yet</p>
-                      <button mat-stroked-button type="button" (click)="openCreateContractDialog()">
-                        <span i18n="@@contractsEmptyAddButton">Add contract</span>
-                      </button>
+                      @if (canCreateContracts()) {
+                        <button mat-stroked-button type="button" (click)="openCreateContractDialog()">
+                          <span i18n="@@contractsEmptyAddButton">Add contract</span>
+                        </button>
+                      }
                     </div>
                   } @else {
                     <div class="overflow-x-auto">
@@ -460,6 +464,8 @@
                               </td>
                               <td>
                                 <button
+                                  aria-label="Contract actions"
+                                  i18n-aria-label="@@contractsActionsAriaLabel"
                                   mat-icon-button
                                   type="button"
                                   [disabled]="!canManageContract(contract)"

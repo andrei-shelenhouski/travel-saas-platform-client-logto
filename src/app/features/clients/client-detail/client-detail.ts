@@ -14,6 +14,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { EMPTY, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 
+import { AuthService } from '@app/auth/auth.service';
 import { ContractFormDialogComponent } from '@app/features/clients/contract-form-dialog/contract-form-dialog';
 import { InvoiceStatusChipComponent } from '@app/features/invoices/invoice-status-chip/invoice-status-chip';
 import { ActivitiesService } from '@app/services/activities.service';
@@ -31,7 +32,13 @@ import {
 import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS, MAT_MENU, MAT_TABS } from '@app/shared/material-imports';
-import { ClientType, ContractStatus, EntityType, SignatureMethod } from '@app/shared/models';
+import {
+  ClientType,
+  ContractStatus,
+  EntityType,
+  PermissionKey,
+  SignatureMethod,
+} from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import type {
@@ -91,6 +98,7 @@ type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices
 export class ClientDetailComponent {
   protected readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+  private readonly authService = inject(AuthService);
   private readonly clientsService = inject(ClientsService);
   private readonly contractsService = inject(ContractsService);
   private readonly activitiesService = inject(ActivitiesService);
@@ -267,6 +275,15 @@ export class ClientDetailComponent {
   readonly invoicesLoading = computed(() => this.invoicesData.isLoading());
 
   readonly isB2BAgent = computed(() => this.client()?.type === ClientType.B2B_AGENT);
+  readonly canViewContracts = computed(() =>
+    this.authService.hasPermission(PermissionKey.CONTRACTS_VIEW),
+  );
+  readonly canCreateContracts = computed(() =>
+    this.authService.hasPermission(PermissionKey.CONTRACTS_CREATE),
+  );
+  readonly canUpdateContracts = computed(() =>
+    this.authService.hasPermission(PermissionKey.CONTRACTS_UPDATE),
+  );
   readonly contracts = computed(() => this.contractsData.value()?.items ?? []);
   readonly contractsTotal = computed(() => this.contractsData.value()?.total ?? 0);
   readonly contractsLoading = computed(() => this.contractsData.isLoading());
@@ -299,7 +316,7 @@ export class ClientDetailComponent {
   onSelectedTabChange(index: number): void {
     const tabs: ClientHistoryTab[] = ['leads', 'requests', 'offers', 'bookings', 'invoices'];
 
-    if (this.isB2BAgent()) {
+    if (this.isB2BAgent() && this.canViewContracts()) {
       tabs.push('contracts');
     }
 
@@ -464,7 +481,7 @@ export class ClientDetailComponent {
   }
 
   canManageContract(contract: ContractResponseDto): boolean {
-    return contract.status === ContractStatus.ACTIVE;
+    return this.canUpdateContracts() && contract.status === ContractStatus.ACTIVE;
   }
 
   openCreateContractDialog(): void {

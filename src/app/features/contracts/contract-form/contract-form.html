@@ -21,13 +21,6 @@
     ) {
       <mat-error i18n="@@contractsFormNumberRequired">Contract number is required</mat-error>
     }
-    @if (
-      form.controls.contractNumber.hasError('duplicate') && form.controls.contractNumber.touched
-    ) {
-      <mat-error i18n="@@contractsFormNumberDuplicate"
-        >Contract with this number already exists</mat-error
-      >
-    }
   </mat-form-field>
 
   <mat-form-field class="w-full" subscriptSizing="dynamic">

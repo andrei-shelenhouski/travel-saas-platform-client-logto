@@ -145,7 +145,13 @@
       <ng-container matColumnDef="actions">
         <th *matHeaderCellDef i18n="@@contractsListActions" mat-header-cell>Actions</th>
         <td *matCellDef="let element" mat-cell>
-          <button mat-icon-button type="button" [matMenuTriggerFor]="actionsMenu">
+          <button
+            aria-label="Contract actions"
+            i18n-aria-label="@@contractsListActionsAriaLabel"
+            mat-icon-button
+            type="button"
+            [matMenuTriggerFor]="actionsMenu"
+          >
             <span aria-hidden="true" class="material-icons">more_vert</span>
           </button>
           <mat-menu #actionsMenu="matMenu">
