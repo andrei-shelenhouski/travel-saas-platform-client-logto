@@ -1,7 +1,6 @@
 <app-page-heading
   subtitle="Total: {{ totalElements() }} requests"
-  title="Requests"
-  i18n-title="@@requestsListTitle"
+  title="Заявки"
 >
 
 </app-page-heading>
@@ -21,8 +20,8 @@
   <div class="table-wrap overflow-scroll">
     <table mat-table [dataSource]="requests()">
       <ng-container matColumnDef="destination">
-        <th *matHeaderCellDef i18n="@@requestsListColumnDestination" mat-header-cell>
-          Destination
+        <th *matHeaderCellDef mat-header-cell>
+          Направление
         </th>
         <td *matCellDef="let element" mat-cell>
           {{ element.destination || '—' }}
@@ -30,47 +29,47 @@
       </ng-container>
 
       <ng-container matColumnDef="departDate">
-        <th *matHeaderCellDef i18n="@@requestsListColumnDeparture" mat-header-cell>Departure</th>
+        <th *matHeaderCellDef mat-header-cell>Выезд</th>
         <td *matCellDef="let element" mat-cell>
           {{ formatDate(element.departDate) }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="returnDate">
-        <th *matHeaderCellDef i18n="@@requestsListColumnReturn" mat-header-cell>Return</th>
+        <th *matHeaderCellDef mat-header-cell>Возвращение</th>
         <td *matCellDef="let element" mat-cell>
           {{ formatDate(element.returnDate) }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="adults">
-        <th *matHeaderCellDef i18n="@@requestsListColumnAdults" mat-header-cell>Travelers</th>
+        <th *matHeaderCellDef mat-header-cell>Путешественники</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.adults || '—' }}
           @if (element.children) {
-            <span class="text-gray-500" i18n="@@requestsListChildrenLabel"
-              >/ {{ element.children }} children</span
+            <span class="text-gray-500"
+              >/ {{ element.children }} детей</span
             >
           }
         </td>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <th *matHeaderCellDef i18n="@@requestsListColumnStatus" mat-header-cell>Status</th>
+        <th *matHeaderCellDef mat-header-cell>Статус</th>
         <td *matCellDef="let element" mat-cell>
           <app-request-status-chip [status]="element.status" />
         </td>
       </ng-container>
 
       <ng-container matColumnDef="managerName">
-        <th *matHeaderCellDef i18n="@@requestsListColumnManager" mat-header-cell>Manager</th>
+        <th *matHeaderCellDef mat-header-cell>Менеджер</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.managerName || '—' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="createdAt">
-        <th *matHeaderCellDef i18n="@@requestsListColumnCreated" mat-header-cell>Created</th>
+        <th *matHeaderCellDef mat-header-cell>Создано</th>
         <td *matCellDef="let element" mat-cell>
           {{ formatDate(element.createdAt) }}
         </td>
@@ -89,15 +88,14 @@
         <td [attr.colspan]="displayedColumns.length">
           <div class="m-10 align-middle text-center">
             @if (loading()) {
-              <p class="pb-4" i18n="@@requestsListLoading">Loading requests...</p>
+              <p class="pb-4">Загрузка заявок...</p>
               <mat-spinner
-                aria-label="Loading requests"
-                i18n-aria-label="@@requestsListLoadingAriaLabel"
+                aria-label="Загрузка заявок"
                 class="mx-auto"
                 diameter="36"
               />
             } @else {
-              <p i18n="@@requestsListEmptyState">No requests for current filters</p>
+              <p>Нет заявок по текущим фильтрам</p>
             }
           </div>
         </td>
@@ -107,8 +105,7 @@
 
   @if (totalElements() > pageSize) {
     <mat-paginator
-      aria-label="Requests pagination"
-      i18n-aria-label="@@requestsListPaginatorAriaLabel"
+      aria-label="Пагинация заявок"
       [length]="totalElements()"
       [pageIndex]="currentPage()"
       [pageSize]="pageSize"

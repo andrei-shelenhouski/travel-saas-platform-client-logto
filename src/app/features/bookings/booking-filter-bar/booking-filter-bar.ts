@@ -20,23 +20,23 @@ import { BookingStatus } from '@app/shared/models';
 const BOOKING_STATUS_OPTIONS: { value: BookingStatus; label: string }[] = [
   {
     value: BookingStatus.PENDING_CONFIRMATION,
-    label: $localize`:@@bookingStatusOptionPendingConfirmation:Pending confirmation`,
+    label: 'Ожидает подтверждения',
   },
   {
     value: BookingStatus.CONFIRMED,
-    label: $localize`:@@bookingStatusOptionConfirmed:Confirmed`,
+    label: 'Подтверждено',
   },
   {
     value: BookingStatus.IN_PROGRESS,
-    label: $localize`:@@bookingStatusOptionInProgress:In progress`,
+    label: 'В поездке',
   },
   {
     value: BookingStatus.COMPLETED,
-    label: $localize`:@@bookingStatusOptionCompleted:Completed`,
+    label: 'Завершено',
   },
   {
     value: BookingStatus.CANCELLED,
-    label: $localize`:@@bookingStatusOptionCancelled:Cancelled`,
+    label: 'Отменено',
   },
 ];
 

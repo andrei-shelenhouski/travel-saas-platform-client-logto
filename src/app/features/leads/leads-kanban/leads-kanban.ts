@@ -60,50 +60,50 @@ const LEADS_VIEW_STORAGE_KEY = 'leads_view';
 const KANBAN_FETCH_LIMIT = 100;
 
 const LEAD_STATUS_OPTIONS: LeadStatusOption[] = [
-  { value: LeadStatus.NEW, label: $localize`:@@leadStatusOptionNew:New` },
-  { value: LeadStatus.ASSIGNED, label: $localize`:@@leadStatusOptionAssigned:Assigned` },
-  { value: LeadStatus.IN_PROGRESS, label: $localize`:@@leadStatusOptionInProgress:In progress` },
-  { value: LeadStatus.OFFER_SENT, label: $localize`:@@leadStatusOptionOfferSent:Offer sent` },
-  { value: LeadStatus.WON, label: $localize`:@@leadStatusOptionWon:Won` },
-  { value: LeadStatus.LOST, label: $localize`:@@leadStatusOptionLost:Lost` },
-  { value: LeadStatus.EXPIRED, label: $localize`:@@leadStatusOptionExpired:Expired` },
+  { value: LeadStatus.NEW, label: 'Новый' },
+  { value: LeadStatus.ASSIGNED, label: 'Назначен' },
+  { value: LeadStatus.IN_PROGRESS, label: 'В работе' },
+  { value: LeadStatus.OFFER_SENT, label: 'Отправлено КП' },
+  { value: LeadStatus.WON, label: 'Выигран' },
+  { value: LeadStatus.LOST, label: 'Проигран' },
+  { value: LeadStatus.EXPIRED, label: 'Истек' },
 ];
 
 const CLIENT_TYPE_OPTIONS: ClientTypeOption[] = [
-  { value: 'INDIVIDUAL', label: $localize`:@@leadClientTypeIndividual:Individual` },
-  { value: 'COMPANY', label: $localize`:@@leadClientTypeCompany:Company` },
-  { value: 'B2B_AGENT', label: $localize`:@@leadClientTypeB2BAgent:B2B agent` },
-  { value: 'AGENT', label: $localize`:@@leadClientTypeAgent:Agent` },
+  { value: 'INDIVIDUAL', label: 'Частный' },
+  { value: 'COMPANY', label: 'Компания' },
+  { value: 'B2B_AGENT', label: 'B2B агент' },
+  { value: 'AGENT', label: 'Агент' },
 ];
 
 const LEAD_SOURCE_OPTIONS: SourceOption[] = [
-  { value: 'MANUAL', label: $localize`:@@leadSourceManual:Manual` },
-  { value: 'INSTAGRAM_ADS', label: $localize`:@@leadSourceInstagramAds:Instagram ads` },
-  { value: 'TOURVISOR', label: $localize`:@@leadSourceTourvisor:TourVisor` },
+  { value: 'MANUAL', label: 'Вручную' },
+  { value: 'INSTAGRAM_ADS', label: 'Реклама Instagram' },
+  { value: 'TOURVISOR', label: 'TourVisor' },
 ];
 
 const KANBAN_COLUMNS: KanbanColumnConfig[] = [
-  { status: LeadStatus.NEW, label: $localize`:@@leadStatusKanbanNew:New`, color: '#2b9db8' },
+  { status: LeadStatus.NEW, label: 'Новый', color: '#2b9db8' },
   {
     status: LeadStatus.ASSIGNED,
-    label: $localize`:@@leadStatusKanbanAssigned:Assigned`,
+    label: 'Назначен',
     color: '#784d90',
   },
   {
     status: LeadStatus.IN_PROGRESS,
-    label: $localize`:@@leadStatusKanbanInProgress:In progress`,
+    label: 'В работе',
     color: '#d97706',
   },
   {
     status: LeadStatus.OFFER_SENT,
-    label: $localize`:@@leadStatusKanbanOfferSent:Offer sent`,
+    label: 'Отправлено КП',
     color: '#41636e',
   },
-  { status: LeadStatus.WON, label: $localize`:@@leadStatusKanbanWon:Won`, color: '#16a34a' },
-  { status: LeadStatus.LOST, label: $localize`:@@leadStatusKanbanLost:Lost`, color: '#73787a' },
+  { status: LeadStatus.WON, label: 'Выигран', color: '#16a34a' },
+  { status: LeadStatus.LOST, label: 'Проигран', color: '#73787a' },
   {
     status: LeadStatus.EXPIRED,
-    label: $localize`:@@leadStatusKanbanExpired:Expired`,
+    label: 'Истёк',
     color: '#ba1a1a',
   },
 ];
@@ -221,7 +221,7 @@ export class LeadsKanbanComponent {
     const err = this.data.error();
 
     if (err instanceof HttpErrorResponse) {
-      return err.error?.message ?? err.message ?? 'Failed to load leads';
+      return err.error?.message ?? err.message ?? 'Не удалось загрузить лиды';
     }
 
     return undefined;
@@ -388,11 +388,11 @@ export class LeadsKanbanComponent {
   private getDropErrorMessage(err: unknown): string {
     if (err instanceof HttpErrorResponse) {
       if (err.status === 400) {
-        return $localize`:@@leadKanbanInvalidTransitionError:Invalid status transition`;
+        return 'Недопустимый переход статуса';
       }
 
       if (err.status === 403) {
-        return $localize`:@@leadKanbanForbiddenTransitionError:No permission to change status`;
+        return 'Нет прав для изменения статуса';
       }
 
       if (typeof err.error?.message === 'string') {
@@ -400,7 +400,7 @@ export class LeadsKanbanComponent {
       }
 
       return (
-        err.message || $localize`:@@leadKanbanDefaultTransitionError:Invalid status transition`
+        err.message || 'Недопустимый переход статуса'
       );
     }
 
@@ -412,7 +412,7 @@ export class LeadsKanbanComponent {
       }
     }
 
-    return $localize`:@@leadKanbanDefaultTransitionError:Invalid status transition`;
+    return 'Недопустимый переход статуса';
   }
 
   private isSalesAgent(member: OrganizationMemberResponseDto): boolean {

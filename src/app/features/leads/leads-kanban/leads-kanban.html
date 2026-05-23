@@ -1,8 +1,8 @@
-<app-page-heading title="Leads · Kanban" i18n-title="@@leadsKanbanTitle">
+<app-page-heading title="Лиды · Канбан">
   @if (canCreateLead()) {
     <a matButton="filled" routerLink="/app/leads/new">
       <mat-icon>add</mat-icon>
-      <span i18n="@@leadsListNewLeadCta">New lead</span>
+      <span>Новый лид</span>
     </a>
   }
   <mat-button-toggle-group appearance="standard" hideSingleSelectionIndicator value="kanban">
@@ -43,15 +43,8 @@
 
   @if (statusFilterWarning()) {
     <p class="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
-      <span i18n="@@leadsKanbanStatusFilterDisabled"
-        >Status filter is disabled in Kanban view.</span
-      >
-    </p>
-  }
-
-  @if (showTruncatedBanner()) {
-    <p class="rounded-md border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-800">
-      <span i18n="@@leadsKanbanFirst100Banner">Showing only first 100 leads.</span>
+      <span
+        >Фильтр статуса отключен в режиме Kanban.</span>
     </p>
   }
 
@@ -126,7 +119,7 @@
                     <app-lead-source-badge size="compact" [source]="lead.source" />
                     <span
                       class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-slate-100 text-xs font-semibold text-slate-700"
-                      [attr.aria-label]="lead.assignedAgentName || 'Unassigned'"
+                      [attr.aria-label]="lead.assignedAgentName || 'Не назначен'"
                     >
                       {{ getAgentInitials(lead.assignedAgentName) }}
                     </span>
@@ -134,13 +127,13 @@
                 </div>
                 @if (lead.destination) {
                   <p class="mt-0.5 text-xs text-gray-500 truncate">
-                    <span i18n="@@leadsKanbanCardDestinationLabel">Destination:</span>
+                    <span>Направление:</span>
                     {{ lead.destination }}
                   </p>
                 }
                 @if (lead.departDateFrom) {
                   <p class="mt-1 text-xs text-gray-600">
-                    <span i18n="@@leadsKanbanCardDepartureLabel">Departure:</span>
+                    <span>Вылет:</span>
                     {{ lead.departDateFrom | date: 'dd MMM yyyy' }}
                   </p>
                 }

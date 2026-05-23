@@ -20,7 +20,7 @@ import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
           @if (label()) {
             <mat-label>{{ label() }}</mat-label>
           }
-          <mat-chip-grid #chipGrid [attr.aria-label]="label() || 'Tags'" [disabled]="false">
+          <mat-chip-grid #chipGrid [attr.aria-label]="label() || 'Теги'" [disabled]="false">
             @for (tag of selected(); track tag) {
               <mat-chip-row
                 [attr.aria-label]="tag"
@@ -29,7 +29,7 @@ import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
               >
                 {{ tag }}
                 @if (removable()) {
-                  <button matChipRemove type="button" [attr.aria-label]="'Remove ' + tag">
+                  <button matChipRemove type="button" [attr.aria-label]="'Удалить ' + tag">
                     <mat-icon>cancel</mat-icon>
                   </button>
                 }
@@ -50,7 +50,7 @@ import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
         @if (label()) {
           <span class="block text-sm font-medium text-gray-700">{{ label() }}</span>
         }
-        <mat-chip-set [attr.aria-label]="label() || 'Tags'">
+        <mat-chip-set [attr.aria-label]="label() || 'Теги'">
           @for (tag of selected(); track tag) {
             <mat-chip-row [attr.aria-label]="tag" [removable]="false">
               {{ tag }}
@@ -82,7 +82,7 @@ export class TagSelectorComponent {
   readonly allowAdd = input<boolean>(true);
   /** Allow removing tags (default true) */
   readonly removable = input<boolean>(true);
-  readonly placeholder = input<string>('Add tag…');
+  readonly placeholder = input<string>('Добавить тег…');
 
   readonly selectionChange = output<string[]>();
 

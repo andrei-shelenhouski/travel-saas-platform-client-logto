@@ -1,12 +1,11 @@
 <app-page-heading
-  subtitle="Total: {{ totalElements() }} bookings"
-  title="Bookings"
-  i18n-title="@@bookingsListTitle"
+  subtitle="Всего: {{ totalElements() }} бронирований"
+  title="Бронирования"
 >
   @if (showCreateBookingButton()) {
     <button color="primary" mat-flat-button type="button" (click)="navigateToCreateBooking()">
       <mat-icon>add</mat-icon>
-      <span i18n="@@bookingsListNewBookingCta">New booking</span>
+      <span>+Новое бронирование</span>
     </button>
   }
 </app-page-heading>
@@ -26,7 +25,7 @@
   <div class="table-wrap overflow-scroll">
     <table mat-table [dataSource]="bookings()">
       <ng-container matColumnDef="number">
-        <th *matHeaderCellDef i18n="@@bookingsListColumnNumber" mat-header-cell>Booking #</th>
+        <th *matHeaderCellDef mat-header-cell>Бронь #</th>
         <td *matCellDef="let element" mat-cell>
           <a
             class="booking-link"
@@ -39,15 +38,15 @@
       </ng-container>
 
       <ng-container matColumnDef="clientId">
-        <th *matHeaderCellDef i18n="@@bookingsListColumnClient" mat-header-cell>Client</th>
+        <th *matHeaderCellDef mat-header-cell>Клиент</th>
         <td *matCellDef="let element" mat-cell>
           {{ getClientName(element) }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="destination">
-        <th *matHeaderCellDef i18n="@@bookingsListColumnDestination" mat-header-cell>
-          Destination
+        <th *matHeaderCellDef mat-header-cell>
+          Направление
         </th>
         <td *matCellDef="let element" mat-cell>
           {{ element.destination || '—' }}
@@ -55,29 +54,29 @@
       </ng-container>
 
       <ng-container matColumnDef="departDate">
-        <th *matHeaderCellDef i18n="@@bookingsListColumnDeparture" mat-header-cell>Departure</th>
+        <th *matHeaderCellDef mat-header-cell>Выезд</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.departDate || '—' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="returnDate">
-        <th *matHeaderCellDef i18n="@@bookingsListColumnReturn" mat-header-cell>Return</th>
+        <th *matHeaderCellDef mat-header-cell>Возврат</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.returnDate || '—' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <th *matHeaderCellDef i18n="@@bookingsListColumnStatus" mat-header-cell>Status</th>
+        <th *matHeaderCellDef mat-header-cell>Статус</th>
         <td *matCellDef="let element" mat-cell>
           <app-booking-status-chip [status]="element.status" />
         </td>
       </ng-container>
 
       <ng-container matColumnDef="assignedBackofficeName">
-        <th *matHeaderCellDef i18n="@@bookingsListColumnAssignedStaff" mat-header-cell>
-          Assigned staff
+        <th *matHeaderCellDef mat-header-cell>
+          Назначенный сотрудник
         </th>
         <td *matCellDef="let element" mat-cell>
           {{ element.assignedBackofficeName || '—' }}
@@ -97,15 +96,14 @@
         <td [attr.colspan]="displayedColumns.length">
           <div class="m-10 align-middle text-center">
             @if (loading()) {
-              <p class="pb-4" i18n="@@bookingsListLoading">Loading bookings...</p>
+              <p class="pb-4">Загрузка бронирований...</p>
               <mat-spinner
-                aria-label="Loading bookings"
-                i18n-aria-label="@@bookingsListLoadingAriaLabel"
+                aria-label="Загрузка бронирований"
                 class="mx-auto"
                 diameter="36"
               />
             } @else {
-              <p i18n="@@bookingsListEmptyState">No bookings for current filters</p>
+              <p>Нет бронирований по текущим фильтрам</p>
             }
           </div>
         </td>
@@ -115,8 +113,7 @@
 
   @if (totalElements() > pageSize) {
     <mat-paginator
-      aria-label="Bookings pagination"
-      i18n-aria-label="@@bookingsListPaginatorAriaLabel"
+      aria-label="Пагинация бронирований"
       [length]="totalElements()"
       [pageIndex]="currentPage()"
       [pageSize]="pageSize"

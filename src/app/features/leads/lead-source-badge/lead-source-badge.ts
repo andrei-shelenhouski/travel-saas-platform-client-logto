@@ -14,19 +14,19 @@ type LeadSourceBadgeConfig = {
 
 const SOURCE_BADGE_CONFIG: Record<string, LeadSourceBadgeConfig> = {
   MANUAL: {
-    label: $localize`:@@leadSourceManual:Manual`,
+    label: 'Вручную',
     color: '#6b7280',
     backgroundColor: '#f3f4f6',
     icon: 'edit',
   },
   INSTAGRAM_ADS: {
-    label: $localize`:@@leadSourceInstagramAds:Instagram ads`,
+    label: 'Реклама Instagram',
     color: '#a3328a',
     backgroundColor: '#fde7f6',
     icon: 'photo_camera',
   },
   TOURVISOR: {
-    label: $localize`:@@leadSourceTourvisor:TourVisor`,
+    label: 'TourVisor',
     color: '#0e8a16',
     backgroundColor: '#e8f6ea',
     icon: 'language',

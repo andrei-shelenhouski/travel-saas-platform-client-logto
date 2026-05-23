@@ -15,24 +15,24 @@ type ClientTypeOption = {
 };
 
 const STATUS_OPTIONS: InvoiceStatusOption[] = [
-  { value: InvoiceStatus.DRAFT, label: $localize`:@@invoiceFilterStatusDraft:Draft` },
-  { value: InvoiceStatus.ISSUED, label: $localize`:@@invoiceFilterStatusIssued:Issued` },
+  { value: InvoiceStatus.DRAFT, label: 'Черновик' },
+  { value: InvoiceStatus.ISSUED, label: 'Выставлен' },
   {
     value: InvoiceStatus.PARTIALLY_PAID,
-    label: $localize`:@@invoiceFilterStatusPartiallyPaid:Partially paid`,
+    label: 'Частично оплачен',
   },
-  { value: InvoiceStatus.PAID, label: $localize`:@@invoiceFilterStatusPaid:Paid` },
-  { value: InvoiceStatus.OVERDUE, label: $localize`:@@invoiceFilterStatusOverdue:Overdue` },
-  { value: InvoiceStatus.CANCELLED, label: $localize`:@@invoiceFilterStatusCancelled:Cancelled` },
+  { value: InvoiceStatus.PAID, label: 'Оплачен' },
+  { value: InvoiceStatus.OVERDUE, label: 'Просрочен' },
+  { value: InvoiceStatus.CANCELLED, label: 'Отменен' },
 ];
 
 const CLIENT_TYPE_OPTIONS: ClientTypeOption[] = [
   {
     value: ClientType.INDIVIDUAL,
-    label: $localize`:@@invoiceFilterClientTypeIndividual:Individual`,
+    label: 'Частный',
   },
-  { value: ClientType.COMPANY, label: $localize`:@@invoiceFilterClientTypeCompany:Company` },
-  { value: ClientType.B2B_AGENT, label: $localize`:@@invoiceFilterClientTypeB2bAgent:B2B agent` },
+  { value: ClientType.COMPANY, label: 'Компания' },
+  { value: ClientType.B2B_AGENT, label: 'B2B агент' },
 ];
 
 @Component({

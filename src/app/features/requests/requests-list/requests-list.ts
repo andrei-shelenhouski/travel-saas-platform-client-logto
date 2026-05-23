@@ -151,7 +151,7 @@ export class RequestsListComponent {
     const err = this.data.error();
 
     if (err instanceof HttpErrorResponse) {
-      return err.error?.message ?? err.message ?? 'Failed to load requests';
+      return err.error?.message ?? err.message ?? 'Не удалось загрузить запросы';
     }
 
     return undefined;

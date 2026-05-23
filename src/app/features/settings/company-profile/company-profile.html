@@ -194,54 +194,8 @@
             </mat-form-field>
 
             <mat-form-field>
-              <mat-label i18n="@@companyProfileDefaultPaymentTermsDaysLabel"
-                >Default payment term (days)</mat-label
-              >
-              <input
-                formControlName="defaultPaymentTermsDays"
-                matInput
-                max="365"
-                min="1"
-                type="number"
-              />
-              <mat-hint i18n="@@companyProfileDefaultPaymentTermsDaysHint"
-                >Used when creating a new invoice</mat-hint
-              >
-              @if (form.controls.defaultPaymentTermsDays.hasError('required')) {
-                <mat-error i18n="@@companyProfileDefaultPaymentTermsDaysRequired"
-                  >Required field</mat-error
-                >
-              }
-              @if (
-                form.controls.defaultPaymentTermsDays.hasError('min') ||
-                form.controls.defaultPaymentTermsDays.hasError('max')
-              ) {
-                <mat-error i18n="@@companyProfileDefaultPaymentTermsDaysRange"
-                  >From 1 to 365 days</mat-error
-                >
-              }
-            </mat-form-field>
-
-            <mat-form-field>
-              <mat-label>Комиссия по умолчанию (%)</mat-label>
-              <input
-                formControlName="defaultCommissionPct"
-                matInput
-                max="100"
-                min="0"
-                step="0.1"
-                type="number"
-              />
-              @if (
-                form.controls.defaultCommissionPct.hasError('min') ||
-                form.controls.defaultCommissionPct.hasError('max')
-              ) {
-                <mat-error>От 0 до 100%</mat-error>
-              }
-            </mat-form-field>
-
-            <mat-form-field class="full-width">
-              <mat-label>Условия оплаты по умолчанию</mat-label>
+              <mat-label
+                >Срок оплаты по умолчанию (дней)</mat-label>
               <textarea formControlName="defaultPaymentTerms" matInput rows="3"></textarea>
             </mat-form-field>
           </div>

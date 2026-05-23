@@ -86,25 +86,25 @@ export class UsersManagementComponent {
     const totalUsers = this.totalUsers();
 
     if (totalUsers === 1) {
-      return $localize`:@@usersTotalSubtitleOne:Total: ${totalUsers}:count: user`;
+      return `Всего: ${totalUsers} пользователь`;
     }
 
-    return $localize`:@@usersTotalSubtitleOther:Total: ${totalUsers}:count: users`;
+    return `Всего: ${totalUsers} пользователей`;
   });
-  protected readonly activeStatusLabel = $localize`:@@usersStatusActive:Active`;
-  protected readonly inactiveStatusLabel = $localize`:@@usersStatusInactive:Inactive`;
+  protected readonly activeStatusLabel = 'Активен';
+  protected readonly inactiveStatusLabel = 'Неактивен';
 
   protected readonly displayedColumns = ['user', 'email', 'role', 'status', 'joined', 'actions'];
 
-  private readonly okLabel = $localize`:@@commonOk:OK`;
-  private readonly closeLabel = $localize`:@@commonClose:Close`;
-  private readonly cancelLabel = $localize`:@@commonCancel:Cancel`;
-  private readonly roleConfirmTitle = $localize`:@@usersRoleChangeTitle:Change role`;
-  private readonly roleConfirmLabel = $localize`:@@usersRoleChangeAction:Change`;
-  private readonly roleForbiddenError = $localize`:@@usersRoleChangeForbidden:You don't have permission to change roles.`;
-  private readonly roleGenericError = $localize`:@@usersUpdateRoleError:Failed to update role`;
-  private readonly roleSelfChangeError = $localize`:@@usersRoleSelfChangeForbidden:You can't change your own role.`;
-  private readonly roleLastAdminError = $localize`:@@usersRoleLastAdminProtected:This org must have at least one admin. Assign another admin first.`;
+  private readonly okLabel = 'OK';
+  private readonly closeLabel = 'Закрыть';
+  private readonly cancelLabel = 'Отмена';
+  private readonly roleConfirmTitle = 'Изменить роль';
+  private readonly roleConfirmLabel = 'Изменить';
+  private readonly roleForbiddenError = 'У вас нет прав для изменения ролей.';
+  private readonly roleGenericError = 'Не удалось обновить роль';
+  private readonly roleSelfChangeError = 'Вы не можете изменить собственную роль.';
+  private readonly roleLastAdminError = 'В организации должен быть хотя бы один администратор. Сначала назначьте другого администратора.';
 
   constructor() {
     this.loadUsers();
@@ -214,7 +214,7 @@ export class UsersManagementComponent {
     }
 
     const roleLabel = this.resolveRoleLabel(roleValue);
-    const roleChangeMessage = $localize`:@@usersRoleChangeMessage:Change role for ${user.fullName}:fullName: to ${roleLabel}:roleName:? Their access will update immediately.`;
+    const roleChangeMessage = `Изменить роль пользователя ${user.fullName} на ${roleLabel}? Доступ обновится немедленно.`;
 
     this.clearRoleUpdateError(user.id);
 
@@ -236,17 +236,17 @@ export class UsersManagementComponent {
   }
 
   protected openDeactivateDialog(user: OrgUserResponseDto): void {
-    const deactivateMessage = $localize`:@@usersDeactivateMessage:Deactivate ${
+    const deactivateMessage = `Деактивировать ${
       user.fullName
-    }? The user will immediately lose access to the system.`;
+    }? Пользователь немедленно потеряет доступ к системе.`;
 
     this.dialog
       .open(ConfirmDialogComponent, {
         data: {
-          title: $localize`:@@usersDeactivateTitle:Deactivate user`,
+          title: 'Деактивировать пользователя',
           message: deactivateMessage,
-          confirmLabel: $localize`:@@usersDeactivateAction:Deactivate`,
-          cancelLabel: $localize`:@@commonCancel:Cancel`,
+          confirmLabel: 'Деактивировать',
+          cancelLabel: 'Отмена',
           confirmColor: 'warn',
         },
       })
@@ -265,7 +265,7 @@ export class UsersManagementComponent {
       .pipe(finalize(() => this.togglingActiveId.set(null)))
       .subscribe({
         next: () => {
-          this.snackBar.open($localize`:@@usersActivated:User activated`, this.okLabel, {
+          this.snackBar.open('Пользователь активирован', this.okLabel, {
             duration: 3500,
           });
           this.loadUsers();
@@ -274,7 +274,7 @@ export class UsersManagementComponent {
           const message =
             err.error?.message ??
             err.message ??
-            $localize`:@@usersActivateError:Failed to activate user`;
+            'Не удалось активировать пользователя';
 
           this.snackBar.open(message, this.closeLabel, { duration: 5000 });
         },
@@ -309,7 +309,7 @@ export class UsersManagementComponent {
       .pipe(finalize(() => this.togglingActiveId.set(null)))
       .subscribe({
         next: () => {
-          this.snackBar.open($localize`:@@usersDeactivated:User deactivated`, this.okLabel, {
+          this.snackBar.open('Пользователь деактивирован', this.okLabel, {
             duration: 3500,
           });
           this.loadUsers();
@@ -318,7 +318,7 @@ export class UsersManagementComponent {
           const message =
             err.error?.message ??
             err.message ??
-            $localize`:@@usersDeactivateError:Failed to deactivate user`;
+            'Не удалось деактивировать пользователя';
 
           this.snackBar.open(message, this.closeLabel, { duration: 5000 });
         },
@@ -335,7 +335,7 @@ export class UsersManagementComponent {
       roles: this.rolesApi.listRoles().pipe(
         catchError((error: unknown) => {
           this.error.set(
-            this.resolveErrorMessage(error, $localize`:@@usersLoadError:Failed to load users`),
+            this.resolveErrorMessage(error, 'Не удалось загрузить пользователей'),
           );
 
           return of<RoleSummaryResponseDto[]>([]);
@@ -359,7 +359,7 @@ export class UsersManagementComponent {
         },
         error: (err) => {
           const message =
-            err.error?.message ?? err.message ?? $localize`:@@usersLoadError:Failed to load users`;
+            err.error?.message ?? err.message ?? 'Не удалось загрузить пользователей';
 
           this.error.set(message);
         },
@@ -397,7 +397,7 @@ export class UsersManagementComponent {
           this.users.update((items) =>
             items.map((item) => (item.id === updatedUser.id ? updatedUser : item)),
           );
-          this.snackBar.open($localize`:@@usersRoleUpdated:Role updated`, this.okLabel, {
+          this.snackBar.open('Роль обновлена', this.okLabel, {
             duration: 3500,
           });
         },
@@ -570,15 +570,15 @@ export class UsersManagementComponent {
   private systemRoleLabel(role: OrgRole): string {
     switch (role) {
       case OrgRole.ADMIN:
-        return $localize`:@@usersRoleAdministrator:Administrator`;
+        return 'Администратор';
       case OrgRole.MANAGER:
-        return $localize`:@@usersRoleManager:Manager`;
+        return 'Менеджер';
       case OrgRole.AGENT:
-        return $localize`:@@usersRoleAgent:Agent`;
+        return 'Агент';
       case OrgRole.SALES_AGENT:
-        return $localize`:@@usersRoleSalesAgent:Sales agent`;
+        return 'Агент по продажам';
       case OrgRole.BACK_OFFICE:
-        return $localize`:@@usersRoleBackOffice:Back office`;
+        return 'Бэк-офис';
       default:
         return role;
     }

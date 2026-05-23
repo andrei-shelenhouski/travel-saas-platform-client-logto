@@ -20,15 +20,15 @@ import { RequestStatus } from '@app/shared/models';
 const REQUEST_STATUS_OPTIONS: { value: RequestStatus; label: string }[] = [
   {
     value: RequestStatus.OPEN,
-    label: $localize`:@@requestStatusOptionOpen:Open`,
+    label: 'Открыто',
   },
   {
     value: RequestStatus.QUOTED,
-    label: $localize`:@@requestStatusOptionQuoted:Quoted`,
+    label: 'Расценено',
   },
   {
     value: RequestStatus.CLOSED,
-    label: $localize`:@@requestStatusOptionClosed:Closed`,
+    label: 'Закрыто',
   },
 ];
 

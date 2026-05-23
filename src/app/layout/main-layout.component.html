@@ -42,7 +42,7 @@
             <button disabled mat-menu-item type="button">
               <span class="flex items-center gap-2">
                 <span aria-hidden="true" class="material-icons animate-spin text-base">sync</span>
-                <span i18n="@@loadingOrganizations">Loading organizations…</span>
+                <span>Загрузка организаций…</span>
               </span>
             </button>
           } @else {
@@ -69,14 +69,14 @@
             }
             @if (organizations().length === 0) {
               <button disabled mat-menu-item type="button">
-                <span i18n="@@noOtherOrganizations">No other organizations</span>
+                <span>Нет других организаций</span>
               </button>
             }
           }
           <mat-divider />
           <a mat-menu-item routerLink="/app/organizations/new">
             <mat-icon fontSet="material-icons">add</mat-icon>
-            <span i18n="@@addOrganization">Add organization</span>
+            <span>Добавить организацию</span>
           </a>
         </mat-menu>
 
@@ -109,7 +109,7 @@
           </span>
           <button class="flex items-center gap-2" mat-button type="button" (click)="logout()">
             <span aria-hidden="true" class="material-icons text-base">logout</span
-            ><span i18n="@@logout">Logout</span>
+            ><span>Выйти</span>
           </button>
         </div>
       </header>

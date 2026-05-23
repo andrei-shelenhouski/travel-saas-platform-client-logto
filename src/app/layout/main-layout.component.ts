@@ -32,47 +32,47 @@ type MainNavLink = {
 };
 
 const MAIN_NAV_LINKS: MainNavLink[] = [
-  { path: '/app/dashboard', icon: 'dashboard', label: $localize`:@@dashboard:Dashboard` },
-  { path: '/app/leads', icon: 'inbox', label: $localize`:@@leads:Leads` },
-  { path: '/app/clients', icon: 'group', label: $localize`:@@clients:Clients` },
+  { path: '/app/dashboard', icon: 'dashboard', label: 'Рабочий стол' },
+  { path: '/app/leads', icon: 'inbox', label: 'Лиды' },
+  { path: '/app/clients', icon: 'group', label: 'Клиенты' },
   {
     path: '/app/contracts',
     icon: 'description',
-    label: $localize`:@@contracts:Contracts`,
+    label: 'Договоры',
     requiredPermission: PermissionKey.CONTRACTS_VIEW,
   },
-  { path: '/app/requests', icon: 'alt_route', label: $localize`:@@requests:Requests` },
-  { path: '/app/offers', icon: 'send', label: $localize`:@@offers:Offers` },
-  { path: '/app/bookings', icon: 'flight', label: $localize`:@@bookings:Bookings` },
+  { path: '/app/requests', icon: 'alt_route', label: 'Запросы' },
+  { path: '/app/offers', icon: 'send', label: 'Предложения' },
+  { path: '/app/bookings', icon: 'flight', label: 'Бронирования' },
   {
     path: '/app/invoices',
     icon: 'description',
-    label: $localize`:@@invoices:Invoices`,
+    label: 'Счета',
     requiredPermission: PermissionKey.INVOICES_VIEW,
   },
   {
     path: '/app/settings/roles',
     icon: 'admin_panel_settings',
-    label: $localize`:@@rolesPermissionsNav:Roles & Permissions`,
+    label: 'Роли и права',
     requiredPermission: PermissionKey.ROLES_VIEW,
     sectionMargin: true,
   },
   {
     path: '/app/settings/users',
     icon: 'manage_accounts',
-    label: $localize`:@@userManagement:User management`,
+    label: 'Пользователи',
     requiredPermission: PermissionKey.ROLES_VIEW,
   },
   {
     path: '/app/settings/integrations',
     icon: 'hub',
-    label: $localize`:@@integrations:Integrations`,
+    label: 'Интеграции',
     requiredPermission: PermissionKey.ROLES_VIEW,
   },
   {
     path: '/app/settings',
     icon: 'settings',
-    label: $localize`:@@settings:Settings`,
+    label: 'Настройки',
     requiredPermission: PermissionKey.SETTINGS_UPDATE,
   },
 ];
@@ -109,7 +109,7 @@ export class MainLayoutComponent implements OnInit {
 
   readonly organizations = signal<OrganizationWithRoleDto[]>([]);
   readonly orgSwitcherLoading = signal(false);
-  private readonly orgMemberRoleLabel = $localize`:@@organizationRoleMember:Member`;
+  private readonly orgMemberRoleLabel = 'Участник';
 
   /** Bumped on org switch so the primary `router-outlet` remounts and reloads the current route. */
   readonly outletReloadKey = signal(0);

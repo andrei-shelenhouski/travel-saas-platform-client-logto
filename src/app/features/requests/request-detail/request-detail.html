@@ -16,12 +16,11 @@
       >
         <button
           color="primary"
-          i18n="@@requestCreateOfferButton"
           mat-flat-button
           type="button"
           (click)="createOffer()"
         >
-          Create offer
+          Создать предложение
         </button>
       </app-page-heading>
 
@@ -29,7 +28,7 @@
         <section class="request-header-card">
           <div class="request-header-main">
             <div>
-              <p class="request-header-label" i18n="@@requestHeaderLabel">Travel request</p>
+              <p class="request-header-label">Запрос на поездку</p>
               <h2 class="request-header-title">{{ r.destination }}</h2>
             </div>
             <span
@@ -43,30 +42,30 @@
         <div class="request-grid">
           <section class="request-card">
             <div class="request-card-header">
-              <h2 class="request-card-title">Details</h2>
+              <h2 class="request-card-title">Детали</h2>
             </div>
 
             <dl class="request-data-list">
               <div class="request-data-row">
-                <dt>Destination</dt>
+                <dt>Направление</dt>
                 <dd>{{ r.destination }}</dd>
               </div>
               <div class="request-data-row">
-                <dt i18n="@@requestDepartDate">Depart date</dt>
+                <dt>Дата отправления</dt>
                 <dd>{{ formatDate(r.departDate) }}</dd>
               </div>
               <div class="request-data-row">
-                <dt i18n="@@requestReturnDate">Return date</dt>
+                <dt>Дата возвращения</dt>
                 <dd>{{ formatDate(r.returnDate) }}</dd>
               </div>
               <div class="request-data-row">
-                <dt>Adults / Children</dt>
+                <dt>Взрослые / Дети</dt>
                 <dd>
-                  {{ r.adults }} adults{{ r.children ? ', ' + r.children + ' children' : '' }}
+                  {{ r.adults }} взр.{{ r.children ? ', ' + r.children + ' дет.' : '' }}
                 </dd>
               </div>
               <div class="request-data-row">
-                <dt>Status</dt>
+                <dt>Статус</dt>
                 <dd>
                   <span
                     class="inline-block rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800"
@@ -77,20 +76,20 @@
               </div>
               @if (r.notes) {
                 <div class="request-data-row">
-                  <dt>Notes</dt>
+                  <dt>Заметки</dt>
                   <dd class="whitespace-pre-wrap">{{ r.notes }}</dd>
                 </div>
               }
               @if (r.leadId) {
                 <div class="request-data-row">
-                  <dt>Lead</dt>
+                  <dt>Лид</dt>
                   <dd>
-                    <a class="request-link" [routerLink]="['/app/leads', r.leadId]">Open lead</a>
+                    <a class="request-link" [routerLink]="['/app/leads', r.leadId]">Открыть лид</a>
                   </dd>
                 </div>
               }
               <div class="request-data-row">
-                <dt>Manager ID</dt>
+                <dt>ID менеджера</dt>
                 <dd class="font-mono text-xs text-gray-600">{{ r.managerId }}</dd>
               </div>
             </dl>
@@ -98,7 +97,7 @@
         </div>
       </div>
     } @else {
-      <p class="text-gray-500">Request not found.</p>
+      <p class="text-gray-500">Запрос не найден.</p>
     }
   }
 </div>

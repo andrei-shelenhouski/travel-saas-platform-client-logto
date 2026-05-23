@@ -30,20 +30,20 @@ type TypeOption = {
 const TYPE_OPTIONS: TypeOption[] = [
   {
     value: ClientType.INDIVIDUAL,
-    label: 'Individual',
-    subLabel: 'Private client',
+    label: 'Физическое лицо',
+    subLabel: 'Частный клиент',
     icon: 'person',
   },
   {
     value: ClientType.COMPANY,
-    label: 'Company',
-    subLabel: 'Legal entity',
+    label: 'Компания',
+    subLabel: 'Юридическое лицо',
     icon: 'business',
   },
   {
     value: ClientType.B2B_AGENT,
-    label: 'B2B agent',
-    subLabel: 'Travel agency / partner',
+    label: 'B2B агент',
+    subLabel: 'Турагентство / партнёр',
     icon: 'work',
   },
 ];

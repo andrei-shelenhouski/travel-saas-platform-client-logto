@@ -183,7 +183,7 @@ export class OfferEditComponent implements OnInit {
     this.offersService.getById(id).subscribe({
       next: (o) => this.handleLoadedOffer(o),
       error: (err) => {
-        this.toast.showError(err.error?.message ?? err.message ?? 'Failed to load offer');
+        this.toast.showError(err.error?.message ?? err.message ?? 'Не удалось загрузить предложение');
         this.router.navigate(['/app/offers']);
       },
       complete: () => this.loading.set(false),
@@ -192,7 +192,7 @@ export class OfferEditComponent implements OnInit {
 
   private handleLoadedOffer(offer: OfferResponseDto): void {
     if (offer.status !== OfferStatus.DRAFT) {
-      this.toast.showError('Only draft offers can be edited.');
+      this.toast.showError('Редактировать можно только черновики предложений.');
       this.router.navigate(['/app/offers', offer.id]);
 
       return;
@@ -407,11 +407,11 @@ export class OfferEditComponent implements OnInit {
         next: (updated) => {
           this.offer.set(updated);
           this.form.markAsPristine();
-          this.toast.showSuccess('Offer draft updated');
+          this.toast.showSuccess('Черновик предложения обновлён');
           this.openPdfPreviewDialog(updated.id, updated.number);
         },
         error: (err) => {
-          this.error.set(err.error?.message ?? err.message ?? 'Failed to update offer');
+          this.error.set(err.error?.message ?? err.message ?? 'Не удалось обновить предложение');
         },
       });
   }
@@ -434,11 +434,11 @@ export class OfferEditComponent implements OnInit {
       next: (updated) => {
         this.offer.set(updated);
         this.form.markAsPristine();
-        this.toast.showSuccess('Offer draft updated');
+        this.toast.showSuccess('Черновик предложения обновлён');
         this.router.navigate(['/app/offers', o.id]);
       },
       error: (err) => {
-        this.error.set(err.error?.message ?? err.message ?? 'Failed to update offer');
+        this.error.set(err.error?.message ?? err.message ?? 'Не удалось обновить предложение');
         this.saving.set(false);
       },
       complete: () => this.saving.set(false),

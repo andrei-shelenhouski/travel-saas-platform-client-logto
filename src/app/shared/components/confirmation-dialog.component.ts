@@ -39,10 +39,10 @@ import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 })
 export class ConfirmationDialogComponent {
   readonly open = input<boolean>(false);
-  readonly title = input<string>('Confirm');
+  readonly title = input<string>('Подтверждение');
   readonly message = input<string>('');
-  readonly confirmLabel = input<string>('Confirm');
-  readonly cancelLabel = input<string>('Cancel');
+  readonly confirmLabel = input<string>('Подтвердить');
+  readonly cancelLabel = input<string>('Отмена');
   readonly danger = input<boolean>(false);
 
   readonly confirm = output<void>();

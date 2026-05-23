@@ -16,18 +16,18 @@ export const OFFER_STATUS_COLORS: Record<string, string> = {
 };
 
 export const OFFER_STATUS_LABELS: Record<string, string> = {
-  DRAFT: $localize`:@@offerStatusDraft:Draft`,
-  NEW: $localize`:@@offerStatusNew:New`,
-  OPEN: $localize`:@@offerStatusOpen:Open`,
-  SENT: $localize`:@@offerStatusSent:Sent`,
-  OFFER_SENT: $localize`:@@offerStatusOfferSent:Offer sent`,
-  VIEWED: $localize`:@@offerStatusViewed:Viewed`,
-  ACCEPTED: $localize`:@@offerStatusAccepted:Accepted`,
-  WON: $localize`:@@offerStatusWon:Won`,
-  REJECTED: $localize`:@@offerStatusRejected:Rejected`,
-  LOST: $localize`:@@offerStatusLost:Lost`,
-  EXPIRED: $localize`:@@offerStatusExpired:Expired`,
-  CLOSED: $localize`:@@offerStatusClosed:Closed`,
+  DRAFT: 'Черновик',
+  NEW: 'Новое',
+  OPEN: 'Открыто',
+  SENT: 'Отправлено',
+  OFFER_SENT: 'Предложение отправлено',
+  VIEWED: 'Просмотрено',
+  ACCEPTED: 'Принято',
+  WON: 'Выиграно',
+  REJECTED: 'Отклонено',
+  LOST: 'Проиграно',
+  EXPIRED: 'Просрочено',
+  CLOSED: 'Закрыто',
 };
 
 @Component({

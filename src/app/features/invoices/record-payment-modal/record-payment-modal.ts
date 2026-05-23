@@ -110,8 +110,8 @@ export class RecordPaymentModalComponent {
 
         const message =
           request.amount >= this.outstandingAmount()
-            ? $localize`:@@recordPaymentModalInvoiceFullyPaidSuccess:Invoice fully paid.`
-            : $localize`:@@recordPaymentModalPaymentRecordedSuccess:Payment recorded. Invoice updated.`;
+            ? 'Счёт полностью оплачен.'
+            : 'Платёж записан. Счёт обновлён.';
 
         this.snackBar.open(message, 'OK', { duration: 4000 });
       },
@@ -193,7 +193,7 @@ export class RecordPaymentModalComponent {
     return (
       errorResponse.error?.message ??
       errorResponse.message ??
-      $localize`:@@recordPaymentModalRecordPaymentError:Failed to record payment.`
+      'Не удалось записать платёж.'
     );
   }
 

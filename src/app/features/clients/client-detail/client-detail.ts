@@ -52,9 +52,9 @@ import type {
 } from '@app/shared/models';
 
 const TYPE_LABEL: Record<string, string> = {
-  [ClientType.INDIVIDUAL]: 'Individual',
-  [ClientType.COMPANY]: 'Company',
-  [ClientType.B2B_AGENT]: 'B2B Agent',
+  [ClientType.INDIVIDUAL]: 'Физическое лицо',
+  [ClientType.COMPANY]: 'Компания',
+  [ClientType.B2B_AGENT]: 'B2B агент',
 };
 
 const CONTRACT_STATUS_CLASS: Record<string, string> = {
@@ -64,10 +64,10 @@ const CONTRACT_STATUS_CLASS: Record<string, string> = {
 };
 
 const SIGNATURE_METHOD_LABEL: Record<string, string> = {
-  [SignatureMethod.ORIGINAL_MAIL]: 'Mail',
-  [SignatureMethod.ORIGINAL_COURIER]: 'Courier',
+  [SignatureMethod.ORIGINAL_MAIL]: 'Почта',
+  [SignatureMethod.ORIGINAL_COURIER]: 'Курьер',
   [SignatureMethod.DIGITAL_PODPIS]: 'Podpis.by',
-  [SignatureMethod.OTHER]: 'Other',
+  [SignatureMethod.OTHER]: 'Другое',
 };
 
 type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices' | 'contracts';
@@ -392,7 +392,7 @@ export class ClientDetailComponent {
         .subscribe({
           next: checkDone,
           error: () => {
-            this.toast.showError('Failed to add tag');
+            this.toast.showError('Не удалось добавить тег');
             checkDone();
           },
         });
@@ -407,7 +407,7 @@ export class ClientDetailComponent {
       this.tagsService.detach(tag.id, EntityType.Client, c.id).subscribe({
         next: checkDone,
         error: () => {
-          this.toast.showError('Failed to remove tag');
+          this.toast.showError('Не удалось удалить тег');
           checkDone();
         },
       });
@@ -543,10 +543,10 @@ export class ClientDetailComponent {
     this.dialog
       .open(ConfirmDialogComponent, {
         data: {
-          title: $localize`:@@contractsTerminateConfirmTitle:Terminate contract`,
-          message: $localize`:@@contractsTerminateConfirmMessage:Are you sure you want to terminate contract ${contract.contractNumber}? This action cannot be undone.`,
-          confirmLabel: $localize`:@@contractsTerminateConfirmAction:Terminate`,
-          cancelLabel: $localize`:@@contractsTerminateCancelAction:Cancel`,
+          title: 'Расторгнуть договор',
+          message: `Вы уверены, что хотите расторгнуть договор ${contract.contractNumber}? Это действие необратимо.`,
+          confirmLabel: 'Расторгнуть',
+          cancelLabel: 'Отмена',
           confirmColor: 'warn',
         },
       })
@@ -561,7 +561,7 @@ export class ClientDetailComponent {
             this.refreshContracts();
           },
           error: () => {
-            this.toast.showError('Failed to terminate contract');
+            this.toast.showError('Не удалось расторгнуть договор');
           },
         });
       });

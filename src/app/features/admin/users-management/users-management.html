@@ -1,19 +1,17 @@
 <app-page-heading
-  title="User management"
-  i18n-title="@@userManagement"
+  title="Пользователи"
   [subtitle]="usersSubtitle()"
 >
   @if (canInviteMembers()) {
     <button
       color="primary"
-      i18n="@@usersInviteButton"
       matButton="filled"
       type="button"
       [disabled]="!canInviteUsers()"
       (click)="openInviteDialog()"
     >
       <mat-icon>add</mat-icon>
-      <span>Invite user</span>
+      <span>Пригласить пользователя</span>
     </button>
   }
 </app-page-heading>
@@ -26,7 +24,7 @@
   <div class="table-wrap overflow-scroll">
     <table mat-table [dataSource]="users()" [multiTemplateDataRows]="true">
       <ng-container matColumnDef="user">
-        <th *matHeaderCellDef i18n="@@usersColumnUser" mat-header-cell>User</th>
+        <th *matHeaderCellDef mat-header-cell>Пользователь</th>
         <td *matCellDef="let element" mat-cell>
           <div class="flex items-center gap-3">
             <span
@@ -39,7 +37,7 @@
             <div>
               <div class="text-sm font-semibold">{{ element.fullName }}</div>
               @if (isCurrentUser(element)) {
-                <div class="text-xs text-gray-500" i18n="@@usersCurrentUser">Current user</div>
+                <div class="text-xs text-gray-500">Текущий пользователь</div>
               }
             </div>
           </div>
@@ -47,7 +45,7 @@
       </ng-container>
 
       <ng-container matColumnDef="email">
-        <th *matHeaderCellDef i18n="@@usersColumnEmail" mat-header-cell>Email</th>
+        <th *matHeaderCellDef mat-header-cell>Email</th>
         <td *matCellDef="let element" mat-cell>
           <span
             class="block max-w-[260px] overflow-hidden text-ellipsis whitespace-nowrap"
@@ -59,7 +57,7 @@
       </ng-container>
 
       <ng-container matColumnDef="role">
-        <th *matHeaderCellDef i18n="@@usersColumnRole" mat-header-cell>Role</th>
+        <th *matHeaderCellDef mat-header-cell>Роль</th>
         <td *matCellDef="let element" mat-cell>
           <div class="flex flex-col gap-1">
             @if (canChangeRole(element)) {
@@ -99,7 +97,7 @@
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <th *matHeaderCellDef i18n="@@usersColumnStatus" mat-header-cell>Status</th>
+        <th *matHeaderCellDef mat-header-cell>Статус</th>
         <td *matCellDef="let element" mat-cell>
           <span
             class="inline-block rounded-full px-2.5 py-1 text-xs font-semibold"
@@ -114,7 +112,7 @@
       </ng-container>
 
       <ng-container matColumnDef="joined">
-        <th *matHeaderCellDef i18n="@@usersColumnJoined" mat-header-cell>Joined</th>
+        <th *matHeaderCellDef mat-header-cell>Присоединился</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.joinedAt | date: 'dd MMM yyyy' }}
         </td>
@@ -124,15 +122,13 @@
         <th
           *matHeaderCellDef
           class="w-[88px] text-center"
-          i18n="@@usersColumnActions"
           mat-header-cell
         >
-          Actions
+          Действия
         </th>
         <td *matCellDef="let element" class="text-center" mat-cell>
           <button
-            aria-label="Open actions menu"
-            i18n-aria-label="@@usersActionsMenuAria"
+            aria-label="Открыть меню действий"
             mat-icon-button
             type="button"
             [disabled]="togglingActiveId() === element.id || isCurrentUser(element)"
@@ -150,16 +146,15 @@
         <td [attr.colspan]="displayedColumns.length">
           <div class="m-10 text-center align-middle">
             @if (loading()) {
-              <p class="pb-4" i18n="@@usersLoading">Loading users...</p>
+              <p class="pb-4">Загрузка пользователей...</p>
               <mat-spinner
-                aria-label="Loading users"
-                i18n-aria-label="@@usersLoadingAriaLabel"
+                aria-label="Загрузка пользователей"
                 class="mx-auto"
                 diameter="36"
               />
             } @else {
-              <p class="text-gray-500" i18n="@@usersEmptyState">
-                No users yet. Invite the first member.
+              <p class="text-gray-500">
+                Пользователей пока нет. Пригласите первого участника.
               </p>
             }
           </div>
@@ -174,22 +169,20 @@
     @if (user.isActive) {
       @if (!isCurrentUser(user)) {
         <button
-          i18n="@@usersDeactivateActionMenu"
           mat-menu-item
           type="button"
           (click)="openDeactivateDialog(user)"
         >
-          Deactivate
+          Деактивировать
         </button>
       }
     } @else {
       <button
-        i18n="@@usersReactivateActionMenu"
         mat-menu-item
         type="button"
         (click)="reactivateUser(user.id)"
       >
-        Activate
+        Активировать
       </button>
     }
   </ng-template>

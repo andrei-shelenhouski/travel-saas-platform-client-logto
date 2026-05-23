@@ -11,13 +11,13 @@ export const BOOKING_STATUS_COLORS: Record<string, string> = {
 };
 
 export const BOOKING_STATUS_LABELS: Record<string, string> = {
-  PENDING_CONFIRMATION: $localize`:@@bookingStatusOptionPendingConfirmation:Pending confirmation`,
-  PENDING: $localize`:@@bookingStatusOptionPending:Pending`,
-  CONFIRMED: $localize`:@@bookingStatusOptionConfirmed:Confirmed`,
-  IN_PROGRESS: $localize`:@@bookingStatusOptionInProgress:In progress`,
-  COMPLETED: $localize`:@@bookingStatusOptionCompleted:Completed`,
-  PAID: $localize`:@@bookingStatusOptionPaid:Paid`,
-  CANCELLED: $localize`:@@bookingStatusOptionCancelled:Cancelled`,
+  PENDING_CONFIRMATION: 'Ожидает подтверждения',
+  PENDING: 'В ожидании',
+  CONFIRMED: 'Подтверждено',
+  IN_PROGRESS: 'В поездке',
+  COMPLETED: 'Завершено',
+  PAID: 'Оплачено',
+  CANCELLED: 'Отменено',
 };
 
 @Component({

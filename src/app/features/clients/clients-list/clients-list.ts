@@ -97,7 +97,7 @@ export class ClientsListComponent {
         return undefined;
       }
 
-      return err.error?.message ?? err.message ?? 'Failed to load clients';
+      return err.error?.message ?? err.message ?? 'Не удалось загрузить клиентов';
     }
 
     return undefined;

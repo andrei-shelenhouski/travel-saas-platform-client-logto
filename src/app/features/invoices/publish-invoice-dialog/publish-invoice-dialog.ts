@@ -61,8 +61,8 @@ export class PublishInvoiceDialogComponent {
       next: (invoice) => {
         this.dialogRef.close({ published: true, invoice });
         this.snackBar.open(
-          $localize`:@@publishInvoiceDialogSuccessMessage:Invoice published and issued to the client.`,
-          $localize`:@@publishInvoiceDialogSuccessAction:OK`,
+          'Счёт опубликован и выставлен клиенту.',
+          'OK',
           { duration: 4000 },
         );
       },
@@ -70,8 +70,8 @@ export class PublishInvoiceDialogComponent {
         this.loading.set(false);
         this.dialogRef.disableClose = false;
         this.snackBar.open(
-          $localize`:@@publishInvoiceDialogErrorMessage:Error publishing invoice. Please try again.`,
-          $localize`:@@publishInvoiceDialogErrorAction:Dismiss`,
+          'Ошибка при публикации. Попробуйте ещё раз.',
+          'Закрыть',
           { duration: 5000 },
         );
       },

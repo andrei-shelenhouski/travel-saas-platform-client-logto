@@ -1,8 +1,8 @@
-<app-page-heading title="Offers · Kanban" i18n-title="@@offersKanbanTitle">
+<app-page-heading title="Коммерческие предложения · Канбан">
   @if (canCreateOffer()) {
     <a matButton="filled" routerLink="/app/offers/new">
       <mat-icon>add</mat-icon>
-      <span i18n="@@offersListNewOfferCta">New offer</span>
+      <span>Новое КП</span>
     </a>
   }
   <mat-button-toggle-group appearance="standard" hideSingleSelectionIndicator value="kanban">
@@ -37,15 +37,8 @@
 
   @if (statusFilterWarning()) {
     <p class="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
-      <span i18n="@@offersKanbanStatusFilterDisabled"
-        >Status filter is disabled in Kanban view.</span
-      >
-    </p>
-  }
-
-  @if (showTruncatedBanner()) {
-    <p class="rounded-md border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-800">
-      <span i18n="@@offersKanbanFirst100Banner">Showing only first 100 offers.</span>
+      <span
+        >Фильтр статуса отключен в режиме Канбан.</span>
     </p>
   }
 

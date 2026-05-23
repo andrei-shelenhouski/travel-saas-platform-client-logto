@@ -1,20 +1,18 @@
 <h2 class="flex items-center justify-between gap-4" mat-dialog-title>
-  <span class="min-w-0 truncate" i18n="@@invoicePdfPreviewDialogTitle"
-    >Invoice {{ data.invoiceNumber }}</span
+  <span class="min-w-0 truncate"
+    >Счёт №{{ data.invoiceNumber }}</span
   >
   <div class="flex items-center gap-2">
     <button
-      i18n="@@invoicePdfDownloadButton"
       mat-stroked-button
       type="button"
       [disabled]="loading() || !!error()"
       (click)="downloadPdf()"
     >
-      Download PDF
+      Скачать PDF
     </button>
     <button
-      aria-label="Close PDF preview"
-      i18n-aria-label="@@invoicePdfPreviewCloseAria"
+      aria-label="Закрыть предпросмотр PDF"
       mat-icon-button
       type="button"
       (click)="close()"
@@ -38,20 +36,18 @@
         <span>{{ errorMessage() }}</span>
         <button
           class="mt-2"
-          i18n="@@invoicePdfPreviewRetryButton"
           mat-stroked-button
           type="button"
           (click)="retry()"
         >
-          Retry
+          Попробуйте ещё раз
         </button>
       </div>
     } @else if (pdfUrl(); as currentPdfUrl) {
       <div class="pdf-a4-frame">
         <iframe
           class="pdf-iframe"
-          title="Invoice PDF preview"
-          i18n-title="@@invoicePdfPreviewFrameTitle"
+          title="Предпросмотр PDF счёта"
           [src]="currentPdfUrl"
         ></iframe>
       </div>

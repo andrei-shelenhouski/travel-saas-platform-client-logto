@@ -1,12 +1,11 @@
 <app-page-heading
-  title="Offers"
-  i18n-title="@@offersListHeadingTitle"
+  title="Коммерческие предложения"
   [subtitle]="'Total: ' + totalElements() + ' offers'"
 >
   @if (canCreateOffer()) {
     <a matButton="filled" routerLink="/app/offers/new">
       <mat-icon>add</mat-icon>
-      <span i18n="@@offersListNewOfferCta">New offer</span>
+      <span>Новое КП</span>
     </a>
   }
   <mat-button-toggle-group appearance="standard" hideSingleSelectionIndicator value="table">
@@ -46,7 +45,7 @@
   <div class="table-wrap overflow-scroll">
     <table mat-table [dataSource]="offers()" [multiTemplateDataRows]="true">
       <ng-container matColumnDef="number">
-        <th *matHeaderCellDef i18n="@@offersListColumnOfferNumber" mat-header-cell>Offer&nbsp;#</th>
+        <th *matHeaderCellDef mat-header-cell>КП #</th>
         <td *matCellDef="let element" mat-cell>
           <span class="block text-sm font-semibold">
             {{ element.number }}
@@ -55,33 +54,33 @@
       </ng-container>
 
       <ng-container matColumnDef="destination">
-        <th *matHeaderCellDef i18n="@@offersListColumnDestination" mat-header-cell>Destination</th>
+        <th *matHeaderCellDef mat-header-cell>Направление</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.destination ?? '—' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="total">
-        <th *matHeaderCellDef i18n="@@offersListColumnTotal" mat-header-cell>Total</th>
+        <th *matHeaderCellDef mat-header-cell>Всего</th>
         <td *matCellDef="let element" mat-cell>{{ element.total }} {{ element.currency }}</td>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <th *matHeaderCellDef i18n="@@offersListColumnStatus" mat-header-cell>Status</th>
+        <th *matHeaderCellDef mat-header-cell>Статус</th>
         <td *matCellDef="let element" mat-cell>
           <app-status-badge variant="offer" [status]="element.status" />
         </td>
       </ng-container>
 
       <ng-container matColumnDef="createdAt">
-        <th *matHeaderCellDef i18n="@@offersListColumnCreated" mat-header-cell>Created</th>
+        <th *matHeaderCellDef mat-header-cell>Создано</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.createdAt | date: 'dd MMM yyyy' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="updatedAt">
-        <th *matHeaderCellDef i18n="@@offersListColumnUpdated" mat-header-cell>Updated</th>
+        <th *matHeaderCellDef mat-header-cell>Обновлено</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.updatedAt | date: 'dd MMM yyyy' }}
         </td>
@@ -98,15 +97,14 @@
         <td [attr.colspan]="displayedColumns.length">
           <div class="m-10 align-middle text-center">
             @if (loading()) {
-              <p class="pb-4" i18n="@@offersListLoading">Loading offers...</p>
+              <p class="pb-4">Загрузка предложений...</p>
               <mat-spinner
-                aria-label="Loading offers"
-                i18n-aria-label="@@offersListLoadingAriaLabel"
+                aria-label="Загрузка предложений"
                 class="mx-auto"
                 diameter="36"
               />
             } @else {
-              <p i18n="@@offersListEmptyState">No offers found for the current filters</p>
+              <p>Нет предложений по текущим фильтрам</p>
             }
           </div>
         </td>
@@ -116,8 +114,7 @@
 
   @if (totalElements() > pageSize) {
     <mat-paginator
-      aria-label="Offers pagination"
-      i18n-aria-label="@@offersListPaginatorAriaLabel"
+      aria-label="Пагинация предложений"
       [length]="totalElements()"
       [pageIndex]="currentPage()"
       [pageSize]="pageSize"

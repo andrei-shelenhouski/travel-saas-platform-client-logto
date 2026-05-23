@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Save as new client</h2>
+<h2 mat-dialog-title>Сохранить как нового клиента</h2>
 
 <mat-dialog-content>
   <form class="promote-form" [formGroup]="form">
@@ -7,19 +7,19 @@
     }
 
     <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-      <mat-label>Client type</mat-label>
+      <mat-label>Тип клиента</mat-label>
       <mat-select formControlName="type">
-        <mat-option [value]="ClientType.INDIVIDUAL">Individual</mat-option>
-        <mat-option [value]="ClientType.COMPANY">Company</mat-option>
-        <mat-option [value]="ClientType.B2B_AGENT">B2B agent</mat-option>
+        <mat-option [value]="ClientType.INDIVIDUAL">Физическое лицо</mat-option>
+        <mat-option [value]="ClientType.COMPANY">Компания</mat-option>
+        <mat-option [value]="ClientType.B2B_AGENT">B2B агент</mat-option>
       </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-      <mat-label>Full name</mat-label>
+      <mat-label>Полное имя</mat-label>
       <input formControlName="fullName" matInput type="text" />
       @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
-        <mat-error>Full name is required</mat-error>
+        <mat-error>Требуется указать полное имя</mat-error>
       }
       @if (hasServerError('fullName')) {
         <mat-error>{{ serverErrorText('fullName') }}</mat-error>
@@ -28,10 +28,10 @@
 
     @if (isCompanyType()) {
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Company name</mat-label>
+        <mat-label>Название компании</mat-label>
         <input formControlName="companyName" matInput type="text" />
         @if (form.controls.companyName.hasError('required') && form.controls.companyName.touched) {
-          <mat-error>Company name is required</mat-error>
+          <mat-error>Требуется указать название компании</mat-error>
         }
         @if (hasServerError('companyName')) {
           <mat-error>{{ serverErrorText('companyName') }}</mat-error>
@@ -39,12 +39,12 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Legal address</mat-label>
+        <mat-label>Юридический адрес</mat-label>
         <input formControlName="legalAddress" matInput type="text" />
         @if (
           form.controls.legalAddress.hasError('required') && form.controls.legalAddress.touched
         ) {
-          <mat-error>Legal address is required</mat-error>
+          <mat-error>Требуется указать юридический адрес</mat-error>
         }
         @if (hasServerError('legalAddress')) {
           <mat-error>{{ serverErrorText('legalAddress') }}</mat-error>
@@ -53,10 +53,10 @@
 
       <div class="promote-grid-two">
         <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-          <mat-label>UNP</mat-label>
+          <mat-label>УНП</mat-label>
           <input formControlName="unp" matInput type="text" />
           @if (form.controls.unp.hasError('pattern') && form.controls.unp.touched) {
-            <mat-error>UNP must be 9 digits</mat-error>
+            <mat-error>УНП должен состоять из 9 цифр</mat-error>
           }
           @if (hasServerError('unp')) {
             <mat-error>{{ serverErrorText('unp') }}</mat-error>
@@ -64,7 +64,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-          <mat-label>OKPO</mat-label>
+          <mat-label>ОКПО</mat-label>
           <input formControlName="okpo" matInput type="text" />
           @if (hasServerError('okpo')) {
             <mat-error>{{ serverErrorText('okpo') }}</mat-error>
@@ -82,7 +82,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-          <mat-label>Bank name</mat-label>
+          <mat-label>Название банка</mat-label>
           <input formControlName="bankName" matInput type="text" />
           @if (hasServerError('bankName')) {
             <mat-error>{{ serverErrorText('bankName') }}</mat-error>
@@ -91,7 +91,7 @@
       </div>
 
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>BIK</mat-label>
+        <mat-label>БИК</mat-label>
         <input formControlName="bik" matInput type="text" />
         @if (hasServerError('bik')) {
           <mat-error>{{ serverErrorText('bik') }}</mat-error>
@@ -101,7 +101,7 @@
 
     <div class="promote-grid-two">
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Phone</mat-label>
+        <mat-label>Телефон</mat-label>
         <input formControlName="phone" matInput type="tel" />
         @if (hasServerError('phone')) {
           <mat-error>{{ serverErrorText('phone') }}</mat-error>
@@ -109,10 +109,10 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Email</mat-label>
+        <mat-label>Электронная почта</mat-label>
         <input formControlName="email" matInput type="email" />
         @if (form.controls.email.hasError('email') && form.controls.email.touched) {
-          <mat-error>Enter a valid email</mat-error>
+          <mat-error>Введите корректный адрес электронной почты</mat-error>
         }
         @if (hasServerError('email')) {
           <mat-error>{{ serverErrorText('email') }}</mat-error>
@@ -129,7 +129,7 @@
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-      <mat-label>Notes</mat-label>
+      <mat-label>Заметки</mat-label>
       <textarea formControlName="notes" matInput rows="3"></textarea>
       @if (hasServerError('notes')) {
         <mat-error>{{ serverErrorText('notes') }}</mat-error>
@@ -138,24 +138,24 @@
 
     <div class="promote-consent-block">
       <mat-checkbox formControlName="dataConsentGiven">
-        Personal data processing consent
+        Согласие на обработку персональных данных
       </mat-checkbox>
       @if (
         form.controls.dataConsentGiven.hasError('required') &&
         form.controls.dataConsentGiven.touched
       ) {
-        <p class="promote-error">Data consent is required</p>
+        <p class="promote-error">Требуется согласие на обработку данных</p>
       }
 
       @if (form.controls.dataConsentGiven.value) {
         <mat-form-field appearance="outline" class="w-56" subscriptSizing="dynamic">
-          <mat-label>Consent date</mat-label>
+          <mat-label>Дата согласия</mat-label>
           <input formControlName="dataConsentDate" matInput type="date" />
           @if (
             form.controls.dataConsentDate.hasError('required') &&
             form.controls.dataConsentDate.touched
           ) {
-            <mat-error>Consent date is required</mat-error>
+            <mat-error>Требуется указать дату согласия</mat-error>
           }
           @if (hasServerError('dataConsentDate')) {
             <mat-error>{{ serverErrorText('dataConsentDate') }}</mat-error>
@@ -167,7 +167,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button type="button" (click)="cancel()">Cancel</button>
+  <button mat-button type="button" (click)="cancel()">Отмена</button>
   <button
     color="primary"
     mat-flat-button
@@ -175,6 +175,6 @@
     [disabled]="submitting()"
     (click)="submit()"
   >
-    Save client
+    Сохранить клиента
   </button>
 </mat-dialog-actions>

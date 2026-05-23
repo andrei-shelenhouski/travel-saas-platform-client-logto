@@ -30,7 +30,7 @@ export class SelectOrganizationComponent implements OnInit {
   private readonly orgState = inject(OrganizationStateService);
   private readonly router = inject(Router);
   protected readonly isLoading = signal(false);
-  private readonly orgMemberRoleLabel = $localize`:@@organizationRoleMember:Member`;
+  private readonly orgMemberRoleLabel = 'Участник';
 
   protected readonly organizations = computed<OrganizationWithRoleDto[]>(() => {
     return this.meService.getMeData()?.organizations ?? ([] as OrganizationWithRoleDto[]);

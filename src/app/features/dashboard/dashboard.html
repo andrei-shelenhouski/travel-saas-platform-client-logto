@@ -1,4 +1,4 @@
-<app-page-heading subtitle="Overview of your organization" title="Dashboard">
+<app-page-heading subtitle="Обзор вашей организации" title="Панель управления">
   <a
     class="inline-flex items-center gap-2"
     color="primary"
@@ -6,11 +6,11 @@
     routerLink="/app/leads/new"
   >
     <span aria-hidden="true" class="material-icons text-base">add</span>
-    New lead
+    Новый лид
   </a>
   <a class="inline-flex items-center gap-2" matButton="tonal" routerLink="/app/clients/new">
     <span aria-hidden="true" class="material-icons text-base">person_add</span>
-    New client
+    Новый клиент
   </a>
 
 </app-page-heading>
@@ -36,10 +36,10 @@
       >
         <div class="flex items-center gap-2 text-gray-500">
           <span aria-hidden="true" class="material-icons text-lg">flash_on</span>
-          <span class="text-sm font-medium">Leads total</span>
+          <span class="text-sm font-medium">Всего лидов</span>
         </div>
         <p class="mt-2 text-2xl font-bold text-primary">{{ s.leadsTotal ?? 0 }}</p>
-        <p class="mt-2 text-xs text-gray-500">New today: {{ s.leadsToday ?? 0 }}</p>
+        <p class="mt-2 text-xs text-gray-500">Новых сегодня: {{ s.leadsToday ?? 0 }}</p>
       </a>
 
       <a
@@ -48,11 +48,11 @@
       >
         <div class="flex items-center gap-2 text-gray-500">
           <span aria-hidden="true" class="material-icons text-lg">send</span>
-          <span class="text-sm font-medium">Active offers</span>
+          <span class="text-sm font-medium">Активные предложения</span>
         </div>
         <p class="mt-2 text-2xl font-bold text-primary">{{ s.activeOffers ?? 0 }}</p>
         <p class="mt-2 text-xs text-gray-500">
-          Expiring this week: {{ s.expiringOffersThisWeek ?? 0 }}
+          Истекает на этой неделе: {{ s.expiringOffersThisWeek ?? 0 }}
         </p>
       </a>
 
@@ -62,11 +62,11 @@
       >
         <div class="flex items-center gap-2 text-gray-500">
           <span aria-hidden="true" class="material-icons text-lg">receipt_long</span>
-          <span class="text-sm font-medium">Overdue invoices</span>
+          <span class="text-sm font-medium">Просроченные счета</span>
         </div>
         <p class="mt-2 text-2xl font-bold text-primary">{{ s.overdueInvoicesCount ?? 0 }}</p>
         <p class="mt-2 text-xs text-gray-500">
-          Amount: {{ s.overdueInvoicesAmount ?? 0 }} {{ s.overdueInvoicesCurrency ?? '' }}
+          Сумма: {{ s.overdueInvoicesAmount ?? 0 }} {{ s.overdueInvoicesCurrency ?? '' }}
         </p>
       </a>
 
@@ -76,16 +76,16 @@
       >
         <div class="flex items-center gap-2 text-gray-500">
           <span aria-hidden="true" class="material-icons text-lg">schedule</span>
-          <span class="text-sm font-medium">Stalled leads</span>
+          <span class="text-sm font-medium">Зависшие лиды</span>
         </div>
         <p class="mt-2 text-2xl font-bold text-primary">{{ stalledLeads().length }}</p>
-        <p class="mt-2 text-xs text-gray-500">Needs follow-up</p>
+        <p class="mt-2 text-xs text-gray-500">Требуют внимания</p>
       </a>
     </div>
 
     @if (leadsByStatusEntries().length) {
       <div class="mt-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <h2 class="text-sm font-semibold text-gray-800">Leads by status</h2>
+        <h2 class="text-sm font-semibold text-gray-800">Лиды по статусу</h2>
         <div class="mt-3 flex flex-wrap gap-2 text-sm">
           @for (entry of leadsByStatusEntries(); track entry[0]) {
             <span class="rounded-full bg-gray-100 px-2.5 py-1 text-gray-700">
@@ -98,20 +98,20 @@
 
     <div class="mt-4 grid gap-4 lg:grid-cols-2">
       <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <h2 class="text-sm font-semibold text-gray-800">Stalled leads</h2>
+        <h2 class="text-sm font-semibold text-gray-800">Зависшие лиды</h2>
         @if (stalledLeads().length) {
           <div class="mt-3 space-y-2">
             @for (lead of stalledLeads(); track lead.id ?? $index) {
               <div class="rounded-md border border-gray-100 px-3 py-2 text-sm">
-                <div class="font-medium text-gray-800">{{ lead.number ?? 'Lead' }}</div>
+                <div class="font-medium text-gray-800">{{ lead.number ?? 'Лид' }}</div>
                 <div class="text-gray-600">
-                  {{ lead.clientName ?? 'Unknown client' }}
+                  {{ lead.clientName ?? 'Клиент не указан' }}
                   @if (lead.destination) {
                     · {{ lead.destination }}
                   }
                 </div>
                 <div class="text-xs text-gray-500">
-                  {{ lead.daysSinceUpdate ?? 0 }} days since update
+                  {{ lead.daysSinceUpdate ?? 0 }} дн. без обновления
                   @if (lead.assignedAgentName) {
                     · {{ lead.assignedAgentName }}
                   }
@@ -120,29 +120,29 @@
             }
           </div>
         } @else {
-          <p class="mt-3 text-sm text-gray-500">No stalled leads.</p>
+          <p class="mt-3 text-sm text-gray-500">Зависших лидов нет.</p>
         }
       </div>
 
       <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-        <h2 class="text-sm font-semibold text-gray-800">Upcoming departures</h2>
+        <h2 class="text-sm font-semibold text-gray-800">Ближайшие вылеты</h2>
         @if (upcomingDepartures().length) {
           <div class="mt-3 space-y-2">
             @for (departure of upcomingDepartures(); track departure.id ?? $index) {
               <div class="rounded-md border border-gray-100 px-3 py-2 text-sm">
-                <div class="font-medium text-gray-800">{{ departure.number ?? 'Booking' }}</div>
+                <div class="font-medium text-gray-800">{{ departure.number ?? 'Бронирование' }}</div>
                 <div class="text-gray-600">
-                  {{ departure.clientName ?? 'Unknown client' }}
+                  {{ departure.clientName ?? 'Клиент не указан' }}
                   @if (departure.destination) {
                     · {{ departure.destination }}
                   }
                 </div>
-                <div class="text-xs text-gray-500">{{ departure.departDate ?? 'No date' }}</div>
+                <div class="text-xs text-gray-500">{{ departure.departDate ?? 'Дата не указана' }}</div>
               </div>
             }
           </div>
         } @else {
-          <p class="mt-3 text-sm text-gray-500">No upcoming departures.</p>
+          <p class="mt-3 text-sm text-gray-500">Ближайших вылетов нет.</p>
         }
       </div>
     </div>

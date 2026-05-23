@@ -37,12 +37,12 @@ const INVOICE_STATUS_CLASSES: Record<string, string> = {
 };
 
 const INVOICE_STATUS_LABELS: Record<string, string> = {
-  DRAFT: $localize`:@@invoiceStatusDraft:Draft`,
-  ISSUED: $localize`:@@invoiceStatusIssued:Issued`,
-  PAID: $localize`:@@invoiceStatusPaid:Paid`,
-  PARTIALLY_PAID: $localize`:@@invoiceStatusPartiallyPaid:Partially paid`,
-  OVERDUE: $localize`:@@invoiceStatusOverdue:Overdue`,
-  CANCELLED: $localize`:@@invoiceStatusCancelled:Cancelled`,
+  DRAFT: 'Черновик',
+  ISSUED: 'Выставлен',
+  PAID: 'Оплачен',
+  PARTIALLY_PAID: 'Частично оплачен',
+  OVERDUE: 'Просрочен',
+  CANCELLED: 'Отменен',
 };
 
 @Component({
@@ -127,14 +127,14 @@ export class InvoiceListMiniComponent {
         error: (error: unknown) => {
           if (error instanceof HttpErrorResponse && error.status === 422) {
             this.createInvoiceError.set(
-              $localize`:@@invoiceCreateNoBillableItems:This booking has no billable items. Please create the invoice manually.`,
+              'В этом бронировании нет позиций для выставления счета. Пожалуйста, создайте счет вручную.',
             );
 
             return;
           }
 
           this.toast.showError(
-            $localize`:@@invoiceCreateFromBookingFailed:Failed to create invoice from booking`,
+            'Не удалось создать счет из бронирования',
           );
         },
       });

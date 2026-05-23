@@ -41,11 +41,11 @@ export class CreateContractPageComponent {
 
     this.contractsService.create(dto).subscribe({
       next: (created) => {
-        this.snackBar.open('Contract created', 'Close', { duration: 3000 });
+        this.snackBar.open('Договор создан', 'Закрыть', { duration: 3000 });
         void this.router.navigate(['/app/contracts', created.id]);
       },
       error: (err) => {
-        const message = err.error?.message ?? err.message ?? 'Failed to create contract';
+        const message = err.error?.message ?? err.message ?? 'Не удалось создать договор';
 
         this.submitError.set(message);
         this.saving.set(false);

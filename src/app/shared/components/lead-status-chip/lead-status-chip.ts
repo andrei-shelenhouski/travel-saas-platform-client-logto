@@ -14,16 +14,16 @@ export const LEAD_STATUS_COLORS: Record<string, string> = {
 };
 
 export const LEAD_STATUS_LABELS: Record<string, string> = {
-  NEW: $localize`:@@leadStatusNew:New`,
-  OPEN: $localize`:@@leadStatusOpen:Open`,
-  ASSIGNED: $localize`:@@leadStatusAssigned:Assigned`,
-  IN_PROGRESS: $localize`:@@leadStatusInProgress:In progress`,
-  OFFER_SENT: $localize`:@@leadStatusOfferSent:Offer sent`,
-  QUOTED: $localize`:@@leadStatusQuoted:Quoted`,
-  WON: $localize`:@@leadStatusWon:Won`,
-  LOST: $localize`:@@leadStatusLost:Lost`,
-  EXPIRED: $localize`:@@leadStatusExpired:Expired`,
-  CLOSED: $localize`:@@leadStatusClosed:Closed`,
+  NEW: 'Новый',
+  OPEN: 'Открыт',
+  ASSIGNED: 'Назначен',
+  IN_PROGRESS: 'В работе',
+  OFFER_SENT: 'Предложение отправлено',
+  QUOTED: 'Предложение готово',
+  WON: 'Выигран',
+  LOST: 'Проигран',
+  EXPIRED: 'Просрочен',
+  CLOSED: 'Закрыт',
 };
 
 @Component({

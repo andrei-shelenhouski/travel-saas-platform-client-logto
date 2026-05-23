@@ -1,6 +1,6 @@
 <form class="request-filter-bar" [formGroup]="form">
   <mat-form-field subscriptSizing="dynamic">
-    <mat-label i18n="@@requestFilterStatusLabel">Status</mat-label>
+    <mat-label>Статус</mat-label>
     <mat-select formControlName="status" multiple>
       @for (option of statusOptions; track option.value) {
         <mat-option [value]="option.value">{{ option.label }}</mat-option>
@@ -9,9 +9,9 @@
   </mat-form-field>
 
   <mat-form-field subscriptSizing="dynamic">
-    <mat-label i18n="@@requestFilterManagerLabel">Manager</mat-label>
+    <mat-label>Менеджер</mat-label>
     <mat-select formControlName="managerId">
-      <mat-option i18n="@@requestFilterAllManagersOption" value="">All managers</mat-option>
+      <mat-option value="">Все менеджеры</mat-option>
       @for (option of managerOptions(); track option.id) {
         <mat-option [value]="option.id">{{ option.name }}</mat-option>
       }
@@ -19,19 +19,17 @@
   </mat-form-field>
 
   <mat-form-field subscriptSizing="dynamic">
-    <mat-label i18n="@@requestFilterDepartureRangeLabel">Departure date range</mat-label>
+    <mat-label>Диапазон дат выезда</mat-label>
     <mat-date-range-input [rangePicker]="picker">
       <input
         formControlName="departDateFrom"
         matStartDate
-        placeholder="From"
-        i18n-placeholder="@@requestFilterDateFromPlaceholder"
+        placeholder="С"
       />
       <input
         formControlName="departDateTo"
         matEndDate
-        placeholder="To"
-        i18n-placeholder="@@requestFilterDateToPlaceholder"
+        placeholder="По"
       />
     </mat-date-range-input>
     <mat-datepicker-toggle matIconSuffix [for]="picker" />

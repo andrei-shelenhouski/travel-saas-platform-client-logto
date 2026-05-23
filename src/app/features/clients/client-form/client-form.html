@@ -1,7 +1,7 @@
-<app-page-heading [showBackButton]="true" [title]="isEditMode() ? 'Edit client' : 'Create client'">
+<app-page-heading [showBackButton]="true" [title]="isEditMode() ? 'Редактировать клиента' : 'Создать клиента'">
   <button mat-button type="button" (click)="cancel()">
     <span aria-hidden="true" class="material-icons text-base">chevron_left</span>
-    <span>Back to clients</span>
+    <span>Назад к клиентам</span>
   </button>
 </app-page-heading>
 
@@ -19,8 +19,8 @@
     }
 
     <form class="flex flex-col gap-4" [formGroup]="form" (ngSubmit)="submit()">
-      <div class="text-sm text-gray-500" i18n="@@createClientSelectTypeLabel">
-        Select client type:
+      <div class="text-sm text-gray-500">
+        Выберите тип клиента:
       </div>
       <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
         @for (opt of typeOptions; track opt.value) {
@@ -41,162 +41,161 @@
       @if (selectedType(); as type) {
         @if (type === ClientType.INDIVIDUAL) {
           <mat-form-field class="w-full" subscriptSizing="dynamic">
-            <mat-label i18n="@@createClientFullNameLabel">Full name</mat-label>
+            <mat-label>Полное имя</mat-label>
             <input formControlName="fullName" matInput type="text" />
             @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
-              <mat-error i18n="@@createClientFullNameRequired">Full name is required</mat-error>
+              <mat-error>Требуется указать полное имя</mat-error>
             }
           </mat-form-field>
         }
 
         @if (type === ClientType.COMPANY || type === ClientType.B2B_AGENT) {
           <mat-form-field class="w-full" subscriptSizing="dynamic">
-            <mat-label i18n="@@createClientCompanyNameLabel">Company name</mat-label>
+            <mat-label>Название компании</mat-label>
             <input formControlName="companyName" matInput type="text" />
             @if (
               form.controls.companyName.hasError('required') && form.controls.companyName.touched
             ) {
-              <mat-error i18n="@@createClientCompanyNameRequired"
-                >Company name is required</mat-error
+              <mat-error
+                >Требуется указать название компании</mat-error
               >
             }
           </mat-form-field>
 
           <mat-form-field class="w-full" subscriptSizing="dynamic">
-            <mat-label i18n="@@createClientLegalAddressLabel">Legal address</mat-label>
+            <mat-label>Юридический адрес</mat-label>
             <input formControlName="legalAddress" matInput type="text" />
             @if (
               form.controls.legalAddress.hasError('required') && form.controls.legalAddress.touched
             ) {
-              <mat-error i18n="@@createClientLegalAddressRequired"
-                >Legal address is required</mat-error
+              <mat-error
+                >Требуется указать юридический адрес</mat-error
               >
             }
           </mat-form-field>
 
           <mat-form-field class="w-full" subscriptSizing="dynamic">
-            <mat-label i18n="@@createClientContactPersonLabel">Contact person</mat-label>
+            <mat-label>Контактное лицо</mat-label>
             <input formControlName="fullName" matInput type="text" />
             @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
-              <mat-error i18n="@@createClientContactPersonRequired"
-                >Contact person is required</mat-error
+              <mat-error
+                >Требуется указать контактное лицо</mat-error
               >
             }
           </mat-form-field>
 
           <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <mat-form-field class="w-full">
-              <mat-label i18n="@@createClientUnpLabel">UNP</mat-label>
+              <mat-label>УНП</mat-label>
               <input formControlName="unp" matInput type="text" />
-              <mat-hint i18n="@@createClientUnpHint">9 digits</mat-hint>
+              <mat-hint>9 цифр</mat-hint>
               @if (form.controls.unp.hasError('pattern') && form.controls.unp.touched) {
-                <mat-error i18n="@@createClientUnpError">UNP must be 9 digits</mat-error>
+                <mat-error>УНП должен состоять из 9 цифр</mat-error>
               }
             </mat-form-field>
             <mat-form-field class="w-full">
-              <mat-label i18n="@@createClientOkpoLabel">OKPO</mat-label>
+              <mat-label>ОКПО</mat-label>
               <input formControlName="okpo" matInput type="text" />
             </mat-form-field>
           </div>
 
           <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <mat-form-field class="w-full" subscriptSizing="dynamic">
-              <mat-label i18n="@@createClientIbanLabel">IBAN</mat-label>
+              <mat-label>IBAN</mat-label>
               <input formControlName="iban" matInput type="text" />
             </mat-form-field>
             <mat-form-field class="w-full" subscriptSizing="dynamic">
-              <mat-label i18n="@@createClientBankNameLabel">Bank name</mat-label>
+              <mat-label>Название банка</mat-label>
               <input formControlName="bankName" matInput type="text" />
             </mat-form-field>
           </div>
 
           <mat-form-field class="w-full" subscriptSizing="dynamic">
-            <mat-label i18n="@@createClientBikLabel">BIK</mat-label>
+            <mat-label>БИК</mat-label>
             <input formControlName="bik" matInput type="text" />
           </mat-form-field>
         }
 
         @if (type === ClientType.B2B_AGENT) {
           <section class="agent-requisites-section">
-            <h3 class="agent-requisites-title" i18n="@@createClientAgentRequisitesTitle">
-              Agent requisites
+            <h3 class="agent-requisites-title">
+              Реквизиты агента
             </h3>
 
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <mat-form-field class="w-full" subscriptSizing="dynamic">
-                <mat-label i18n="@@createClientTrademarkLabel">Trademark</mat-label>
+                <mat-label>Торговая марка</mat-label>
                 <input formControlName="trademark" matInput maxlength="200" type="text" />
               </mat-form-field>
 
               <mat-form-field class="w-full" subscriptSizing="dynamic">
-                <mat-label i18n="@@createClientRegistrationCertLabel"
-                  >Registration certificate</mat-label
+                <mat-label
+                  >Свидетельство о регистрации</mat-label
                 >
                 <input formControlName="registrationCert" matInput maxlength="100" type="text" />
               </mat-form-field>
             </div>
 
             <mat-form-field class="w-full" subscriptSizing="dynamic">
-              <mat-label i18n="@@createClientTaxationTypeLabel">Taxation type</mat-label>
+              <mat-label>Система налогообложения</mat-label>
               <input formControlName="taxationType" matInput maxlength="60" type="text" />
             </mat-form-field>
 
             <mat-form-field class="w-full" subscriptSizing="dynamic">
-              <mat-label i18n="@@createClientDirectorNameLabel">Director full name</mat-label>
+              <mat-label>ФИО директора</mat-label>
               <input formControlName="directorName" matInput maxlength="200" type="text" />
-              <mat-hint i18n="@@createClientDirectorNameHint">Legal signatory</mat-hint>
+              <mat-hint>Законный представитель</mat-hint>
             </mat-form-field>
 
             <mat-checkbox formControlName="rataMember">
-              <span i18n="@@createClientRataMemberLabel">Valid RATA member</span>
+              <span>Действительный член РАТА</span>
             </mat-checkbox>
           </section>
 
           <mat-form-field class="w-48" subscriptSizing="dynamic">
-            <mat-label i18n="@@createClientCommissionLabel">Agent commission, %</mat-label>
+            <mat-label>Агентская комиссия, %</mat-label>
             <input matInput type="number" [formControl]="commissionPctCtrl" />
-            <mat-hint i18n="@@createClientCommissionHint">Reference value</mat-hint>
+            <mat-hint>Справочное значение</mat-hint>
           </mat-form-field>
         }
 
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <mat-form-field class="w-full" subscriptSizing="dynamic">
-            <mat-label i18n="@@createClientPhoneLabel">Phone</mat-label>
+            <mat-label>Телефон</mat-label>
             <input formControlName="phone" matInput type="tel" />
           </mat-form-field>
           <mat-form-field class="w-full" subscriptSizing="dynamic">
-            <mat-label i18n="@@createClientEmailLabel">Email</mat-label>
+            <mat-label>Электронная почта</mat-label>
             <input formControlName="email" matInput type="email" />
             @if (form.controls.email.hasError('email') && form.controls.email.touched) {
-              <mat-error i18n="@@createClientEmailError">Enter a valid email</mat-error>
+              <mat-error>Введите корректный адрес электронной почты</mat-error>
             }
           </mat-form-field>
         </div>
 
         <mat-form-field class="w-full" subscriptSizing="dynamic">
-          <mat-label i18n="@@createClientTelegramLabel">Telegram</mat-label>
+          <mat-label>Telegram</mat-label>
           <input
             formControlName="telegramHandle"
             matInput
             placeholder="@username"
-            i18n-placeholder="@@createClientTelegramPlaceholder"
             type="text"
           />
         </mat-form-field>
 
         <mat-form-field class="w-full" subscriptSizing="dynamic">
-          <mat-label i18n="@@createClientNotesLabel">Notes</mat-label>
+          <mat-label>Заметки</mat-label>
           <textarea formControlName="notes" matInput rows="3"></textarea>
         </mat-form-field>
 
         @if (!isEditMode()) {
           <div class="flex flex-col gap-3">
             <mat-checkbox formControlName="dataConsentGiven">
-              <span i18n="@@createClientDataConsentLabel">Personal data processing consent</span>
+              <span>Согласие на обработку персональных данных</span>
             </mat-checkbox>
             @if (consentGiven()) {
               <mat-form-field class="w-48" subscriptSizing="dynamic">
-                <mat-label i18n="@@createClientConsentDateLabel">Consent date</mat-label>
+                <mat-label>Дата согласия</mat-label>
                 <input formControlName="dataConsentDate" matInput type="date" />
               </mat-form-field>
             }
@@ -206,7 +205,7 @@
 
       <div class="mt-2 flex justify-end gap-2">
         <button mat-button type="button" (click)="cancel()">
-          <span i18n="@@createClientCancelBtn">Cancel</span>
+          <span>Отмена</span>
         </button>
         <button
           cdkFocusInitial
@@ -215,9 +214,9 @@
           [disabled]="saving() || !selectedType()"
         >
           @if (isEditMode()) {
-            <span>Save changes</span>
+            <span>Сохранить изменения</span>
           } @else {
-            <span i18n="@@createClientSubmitBtn">Create client</span>
+            <span>Создать клиента</span>
           }
         </button>
       </div>

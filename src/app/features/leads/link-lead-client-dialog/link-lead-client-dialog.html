@@ -1,12 +1,12 @@
-<h2 mat-dialog-title>Link existing client</h2>
+<h2 mat-dialog-title>Привязать существующего клиента</h2>
 
 <mat-dialog-content>
   <div class="pt-4">
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Search client</mat-label>
+      <mat-label>Поиск клиента</mat-label>
       <input
         matInput
-        placeholder="Type name, phone, or email"
+        placeholder="Имя, телефон или email"
         type="text"
         [formControl]="search"
         [matAutocomplete]="clientsAutocomplete"
@@ -14,7 +14,7 @@
       @if (loadingOptions()) {
         <mat-spinner diameter="18" matSuffix></mat-spinner>
       }
-      <mat-hint>Minimum 2 characters</mat-hint>
+      <mat-hint>Минимум 2 символа</mat-hint>
     </mat-form-field>
 
     <mat-autocomplete
@@ -28,7 +28,7 @@
           <span class="client-option-meta">{{ option.phone || option.email || '' }}</span>
         </mat-option>
       } @empty {
-        <mat-option disabled>No matching clients found</mat-option>
+        <mat-option disabled>Клиенты не найдены</mat-option>
       }
     </mat-autocomplete>
 
@@ -39,7 +39,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button type="button" (click)="cancel()">Cancel</button>
+  <button mat-button type="button" (click)="cancel()">Отмена</button>
   <button
     color="primary"
     mat-flat-button
@@ -47,6 +47,6 @@
     [disabled]="!selectedClientId() || submitting()"
     (click)="confirm()"
   >
-    Link client
+    Привязать клиента
   </button>
 </mat-dialog-actions>

@@ -5,8 +5,8 @@
         <mat-icon class="text-base">arrow_back</mat-icon>
       </a>
       <div>
-        <h1 class="text-xl font-semibold text-gray-900" i18n>
-          Booking {{ booking().number ? '#' + booking().number : '' }}
+        <h1 class="text-xl font-semibold text-gray-900">
+          Бронирование {{ booking().number ? '#' + booking().number : '' }}
         </h1>
         <p class="mt-0.5 text-xs text-gray-400">ID: {{ booking().id }}</p>
       </div>
@@ -23,7 +23,7 @@
         [disabled]="actionLoading()"
         (click)="confirmBooking.emit()"
       >
-        <span i18n>Confirm booking</span>
+        <span>Подтвердить бронирование</span>
       </button>
       <button
         color="warn"
@@ -32,7 +32,7 @@
         [disabled]="actionLoading()"
         (click)="cancelBooking.emit()"
       >
-        <span i18n>Cancel</span>
+        <span>Отмена</span>
       </button>
     }
     @if (booking().status === BookingStatus.CONFIRMED) {
@@ -43,7 +43,7 @@
         [disabled]="actionLoading()"
         (click)="cancelBooking.emit()"
       >
-        <span i18n>Cancel</span>
+        <span>Отмена</span>
       </button>
     }
   </div>

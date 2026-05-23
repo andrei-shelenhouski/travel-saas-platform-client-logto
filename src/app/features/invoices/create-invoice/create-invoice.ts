@@ -438,11 +438,11 @@ export class CreateInvoiceComponent {
       this.invoicesService.update(this.invoiceId!, this.buildUpdateInvoiceDto()).subscribe({
         next: () => {
           this.form.markAsPristine();
-          this.toast.showSuccess('Invoice updated');
+          this.toast.showSuccess('Счёт обновлён');
           this.router.navigate(['/app/invoices', this.invoiceId]);
         },
         error: (err) => {
-          this.error.set(err.error?.message ?? err.message ?? 'Failed to update invoice');
+          this.error.set(err.error?.message ?? err.message ?? 'Не удалось обновить счёт');
           this.saving.set(false);
         },
         complete: () => this.saving.set(false),
@@ -451,11 +451,11 @@ export class CreateInvoiceComponent {
       this.invoicesService.create(this.buildCreateInvoiceDto()).subscribe({
         next: (created) => {
           this.form.markAsPristine();
-          this.toast.showSuccess('Invoice draft saved');
+          this.toast.showSuccess('Черновик счёта сохранён');
           this.router.navigate(['/app/invoices', created.id]);
         },
         error: (err) => {
-          this.error.set(err.error?.message ?? err.message ?? 'Failed to create invoice');
+          this.error.set(err.error?.message ?? err.message ?? 'Не удалось создать счёт');
           this.saving.set(false);
         },
         complete: () => this.saving.set(false),
@@ -590,7 +590,7 @@ export class CreateInvoiceComponent {
         this.form.markAsPristine();
       },
       error: (err) => {
-        this.error.set(err.error?.message ?? err.message ?? 'Failed to load booking data');
+        this.error.set(err.error?.message ?? err.message ?? 'Не удалось загрузить данные бронирования');
       },
     });
   }
@@ -602,7 +602,7 @@ export class CreateInvoiceComponent {
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err.error?.message ?? err.message ?? 'Failed to load invoice');
+        this.error.set(err.error?.message ?? err.message ?? 'Не удалось загрузить счёт');
         this.loading.set(false);
       },
     });
@@ -664,7 +664,7 @@ export class CreateInvoiceComponent {
         this.clientSearchControl.setValue(this.clientDisplayName(client), { emitEvent: false });
       },
       error: (err) => {
-        this.error.set(err.error?.message ?? err.message ?? 'Failed to load client details');
+        this.error.set(err.error?.message ?? err.message ?? 'Не удалось загрузить данные клиента');
       },
     });
   }
@@ -676,7 +676,7 @@ export class CreateInvoiceComponent {
         this.applyClientDetails(client, prefillFromBooking);
       },
       error: (err) => {
-        this.error.set(err.error?.message ?? err.message ?? 'Failed to load client details');
+        this.error.set(err.error?.message ?? err.message ?? 'Не удалось загрузить данные клиента');
       },
     });
   }
@@ -693,7 +693,7 @@ export class CreateInvoiceComponent {
 
     if (shouldResetRows) {
       this.clientTypeWarning.set(
-        'Client type changed. Existing invoice lines were cleared and rebuilt for the selected type.',
+        'Тип клиента изменён. Существующие строки счёта были очищены и перестроены для выбранного типа.',
       );
       this.resetLineItems();
     }
@@ -740,10 +740,10 @@ export class CreateInvoiceComponent {
       return;
     }
 
-    const travelersLabel = `${booking.adults ?? 0} adults, ${booking.children ?? 0} children`;
+    const travelersLabel = `${booking.adults ?? 0} взр., ${booking.children ?? 0} дет.`;
     const description = booking.destination?.trim().length
-      ? `Travel services: ${booking.destination}`
-      : 'Travel services';
+      ? `Туристические услуги: ${booking.destination}`
+      : 'Туристические услуги';
 
     row.patchValue(
       {

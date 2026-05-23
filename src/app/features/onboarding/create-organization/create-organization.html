@@ -3,16 +3,16 @@
     @if (fromApp) {
       <a class="mb-4 inline-flex items-center gap-1.5" mat-button routerLink="/app/dashboard">
         <span aria-hidden="true" class="material-icons text-base">arrow_back</span>
-        <span>Back to dashboard</span>
+        <span>Назад на панель управления</span>
       </a>
     }
-    <h1 class="text-xl font-semibold text-gray-900 mb-4">Create organization</h1>
+    <h1 class="text-xl font-semibold text-gray-900 mb-4">Создать организацию</h1>
     <form class="flex flex-col gap-4" [formGroup]="form" (ngSubmit)="onSubmit()">
       <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
-        <mat-label>Organization name</mat-label>
+        <mat-label>Название организации</mat-label>
         <input formControlName="name" id="name" matInput placeholder="Acme Tours" type="text" />
         @if (form.controls.name.hasError('required') && form.controls.name.touched) {
-          <mat-error>Required</mat-error>
+          <mat-error>Обязательное поле</mat-error>
         }
       </mat-form-field>
       @if (error()) {
@@ -25,7 +25,7 @@
         type="submit"
         [disabled]="loading() || form.invalid"
       >
-        {{ loading() ? 'Creating...' : 'Create' }}
+        {{ loading() ? 'Создание...' : 'Создать' }}
       </button>
     </form>
   </div>

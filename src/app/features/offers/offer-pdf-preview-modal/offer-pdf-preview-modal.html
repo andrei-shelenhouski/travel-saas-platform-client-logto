@@ -1,20 +1,18 @@
 <h2 class="flex items-center justify-between gap-4" mat-dialog-title>
-  <span class="min-w-0 truncate" i18n="@@offerPdfPreviewDialogTitle"
-    >Offer {{ data.offerNumber ?? data.offerId }} PDF preview</span
+  <span class="min-w-0 truncate"
+    >Предложение {{ data.offerNumber ?? data.offerId }}: предпросмотр PDF</span
   >
   <div class="flex items-center gap-2">
     <button
-      i18n="@@offerPdfDownloadButton"
       mat-stroked-button
       type="button"
       [disabled]="loading() || !!error()"
       (click)="downloadPdf()"
     >
-      Download PDF
+      Скачать PDF
     </button>
     <button
-      aria-label="Close PDF preview"
-      i18n-aria-label="@@offerPdfPreviewCloseAria"
+      aria-label="Закрыть предпросмотр PDF"
       mat-icon-button
       type="button"
       (click)="close()"
@@ -41,8 +39,7 @@
       <div class="pdf-a4-frame">
         <iframe
           class="pdf-iframe"
-          title="Offer PDF preview"
-          i18n-title="@@offerPdfPreviewFrameTitle"
+          title="Предпросмотр PDF предложения"
           [src]="currentPdfUrl"
         ></iframe>
       </div>

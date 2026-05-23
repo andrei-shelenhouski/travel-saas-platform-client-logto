@@ -49,43 +49,43 @@ const OFFERS_VIEW_STORAGE_KEY = 'offers_view';
 const KANBAN_FETCH_LIMIT = 100;
 
 const OFFER_STATUS_OPTIONS: OfferStatusOption[] = [
-  { value: OfferStatus.DRAFT, label: $localize`:@@offerStatusOptionDraft:Draft` },
-  { value: OfferStatus.SENT, label: $localize`:@@offerStatusOptionSent:Sent` },
-  { value: OfferStatus.VIEWED, label: $localize`:@@offerStatusOptionViewed:Viewed` },
-  { value: OfferStatus.ACCEPTED, label: $localize`:@@offerStatusOptionAccepted:Accepted` },
-  { value: OfferStatus.REJECTED, label: $localize`:@@offerStatusOptionRejected:Rejected` },
-  { value: OfferStatus.EXPIRED, label: $localize`:@@offerStatusOptionExpired:Expired` },
+  { value: OfferStatus.DRAFT, label: 'Черновик' },
+  { value: OfferStatus.SENT, label: 'Отправлено' },
+  { value: OfferStatus.VIEWED, label: 'Просмотрено' },
+  { value: OfferStatus.ACCEPTED, label: 'Принято' },
+  { value: OfferStatus.REJECTED, label: 'Отклонено' },
+  { value: OfferStatus.EXPIRED, label: 'Истекло' },
 ];
 
 const KANBAN_COLUMNS: KanbanColumnConfig[] = [
   {
     status: OfferStatus.DRAFT,
-    label: $localize`:@@offerStatusKanbanDraft:Draft`,
+    label: 'Черновик',
     color: '#6b7280',
   },
   {
     status: OfferStatus.SENT,
-    label: $localize`:@@offerStatusKanbanSent:Sent`,
+    label: 'Отправлено',
     color: '#2563eb',
   },
   {
     status: OfferStatus.VIEWED,
-    label: $localize`:@@offerStatusKanbanViewed:Viewed`,
+    label: 'Просмотрено',
     color: '#7c3aed',
   },
   {
     status: OfferStatus.ACCEPTED,
-    label: $localize`:@@offerStatusKanbanAccepted:Accepted`,
+    label: 'Принято',
     color: '#16a34a',
   },
   {
     status: OfferStatus.REJECTED,
-    label: $localize`:@@offerStatusKanbanRejected:Rejected`,
+    label: 'Отклонено',
     color: '#dc2626',
   },
   {
     status: OfferStatus.EXPIRED,
-    label: $localize`:@@offerStatusKanbanExpired:Expired`,
+    label: 'Истекло',
     color: '#9ca3af',
   },
 ];
@@ -195,7 +195,7 @@ export class OffersKanbanComponent {
     const err = this.data.error();
 
     if (err instanceof HttpErrorResponse) {
-      return err.error?.message ?? err.message ?? 'Failed to load offers';
+      return err.error?.message ?? err.message ?? 'Не удалось загрузить предложения';
     }
 
     return undefined;
@@ -338,11 +338,11 @@ export class OffersKanbanComponent {
   private getDropErrorMessage(err: unknown): string {
     if (err instanceof HttpErrorResponse) {
       if (err.status === 400) {
-        return $localize`:@@offerKanbanInvalidTransitionError:Invalid status transition`;
+        return 'Недопустимый переход статуса';
       }
 
       if (err.status === 403) {
-        return $localize`:@@offerKanbanForbiddenTransitionError:No permission to change status`;
+        return 'Нет прав для изменения статуса';
       }
 
       if (typeof err.error?.message === 'string') {
@@ -350,7 +350,7 @@ export class OffersKanbanComponent {
       }
 
       return (
-        err.message || $localize`:@@offerKanbanDefaultTransitionError:Invalid status transition`
+        err.message || 'Недопустимый переход статуса'
       );
     }
 
@@ -362,7 +362,7 @@ export class OffersKanbanComponent {
       }
     }
 
-    return $localize`:@@offerKanbanDefaultTransitionError:Invalid status transition`;
+    return 'Недопустимый переход статуса';
   }
 
   private isSalesAgent(member: OrganizationMemberResponseDto): boolean {

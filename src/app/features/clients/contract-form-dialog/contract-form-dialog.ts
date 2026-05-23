@@ -58,7 +58,7 @@ export class ContractFormDialogComponent {
       return;
     }
 
-    this.submitError.set($localize`:@@contractsEditMissingIdError:Contract ID is missing`);
+    this.submitError.set('Идентификатор договора отсутствует');
     this.saving.set(false);
   }
 
@@ -82,14 +82,14 @@ export class ContractFormDialogComponent {
 
   private handleSubmitError(error: unknown): void {
     if (!(error instanceof HttpErrorResponse)) {
-      this.submitError.set($localize`:@@contractsGenericError:Failed to save contract`);
+      this.submitError.set('Не удалось сохранить договор');
 
       return;
     }
 
     if (error.status === 409) {
       this.submitError.set(
-        $localize`:@@contractsDuplicateNumberError:Contract with this number already exists`,
+        'Договор с таким номером уже существует',
       );
 
       return;
@@ -97,12 +97,12 @@ export class ContractFormDialogComponent {
 
     if (error.status === 400) {
       this.submitError.set(
-        error.error?.message ?? $localize`:@@contractsValidationError:Please fix form errors`,
+        error.error?.message ?? 'Исправьте ошибки в форме',
       );
 
       return;
     }
 
-    this.submitError.set(error.error?.message ?? error.message ?? 'Failed to save contract');
+    this.submitError.set(error.error?.message ?? error.message ?? 'Не удалось сохранить договор');
   }
 }

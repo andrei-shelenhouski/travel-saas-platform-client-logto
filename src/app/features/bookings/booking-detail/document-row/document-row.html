@@ -2,8 +2,8 @@
   <div class="flex min-w-0 items-center gap-2">
     <mat-icon class="shrink-0 text-gray-400">insert_drive_file</mat-icon>
     <div class="min-w-0">
-      <p class="truncate text-sm font-medium text-gray-900" i18n>
-        {{ document().filename || 'Document' }}
+      <p class="truncate text-sm font-medium text-gray-900">
+        {{ document().filename || 'Документ' }}
       </p>
       @if (document().uploadedAt) {
         <p class="text-xs text-gray-500">
@@ -17,8 +17,7 @@
   </div>
 
   <button
-    aria-label="Delete document"
-    i18n-aria-label
+    aria-label="Удалить документ"
     color="warn"
     mat-icon-button
     type="button"

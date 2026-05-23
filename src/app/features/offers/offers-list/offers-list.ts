@@ -48,12 +48,12 @@ type AgentOption = {
 };
 
 const OFFER_STATUS_OPTIONS: OfferStatusOption[] = [
-  { value: 'DRAFT', label: $localize`:@@offerStatusOptionDraft:Draft` },
-  { value: 'SENT', label: $localize`:@@offerStatusOptionSent:Sent` },
-  { value: 'VIEWED', label: $localize`:@@offerStatusOptionViewed:Viewed` },
-  { value: 'ACCEPTED', label: $localize`:@@offerStatusOptionAccepted:Accepted` },
-  { value: 'REJECTED', label: $localize`:@@offerStatusOptionRejected:Rejected` },
-  { value: 'EXPIRED', label: $localize`:@@offerStatusOptionExpired:Expired` },
+  { value: 'DRAFT', label: 'Черновик' },
+  { value: 'SENT', label: 'Отправлено' },
+  { value: 'VIEWED', label: 'Просмотрено' },
+  { value: 'ACCEPTED', label: 'Принято' },
+  { value: 'REJECTED', label: 'Отклонено' },
+  { value: 'EXPIRED', label: 'Истекло' },
 ];
 
 const OFFER_STATUSES = new Set<OfferStatus>([
@@ -175,7 +175,7 @@ export class OffersListComponent {
         return undefined;
       }
 
-      return err.error?.message ?? err.message ?? 'Failed to load offers';
+      return err.error?.message ?? err.message ?? 'Не удалось загрузить предложения';
     }
 
     return undefined;

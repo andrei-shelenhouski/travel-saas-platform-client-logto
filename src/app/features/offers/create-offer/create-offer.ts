@@ -130,7 +130,7 @@ export class CreateOfferComponent implements OnInit {
   readonly error = signal('');
   readonly requestId = signal<string | null>(null);
   readonly createdDraftId = signal<string | null>(null);
-  readonly destinationNotSetLabel = $localize`:@@createOfferDestinationNotSet:Destination not set`;
+  readonly destinationNotSetLabel = 'Направление не указано';
   readonly prefilledRequestCode = computed(() => {
     const request = this.request();
 
@@ -247,7 +247,7 @@ export class CreateOfferComponent implements OnInit {
           if (err instanceof HttpErrorResponse && err.status === 404) {
             this.request.set(null);
             this.requestPrefillWarning.set(
-              $localize`:@@createOfferRequestPrefillNotFound:Trip request was not found. Fill travel details manually and continue creating the offer.`,
+              'Запрос на поездку не найден. Заполните детали поездки вручную и продолжайте создание предложения.',
             );
 
             return;
@@ -256,7 +256,7 @@ export class CreateOfferComponent implements OnInit {
           this.error.set(
             this.getErrorMessage(
               err,
-              $localize`:@@createOfferRequestLoadFailed:Failed to load request data.`,
+              'Не удалось загрузить данные запроса.',
             ),
           );
         },
@@ -358,7 +358,7 @@ export class CreateOfferComponent implements OnInit {
 
     if (!requestId) {
       this.toast.showError(
-        $localize`:@@offerPdfPreviewSaveDraftPrompt:Save a draft before opening PDF preview.`,
+        'Сохраните черновик перед предпросмотром.',
       );
 
       return;
@@ -386,7 +386,7 @@ export class CreateOfferComponent implements OnInit {
             this.openPdfPreviewDialog(updated.id, updated.number);
           },
           error: (err) => {
-            this.error.set(err.error?.message ?? err.message ?? 'Failed to update offer');
+            this.error.set(err.error?.message ?? err.message ?? 'Не удалось обновить предложение');
           },
         });
     } else {
@@ -398,11 +398,11 @@ export class CreateOfferComponent implements OnInit {
           next: (created) => {
             this.createdDraftId.set(created.id);
             this.form.markAsPristine();
-            this.toast.showSuccess('Offer draft saved');
+            this.toast.showSuccess('Черновик предложения сохранён');
             this.openPdfPreviewDialog(created.id, created.number);
           },
           error: (err) => {
-            this.error.set(err.error?.message ?? err.message ?? 'Failed to create offer');
+            this.error.set(err.error?.message ?? err.message ?? 'Не удалось создать предложение');
           },
         });
     }
@@ -416,7 +416,7 @@ export class CreateOfferComponent implements OnInit {
     const requestId = this.requestId();
 
     if (!requestId) {
-      this.error.set('Unable to save: this offer is not linked to a travel request.');
+      this.error.set('Невозможно сохранить: это предложение не привязано к запросу на тур.');
 
       return;
     }
@@ -437,11 +437,11 @@ export class CreateOfferComponent implements OnInit {
       this.offersService.update(existingId, updateDto).subscribe({
         next: (updated) => {
           this.form.markAsPristine();
-          this.toast.showSuccess('Offer draft saved');
+          this.toast.showSuccess('Черновик предложения сохранён');
           this.router.navigate(['/app/offers', updated.id]);
         },
         error: (err) => {
-          this.error.set(err.error?.message ?? err.message ?? 'Failed to update offer');
+          this.error.set(err.error?.message ?? err.message ?? 'Не удалось обновить предложение');
           this.saving.set(false);
         },
         complete: () => this.saving.set(false),
@@ -451,11 +451,11 @@ export class CreateOfferComponent implements OnInit {
       this.offersService.create(dto).subscribe({
         next: (created) => {
           this.form.markAsPristine();
-          this.toast.showSuccess('Offer draft saved');
+          this.toast.showSuccess('Черновик предложения сохранён');
           this.router.navigate(['/app/offers', created.id]);
         },
         error: (err) => {
-          this.error.set(err.error?.message ?? err.message ?? 'Failed to create offer');
+          this.error.set(err.error?.message ?? err.message ?? 'Не удалось создать предложение');
           this.saving.set(false);
         },
         complete: () => this.saving.set(false),

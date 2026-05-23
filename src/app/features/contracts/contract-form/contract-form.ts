@@ -25,16 +25,16 @@ type SignatureMethodOption = {
 };
 
 const SIGNATURE_METHOD_OPTIONS: SignatureMethodOption[] = [
-  { value: SignatureMethod.ORIGINAL_MAIL, label: $localize`:@@contractSignatureMethodMail:Mail` },
+  { value: SignatureMethod.ORIGINAL_MAIL, label: 'Почта' },
   {
     value: SignatureMethod.ORIGINAL_COURIER,
-    label: $localize`:@@contractSignatureMethodCourier:Courier`,
+    label: 'Курьер',
   },
   {
     value: SignatureMethod.DIGITAL_PODPIS,
-    label: $localize`:@@contractSignatureMethodPodpis:Podpis.by`,
+    label: 'Podpis.by',
   },
-  { value: SignatureMethod.OTHER, label: $localize`:@@contractSignatureMethodOther:Other` },
+  { value: SignatureMethod.OTHER, label: 'Другое' },
 ];
 
 @Component({
