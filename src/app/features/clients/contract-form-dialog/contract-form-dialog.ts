@@ -88,17 +88,13 @@ export class ContractFormDialogComponent {
     }
 
     if (error.status === 409) {
-      this.submitError.set(
-        'Договор с таким номером уже существует',
-      );
+      this.submitError.set('Договор с таким номером уже существует');
 
       return;
     }
 
     if (error.status === 400) {
-      this.submitError.set(
-        error.error?.message ?? 'Исправьте ошибки в форме',
-      );
+      this.submitError.set(error.error?.message ?? 'Исправьте ошибки в форме');
 
       return;
     }

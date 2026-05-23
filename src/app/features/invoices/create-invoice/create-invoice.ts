@@ -590,7 +590,9 @@ export class CreateInvoiceComponent {
         this.form.markAsPristine();
       },
       error: (err) => {
-        this.error.set(err.error?.message ?? err.message ?? 'Не удалось загрузить данные бронирования');
+        this.error.set(
+          err.error?.message ?? err.message ?? 'Не удалось загрузить данные бронирования',
+        );
       },
     });
   }

@@ -190,11 +190,7 @@ export class RecordPaymentModalComponent {
       }
     }
 
-    return (
-      errorResponse.error?.message ??
-      errorResponse.message ??
-      'Не удалось записать платёж.'
-    );
+    return errorResponse.error?.message ?? errorResponse.message ?? 'Не удалось записать платёж.';
   }
 
   private isFieldErrorMap(value: unknown): value is RecordPaymentModalFieldErrorMap {

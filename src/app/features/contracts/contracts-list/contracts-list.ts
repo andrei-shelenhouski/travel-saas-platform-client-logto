@@ -20,11 +20,11 @@ import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ContractStatus, PermissionKey } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
-import { boolLabel, clientTypeLabel, textOrDash } from '../contracts-format.utils';
 import {
   ContractsFilterBarComponent,
   ContractsFilterValue,
 } from '../contracts-filter-bar/contracts-filter-bar';
+import { boolLabel, clientTypeLabel, textOrDash } from '../contracts-format.utils';
 
 import type { ContractResponseDto } from '@app/shared/models';
 

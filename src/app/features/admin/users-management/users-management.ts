@@ -104,7 +104,8 @@ export class UsersManagementComponent {
   private readonly roleForbiddenError = 'У вас нет прав для изменения ролей.';
   private readonly roleGenericError = 'Не удалось обновить роль';
   private readonly roleSelfChangeError = 'Вы не можете изменить собственную роль.';
-  private readonly roleLastAdminError = 'В организации должен быть хотя бы один администратор. Сначала назначьте другого администратора.';
+  private readonly roleLastAdminError =
+    'В организации должен быть хотя бы один администратор. Сначала назначьте другого администратора.';
 
   constructor() {
     this.loadUsers();
@@ -272,9 +273,7 @@ export class UsersManagementComponent {
         },
         error: (err) => {
           const message =
-            err.error?.message ??
-            err.message ??
-            'Не удалось активировать пользователя';
+            err.error?.message ?? err.message ?? 'Не удалось активировать пользователя';
 
           this.snackBar.open(message, this.closeLabel, { duration: 5000 });
         },
@@ -316,9 +315,7 @@ export class UsersManagementComponent {
         },
         error: (err) => {
           const message =
-            err.error?.message ??
-            err.message ??
-            'Не удалось деактивировать пользователя';
+            err.error?.message ?? err.message ?? 'Не удалось деактивировать пользователя';
 
           this.snackBar.open(message, this.closeLabel, { duration: 5000 });
         },
@@ -334,9 +331,7 @@ export class UsersManagementComponent {
       inactiveUsers: this.usersService.getList({ isActive: false, limit: 200 }),
       roles: this.rolesApi.listRoles().pipe(
         catchError((error: unknown) => {
-          this.error.set(
-            this.resolveErrorMessage(error, 'Не удалось загрузить пользователей'),
-          );
+          this.error.set(this.resolveErrorMessage(error, 'Не удалось загрузить пользователей'));
 
           return of<RoleSummaryResponseDto[]>([]);
         }),
@@ -358,8 +353,7 @@ export class UsersManagementComponent {
           );
         },
         error: (err) => {
-          const message =
-            err.error?.message ?? err.message ?? 'Не удалось загрузить пользователей';
+          const message = err.error?.message ?? err.message ?? 'Не удалось загрузить пользователей';
 
           this.error.set(message);
         },

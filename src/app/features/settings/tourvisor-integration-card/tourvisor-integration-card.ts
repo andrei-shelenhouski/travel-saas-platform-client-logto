@@ -72,7 +72,8 @@ export class TourvisorIntegrationCardComponent {
 
   protected readonly pageTitle = 'Интеграции';
   protected readonly pageSubtitle = 'Подключайте и управляйте внешними провайдерами лидов.';
-  protected readonly authkeyHelpText = 'Откройте настройки аккаунта TourVisor и скопируйте authkey из настроек интеграционного доступа.';
+  protected readonly authkeyHelpText =
+    'Откройте настройки аккаунта TourVisor и скопируйте authkey из настроек интеграционного доступа.';
 
   protected readonly loading = signal(true);
   protected readonly saving = signal(false);
@@ -257,7 +258,8 @@ export class TourvisorIntegrationCardComponent {
 
           this.connectionTestState.set('invalid');
           this.connectionTestMessage.set(
-            response.error || 'Недействительный authkey. Пожалуйста, переподключитесь с действительным ключом.',
+            response.error ||
+              'Недействительный authkey. Пожалуйста, переподключитесь с действительным ключом.',
           );
         },
         error: (error: unknown) => {
@@ -282,7 +284,9 @@ export class TourvisorIntegrationCardComponent {
           this.scheduleSettingsRefresh();
         },
         error: (error: unknown) => {
-          this.inlineError.set(this.getErrorMessage(error, 'Не удалось запустить синхронизацию TourVisor.'));
+          this.inlineError.set(
+            this.getErrorMessage(error, 'Не удалось запустить синхронизацию TourVisor.'),
+          );
         },
       });
   }

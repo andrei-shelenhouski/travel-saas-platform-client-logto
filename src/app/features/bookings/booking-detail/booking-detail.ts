@@ -120,11 +120,7 @@ export class BookingDetailComponent {
         return 'Бронирование не найдено';
       }
 
-      return (
-        error.error?.message ??
-        error.message ??
-        'Не удалось загрузить бронирование'
-      );
+      return error.error?.message ?? error.message ?? 'Не удалось загрузить бронирование';
     }
 
     return 'Не удалось загрузить бронирование';
@@ -159,10 +155,7 @@ export class BookingDetailComponent {
       .subscribe({
         next: (updated) => this.patchBooking(updated),
         error: (err) =>
-          this.toast.showError(
-            err.error?.message ??
-              'Не удалось обновить статус бронирования',
-          ),
+          this.toast.showError(err.error?.message ?? 'Не удалось обновить статус бронирования'),
       });
   }
 
@@ -185,9 +178,7 @@ export class BookingDetailComponent {
       .subscribe({
         next: (updated) => this.patchBooking(updated),
         error: (err) =>
-          this.toast.showError(
-            err.error?.message ?? 'Не удалось отменить бронирование',
-          ),
+          this.toast.showError(err.error?.message ?? 'Не удалось отменить бронирование'),
       });
   }
 
@@ -212,9 +203,7 @@ export class BookingDetailComponent {
           this.toast.showSuccess('Детали тура обновлены');
         },
         error: (err) =>
-          this.toast.showError(
-            err.error?.message ?? 'Не удалось сохранить изменения',
-          ),
+          this.toast.showError(err.error?.message ?? 'Не удалось сохранить изменения'),
       });
   }
 
@@ -235,9 +224,7 @@ export class BookingDetailComponent {
           this.toast.showSuccess('Операционные данные обновлены');
         },
         error: (err) =>
-          this.toast.showError(
-            err.error?.message ?? 'Не удалось сохранить изменения',
-          ),
+          this.toast.showError(err.error?.message ?? 'Не удалось сохранить изменения'),
       });
   }
 
@@ -259,14 +246,9 @@ export class BookingDetailComponent {
         if (current) {
           this.allData.set({ ...current, documents: [...current.documents, ...uploaded] });
         }
-        this.toast.showSuccess(
-          `Загружено файлов: ${uploaded.length}`,
-        );
+        this.toast.showSuccess(`Загружено файлов: ${uploaded.length}`);
       },
-      error: (err) =>
-        this.toast.showError(
-          err.error?.message ?? 'Не удалось загрузить файл',
-        ),
+      error: (err) => this.toast.showError(err.error?.message ?? 'Не удалось загрузить файл'),
     });
   }
 
@@ -289,10 +271,7 @@ export class BookingDetailComponent {
         }
         this.toast.showSuccess('Документ удален');
       },
-      error: (err) =>
-        this.toast.showError(
-          err.error?.message ?? 'Не удалось удалить документ',
-        ),
+      error: (err) => this.toast.showError(err.error?.message ?? 'Не удалось удалить документ'),
     });
   }
 

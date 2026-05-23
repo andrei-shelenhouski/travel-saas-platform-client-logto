@@ -80,9 +80,13 @@ export class EditClientPageComponent implements OnInit {
         this.client.set(client);
       },
       error: (err) => {
-        this.snackBar.open(err.error?.message ?? err.message ?? 'Не удалось загрузить клиента', 'Закрыть', {
-          duration: 5000,
-        });
+        this.snackBar.open(
+          err.error?.message ?? err.message ?? 'Не удалось загрузить клиента',
+          'Закрыть',
+          {
+            duration: 5000,
+          },
+        );
         void this.router.navigate(['..'], { relativeTo: this.route });
       },
       complete: () => {

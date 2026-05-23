@@ -57,7 +57,9 @@ export class CreateOrganizationComponent {
                 this.orgState.setActiveOrganization(org.organizationId, org.organizationName);
                 this.router.navigate(['/app/dashboard']);
               } else {
-                this.error.set('Организация создана, но не найдена в профиле. Попробуйте обновить страницу.');
+                this.error.set(
+                  'Организация создана, но не найдена в профиле. Попробуйте обновить страницу.',
+                );
               }
               this.loading.set(false);
             },

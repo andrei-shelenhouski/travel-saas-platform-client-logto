@@ -85,9 +85,7 @@ export class InviteUserDialogComponent {
 
           if (err.status !== 409) {
             const message =
-              err.error?.message ??
-              err.message ??
-              'Не удалось пригласить пользователя';
+              err.error?.message ?? err.message ?? 'Не удалось пригласить пользователя';
 
             this.snackBar.open(message, 'Закрыть', { duration: 5000 });
           }

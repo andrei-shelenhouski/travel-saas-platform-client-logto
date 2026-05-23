@@ -277,12 +277,7 @@ export class RolesPermissionsComponent {
           this.startCreateRole();
         },
         error: (error: unknown) => {
-          this.loadError.set(
-            this.resolveErrorMessage(
-              error,
-              'Не удалось загрузить роли и права',
-            ),
-          );
+          this.loadError.set(this.resolveErrorMessage(error, 'Не удалось загрузить роли и права'));
         },
       });
   }
@@ -297,10 +292,7 @@ export class RolesPermissionsComponent {
         next: (roleDetail) => this.setSelectedRole(roleDetail),
         error: (error: unknown) => {
           this.snackBar.open(
-            this.resolveErrorMessage(
-              error,
-              'Не удалось загрузить данные роли',
-            ),
+            this.resolveErrorMessage(error, 'Не удалось загрузить данные роли'),
             this.closeLabel,
             { duration: 5000 },
           );
@@ -352,11 +344,7 @@ export class RolesPermissionsComponent {
           ]);
           this.creatingRole.set(false);
           this.setSelectedRole(createdRole);
-          this.snackBar.open(
-            'Роль создана',
-            this.okLabel,
-            { duration: 3000 },
-          );
+          this.snackBar.open('Роль создана', this.okLabel, { duration: 3000 });
         },
         error: (error: unknown) => {
           if (this.getErrorStatus(error) === 409) {
@@ -369,10 +357,7 @@ export class RolesPermissionsComponent {
           }
 
           this.snackBar.open(
-            this.resolveErrorMessage(
-              error,
-              'Не удалось создать роль',
-            ),
+            this.resolveErrorMessage(error, 'Не удалось создать роль'),
             this.closeLabel,
             { duration: 5000 },
           );
@@ -397,18 +382,11 @@ export class RolesPermissionsComponent {
       .subscribe({
         next: (updatedRole) => {
           this.setSelectedRole(updatedRole);
-          this.snackBar.open(
-            'Права обновлены',
-            this.okLabel,
-            { duration: 3000 },
-          );
+          this.snackBar.open('Права обновлены', this.okLabel, { duration: 3000 });
         },
         error: (error: unknown) => {
           this.snackBar.open(
-            this.resolveErrorMessage(
-              error,
-              'Не удалось обновить права',
-            ),
+            this.resolveErrorMessage(error, 'Не удалось обновить права'),
             this.closeLabel,
             { duration: 5000 },
           );
@@ -439,28 +417,19 @@ export class RolesPermissionsComponent {
             }
           }
 
-          this.snackBar.open(
-            'Роль удалена',
-            this.okLabel,
-            {
-              duration: 3000,
-            },
-          );
+          this.snackBar.open('Роль удалена', this.okLabel, {
+            duration: 3000,
+          });
         },
         error: (error: unknown) => {
           if (this.getErrorStatus(error) === 409) {
-            this.deleteError.set(
-              'Перед удалением роли снимите все назначения участников.',
-            );
+            this.deleteError.set('Перед удалением роли снимите все назначения участников.');
 
             return;
           }
 
           this.snackBar.open(
-            this.resolveErrorMessage(
-              error,
-              'Не удалось удалить роль',
-            ),
+            this.resolveErrorMessage(error, 'Не удалось удалить роль'),
             this.closeLabel,
             { duration: 5000 },
           );

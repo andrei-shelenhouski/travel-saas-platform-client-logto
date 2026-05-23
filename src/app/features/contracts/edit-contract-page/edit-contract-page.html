@@ -1,14 +1,14 @@
 <app-page-heading
   subtitle="Измените поля договора и сохраните новую версию"
-  [showBackButton]="true"
   title="Редактировать договор"
+  [showBackButton]="true"
 />
 
 <section class="contract-edit-shell" [attr.aria-busy]="loading()">
   @if (loading()) {
     <div class="contract-edit-loading">
       <div class="contract-edit-loading-spinner"></div>
-      <p class="contract-edit-loading-text" role="status" aria-live="polite">
+      <p aria-live="polite" class="contract-edit-loading-text" role="status">
         Загрузка договора...
       </p>
     </div>

@@ -133,9 +133,7 @@ export class InvoiceListMiniComponent {
             return;
           }
 
-          this.toast.showError(
-            'Не удалось создать счет из бронирования',
-          );
+          this.toast.showError('Не удалось создать счет из бронирования');
         },
       });
   }

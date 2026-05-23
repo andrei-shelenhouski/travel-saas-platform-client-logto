@@ -151,9 +151,7 @@ export class OfferDetailComponent {
   protected readonly displayOfferNumber = computed(
     () => this.offer()?.number ?? this.offer()?.id ?? '',
   );
-  protected readonly pageTitle = computed(
-    () => `Предложение ${this.displayOfferNumber()}`,
-  );
+  protected readonly pageTitle = computed(() => `Предложение ${this.displayOfferNumber()}`);
   protected readonly pageSubtitle = 'Детали предложения';
   protected readonly displayVersion = computed(() => `v${this.offer()?.version ?? 1}`);
   protected readonly canSeeInternalNotes = computed(() => this.permissions.canViewAllOffers());
@@ -421,7 +419,9 @@ export class OfferDetailComponent {
               this.toast.showSuccess('Предложение принято');
               this.router.navigate(['/app/bookings', linkedBookingId]);
             } else {
-              this.toast.showSuccess('Предложение принято. Бронирование появится в ближайшее время.');
+              this.toast.showSuccess(
+                'Предложение принято. Бронирование появится в ближайшее время.',
+              );
             }
           }
 
@@ -431,7 +431,9 @@ export class OfferDetailComponent {
         },
         error: (err) => {
           this.data.set(currentOffer);
-          this.toast.showError(err.error?.message ?? err.message ?? 'Не удалось выполнить действие');
+          this.toast.showError(
+            err.error?.message ?? err.message ?? 'Не удалось выполнить действие',
+          );
         },
       });
   }
@@ -448,7 +450,9 @@ export class OfferDetailComponent {
           this.router.navigate(['/app/offers']);
         },
         error: (err) => {
-          this.toast.showError(err.error?.message ?? err.message ?? 'Не удалось удалить предложение');
+          this.toast.showError(
+            err.error?.message ?? err.message ?? 'Не удалось удалить предложение',
+          );
         },
       });
   }
@@ -465,7 +469,9 @@ export class OfferDetailComponent {
           this.router.navigate(['/app/offers', revisedOffer.id, 'edit']);
         },
         error: (err) => {
-          this.toast.showError(err.error?.message ?? err.message ?? 'Не удалось создать исправление');
+          this.toast.showError(
+            err.error?.message ?? err.message ?? 'Не удалось создать исправление',
+          );
         },
       });
   }
