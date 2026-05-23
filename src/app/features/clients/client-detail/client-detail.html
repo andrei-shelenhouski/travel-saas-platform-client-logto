@@ -58,6 +58,36 @@
                   <dd class="whitespace-pre-wrap">{{ c.notes }}</dd>
                 </div>
               }
+              @if (isB2BAgent()) {
+                @if (c.trademark) {
+                  <div class="client-data-row">
+                    <dt i18n="@@clientTrademark">Trademark</dt>
+                    <dd>{{ c.trademark }}</dd>
+                  </div>
+                }
+                @if (c.registrationCert) {
+                  <div class="client-data-row">
+                    <dt i18n="@@clientRegistrationCert">Registration certificate</dt>
+                    <dd>{{ c.registrationCert }}</dd>
+                  </div>
+                }
+                @if (c.taxationType) {
+                  <div class="client-data-row">
+                    <dt i18n="@@clientTaxationType">Taxation type</dt>
+                    <dd>{{ c.taxationType }}</dd>
+                  </div>
+                }
+                @if (c.directorName) {
+                  <div class="client-data-row">
+                    <dt i18n="@@clientDirectorName">Director full name</dt>
+                    <dd>{{ c.directorName }}</dd>
+                  </div>
+                }
+                <div class="client-data-row">
+                  <dt i18n="@@clientRataMember">Valid RATA member</dt>
+                  <dd>{{ c.rataMember ? 'Yes' : 'No' }}</dd>
+                </div>
+              }
               <div class="client-data-row">
                 <dt i18n="@@clientCreated">Created</dt>
                 <dd>{{ formatDate(c.createdAt) }}</dd>
@@ -372,6 +402,109 @@
                   </div>
                 }
               </mat-tab>
+
+              @if (isB2BAgent()) {
+                <mat-tab>
+                  <ng-template mat-tab-label>
+                    <span i18n="@@contractsTabLabel">Contracts</span>
+                  </ng-template>
+
+                  <div class="contracts-tab-header">
+                    <button matButton="filled" type="button" (click)="openCreateContractDialog()">
+                      <span i18n="@@contractsAddButton">Add contract</span>
+                    </button>
+                  </div>
+
+                  @if (contractsLoading()) {
+                    <div class="flex justify-center py-12">
+                      <div
+                        aria-hidden="true"
+                        class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
+                      ></div>
+                    </div>
+                  } @else if (contracts().length === 0) {
+                    <div class="client-history-empty">
+                      <p i18n="@@contractsEmptyState">Contracts are not added yet</p>
+                      <button mat-stroked-button type="button" (click)="openCreateContractDialog()">
+                        <span i18n="@@contractsEmptyAddButton">Add contract</span>
+                      </button>
+                    </div>
+                  } @else {
+                    <div class="overflow-x-auto">
+                      <table class="client-history-table contracts-table">
+                        <thead>
+                          <tr>
+                            <th i18n="@@contractsColumnNumber">Number</th>
+                            <th i18n="@@contractsColumnSignedAt">Signed at</th>
+                            <th i18n="@@contractsColumnExpiresAt">Expires at</th>
+                            <th i18n="@@contractsColumnSignatureMethod">Signature method</th>
+                            <th i18n="@@contractsColumnStatus">Status</th>
+                            <th i18n="@@contractsColumnActions">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @for (contract of contracts(); track contract.id) {
+                            <tr>
+                              <td class="font-medium">{{ contract.contractNumber }}</td>
+                              <td class="text-gray-600">
+                                {{ formatDateShort(contract.signedAt) }}
+                              </td>
+                              <td class="text-gray-600">
+                                {{ formatDateShort(contract.expiresAt) }}
+                              </td>
+                              <td>{{ contractSignatureLabel(contract.signatureMethod) }}</td>
+                              <td>
+                                <span [class]="contractStatusClass(contract.status)">
+                                  {{ contract.status }}
+                                </span>
+                              </td>
+                              <td>
+                                <button
+                                  mat-icon-button
+                                  type="button"
+                                  [disabled]="!canManageContract(contract)"
+                                  [matMenuTriggerFor]="contractActionsMenu"
+                                >
+                                  <span aria-hidden="true" class="material-icons">more_vert</span>
+                                </button>
+                                <mat-menu #contractActionsMenu="matMenu">
+                                  <button
+                                    mat-menu-item
+                                    type="button"
+                                    [disabled]="!canManageContract(contract)"
+                                    (click)="openEditContractDialog(contract)"
+                                  >
+                                    <span i18n="@@contractsActionEdit">Edit</span>
+                                  </button>
+                                  <button
+                                    mat-menu-item
+                                    type="button"
+                                    [disabled]="!canManageContract(contract)"
+                                    (click)="terminateContract(contract)"
+                                  >
+                                    <span i18n="@@contractsActionTerminate">Terminate</span>
+                                  </button>
+                                </mat-menu>
+                              </td>
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+                    </div>
+
+                    @if (contractsTotal() > contractsPageSize) {
+                      <mat-paginator
+                        class="pt-2"
+                        [length]="contractsTotal()"
+                        [pageIndex]="contractsPageIndex()"
+                        [pageSize]="contractsPageSize"
+                        [showFirstLastButtons]="true"
+                        (page)="onContractsPageChange($event)"
+                      />
+                    }
+                  }
+                </mat-tab>
+              }
             </mat-tab-group>
           </section>
         </div>

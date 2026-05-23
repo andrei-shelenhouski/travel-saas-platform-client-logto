@@ -1,0 +1,70 @@
+.contract-link {
+  color: #0f172a;
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.contract-link:hover {
+  text-decoration: underline;
+}
+
+.client-link {
+  color: #1d4ed8;
+  text-decoration: none;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  font-size: 0.75rem;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    Menlo,
+    Monaco,
+    Consolas,
+    Liberation Mono,
+    Courier New,
+    monospace;
+}
+
+.client-link:hover {
+  text-decoration: underline;
+}
+
+.contract-status {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.contract-status-active {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.contract-status-expired {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.contract-status-terminated {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.notes-cell {
+  max-width: 22rem;
+  white-space: normal;
+  word-break: break-word;
+  color: #334155;
+  font-size: 0.75rem;
+}

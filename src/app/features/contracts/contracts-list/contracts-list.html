@@ -1,0 +1,205 @@
+<app-page-heading
+  subtitle="Total: {{ totalElements() }}"
+  title="Contracts"
+  i18n-title="@@contractsListTitle"
+>
+  @if (canCreateContracts()) {
+    <button matButton="filled" type="button" (click)="goToCreateContract()">
+      <span i18n="@@contractsCreateAction">Create contract</span>
+    </button>
+  }
+</app-page-heading>
+
+<div class="p-4">
+  <app-contracts-filter-bar
+    class="m-4"
+    [value]="activeFilter()"
+    (filterChange)="onFilterChange($event)"
+  />
+
+  @if (error()) {
+    <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
+  }
+
+  <div class="table-wrap overflow-scroll">
+    <table mat-table [dataSource]="contracts()">
+      <ng-container matColumnDef="contract">
+        <th *matHeaderCellDef i18n="@@contractsListNumber" mat-header-cell>Number</th>
+        <td *matCellDef="let element" mat-cell>
+          <button class="contract-link" type="button" (click)="goToContract(element.id)">
+            {{ element.contractNumber }}
+          </button>
+          <div class="text-xs text-slate-500">ID: {{ element.id }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="client">
+        <th *matHeaderCellDef i18n="@@contractsListClientId" mat-header-cell>Client</th>
+        <td *matCellDef="let element" mat-cell>
+          <button class="client-link" type="button" (click)="goToClient(element.clientId)">
+            {{ clientLabel(element) }}
+          </button>
+          <div class="text-xs text-slate-500">ID: {{ element.clientId }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="clientType">
+        <th *matHeaderCellDef i18n="@@contractsListClientType" mat-header-cell>Client type</th>
+        <td *matCellDef="let element" mat-cell>
+          <span class="text-xs text-slate-600">{{ clientTypeLabel(element.client?.type) }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="clientContacts">
+        <th *matHeaderCellDef i18n="@@contractsListClientContacts" mat-header-cell>Contacts</th>
+        <td *matCellDef="let element" mat-cell>
+          <div class="text-xs text-slate-600">Email: {{ textOrDash(element.client?.email) }}</div>
+          <div class="text-xs text-slate-600">Phone: {{ textOrDash(element.client?.phone) }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="clientB2B">
+        <th *matHeaderCellDef i18n="@@contractsListClientB2B" mat-header-cell>B2B details</th>
+        <td *matCellDef="let element" mat-cell>
+          <div class="text-xs text-slate-600">
+            Reg cert: {{ textOrDash(element.client?.registrationCert) }}
+          </div>
+          <div class="text-xs text-slate-600">
+            Taxation: {{ textOrDash(element.client?.taxationType) }}
+          </div>
+          <div class="text-xs text-slate-600">
+            Director: {{ textOrDash(element.client?.directorName) }}
+          </div>
+          <div class="text-xs text-slate-600">
+            RATA member: {{ boolLabel(element.client?.rataMember) }}
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="signedAt">
+        <th *matHeaderCellDef i18n="@@contractsListSignedAt" mat-header-cell>Signed at</th>
+        <td *matCellDef="let element" mat-cell>
+          {{ element.signedAt | date: 'dd MMM yyyy' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="expiresAt">
+        <th *matHeaderCellDef i18n="@@contractsListExpiresAt" mat-header-cell>Expires at</th>
+        <td *matCellDef="let element" mat-cell>
+          @if (element.expiresAt) {
+            {{ element.expiresAt | date: 'dd MMM yyyy' }}
+          } @else {
+            —
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdAt">
+        <th *matHeaderCellDef i18n="@@contractsListCreatedAt" mat-header-cell>Created</th>
+        <td *matCellDef="let element" mat-cell>
+          <span class="text-xs text-slate-600">{{
+            element.createdAt | date: 'dd MMM yyyy, HH:mm'
+          }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="updatedAt">
+        <th *matHeaderCellDef i18n="@@contractsListUpdatedAt" mat-header-cell>Updated</th>
+        <td *matCellDef="let element" mat-cell>
+          <span class="text-xs text-slate-600">{{
+            element.updatedAt | date: 'dd MMM yyyy, HH:mm'
+          }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="signatureMethod">
+        <th *matHeaderCellDef i18n="@@contractsListSignatureMethod" mat-header-cell>
+          Signature method
+        </th>
+        <td *matCellDef="let element" mat-cell>
+          {{ signatureMethodLabel(element.signatureMethod) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th *matHeaderCellDef i18n="@@contractsListStatus" mat-header-cell>Status</th>
+        <td *matCellDef="let element" mat-cell>
+          <span [class]="statusClass(element.status)">{{ element.status }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="notes">
+        <th *matHeaderCellDef i18n="@@contractsListNotes" mat-header-cell>Notes</th>
+        <td *matCellDef="let element" mat-cell>
+          <div class="notes-cell">{{ textOrDash(element.notes) }}</div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="createdBy">
+        <th *matHeaderCellDef i18n="@@contractsListCreatedBy" mat-header-cell>Created by</th>
+        <td *matCellDef="let element" mat-cell>
+          <span class="text-xs text-slate-600">{{ element.createdById }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th *matHeaderCellDef i18n="@@contractsListActions" mat-header-cell>Actions</th>
+        <td *matCellDef="let element" mat-cell>
+          <button mat-icon-button type="button" [matMenuTriggerFor]="actionsMenu">
+            <span aria-hidden="true" class="material-icons">more_vert</span>
+          </button>
+          <mat-menu #actionsMenu="matMenu">
+            <button
+              mat-menu-item
+              type="button"
+              [disabled]="!canManageContract(element)"
+              (click)="goToEditContract(element)"
+            >
+              <span i18n="@@contractsActionEdit">Edit</span>
+            </button>
+            <button
+              mat-menu-item
+              type="button"
+              [disabled]="!canManageContract(element)"
+              (click)="terminateContract(element)"
+            >
+              <span i18n="@@contractsActionTerminate">Terminate</span>
+            </button>
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="displayedColumns" class="table-header-row" mat-header-row></tr>
+      <tr *matRowDef="let row; columns: displayedColumns" class="table-row" mat-row></tr>
+      <tr *matNoDataRow>
+        <td [attr.colspan]="displayedColumns.length">
+          <div class="m-10 align-middle text-center">
+            @if (loading()) {
+              <p class="pb-4" i18n="@@contractsListLoading">Loading contracts...</p>
+              <mat-spinner
+                aria-label="Loading contracts"
+                i18n-aria-label="@@contractsListLoadingAriaLabel"
+                class="mx-auto"
+                diameter="36"
+              />
+            } @else {
+              <p i18n="@@contractsListEmpty">No contracts found for current filters</p>
+            }
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  @if (totalElements() > pageSize) {
+    <mat-paginator
+      aria-label="Contracts pagination"
+      i18n-aria-label="@@contractsListPaginatorAriaLabel"
+      [length]="totalElements()"
+      [pageIndex]="currentPage()"
+      [pageSize]="pageSize"
+      [showFirstLastButtons]="true"
+      (page)="onPageChange($event)"
+    />
+  }
+</div>

@@ -7,6 +7,7 @@ export * from './me.service';
 export * from './leads.service';
 export * from './bookings.service';
 export * from './clients.service';
+export * from './contracts.service';
 export * from './invoices.service';
 export * from './offers.service';
 export * from './organizations.service';

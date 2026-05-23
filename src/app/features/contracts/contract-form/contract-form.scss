@@ -1,0 +1,17 @@
+.contract-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.contract-form-error {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #dc2626;
+}
+
+.contract-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

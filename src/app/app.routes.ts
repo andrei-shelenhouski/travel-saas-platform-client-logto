@@ -152,6 +152,43 @@ export const routes: Routes = [
             (m) => m.ClientsListComponent,
           ),
       },
+      // Contracts
+      {
+        path: 'contracts/new',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.CONTRACTS_CREATE },
+        loadComponent: () =>
+          import('@app/features/contracts/create-contract-page/create-contract-page').then(
+            (m) => m.CreateContractPageComponent,
+          ),
+      },
+      {
+        path: 'contracts/:id/edit',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.CONTRACTS_UPDATE },
+        loadComponent: () =>
+          import('@app/features/contracts/edit-contract-page/edit-contract-page').then(
+            (m) => m.EditContractPageComponent,
+          ),
+      },
+      {
+        path: 'contracts/:id',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.CONTRACTS_VIEW },
+        loadComponent: () =>
+          import('@app/features/contracts/contract-view-page/contract-view-page').then(
+            (m) => m.ContractViewPageComponent,
+          ),
+      },
+      {
+        path: 'contracts',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.CONTRACTS_VIEW },
+        loadComponent: () =>
+          import('@app/features/contracts/contracts-list/contracts-list').then(
+            (m) => m.ContractsListComponent,
+          ),
+      },
       // Requests: /app/requests/:id
       {
         path: 'requests/:id',

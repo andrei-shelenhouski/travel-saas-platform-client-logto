@@ -76,6 +76,9 @@ export const PermissionKey = {
   LEADS_DELETE: 'leads:delete',
   BOOKINGS_DELETE: 'bookings:delete',
   BOOKINGS_UPDATE: 'bookings:update',
+  CONTRACTS_VIEW: 'contracts:view',
+  CONTRACTS_CREATE: 'contracts:create',
+  CONTRACTS_UPDATE: 'contracts:update',
   INVOICES_VIEW: 'invoices:view',
   INVOICES_CREATE: 'invoices:create',
   INVOICES_PUBLISH: 'invoices:publish',
@@ -974,6 +977,11 @@ export type CreateClientDto = {
   bankName?: string;
   bik?: string;
   commissionPct?: number;
+  trademark?: string;
+  registrationCert?: string;
+  taxationType?: string;
+  directorName?: string;
+  rataMember?: boolean;
   dataConsentGiven: boolean;
   dataConsentDate?: string;
 };
@@ -996,6 +1004,11 @@ export type ClientResponseDto = {
   iban: string | null;
   bankName: string | null;
   bik: string | null;
+  trademark?: string | null;
+  registrationCert?: string | null;
+  taxationType?: string | null;
+  directorName?: string | null;
+  rataMember?: boolean | null;
   dataConsentGiven: boolean;
   dataConsentDate: string | null;
   createdAt: string;
@@ -1019,6 +1032,90 @@ export type UpdateClientDto = {
   iban?: string;
   bankName?: string;
   bik?: string;
+  trademark?: string;
+  registrationCert?: string;
+  taxationType?: string;
+  directorName?: string;
+  rataMember?: boolean;
+};
+
+// ----- Contracts -----
+
+export const ContractStatus = {
+  ACTIVE: 'ACTIVE',
+  EXPIRED: 'EXPIRED',
+  TERMINATED: 'TERMINATED',
+} as const;
+export type ContractStatus = (typeof ContractStatus)[keyof typeof ContractStatus];
+
+export const SignatureMethod = {
+  ORIGINAL_MAIL: 'ORIGINAL_MAIL',
+  ORIGINAL_COURIER: 'ORIGINAL_COURIER',
+  DIGITAL_PODPIS: 'DIGITAL_PODPIS',
+  OTHER: 'OTHER',
+} as const;
+export type SignatureMethod = (typeof SignatureMethod)[keyof typeof SignatureMethod];
+
+export type ContractClientSummaryDto = {
+  id: string;
+  type?: ClientType;
+  fullName?: string | null;
+  companyName?: string | null;
+  trademark?: string | null;
+  registrationCert?: string | null;
+  taxationType?: string | null;
+  directorName?: string | null;
+  rataMember?: boolean | null;
+  email?: string | null;
+  phone?: string | null;
+};
+
+export type ContractResponseDto = {
+  id: string;
+  organizationId: string;
+  clientId: string;
+  client?: ContractClientSummaryDto | null;
+  contractNumber: string;
+  signedAt: string;
+  expiresAt: string | null;
+  signatureMethod: SignatureMethod | null;
+  status: ContractStatus | string;
+  notes: string | null;
+  createdById: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type PaginatedContractResponseDto = PaginatedDto<ContractResponseDto>;
+
+export type ListContractsQueryDto = {
+  page?: number;
+  limit?: number;
+  clientId?: string;
+  status?: ContractStatus;
+  /** Compatibility with backend pageable binding; preferred field is limit. */
+  size?: number;
+};
+
+export type CreateContractDto = {
+  clientId: string;
+  contractNumber: string;
+  signedAt: string;
+  expiresAt?: string;
+  signatureMethod?: SignatureMethod;
+  notes?: string;
+};
+
+export type UpdateContractDto = {
+  contractNumber?: string;
+  signedAt?: string;
+  expiresAt?: string;
+  signatureMethod?: SignatureMethod;
+  notes?: string;
+};
+
+export type TerminateContractDto = {
+  notes?: string;
 };
 
 // ----- Requests -----
