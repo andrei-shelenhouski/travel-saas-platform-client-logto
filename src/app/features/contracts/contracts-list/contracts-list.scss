@@ -9,27 +9,13 @@
   font-weight: 600;
 }
 
-.contract-link:hover {
-  text-decoration: underline;
-}
-
-.client-link {
-  color: #1d4ed8;
+.link {
+  color: var(--color-primary);
   text-decoration: none;
-  border: none;
-  background: transparent;
-  padding: 0;
-  cursor: pointer;
-  font-size: 0.75rem;
-  font-family:
-    ui-monospace,
-    SFMono-Regular,
-    Menlo,
-    Monaco,
-    Consolas,
-    Liberation Mono,
-    Courier New,
-    monospace;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .client-link:hover {
@@ -62,9 +48,6 @@
 }
 
 .notes-cell {
-  max-width: 22rem;
-  white-space: normal;
-  word-break: break-word;
-  color: #334155;
-  font-size: 0.75rem;
+  max-width: 20rem;
+  white-space-collapse: preserve-breaks;
 }

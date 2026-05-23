@@ -23,7 +23,7 @@ const SOURCE_BADGE_CONFIG: Record<string, LeadSourceBadgeConfig> = {
     label: 'Instagram Ads',
     color: '#a3328a',
     backgroundColor: '#fde7f6',
-    icon: 'photo_camera',
+    icon: 'camera',
   },
   TOURVISOR: {
     label: 'TourVisor',

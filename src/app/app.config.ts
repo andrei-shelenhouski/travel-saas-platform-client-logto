@@ -1,7 +1,9 @@
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import '@angular/common/locales/global/ru-BY';
 import {
   ApplicationConfig,
   isDevMode,
+  LOCALE_ID,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
@@ -23,12 +25,13 @@ import {
   getAuth,
   provideAuth as provideFirebaseAuth,
 } from '@angular/fire/auth';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 
-import { environment } from '@environments/environment';
 import { routes } from '@app/app.routes';
 import { errorHandlerInterceptor, orgAuthInterceptor } from '@app/interceptors/index';
+import { environment } from '@environments/environment';
 
 const connectLocalAuthEmulator = (auth: Auth, host: string, port: number): void => {
   connectAuthEmulator(auth, `http://${host}:${port}`);
@@ -66,6 +69,14 @@ export const appConfig: ApplicationConfig = {
       useValue: {
         appearance: 'outline',
       },
+    },
+    {
+      provide: LOCALE_ID,
+      useValue: 'ru-BY',
+    },
+    {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'ru-BY',
     },
   ],
 };

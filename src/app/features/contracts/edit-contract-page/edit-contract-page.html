@@ -1,16 +1,28 @@
-<app-page-heading title="Редактировать договор" />
+<app-page-heading
+  subtitle="Измените поля договора и сохраните новую версию"
+  [showBackButton]="true"
+  title="Редактировать договор"
+/>
 
 <section class="contract-edit-shell">
   @if (loading()) {
-    <p>Загрузка договора...</p>
+    <div class="contract-edit-loading" aria-hidden="true">
+      <div class="contract-edit-loading-spinner"></div>
+    </div>
   } @else if (contract()) {
-    <app-contract-form
-      [initialContract]="contract()"
-      [mode]="'edit'"
-      [saving]="saving()"
-      [submitError]="submitError()"
-      (cancelled)="cancel()"
-      (updateSubmitted)="onUpdateSubmitted($event)"
-    />
+    <div class="contract-edit-card">
+      <p class="contract-edit-note">
+        После сохранения клиент увидит обновлённые данные в карточке договора.
+      </p>
+
+      <app-contract-form
+        [initialContract]="contract()"
+        [mode]="'edit'"
+        [saving]="saving()"
+        [submitError]="submitError()"
+        (cancelled)="cancel()"
+        (updateSubmitted)="onUpdateSubmitted($event)"
+      />
+    </div>
   }
 </section>

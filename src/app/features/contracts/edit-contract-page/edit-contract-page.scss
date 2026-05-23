@@ -1,4 +1,43 @@
 .contract-edit-shell {
-  max-width: 44rem;
+  padding: 0 1rem 1rem;
+}
+
+.contract-edit-loading {
+  display: flex;
+  justify-content: center;
+  padding: 2.5rem 0;
+}
+
+.contract-edit-loading-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid var(--mat-sys-primary, #1d4ed8);
+  border-top-color: transparent;
+  border-radius: 9999px;
+  animation: contract-edit-spin 0.8s linear infinite;
+}
+
+.contract-edit-card {
+  max-width: 46rem;
+  margin: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background: #ffffff;
   padding: 1rem;
+}
+
+.contract-edit-note {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+@keyframes contract-edit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }

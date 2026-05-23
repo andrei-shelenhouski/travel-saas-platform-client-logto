@@ -18,7 +18,7 @@ import {
 } from '@app/shared/components/confirm-dialog.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
-import { ContractStatus, PermissionKey } from '@app/shared/models';
+import { ClientType, ContractStatus, PermissionKey } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import type { ContractResponseDto } from '@app/shared/models';
@@ -139,6 +139,44 @@ export class ContractViewPageComponent implements OnInit {
     }
 
     return 'contract-status contract-status-expired';
+  }
+
+  clientTypeLabel(type: string | undefined): string {
+    if (type === ClientType.INDIVIDUAL) {
+      return 'Физ. лицо';
+    }
+
+    if (type === ClientType.COMPANY) {
+      return 'Компания';
+    }
+
+    if (type === ClientType.B2B_AGENT) {
+      return 'B2B агент';
+    }
+
+    if (type === ClientType.AGENT) {
+      return 'Агент';
+    }
+
+    return '—';
+  }
+
+  boolLabel(value: boolean | null | undefined): string {
+    if (value === null || value === undefined) {
+      return '—';
+    }
+
+    return value ? 'Да' : 'Нет';
+  }
+
+  textOrDash(value: string | null | undefined): string {
+    const normalizedValue = value?.trim();
+
+    if (normalizedValue) {
+      return normalizedValue;
+    }
+
+    return '—';
   }
 
   private loadContract(id: string): void {
