@@ -172,6 +172,6 @@ describe('MainLayoutComponent', () => {
       organizationName: 'No Role Org',
     };
 
-    expect(component.orgRoleLabel(orgWithoutRole)).toBe('Member');
+    expect(component.orgRoleLabel(orgWithoutRole)).toBe('Участник');
   });
 });

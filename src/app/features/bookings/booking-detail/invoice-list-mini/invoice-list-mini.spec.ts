@@ -104,7 +104,7 @@ describe('InvoiceListMiniComponent', () => {
     const nativeElement = fixture.nativeElement as HTMLElement;
     const manualLink = nativeElement.querySelector('a[mat-button][href*="/app/invoices/new"]');
 
-    expect(manualLink?.textContent).toContain('Create manually');
+    expect(manualLink?.textContent).toContain('Создать вручную');
   });
 
   it('does not allow create invoice when permission is missing', () => {
@@ -181,7 +181,9 @@ describe('InvoiceListMiniComponent', () => {
 
     component.onCreateInvoice();
 
-    expect(component.createInvoiceError()).toContain('This booking has no billable items');
+    expect(component.createInvoiceError()).toContain(
+      'В этом бронировании нет позиций для выставления счета',
+    );
     expect(toastService.showError).not.toHaveBeenCalled();
     expect(component.creatingInvoice()).toBe(false);
   });

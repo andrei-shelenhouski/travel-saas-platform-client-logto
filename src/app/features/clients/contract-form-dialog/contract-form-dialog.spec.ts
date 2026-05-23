@@ -117,6 +117,6 @@ describe('ContractFormDialogComponent', () => {
       signedAt: '2026-05-21',
     });
 
-    expect(component.submitError()).toContain('already exists');
+    expect(component.submitError()).toContain('уже существует');
   });
 });

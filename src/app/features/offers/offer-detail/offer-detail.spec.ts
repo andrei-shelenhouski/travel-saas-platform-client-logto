@@ -97,8 +97,8 @@ describe('OfferDetailComponent', () => {
   it('renders offer header and download button', () => {
     const text = fixture.nativeElement.textContent as string;
 
-    expect(text).toContain('Offer OF-100');
-    expect(text).toContain('Preview PDF');
+    expect(text).toContain('Предложение OF-100');
+    expect(text).toContain('Предварительный просмотр');
   });
 
   it('calls revise and navigates to edit for revised offer', () => {

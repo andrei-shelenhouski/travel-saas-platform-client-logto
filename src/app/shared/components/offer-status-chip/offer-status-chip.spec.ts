@@ -31,7 +31,7 @@ describe('OfferStatusChipComponent', () => {
     fixture.componentRef.setInput('status', 'SENT');
     fixture.detectChanges();
 
-    expect(component.label()).toBe('Sent');
+    expect(component.label()).toBe('Отправлено');
   });
 
   it('should display status as-is for unknown status', () => {

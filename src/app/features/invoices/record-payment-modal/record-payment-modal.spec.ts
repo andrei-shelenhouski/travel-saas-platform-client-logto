@@ -103,7 +103,7 @@ describe('RecordPaymentModalComponent', () => {
       reference: 'P-123',
     });
     expect(dialogRef.close).toHaveBeenCalledWith({ refresh: true });
-    expect(snackBar.open).toHaveBeenCalledWith('Payment recorded. Invoice updated.', 'OK', {
+    expect(snackBar.open).toHaveBeenCalledWith('Платёж записан. Счёт обновлён.', 'OK', {
       duration: 4000,
     });
   });
@@ -118,7 +118,7 @@ describe('RecordPaymentModalComponent', () => {
 
     component['save']();
 
-    expect(snackBar.open).toHaveBeenCalledWith('Invoice fully paid.', 'OK', {
+    expect(snackBar.open).toHaveBeenCalledWith('Счёт полностью оплачен.', 'OK', {
       duration: 4000,
     });
   });

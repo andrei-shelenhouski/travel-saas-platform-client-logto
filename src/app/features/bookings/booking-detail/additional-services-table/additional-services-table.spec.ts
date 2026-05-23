@@ -33,17 +33,17 @@ describe('AdditionalServicesTableComponent', () => {
   it('should render service row data', () => {
     const text = fixture.nativeElement.textContent?.replace(/\s+/g, ' ').trim() ?? '';
 
-    expect(text).toContain('Transfer');
+    expect(text).toContain('Трансфер');
     expect(text).toContain('Airport transfer');
     expect(text).toContain('120 BYN');
   });
 
   it('maps all known service types to labels', () => {
-    expect(component.serviceTypeLabel('TRANSFER')).toBe('Transfer');
-    expect(component.serviceTypeLabel('EXCURSION')).toBe('Excursion');
-    expect(component.serviceTypeLabel('VISA')).toBe('Visa');
-    expect(component.serviceTypeLabel('INSURANCE')).toBe('Insurance');
-    expect(component.serviceTypeLabel('FLIGHT')).toBe('Flight');
-    expect(component.serviceTypeLabel('OTHER')).toBe('Other');
+    expect(component.serviceTypeLabel('TRANSFER')).toBe('Трансфер');
+    expect(component.serviceTypeLabel('EXCURSION')).toBe('Экскурсия');
+    expect(component.serviceTypeLabel('VISA')).toBe('Виза');
+    expect(component.serviceTypeLabel('INSURANCE')).toBe('Страховка');
+    expect(component.serviceTypeLabel('FLIGHT')).toBe('Перелет');
+    expect(component.serviceTypeLabel('OTHER')).toBe('Другое');
   });
 });

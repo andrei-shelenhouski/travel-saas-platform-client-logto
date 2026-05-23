@@ -1,10 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { ActivatedRoute, provideRouter, Router } from '@angular/router';
+import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 
 import { of, Subject } from 'rxjs';
 
+import { AuthService } from '@app/auth/auth.service';
 import { ClientsService } from '@app/services/clients.service';
 import { ContractsService } from '@app/services/contracts.service';
 import { TagsService } from '@app/services/tags.service';
@@ -53,7 +54,7 @@ describe('ClientDetailComponent', () => {
   let mockRouter: {
     navigate: ReturnType<typeof vi.fn>;
   };
-  let paramMapSubject: Subject<Map<string, string | null>>;
+  let paramMapSubject: Subject<ReturnType<typeof convertToParamMap>>;
 
   const mockClient: ClientResponseDto = {
     id: 'client-1',
@@ -131,6 +132,12 @@ describe('ClientDetailComponent', () => {
         { provide: ClientsService, useValue: mockClientsService },
         { provide: ContractsService, useValue: mockContractsService },
         { provide: TagsService, useValue: mockTagsService },
+        {
+          provide: AuthService,
+          useValue: {
+            hasPermission: vi.fn(() => true),
+          },
+        },
         { provide: ToastService, useValue: mockToastService },
         { provide: MatDialog, useValue: mockDialog },
         { provide: Router, useValue: mockRouter },
@@ -152,7 +159,7 @@ describe('ClientDetailComponent', () => {
   });
 
   it('should load client data on init', () => {
-    const paramMap = new Map([['id', 'client-1']]);
+    const paramMap = convertToParamMap({ id: 'client-1' });
 
     paramMapSubject.next(paramMap);
     fixture.detectChanges();
@@ -161,7 +168,7 @@ describe('ClientDetailComponent', () => {
   });
 
   it('should lazy-load leads tab on first activation', () => {
-    const paramMap = new Map([['id', 'client-1']]);
+    const paramMap = convertToParamMap({ id: 'client-1' });
 
     paramMapSubject.next(paramMap);
     fixture.detectChanges();
@@ -215,7 +222,7 @@ describe('ClientDetailComponent', () => {
   });
 
   it('should load the next tab data on tab change', () => {
-    const paramMap = new Map([['id', 'client-1']]);
+    const paramMap = convertToParamMap({ id: 'client-1' });
 
     paramMapSubject.next(paramMap);
     fixture.detectChanges();
@@ -233,7 +240,7 @@ describe('ClientDetailComponent', () => {
   });
 
   it('loads contracts when B2B contracts tab is selected', async () => {
-    const paramMap = new Map([['id', 'client-1']]);
+    const paramMap = convertToParamMap({ id: 'client-1' });
 
     mockClientsService.getById.mockReturnValue(
       of({

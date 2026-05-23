@@ -86,7 +86,7 @@ describe('ClientsListComponent', () => {
     await createComponent(EMPTY_PAGE);
     const el: HTMLElement = fixture.nativeElement;
 
-    expect(el.textContent).toContain('Ooooops, no clients found.');
+    expect(el.textContent).toContain('Упс, клиенты не найдены.');
   });
 
   it('renders client rows when data is present', async () => {

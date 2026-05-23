@@ -115,7 +115,7 @@ describe('SelectOrganizationComponent', () => {
       organizationName: 'No Role Org',
     };
 
-    expect(component.roleLabel(orgWithoutRole)).toBe('Member');
+    expect(component.roleLabel(orgWithoutRole)).toBe('Участник');
   });
 
   it('should set active org with role and navigate to /app/dashboard on select', () => {
@@ -141,6 +141,6 @@ describe('SelectOrganizationComponent', () => {
 
     const text = fixture.nativeElement.textContent as string;
 
-    expect(text).toContain('No organizations found.');
+    expect(text).toContain('Организации не найдены.');
   });
 });

@@ -157,7 +157,7 @@ describe('TourvisorIntegrationCardComponent', () => {
       ingestOrderTypes: [0, 1, 2, 3, 4, 5, 6],
     });
     expect(api.isConnected()).toBe(true);
-    expect(toast.showSuccess).toHaveBeenCalledWith('TourVisor connected successfully.');
+    expect(toast.showSuccess).toHaveBeenCalledWith('TourVisor успешно подключён.');
   });
 
   it('shows inline API errors in connect flow', () => {
@@ -215,7 +215,7 @@ describe('TourvisorIntegrationCardComponent', () => {
 
       expect(integrationService.syncNow).toHaveBeenCalled();
       expect(integrationService.getSettings).toHaveBeenCalledTimes(2);
-      expect(toast.showSuccess).toHaveBeenCalledWith('TourVisor sync started.');
+      expect(toast.showSuccess).toHaveBeenCalledWith('Синхронизация TourVisor запущена.');
     } finally {
       vi.useRealTimers();
     }
@@ -235,7 +235,7 @@ describe('TourvisorIntegrationCardComponent', () => {
     fixture.detectChanges();
 
     expect((fixture.nativeElement as HTMLElement).textContent).toContain(
-      'Never synced - click Sync Now',
+      'Синхронизация не выполнялась — нажмите «Синхронизировать»',
     );
   });
 
@@ -250,7 +250,7 @@ describe('TourvisorIntegrationCardComponent', () => {
 
     expect(integrationService.getSettings).not.toHaveBeenCalled();
     expect((nonAdminFixture.nativeElement as HTMLElement).textContent).toContain(
-      'Only admins can manage integrations.',
+      'Только администраторы могут управлять интеграциями.',
     );
   });
 
