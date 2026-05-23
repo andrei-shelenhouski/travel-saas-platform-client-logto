@@ -229,14 +229,14 @@ export class PromoteLeadClientDialogComponent {
 
   private handleSubmitError(error: unknown): void {
     if (!(error instanceof HttpErrorResponse)) {
-      this.submitError.set('Failed to save client from lead');
+      this.submitError.set('Не удалось сохранить клиента из лида');
 
       return;
     }
 
     if (error.status === 409) {
       this.submitError.set(
-        "This lead is already linked to a client. Use 'Change client' to re-link.",
+        'Этот лид уже привязан к клиенту. Используйте «Изменить клиента» для повторной привязки.',
       );
 
       return;
@@ -244,7 +244,7 @@ export class PromoteLeadClientDialogComponent {
 
     if (error.status !== 422) {
       this.submitError.set(
-        error.error?.message ?? error.message ?? 'Failed to save client from lead',
+        error.error?.message ?? error.message ?? 'Не удалось сохранить клиента из лида',
       );
 
       return;
@@ -255,7 +255,7 @@ export class PromoteLeadClientDialogComponent {
     );
 
     if (fieldErrors === null) {
-      this.submitError.set(error.error?.message ?? 'Validation failed');
+      this.submitError.set(error.error?.message ?? 'Ошибка валидации');
 
       return;
     }

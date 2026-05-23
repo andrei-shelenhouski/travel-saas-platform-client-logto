@@ -31,7 +31,7 @@ describe('LeadStatusChipComponent', () => {
     fixture.componentRef.setInput('status', 'WON');
     fixture.detectChanges();
 
-    expect(component.label()).toBe('Won');
+    expect(component.label()).toBe('Выигран');
   });
 
   it('should display status as-is for unknown status', () => {

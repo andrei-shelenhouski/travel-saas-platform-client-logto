@@ -97,7 +97,7 @@ describe('OffersKanbanComponent', () => {
     expect(previousColumn).toHaveLength(1);
     expect(targetColumn).toHaveLength(0);
     expect(offer.status).toBe('DRAFT');
-    expect(showErrorSpy).toHaveBeenCalledWith('Invalid status transition');
+    expect(showErrorSpy).toHaveBeenCalledWith('Недопустимый переход статуса');
   });
 });
 

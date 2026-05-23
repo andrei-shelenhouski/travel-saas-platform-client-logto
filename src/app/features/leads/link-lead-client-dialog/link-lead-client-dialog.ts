@@ -133,13 +133,13 @@ export class LinkLeadClientDialogComponent {
 
   private resolveErrorMessage(error: unknown): string {
     if (error instanceof HttpErrorResponse) {
-      return error.error?.message ?? error.message ?? 'Failed to link client';
+      return error.error?.message ?? error.message ?? 'Не удалось привязать клиента';
     }
 
     if (typeof error === 'object' && error !== null && 'message' in error) {
-      return (error as { message?: string }).message ?? 'Failed to link client';
+      return (error as { message?: string }).message ?? 'Не удалось привязать клиента';
     }
 
-    return 'Failed to link client';
+    return 'Не удалось привязать клиента';
   }
 }

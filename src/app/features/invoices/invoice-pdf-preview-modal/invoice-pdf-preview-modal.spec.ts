@@ -75,7 +75,7 @@ describe('InvoicePdfPreviewModalComponent', () => {
     fixture.detectChanges();
 
     expect(fixture.nativeElement.textContent as string).toContain(
-      'Unable to load PDF. Please try again.',
+      'Не удалось загрузить PDF. Попробуйте ещё раз.',
     );
   });
 

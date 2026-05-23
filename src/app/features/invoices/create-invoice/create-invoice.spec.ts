@@ -200,7 +200,7 @@ describe('CreateInvoiceComponent', () => {
       ).form.controls.bookingId.value,
     ).toBe('booking-1');
     expect(bookingsService.getById).toHaveBeenCalledWith('booking-1');
-    expect(lineItems.at(0).controls.description.value).toContain('Travel services');
+    expect(lineItems.at(0).controls.description.value).toContain('Туристические услуги');
   });
 
   it('defaults due date to invoice date plus configured payment terms days', async () => {

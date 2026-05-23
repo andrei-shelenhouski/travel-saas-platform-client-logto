@@ -65,11 +65,11 @@ export class EditContractPageComponent implements OnInit {
     this.contractsService.update(id, dto).subscribe({
       next: (updated) => {
         this.contract.set(updated);
-        this.snackBar.open('Contract updated', 'Close', { duration: 3000 });
+        this.snackBar.open('Договор обновлён', 'Закрыть', { duration: 3000 });
         void this.router.navigate(['/app/contracts', updated.id]);
       },
       error: (err) => {
-        const message = err.error?.message ?? err.message ?? 'Failed to update contract';
+        const message = err.error?.message ?? err.message ?? 'Не удалось обновить договор';
 
         this.submitError.set(message);
         this.saving.set(false);
@@ -90,8 +90,8 @@ export class EditContractPageComponent implements OnInit {
       },
       error: (err) => {
         this.snackBar.open(
-          err.error?.message ?? err.message ?? 'Failed to load contract',
-          'Close',
+          err.error?.message ?? err.message ?? 'Не удалось загрузить договор',
+          'Закрыть',
           {
             duration: 5000,
           },

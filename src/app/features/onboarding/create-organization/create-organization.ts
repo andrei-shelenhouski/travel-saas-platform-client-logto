@@ -57,18 +57,18 @@ export class CreateOrganizationComponent {
                 this.orgState.setActiveOrganization(org.organizationId, org.organizationName);
                 this.router.navigate(['/app/dashboard']);
               } else {
-                this.error.set('Organization created but not found in profile. Try refreshing.');
+                this.error.set('Организация создана, но не найдена в профиле. Попробуйте обновить страницу.');
               }
               this.loading.set(false);
             },
             error: (err) => {
-              this.error.set(err.error?.message ?? err.message ?? 'Failed to load profile');
+              this.error.set(err.error?.message ?? err.message ?? 'Не удалось загрузить профиль');
               this.loading.set(false);
             },
           });
       },
       error: (err) => {
-        this.error.set(err.error?.message ?? err.message ?? 'Failed to create organization');
+        this.error.set(err.error?.message ?? err.message ?? 'Не удалось создать организацию');
         this.loading.set(false);
       },
     });

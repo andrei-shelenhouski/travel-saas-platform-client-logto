@@ -6,20 +6,20 @@
           <span class="material-icons text-3xl text-primary-600">business</span>
         </div>
       </div>
-      <h1 class="text-2xl font-semibold text-gray-900" i18n="@@selectOrganizationTitle">
-        Select Organization
+      <h1 class="text-2xl font-semibold text-gray-900">
+        Выберите организацию
       </h1>
-      <p class="mt-2 text-sm text-gray-500" i18n="@@selectOrganizationSubtitle">
-        You have access to multiple organizations. Select one to continue.
+      <p class="mt-2 text-sm text-gray-500">
+        У вас есть доступ к нескольким организациям. Выберите одну, чтобы продолжить.
       </p>
     </div>
 
     @if (isLoading()) {
       <p class="text-center text-gray-600">
-        <span i18n="@@loadingOrganizations">Loading organizations…</span>
+        <span>Загрузка организаций…</span>
       </p>
     } @else if (organizations().length === 0) {
-      <p class="text-center text-gray-600" i18n="@@noOrganizationsFound">No organizations found.</p>
+      <p class="text-center text-gray-600">Организации не найдены.</p>
     } @else {
       <ul class="space-y-3" role="list">
         @for (org of organizations(); track org.organizationId) {

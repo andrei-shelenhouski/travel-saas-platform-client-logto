@@ -26,11 +26,11 @@ export function buildOfferTimelineItems(offer: OfferResponseDto | null): Timelin
   const items: TimelineItem[] = [];
 
   if (offer.createdAt) {
-    items.push({ label: 'Offer created', date: formatDate(offer.createdAt) });
+    items.push({ label: 'Предложение создано', date: formatDate(offer.createdAt) });
   }
 
   if (offer.updatedAt && offer.updatedAt !== offer.createdAt) {
-    items.push({ label: 'Status updated', date: formatDate(offer.updatedAt) });
+    items.push({ label: 'Статус обновлён', date: formatDate(offer.updatedAt) });
   }
 
   return items;
@@ -41,7 +41,7 @@ export function buildOfferTimelineItems(offer: OfferResponseDto | null): Timelin
   selector: 'app-offer-timeline',
   template: `
     <div class="rounded-lg border border-gray-200 bg-white p-4">
-      <h3 class="text-sm font-semibold text-gray-900">Timeline</h3>
+      <h3 class="text-sm font-semibold text-gray-900">Хронология</h3>
       <ul class="mt-3 space-y-3" role="list">
         @for (item of timelineItems(); track item.date + item.label) {
           <li class="flex gap-3">

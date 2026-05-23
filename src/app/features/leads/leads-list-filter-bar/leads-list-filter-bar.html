@@ -1,6 +1,6 @@
 <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 leads-list-filter-bar">
   <mat-form-field subscriptSizing="dynamic">
-    <mat-label i18n="@@leadsListFilterStatusLabel">Statuses</mat-label>
+    <mat-label>Статусы</mat-label>
     <mat-select
       multiple
       [value]="statusFilter()"
@@ -14,12 +14,12 @@
 
   @if (showAgentFilter()) {
     <mat-form-field subscriptSizing="dynamic">
-      <mat-label i18n="@@leadsListFilterAgentLabel">Agent</mat-label>
+      <mat-label>Агент</mat-label>
       <mat-select
         [value]="selectedAgentId()"
         (selectionChange)="onAgentSelectionChange($event.value)"
       >
-        <mat-option i18n="@@leadsListFilterAgentAllOption" value="">All</mat-option>
+        <mat-option value="">Все</mat-option>
         @for (agent of agentOptions(); track agent.id) {
           <mat-option [value]="agent.id">{{ agent.name }}</mat-option>
         }
@@ -28,12 +28,12 @@
   }
 
   <mat-form-field subscriptSizing="dynamic">
-    <mat-label i18n="@@leadsListFilterClientTypeLabel">Client type</mat-label>
+    <mat-label>Тип клиента</mat-label>
     <mat-select
       [value]="clientTypeFilter()"
       (selectionChange)="onClientTypeSelectionChange($event.value)"
     >
-      <mat-option i18n="@@leadsListFilterClientTypeAllOption" value="">All</mat-option>
+      <mat-option value="">Все</mat-option>
       @for (type of clientTypeOptions(); track type.value) {
         <mat-option [value]="type.value">{{ type.label }}</mat-option>
       }
@@ -41,9 +41,9 @@
   </mat-form-field>
 
   <mat-form-field subscriptSizing="dynamic">
-    <mat-label i18n="@@leadsListFilterSourceLabel">Source</mat-label>
+    <mat-label>Источник</mat-label>
     <mat-select [value]="sourceFilter()" (selectionChange)="onSourceSelectionChange($event.value)">
-      <mat-option i18n="@@leadsListFilterSourceAllOption" value="">All</mat-option>
+      <mat-option value="">Все</mat-option>
       @for (source of sourceOptions(); track source.value) {
         <mat-option [value]="source.value">{{ source.label }}</mat-option>
       }
@@ -51,7 +51,7 @@
   </mat-form-field>
 
   <mat-form-field subscriptSizing="dynamic">
-    <mat-label i18n="@@leadsListFilterCreatedFromLabel">Created from</mat-label>
+    <mat-label>Создано с</mat-label>
     <input
       matInput
       type="date"
@@ -61,7 +61,7 @@
   </mat-form-field>
 
   <mat-form-field subscriptSizing="dynamic">
-    <mat-label i18n="@@leadsListFilterCreatedToLabel">Created to</mat-label>
+    <mat-label>Создано по</mat-label>
     <input
       matInput
       type="date"
@@ -71,12 +71,11 @@
   </mat-form-field>
 
   <mat-form-field class="search-form-field" subscriptSizing="dynamic">
-    <mat-label i18n="@@leadsListFilterSearchLabel">Search</mat-label>
+    <mat-label>Поиск</mat-label>
     <mat-icon matPrefix>search</mat-icon>
     <input
       matInput
-      placeholder="Client, phone, email, lead number"
-      i18n-placeholder="@@leadsListFilterSearchPlaceholder"
+      placeholder="Клиент, телефон, email, номер лида"
       [formControl]="searchControl()"
     />
   </mat-form-field>

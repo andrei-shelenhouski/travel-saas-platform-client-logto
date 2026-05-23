@@ -14,8 +14,8 @@
         [subtitle]="typeLabel[c.type]"
         [title]="c.companyName ?? c.fullName"
       >
-        <a i18n="@@editClient" mat-stroked-button [relativeTo]="route" [routerLink]="['edit']"
-          >Edit client</a
+        <a mat-stroked-button [relativeTo]="route" [routerLink]="['edit']"
+          >Редактировать клиента</a
         >
       </app-page-heading>
 
@@ -32,79 +32,78 @@
         <div class="client-grid">
           <section class="client-card">
             <div class="client-card-header">
-              <h2 class="client-card-title" i18n="@@clientDetailsHeading">Details</h2>
+              <h2 class="client-card-title">Детали клиента</h2>
             </div>
 
             <dl class="client-data-list">
               <div class="client-data-row">
-                <dt i18n="@@clientType">Type</dt>
+                <dt>Тип клиента</dt>
                 <dd>{{ typeLabel[c.type] }}</dd>
               </div>
               @if (c.email) {
                 <div class="client-data-row">
-                  <dt i18n="@@clientEmail">Email</dt>
+                  <dt>Электронная почта</dt>
                   <dd>{{ c.email }}</dd>
                 </div>
               }
               @if (c.phone) {
                 <div class="client-data-row">
-                  <dt i18n="@@clientPhone">Phone</dt>
+                  <dt>Телефон</dt>
                   <dd>{{ c.phone }}</dd>
                 </div>
               }
               @if (c.notes) {
                 <div class="client-data-row">
-                  <dt i18n="@@clientNotes">Notes</dt>
+                  <dt>Заметки</dt>
                   <dd class="whitespace-pre-wrap">{{ c.notes }}</dd>
                 </div>
               }
               @if (isB2BAgent()) {
                 @if (c.trademark) {
                   <div class="client-data-row">
-                    <dt i18n="@@clientTrademark">Trademark</dt>
+                    <dt>Торговая марка</dt>
                     <dd>{{ c.trademark }}</dd>
                   </div>
                 }
                 @if (c.registrationCert) {
                   <div class="client-data-row">
-                    <dt i18n="@@clientRegistrationCert">Registration certificate</dt>
+                    <dt>Свидетельство о регистрации</dt>
                     <dd>{{ c.registrationCert }}</dd>
                   </div>
                 }
                 @if (c.taxationType) {
                   <div class="client-data-row">
-                    <dt i18n="@@clientTaxationType">Taxation type</dt>
+                    <dt>Система налогообложения</dt>
                     <dd>{{ c.taxationType }}</dd>
                   </div>
                 }
                 @if (c.directorName) {
                   <div class="client-data-row">
-                    <dt i18n="@@clientDirectorName">Director full name</dt>
+                    <dt>ФИО директора</dt>
                     <dd>{{ c.directorName }}</dd>
                   </div>
                 }
                 <div class="client-data-row">
-                  <dt i18n="@@clientRataMember">Valid RATA member</dt>
-                  <dd>{{ c.rataMember ? 'Yes' : 'No' }}</dd>
+                  <dt>Действительный член РАТА</dt>
+                  <dd>{{ c.rataMember ? 'Да' : 'Нет' }}</dd>
                 </div>
               }
               <div class="client-data-row">
-                <dt i18n="@@clientCreated">Created</dt>
+                <dt>Создан</dt>
                 <dd>{{ formatDate(c.createdAt) }}</dd>
               </div>
               <div class="client-data-row">
-                <dt i18n="@@clientId">ID</dt>
+                <dt>ID</dt>
                 <dd class="font-mono text-xs text-gray-600">{{ c.id }}</dd>
               </div>
             </dl>
 
             <div class="mt-4">
               @if (tagsLoading()) {
-                <p class="text-sm text-gray-500" i18n="@@loadingTags">Loading tags…</p>
+                <p class="text-sm text-gray-500">Загрузка тегов…</p>
               } @else {
                 <app-tag-selector
-                  label="Tags"
-                  i18n-label="@@tagsLabel"
+                  label="Теги"
                   [selected]="clientTags()"
                   (selectionChange)="onTagsChange($event)"
                 />
@@ -114,7 +113,7 @@
 
           <section class="client-card client-history-card">
             <div class="client-card-header">
-              <h2 class="client-card-title" i18n="@@historyTabLabel">History</h2>
+              <h2 class="client-card-title">История</h2>
             </div>
 
             <mat-tab-group
@@ -125,7 +124,7 @@
               <!-- Leads tab -->
               <mat-tab>
                 <ng-template mat-tab-label>
-                  <span i18n="@@leadsTabLabel">Leads</span>
+                  <span>Лиды</span>
                 </ng-template>
                 @if (leadsLoading()) {
                   <div class="flex justify-center py-12">
@@ -136,16 +135,16 @@
                   </div>
                 } @else if (leads().length === 0) {
                   <div class="client-history-empty">
-                    <p i18n="@@noLeadsMessage">No leads</p>
+                    <p>Нет лидов</p>
                   </div>
                 } @else {
                   <div class="overflow-x-auto">
                     <table class="client-history-table">
                       <thead>
                         <tr>
-                          <th i18n="@@leadNumberColumn">Lead #</th>
-                          <th i18n="@@statusColumn">Status</th>
-                          <th i18n="@@createdColumn">Created</th>
+                          <th>Лид №</th>
+                          <th>Статус</th>
+                          <th>Создано</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -172,7 +171,7 @@
               <!-- Requests tab -->
               <mat-tab>
                 <ng-template mat-tab-label>
-                  <span i18n="@@requestsTabLabel">Requests</span>
+                  <span>Запросы</span>
                 </ng-template>
                 @if (requestsLoading()) {
                   <div class="flex justify-center py-12">
@@ -183,18 +182,18 @@
                   </div>
                 } @else if (requests().length === 0) {
                   <div class="client-history-empty">
-                    <p i18n="@@noRequestsMessage">No requests</p>
+                    <p>Нет запросов</p>
                   </div>
                 } @else {
                   <div class="overflow-x-auto">
                     <table class="client-history-table">
                       <thead>
                         <tr>
-                          <th i18n="@@destinationColumn">Destination</th>
-                          <th i18n="@@datesColumn">Dates</th>
-                          <th i18n="@@travelersColumn">Travelers</th>
-                          <th i18n="@@statusColumn">Status</th>
-                          <th i18n="@@offersCountColumn">Offers</th>
+                          <th>Направление</th>
+                          <th>Даты</th>
+                          <th>Путешественники</th>
+                          <th>Статус</th>
+                          <th>Предложения</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -228,7 +227,7 @@
               <!-- Offers tab -->
               <mat-tab>
                 <ng-template mat-tab-label>
-                  <span i18n="@@offersTabLabel">Offers</span>
+                  <span>Предложения</span>
                 </ng-template>
                 @if (offersLoading()) {
                   <div class="flex justify-center py-12">
@@ -239,18 +238,18 @@
                   </div>
                 } @else if (offers().length === 0) {
                   <div class="client-history-empty">
-                    <p i18n="@@noOffersMessage">No offers</p>
+                    <p>Нет предложений</p>
                   </div>
                 } @else {
                   <div class="overflow-x-auto">
                     <table class="client-history-table">
                       <thead>
                         <tr>
-                          <th i18n="@@offerNumberColumn">Offer #</th>
-                          <th i18n="@@destinationColumn">Destination</th>
-                          <th i18n="@@totalPriceColumn">Total</th>
-                          <th i18n="@@statusColumn">Status</th>
-                          <th i18n="@@createdColumn">Created</th>
+                          <th>Предложение №</th>
+                          <th>Направление</th>
+                          <th>Итого</th>
+                          <th>Статус</th>
+                          <th>Создано</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -285,7 +284,7 @@
               <!-- Bookings tab -->
               <mat-tab>
                 <ng-template mat-tab-label>
-                  <span i18n="@@bookingsTabLabel">Bookings</span>
+                  <span>Бронирования</span>
                 </ng-template>
                 @if (bookingsLoading()) {
                   <div class="flex justify-center py-12">
@@ -296,18 +295,18 @@
                   </div>
                 } @else if (bookings().length === 0) {
                   <div class="client-history-empty">
-                    <p i18n="@@noBookingsMessage">No bookings</p>
+                    <p>Нет бронирований</p>
                   </div>
                 } @else {
                   <div class="overflow-x-auto">
                     <table class="client-history-table">
                       <thead>
                         <tr>
-                          <th i18n="@@bookingNumberColumn">Booking #</th>
-                          <th i18n="@@destinationColumn">Destination</th>
-                          <th i18n="@@datesColumn">Dates</th>
-                          <th i18n="@@statusColumn">Status</th>
-                          <th i18n="@@totalPriceColumn">Total</th>
+                          <th>Бронирование №</th>
+                          <th>Направление</th>
+                          <th>Даты</th>
+                          <th>Статус</th>
+                          <th>Итого</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -347,7 +346,7 @@
               <!-- Invoices tab -->
               <mat-tab>
                 <ng-template mat-tab-label>
-                  <span i18n="@@invoicesTabLabel">Invoices</span>
+                  <span>Счета</span>
                 </ng-template>
                 @if (invoicesLoading()) {
                   <div class="flex justify-center py-12">
@@ -358,18 +357,18 @@
                   </div>
                 } @else if (invoices().length === 0) {
                   <div class="client-history-empty">
-                    <p i18n="@@noInvoicesMessage">No invoices</p>
+                    <p>Нет счетов</p>
                   </div>
                 } @else {
                   <div class="overflow-x-auto">
                     <table class="client-history-table">
                       <thead>
                         <tr>
-                          <th i18n="@@invoiceNumberColumn">Invoice #</th>
-                          <th i18n="@@invoiceDateColumn">Invoice Date</th>
-                          <th i18n="@@dueDateColumn">Due Date</th>
-                          <th i18n="@@statusColumn">Status</th>
-                          <th i18n="@@totalPriceColumn">Total</th>
+                          <th>Счёт №</th>
+                          <th>Дата счёта</th>
+                          <th>Срок оплаты</th>
+                          <th>Статус</th>
+                          <th>Итого</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -406,13 +405,13 @@
               @if (isB2BAgent() && canViewContracts()) {
                 <mat-tab>
                   <ng-template mat-tab-label>
-                    <span i18n="@@contractsTabLabel">Contracts</span>
+                    <span>Договоры</span>
                   </ng-template>
 
                   <div class="contracts-tab-header">
                     @if (canCreateContracts()) {
                       <button matButton="filled" type="button" (click)="openCreateContractDialog()">
-                        <span i18n="@@contractsAddButton">Add contract</span>
+                        <span>Добавить договор</span>
                       </button>
                     }
                   </div>
@@ -426,10 +425,10 @@
                     </div>
                   } @else if (contracts().length === 0) {
                     <div class="client-history-empty">
-                      <p i18n="@@contractsEmptyState">Contracts are not added yet</p>
+                      <p>Договоры ещё не добавлены</p>
                       @if (canCreateContracts()) {
                         <button mat-stroked-button type="button" (click)="openCreateContractDialog()">
-                          <span i18n="@@contractsEmptyAddButton">Add contract</span>
+                          <span>Добавить договор</span>
                         </button>
                       }
                     </div>
@@ -438,12 +437,12 @@
                       <table class="client-history-table contracts-table">
                         <thead>
                           <tr>
-                            <th i18n="@@contractsColumnNumber">Number</th>
-                            <th i18n="@@contractsColumnSignedAt">Signed at</th>
-                            <th i18n="@@contractsColumnExpiresAt">Expires at</th>
-                            <th i18n="@@contractsColumnSignatureMethod">Signature method</th>
-                            <th i18n="@@contractsColumnStatus">Status</th>
-                            <th i18n="@@contractsColumnActions">Actions</th>
+                            <th>Номер</th>
+                            <th>Дата подписания</th>
+                            <th>Действует до</th>
+                            <th>Способ подписания</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -464,8 +463,7 @@
                               </td>
                               <td>
                                 <button
-                                  aria-label="Contract actions"
-                                  i18n-aria-label="@@contractsActionsAriaLabel"
+                                  aria-label="Действия с договором"
                                   mat-icon-button
                                   type="button"
                                   [disabled]="!canManageContract(contract)"
@@ -480,7 +478,7 @@
                                     [disabled]="!canManageContract(contract)"
                                     (click)="openEditContractDialog(contract)"
                                   >
-                                    <span i18n="@@contractsActionEdit">Edit</span>
+                                    <span>Редактировать</span>
                                   </button>
                                   <button
                                     mat-menu-item
@@ -488,7 +486,7 @@
                                     [disabled]="!canManageContract(contract)"
                                     (click)="terminateContract(contract)"
                                   >
-                                    <span i18n="@@contractsActionTerminate">Terminate</span>
+                                    <span>Расторгнуть</span>
                                   </button>
                                 </mat-menu>
                               </td>
@@ -516,7 +514,7 @@
         </div>
       </div>
     } @else {
-      <p class="text-gray-500" i18n="@@clientNotFound">Client not found.</p>
+      <p class="text-gray-500">Клиент не найден.</p>
     }
   }
 </div>

@@ -144,7 +144,7 @@ export class BookingsListComponent {
     const err = this.data.error();
 
     if (err instanceof HttpErrorResponse) {
-      return err.error?.message ?? err.message ?? 'Failed to load bookings';
+      return err.error?.message ?? err.message ?? 'Не удалось загрузить бронирования';
     }
 
     return undefined;

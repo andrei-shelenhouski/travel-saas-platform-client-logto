@@ -146,7 +146,7 @@ export class InvoicesListComponent {
     const err = this.data.error();
 
     if (err instanceof HttpErrorResponse) {
-      return err.error?.message ?? err.message ?? 'Failed to load invoices';
+      return err.error?.message ?? err.message ?? 'Не удалось загрузить счета';
     }
 
     return undefined;

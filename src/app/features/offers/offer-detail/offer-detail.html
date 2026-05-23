@@ -8,10 +8,10 @@
     </div>
   } @else if (hasError()) {
     <section class="rounded-lg border border-red-200 bg-red-50 p-6">
-      <h2 class="text-lg font-semibold text-red-900">Unable to open offer</h2>
+      <h2 class="text-lg font-semibold text-red-900">Не удалось открыть предложение</h2>
       <p class="mt-2 text-sm text-red-800">{{ loadErrorMessage() }}</p>
       <button class="mt-4" mat-flat-button type="button" (click)="onBackClick()">
-        Back to offers
+        Назад к предложениям
       </button>
     </section>
   } @else {
@@ -19,12 +19,11 @@
     @if (o) {
       <app-page-heading [showBackButton]="true" [subtitle]="pageSubtitle" [title]="pageTitle()">
         <button
-          i18n="@@offerPdfPreviewButton"
           mat-stroked-button
           type="button"
           (click)="openPdfPreview()"
         >
-          Preview PDF
+          Предварительный просмотр
         </button>
         @for (action of allowedActions(); track action) {
           <button
@@ -43,12 +42,12 @@
         <section class="offer-header-card">
           <div class="offer-header-main">
             <div>
-              <p class="offer-header-label">Offer {{ displayOfferNumber() }}</p>
+              <p class="offer-header-label">Предложение {{ displayOfferNumber() }}</p>
               <h2 class="offer-header-title">
                 @if (o.destination) {
                   {{ o.destination }}
                 } @else {
-                  <span i18n="@@offerUntitled">Untitled offer</span>
+                  <span>Предложение без названия</span>
                 }
               </h2>
             </div>
@@ -67,7 +66,7 @@
 
           @if (hasVersionHistory()) {
             <div class="text-sm text-gray-600">
-              <span>Version history:</span>
+              <span>История версий:</span>
               <a
                 class="ml-1 text-primary hover:underline"
                 [routerLink]="['/app/offers', o.previousVersionId]"
@@ -82,11 +81,11 @@
               <ol class="flex flex-wrap items-center gap-2 text-gray-600">
                 @if (requestData.leadId; as leadId) {
                   <li>
-                    <a class="offer-link" [routerLink]="['/app/leads', leadId]">Lead</a>
+                    <a class="offer-link" [routerLink]="['/app/leads', leadId]">Лид</a>
                   </li>
                   <li>/</li>
                 }
-                <li class="truncate">Request: {{ requestData.destination || 'Travel request' }}</li>
+                <li class="truncate">Запрос: {{ requestData.destination || 'Запрос на тур' }}</li>
               </ol>
             </nav>
           }
@@ -95,39 +94,39 @@
         <div class="offer-grid">
           <section class="offer-card">
             <div class="offer-card-header">
-              <h2 class="offer-card-title">Offer details</h2>
+              <h2 class="offer-card-title">Детали предложения</h2>
             </div>
 
             <dl class="offer-data-list">
               <div class="offer-data-row">
-                <dt>Language</dt>
+                <dt>Язык</dt>
                 <dd>{{ o.language || '—' }}</dd>
               </div>
               <div class="offer-data-row">
-                <dt>Offer date</dt>
+                <dt>Дата предложения</dt>
                 <dd>{{ o.offerDate || o.createdAt | date: 'mediumDate' }}</dd>
               </div>
               <div class="offer-data-row">
-                <dt>Valid until</dt>
+                <dt>Действительно до</dt>
                 <dd>{{ o.validityDate ? (o.validityDate | date: 'mediumDate') : '—' }}</dd>
               </div>
               <div class="offer-data-row">
-                <dt>Destination</dt>
+                <dt>Направление</dt>
                 <dd>{{ o.destination || '—' }}</dd>
               </div>
               <div class="offer-data-row">
-                <dt>Travel dates</dt>
+                <dt>Даты поездки</dt>
                 <dd>
                   {{ o.departDate ? (o.departDate | date: 'mediumDate') : '—' }} –
                   {{ o.returnDate ? (o.returnDate | date: 'mediumDate') : '—' }}
                 </dd>
               </div>
               <div class="offer-data-row">
-                <dt>Travelers</dt>
-                <dd>{{ o.adults ?? 0 }} adults, {{ o.children ?? 0 }} children</dd>
+                <dt>Туристы</dt>
+                <dd>{{ o.adults ?? 0 }} взр., {{ o.children ?? 0 }} дет.</dd>
               </div>
               <div class="offer-data-row">
-                <dt>Currency</dt>
+                <dt>Валюта</dt>
                 <dd>{{ o.currency || '—' }}</dd>
               </div>
             </dl>
@@ -135,18 +134,18 @@
 
           <section class="offer-card offer-table-card">
             <div class="offer-card-header">
-              <h2 class="offer-card-title">Accommodations</h2>
+              <h2 class="offer-card-title">Размещение</h2>
             </div>
 
             <table class="offer-table">
               <thead>
                 <tr>
-                  <th>Hotel</th>
-                  <th>Room type</th>
-                  <th>Meal plan</th>
-                  <th>Dates</th>
-                  <th>Nights</th>
-                  <th class="text-right">Price</th>
+                  <th>Отель</th>
+                  <th>Тип номера</th>
+                  <th>Питание</th>
+                  <th>Даты</th>
+                  <th>Ночей</th>
+                  <th class="text-right">Цена</th>
                 </tr>
               </thead>
               <tbody>
@@ -166,7 +165,7 @@
                   </tr>
                 } @empty {
                   <tr>
-                    <td class="offer-table-empty" colspan="6">No accommodations</td>
+                    <td class="offer-table-empty" colspan="6">Нет размещений</td>
                   </tr>
                 }
               </tbody>
@@ -176,17 +175,17 @@
           @if ((o.services?.length ?? 0) > 0) {
             <section class="offer-card offer-table-card">
               <div class="offer-card-header">
-                <h2 class="offer-card-title">Services</h2>
+                <h2 class="offer-card-title">Услуги</h2>
               </div>
 
               <table class="offer-table">
                 <thead>
                   <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                    <th>Quantity</th>
-                    <th class="text-right">Unit price</th>
-                    <th class="text-right">Total</th>
+                    <th>Тип</th>
+                    <th>Описание</th>
+                    <th>Количество</th>
+                    <th class="text-right">Цена за ед.</th>
+                    <th class="text-right">Итого</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -211,20 +210,20 @@
 
           <section class="offer-card">
             <div class="offer-card-header">
-              <h2 class="offer-card-title">Pricing</h2>
+              <h2 class="offer-card-title">Стоимость</h2>
             </div>
 
             <dl class="offer-data-list">
               <div class="offer-data-row">
-                <dt>Subtotal</dt>
+                <dt>Сумма без скидки</dt>
                 <dd>{{ o.subtotal ?? 0 | number: '1.0-2' }} {{ o.currency }}</dd>
               </div>
               <div class="offer-data-row">
-                <dt>Discount</dt>
+                <dt>Скидка</dt>
                 <dd>{{ o.discountAmount ?? 0 | number: '1.0-2' }} {{ o.currency }}</dd>
               </div>
               <div class="offer-data-row offer-pricing-total">
-                <dt class="font-semibold text-gray-900">Total</dt>
+                <dt class="font-semibold text-gray-900">Итого</dt>
                 <dd class="text-base font-bold text-gray-900">
                   {{ o.total ?? 0 | number: '1.0-2' }} {{ o.currency }}
                 </dd>
@@ -235,7 +234,7 @@
           @if (canSeeInternalNotes() && o.internalNotes) {
             <section class="offer-card">
               <div class="offer-card-header">
-                <h2 class="offer-card-title">Internal notes</h2>
+                <h2 class="offer-card-title">Внутренние заметки</h2>
               </div>
               <p class="mt-2 whitespace-pre-line text-sm text-gray-700">{{ o.internalNotes }}</p>
             </section>
@@ -247,18 +246,18 @@
         </div>
       </div>
     } @else {
-      <p class="text-gray-500">Offer not found.</p>
+      <p class="text-gray-500">Предложение не найдено.</p>
     }
   }
 </div>
 
 <app-confirmation-dialog
-  cancelLabel="Cancel"
-  [confirmLabel]="confirmPayload()?.confirmLabel ?? 'Confirm'"
+  cancelLabel="Отмена"
+  [confirmLabel]="confirmPayload()?.confirmLabel ?? 'Подтвердить'"
   [danger]="confirmPayload()?.danger ?? false"
   [message]="confirmPayload()?.message ?? ''"
   [open]="confirmOpen()"
-  [title]="confirmPayload()?.title ?? 'Confirm'"
+  [title]="confirmPayload()?.title ?? 'Подтверждение'"
   (cancel)="onConfirmDialogCancel()"
   (confirm)="onConfirmDialogConfirm()"
 />

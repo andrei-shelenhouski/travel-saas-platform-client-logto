@@ -304,7 +304,7 @@ export class CreateLeadComponent {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (created: LeadResponseDto) => {
-          this.toast.showSuccess('Lead created');
+          this.toast.showSuccess('Лид создан');
           void this.router.navigate(['/app/leads', created.id]);
         },
         error: (err: HttpErrorResponse) => {
@@ -421,7 +421,7 @@ export class CreateLeadComponent {
 
   private applyBackendValidation(err: HttpErrorResponse): void {
     if (err.status !== 422) {
-      this.error.set(err.error?.message ?? err.message ?? 'Failed to create lead');
+      this.error.set(err.error?.message ?? err.message ?? 'Не удалось создать лид');
 
       return;
     }
@@ -429,7 +429,7 @@ export class CreateLeadComponent {
     const fieldErrors = err.error?.fieldErrors;
 
     if (!isFieldErrorMap(fieldErrors)) {
-      this.error.set(err.error?.message ?? 'Validation failed');
+      this.error.set(err.error?.message ?? 'Ошибка валидации');
 
       return;
     }

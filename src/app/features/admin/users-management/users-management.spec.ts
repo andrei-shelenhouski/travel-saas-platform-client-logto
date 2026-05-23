@@ -209,7 +209,7 @@ describe('UsersManagementComponent', () => {
     component['onRoleChange'](activeUser, 'role-admin');
 
     expect(usersService.changeRole).toHaveBeenCalledWith('u-1', { roleId: 'role-admin' });
-    expect(component['snackBar'].open).toHaveBeenCalledWith('Role updated', 'OK', {
+    expect(component['snackBar'].open).toHaveBeenCalledWith('Роль обновлена', 'OK', {
       duration: 3500,
     });
   });
@@ -264,7 +264,7 @@ describe('UsersManagementComponent', () => {
     component['onRoleChange'](activeUser, 'role-admin');
 
     expect(component['roleUpdateErrorMessage']('u-1')).toBe(
-      'This org must have at least one admin. Assign another admin first.',
+      'В организации должен быть хотя бы один администратор. Сначала назначьте другого администратора.',
     );
   });
 
@@ -282,7 +282,7 @@ describe('UsersManagementComponent', () => {
     component['reactivateUser']('u-2');
 
     expect(usersService.reactivate).toHaveBeenCalledWith('u-2');
-    expect(component['snackBar'].open).toHaveBeenCalledWith('User activated', 'OK', {
+    expect(component['snackBar'].open).toHaveBeenCalledWith('Пользователь активирован', 'OK', {
       duration: 3500,
     });
   });

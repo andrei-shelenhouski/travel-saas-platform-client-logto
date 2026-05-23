@@ -111,7 +111,7 @@ export class ContractsListComponent {
     const err = this.data.error();
 
     if (err instanceof HttpErrorResponse) {
-      return err.error?.message ?? err.message ?? 'Failed to load contracts';
+      return err.error?.message ?? err.message ?? 'Не удалось загрузить договоры';
     }
 
     return undefined;
@@ -159,10 +159,10 @@ export class ContractsListComponent {
     }
 
     const data: ConfirmDialogData = {
-      title: $localize`:@@contractsTerminateConfirmTitle:Terminate contract`,
-      message: $localize`:@@contractsTerminateConfirmMessage:Are you sure you want to terminate contract ${contract.contractNumber}? This action cannot be undone.`,
-      confirmLabel: $localize`:@@contractsTerminateConfirmAction:Terminate`,
-      cancelLabel: $localize`:@@contractsTerminateCancelAction:Cancel`,
+      title: 'Расторгнуть договор',
+      message: `Вы уверены, что хотите расторгнуть договор ${contract.contractNumber}? Это действие нельзя отменить.`,
+      confirmLabel: 'Расторгнуть',
+      cancelLabel: 'Отмена',
       confirmColor: 'warn',
     };
 
@@ -177,10 +177,10 @@ export class ContractsListComponent {
         this.contractsService.terminate(contract.id).subscribe({
           next: () => {
             this.refreshTick.update((value) => value + 1);
-            this.toast.showSuccess('Contract terminated');
+            this.toast.showSuccess('Договор расторгнут');
           },
           error: () => {
-            this.toast.showError('Failed to terminate contract');
+            this.toast.showError('Не удалось расторгнуть договор');
           },
         });
       });
@@ -208,19 +208,19 @@ export class ContractsListComponent {
 
   clientTypeLabel(type: string | undefined): string {
     if (type === ClientType.INDIVIDUAL) {
-      return 'Individual';
+      return 'Физ. лицо';
     }
 
     if (type === ClientType.COMPANY) {
-      return 'Company';
+      return 'Компания';
     }
 
     if (type === ClientType.B2B_AGENT) {
-      return 'B2B Agent';
+      return 'B2B агент';
     }
 
     if (type === ClientType.AGENT) {
-      return 'Agent';
+      return 'Агент';
     }
 
     return '—';
@@ -231,7 +231,7 @@ export class ContractsListComponent {
       return '—';
     }
 
-    return value ? 'Yes' : 'No';
+    return value ? 'Да' : 'Нет';
   }
 
   textOrDash(value: string | null | undefined): string {
@@ -262,11 +262,11 @@ export class ContractsListComponent {
     }
 
     if (method === 'ORIGINAL_MAIL') {
-      return 'Mail';
+      return 'Почта';
     }
 
     if (method === 'ORIGINAL_COURIER') {
-      return 'Courier';
+      return 'Курьер';
     }
 
     if (method === 'DIGITAL_PODPIS') {
@@ -274,7 +274,7 @@ export class ContractsListComponent {
     }
 
     if (method === 'OTHER') {
-      return 'Other';
+      return 'Другое';
     }
 
     return method;

@@ -81,10 +81,10 @@ const OFFER_STATUS_CLASS: Record<string, string> = {
 };
 
 const ACTION_LABELS: Record<LeadAction, string> = {
-  assign: 'Assign',
-  to_in_progress: 'In progress',
-  to_offer_sent: 'Offer sent',
-  mark_lost: 'Lost',
+  assign: 'Назначить',
+  to_in_progress: 'В работе',
+  to_offer_sent: 'КП отправлено',
+  mark_lost: 'Проигран',
 };
 
 const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
@@ -244,14 +244,14 @@ export class LeadDetailComponent {
     if (lead.bookingId) {
       return {
         id: lead.bookingId,
-        number: lead.bookingNumber ?? 'Booking',
+        number: lead.bookingNumber ?? 'Бронирование',
       };
     }
 
     if (lead.booking?.id) {
       return {
         id: lead.booking.id,
-        number: lead.booking.number ?? 'Booking',
+        number: lead.booking.number ?? 'Бронирование',
       };
     }
 
@@ -443,10 +443,10 @@ export class LeadDetailComponent {
     this.leadsService.updateStatus(lead.id, { status: targetStatus }).subscribe({
       next: (updated) => {
         this.travelDetailsData.set(updated);
-        this.toast.showSuccess('Lead status was updated');
+        this.toast.showSuccess('Статус лида обновлён');
       },
       error: (err: unknown) => {
-        this.toast.showError(this.getErrorMessage(err, 'Failed to update status'));
+        this.toast.showError(this.getErrorMessage(err, 'Не удалось обновить статус'));
       },
       complete: () => {
         this.statusActionLoading.set(null);
@@ -487,10 +487,10 @@ export class LeadDetailComponent {
     this.leadsService.assign(lead.id, { agentId }).subscribe({
       next: (updated) => {
         this.travelDetailsData.set(updated);
-        this.toast.showSuccess('Lead was reassigned');
+        this.toast.showSuccess('Лид переназначен');
       },
       error: (err: unknown) => {
-        this.toast.showError(this.getErrorMessage(err, 'Failed to assign lead'));
+        this.toast.showError(this.getErrorMessage(err, 'Не удалось назначить лид'));
       },
       complete: () => {
         this.assignLoading.set(false);
@@ -520,7 +520,7 @@ export class LeadDetailComponent {
 
       this.travelDetailsData.set(updatedLead);
       this.patchTravelForm(updatedLead);
-      this.toast.showSuccess('Client was linked to lead');
+      this.toast.showSuccess('Клиент привязан к лиду');
     });
   }
 
@@ -546,7 +546,7 @@ export class LeadDetailComponent {
 
       this.travelDetailsData.set(updatedLead);
       this.patchTravelForm(updatedLead);
-      this.toast.showSuccess('Lead was saved as a new client');
+      this.toast.showSuccess('Лид сохранён как новый клиент');
     });
   }
 
@@ -613,10 +613,10 @@ export class LeadDetailComponent {
           this.travelDetailsData.set(updated);
           this.patchTravelForm(updated);
           this.editingTravelDetails.set(false);
-          this.toast.showSuccess('Travel details were updated');
+          this.toast.showSuccess('Детали тура обновлены');
         },
         error: (err: unknown) => {
-          this.toast.showError(this.getErrorMessage(err, 'Failed to update travel details'));
+          this.toast.showError(this.getErrorMessage(err, 'Не удалось обновить детали тура'));
         },
         complete: () => {
           this.savingTravelDetails.set(false);
@@ -685,10 +685,10 @@ export class LeadDetailComponent {
             notes: '',
             managerId: '',
           });
-          this.toast.showSuccess('Travel request was created');
+          this.toast.showSuccess('Запрос на тур создан');
         },
         error: (err: unknown) => {
-          this.toast.showError(this.getErrorMessage(err, 'Failed to create travel request'));
+          this.toast.showError(this.getErrorMessage(err, 'Не удалось создать запрос на тур'));
         },
       });
   }
@@ -764,10 +764,10 @@ export class LeadDetailComponent {
             });
           });
           this.editingRequestId.set(null);
-          this.toast.showSuccess('Travel request was updated');
+          this.toast.showSuccess('Запрос на тур обновлён');
         },
         error: (err: unknown) => {
-          this.toast.showError(this.getErrorMessage(err, 'Failed to update travel request'));
+          this.toast.showError(this.getErrorMessage(err, 'Не удалось обновить запрос на тур'));
         },
       });
   }
@@ -792,7 +792,7 @@ export class LeadDetailComponent {
     }
 
     const confirmed = confirm(
-      `Are you sure you want to delete ${this.getRequestIdentifier(request, index)}?`,
+      `Вы уверены, что хотите удалить ${this.getRequestIdentifier(request, index)}?`,
     );
 
     if (!confirmed) {
@@ -810,10 +810,10 @@ export class LeadDetailComponent {
       .subscribe({
         next: () => {
           this.requestsData.update((items) => items.filter((item) => item.id !== request.id));
-          this.toast.showSuccess('Travel request was deleted');
+          this.toast.showSuccess('Запрос на тур удалён');
         },
         error: (err: unknown) => {
-          this.toast.showError(this.getErrorMessage(err, 'Failed to delete travel request'));
+          this.toast.showError(this.getErrorMessage(err, 'Не удалось удалить запрос на тур'));
         },
       });
   }
@@ -846,18 +846,18 @@ export class LeadDetailComponent {
 
   protected getRequestStatusLabel(status: string | null | undefined): string {
     if (status === 'OPEN') {
-      return 'Open';
+      return 'Открыт';
     }
 
     if (status === 'QUOTED') {
-      return 'Quoted';
+      return 'Оценён';
     }
 
     if (status === 'CLOSED') {
-      return 'Closed';
+      return 'Закрыт';
     }
 
-    return status ?? 'Unknown';
+    return status ?? 'Неизвестно';
   }
 
   protected getOfferStatusClass(status: string | null | undefined): string {
@@ -873,14 +873,14 @@ export class LeadDetailComponent {
     const currency = offer.currency;
 
     if (amount === null || amount === undefined) {
-      return 'Total is not set';
+      return 'Итого не указано';
     }
 
     if (!currency) {
-      return `Total: ${amount}`;
+      return `Итого: ${amount}`;
     }
 
-    return `Total: ${amount} ${currency}`;
+    return `Итого: ${amount} ${currency}`;
   }
 
   protected toggleNotesExpanded(requestId: string): void {
@@ -922,7 +922,7 @@ export class LeadDetailComponent {
       })
       .pipe(
         catchError((err) => {
-          this.toast.showError(this.getErrorMessage(err, 'Failed to load activity'));
+          this.toast.showError(this.getErrorMessage(err, 'Не удалось загрузить активность'));
 
           return of({
             items: [],
@@ -1088,7 +1088,7 @@ export class LeadDetailComponent {
     const normalizedCreatedBy = this.normalizeActivityActor(createdBy);
 
     if (normalizedCreatedBy === 'system' || normalizedCreatedBy === 'system action') {
-      return 'System action';
+      return 'Системное действие';
     }
 
     const resolvedActorName = this.activityActorNameByUserId().get(createdBy);
@@ -1101,7 +1101,7 @@ export class LeadDetailComponent {
       return createdBy;
     }
 
-    return 'System action';
+    return 'Системное действие';
   }
 
   protected isSystemEvent(item: ActivityResponseDto): boolean {

@@ -27,7 +27,7 @@ export class DashboardComponent {
     const err = this.data.error();
 
     if (err instanceof HttpErrorResponse) {
-      return err.error?.message ?? err.message ?? 'Failed to load dashboard';
+      return err.error?.message ?? err.message ?? 'Не удалось загрузить панель управления';
     }
 
     return undefined;

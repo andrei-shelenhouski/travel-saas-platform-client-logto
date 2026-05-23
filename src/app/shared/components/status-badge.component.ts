@@ -13,13 +13,13 @@ export const LEAD_STATUS_COLORS: Record<string, string> = {
 };
 
 export const LEAD_STATUS_LABELS: Record<string, string> = {
-  NEW: 'New',
-  ASSIGNED: 'Assigned',
-  IN_PROGRESS: 'In progress',
-  OFFER_SENT: 'Offer sent',
-  WON: 'Won',
-  LOST: 'Lost',
-  EXPIRED: 'Expired',
+  NEW: 'Новый',
+  ASSIGNED: 'Назначен',
+  IN_PROGRESS: 'В работе',
+  OFFER_SENT: 'Предложение отправлено',
+  WON: 'Выигран',
+  LOST: 'Проигран',
+  EXPIRED: 'Просрочен',
 };
 
 const OFFER_STATUS_CLASS: Record<string, string> = {

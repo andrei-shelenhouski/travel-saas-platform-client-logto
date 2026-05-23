@@ -117,17 +117,17 @@ export class BookingDetailComponent {
 
     if (error instanceof HttpErrorResponse) {
       if (error.status === 404) {
-        return $localize`:@@bookingNotFoundTitle:Booking not found`;
+        return 'Бронирование не найдено';
       }
 
       return (
         error.error?.message ??
         error.message ??
-        $localize`:@@bookingLoadFailed:Failed to load booking`
+        'Не удалось загрузить бронирование'
       );
     }
 
-    return $localize`:@@bookingLoadFailed:Failed to load booking`;
+    return 'Не удалось загрузить бронирование';
   });
 
   readonly actionLoading = signal(false);
@@ -161,7 +161,7 @@ export class BookingDetailComponent {
         error: (err) =>
           this.toast.showError(
             err.error?.message ??
-              $localize`:@@bookingStatusUpdateFailed:Failed to update booking status`,
+              'Не удалось обновить статус бронирования',
           ),
       });
   }
@@ -186,7 +186,7 @@ export class BookingDetailComponent {
         next: (updated) => this.patchBooking(updated),
         error: (err) =>
           this.toast.showError(
-            err.error?.message ?? $localize`:@@bookingCancellationFailed:Failed to cancel booking`,
+            err.error?.message ?? 'Не удалось отменить бронирование',
           ),
       });
   }
@@ -209,11 +209,11 @@ export class BookingDetailComponent {
       .subscribe({
         next: (updated) => {
           this.patchBooking(updated);
-          this.toast.showSuccess($localize`:@@bookingTravelDetailsUpdated:Travel details updated`);
+          this.toast.showSuccess('Детали тура обновлены');
         },
         error: (err) =>
           this.toast.showError(
-            err.error?.message ?? $localize`:@@bookingSaveFailed:Failed to save changes`,
+            err.error?.message ?? 'Не удалось сохранить изменения',
           ),
       });
   }
@@ -232,11 +232,11 @@ export class BookingDetailComponent {
       .subscribe({
         next: (updated) => {
           this.patchBooking(updated);
-          this.toast.showSuccess($localize`:@@bookingOperationsUpdated:Operations data updated`);
+          this.toast.showSuccess('Операционные данные обновлены');
         },
         error: (err) =>
           this.toast.showError(
-            err.error?.message ?? $localize`:@@bookingSaveFailed:Failed to save changes`,
+            err.error?.message ?? 'Не удалось сохранить изменения',
           ),
       });
   }
@@ -260,12 +260,12 @@ export class BookingDetailComponent {
           this.allData.set({ ...current, documents: [...current.documents, ...uploaded] });
         }
         this.toast.showSuccess(
-          $localize`:@@bookingFilesUploaded:Uploaded files: ${uploaded.length}:uploadedCount:`,
+          `Загружено файлов: ${uploaded.length}`,
         );
       },
       error: (err) =>
         this.toast.showError(
-          err.error?.message ?? $localize`:@@bookingFileUploadFailed:Failed to upload file`,
+          err.error?.message ?? 'Не удалось загрузить файл',
         ),
     });
   }
@@ -287,11 +287,11 @@ export class BookingDetailComponent {
             documents: current.documents.filter((d) => d.id !== doc.id),
           });
         }
-        this.toast.showSuccess($localize`:@@bookingDocumentDeleted:Document deleted`);
+        this.toast.showSuccess('Документ удален');
       },
       error: (err) =>
         this.toast.showError(
-          err.error?.message ?? $localize`:@@bookingDocumentDeleteFailed:Failed to delete document`,
+          err.error?.message ?? 'Не удалось удалить документ',
         ),
     });
   }

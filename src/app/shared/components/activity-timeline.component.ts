@@ -22,7 +22,7 @@ import type { ActivityTimelineItem } from '@app/shared/models/activity.model';
             </div>
           </li>
         } @empty {
-          <p class="text-sm text-gray-500">No activity yet.</p>
+          <p class="text-sm text-gray-500">Активности пока нет.</p>
         }
       </ul>
     </div>
@@ -30,7 +30,7 @@ import type { ActivityTimelineItem } from '@app/shared/models/activity.model';
 })
 export class ActivityTimelineComponent {
   /** Timeline title (e.g. "Activity") */
-  readonly title = input<string>('Timeline');
+  readonly title = input<string>('Хронология');
   /** List of timeline items */
   readonly items = input<ActivityTimelineItem[]>([]);
 

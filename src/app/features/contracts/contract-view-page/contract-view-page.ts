@@ -24,10 +24,10 @@ import { ToastService } from '@app/shared/services/toast.service';
 import type { ContractResponseDto } from '@app/shared/models';
 
 const SIGNATURE_METHOD_LABEL: Record<string, string> = {
-  ORIGINAL_MAIL: 'Mail',
-  ORIGINAL_COURIER: 'Courier',
+  ORIGINAL_MAIL: 'Почта',
+  ORIGINAL_COURIER: 'Курьер',
   DIGITAL_PODPIS: 'Podpis.by',
-  OTHER: 'Other',
+  OTHER: 'Другое',
 };
 
 @Component({
@@ -86,10 +86,10 @@ export class ContractViewPageComponent implements OnInit {
     }
 
     const data: ConfirmDialogData = {
-      title: $localize`:@@contractsTerminateConfirmTitle:Terminate contract`,
-      message: $localize`:@@contractsTerminateConfirmMessage:Are you sure you want to terminate contract ${contract.contractNumber}? This action cannot be undone.`,
-      confirmLabel: $localize`:@@contractsTerminateConfirmAction:Terminate`,
-      cancelLabel: $localize`:@@contractsTerminateCancelAction:Cancel`,
+      title: 'Расторгнуть договор',
+      message: `Вы уверены, что хотите расторгнуть договор ${contract.contractNumber}? Это действие нельзя отменить.`,
+      confirmLabel: 'Расторгнуть',
+      cancelLabel: 'Отмена',
       confirmColor: 'warn',
     };
 
@@ -104,10 +104,10 @@ export class ContractViewPageComponent implements OnInit {
         this.contractsService.terminate(contract.id).subscribe({
           next: (updated) => {
             this.contract.set(updated);
-            this.toast.showSuccess('Contract terminated');
+            this.toast.showSuccess('Договор расторгнут');
           },
           error: () => {
-            this.toast.showError('Failed to terminate contract');
+            this.toast.showError('Не удалось расторгнуть договор');
           },
         });
       });
@@ -150,7 +150,7 @@ export class ContractViewPageComponent implements OnInit {
         this.contract.set(contract);
       },
       error: (err) => {
-        this.error.set(err.error?.message ?? err.message ?? 'Failed to load contract');
+        this.error.set(err.error?.message ?? err.message ?? 'Не удалось загрузить договор');
       },
       complete: () => {
         this.loading.set(false);

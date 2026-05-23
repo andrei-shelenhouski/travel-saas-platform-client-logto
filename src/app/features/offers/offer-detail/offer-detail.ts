@@ -51,13 +51,13 @@ const STATUS_BADGE_CLASS: Record<OfferStatus, string> = {
 };
 
 const ACTION_LABELS: Record<OfferAction, string> = {
-  EDIT: 'Edit',
-  SEND: 'Send',
-  ACCEPT: 'Accept',
-  REJECT: 'Reject',
-  REVISE: 'Revise',
-  VIEW_BOOKING: 'Open booking',
-  DELETE: 'Delete',
+  EDIT: 'Редактировать',
+  SEND: 'Отправить',
+  ACCEPT: 'Принять',
+  REJECT: 'Отклонить',
+  REVISE: 'Исправить',
+  VIEW_BOOKING: 'Открыть бронирование',
+  DELETE: 'Удалить',
 };
 
 @Component({
@@ -128,14 +128,14 @@ export class OfferDetailComponent {
     }
 
     if (error.status === 404) {
-      return 'Offer not found';
+      return 'Предложение не найдено';
     }
 
     if (error.status === 403) {
-      return 'You do not have access to this offer';
+      return 'У вас нет доступа к этому предложению';
     }
 
-    return error.error?.message ?? error.message ?? 'Failed to load offer';
+    return error.error?.message ?? error.message ?? 'Не удалось загрузить предложение';
   });
 
   protected readonly actionLoading = signal(false);
@@ -152,9 +152,9 @@ export class OfferDetailComponent {
     () => this.offer()?.number ?? this.offer()?.id ?? '',
   );
   protected readonly pageTitle = computed(
-    () => $localize`:@@offerDetailPageTitle:Offer ${this.displayOfferNumber()}:offerNumber:`,
+    () => `Предложение ${this.displayOfferNumber()}`,
   );
-  protected readonly pageSubtitle = $localize`:@@offerDetailPageSubtitle:Offer details`;
+  protected readonly pageSubtitle = 'Детали предложения';
   protected readonly displayVersion = computed(() => `v${this.offer()?.version ?? 1}`);
   protected readonly canSeeInternalNotes = computed(() => this.permissions.canViewAllOffers());
   protected readonly hasVersionHistory = computed(() => !!this.offer()?.previousVersionId);
@@ -282,30 +282,30 @@ export class OfferDetailComponent {
     const payloads = {
       SEND: {
         action: 'SEND' as const,
-        title: 'Send offer',
-        message: 'Send this offer to the client?',
-        confirmLabel: 'Send',
+        title: 'Отправить предложение',
+        message: 'Отправить это предложение клиенту?',
+        confirmLabel: 'Отправить',
         danger: false,
       },
       ACCEPT: {
         action: 'ACCEPT' as const,
-        title: 'Accept offer',
-        message: 'Mark this offer as accepted? This action cannot be undone.',
-        confirmLabel: 'Accept',
+        title: 'Принять предложение',
+        message: 'Пометить предложение как принятое? Это действие нельзя отменить.',
+        confirmLabel: 'Принять',
         danger: true,
       },
       REJECT: {
         action: 'REJECT' as const,
-        title: 'Reject offer',
-        message: 'Mark this offer as rejected by the client?',
-        confirmLabel: 'Reject',
+        title: 'Отклонить предложение',
+        message: 'Пометить предложение как отклонённое клиентом?',
+        confirmLabel: 'Отклонить',
         danger: true,
       },
       DELETE: {
         action: 'DELETE' as const,
-        title: 'Delete offer',
-        message: 'Delete this draft offer?',
-        confirmLabel: 'Delete',
+        title: 'Удалить предложение',
+        message: 'Удалить этот черновик предложения?',
+        confirmLabel: 'Удалить',
         danger: true,
       },
     };
@@ -407,7 +407,7 @@ export class OfferDetailComponent {
           this.data.set(updated);
 
           if (newStatus === OfferStatus.SENT) {
-            this.toast.showSuccess('Offer sent');
+            this.toast.showSuccess('Предложение отправлено');
           }
 
           if (newStatus === OfferStatus.ACCEPTED) {
@@ -418,20 +418,20 @@ export class OfferDetailComponent {
                 : undefined;
 
             if (linkedBookingId) {
-              this.toast.showSuccess('Offer accepted');
+              this.toast.showSuccess('Предложение принято');
               this.router.navigate(['/app/bookings', linkedBookingId]);
             } else {
-              this.toast.showSuccess('Offer accepted. Booking will appear shortly.');
+              this.toast.showSuccess('Предложение принято. Бронирование появится в ближайшее время.');
             }
           }
 
           if (newStatus === OfferStatus.REJECTED) {
-            this.toast.showSuccess('Offer marked as rejected');
+            this.toast.showSuccess('Предложение отклонено');
           }
         },
         error: (err) => {
           this.data.set(currentOffer);
-          this.toast.showError(err.error?.message ?? err.message ?? 'Action failed');
+          this.toast.showError(err.error?.message ?? err.message ?? 'Не удалось выполнить действие');
         },
       });
   }
@@ -444,11 +444,11 @@ export class OfferDetailComponent {
       .pipe(finalize(() => this.actionLoading.set(false)))
       .subscribe({
         next: () => {
-          this.toast.showSuccess('Offer deleted');
+          this.toast.showSuccess('Предложение удалено');
           this.router.navigate(['/app/offers']);
         },
         error: (err) => {
-          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to delete offer');
+          this.toast.showError(err.error?.message ?? err.message ?? 'Не удалось удалить предложение');
         },
       });
   }
@@ -461,11 +461,11 @@ export class OfferDetailComponent {
       .pipe(finalize(() => this.actionLoading.set(false)))
       .subscribe({
         next: (revisedOffer) => {
-          this.toast.showSuccess('Revision created');
+          this.toast.showSuccess('Исправление создано');
           this.router.navigate(['/app/offers', revisedOffer.id, 'edit']);
         },
         error: (err) => {
-          this.toast.showError(err.error?.message ?? err.message ?? 'Failed to revise offer');
+          this.toast.showError(err.error?.message ?? err.message ?? 'Не удалось создать исправление');
         },
       });
   }

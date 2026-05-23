@@ -1,11 +1,10 @@
 <app-page-heading
-  subtitle="Total: {{ totalElements() }} clients"
-  title="Clients"
-  i18n-title="@@clientsListTitle"
+  subtitle="Всего: {{ totalElements() }} клиентов"
+  title="Клиенты"
 >
   <button color="primary" mat-flat-button type="button" (click)="navigateToCreateClient()">
     <mat-icon>add</mat-icon>
-    <span i18n="@@clientsListNewClientCta">New Client</span>
+    <span>Новый клиент</span>
   </button>
 </app-page-heading>
 
@@ -19,7 +18,7 @@
   <div class="table-wrap overflow-scroll">
     <table mat-table [dataSource]="clients()" [multiTemplateDataRows]="true">
       <ng-container matColumnDef="name">
-        <th *matHeaderCellDef i18n="@@clientsListHeaderName" mat-header-cell>Name</th>
+        <th *matHeaderCellDef mat-header-cell>Имя</th>
         <td *matCellDef="let element" mat-cell>
           <span class="block text-sm font-semibold">{{ displayName(element) }}</span>
           @if (displaySubtitle(element); as subtitle) {
@@ -29,35 +28,35 @@
       </ng-container>
 
       <ng-container matColumnDef="type">
-        <th *matHeaderCellDef i18n="@@clientsListHeaderType" mat-header-cell>Type</th>
+        <th *matHeaderCellDef mat-header-cell>Тип</th>
         <td *matCellDef="let element" mat-cell>
           <app-client-type-badge [type]="element.type" />
         </td>
       </ng-container>
 
       <ng-container matColumnDef="phone">
-        <th *matHeaderCellDef i18n="@@clientsListHeaderPhone" mat-header-cell>Phone</th>
+        <th *matHeaderCellDef mat-header-cell>Телефон</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.phone ?? '—' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="email">
-        <th *matHeaderCellDef i18n="@@clientsListHeaderEmail" mat-header-cell>Email</th>
+        <th *matHeaderCellDef mat-header-cell>Электронная почта</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.email ?? '—' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="createdAt">
-        <th *matHeaderCellDef i18n="@@clientsListHeaderCreatedAt" mat-header-cell>Created</th>
+        <th *matHeaderCellDef mat-header-cell>Дата создания</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.createdAt | date: 'dd MMM yyyy' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="updatedAt">
-        <th *matHeaderCellDef i18n="@@clientsListHeaderUpdatedAt" mat-header-cell>Updated</th>
+        <th *matHeaderCellDef mat-header-cell>Дата обновления</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.updatedAt | date: 'dd MMM yyyy' }}
         </td>
@@ -74,19 +73,18 @@
         <td [attr.colspan]="displayedColumns.length">
           <div class="m-10 align-middle text-center">
             @if (loading()) {
-              <p class="pb-4" i18n="@@clientsListLoading">Loading clients...</p>
+              <p class="pb-4">Загрузка клиентов...</p>
               <mat-spinner
-                aria-label="Loading clients"
-                i18n-aria-label="@@clientsListLoadingAriaLabel"
+                aria-label="Загрузка клиентов"
                 class="mx-auto"
                 diameter="36"
               />
             } @else {
-              <p i18n="@@clientsListNoData">
-                Ooooops, no clients found. Try adjusting your filters.
+              <p>
+                Упс, клиенты не найдены. Попробуйте изменить фильтры.
               </p>
 
-              <span class="or-divider" i18n="@@clientsListOrDivider">or</span>
+              <span class="or-divider">или</span>
 
               <div>
                 <button
@@ -96,7 +94,7 @@
                   (click)="navigateToCreateClient()"
                 >
                   <mat-icon>add</mat-icon>
-                  <span i18n="@@clientsListNewClientCta">New Client</span>
+                  <span>Новый клиент</span>
                 </button>
               </div>
             }
@@ -108,8 +106,7 @@
 
   @if (totalElements() > pageSize) {
     <mat-paginator
-      aria-label="Clients pagination"
-      i18n-aria-label="@@clientsListPaginatorAriaLabel"
+      aria-label="Пагинация клиентов"
       [length]="totalElements()"
       [pageIndex]="currentPage()"
       [pageSize]="pageSize"

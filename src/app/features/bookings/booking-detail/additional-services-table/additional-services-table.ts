@@ -4,12 +4,12 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import type { BookingServiceSnapshotEntryDto } from '@app/shared/models';
 
 const SERVICE_TYPE_LABELS: Record<string, string> = {
-  TRANSFER: $localize`:@@bookingServiceTypeTransfer:Transfer`,
-  EXCURSION: $localize`:@@bookingServiceTypeExcursion:Excursion`,
-  VISA: $localize`:@@bookingServiceTypeVisa:Visa`,
-  INSURANCE: $localize`:@@bookingServiceTypeInsurance:Insurance`,
-  FLIGHT: $localize`:@@bookingServiceTypeFlight:Flight`,
-  OTHER: $localize`:@@bookingServiceTypeOther:Other`,
+  TRANSFER: 'Трансфер',
+  EXCURSION: 'Экскурсия',
+  VISA: 'Виза',
+  INSURANCE: 'Страховка',
+  FLIGHT: 'Перелет',
+  OTHER: 'Другое',
 };
 
 @Component({

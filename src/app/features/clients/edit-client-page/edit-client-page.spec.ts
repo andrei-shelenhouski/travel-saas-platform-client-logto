@@ -146,7 +146,7 @@ describe('EditClientPageComponent', () => {
     component.onUpdateSubmitted(dto);
 
     expect(clientsService.update).toHaveBeenCalledWith('client-1', dto);
-    expect(snackBar.open).toHaveBeenCalledWith('Client updated', 'Close', { duration: 3000 });
+    expect(snackBar.open).toHaveBeenCalledWith('Клиент обновлён', 'Закрыть', { duration: 3000 });
     expect(navigateSpy).toHaveBeenCalledWith(['..'], { relativeTo: expect.any(Object) });
     expect(component.saving()).toBe(false);
   });

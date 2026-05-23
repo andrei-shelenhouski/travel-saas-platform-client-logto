@@ -57,12 +57,12 @@ export class EditClientPageComponent implements OnInit {
 
     this.clientsService.update(id, dto).subscribe({
       next: (updated) => {
-        this.snackBar.open('Client updated', 'Close', { duration: 3000 });
+        this.snackBar.open('Клиент обновлён', 'Закрыть', { duration: 3000 });
         this.client.set(updated);
         void this.router.navigate(['..'], { relativeTo: this.route });
       },
       error: (err) => {
-        this.submitError.set(err.error?.message ?? err.message ?? 'Failed to update client');
+        this.submitError.set(err.error?.message ?? err.message ?? 'Не удалось обновить клиента');
         this.saving.set(false);
       },
       complete: () => {
@@ -80,7 +80,7 @@ export class EditClientPageComponent implements OnInit {
         this.client.set(client);
       },
       error: (err) => {
-        this.snackBar.open(err.error?.message ?? err.message ?? 'Failed to load client', 'Close', {
+        this.snackBar.open(err.error?.message ?? err.message ?? 'Не удалось загрузить клиента', 'Закрыть', {
           duration: 5000,
         });
         void this.router.navigate(['..'], { relativeTo: this.route });

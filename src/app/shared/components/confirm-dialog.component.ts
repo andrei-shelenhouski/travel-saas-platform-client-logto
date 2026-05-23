@@ -20,7 +20,7 @@ export type ConfirmDialogData = {
     <mat-dialog-content>{{ data.message }}</mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button type="button" [mat-dialog-close]="false">
-        {{ data.cancelLabel ?? 'Cancel' }}
+        {{ data.cancelLabel ?? 'Отмена' }}
       </button>
       <button
         mat-flat-button
@@ -28,7 +28,7 @@ export type ConfirmDialogData = {
         [color]="data.confirmColor ?? 'primary'"
         [mat-dialog-close]="true"
       >
-        {{ data.confirmLabel ?? 'Confirm' }}
+        {{ data.confirmLabel ?? 'Подтвердить' }}
       </button>
     </mat-dialog-actions>
   `,

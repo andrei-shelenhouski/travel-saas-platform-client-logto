@@ -1,6 +1,6 @@
 <form class="booking-filter-bar" [formGroup]="form">
   <mat-form-field subscriptSizing="dynamic">
-    <mat-label i18n="@@bookingFilterStatusLabel">Status</mat-label>
+    <mat-label>Статус</mat-label>
     <mat-select formControlName="status" multiple>
       @for (option of statusOptions; track option.value) {
         <mat-option [value]="option.value">{{ option.label }}</mat-option>
@@ -9,9 +9,9 @@
   </mat-form-field>
 
   <mat-form-field subscriptSizing="dynamic">
-    <mat-label i18n="@@bookingFilterAssignedStaffLabel">Assigned staff</mat-label>
+    <mat-label>Назначенный сотрудник</mat-label>
     <mat-select formControlName="assignedBackofficeId">
-      <mat-option i18n="@@bookingFilterAllAssignedStaffOption" value="">All staff</mat-option>
+      <mat-option value="">Все сотрудники</mat-option>
       @for (option of staffOptions(); track option.id) {
         <mat-option [value]="option.id">{{ option.name }}</mat-option>
       }
@@ -19,19 +19,17 @@
   </mat-form-field>
 
   <mat-form-field subscriptSizing="dynamic">
-    <mat-label i18n="@@bookingFilterDepartureRangeLabel">Departure date range</mat-label>
+    <mat-label>Диапазон дат выезда</mat-label>
     <mat-date-range-input [rangePicker]="picker">
       <input
         formControlName="departDateFrom"
         matStartDate
-        placeholder="From"
-        i18n-placeholder="@@bookingFilterDateFromPlaceholder"
+        placeholder="С"
       />
       <input
         formControlName="departDateTo"
         matEndDate
-        placeholder="To"
-        i18n-placeholder="@@bookingFilterDateToPlaceholder"
+        placeholder="По"
       />
     </mat-date-range-input>
     <mat-datepicker-toggle matIconSuffix [for]="picker" />

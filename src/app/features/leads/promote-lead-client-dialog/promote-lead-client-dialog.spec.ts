@@ -97,7 +97,7 @@ describe('PromoteLeadClientDialogComponent', () => {
 
     component['submit']();
 
-    expect(component['submitError']()).toContain('already linked to a client');
+    expect(component['submitError']()).toContain('уже привязан к клиенту');
   });
 });
 

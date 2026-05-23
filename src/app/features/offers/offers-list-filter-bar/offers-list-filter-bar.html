@@ -1,6 +1,6 @@
 <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
   <mat-form-field>
-    <mat-label i18n="@@offersListFilterStatusLabel">Statuses</mat-label>
+    <mat-label>Статусы</mat-label>
     <mat-select
       multiple
       [value]="statusFilter()"
@@ -14,12 +14,12 @@
 
   @if (showAgentFilter()) {
     <mat-form-field>
-      <mat-label i18n="@@offersListFilterAgentLabel">Agent</mat-label>
+      <mat-label>Агент</mat-label>
       <mat-select
         [value]="selectedAgentId()"
         (selectionChange)="onAgentSelectionChange($event.value)"
       >
-        <mat-option i18n="@@offersListFilterAgentAllOption" value="">All</mat-option>
+        <mat-option value="">Все</mat-option>
         @for (agent of agentOptions(); track agent.id) {
           <mat-option [value]="agent.id">{{ agent.name }}</mat-option>
         }
@@ -28,7 +28,7 @@
   }
 
   <mat-form-field>
-    <mat-label i18n="@@offersListFilterCreatedFromLabel">Created from</mat-label>
+    <mat-label>Создано с</mat-label>
     <input
       matInput
       type="date"
@@ -38,7 +38,7 @@
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label i18n="@@offersListFilterCreatedToLabel">Created to</mat-label>
+    <mat-label>Создано по</mat-label>
     <input
       matInput
       type="date"
@@ -48,11 +48,10 @@
   </mat-form-field>
 
   <mat-form-field>
-    <mat-label i18n="@@offersListFilterSearchLabel">Search</mat-label>
+    <mat-label>Поиск</mat-label>
     <input
       matInput
-      placeholder="Client, destination, offer number"
-      i18n-placeholder="@@offersListFilterSearchPlaceholder"
+      placeholder="Клиент, направление, номер КП"
       [formControl]="searchControl()"
     />
   </mat-form-field>

@@ -14,10 +14,10 @@ export type ClientFilterValue = {
 };
 
 const TYPE_OPTIONS: { value: ClientType | 'ALL'; label: string }[] = [
-  { value: 'ALL', label: 'All' },
-  { value: ClientType.INDIVIDUAL, label: 'Individual' },
-  { value: ClientType.COMPANY, label: 'Company' },
-  { value: ClientType.B2B_AGENT, label: 'B2B Agent' },
+  { value: 'ALL', label: 'Все' },
+  { value: ClientType.INDIVIDUAL, label: 'Физ. лицо' },
+  { value: ClientType.COMPANY, label: 'Компания' },
+  { value: ClientType.B2B_AGENT, label: 'B2B агент' },
 ];
 
 @Component({

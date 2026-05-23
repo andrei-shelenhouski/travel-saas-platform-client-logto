@@ -1,6 +1,6 @@
 <section class="rounded-lg border border-gray-200 bg-white p-4">
   <div class="flex items-center justify-between">
-    <h2 class="text-sm font-semibold text-gray-900" i18n>Invoices</h2>
+    <h2 class="text-sm font-semibold text-gray-900">Счета</h2>
     @if (canCreateInvoice()) {
       <div class="flex items-center gap-2">
         <button
@@ -18,18 +18,17 @@
               aria-hidden="true"
               class="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
             ></div>
-            <span i18n="@@invoiceCreateFromBookingCreating">Creating...</span>
+            <span>Создание...</span>
           } @else {
-            <span i18n="@@invoiceCreateAutoButton">Create invoice</span>
+            <span>Создать счет</span>
           }
         </button>
 
         <a
-          i18n="@@invoiceCreateManualButton"
           mat-button
           [queryParams]="{ bookingId: booking().id }"
           [routerLink]="['/app/invoices/new']"
-          >Create manually</a
+          >Создать вручную</a
         >
       </div>
     }
@@ -46,7 +45,7 @@
         [routerLink]="['/app/invoices', invoice.id]"
       >
         <div class="min-w-0">
-          <p class="text-sm font-medium text-gray-900" i18n>Invoice #{{ invoice.number }}</p>
+          <p class="text-sm font-medium text-gray-900">Счёт #{{ invoice.number }}</p>
           <p class="text-xs text-gray-500">
             {{ invoice.invoiceDate | date: 'mediumDate' }} &middot; {{ invoice.currency }}
           </p>
@@ -64,7 +63,7 @@
         </div>
       </a>
     } @empty {
-      <p class="text-sm text-gray-500" i18n>No invoices created</p>
+      <p class="text-sm text-gray-500">Счета не созданы</p>
     }
   </div>
 </section>

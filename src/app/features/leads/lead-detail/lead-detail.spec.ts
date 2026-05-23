@@ -359,7 +359,7 @@ describe('LeadDetailComponent', () => {
       createdBy: 'system',
     });
 
-    expect(actor).toBe('System action');
+    expect(actor).toBe('Системное действие');
   });
 
   it('defaults to system actor label when createdBy is empty', () => {
@@ -375,7 +375,7 @@ describe('LeadDetailComponent', () => {
       createdBy: '',
     });
 
-    expect(actor).toBe('System action');
+    expect(actor).toBe('Системное действие');
   });
 
   it('treats createdBy with surrounding whitespace as system action', () => {
@@ -394,7 +394,7 @@ describe('LeadDetailComponent', () => {
 
     const isSystem = api.isSystemEvent({ createdBy: ' system ' });
 
-    expect(actor).toBe('System action');
+    expect(actor).toBe('Системное действие');
     expect(isSystem).toBe(true);
   });
 

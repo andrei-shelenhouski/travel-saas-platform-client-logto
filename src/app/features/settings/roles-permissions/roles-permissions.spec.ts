@@ -133,7 +133,7 @@ describe('RolesPermissionsComponent', () => {
     expect(rolesApi.replacePermissions).toHaveBeenCalledWith('role-admin', {
       permissions: ['leads:create', 'leads:view:all'],
     });
-    expect(component['snackBar'].open).toHaveBeenCalledWith('Permissions updated', 'OK', {
+    expect(component['snackBar'].open).toHaveBeenCalledWith('Права обновлены', 'OK', {
       duration: 3000,
     });
   });
@@ -229,7 +229,7 @@ describe('RolesPermissionsComponent', () => {
     component['confirmDeleteRole'](roleSummaries[1], new MouseEvent('click'));
 
     expect(component['deleteError']()).toBe(
-      'Remove all member assignments before deleting this role.',
+      'Перед удалением роли снимите все назначения участников.',
     );
   });
 });

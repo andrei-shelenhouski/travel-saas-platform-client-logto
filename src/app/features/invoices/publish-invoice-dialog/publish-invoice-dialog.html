@@ -1,35 +1,32 @@
-<h2 i18n="@@publishInvoiceDialogTitle" mat-dialog-title>
-  Publish invoice {{ data.invoiceNumber }}?
+<h2 mat-dialog-title>
+  Опубликовать счёт {{ data.invoiceNumber }}?
 </h2>
 
 <mat-dialog-content>
-  <p i18n="@@publishInvoiceDialogBody">
-    After publishing, the invoice cannot be edited. Client and issuer details will be locked.
+  <p>
+    После публикации счёт нельзя будет редактировать. Данные клиента и исполнителя будут зафиксированы.
   </p>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
   <button
-    i18n="@@publishInvoiceDialogBtnPreview"
     mat-stroked-button
     type="button"
     (click)="previewPdf()"
   >
     <mat-icon>preview</mat-icon>
-    Preview
+    Предварительный просмотр
   </button>
   <button
-    i18n="@@publishInvoiceDialogBtnCancel"
     mat-button
     type="button"
     [disabled]="loading()"
     (click)="cancel()"
   >
-    Cancel
+    Отмена
   </button>
   <button
     color="primary"
-    i18n="@@publishInvoiceDialogBtnConfirm"
     mat-flat-button
     type="button"
     [disabled]="loading()"
@@ -40,6 +37,6 @@
     } @else {
       <mat-icon>publish</mat-icon>
     }
-    Publish
+    Опубликовать
   </button>
 </mat-dialog-actions>

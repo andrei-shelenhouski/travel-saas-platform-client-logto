@@ -1,9 +1,9 @@
-<h2 mat-dialog-title>Assign lead</h2>
+<h2 mat-dialog-title>Назначить лид</h2>
 
 <mat-dialog-content>
   <div class="pt-4">
     <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Search agent</mat-label>
+      <mat-label>Поиск агента</mat-label>
       <input
         #assignSearchInput
         matInput
@@ -12,7 +12,7 @@
       />
     </mat-form-field>
 
-    <div aria-label="Agents" class="assign-agent-list" role="listbox">
+    <div aria-label="Агенты" class="assign-agent-list" role="listbox">
       @for (agent of filteredAgents(); track agent.id) {
         <button
           class="assign-agent-item"
@@ -27,14 +27,14 @@
           </span>
         </button>
       } @empty {
-        <p class="text-sm text-gray-500">No active agents found.</p>
+        <p class="text-sm text-gray-500">Активные агенты не найдены.</p>
       }
     </div>
   </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button type="button" (click)="onCancel()">Cancel</button>
+  <button mat-button type="button" (click)="onCancel()">Отмена</button>
   <button
     color="primary"
     mat-flat-button
@@ -42,6 +42,6 @@
     [disabled]="!selectedAgentId()"
     (click)="onConfirm()"
   >
-    Assign
+    Назначить
   </button>
 </mat-dialog-actions>

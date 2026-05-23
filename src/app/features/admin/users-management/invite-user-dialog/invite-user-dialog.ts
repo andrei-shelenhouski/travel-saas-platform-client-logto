@@ -37,8 +37,8 @@ export class InviteUserDialogComponent {
   });
 
   protected readonly saving = signal(false);
-  protected readonly sendingLabel = $localize`:@@usersInviteSending:Sending...`;
-  protected readonly inviteLabel = $localize`:@@usersInviteSubmit:Invite`;
+  protected readonly sendingLabel = 'Отправка...';
+  protected readonly inviteLabel = 'Пригласить';
 
   protected readonly roles = this.dialogData?.roleOptions ?? [];
   protected readonly hasRoleOptions = this.roles.length > 0;
@@ -70,8 +70,8 @@ export class InviteUserDialogComponent {
       .subscribe({
         next: () => {
           this.snackBar.open(
-            $localize`:@@usersInviteSuccess:Invitation sent. The user will get access on first sign-in.`,
-            $localize`:@@commonOk:OK`,
+            'Приглашение отправлено. Пользователь получит доступ при первом входе.',
+            'OK',
             {
               duration: 5000,
             },
@@ -87,9 +87,9 @@ export class InviteUserDialogComponent {
             const message =
               err.error?.message ??
               err.message ??
-              $localize`:@@usersInviteError:Failed to invite user`;
+              'Не удалось пригласить пользователя';
 
-            this.snackBar.open(message, $localize`:@@commonClose:Close`, { duration: 5000 });
+            this.snackBar.open(message, 'Закрыть', { duration: 5000 });
           }
         },
       });

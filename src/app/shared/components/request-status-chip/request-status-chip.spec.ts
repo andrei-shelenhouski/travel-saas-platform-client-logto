@@ -31,7 +31,7 @@ describe('RequestStatusChipComponent', () => {
     fixture.componentRef.setInput('status', 'QUOTED');
     fixture.detectChanges();
 
-    expect(component.label()).toBe('Quoted');
+    expect(component.label()).toBe('Предложение готово');
   });
 
   it('should display status as-is for unknown status', () => {

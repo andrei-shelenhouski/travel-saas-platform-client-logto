@@ -37,10 +37,10 @@ import type {
 } from '@app/shared/models';
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
-  BANK_TRANSFER: 'Bank transfer',
-  CASH: 'Cash',
-  CARD: 'Card',
-  OTHER: 'Other',
+  BANK_TRANSFER: 'Банковский перевод',
+  CASH: 'Наличные',
+  CARD: 'Карта',
+  OTHER: 'Другое',
 };
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
@@ -53,12 +53,12 @@ const STATUS_BADGE_CLASS: Record<string, string> = {
 };
 
 const STATUS_LABELS: Record<string, string> = {
-  DRAFT: 'Draft',
-  ISSUED: 'Issued',
-  PAID: 'Paid',
-  PARTIALLY_PAID: 'Partially paid',
-  OVERDUE: 'Overdue',
-  CANCELLED: 'Cancelled',
+  DRAFT: 'Черновик',
+  ISSUED: 'Выставлен',
+  PAID: 'Оплачен',
+  PARTIALLY_PAID: 'Частично оплачен',
+  OVERDUE: 'Просрочен',
+  CANCELLED: 'Отменён',
 };
 
 @Component({
@@ -235,7 +235,7 @@ export class InvoiceDetailComponent {
   readonly deletePaymentMessage = computed(() => {
     const amount = this.pendingDeletePaymentLabel();
 
-    return $localize`:@@invoiceDetailDeletePaymentMessage:Delete payment of ${amount}:AMOUNT:?`;
+    return `Удалить платёж на ${amount}?`;
   });
 
   // ---- Forms ----

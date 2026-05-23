@@ -1,7 +1,6 @@
 <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
   <button
-    aria-label="Filter by draft invoices"
-    i18n-aria-label="@@invoiceSummaryDraftAriaLabel"
+    aria-label="Фильтр по черновикам счетов"
     class="group flex flex-col rounded-xl border bg-white p-4 text-left shadow-sm transition hover:shadow-md"
     type="button"
     [class.border-gray-200]="!isDraftActive()"
@@ -12,15 +11,14 @@
   >
     <div class="flex items-center gap-2 text-gray-500">
       <span aria-hidden="true" class="material-icons text-lg">edit_note</span>
-      <span class="text-sm font-medium" i18n="@@invoiceSummaryDraftTitle">Drafts</span>
+      <span class="text-sm font-medium">Черновики</span>
     </div>
     <p class="mt-2 text-2xl font-bold text-primary">{{ drafts() }}</p>
-    <p class="mt-2 text-xs text-gray-500" i18n="@@invoiceSummaryDraftHint">Click to filter</p>
+    <p class="mt-2 text-xs text-gray-500">Нажмите для фильтрации</p>
   </button>
 
   <button
-    aria-label="Filter by pending invoices"
-    i18n-aria-label="@@invoiceSummaryPendingAriaLabel"
+    aria-label="Фильтр по счетам в ожидании оплаты"
     class="group flex flex-col rounded-xl border bg-white p-4 text-left shadow-sm transition hover:shadow-md"
     type="button"
     [class.border-gray-200]="!isPendingActive()"
@@ -31,18 +29,17 @@
   >
     <div class="flex items-center gap-2 text-gray-500">
       <span aria-hidden="true" class="material-icons text-lg">schedule</span>
-      <span class="text-sm font-medium" i18n="@@invoiceSummaryPendingTitle">Pending payment</span>
+      <span class="text-sm font-medium">Ожидают оплаты</span>
     </div>
     <p class="mt-2 text-2xl font-bold text-primary">{{ pendingCount() }}</p>
     <p class="mt-2 text-xs text-gray-500">
-      <span i18n="@@invoiceSummaryPendingAmount">Amount:</span>
+      <span>Сумма:</span>
       {{ formatAmount(pendingAmount()) }} {{ currency() }}
     </p>
   </button>
 
   <button
-    aria-label="Filter by overdue invoices"
-    i18n-aria-label="@@invoiceSummaryOverdueAriaLabel"
+    aria-label="Фильтр по просроченным счетам"
     class="group flex flex-col rounded-xl border bg-white p-4 text-left shadow-sm transition hover:shadow-md"
     type="button"
     [class.border-gray-200]="!isOverdueActive()"
@@ -53,11 +50,11 @@
   >
     <div class="flex items-center gap-2 text-gray-500">
       <span aria-hidden="true" class="material-icons text-lg">warning</span>
-      <span class="text-sm font-medium" i18n="@@invoiceSummaryOverdueTitle">Overdue</span>
+      <span class="text-sm font-medium">Просрочено</span>
     </div>
     <p class="mt-2 text-2xl font-bold text-primary">{{ overdueCount() }}</p>
     <p class="mt-2 text-xs text-gray-500">
-      <span i18n="@@invoiceSummaryOverdueAmount">Amount:</span>
+      <span>Сумма:</span>
       {{ formatAmount(overdueAmount()) }} {{ currency() }}
     </p>
   </button>

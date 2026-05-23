@@ -23,9 +23,9 @@ export type ContractsFilterValue = {
 };
 
 const CONTRACT_STATUS_OPTIONS: { value: ContractStatusType; label: string }[] = [
-  { value: ContractStatus.ACTIVE, label: $localize`:@@contractsStatusActive:Active` },
-  { value: ContractStatus.EXPIRED, label: $localize`:@@contractsStatusExpired:Expired` },
-  { value: ContractStatus.TERMINATED, label: $localize`:@@contractsStatusTerminated:Terminated` },
+  { value: ContractStatus.ACTIVE, label: 'Активный' },
+  { value: ContractStatus.EXPIRED, label: 'Истёкший' },
+  { value: ContractStatus.TERMINATED, label: 'Расторгнутый' },
 ];
 
 @Component({

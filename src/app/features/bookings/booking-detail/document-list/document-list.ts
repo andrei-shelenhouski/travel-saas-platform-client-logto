@@ -53,7 +53,7 @@ export class DocumentListComponent {
   onDeleteRequest(doc: BookingDocumentResponseDto): void {
     this.pendingDelete.set(doc);
     this.deleteConfirmMessage.set(
-      $localize`:@@bookingDeleteDocumentConfirmation:Delete document "${doc.filename ?? 'Document'}:documentName:"? This action cannot be undone.`,
+      `Удалить документ "${doc.filename ?? 'Документ'}"? Это действие необратимо.`,
     );
     this.deleteDialogOpen.set(true);
   }

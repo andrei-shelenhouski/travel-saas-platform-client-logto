@@ -1,11 +1,10 @@
 <app-page-heading
-  subtitle="Total: {{ totalElements() }}"
-  title="Contracts"
-  i18n-title="@@contractsListTitle"
+  subtitle="Всего: {{ totalElements() }}"
+  title="Договоры"
 >
   @if (canCreateContracts()) {
     <button matButton="filled" type="button" (click)="goToCreateContract()">
-      <span i18n="@@contractsCreateAction">Create contract</span>
+      <span>Создать договор</span>
     </button>
   }
 </app-page-heading>
@@ -24,7 +23,7 @@
   <div class="table-wrap overflow-scroll">
     <table mat-table [dataSource]="contracts()">
       <ng-container matColumnDef="contract">
-        <th *matHeaderCellDef i18n="@@contractsListNumber" mat-header-cell>Number</th>
+        <th *matHeaderCellDef mat-header-cell>Номер</th>
         <td *matCellDef="let element" mat-cell>
           <button class="contract-link" type="button" (click)="goToContract(element.id)">
             {{ element.contractNumber }}
@@ -34,7 +33,7 @@
       </ng-container>
 
       <ng-container matColumnDef="client">
-        <th *matHeaderCellDef i18n="@@contractsListClientId" mat-header-cell>Client</th>
+        <th *matHeaderCellDef mat-header-cell>Клиент</th>
         <td *matCellDef="let element" mat-cell>
           <button class="client-link" type="button" (click)="goToClient(element.clientId)">
             {{ clientLabel(element) }}
@@ -44,47 +43,47 @@
       </ng-container>
 
       <ng-container matColumnDef="clientType">
-        <th *matHeaderCellDef i18n="@@contractsListClientType" mat-header-cell>Client type</th>
+        <th *matHeaderCellDef mat-header-cell>Тип клиента</th>
         <td *matCellDef="let element" mat-cell>
           <span class="text-xs text-slate-600">{{ clientTypeLabel(element.client?.type) }}</span>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="clientContacts">
-        <th *matHeaderCellDef i18n="@@contractsListClientContacts" mat-header-cell>Contacts</th>
+        <th *matHeaderCellDef mat-header-cell>Контакты</th>
         <td *matCellDef="let element" mat-cell>
           <div class="text-xs text-slate-600">Email: {{ textOrDash(element.client?.email) }}</div>
-          <div class="text-xs text-slate-600">Phone: {{ textOrDash(element.client?.phone) }}</div>
+          <div class="text-xs text-slate-600">Телефон: {{ textOrDash(element.client?.phone) }}</div>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="clientB2B">
-        <th *matHeaderCellDef i18n="@@contractsListClientB2B" mat-header-cell>B2B details</th>
+        <th *matHeaderCellDef mat-header-cell>B2B реквизиты</th>
         <td *matCellDef="let element" mat-cell>
           <div class="text-xs text-slate-600">
-            Reg cert: {{ textOrDash(element.client?.registrationCert) }}
+            Рег. свид.: {{ textOrDash(element.client?.registrationCert) }}
           </div>
           <div class="text-xs text-slate-600">
-            Taxation: {{ textOrDash(element.client?.taxationType) }}
+            Налогообложение: {{ textOrDash(element.client?.taxationType) }}
           </div>
           <div class="text-xs text-slate-600">
-            Director: {{ textOrDash(element.client?.directorName) }}
+            Директор: {{ textOrDash(element.client?.directorName) }}
           </div>
           <div class="text-xs text-slate-600">
-            RATA member: {{ boolLabel(element.client?.rataMember) }}
+            Член RATA: {{ boolLabel(element.client?.rataMember) }}
           </div>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="signedAt">
-        <th *matHeaderCellDef i18n="@@contractsListSignedAt" mat-header-cell>Signed at</th>
+        <th *matHeaderCellDef mat-header-cell>Дата подписания</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.signedAt | date: 'dd MMM yyyy' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="expiresAt">
-        <th *matHeaderCellDef i18n="@@contractsListExpiresAt" mat-header-cell>Expires at</th>
+        <th *matHeaderCellDef mat-header-cell>Действует до</th>
         <td *matCellDef="let element" mat-cell>
           @if (element.expiresAt) {
             {{ element.expiresAt | date: 'dd MMM yyyy' }}
@@ -95,7 +94,7 @@
       </ng-container>
 
       <ng-container matColumnDef="createdAt">
-        <th *matHeaderCellDef i18n="@@contractsListCreatedAt" mat-header-cell>Created</th>
+        <th *matHeaderCellDef mat-header-cell>Создан</th>
         <td *matCellDef="let element" mat-cell>
           <span class="text-xs text-slate-600">{{
             element.createdAt | date: 'dd MMM yyyy, HH:mm'
@@ -104,7 +103,7 @@
       </ng-container>
 
       <ng-container matColumnDef="updatedAt">
-        <th *matHeaderCellDef i18n="@@contractsListUpdatedAt" mat-header-cell>Updated</th>
+        <th *matHeaderCellDef mat-header-cell>Обновлён</th>
         <td *matCellDef="let element" mat-cell>
           <span class="text-xs text-slate-600">{{
             element.updatedAt | date: 'dd MMM yyyy, HH:mm'
@@ -113,8 +112,8 @@
       </ng-container>
 
       <ng-container matColumnDef="signatureMethod">
-        <th *matHeaderCellDef i18n="@@contractsListSignatureMethod" mat-header-cell>
-          Signature method
+        <th *matHeaderCellDef mat-header-cell>
+          Способ подписания
         </th>
         <td *matCellDef="let element" mat-cell>
           {{ signatureMethodLabel(element.signatureMethod) }}
@@ -122,32 +121,31 @@
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <th *matHeaderCellDef i18n="@@contractsListStatus" mat-header-cell>Status</th>
+        <th *matHeaderCellDef mat-header-cell>Статус</th>
         <td *matCellDef="let element" mat-cell>
           <span [class]="statusClass(element.status)">{{ element.status }}</span>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="notes">
-        <th *matHeaderCellDef i18n="@@contractsListNotes" mat-header-cell>Notes</th>
+        <th *matHeaderCellDef mat-header-cell>Заметки</th>
         <td *matCellDef="let element" mat-cell>
           <div class="notes-cell">{{ textOrDash(element.notes) }}</div>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="createdBy">
-        <th *matHeaderCellDef i18n="@@contractsListCreatedBy" mat-header-cell>Created by</th>
+        <th *matHeaderCellDef mat-header-cell>Создал</th>
         <td *matCellDef="let element" mat-cell>
           <span class="text-xs text-slate-600">{{ element.createdById }}</span>
         </td>
       </ng-container>
 
       <ng-container matColumnDef="actions">
-        <th *matHeaderCellDef i18n="@@contractsListActions" mat-header-cell>Actions</th>
+        <th *matHeaderCellDef mat-header-cell>Действия</th>
         <td *matCellDef="let element" mat-cell>
           <button
-            aria-label="Contract actions"
-            i18n-aria-label="@@contractsListActionsAriaLabel"
+            aria-label="Действия с договором"
             mat-icon-button
             type="button"
             [matMenuTriggerFor]="actionsMenu"
@@ -161,7 +159,7 @@
               [disabled]="!canManageContract(element)"
               (click)="goToEditContract(element)"
             >
-              <span i18n="@@contractsActionEdit">Edit</span>
+              <span>Редактировать</span>
             </button>
             <button
               mat-menu-item
@@ -169,7 +167,7 @@
               [disabled]="!canManageContract(element)"
               (click)="terminateContract(element)"
             >
-              <span i18n="@@contractsActionTerminate">Terminate</span>
+              <span>Расторгнуть</span>
             </button>
           </mat-menu>
         </td>
@@ -181,15 +179,14 @@
         <td [attr.colspan]="displayedColumns.length">
           <div class="m-10 align-middle text-center">
             @if (loading()) {
-              <p class="pb-4" i18n="@@contractsListLoading">Loading contracts...</p>
+              <p class="pb-4">Загрузка договоров...</p>
               <mat-spinner
-                aria-label="Loading contracts"
-                i18n-aria-label="@@contractsListLoadingAriaLabel"
+                aria-label="Загрузка договоров"
                 class="mx-auto"
                 diameter="36"
               />
             } @else {
-              <p i18n="@@contractsListEmpty">No contracts found for current filters</p>
+              <p>Договоры по текущим фильтрам не найдены</p>
             }
           </div>
         </td>
@@ -199,8 +196,7 @@
 
   @if (totalElements() > pageSize) {
     <mat-paginator
-      aria-label="Contracts pagination"
-      i18n-aria-label="@@contractsListPaginatorAriaLabel"
+      aria-label="Пагинация договоров"
       [length]="totalElements()"
       [pageIndex]="currentPage()"
       [pageSize]="pageSize"

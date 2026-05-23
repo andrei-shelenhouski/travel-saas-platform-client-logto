@@ -97,7 +97,7 @@ describe('LeadsKanbanComponent', () => {
     expect(previousColumn).toHaveLength(1);
     expect(targetColumn).toHaveLength(0);
     expect(lead.status).toBe('NEW');
-    expect(showErrorSpy).toHaveBeenCalledWith('Invalid status transition');
+    expect(showErrorSpy).toHaveBeenCalledWith('Недопустимый переход статуса');
   });
 
   it('forwards source filter to leads API query', () => {

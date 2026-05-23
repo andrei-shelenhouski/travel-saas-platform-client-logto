@@ -70,9 +70,9 @@ export class TourvisorIntegrationCardComponent {
 
   private refreshTimerId: ReturnType<typeof setTimeout> | null = null;
 
-  protected readonly pageTitle = $localize`:@@integrations:Integrations`;
-  protected readonly pageSubtitle = $localize`:@@tourvisorPageSubtitle:Connect and manage external lead ingestion providers.`;
-  protected readonly authkeyHelpText = $localize`:@@tourvisorAuthkeyHelp:Open TourVisor account settings, then copy the authkey from integration access settings.`;
+  protected readonly pageTitle = 'Интеграции';
+  protected readonly pageSubtitle = 'Подключайте и управляйте внешними провайдерами лидов.';
+  protected readonly authkeyHelpText = 'Откройте настройки аккаунта TourVisor и скопируйте authkey из настроек интеграционного доступа.';
 
   protected readonly loading = signal(true);
   protected readonly saving = signal(false);
@@ -102,25 +102,25 @@ export class TourvisorIntegrationCardComponent {
     }
 
     if (!currentSettings.lastPolledAt) {
-      return 'Never synced - click Sync Now';
+      return 'Синхронизация не выполнялась — нажмите «Синхронизировать»';
     }
 
     const relative = this.formatRelativeTime(currentSettings.lastPolledAt);
 
-    return `Last sync: ${relative}`;
+    return `Последняя синхронизация: ${relative}`;
   });
 
   protected readonly selectedAgentLabel = computed(() => {
     const defaultAgentId = this.settings()?.defaultAgentId ?? '';
 
     if (!defaultAgentId) {
-      return 'Unassigned';
+      return 'Не назначен';
     }
 
     const selectedAgent = this.agentOptions().find((agent) => agent.id === defaultAgentId);
 
     if (!selectedAgent) {
-      return 'Unknown agent';
+      return 'Неизвестный агент';
     }
 
     return selectedAgent.name;
@@ -130,11 +130,11 @@ export class TourvisorIntegrationCardComponent {
     const ingestOrderTypes = this.settings()?.ingestOrderTypes ?? [];
 
     if (ingestOrderTypes.length === 0) {
-      return 'None';
+      return 'Нет';
     }
 
     if (this.hasAllOrderTypesSelected(ingestOrderTypes)) {
-      return 'All';
+      return 'Все';
     }
 
     return ingestOrderTypes.join(', ');
@@ -225,11 +225,11 @@ export class TourvisorIntegrationCardComponent {
             defaultAgentId: normalized.defaultAgentId ?? '',
           });
           this.toast.showSuccess(
-            wasConnected ? 'TourVisor settings were updated.' : 'TourVisor connected successfully.',
+            wasConnected ? 'Настройки TourVisor обновлены.' : 'TourVisor успешно подключён.',
           );
         },
         error: (error: unknown) => {
-          this.inlineError.set(this.getErrorMessage(error, 'Failed to connect TourVisor.'));
+          this.inlineError.set(this.getErrorMessage(error, 'Не удалось подключить TourVisor.'));
         },
       });
   }
@@ -257,13 +257,13 @@ export class TourvisorIntegrationCardComponent {
 
           this.connectionTestState.set('invalid');
           this.connectionTestMessage.set(
-            response.error || 'Invalid authkey. Please reconnect with a valid key.',
+            response.error || 'Недействительный authkey. Пожалуйста, переподключитесь с действительным ключом.',
           );
         },
         error: (error: unknown) => {
           this.connectionTestState.set('invalid');
           this.connectionTestMessage.set(
-            this.getErrorMessage(error, 'Failed to verify TourVisor connection.'),
+            this.getErrorMessage(error, 'Не удалось проверить подключение TourVisor.'),
           );
         },
       });
@@ -278,11 +278,11 @@ export class TourvisorIntegrationCardComponent {
       .pipe(finalize(() => this.syncing.set(false)))
       .subscribe({
         next: () => {
-          this.toast.showSuccess('TourVisor sync started.');
+          this.toast.showSuccess('Синхронизация TourVisor запущена.');
           this.scheduleSettingsRefresh();
         },
         error: (error: unknown) => {
-          this.inlineError.set(this.getErrorMessage(error, 'Failed to start TourVisor sync.'));
+          this.inlineError.set(this.getErrorMessage(error, 'Не удалось запустить синхронизацию TourVisor.'));
         },
       });
   }
@@ -293,10 +293,10 @@ export class TourvisorIntegrationCardComponent {
     this.dialog
       .open(ConfirmDialogComponent, {
         data: {
-          title: 'Disconnect TourVisor?',
-          message: 'New orders will no longer be imported.',
-          confirmLabel: 'Disconnect',
-          cancelLabel: 'Cancel',
+          title: 'Отключить TourVisor?',
+          message: 'Новые заявки больше не будут импортироваться.',
+          confirmLabel: 'Отключить',
+          cancelLabel: 'Отмена',
           confirmColor: 'warn',
         },
       })
@@ -324,10 +324,10 @@ export class TourvisorIntegrationCardComponent {
           });
           this.connectionTestState.set(null);
           this.connectionTestMessage.set(null);
-          this.toast.showSuccess('TourVisor was disconnected.');
+          this.toast.showSuccess('TourVisor отключён.');
         },
         error: (error: unknown) => {
-          this.inlineError.set(this.getErrorMessage(error, 'Failed to disconnect TourVisor.'));
+          this.inlineError.set(this.getErrorMessage(error, 'Не удалось отключить TourVisor.'));
         },
       });
   }
@@ -348,7 +348,7 @@ export class TourvisorIntegrationCardComponent {
         },
         error: (error: unknown) => {
           this.inlineError.set(
-            this.getErrorMessage(error, 'Failed to load TourVisor integration settings.'),
+            this.getErrorMessage(error, 'Не удалось загрузить настройки интеграции TourVisor.'),
           );
         },
       });
@@ -369,7 +369,7 @@ export class TourvisorIntegrationCardComponent {
       },
       error: (error: unknown) => {
         this.agentOptions.set([]);
-        this.toast.showError(this.getErrorMessage(error, 'Failed to load agent list.'));
+        this.toast.showError(this.getErrorMessage(error, 'Не удалось загрузить список агентов.'));
       },
     });
   }
@@ -431,7 +431,7 @@ export class TourvisorIntegrationCardComponent {
     const absDiffInMs = Math.abs(diffInMs);
 
     if (absDiffInMs < minuteInMs) {
-      return 'just now';
+      return 'только что';
     }
 
     if (absDiffInMs < hourInMs) {
@@ -459,7 +459,7 @@ export class TourvisorIntegrationCardComponent {
       }
 
       if (error.status === 0) {
-        return 'Network error. Please try again.';
+        return 'Ошибка сети. Пожалуйста, попробуйте снова.';
       }
     }
 

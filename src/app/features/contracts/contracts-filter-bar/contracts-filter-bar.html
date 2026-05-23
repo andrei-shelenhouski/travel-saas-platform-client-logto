@@ -1,8 +1,8 @@
 <form class="contracts-filter-bar" [formGroup]="form">
   <mat-form-field subscriptSizing="dynamic">
-    <mat-label i18n="@@contractsFilterStatusLabel">Status</mat-label>
+    <mat-label>Статус</mat-label>
     <mat-select formControlName="status">
-      <mat-option i18n="@@contractsFilterAllStatuses" value="">All statuses</mat-option>
+      <mat-option value="">Все статусы</mat-option>
       @for (option of statusOptions; track option.value) {
         <mat-option [value]="option.value">{{ option.label }}</mat-option>
       }
@@ -10,7 +10,7 @@
   </mat-form-field>
 
   <mat-form-field subscriptSizing="dynamic">
-    <mat-label i18n="@@contractsFilterClientIdLabel">Client ID</mat-label>
+    <mat-label>ID клиента</mat-label>
     <input formControlName="clientId" matInput type="text" />
   </mat-form-field>
 </form>

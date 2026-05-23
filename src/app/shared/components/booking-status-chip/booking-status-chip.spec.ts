@@ -24,6 +24,6 @@ describe('BookingStatusChipComponent', () => {
     fixture.componentRef.setInput('status', 'PENDING_CONFIRMATION');
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.textContent).toContain('Pending confirmation');
+    expect(fixture.nativeElement.textContent).toContain('Ожидает подтверждения');
   });
 });

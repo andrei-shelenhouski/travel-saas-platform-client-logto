@@ -12,14 +12,14 @@ export const REQUEST_STATUS_COLORS: Record<string, string> = {
 };
 
 export const REQUEST_STATUS_LABELS: Record<string, string> = {
-  NEW: $localize`:@@requestStatusNew:New`,
-  OPEN: $localize`:@@requestStatusOpen:Open`,
-  IN_PROGRESS: $localize`:@@requestStatusInProgress:In progress`,
-  QUOTED: $localize`:@@requestStatusQuoted:Quoted`,
-  WON: $localize`:@@requestStatusWon:Won`,
-  LOST: $localize`:@@requestStatusLost:Lost`,
-  EXPIRED: $localize`:@@requestStatusExpired:Expired`,
-  CLOSED: $localize`:@@requestStatusClosed:Closed`,
+  NEW: 'Новый',
+  OPEN: 'Открыт',
+  IN_PROGRESS: 'В работе',
+  QUOTED: 'Предложение готово',
+  WON: 'Выигран',
+  LOST: 'Проигран',
+  EXPIRED: 'Просрочен',
+  CLOSED: 'Закрыт',
 };
 
 @Component({

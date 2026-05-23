@@ -1,12 +1,11 @@
 <app-page-heading
-  subtitle="Total: {{ totalElements() }} invoices"
-  title="Invoices"
-  i18n-title="@@invoiceListHeadingTitle"
+  subtitle="Всего: {{ totalElements() }} счетов"
+  title="Счета"
 >
   @if (canCreateInvoice()) {
     <button color="primary" mat-flat-button type="button" (click)="navigateToCreateInvoice()">
       <mat-icon>add</mat-icon>
-      <span i18n="@@invoiceListNewInvoiceCta">New invoice</span>
+      <span>Новый счет</span>
     </button>
   }
 </app-page-heading>
@@ -45,7 +44,7 @@
   <div class="table-wrap overflow-scroll">
     <table mat-table [dataSource]="invoices()" [multiTemplateDataRows]="true">
       <ng-container matColumnDef="number">
-        <th *matHeaderCellDef i18n="@@invoiceListColumnNumber" mat-header-cell>Invoice #</th>
+        <th *matHeaderCellDef mat-header-cell>Счет #</th>
         <td *matCellDef="let element" mat-cell>
           <a
             class="invoice-link"
@@ -58,49 +57,49 @@
       </ng-container>
 
       <ng-container matColumnDef="client">
-        <th *matHeaderCellDef i18n="@@invoiceListColumnClient" mat-header-cell>Client</th>
+        <th *matHeaderCellDef mat-header-cell>Клиент</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.clientName || element.clientSnapshot || '—' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="type">
-        <th *matHeaderCellDef i18n="@@invoiceListColumnType" mat-header-cell>Type</th>
+        <th *matHeaderCellDef mat-header-cell>Тип</th>
         <td *matCellDef="let element" mat-cell>
           <app-client-type-badge [type]="element.clientType ?? ''" />
         </td>
       </ng-container>
 
       <ng-container matColumnDef="invoiceDate">
-        <th *matHeaderCellDef i18n="@@invoiceListColumnDate" mat-header-cell>Date</th>
+        <th *matHeaderCellDef mat-header-cell>Дата</th>
         <td *matCellDef="let element" mat-cell>
           {{ formatDate(element.invoiceDate) }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="dueDate">
-        <th *matHeaderCellDef i18n="@@invoiceListColumnDueDate" mat-header-cell>Due date</th>
+        <th *matHeaderCellDef mat-header-cell>Срок оплаты</th>
         <td *matCellDef="let element" mat-cell>
           {{ formatDate(element.dueDate) }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="total">
-        <th *matHeaderCellDef i18n="@@invoiceListColumnTotal" mat-header-cell>Total</th>
+        <th *matHeaderCellDef mat-header-cell>Сумма</th>
         <td *matCellDef="let element" mat-cell>
           {{ formatAmount(element.total ?? element.subtotal, element.currency) }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="status">
-        <th *matHeaderCellDef i18n="@@invoiceListColumnStatus" mat-header-cell>Status</th>
+        <th *matHeaderCellDef mat-header-cell>Статус</th>
         <td *matCellDef="let element" mat-cell>
           <app-invoice-status-chip [status]="element.status" />
         </td>
       </ng-container>
 
       <ng-container matColumnDef="paidAmount">
-        <th *matHeaderCellDef i18n="@@invoiceListColumnPaidAmount" mat-header-cell>Paid amount</th>
+        <th *matHeaderCellDef mat-header-cell>Оплачено</th>
         <td *matCellDef="let element" mat-cell>
           {{ paidAmountLabel(element) }}
         </td>
@@ -117,15 +116,14 @@
         <td [attr.colspan]="displayedColumns.length">
           <div class="m-10 align-middle text-center">
             @if (loading()) {
-              <p class="pb-4" i18n="@@invoiceListLoading">Loading invoices...</p>
+              <p class="pb-4">Загрузка счетов...</p>
               <mat-spinner
-                aria-label="Loading invoices"
-                i18n-aria-label="@@invoiceListLoadingAriaLabel"
+                aria-label="Загрузка счетов"
                 class="mx-auto"
                 diameter="36"
               />
             } @else {
-              <p i18n="@@invoiceListEmptyState">No invoices found for current filters</p>
+              <p>Нет счётов по текущим фильтрам</p>
             }
           </div>
         </td>
@@ -135,8 +133,7 @@
 
   @if (totalElements() > pageSize) {
     <mat-paginator
-      aria-label="Invoices pagination"
-      i18n-aria-label="@@invoiceListPaginatorAriaLabel"
+      aria-label="Пагинация счетов"
       [length]="totalElements()"
       [pageIndex]="currentPage()"
       [pageSize]="pageSize"

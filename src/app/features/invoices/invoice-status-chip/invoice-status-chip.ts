@@ -12,12 +12,12 @@ const INVOICE_STATUS_CLASSES: Record<string, string> = {
 };
 
 const INVOICE_STATUS_LABELS: Record<string, string> = {
-  [InvoiceStatus.DRAFT]: $localize`:@@invoiceStatusLabelDraft:Draft`,
-  [InvoiceStatus.ISSUED]: $localize`:@@invoiceStatusLabelIssued:Issued`,
-  [InvoiceStatus.PARTIALLY_PAID]: $localize`:@@invoiceStatusLabelPartiallyPaid:Partially paid`,
-  [InvoiceStatus.PAID]: $localize`:@@invoiceStatusLabelPaid:Paid`,
-  [InvoiceStatus.OVERDUE]: $localize`:@@invoiceStatusLabelOverdue:Overdue`,
-  [InvoiceStatus.CANCELLED]: $localize`:@@invoiceStatusLabelCancelled:Cancelled`,
+  [InvoiceStatus.DRAFT]: 'Черновик',
+  [InvoiceStatus.ISSUED]: 'Выставлен',
+  [InvoiceStatus.PARTIALLY_PAID]: 'Частично оплачен',
+  [InvoiceStatus.PAID]: 'Оплачен',
+  [InvoiceStatus.OVERDUE]: 'Просрочен',
+  [InvoiceStatus.CANCELLED]: 'Отменен',
 };
 
 @Component({

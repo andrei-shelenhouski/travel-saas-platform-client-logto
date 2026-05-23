@@ -110,9 +110,9 @@ export class RolesPermissionsComponent {
     return this.isSystemRole(selectedRole);
   });
 
-  private readonly deleteTooltipText = $localize`:@@rolesPermissionsDeleteWithMembers:Remove member assignments first`;
-  private readonly okLabel = $localize`:@@commonOk:OK`;
-  private readonly closeLabel = $localize`:@@commonClose:Close`;
+  private readonly deleteTooltipText = 'Сначала снимите назначения участников';
+  private readonly okLabel = 'OK';
+  private readonly closeLabel = 'Закрыть';
 
   constructor() {
     this.loadInitialData();
@@ -202,10 +202,10 @@ export class RolesPermissionsComponent {
     const memberCount = role.memberCount ?? 0;
 
     if (memberCount === 1) {
-      return $localize`:@@rolesPermissionsMemberCountOne:${memberCount}:memberCount: member`;
+      return `${memberCount} участник`;
     }
 
-    return $localize`:@@rolesPermissionsMemberCountOther:${memberCount}:memberCount: members`;
+    return `${memberCount} участников`;
   }
 
   protected isDeleteDisabled(role: RoleSummaryResponseDto): boolean {
@@ -228,15 +228,15 @@ export class RolesPermissionsComponent {
     }
 
     const name = role.name;
-    const message = $localize`:@@rolesPermissionsDeleteConfirmMessage:Delete role '${name}'? This cannot be undone.`;
+    const message = `Удалить роль «${name}»? Это действие нельзя отменить.`;
 
     this.dialog
       .open(ConfirmDialogComponent, {
         data: {
-          title: $localize`:@@rolesPermissionsDeleteConfirmTitle:Delete role`,
+          title: 'Удалить роль',
           message,
-          confirmLabel: $localize`:@@rolesPermissionsDeleteConfirmAction:Delete`,
-          cancelLabel: $localize`:@@commonCancel:Cancel`,
+          confirmLabel: 'Удалить',
+          cancelLabel: 'Отмена',
           confirmColor: 'warn',
         },
       })
@@ -280,7 +280,7 @@ export class RolesPermissionsComponent {
           this.loadError.set(
             this.resolveErrorMessage(
               error,
-              $localize`:@@rolesPermissionsLoadError:Failed to load roles and permissions`,
+              'Не удалось загрузить роли и права',
             ),
           );
         },
@@ -299,7 +299,7 @@ export class RolesPermissionsComponent {
           this.snackBar.open(
             this.resolveErrorMessage(
               error,
-              $localize`:@@rolesPermissionsDetailLoadError:Failed to load role details`,
+              'Не удалось загрузить данные роли',
             ),
             this.closeLabel,
             { duration: 5000 },
@@ -353,7 +353,7 @@ export class RolesPermissionsComponent {
           this.creatingRole.set(false);
           this.setSelectedRole(createdRole);
           this.snackBar.open(
-            $localize`:@@rolesPermissionsCreateSuccess:Role created`,
+            'Роль создана',
             this.okLabel,
             { duration: 3000 },
           );
@@ -371,7 +371,7 @@ export class RolesPermissionsComponent {
           this.snackBar.open(
             this.resolveErrorMessage(
               error,
-              $localize`:@@rolesPermissionsCreateError:Failed to create role`,
+              'Не удалось создать роль',
             ),
             this.closeLabel,
             { duration: 5000 },
@@ -398,7 +398,7 @@ export class RolesPermissionsComponent {
         next: (updatedRole) => {
           this.setSelectedRole(updatedRole);
           this.snackBar.open(
-            $localize`:@@rolesPermissionsSaveSuccess:Permissions updated`,
+            'Права обновлены',
             this.okLabel,
             { duration: 3000 },
           );
@@ -407,7 +407,7 @@ export class RolesPermissionsComponent {
           this.snackBar.open(
             this.resolveErrorMessage(
               error,
-              $localize`:@@rolesPermissionsSaveError:Failed to update permissions`,
+              'Не удалось обновить права',
             ),
             this.closeLabel,
             { duration: 5000 },
@@ -440,7 +440,7 @@ export class RolesPermissionsComponent {
           }
 
           this.snackBar.open(
-            $localize`:@@rolesPermissionsDeleteSuccess:Role deleted`,
+            'Роль удалена',
             this.okLabel,
             {
               duration: 3000,
@@ -450,7 +450,7 @@ export class RolesPermissionsComponent {
         error: (error: unknown) => {
           if (this.getErrorStatus(error) === 409) {
             this.deleteError.set(
-              $localize`:@@rolesPermissionsDeleteConflict:Remove all member assignments before deleting this role.`,
+              'Перед удалением роли снимите все назначения участников.',
             );
 
             return;
@@ -459,7 +459,7 @@ export class RolesPermissionsComponent {
           this.snackBar.open(
             this.resolveErrorMessage(
               error,
-              $localize`:@@rolesPermissionsDeleteError:Failed to delete role`,
+              'Не удалось удалить роль',
             ),
             this.closeLabel,
             { duration: 5000 },

@@ -4,15 +4,15 @@ import { ClientType } from '@app/shared/models';
 
 const BADGE_CONFIG: Record<string, { label: string; classes: string }> = {
   [ClientType.INDIVIDUAL]: {
-    label: 'Individual',
+    label: 'Физ. лицо',
     classes: 'bg-blue-100 text-blue-800',
   },
   [ClientType.COMPANY]: {
-    label: 'Company',
+    label: 'Компания',
     classes: 'bg-purple-100 text-purple-800',
   },
   [ClientType.B2B_AGENT]: {
-    label: 'B2B Agent',
+    label: 'B2B агент',
     classes: 'bg-orange-100 text-orange-800',
   },
 };

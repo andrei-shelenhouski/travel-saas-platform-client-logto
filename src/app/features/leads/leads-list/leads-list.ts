@@ -55,26 +55,26 @@ type SourceOption = {
 };
 
 const LEAD_STATUS_OPTIONS: LeadStatusOption[] = [
-  { value: 'NEW', label: $localize`:@@leadStatusOptionNew:New` },
-  { value: 'ASSIGNED', label: $localize`:@@leadStatusOptionAssigned:Assigned` },
-  { value: 'IN_PROGRESS', label: $localize`:@@leadStatusOptionInProgress:In progress` },
-  { value: 'OFFER_SENT', label: $localize`:@@leadStatusOptionOfferSent:Offer sent` },
-  { value: 'WON', label: $localize`:@@leadStatusOptionWon:Won` },
-  { value: 'LOST', label: $localize`:@@leadStatusOptionLost:Lost` },
-  { value: 'EXPIRED', label: $localize`:@@leadStatusOptionExpired:Expired` },
+  { value: 'NEW', label: 'Новый' },
+  { value: 'ASSIGNED', label: 'Назначен' },
+  { value: 'IN_PROGRESS', label: 'В работе' },
+  { value: 'OFFER_SENT', label: 'Отправлено КП' },
+  { value: 'WON', label: 'Выигран' },
+  { value: 'LOST', label: 'Проигран' },
+  { value: 'EXPIRED', label: 'Истек' },
 ];
 
 const CLIENT_TYPE_OPTIONS = [
-  { value: 'INDIVIDUAL', label: $localize`:@@leadClientTypeIndividual:Individual` },
-  { value: 'COMPANY', label: $localize`:@@leadClientTypeCompany:Company` },
-  { value: 'B2B_AGENT', label: $localize`:@@leadClientTypeB2BAgent:B2B agent` },
-  { value: 'AGENT', label: $localize`:@@leadClientTypeAgent:Agent` },
+  { value: 'INDIVIDUAL', label: 'Физ. лицо' },
+  { value: 'COMPANY', label: 'Компания' },
+  { value: 'B2B_AGENT', label: 'B2B агент' },
+  { value: 'AGENT', label: 'Агент' },
 ];
 
 const LEAD_SOURCE_OPTIONS: SourceOption[] = [
-  { value: 'MANUAL', label: $localize`:@@leadSourceManual:Manual` },
-  { value: 'INSTAGRAM_ADS', label: $localize`:@@leadSourceInstagramAds:Instagram ads` },
-  { value: 'TOURVISOR', label: $localize`:@@leadSourceTourvisor:TourVisor` },
+  { value: 'MANUAL', label: 'Вручную' },
+  { value: 'INSTAGRAM_ADS', label: 'Instagram Ads' },
+  { value: 'TOURVISOR', label: 'TourVisor' },
 ];
 
 const LEAD_STATUSES = new Set<LeadStatus>([
@@ -215,7 +215,7 @@ export class LeadsListComponent {
         return undefined;
       }
 
-      return err.error?.message ?? err.message ?? 'Failed to load leads';
+      return err.error?.message ?? err.message ?? 'Не удалось загрузить лиды';
     }
 
     return undefined;

@@ -24,7 +24,7 @@ describe('InvoiceStatusChipComponent', () => {
   it('should render cancelled status label', () => {
     const chip = fixture.nativeElement.querySelector('span') as HTMLSpanElement;
 
-    expect(chip.textContent?.trim()).toBe('Cancelled');
+    expect(chip.textContent?.trim()).toBe('Отменен');
     expect(chip.className).toContain('line-through');
   });
 });

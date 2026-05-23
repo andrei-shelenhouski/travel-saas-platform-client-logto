@@ -65,8 +65,8 @@ describe('CreateOfferComponent', () => {
     const text = fixture.nativeElement.textContent as string;
     const requestLink = fixture.nativeElement.querySelector('a[href="/app/requests/request-1"]');
 
-    expect(text).toContain('Pre-filled from trip request TR-1');
-    expect(requestLink?.textContent).toContain('View request');
+    expect(text).toContain('Предзаполнено из запроса на поездку TR-1');
+    expect(requestLink?.textContent).toContain('Открыть запрос');
   });
 
   it('shows empty travel details and does not fetch request when requestId is absent', async () => {
@@ -92,13 +92,13 @@ describe('CreateOfferComponent', () => {
 
     expect(fixture.componentInstance.requestLoading()).toBe(false);
     expect(fixture.componentInstance.requestPrefillWarning()).toContain(
-      'Trip request was not found',
+      'Запрос на поездку не найден',
     );
     expect(fixture.componentInstance.error()).toBe('');
 
     const text = fixture.nativeElement.textContent as string;
 
-    expect(text).toContain('Trip request was not found');
+    expect(text).toContain('Запрос на поездку не найден');
     expect(fixture.componentInstance.form.controls.destination.value).toBe('');
     expect(fixture.componentInstance.form.controls.departureCity.value).toBe('');
   });
@@ -150,10 +150,10 @@ describe('CreateOfferComponent', () => {
     expect(checkinField).not.toBeNull();
     expect(checkoutField).not.toBeNull();
     expect(checkinField?.querySelector('mat-error')?.textContent).toContain(
-      'Check-in date is required',
+      'Требуется дата заезда',
     );
     expect(checkoutField?.querySelector('mat-error')?.textContent).toContain(
-      'Check-out date is required',
+      'Требуется дата выезда',
     );
   });
 

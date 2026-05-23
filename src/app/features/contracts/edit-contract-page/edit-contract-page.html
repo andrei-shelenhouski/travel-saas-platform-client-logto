@@ -1,8 +1,8 @@
-<app-page-heading title="Edit contract" i18n-title="@@contractsEditPageTitle" />
+<app-page-heading title="Редактировать договор" />
 
 <section class="contract-edit-shell">
   @if (loading()) {
-    <p i18n="@@contractsEditLoading">Loading contract...</p>
+    <p>Загрузка договора...</p>
   } @else if (contract()) {
     <app-contract-form
       [initialContract]="contract()"

@@ -19,7 +19,7 @@ import type { CommentItem } from '@app/shared/models/comment.model';
             <p class="mt-1 text-xs text-gray-500">{{ c.author }} · {{ formatDate(c.createdAt) }}</p>
           </li>
         } @empty {
-          <p class="text-sm text-gray-500">No comments yet.</p>
+          <p class="text-sm text-gray-500">Комментариев пока нет.</p>
         }
       </ul>
       @if (canAdd()) {
@@ -40,7 +40,7 @@ import type { CommentItem } from '@app/shared/models/comment.model';
             [disabled]="!newComment.value.trim()"
             (click)="submit()"
           >
-            Add
+            Добавить
           </button>
         </div>
       }
@@ -48,10 +48,10 @@ import type { CommentItem } from '@app/shared/models/comment.model';
   `,
 })
 export class CommentComponent {
-  readonly title = input<string>('Comments');
+  readonly title = input<string>('Комментарии');
   readonly comments = input<CommentItem[]>([]);
   readonly canAdd = input<boolean>(true);
-  readonly placeholder = input<string>('Write a comment…');
+  readonly placeholder = input<string>('Напишите комментарий…');
 
   readonly addComment = output<{ text: string }>();
 
