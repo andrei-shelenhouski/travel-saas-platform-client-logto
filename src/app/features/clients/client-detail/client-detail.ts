@@ -52,7 +52,7 @@ import type {
 } from '@app/shared/models';
 
 const TYPE_LABEL: Record<string, string> = {
-  [ClientType.INDIVIDUAL]: 'Физическое лицо',
+  [ClientType.INDIVIDUAL]: 'Физ. лицо',
   [ClientType.COMPANY]: 'Компания',
   [ClientType.B2B_AGENT]: 'B2B агент',
 };

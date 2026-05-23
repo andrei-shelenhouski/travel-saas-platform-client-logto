@@ -29,7 +29,7 @@ const STATUS_OPTIONS: InvoiceStatusOption[] = [
 const CLIENT_TYPE_OPTIONS: ClientTypeOption[] = [
   {
     value: ClientType.INDIVIDUAL,
-    label: 'Частный',
+    label: 'Физ. лицо',
   },
   { value: ClientType.COMPANY, label: 'Компания' },
   { value: ClientType.B2B_AGENT, label: 'B2B агент' },

@@ -30,7 +30,7 @@ type TypeOption = {
 const TYPE_OPTIONS: TypeOption[] = [
   {
     value: ClientType.INDIVIDUAL,
-    label: 'Физическое лицо',
+    label: 'Физ. лицо',
     subLabel: 'Частный клиент',
     icon: 'person',
   },

@@ -208,7 +208,7 @@ export class ContractsListComponent {
 
   clientTypeLabel(type: string | undefined): string {
     if (type === ClientType.INDIVIDUAL) {
-      return 'Частный';
+      return 'Физ. лицо';
     }
 
     if (type === ClientType.COMPANY) {

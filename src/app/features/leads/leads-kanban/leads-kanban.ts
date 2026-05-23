@@ -70,7 +70,7 @@ const LEAD_STATUS_OPTIONS: LeadStatusOption[] = [
 ];
 
 const CLIENT_TYPE_OPTIONS: ClientTypeOption[] = [
-  { value: 'INDIVIDUAL', label: 'Частный' },
+  { value: 'INDIVIDUAL', label: 'Физ. лицо' },
   { value: 'COMPANY', label: 'Компания' },
   { value: 'B2B_AGENT', label: 'B2B агент' },
   { value: 'AGENT', label: 'Агент' },
@@ -78,7 +78,7 @@ const CLIENT_TYPE_OPTIONS: ClientTypeOption[] = [
 
 const LEAD_SOURCE_OPTIONS: SourceOption[] = [
   { value: 'MANUAL', label: 'Вручную' },
-  { value: 'INSTAGRAM_ADS', label: 'Реклама Instagram' },
+  { value: 'INSTAGRAM_ADS', label: 'Instagram Ads' },
   { value: 'TOURVISOR', label: 'TourVisor' },
 ];
 
@@ -399,9 +399,7 @@ export class LeadsKanbanComponent {
         return err.error.message;
       }
 
-      return (
-        err.message || 'Недопустимый переход статуса'
-      );
+      return err.message || 'Недопустимый переход статуса';
     }
 
     if (typeof err === 'object' && err !== null && 'message' in err) {

@@ -20,7 +20,7 @@ const SOURCE_BADGE_CONFIG: Record<string, LeadSourceBadgeConfig> = {
     icon: 'edit',
   },
   INSTAGRAM_ADS: {
-    label: 'Реклама Instagram',
+    label: 'Instagram Ads',
     color: '#a3328a',
     backgroundColor: '#fde7f6',
     icon: 'photo_camera',

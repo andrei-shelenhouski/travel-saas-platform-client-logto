@@ -15,7 +15,7 @@ export type ClientFilterValue = {
 
 const TYPE_OPTIONS: { value: ClientType | 'ALL'; label: string }[] = [
   { value: 'ALL', label: 'Все' },
-  { value: ClientType.INDIVIDUAL, label: 'Физическое лицо' },
+  { value: ClientType.INDIVIDUAL, label: 'Физ. лицо' },
   { value: ClientType.COMPANY, label: 'Компания' },
   { value: ClientType.B2B_AGENT, label: 'B2B агент' },
 ];
