@@ -85,3 +85,63 @@ Base URL
 
 http://localhost:8080 locally. Set via VITE_API_BASE_URL (or equivalent) in .env.
 ```
+
+## Issue Workflow
+
+All issues in this repo follow the TravelOps cross-repo workflow. Read this section before starting any issue.
+
+### Before starting an issue
+
+- The issue **must** be labeled `spec-linked` — never start an issue labeled `needs-spec`
+- Read the BA spec linked in the issue body under `## Spec`: `andrei-shelenhouski/travel-saas-platform-ba#N`
+- Check `## Depends on` in the issue body — the BE endpoint(s) listed there must be merged and deployed before FE work begins
+- If the BE issue is still open, label this issue `blocked` and wait
+
+### Creating new issues
+
+Use this body template:
+
+```markdown
+## Spec
+andrei-shelenhouski/travel-saas-platform-ba#<N>
+
+## API Contract
+andrei-shelenhouski/travel-saas-platform#<N>
+
+## Scope
+<what this issue covers — component, page, flow, etc.>
+
+## Depends on
+- andrei-shelenhouski/travel-saas-platform#<N> — <endpoint must be available>
+
+## Blocks
+- (none)
+```
+
+Always apply to new issues:
+- One `module:` label matching the domain area (`module: leads`, `module: offers`, etc.)
+- One priority label: `P0 · Critical`, `P1 · Important`, or `P2 · Nice to have`
+- `spec-linked` once a BA spec is confirmed and linked
+- `blocked` if the corresponding BE issue is not yet merged — name it in `## Depends on`
+
+### Cross-repo references
+
+Always use the full `owner/repo#N` format. Never use bare `#N` for cross-repo links.
+
+| Repo | Reference format |
+|---|---|
+| BA specs | `andrei-shelenhouski/travel-saas-platform-ba#N` |
+| BE issues | `andrei-shelenhouski/travel-saas-platform#N` |
+
+Put all relationships under `## Depends on` / `## Blocks` in the issue body — never in comments.
+
+### GitHub Project board
+
+Issues are auto-added to the **TravelOps v1** project board (#6) when opened. When picking up an issue:
+- Set the `Layer` field to `FE`
+- Update `Status` as work progresses: `Backlog → Ready → In Progress → In Review → Done`
+
+### When closing an issue
+
+- Confirm the linked BA spec issue (`andrei-shelenhouski/travel-saas-platform-ba#N`) lists this ticket under `## Implementation` in its body — update it if missing
+- Only close when the feature works end-to-end in the browser and all tests pass
