@@ -63,6 +63,7 @@ export type OrgRole = (typeof OrgRole)[keyof typeof OrgRole];
 
 export const PermissionKey = {
   SETTINGS_UPDATE: 'settings:update',
+  INTEGRATIONS_MANAGE: 'integrations:manage',
   MEMBERS_INVITE: 'members:invite',
   MEMBERS_UPDATE: 'members:update',
   ROLES_VIEW: 'roles:view',
@@ -386,6 +387,20 @@ export type TourvisorTestResponseDto = {
 export type TourvisorIntegrationSettingsResponseDto = TourvisorIntegrationStatusResponseDto;
 export type UpdateTourvisorIntegrationSettingsDto = UpsertTourvisorIntegrationRequestDto;
 export type TourvisorIntegrationTestResponseDto = TourvisorTestResponseDto;
+
+/** OpenAPI: TelegramPairingTokenResponse. POST /api/telegram/pairing-tokens. */
+export type TelegramPairingTokenResponseDto = {
+  token: string;
+  expiresAt?: string | null;
+};
+
+/** OpenAPI: TelegramPairingStatusResponse. GET /api/telegram/pairings/me. */
+export type TelegramPairingStatusResponseDto = {
+  status: 'unpaired' | 'paired' | (string & Record<never, never>);
+  pairedAt?: string | null;
+  connectedAt?: string | null;
+  disconnectedAt?: string | null;
+};
 
 // ----- Leads -----
 

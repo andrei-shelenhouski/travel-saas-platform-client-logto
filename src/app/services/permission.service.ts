@@ -19,6 +19,9 @@ export class PermissionService {
   readonly canUpdateSettings = computed(() =>
     this.authService.hasPermission(PermissionKey.SETTINGS_UPDATE),
   );
+  readonly canManageIntegrations = computed(() =>
+    this.authService.hasPermission(PermissionKey.INTEGRATIONS_MANAGE),
+  );
   readonly canInviteMembers = computed(() =>
     this.authService.hasPermission(PermissionKey.MEMBERS_INVITE),
   );

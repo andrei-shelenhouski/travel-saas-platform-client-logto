@@ -1,0 +1,59 @@
+<h2 mat-dialog-title>Connect Telegram</h2>
+
+<mat-dialog-content>
+  <p class="description">
+    Scan the QR code with your phone camera or open Telegram and send the token manually.
+  </p>
+
+  @if (inlineError(); as errorMessage) {
+    <p class="inline-error" role="alert">{{ errorMessage }}</p>
+  }
+
+  <section class="pairing-grid">
+    <div class="qr-column" [class.expired]="isExpired()">
+      @if (loadingQr()) {
+        <div class="qr-skeleton" aria-hidden="true"></div>
+      } @else if (qrCodeDataUrl(); as qrCode) {
+        <img [src]="qrCode" alt="Telegram pairing QR code" class="qr-code" height="220" width="220" />
+      }
+    </div>
+
+    <div class="token-column">
+      <p class="token-help">Can't scan? Open Telegram, find @TravelOpsBot and send:</p>
+      <p class="start-command">{{ startCommand() }}</p>
+
+      <button mat-stroked-button type="button" [disabled]="copying()" (click)="copyStartCommand()">
+        @if (copied()) {
+          <span>Copied!</span>
+        } @else {
+          <span>Copy token</span>
+        }
+      </button>
+    </div>
+  </section>
+
+  <div class="status-row">
+    @if (isExpired()) {
+      <output class="expired-label" aria-live="polite">
+        <mat-icon aria-hidden="true">warning</mat-icon>
+        <span>Token expired</span>
+      </output>
+    } @else {
+      <output class="countdown" aria-live="polite">Token expires in {{ countdownLabel() }}</output>
+    }
+
+    <button mat-button type="button" [disabled]="regenerating()" (click)="regenerateToken()">
+      @if (regenerating()) {
+        <span>Regenerating...</span>
+      } @else {
+        <span>Regenerate</span>
+      }
+    </button>
+  </div>
+
+  <output class="waiting" aria-live="polite">Waiting for connection...</output>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="close()">Close</button>
+</mat-dialog-actions>

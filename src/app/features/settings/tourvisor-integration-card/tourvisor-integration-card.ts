@@ -1,4 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
+import { formatDate } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -19,14 +20,17 @@ import { finalize } from 'rxjs';
 
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
+import { TelegramIntegrationService } from '@app/services/telegram-integration.service';
 import { TourvisorIntegrationService } from '@app/services/tourvisor-integration.service';
 import { ConfirmDialogComponent } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { TelegramPairingModalComponent } from '@app/features/settings/telegram-pairing-modal/telegram-pairing-modal';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { OrgRole } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import type {
+  TelegramPairingStatusResponseDto,
   TourvisorIntegrationSettingsResponseDto,
   UpdateTourvisorIntegrationSettingsDto,
 } from '@app/shared/models';
@@ -61,6 +65,7 @@ export class TourvisorIntegrationCardComponent {
   private readonly membersService = inject(OrganizationMembersService);
   private readonly permissions = inject(PermissionService);
   private readonly integrationService = inject(TourvisorIntegrationService);
+  private readonly telegramService = inject(TelegramIntegrationService);
   private readonly dialog = inject(MatDialog);
   private readonly toast = inject(ToastService);
 
@@ -82,18 +87,38 @@ export class TourvisorIntegrationCardComponent {
   protected readonly disconnecting = signal(false);
 
   protected readonly inlineError = signal<string | null>(null);
+  protected readonly telegramInlineError = signal<string | null>(null);
   protected readonly connectionTestState = signal<'valid' | 'invalid' | null>(null);
   protected readonly connectionTestMessage = signal<string | null>(null);
+
+  protected readonly telegramStatusLoading = signal(true);
+  protected readonly telegramConnectLoading = signal(false);
+  protected readonly telegramDisconnecting = signal(false);
+  protected readonly telegramPairingStatus = signal<TelegramPairingStatusResponseDto | null>(null);
 
   protected readonly settings = signal<TourvisorIntegrationSettingsResponseDto | null>(null);
   protected readonly editingConnectedSettings = signal(false);
   protected readonly agentOptions = signal<AgentOption[]>([]);
 
   protected readonly isAdmin = this.permissions.isAdmin;
+  protected readonly canManageIntegrations = this.permissions.canManageIntegrations;
   protected readonly isConnected = computed(() => this.settings()?.connected ?? false);
+  protected readonly isTelegramConnected = computed(
+    () => this.telegramPairingStatus()?.status === 'paired',
+  );
   protected readonly showSettingsForm = computed(
     () => !this.isConnected() || this.editingConnectedSettings(),
   );
+
+  protected readonly telegramConnectedSinceLabel = computed(() => {
+    const pairedAt = this.resolveTelegramPairedAt(this.telegramPairingStatus());
+
+    if (!pairedAt) {
+      return null;
+    }
+
+    return formatDate(pairedAt, 'longDate', this.locale);
+  });
 
   protected readonly connectedStatusLine = computed(() => {
     const currentSettings = this.settings();
@@ -159,6 +184,72 @@ export class TourvisorIntegrationCardComponent {
 
     this.loadAgentOptions();
     this.loadSettings();
+    this.loadTelegramPairingStatus();
+  }
+
+  protected connectTelegram(): void {
+    if (!this.canManageIntegrations()) {
+      return;
+    }
+
+    this.telegramInlineError.set(null);
+    this.telegramConnectLoading.set(true);
+
+    this.telegramService
+      .createPairingToken()
+      .pipe(finalize(() => this.telegramConnectLoading.set(false)))
+      .subscribe({
+        next: (tokenResponse) => {
+          this.dialog
+            .open(TelegramPairingModalComponent, {
+              width: '44rem',
+              maxWidth: '95vw',
+              autoFocus: false,
+              data: { token: tokenResponse },
+            })
+            .afterClosed()
+            .subscribe((pairingStatus: TelegramPairingStatusResponseDto | null | undefined) => {
+              if (pairingStatus?.status === 'paired') {
+                this.telegramPairingStatus.set(pairingStatus);
+                this.toast.showSuccess('Telegram connected.');
+
+                return;
+              }
+
+              this.loadTelegramPairingStatus();
+            });
+        },
+        error: (error: unknown) => {
+          this.telegramInlineError.set(
+            this.getErrorMessage(error, 'Could not start Telegram pairing.'),
+          );
+        },
+      });
+  }
+
+  protected confirmTelegramDisconnect(): void {
+    if (!this.canManageIntegrations()) {
+      return;
+    }
+
+    this.telegramInlineError.set(null);
+
+    this.dialog
+      .open(ConfirmDialogComponent, {
+        data: {
+          title: 'Disconnect Telegram?',
+          message: "You'll stop receiving bot notifications.",
+          confirmLabel: 'Disconnect',
+          cancelLabel: 'Cancel',
+          confirmColor: 'warn',
+        },
+      })
+      .afterClosed()
+      .subscribe((confirmed: boolean | undefined) => {
+        if (confirmed) {
+          this.disconnectTelegram();
+        }
+      });
   }
 
   protected openEditForm(): void {
@@ -206,7 +297,7 @@ export class TourvisorIntegrationCardComponent {
 
     const dto: UpdateTourvisorIntegrationSettingsDto = {
       authkey,
-      defaultAgentId: defaultAgentId ? defaultAgentId : null,
+      defaultAgentId: defaultAgentId || null,
       ingestOrderTypes: this.settings()?.ingestOrderTypes ?? DEFAULT_INGEST_ORDER_TYPES,
     };
 
@@ -336,6 +427,25 @@ export class TourvisorIntegrationCardComponent {
       });
   }
 
+  private disconnectTelegram(): void {
+    this.telegramDisconnecting.set(true);
+
+    this.telegramService
+      .disconnectMyPairing()
+      .pipe(finalize(() => this.telegramDisconnecting.set(false)))
+      .subscribe({
+        next: () => {
+          this.telegramPairingStatus.set({ status: 'unpaired' });
+          this.toast.showSuccess('Telegram disconnected.');
+        },
+        error: (error: unknown) => {
+          this.telegramInlineError.set(
+            this.getErrorMessage(error, 'Could not disconnect Telegram.'),
+          );
+        },
+      });
+  }
+
   private loadSettings(): void {
     this.loading.set(true);
     this.inlineError.set(null);
@@ -376,6 +486,26 @@ export class TourvisorIntegrationCardComponent {
         this.toast.showError(this.getErrorMessage(error, 'Не удалось загрузить список агентов.'));
       },
     });
+  }
+
+  private loadTelegramPairingStatus(): void {
+    this.telegramStatusLoading.set(true);
+    this.telegramInlineError.set(null);
+
+    this.telegramService
+      .getMyPairing()
+      .pipe(finalize(() => this.telegramStatusLoading.set(false)))
+      .subscribe({
+        next: (pairingStatus) => {
+          this.telegramPairingStatus.set(pairingStatus);
+        },
+        error: (error: unknown) => {
+          this.telegramPairingStatus.set({ status: 'unpaired' });
+          this.telegramInlineError.set(
+            this.getErrorMessage(error, 'Could not load Telegram connection status.'),
+          );
+        },
+      });
   }
 
   private scheduleSettingsRefresh(): void {
@@ -449,14 +579,27 @@ export class TourvisorIntegrationCardComponent {
     return this.relativeTimeFormatter.format(Math.round(diffInMs / dayInMs), 'day');
   }
 
+  private resolveTelegramPairedAt(
+    pairingStatus: TelegramPairingStatusResponseDto | null,
+  ): string | null {
+    if (pairingStatus?.status !== 'paired') {
+      return null;
+    }
+
+    return pairingStatus.pairedAt ?? pairingStatus.connectedAt ?? null;
+  }
+
   private getErrorMessage(error: unknown, fallback: string): string {
     if (error instanceof HttpErrorResponse) {
-      const apiMessage =
-        typeof error.error?.message === 'string'
-          ? error.error.message
-          : typeof error.error?.error === 'string'
-            ? error.error.error
-            : null;
+      const errorMessageValue = error.error?.message;
+      const errorFieldValue = error.error?.error;
+      let apiMessage: string | null = null;
+
+      if (typeof errorMessageValue === 'string') {
+        apiMessage = errorMessageValue;
+      } else if (typeof errorFieldValue === 'string') {
+        apiMessage = errorFieldValue;
+      }
 
       if (apiMessage) {
         return apiMessage;

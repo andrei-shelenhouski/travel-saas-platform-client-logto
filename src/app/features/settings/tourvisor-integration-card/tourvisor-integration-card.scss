@@ -3,6 +3,8 @@
 }
 
 .content {
+  display: grid;
+  gap: 1rem;
   margin: 0 auto;
   max-width: 60rem;
   padding: 1rem;
@@ -21,6 +23,27 @@
 
 .integration-card {
   border-radius: 0.75rem;
+}
+
+.telegram-card {
+  border-color: #cbd5e1;
+}
+
+.telegram-title {
+  align-items: center;
+  display: inline-flex;
+  gap: 0.5rem;
+}
+
+.telegram-loading-row {
+  align-items: center;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.telegram-loading-row p {
+  color: #334155;
+  margin: 0;
 }
 
 .connected-title {

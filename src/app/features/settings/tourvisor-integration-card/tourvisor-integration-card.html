@@ -156,6 +156,75 @@
           }
         </mat-card-content>
       </mat-card>
+
+      @if (canManageIntegrations()) {
+        <mat-card appearance="outlined" class="integration-card telegram-card">
+          <mat-card-header>
+            <mat-card-title>
+              <span class="telegram-title">
+                <span aria-hidden="true">🤖</span>
+                <span>Telegram Bot</span>
+              </span>
+            </mat-card-title>
+            <mat-card-subtitle>
+              @if (isTelegramConnected()) {
+                @if (telegramConnectedSinceLabel(); as connectedSinceLabel) {
+                  Connected since {{ connectedSinceLabel }}
+                } @else {
+                  Telegram account connected.
+                }
+              } @else {
+                Connect your Telegram account to receive notifications and create leads on the go.
+              }
+            </mat-card-subtitle>
+          </mat-card-header>
+
+          <mat-card-content>
+            @if (telegramInlineError(); as telegramErrorMessage) {
+              <p class="inline-error" role="alert">{{ telegramErrorMessage }}</p>
+            }
+
+            @if (telegramStatusLoading()) {
+              <section aria-live="polite" class="telegram-loading-row">
+                <mat-progress-spinner diameter="24" mode="indeterminate" />
+                <p>Loading Telegram status...</p>
+              </section>
+            } @else {
+              <div class="actions-row">
+                @if (isTelegramConnected()) {
+                  <button
+                    color="warn"
+                    mat-stroked-button
+                    type="button"
+                    [disabled]="telegramDisconnecting()"
+                    (click)="confirmTelegramDisconnect()"
+                  >
+                    @if (telegramDisconnecting()) {
+                      <span>Disconnecting...</span>
+                    } @else {
+                      <span>Disconnect</span>
+                    }
+                  </button>
+                } @else {
+                  <button
+                    color="primary"
+                    mat-flat-button
+                    type="button"
+                    [disabled]="telegramConnectLoading()"
+                    (click)="connectTelegram()"
+                  >
+                    @if (telegramConnectLoading()) {
+                      <span>Connecting...</span>
+                    } @else {
+                      <span>Connect Telegram</span>
+                    }
+                  </button>
+                }
+              </div>
+            }
+          </mat-card-content>
+        </mat-card>
+      }
     }
   </section>
 </div>

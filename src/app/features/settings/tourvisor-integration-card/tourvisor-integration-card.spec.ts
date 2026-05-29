@@ -8,17 +8,22 @@ import { of, throwError } from 'rxjs';
 
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
+import { TelegramIntegrationService } from '@app/services/telegram-integration.service';
 import { TourvisorIntegrationService } from '@app/services/tourvisor-integration.service';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import { TourvisorIntegrationCardComponent } from './tourvisor-integration-card';
 
-import type { TourvisorIntegrationSettingsResponseDto } from '@app/shared/models';
+import type {
+  TelegramPairingStatusResponseDto,
+  TourvisorIntegrationSettingsResponseDto,
+} from '@app/shared/models';
 
 describe('TourvisorIntegrationCardComponent', () => {
   let fixture: ComponentFixture<TourvisorIntegrationCardComponent>;
   let component: TourvisorIntegrationCardComponent;
   let adminAccess: boolean;
+  let canManageIntegrations: boolean;
 
   let integrationService: {
     getSettings: ReturnType<typeof vi.fn>;
@@ -32,6 +37,12 @@ describe('TourvisorIntegrationCardComponent', () => {
     open: ReturnType<typeof vi.fn>;
   };
 
+  let telegramService: {
+    createPairingToken: ReturnType<typeof vi.fn>;
+    getMyPairing: ReturnType<typeof vi.fn>;
+    disconnectMyPairing: ReturnType<typeof vi.fn>;
+  };
+
   let membersService: {
     findAll: ReturnType<typeof vi.fn>;
   };
@@ -43,6 +54,7 @@ describe('TourvisorIntegrationCardComponent', () => {
 
   beforeEach(async () => {
     adminAccess = true;
+    canManageIntegrations = true;
 
     integrationService = {
       getSettings: vi.fn(() => of({ connected: false })),
@@ -54,6 +66,17 @@ describe('TourvisorIntegrationCardComponent', () => {
 
     dialog = {
       open: vi.fn(() => ({ afterClosed: () => of(true) })),
+    };
+
+    telegramService = {
+      createPairingToken: vi.fn(() =>
+        of({
+          token: 'ABC-12345',
+          expiresAt: new Date(Date.now() + 15 * 60 * 1000).toISOString(),
+        }),
+      ),
+      getMyPairing: vi.fn(() => of({ status: 'unpaired' })),
+      disconnectMyPairing: vi.fn(() => of(undefined)),
     };
 
     membersService = {
@@ -85,12 +108,14 @@ describe('TourvisorIntegrationCardComponent', () => {
           provide: PermissionService,
           useValue: {
             isAdmin: () => adminAccess,
+            canManageIntegrations: () => canManageIntegrations,
           },
         },
         {
           provide: OrganizationMembersService,
           useValue: membersService,
         },
+        { provide: TelegramIntegrationService, useValue: telegramService },
         { provide: TourvisorIntegrationService, useValue: integrationService },
         { provide: MatDialog, useValue: dialog },
         { provide: ToastService, useValue: toast },
@@ -107,6 +132,11 @@ describe('TourvisorIntegrationCardComponent', () => {
 
     expect((component as unknown as { isConnected: () => boolean }).isConnected()).toBe(false);
     expect(host.querySelector('form')).toBeTruthy();
+    expect(host.textContent).toContain('Connect Telegram');
+  });
+
+  it('loads telegram pairing status on init', () => {
+    expect(telegramService.getMyPairing).toHaveBeenCalled();
   });
 
   it('requires authkey before submitting connect form', () => {
@@ -271,6 +301,68 @@ describe('TourvisorIntegrationCardComponent', () => {
     failingFixture.detectChanges();
 
     expect(toast.showError).toHaveBeenCalledWith('Agent service unavailable');
+  });
+
+  it('opens Telegram pairing modal after token is created', () => {
+    const api = component as unknown as {
+      connectTelegram: () => void;
+    };
+
+    dialog.open.mockReturnValue({ afterClosed: () => of(null) });
+
+    api.connectTelegram();
+
+    expect(telegramService.createPairingToken).toHaveBeenCalled();
+    expect(dialog.open).toHaveBeenCalled();
+  });
+
+  it('sets Telegram connected status when modal returns paired', () => {
+    const api = component as unknown as {
+      connectTelegram: () => void;
+      isTelegramConnected: () => boolean;
+    };
+
+    const pairedStatus: TelegramPairingStatusResponseDto = {
+      status: 'paired',
+      pairedAt: '2026-05-25T09:00:00.000Z',
+    };
+
+    dialog.open.mockReturnValue({ afterClosed: () => of(pairedStatus) });
+
+    api.connectTelegram();
+
+    expect(api.isTelegramConnected()).toBe(true);
+    expect(toast.showSuccess).toHaveBeenCalledWith('Telegram connected.');
+  });
+
+  it('hides Telegram card when integrations:manage is missing', () => {
+    fixture.destroy();
+    canManageIntegrations = false;
+
+    const restrictedFixture = TestBed.createComponent(TourvisorIntegrationCardComponent);
+
+    restrictedFixture.detectChanges();
+
+    expect((restrictedFixture.nativeElement as HTMLElement).textContent).not.toContain(
+      'Connect Telegram',
+    );
+  });
+
+  it('disconnects Telegram after confirmation', () => {
+    const api = component as unknown as {
+      telegramPairingStatus: { set: (value: TelegramPairingStatusResponseDto) => void };
+      confirmTelegramDisconnect: () => void;
+    };
+
+    api.telegramPairingStatus.set({
+      status: 'paired',
+      pairedAt: '2026-05-25T09:00:00.000Z',
+    });
+
+    api.confirmTelegramDisconnect();
+
+    expect(telegramService.disconnectMyPairing).toHaveBeenCalled();
+    expect(toast.showSuccess).toHaveBeenCalledWith('Telegram disconnected.');
   });
 });
 
