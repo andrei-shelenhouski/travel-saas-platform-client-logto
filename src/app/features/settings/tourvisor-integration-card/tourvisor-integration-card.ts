@@ -1,5 +1,5 @@
-import { HttpErrorResponse } from '@angular/common/http';
 import { formatDate } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -18,13 +18,13 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { finalize } from 'rxjs';
 
+import { TelegramPairingModalComponent } from '@app/features/settings/telegram-pairing-modal/telegram-pairing-modal';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { TelegramIntegrationService } from '@app/services/telegram-integration.service';
 import { TourvisorIntegrationService } from '@app/services/tourvisor-integration.service';
 import { ConfirmDialogComponent } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { TelegramPairingModalComponent } from '@app/features/settings/telegram-pairing-modal/telegram-pairing-modal';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { OrgRole } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';

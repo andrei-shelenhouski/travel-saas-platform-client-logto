@@ -12,9 +12,15 @@
   <section class="pairing-grid">
     <div class="qr-column" [class.expired]="isExpired()">
       @if (loadingQr()) {
-        <div class="qr-skeleton" aria-hidden="true"></div>
+        <div aria-hidden="true" class="qr-skeleton"></div>
       } @else if (qrCodeDataUrl(); as qrCode) {
-        <img [src]="qrCode" alt="Telegram pairing QR code" class="qr-code" height="220" width="220" />
+        <img
+          alt="Telegram pairing QR code"
+          class="qr-code"
+          height="220"
+          width="220"
+          [src]="qrCode"
+        />
       }
     </div>
 
@@ -34,12 +40,12 @@
 
   <div class="status-row">
     @if (isExpired()) {
-      <output class="expired-label" aria-live="polite">
+      <output aria-live="polite" class="expired-label">
         <mat-icon aria-hidden="true">warning</mat-icon>
         <span>Token expired</span>
       </output>
     } @else {
-      <output class="countdown" aria-live="polite">Token expires in {{ countdownLabel() }}</output>
+      <output aria-live="polite" class="countdown">Token expires in {{ countdownLabel() }}</output>
     }
 
     <button mat-button type="button" [disabled]="regenerating()" (click)="regenerateToken()">
@@ -51,7 +57,7 @@
     </button>
   </div>
 
-  <output class="waiting" aria-live="polite">Waiting for connection...</output>
+  <output aria-live="polite" class="waiting">Waiting for connection...</output>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">

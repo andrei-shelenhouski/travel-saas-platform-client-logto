@@ -1,5 +1,12 @@
 import { HttpErrorResponse } from '@angular/common/http';
-import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnDestroy,
+  signal,
+} from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -89,7 +96,9 @@ export class TelegramPairingModalComponent implements OnDestroy {
         this.regenerating.set(false);
       },
       error: (error: unknown) => {
-        this.inlineError.set(this.resolveErrorMessage(error, 'Could not regenerate Telegram token.'));
+        this.inlineError.set(
+          this.resolveErrorMessage(error, 'Could not regenerate Telegram token.'),
+        );
         this.regenerating.set(false);
       },
     });

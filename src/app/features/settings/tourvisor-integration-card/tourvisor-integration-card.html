@@ -49,13 +49,7 @@
               <div class="detail-row">
                 <span class="detail-label">Агент по умолчанию</span>
                 <span class="detail-value">{{ selectedAgentLabel() }}</span>
-                <button
-                  mat-button
-                  type="button"
-                  (click)="openEditForm()"
-                >
-                  Изменить
-                </button>
+                <button mat-button type="button" (click)="openEditForm()">Изменить</button>
               </div>
 
               <div class="detail-row">
@@ -103,11 +97,7 @@
               </mat-form-field>
 
               <div class="help-row">
-                <button
-                  mat-button
-                  type="button"
-                  [matTooltip]="authkeyHelpText"
-                >
+                <button mat-button type="button" [matTooltip]="authkeyHelpText">
                   Где это найти?
                 </button>
               </div>
