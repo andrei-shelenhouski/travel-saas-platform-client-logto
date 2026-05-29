@@ -537,4 +537,128 @@ describe('CreateInvoiceComponent', () => {
     );
     expect(navigateSpy).toHaveBeenCalledWith(['/app/invoices', 'invoice-1']);
   });
+
+  // ── Bug #60 regression tests ────────────────────────────────────────────────
+
+  it('[#60] isB2bMode updates synchronously (same tick) when a B2B_AGENT client is selected', async () => {
+    await createComponent();
+
+    const b2bClient = createClient({ id: 'b2b-1', type: ClientType.B2B_AGENT });
+
+    // Both the autocomplete selection and the subsequent getById call must return B2B_AGENT.
+    clientsService.getById.mockReturnValue(of(b2bClient));
+
+    const cmp = component as unknown as {
+      form: CreateInvoiceComponent['form'];
+      isB2bMode: () => boolean;
+      onClientSelected: (client: ClientResponseDto) => void;
+    };
+
+    expect(cmp.isB2bMode()).toBe(false);
+
+    // Simulate selecting a B2B_AGENT client. loadClientById also fires synchronously here
+    // (of() observable) and must NOT reset the type back to INDIVIDUAL.
+    cmp.onClientSelected(b2bClient);
+
+    // Signal must already be true without any detectChanges() call.
+    expect(cmp.isB2bMode()).toBe(true);
+  });
+
+  it('[#60] pricingSummary recalculates as tourCost is entered in B2B_AGENT mode', async () => {
+    await createComponent();
+
+    const cmp = component as unknown as {
+      form: CreateInvoiceComponent['form'];
+      lineItemsArray: CreateInvoiceComponent['lineItemsArray'];
+      onClientSelected: (client: ClientResponseDto) => void;
+      onB2bTourCostInput: (index: number) => void;
+      pricingSummary: () => { subtotal: number; total: number };
+    };
+
+    clientsService.getById.mockReturnValue(
+      of(createClient({ id: 'b2b-2', type: ClientType.B2B_AGENT, commissionPct: 10 })),
+    );
+
+    cmp.onClientSelected(createClient({ id: 'b2b-2', type: ClientType.B2B_AGENT, commissionPct: 10 }));
+
+    // Initially all values are 0
+    expect(cmp.pricingSummary().subtotal).toBe(0);
+
+    // User fills tourCost
+    cmp.lineItemsArray.at(0).controls.tourCost.setValue(1200);
+    cmp.lineItemsArray.at(0).controls.commissionPct.setValue(10);
+    cmp.onB2bTourCostInput(0);
+
+    // Summary must reflect netToPay = 1200 - 120 = 1080
+    expect(cmp.pricingSummary().subtotal).toBe(1080);
+    expect(cmp.pricingSummary().total).toBe(1080);
+  });
+
+  it('[#60] form becomes valid after filling clientId, description, and tourCost for B2B_AGENT', async () => {
+    await createComponent();
+
+    const cmp = component as unknown as {
+      form: CreateInvoiceComponent['form'];
+      lineItemsArray: CreateInvoiceComponent['lineItemsArray'];
+      onClientSelected: (client: ClientResponseDto) => void;
+      onB2bTourCostInput: (index: number) => void;
+    };
+
+    clientsService.getById.mockReturnValue(
+      of(createClient({ id: 'b2b-3', type: ClientType.B2B_AGENT })),
+    );
+
+    cmp.onClientSelected(createClient({ id: 'b2b-3', type: ClientType.B2B_AGENT }));
+    fixture.detectChanges();
+
+    // Form is invalid: tourCost (required in B2B) and description not yet filled
+    expect(cmp.form.invalid).toBe(true);
+
+    // Fill the required B2B fields
+    cmp.lineItemsArray.at(0).controls.description.setValue('Агентское вознаграждение');
+    cmp.lineItemsArray.at(0).controls.tourCost.setValue(1200);
+    cmp.onB2bTourCostInput(0);
+    fixture.detectChanges();
+
+    // Form must now be valid so the Save draft button can be enabled
+    expect(cmp.form.valid).toBe(true);
+  });
+
+  it('[#60] standard-mode totals are unaffected after switching back from B2B_AGENT to INDIVIDUAL', async () => {
+    await createComponent();
+
+    const cmp = component as unknown as {
+      form: CreateInvoiceComponent['form'];
+      lineItemsArray: CreateInvoiceComponent['lineItemsArray'];
+      onClientSelected: (client: ClientResponseDto) => void;
+      onStandardItemInput: (index: number) => void;
+      pricingSummary: () => { subtotal: number; total: number };
+    };
+
+    // Switch to B2B then back to INDIVIDUAL
+    clientsService.getById.mockReturnValueOnce(
+      of(createClient({ id: 'b2b-4', type: ClientType.B2B_AGENT })),
+    );
+    cmp.onClientSelected(createClient({ id: 'b2b-4', type: ClientType.B2B_AGENT }));
+    fixture.detectChanges();
+
+    expect(cmp.form.controls.clientType.value).toBe(ClientType.B2B_AGENT);
+
+    clientsService.getById.mockReturnValueOnce(
+      of(createClient({ id: 'ind-1', type: ClientType.INDIVIDUAL })),
+    );
+    cmp.onClientSelected(createClient({ id: 'ind-1', type: ClientType.INDIVIDUAL }));
+    fixture.detectChanges();
+
+    expect(cmp.form.controls.clientType.value).toBe(ClientType.INDIVIDUAL);
+
+    // Fill standard-mode fields
+    cmp.lineItemsArray.at(0).controls.description.setValue('Transfer');
+    cmp.lineItemsArray.at(0).controls.unitPrice.setValue(300);
+    cmp.lineItemsArray.at(0).controls.quantity.setValue(2);
+    cmp.onStandardItemInput(0);
+
+    expect(cmp.pricingSummary().subtotal).toBe(600);
+    expect(cmp.pricingSummary().total).toBe(600);
+  });
 });
