@@ -300,9 +300,15 @@ export class BookingDetailComponent {
 
     this.personsService
       .getByClientId(booking.clientId)
-      .pipe(switchMap((person) => this.personsService.getFamily(person.id)))
+      .pipe(
+        switchMap((person) =>
+          this.personsService
+            .getFamily(person.id)
+            .pipe(map((family) => [person, ...family])),
+        ),
+      )
       .subscribe({
-        next: (familyMembers) => this.openAddTravelersDialog(familyMembers),
+        next: (members) => this.openAddTravelersDialog(members),
         error: () => this.toast.showError('Не удалось загрузить список семьи'),
       });
   }
