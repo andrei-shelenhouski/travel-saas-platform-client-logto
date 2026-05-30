@@ -111,6 +111,13 @@
             </div>
           </section>
 
+          @if (client()?.type === 'INDIVIDUAL') {
+            <app-traveler-profile-section
+              [clientId]="client()!.id"
+              [clientType]="client()!.type"
+            />
+          }
+
           <section class="client-card client-history-card">
             <div class="client-card-header">
               <h2 class="client-card-title">История</h2>

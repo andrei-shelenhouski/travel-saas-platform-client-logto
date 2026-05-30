@@ -32,6 +32,7 @@ import {
 import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS, MAT_MENU, MAT_TABS } from '@app/shared/material-imports';
+import { TravelerProfileSectionComponent } from '@app/features/clients/client-detail/traveler-profile-section/traveler-profile-section';
 import {
   ClientType,
   ContractStatus,
@@ -88,6 +89,7 @@ type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices
     ...MAT_MENU,
     ...MAT_TABS,
     PageHeading,
+    TravelerProfileSectionComponent,
   ],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
