@@ -1328,7 +1328,7 @@ export type PersonGender = (typeof PersonGender)[keyof typeof PersonGender];
 /** OpenAPI: PersonDocumentResponse. */
 export type PersonDocumentResponseDto = {
   id: string;
-  type: PersonDocumentType | string;
+  type: PersonDocumentType | (string & Record<never, never>);
   series?: string;
   numberLast4: string;
   issueDate?: string;
@@ -1341,7 +1341,7 @@ export type PersonDocumentResponseDto = {
 /** OpenAPI: PersonAddressResponse. */
 export type PersonAddressResponseDto = {
   id: string;
-  type: PersonAddressType | string;
+  type: PersonAddressType | (string & Record<never, never>);
   street?: string;
   city?: string;
   region?: string;
@@ -1354,7 +1354,7 @@ export type PersonAddressResponseDto = {
 /** OpenAPI: PersonContactResponse. */
 export type PersonContactResponseDto = {
   id: string;
-  medium: PersonContactMedium | string;
+  medium: PersonContactMedium | (string & Record<never, never>);
   value: string;
   primary: boolean;
   createdAt: string;
@@ -1368,7 +1368,7 @@ export type PersonResponseDto = {
   lastName: string;
   patronymic?: string;
   dateOfBirth?: string;
-  gender?: PersonGender | string;
+  gender?: PersonGender | (string & Record<never, never>);
   citizenship?: string;
   dataConsentGiven?: boolean;
   dataConsentDate?: string;
@@ -1420,7 +1420,7 @@ export type PersonDocumentRequestDto = {
 
 /** OpenAPI: PersonAddressRequest. POST/PUT /api/persons/:id/addresses body. */
 export type PersonAddressRequestDto = {
-  type: PersonAddressType | string;
+  type: PersonAddressType | (string & Record<never, never>);
   street?: string;
   city?: string;
   region?: string;
@@ -1431,7 +1431,7 @@ export type PersonAddressRequestDto = {
 
 /** OpenAPI: PersonContactRequest. POST/PUT /api/persons/:id/contacts body. */
 export type PersonContactRequestDto = {
-  medium: PersonContactMedium | string;
+  medium: PersonContactMedium | (string & Record<never, never>);
   value: string;
   primary?: boolean;
 };
