@@ -178,11 +178,22 @@ export class CreateInvoiceComponent {
   protected readonly clientOptions = computed(() => this.clientsResource.value()?.items ?? []);
   protected readonly clientOptionsLoading = computed(() => this.clientsResource.isLoading());
 
-  protected readonly clientTypeSignal = toSignal(
-    this.form.controls.clientType.valueChanges.pipe(startWith(this.form.controls.clientType.value)),
-    { initialValue: this.form.controls.clientType.value },
+  /**
+   * Synchronous signal for client type. Updated in the valueChanges subscription (not via
+   * toSignal) so the template reacts immediately when clientType.setValue() is called, without
+   * waiting for the next async effect flush that toSignal would introduce.
+   */
+  protected readonly clientTypeSignal = signal<ClientTypeValue>(
+    this.form.controls.clientType.value,
   );
   protected readonly isB2bMode = computed(() => this.clientTypeSignal() === ClientType.B2B_AGENT);
+
+  /**
+   * Version counter bumped after every line-item value mutation so that pricingSummary()
+   * — a computed — re-evaluates reactively even when triggered by programmatic setValue() calls
+   * (e.g. onB2bTourCostInput, applyDefaultCommissionPct) rather than only by DOM events.
+   */
+  private readonly lineItemsVersion = signal(0);
   protected readonly currencyOptions = CURRENCY_OPTIONS;
   protected readonly languageOptions = LANGUAGE_OPTIONS;
 
@@ -199,12 +210,17 @@ export class CreateInvoiceComponent {
       this.resetLineItems();
     }
 
-    this.form.controls.clientType.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => {
+    this.form.controls.clientType.valueChanges.pipe(takeUntilDestroyed()).subscribe((type) => {
+      // Update the synchronous signal immediately so isB2bMode() and pricingSummary reflect
+      // the new type in the same change-detection cycle that triggered the value change.
+      this.clientTypeSignal.set(type);
       this.applyLineItemModeValidators();
 
       for (let index = 0; index < this.lineItemsArray.length; index++) {
         this.recalculateRow(index);
       }
+
+      this.bumpLineItemsVersion();
     });
 
     this.clientSearchControl.valueChanges.pipe(takeUntilDestroyed()).subscribe((value) => {
@@ -323,6 +339,7 @@ export class CreateInvoiceComponent {
     this.lineItemsArray.push(this.createLineItemGroup(newIndex));
     this.syncLineItemSortOrder();
     this.recalculateRow(newIndex);
+    this.bumpLineItemsVersion();
     this.form.markAsDirty();
   }
 
@@ -333,6 +350,7 @@ export class CreateInvoiceComponent {
 
     this.lineItemsArray.removeAt(index);
     this.syncLineItemSortOrder();
+    this.bumpLineItemsVersion();
     this.form.markAsDirty();
   }
 
@@ -346,6 +364,7 @@ export class CreateInvoiceComponent {
     this.lineItemsArray.removeAt(event.previousIndex);
     this.lineItemsArray.insert(event.currentIndex, moved);
     this.syncLineItemSortOrder();
+    this.bumpLineItemsVersion();
     this.form.markAsDirty();
   }
 
@@ -360,6 +379,7 @@ export class CreateInvoiceComponent {
       toSafeNumber(row.controls.unitPrice.value) * toSafeNumber(row.controls.quantity.value);
 
     row.controls.total.setValue(total);
+    this.bumpLineItemsVersion();
   }
 
   protected onB2bCommissionPctInput(index: number): void {
@@ -482,15 +502,19 @@ export class CreateInvoiceComponent {
     }).format(amount);
   }
 
-  protected pricingSummary(): {
+  readonly pricingSummary = computed<{
     subtotal: number;
     total: number;
     totalCommission: number;
     totalVat: number;
-  } {
+  }>(() => {
+    // Declare dependency on both signals so this computed re-runs when either changes.
+    const isB2b = this.isB2bMode();
+    this.lineItemsVersion(); // reactive dependency — bumped after each line-item mutation
+
     const lineItems = this.lineItemsArray.controls.map((row) => row.getRawValue());
 
-    if (this.form.controls.clientType.value === ClientType.B2B_AGENT) {
+    if (isB2b) {
       const totalCommission = lineItems.reduce((sum, item) => {
         return sum + toSafeNumber(item.commissionAmount);
       }, 0);
@@ -519,7 +543,7 @@ export class CreateInvoiceComponent {
       totalCommission: 0,
       totalVat: 0,
     };
-  }
+  });
 
   private loadDefaults(): void {
     this.organizationSettingsService.get().subscribe({
@@ -864,6 +888,7 @@ export class CreateInvoiceComponent {
     row.controls.commissionAmount.updateValueAndValidity();
     row.controls.netToPay.setValue(netToPay);
     row.controls.commissionVat.setValue(commissionVat);
+    this.bumpLineItemsVersion();
   }
 
   private buildUpdateInvoiceDto(): UpdateInvoiceDto {
@@ -959,6 +984,11 @@ export class CreateInvoiceComponent {
     });
 
     this.lineItemsArray.updateValueAndValidity({ emitEvent: false });
+  }
+
+  /** Increments the version counter so pricingSummary (a computed) re-evaluates. */
+  private bumpLineItemsVersion(): void {
+    this.lineItemsVersion.update((v) => v + 1);
   }
 
   private hasMeaningfulLineItems(): boolean {
