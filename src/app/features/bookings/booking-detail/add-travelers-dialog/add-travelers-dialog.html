@@ -20,7 +20,7 @@
           }
         </label>
 
-        @if (isSelected(member.id) && member.documents.length > 0) {
+        @if (isSelected(member.id) && docs(member).length > 0) {
           <label class="doc-label">
             Документ
             <select
@@ -28,7 +28,7 @@
               [value]="selectedDocumentId(member)"
               (change)="setDocument(member.id, $any($event.target).value)"
             >
-              @for (doc of member.documents; track doc.id) {
+              @for (doc of docs(member); track doc.id) {
                 <option [value]="doc.id">{{ documentLabel(doc) }}</option>
               }
             </select>

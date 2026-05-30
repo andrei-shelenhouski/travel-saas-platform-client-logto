@@ -58,8 +58,13 @@ export class AddTravelersDialogComponent {
     return [member.lastName, member.firstName, member.patronymic].filter(Boolean).join(' ');
   }
 
+  protected docs(member: PersonResponseDto): PersonDocumentResponseDto[] {
+    return (member.documents as PersonDocumentResponseDto[] | null) ?? [];
+  }
+
   protected primaryDocument(member: PersonResponseDto): PersonDocumentResponseDto | undefined {
-    return member.documents.find((item) => item.primary) ?? member.documents[0];
+    const docs = this.docs(member);
+    return docs.find((item) => item.primary) ?? docs[0];
   }
 
   protected selectedDocumentId(member: PersonResponseDto): string {
@@ -68,8 +73,7 @@ export class AddTravelersDialogComponent {
 
   protected selectedDocument(member: PersonResponseDto): PersonDocumentResponseDto | undefined {
     const selectedDocumentId = this.selectedDocumentId(member);
-
-    return member.documents.find((item) => item.id === selectedDocumentId);
+    return this.docs(member).find((item) => item.id === selectedDocumentId);
   }
 
   protected shouldShowExpiryWarning(member: PersonResponseDto): boolean {
