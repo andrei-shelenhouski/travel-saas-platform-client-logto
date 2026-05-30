@@ -354,7 +354,7 @@ export class TravelerProfileSectionComponent {
     this.editingDocId.set(doc.id);
     this.addDocForm.reset({
       type: doc.type as string,
-      number: doc.numberLast4,
+      number: '',
       series: doc.series ?? '',
       issueDate: doc.issueDate ?? '',
       expiryDate: doc.expiryDate ?? '',

@@ -1,7 +1,7 @@
 <section class="traveler-card">
   <div class="traveler-header">
     <h2>Туристы</h2>
-    <button color="primary" mat-stroked-button type="button" (click)="addTravelers.emit()">
+    <button color="primary" mat-stroked-button type="button" [disabled]="!canEdit()" (click)="addTravelers.emit()">
       + Добавить туриста
     </button>
   </div>

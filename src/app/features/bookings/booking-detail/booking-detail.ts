@@ -302,13 +302,25 @@ export class BookingDetailComponent {
       .getByClientId(booking.clientId)
       .pipe(
         switchMap((person) =>
-          this.personsService
-            .getFamily(person.id)
-            .pipe(map((family) => [person, ...family])),
+          forkJoin({
+            family: this.personsService.getFamily(person.id),
+            relationships: this.personsService.getRelationships(person.id),
+          }).pipe(
+            map(({ family, relationships }) => ({
+              members: [person, ...family],
+              activeRelationshipPersonIds: [
+                person.id,
+                ...relationships
+                  .filter((r) => r.status === 'ACTIVE')
+                  .map((r) => r.toPersonId),
+              ],
+            })),
+          ),
         ),
       )
       .subscribe({
-        next: (members) => this.openAddTravelersDialog(members),
+        next: ({ members, activeRelationshipPersonIds }) =>
+          this.openAddTravelersDialog(members, activeRelationshipPersonIds),
         error: () => this.toast.showError('Не удалось загрузить список семьи'),
       });
   }
@@ -337,7 +349,10 @@ export class BookingDetailComponent {
     });
   }
 
-  private openAddTravelersDialog(familyMembers: PersonResponseDto[]): void {
+  private openAddTravelersDialog(
+    familyMembers: PersonResponseDto[],
+    activeRelationshipPersonIds: string[],
+  ): void {
     const booking = this.booking();
 
     if (!booking) {
@@ -346,13 +361,14 @@ export class BookingDetailComponent {
 
     const dialogRef = this.dialog.open<
       AddTravelersDialogComponent,
-      { familyMembers: PersonResponseDto[]; returnDate?: string },
+      { familyMembers: PersonResponseDto[]; returnDate?: string; activeRelationshipPersonIds: string[] },
       { items: { personId: string; documentId?: string }[] }
     >(AddTravelersDialogComponent, {
       width: '760px',
       data: {
         familyMembers,
         returnDate: booking.returnDate,
+        activeRelationshipPersonIds,
       },
     });
 
@@ -366,11 +382,17 @@ export class BookingDetailComponent {
             return of<BookingTravelerResponseDto[]>([]);
           }
 
-          const clientPersonId = booking.clientPersonId;
-          const leadIndex = clientPersonId
-            ? raw.findIndex((item) => item.personId === clientPersonId)
-            : -1;
-          const leadIdx = leadIndex >= 0 ? leadIndex : 0;
+          const existingTravelers = this.allData.value()?.travelers ?? [];
+          const hasExistingLead = existingTravelers.some((t) => t.role === 'LEAD');
+
+          let leadIdx = -1;
+          if (!hasExistingLead) {
+            const clientPersonId = booking.clientPersonId;
+            const leadIndex = clientPersonId
+              ? raw.findIndex((item) => item.personId === clientPersonId)
+              : -1;
+            leadIdx = leadIndex >= 0 ? leadIndex : 0;
+          }
 
           const travelers = raw.map((item, i) => ({
             ...item,

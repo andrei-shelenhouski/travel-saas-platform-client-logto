@@ -37,13 +37,13 @@ export class BookingTravelersSectionComponent {
   });
 
   protected canRemove(): boolean {
-    const status = this.bookingStatus();
-
-    if (status !== 'IN_PROGRESS' && status !== 'COMPLETED' && status !== 'CANCELLED') {
-      return true;
+    if (!this.canEdit()) {
+      return false;
     }
 
-    return this.canEdit();
+    const status = this.bookingStatus();
+
+    return status !== 'IN_PROGRESS' && status !== 'COMPLETED' && status !== 'CANCELLED';
   }
 
   protected documentLabel(traveler: BookingTravelerResponseDto): string {

@@ -8,6 +8,7 @@ import type { PersonDocumentResponseDto, PersonResponseDto } from '@app/shared/m
 type AddTravelersDialogData = {
   familyMembers: PersonResponseDto[];
   returnDate?: string;
+  activeRelationshipPersonIds: string[];
 };
 
 type AddTravelersDialogResult = {
@@ -42,9 +43,10 @@ export class AddTravelersDialogComponent {
 
   protected addWholeFamily(): void {
     const nextSelected: Record<string, boolean> = {};
+    const activeIds = new Set(this.data.activeRelationshipPersonIds ?? []);
 
     for (const member of this.familyMembers()) {
-      nextSelected[member.id] = member.active !== false;
+      nextSelected[member.id] = activeIds.size > 0 ? activeIds.has(member.id) : member.active !== false;
     }
 
     this.selected.set(nextSelected);
