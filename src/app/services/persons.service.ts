@@ -1,11 +1,14 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { environment } from '@environments/environment';
 
 import type {
+  AddPersonRelationshipRequestDto,
+  CreateDetachedPersonRequestDto,
   CreatePersonRequestDto,
   LinkPersonRequestDto,
   PersonAddressRequestDto,
@@ -14,7 +17,9 @@ import type {
   PersonContactResponseDto,
   PersonDocumentRequestDto,
   PersonDocumentResponseDto,
+  PersonRelationshipResponseDto,
   PersonResponseDto,
+  PersonSearchResultDto,
   UpdatePersonRequestDto,
 } from '@app/shared/models';
 
@@ -25,8 +30,16 @@ const PERSONS_URL = `${environment.baseUrl}/api/persons`;
 export class PersonsService {
   private readonly http = inject(HttpClient);
 
+  getById(id: string): Observable<PersonResponseDto> {
+    return this.http.get<PersonResponseDto>(`${PERSONS_URL}/${id}`);
+  }
+
   getByClientId(clientId: string): Observable<PersonResponseDto> {
     return this.http.get<PersonResponseDto>(`${CLIENTS_URL}/${clientId}/person`);
+  }
+
+  create(dto: CreateDetachedPersonRequestDto): Observable<PersonResponseDto> {
+    return this.http.post<PersonResponseDto>(PERSONS_URL, dto);
   }
 
   createForClient(clientId: string, dto: CreatePersonRequestDto): Observable<PersonResponseDto> {
@@ -39,6 +52,50 @@ export class PersonsService {
 
   update(id: string, dto: UpdatePersonRequestDto): Observable<PersonResponseDto> {
     return this.http.patch<PersonResponseDto>(`${PERSONS_URL}/${id}`, dto);
+  }
+
+  search(query: string): Observable<PersonSearchResultDto[]> {
+    if (query.trim().length < 2) {
+      return of([]);
+    }
+
+    const params = new HttpParams().set('q', query.trim());
+
+    return this.http
+      .get<{ items: PersonResponseDto[] }>(`${PERSONS_URL}/search`, { params })
+      .pipe(
+        map((response) =>
+          response.items.map((person) => ({
+            id: person.id,
+            fullName: [person.lastName, person.firstName, person.patronymic]
+              .filter(Boolean)
+              .join(' '),
+            dateOfBirth: person.dateOfBirth,
+            citizenship: person.citizenship,
+            clientId: person.clientId,
+          })),
+        ),
+      );
+  }
+
+  getRelationships(personId: string): Observable<PersonRelationshipResponseDto[]> {
+    return this.http.get<PersonRelationshipResponseDto[]>(
+      `${PERSONS_URL}/${personId}/relationships`,
+    );
+  }
+
+  getFamily(personId: string): Observable<PersonResponseDto[]> {
+    return this.http.get<PersonResponseDto[]>(`${PERSONS_URL}/${personId}/family`);
+  }
+
+  addRelationship(
+    personId: string,
+    dto: AddPersonRelationshipRequestDto,
+  ): Observable<PersonRelationshipResponseDto> {
+    return this.http.post<PersonRelationshipResponseDto>(
+      `${PERSONS_URL}/${personId}/relationships`,
+      dto,
+    );
   }
 
   getDocuments(personId: string): Observable<PersonDocumentResponseDto[]> {
@@ -57,7 +114,7 @@ export class PersonsService {
     docId: string,
     dto: PersonDocumentRequestDto,
   ): Observable<PersonDocumentResponseDto> {
-    return this.http.put<PersonDocumentResponseDto>(
+    return this.http.patch<PersonDocumentResponseDto>(
       `${PERSONS_URL}/${personId}/documents/${docId}`,
       dto,
     );
@@ -87,7 +144,7 @@ export class PersonsService {
     addrId: string,
     dto: PersonAddressRequestDto,
   ): Observable<PersonAddressResponseDto> {
-    return this.http.put<PersonAddressResponseDto>(
+    return this.http.patch<PersonAddressResponseDto>(
       `${PERSONS_URL}/${personId}/addresses/${addrId}`,
       dto,
     );
@@ -110,7 +167,7 @@ export class PersonsService {
     ctcId: string,
     dto: PersonContactRequestDto,
   ): Observable<PersonContactResponseDto> {
-    return this.http.put<PersonContactResponseDto>(
+    return this.http.patch<PersonContactResponseDto>(
       `${PERSONS_URL}/${personId}/contacts/${ctcId}`,
       dto,
     );

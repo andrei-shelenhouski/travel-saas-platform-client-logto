@@ -1,0 +1,51 @@
+<h2 mat-dialog-title>Добавить туриста</h2>
+
+<mat-dialog-content>
+  <div class="dialog-toolbar">
+    <button mat-stroked-button type="button" (click)="addWholeFamily()">Добавить всю семью</button>
+  </div>
+
+  <div class="members-list">
+    @for (member of familyMembers(); track member.id) {
+      <div class="member-item" [class.member-item-inactive]="member.active === false">
+        <label class="member-toggle">
+          <input
+            type="checkbox"
+            [checked]="isSelected(member.id)"
+            (change)="toggleMember(member.id, $any($event.target).checked)"
+          />
+          <span>{{ fullName(member) }}</span>
+          @if (member.active === false) {
+            <span class="inactive-pill">Неактивно</span>
+          }
+        </label>
+
+        @if (isSelected(member.id) && member.documents.length > 0) {
+          <label class="doc-label">
+            Документ
+            <select
+              class="doc-select"
+              [value]="selectedDocumentId(member)"
+              (change)="setDocument(member.id, $any($event.target).value)"
+            >
+              @for (doc of member.documents; track doc.id) {
+                <option [value]="doc.id">{{ documentLabel(doc) }}</option>
+              }
+            </select>
+          </label>
+        }
+
+        @if (isSelected(member.id) && shouldShowExpiryWarning(member)) {
+          <p class="doc-warning">
+            Выбранный документ истекает менее чем через 6 месяцев после возврата
+          </p>
+        }
+      </div>
+    }
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="close()">Отмена</button>
+  <button color="primary" mat-flat-button type="button" (click)="save()">Добавить</button>
+</mat-dialog-actions>

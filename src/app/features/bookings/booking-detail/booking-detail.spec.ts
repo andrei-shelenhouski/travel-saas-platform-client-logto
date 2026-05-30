@@ -6,6 +6,7 @@ import { of, throwError } from 'rxjs';
 import { BookingsService } from '@app/services/bookings.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
+import { PersonsService } from '@app/services/persons.service';
 import { BookingStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
@@ -38,6 +39,9 @@ describe('BookingDetailComponent', () => {
     getById: ReturnType<typeof vi.fn>;
     listInvoices: ReturnType<typeof vi.fn>;
     listDocuments: ReturnType<typeof vi.fn>;
+    listTravelers: ReturnType<typeof vi.fn>;
+    addTraveler: ReturnType<typeof vi.fn>;
+    removeTraveler: ReturnType<typeof vi.fn>;
     updateStatus: ReturnType<typeof vi.fn>;
     update: ReturnType<typeof vi.fn>;
     uploadDocument: ReturnType<typeof vi.fn>;
@@ -54,6 +58,9 @@ describe('BookingDetailComponent', () => {
       getById: vi.fn(() => of(MOCK_BOOKING)),
       listInvoices: vi.fn(() => of({ items: [], total: 0, page: 1, limit: 20 })),
       listDocuments: vi.fn(() => of([])),
+      listTravelers: vi.fn(() => of([])),
+      addTraveler: vi.fn(() => of({ id: 'traveler-1' })),
+      removeTraveler: vi.fn(() => of(undefined)),
       updateStatus: vi.fn(() => of({ ...MOCK_BOOKING, status: BookingStatus.CANCELLED })),
       update: vi.fn(() => of(MOCK_BOOKING)),
       uploadDocument: vi.fn(() => of({ id: 'doc-1', filename: 'test.pdf' })),
@@ -84,6 +91,13 @@ describe('BookingDetailComponent', () => {
           useValue: { findAll: () => of([]) },
         },
         {
+          provide: PersonsService,
+          useValue: {
+            getByClientId: vi.fn(() => of({ id: 'person-1' })),
+            getFamily: vi.fn(() => of([])),
+          },
+        },
+        {
           provide: PermissionService,
           useValue: permissionService,
         },
@@ -107,6 +121,7 @@ describe('BookingDetailComponent', () => {
     expect(bookingsService.getById).toHaveBeenCalledWith('booking-1');
     expect(bookingsService.listInvoices).toHaveBeenCalledWith('booking-1');
     expect(bookingsService.listDocuments).toHaveBeenCalledWith('booking-1');
+    expect(bookingsService.listTravelers).toHaveBeenCalledWith('booking-1');
   });
 
   it('should expose booking signal after load', async () => {

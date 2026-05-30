@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -9,6 +18,8 @@ import { catchError, of } from 'rxjs';
 
 import { PersonsService } from '@app/services/persons.service';
 import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+import { ToastService } from '@app/shared/services/toast.service';
+
 import type {
   CreatePersonRequestDto,
   PersonAddressRequestDto,
@@ -19,8 +30,6 @@ import type {
   PersonDocumentResponseDto,
   PersonResponseDto,
 } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
-
 const DOC_TYPE_LABEL: Record<string, string> = {
   INTL_PASSPORT: 'Загранпаспорт',
   NATIONAL_ID: 'Паспорт РБ',
@@ -64,6 +73,8 @@ const GENDER_LABEL: Record<string, string | undefined> = {
 export class TravelerProfileSectionComponent {
   readonly clientId = input.required<string>();
   readonly clientType = input.required<string>();
+  readonly primaryContactChanged = output<void>();
+  readonly personIdResolved = output<string>();
 
   protected readonly docTypeLabel = DOC_TYPE_LABEL;
   protected readonly addrTypeLabel = ADDR_TYPE_LABEL;
@@ -114,6 +125,16 @@ export class TravelerProfileSectionComponent {
   protected readonly person = computed(() => this.personResource.value() ?? null);
   protected readonly loading = computed(() => this.personResource.isLoading());
   protected readonly hasPerson = computed(() => this.person() !== null);
+
+  constructor() {
+    effect(() => {
+      const id = this.person()?.id;
+
+      if (id) {
+        this.personIdResolved.emit(id);
+      }
+    });
+  }
 
   // ---- Create person form ----
   protected readonly showCreateForm = signal(false);
@@ -583,7 +604,10 @@ export class TravelerProfileSectionComponent {
     }
 
     this.personsService.setContactPrimary(p.id, ctcId).subscribe({
-      next: () => this.personVersion.update((v) => v + 1),
+      next: () => {
+        this.personVersion.update((v) => v + 1);
+        this.primaryContactChanged.emit();
+      },
       error: () => this.toast.showError('Не удалось установить основной контакт'),
     });
   }

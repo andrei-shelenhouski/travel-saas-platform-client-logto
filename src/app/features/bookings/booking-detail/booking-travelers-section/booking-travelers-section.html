@@ -1,0 +1,54 @@
+<section class="traveler-card">
+  <div class="traveler-header">
+    <h2>Туристы</h2>
+    <button color="primary" mat-stroked-button type="button" (click)="addTravelers.emit()">
+      + Добавить туриста
+    </button>
+  </div>
+
+  @if (hasExpiringDocuments()) {
+    <p class="traveler-warning">Есть туристы с документами, срок действия которых скоро истекает</p>
+  }
+
+  @if (travelers().length === 0) {
+    <p class="traveler-empty">Туристы не добавлены</p>
+  } @else {
+    <div class="overflow-x-auto">
+      <table class="traveler-table">
+        <thead>
+          <tr>
+            <th>Роль</th>
+            <th>Имя</th>
+            <th>Документ</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (traveler of travelers(); track traveler.id) {
+            <tr>
+              <td>
+                @if (isLeadRow(traveler)) {
+                  <span class="lead-badge">LEAD</span>
+                } @else {
+                  —
+                }
+              </td>
+              <td>{{ personName(traveler) }}</td>
+              <td>{{ documentLabel(traveler) }}</td>
+              <td class="text-right">
+                <button
+                  mat-button
+                  type="button"
+                  [disabled]="!canRemove()"
+                  (click)="removeTraveler.emit(traveler)"
+                >
+                  ×
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

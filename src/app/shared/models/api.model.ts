@@ -684,6 +684,33 @@ export type BookingDocumentResponseDto = {
   uploadedByName?: string;
 };
 
+/** OpenAPI: BookingTravelerResponse. */
+export type BookingTravelerResponseDto = {
+  id: string;
+  personId: string;
+  role: 'LEAD' | 'COMPANION' | (string & Record<never, never>);
+  personSnapshot?: Record<string, unknown>;
+  expiryWarnings?: string[];
+};
+
+/** OpenAPI: TravelerEntry. */
+export type TravelerEntryDto = {
+  personId: string;
+  documentId?: string;
+};
+
+/** OpenAPI: AddBookingTravelerRequest. POST /api/bookings/:id/travelers body. */
+export type AddBookingTravelerRequestDto = {
+  travelers: TravelerEntryDto[];
+};
+
+/** OpenAPI: BookingExpiringDocumentHint. */
+export type BookingExpiringDocumentHintDto = {
+  personShortName?: string;
+  documentLabel?: string;
+  expiryDate?: string;
+};
+
 /** OpenAPI: ErrorResponse. */
 export type ErrorResponseDto = {
   status?: number;
@@ -716,6 +743,11 @@ export type BookingResponseDto = {
   internalNotes?: string;
   invoicesCount?: number;
   documentsCount?: number;
+  hasExpiringDocuments?: boolean;
+  expiringDocuments?: BookingExpiringDocumentHintDto[];
+  travelers?: string;
+  bookingTravelers?: BookingTravelerResponseDto[];
+  clientPersonId?: string;
   createdById?: string;
   createdAt: string;
   updatedAt: string;
@@ -1325,6 +1357,23 @@ export const PersonGender = {
 } as const;
 export type PersonGender = (typeof PersonGender)[keyof typeof PersonGender];
 
+export const PersonRelationshipType = {
+  SPOUSE_OF: 'SPOUSE_OF',
+  PARENT_OF: 'PARENT_OF',
+  SIBLING_OF: 'SIBLING_OF',
+  GRANDPARENT_OF: 'GRANDPARENT_OF',
+  OTHER: 'OTHER',
+} as const;
+export type PersonRelationshipType =
+  (typeof PersonRelationshipType)[keyof typeof PersonRelationshipType];
+
+export const PersonRelationshipStatus = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+} as const;
+export type PersonRelationshipStatus =
+  (typeof PersonRelationshipStatus)[keyof typeof PersonRelationshipStatus];
+
 /** OpenAPI: PersonDocumentResponse. */
 export type PersonDocumentResponseDto = {
   id: string;
@@ -1379,6 +1428,26 @@ export type PersonResponseDto = {
   documents: PersonDocumentResponseDto[];
   addresses: PersonAddressResponseDto[];
   contacts: PersonContactResponseDto[];
+  clientId?: string;
+};
+
+/** OpenAPI: PersonSearchResult. */
+export type PersonSearchResultDto = {
+  id: string;
+  fullName: string;
+  dateOfBirth?: string;
+  citizenship?: string;
+  clientId?: string;
+};
+
+/** OpenAPI: PersonRelationshipResponse. */
+export type PersonRelationshipResponseDto = {
+  id: string;
+  personId: string;
+  toPersonId: string;
+  type: PersonRelationshipType | (string & Record<never, never>);
+  status: PersonRelationshipStatus | (string & Record<never, never>);
+  createdAt?: string;
 };
 
 /** OpenAPI: CreatePersonRequest. POST /api/clients/:id/person body. */
@@ -1405,6 +1474,22 @@ export type UpdatePersonRequestDto = {
   dataConsentGiven?: boolean;
   dataConsentDate?: string;
   notes?: string;
+};
+
+/** OpenAPI: CreatePersonRequest. POST /api/persons body. */
+export type CreateDetachedPersonRequestDto = {
+  firstName: string;
+  lastName: string;
+  patronymic?: string;
+  dateOfBirth?: string;
+  gender?: string;
+  citizenship?: string;
+};
+
+/** OpenAPI: AddPersonRelationshipRequest. POST /api/persons/:id/relationships body. */
+export type AddPersonRelationshipRequestDto = {
+  toPersonId: string;
+  type: PersonRelationshipType | (string & Record<never, never>);
 };
 
 /** OpenAPI: PersonDocumentRequest. POST/PUT /api/persons/:id/documents body. */

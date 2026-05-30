@@ -14,9 +14,7 @@
         [subtitle]="typeLabel[c.type]"
         [title]="c.companyName ?? c.fullName"
       >
-        <a mat-stroked-button [relativeTo]="route" [routerLink]="['edit']"
-          >Редактировать клиента</a
-        >
+        <a mat-stroked-button [relativeTo]="route" [routerLink]="['edit']">Редактировать клиента</a>
       </app-page-heading>
 
       <div class="m-4">
@@ -115,7 +113,13 @@
             <app-traveler-profile-section
               [clientId]="client()!.id"
               [clientType]="client()!.type"
+              (primaryContactChanged)="onTravelerPrimaryContactChanged()"
+              (personIdResolved)="onTravelerPersonIdResolved($event)"
             />
+
+            @if (client()?.personId || resolvedPersonId()) {
+              <app-family-section [personId]="(client()?.personId || resolvedPersonId())!" />
+            }
           }
 
           <section class="client-card client-history-card">
@@ -434,7 +438,11 @@
                     <div class="client-history-empty">
                       <p>Договоры ещё не добавлены</p>
                       @if (canCreateContracts()) {
-                        <button mat-stroked-button type="button" (click)="openCreateContractDialog()">
+                        <button
+                          mat-stroked-button
+                          type="button"
+                          (click)="openCreateContractDialog()"
+                        >
                           <span>Добавить договор</span>
                         </button>
                       }

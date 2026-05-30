@@ -32,7 +32,6 @@ import {
 import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS, MAT_MENU, MAT_TABS } from '@app/shared/material-imports';
-import { TravelerProfileSectionComponent } from '@app/features/clients/client-detail/traveler-profile-section/traveler-profile-section';
 import {
   ClientType,
   ContractStatus,
@@ -41,6 +40,9 @@ import {
   SignatureMethod,
 } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
+
+import { FamilySectionComponent } from './family-section/family-section';
+import { TravelerProfileSectionComponent } from './traveler-profile-section/traveler-profile-section';
 
 import type {
   BookingSummaryDto,
@@ -89,6 +91,7 @@ type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices
     ...MAT_MENU,
     ...MAT_TABS,
     PageHeading,
+    FamilySectionComponent,
     TravelerProfileSectionComponent,
   ],
   templateUrl: './client-detail.html',
@@ -417,6 +420,16 @@ export class ClientDetailComponent {
     if (pending === 0) {
       this.tagsSaveLoading.set(false);
     }
+  }
+
+  readonly resolvedPersonId = signal<string | null>(null);
+
+  protected onTravelerPersonIdResolved(personId: string): void {
+    this.resolvedPersonId.set(personId);
+  }
+
+  protected onTravelerPrimaryContactChanged(): void {
+    this.data.reload();
   }
 
   goToLead(lead: LeadResponseDto): void {

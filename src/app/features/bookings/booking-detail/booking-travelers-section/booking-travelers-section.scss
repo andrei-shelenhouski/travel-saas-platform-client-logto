@@ -1,0 +1,58 @@
+:host {
+  display: block;
+}
+
+.traveler-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  padding: 16px;
+}
+
+.traveler-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.traveler-warning {
+  margin-bottom: 10px;
+  border: 1px solid #f59e0b;
+  border-radius: 10px;
+  background: #fffbeb;
+  color: #b45309;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.traveler-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.traveler-table th,
+.traveler-table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 10px;
+  text-align: left;
+}
+
+.traveler-empty {
+  color: #6b7280;
+}
+
+.traveler-row-inactive {
+  color: #9ca3af;
+  font-style: italic;
+}
+
+.lead-badge {
+  border-radius: 999px;
+  background: #dbeafe;
+  color: #1d4ed8;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 700;
+}

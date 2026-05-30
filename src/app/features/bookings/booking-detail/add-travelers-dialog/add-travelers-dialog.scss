@@ -1,0 +1,58 @@
+:host {
+  display: block;
+}
+
+.dialog-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.members-list {
+  display: grid;
+  gap: 10px;
+}
+
+.member-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.member-item-inactive {
+  opacity: 0.6;
+}
+
+.member-toggle {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.inactive-pill {
+  margin-left: auto;
+  font-size: 11px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+.doc-label {
+  display: grid;
+  gap: 4px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.doc-select {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 6px;
+}
+
+.doc-warning {
+  margin-top: 8px;
+  color: #b45309;
+  font-size: 12px;
+  font-weight: 600;
+}

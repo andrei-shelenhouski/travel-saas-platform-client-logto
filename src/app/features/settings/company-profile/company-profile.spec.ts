@@ -87,7 +87,6 @@ describe('CompanyProfileComponent', () => {
     settingsService.get.mockReturnValue(errorObs);
 
     const newFixture = TestBed.createComponent(CompanyProfileComponent);
-    const newComponent = newFixture.componentInstance;
 
     // Trigger component initialization
     newFixture.detectChanges();

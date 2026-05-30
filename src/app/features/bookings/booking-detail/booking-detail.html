@@ -22,11 +22,7 @@
   } @else {
     @let b = booking();
     @if (b) {
-      <app-page-heading
-        subtitle="Детали бронирования"
-        [showBackButton]="true"
-        [title]="b.number"
-      >
+      <app-page-heading subtitle="Детали бронирования" [showBackButton]="true" [title]="b.number">
         @if (b.status === BookingStatus.PENDING_CONFIRMATION) {
           <button
             color="primary"
@@ -66,9 +62,7 @@
             <div>
               <p class="booking-header-label">Номер бронирования</p>
               <h2 class="booking-header-title">{{ b.number }}</h2>
-              <p class="booking-header-subtitle">
-                <span>ID:</span> {{ b.id }}
-              </p>
+              <p class="booking-header-subtitle"><span>ID:</span> {{ b.id }}</p>
             </div>
             <app-booking-status-chip [status]="b.status" />
           </div>
@@ -83,6 +77,22 @@
               [saving]="savingTravel()"
               (save)="onSaveTravelDetails($event)"
             />
+
+            @if (!showLegacyTravelers()) {
+              <app-booking-travelers-section
+                [bookingStatus]="b.status"
+                [canEdit]="canManageTravelers()"
+                [returnDate]="b.returnDate"
+                [travelers]="travelers()"
+                (addTravelers)="onOpenAddTravelers()"
+                (removeTraveler)="onRemoveTraveler($event)"
+              />
+            } @else {
+              <section class="rounded-lg border border-gray-200 bg-white p-4">
+                <h3 class="mb-2 text-sm font-semibold text-gray-900">Туристы</h3>
+                <p class="text-sm text-gray-700">{{ b.travelers }}</p>
+              </section>
+            }
 
             <app-accommodation-table [accommodationDetails]="b.accommodationDetails" />
 

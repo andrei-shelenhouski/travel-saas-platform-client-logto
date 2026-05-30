@@ -1,0 +1,46 @@
+:host {
+  display: block;
+}
+
+.person-detail-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  padding: 16px;
+}
+
+.person-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #fff;
+  padding: 16px;
+}
+
+.person-card h2 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+
+.person-card dl div {
+  margin-bottom: 6px;
+}
+
+.person-card dt {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.person-card dd {
+  margin: 0;
+}
+
+.dependent-badge {
+  display: inline-flex;
+  margin-bottom: 8px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
