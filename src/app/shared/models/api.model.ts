@@ -696,6 +696,7 @@ export type BookingTravelerResponseDto = {
 /** OpenAPI: TravelerEntry. */
 export type TravelerEntryDto = {
   personId: string;
+  role: 'LEAD' | 'COMPANION' | (string & Record<never, never>);
   documentId?: string;
 };
 

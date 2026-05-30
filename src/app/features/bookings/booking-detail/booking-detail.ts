@@ -354,13 +354,24 @@ export class BookingDetailComponent {
       .afterClosed()
       .pipe(
         switchMap((result: { items?: { personId: string; documentId?: string }[] } | undefined) => {
-          const items = result?.items ?? [];
+          const raw = result?.items ?? [];
 
-          if (items.length === 0) {
+          if (raw.length === 0) {
             return of<BookingTravelerResponseDto[]>([]);
           }
 
-          return this.bookingsService.addTravelers(booking.id, { travelers: items });
+          const clientPersonId = booking.clientPersonId;
+          const leadIndex = clientPersonId
+            ? raw.findIndex((item) => item.personId === clientPersonId)
+            : -1;
+          const leadIdx = leadIndex >= 0 ? leadIndex : 0;
+
+          const travelers = raw.map((item, i) => ({
+            ...item,
+            role: i === leadIdx ? ('LEAD' as const) : ('COMPANION' as const),
+          }));
+
+          return this.bookingsService.addTravelers(booking.id, { travelers });
         }),
       )
       .subscribe({
