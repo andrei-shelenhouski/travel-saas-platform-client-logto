@@ -1,7 +1,4 @@
-<app-page-heading
-  subtitle="Всего: {{ totalElements() }} бронирований"
-  title="Бронирования"
->
+<app-page-heading subtitle="Всего: {{ totalElements() }} бронирований" title="Бронирования">
   @if (showCreateBookingButton()) {
     <button color="primary" mat-flat-button type="button" (click)="navigateToCreateBooking()">
       <mat-icon>add</mat-icon>
@@ -45,9 +42,7 @@
       </ng-container>
 
       <ng-container matColumnDef="destination">
-        <th *matHeaderCellDef mat-header-cell>
-          Направление
-        </th>
+        <th *matHeaderCellDef mat-header-cell>Направление</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.destination || '—' }}
         </td>
@@ -67,6 +62,22 @@
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="expiringDocuments">
+        <th *matHeaderCellDef mat-header-cell>Документы</th>
+        <td *matCellDef="let element" mat-cell>
+          @if (hasExpiringDocumentBadge(element)) {
+            <span
+              class="inline-flex rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800"
+              [title]="expiringDocumentTooltip(element)"
+            >
+              Документ ⚠
+            </span>
+          } @else {
+            —
+          }
+        </td>
+      </ng-container>
+
       <ng-container matColumnDef="status">
         <th *matHeaderCellDef mat-header-cell>Статус</th>
         <td *matCellDef="let element" mat-cell>
@@ -75,9 +86,7 @@
       </ng-container>
 
       <ng-container matColumnDef="assignedBackofficeName">
-        <th *matHeaderCellDef mat-header-cell>
-          Назначенный сотрудник
-        </th>
+        <th *matHeaderCellDef mat-header-cell>Назначенный сотрудник</th>
         <td *matCellDef="let element" mat-cell>
           {{ element.assignedBackofficeName || '—' }}
         </td>
@@ -97,11 +106,7 @@
           <div class="m-10 align-middle text-center">
             @if (loading()) {
               <p class="pb-4">Загрузка бронирований...</p>
-              <mat-spinner
-                aria-label="Загрузка бронирований"
-                class="mx-auto"
-                diameter="36"
-              />
+              <mat-spinner aria-label="Загрузка бронирований" class="mx-auto" diameter="36" />
             } @else {
               <p>Нет бронирований по текущим фильтрам</p>
             }

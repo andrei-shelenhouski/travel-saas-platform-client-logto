@@ -131,6 +131,7 @@ export class BookingsListComponent {
     'destination',
     'departDate',
     'returnDate',
+    'expiringDocuments',
     'status',
     'assignedBackofficeName',
   ];
@@ -185,7 +186,7 @@ export class BookingsListComponent {
     const snapshot = booking.clientSnapshot;
 
     if (snapshot && typeof snapshot === 'object') {
-      const map = snapshot as Record<string, unknown>;
+      const map = snapshot;
       const candidates = [map['companyName'], map['fullName'], map['name'], map['clientName']];
 
       for (const candidate of candidates) {
@@ -196,6 +197,28 @@ export class BookingsListComponent {
     }
 
     return '—';
+  }
+
+  hasExpiringDocumentBadge(booking: BookingResponseDto): boolean {
+    if (booking.status === BookingStatus.CANCELLED || booking.status === BookingStatus.COMPLETED) {
+      return false;
+    }
+
+    return booking.hasExpiringDocuments === true;
+  }
+
+  expiringDocumentTooltip(booking: BookingResponseDto): string {
+    const firstHint = booking.expiringDocuments?.[0];
+
+    if (!firstHint) {
+      return 'Документ истекает менее чем за 6 месяцев до возвращения';
+    }
+
+    const label = firstHint.documentLabel || 'Паспорт';
+    const person = firstHint.personShortName || 'Турист';
+    const expiryDate = firstHint.expiryDate || '—';
+
+    return `${label} [${person}] истекает ${expiryDate} — менее 6 месяцев до возвращения`;
   }
 
   private syncStateFromQueryParams(): void {

@@ -8,13 +8,15 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { EMPTY, forkJoin, of } from 'rxjs';
-import { finalize, map } from 'rxjs/operators';
+import { finalize, map, switchMap } from 'rxjs/operators';
 
 import { BookingsService } from '@app/services/bookings.service';
 import { PermissionService } from '@app/services/permission.service';
+import { PersonsService } from '@app/services/persons.service';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
@@ -22,7 +24,9 @@ import { BookingStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import { AccommodationTableComponent } from './accommodation-table/accommodation-table';
+import { AddTravelersDialogComponent } from './add-travelers-dialog/add-travelers-dialog';
 import { AdditionalServicesTableComponent } from './additional-services-table/additional-services-table';
+import { BookingTravelersSectionComponent } from './booking-travelers-section/booking-travelers-section';
 import { CancellationDialogComponent } from './cancellation-dialog/cancellation-dialog';
 import { ClientSnapshotCardComponent } from './client-snapshot-card/client-snapshot-card';
 import { DocumentListComponent } from './document-list/document-list';
@@ -33,7 +37,9 @@ import { TravelDetailsSectionComponent } from './travel-details-section/travel-d
 import type {
   BookingDocumentResponseDto,
   BookingResponseDto,
+  BookingTravelerResponseDto,
   InvoiceResponseDto,
+  PersonResponseDto,
   UpdateBookingDto,
 } from '@app/shared/models';
 
@@ -51,6 +57,7 @@ import type {
     OperationsSectionComponent,
     PageHeading,
     TravelDetailsSectionComponent,
+    BookingTravelersSectionComponent,
     ...MAT_BUTTONS,
   ],
   templateUrl: './booking-detail.html',
@@ -61,7 +68,9 @@ export class BookingDetailComponent {
   private readonly router = inject(Router);
   private readonly bookingsService = inject(BookingsService);
   private readonly permissions = inject(PermissionService);
+  private readonly personsService = inject(PersonsService);
   private readonly toast = inject(ToastService);
+  private readonly dialog = inject(MatDialog);
 
   readonly BookingStatus = BookingStatus;
 
@@ -72,6 +81,7 @@ export class BookingDetailComponent {
       booking: BookingResponseDto;
       invoices: InvoiceResponseDto[];
       documents: BookingDocumentResponseDto[];
+      travelers: BookingTravelerResponseDto[];
     },
     {
       id: string | null;
@@ -97,6 +107,7 @@ export class BookingDetailComponent {
         booking: this.bookingsService.getById(id),
         invoices: invoices$,
         documents: this.bookingsService.listDocuments(id),
+        travelers: this.bookingsService.listTravelers(id),
       });
     },
   });
@@ -104,7 +115,12 @@ export class BookingDetailComponent {
   readonly booking = computed(() => this.allData.value()?.booking ?? null);
   readonly invoices = computed(() => this.allData.value()?.invoices ?? []);
   readonly documents = computed(() => this.allData.value()?.documents ?? []);
+  readonly travelers = computed(() => this.allData.value()?.travelers ?? []);
   readonly canViewInvoices = computed(() => this.permissions.canViewInvoices());
+  readonly canManageTravelers = computed(() => this.permissions.canUpdateBookings());
+  readonly showLegacyTravelers = computed(
+    () => this.travelers().length === 0 && Boolean(this.booking()?.travelers),
+  );
   readonly loading = computed(() => this.allData.isLoading());
   readonly loadError = computed(() => this.allData.error());
   readonly loadNotFound = computed(() => {
@@ -273,6 +289,138 @@ export class BookingDetailComponent {
       },
       error: (err) => this.toast.showError(err.error?.message ?? 'Не удалось удалить документ'),
     });
+  }
+
+  onOpenAddTravelers(): void {
+    const booking = this.booking();
+
+    if (!booking) {
+      return;
+    }
+
+    this.personsService
+      .getByClientId(booking.clientId)
+      .pipe(
+        switchMap((person) =>
+          forkJoin({
+            family: this.personsService.getFamily(person.id),
+            relationships: this.personsService.getRelationships(person.id),
+          }).pipe(
+            map(({ family, relationships }) => ({
+              members: [person, ...family],
+              activeRelationshipPersonIds: [
+                person.id,
+                ...relationships
+                  .filter((r) => r.status === 'ACTIVE')
+                  .map((r) => r.toPersonId),
+              ],
+            })),
+          ),
+        ),
+      )
+      .subscribe({
+        next: ({ members, activeRelationshipPersonIds }) =>
+          this.openAddTravelersDialog(members, activeRelationshipPersonIds),
+        error: () => this.toast.showError('Не удалось загрузить список семьи'),
+      });
+  }
+
+  onRemoveTraveler(traveler: BookingTravelerResponseDto): void {
+    const booking = this.booking();
+
+    if (!booking) {
+      return;
+    }
+
+    this.bookingsService.removeTraveler(booking.id, traveler.id).subscribe({
+      next: () => {
+        const current = this.allData.value();
+
+        if (!current) {
+          return;
+        }
+
+        this.allData.set({
+          ...current,
+          travelers: current.travelers.filter((item) => item.id !== traveler.id),
+        });
+      },
+      error: () => this.toast.showError('Не удалось удалить туриста'),
+    });
+  }
+
+  private openAddTravelersDialog(
+    familyMembers: PersonResponseDto[],
+    activeRelationshipPersonIds: string[],
+  ): void {
+    const booking = this.booking();
+
+    if (!booking) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open<
+      AddTravelersDialogComponent,
+      { familyMembers: PersonResponseDto[]; returnDate?: string; activeRelationshipPersonIds: string[] },
+      { items: { personId: string; documentId?: string }[] }
+    >(AddTravelersDialogComponent, {
+      width: '760px',
+      data: {
+        familyMembers,
+        returnDate: booking.returnDate,
+        activeRelationshipPersonIds,
+      },
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(
+        switchMap((result: { items?: { personId: string; documentId?: string }[] } | undefined) => {
+          const raw = result?.items ?? [];
+
+          if (raw.length === 0) {
+            return of<BookingTravelerResponseDto[]>([]);
+          }
+
+          const existingTravelers = this.allData.value()?.travelers ?? [];
+          const hasExistingLead = existingTravelers.some((t) => t.role === 'LEAD');
+
+          let leadIdx = -1;
+          if (!hasExistingLead) {
+            const clientPersonId = booking.clientPersonId;
+            const leadIndex = clientPersonId
+              ? raw.findIndex((item) => item.personId === clientPersonId)
+              : -1;
+            leadIdx = leadIndex >= 0 ? leadIndex : 0;
+          }
+
+          const travelers = raw.map((item, i) => ({
+            ...item,
+            role: i === leadIdx ? ('LEAD' as const) : ('COMPANION' as const),
+          }));
+
+          return this.bookingsService.addTravelers(booking.id, { travelers });
+        }),
+      )
+      .subscribe({
+        next: (addedTravelers) => {
+          if (addedTravelers.length === 0) {
+            return;
+          }
+
+          const current = this.allData.value();
+
+          if (!current) {
+            return;
+          }
+
+          this.allData.set({
+            ...current,
+            travelers: [...current.travelers, ...addedTravelers],
+          });
+        },
+        error: () => this.toast.showError('Не удалось добавить туристов'),
+      });
   }
 
   private patchBooking(updated: BookingResponseDto): void {

@@ -41,6 +41,9 @@ import {
 } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
+import { FamilySectionComponent } from './family-section/family-section';
+import { TravelerProfileSectionComponent } from './traveler-profile-section/traveler-profile-section';
+
 import type {
   BookingSummaryDto,
   ClientResponseDto,
@@ -88,6 +91,8 @@ type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices
     ...MAT_MENU,
     ...MAT_TABS,
     PageHeading,
+    FamilySectionComponent,
+    TravelerProfileSectionComponent,
   ],
   templateUrl: './client-detail.html',
   styleUrl: './client-detail.scss',
@@ -415,6 +420,16 @@ export class ClientDetailComponent {
     if (pending === 0) {
       this.tagsSaveLoading.set(false);
     }
+  }
+
+  readonly resolvedPersonId = signal<string | null>(null);
+
+  protected onTravelerPersonIdResolved(personId: string): void {
+    this.resolvedPersonId.set(personId);
+  }
+
+  protected onTravelerPrimaryContactChanged(): void {
+    this.data.reload();
   }
 
   goToLead(lead: LeadResponseDto): void {

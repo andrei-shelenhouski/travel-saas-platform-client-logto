@@ -6,9 +6,11 @@ import { Observable } from 'rxjs';
 import { environment } from '@environments/environment';
 
 import type {
+  AddBookingTravelerRequestDto,
   BookingDocumentResponseDto,
   BookingResponseDto,
   BookingStatus,
+  BookingTravelerResponseDto,
   CreateBookingDto,
   PaginatedBookingResponseDto,
   PaginatedInvoiceResponseDto,
@@ -36,6 +38,7 @@ export class BookingsService {
     assignedBackofficeId?: string;
     departDateFrom?: string;
     departDateTo?: string;
+    travelerPersonId?: string;
   }): Observable<PaginatedBookingResponseDto> {
     let httpParams = new HttpParams();
 
@@ -49,7 +52,7 @@ export class BookingsService {
 
     if (params?.status !== undefined) {
       const statuses = Array.isArray(params.status)
-        ? params.status.filter((value) => Boolean(value))
+        ? params.status.filter(Boolean)
         : [params.status];
 
       for (const status of statuses) {
@@ -71,6 +74,10 @@ export class BookingsService {
 
     if (params?.departDateTo !== undefined) {
       httpParams = httpParams.set('departDateTo', params.departDateTo);
+    }
+
+    if (params?.travelerPersonId !== undefined) {
+      httpParams = httpParams.set('traveler_person_id', params.travelerPersonId);
     }
 
     return this.http.get<PaginatedBookingResponseDto>(BOOKINGS_URL, { params: httpParams });
@@ -119,6 +126,24 @@ export class BookingsService {
   /** GET /api/bookings/{id}/documents. */
   listDocuments(id: string): Observable<BookingDocumentResponseDto[]> {
     return this.http.get<BookingDocumentResponseDto[]>(`${BOOKINGS_URL}/${id}/documents`);
+  }
+
+  /** GET /api/bookings/{id}/travelers. */
+  listTravelers(id: string): Observable<BookingTravelerResponseDto[]> {
+    return this.http.get<BookingTravelerResponseDto[]>(`${BOOKINGS_URL}/${id}/travelers`);
+  }
+
+  /** POST /api/bookings/{id}/travelers. */
+  addTravelers(
+    id: string,
+    dto: AddBookingTravelerRequestDto,
+  ): Observable<BookingTravelerResponseDto[]> {
+    return this.http.post<BookingTravelerResponseDto[]>(`${BOOKINGS_URL}/${id}/travelers`, dto);
+  }
+
+  /** DELETE /api/bookings/{id}/travelers/{travelerId}. */
+  removeTraveler(id: string, travelerId: string): Observable<void> {
+    return this.http.delete<void>(`${BOOKINGS_URL}/${id}/travelers/${travelerId}`);
   }
 
   /** POST /api/bookings/{id}/documents. */

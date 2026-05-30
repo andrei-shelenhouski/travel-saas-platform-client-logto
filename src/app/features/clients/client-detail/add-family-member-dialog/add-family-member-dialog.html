@@ -1,0 +1,142 @@
+<h2 mat-dialog-title>Добавить члена семьи</h2>
+
+<mat-dialog-content>
+  <div class="step-badge">Шаг {{ step() }} из 3</div>
+
+  @if (step() === 1) {
+    <fieldset class="mode-fieldset">
+      <legend>Способ добавления</legend>
+      <label class="mode-option">
+        <input
+          name="mode"
+          type="radio"
+          value="create"
+          [checked]="mode() === 'create'"
+          (change)="onModeChange('create')"
+        />
+        <span>Создать нового человека</span>
+      </label>
+      <label class="mode-option">
+        <input
+          name="mode"
+          type="radio"
+          value="link"
+          [checked]="mode() === 'link'"
+          (change)="onModeChange('link')"
+        />
+        <span>Связать существующего клиента</span>
+      </label>
+    </fieldset>
+  }
+
+  @if (step() === 2 && mode() === 'create') {
+    <form class="dialog-form" [formGroup]="createForm">
+      <mat-form-field>
+        <mat-label>Фамилия</mat-label>
+        <input formControlName="lastName" matInput />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Имя</mat-label>
+        <input formControlName="firstName" matInput />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Отчество</mat-label>
+        <input formControlName="patronymic" matInput />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Дата рождения</mat-label>
+        <input formControlName="dateOfBirth" matInput type="date" />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Гражданство</mat-label>
+        <input formControlName="citizenship" matInput />
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Тип связи</mat-label>
+        <select formControlName="relationType" matNativeControl>
+          @for (option of relationOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </mat-form-field>
+    </form>
+  }
+
+  @if (step() === 2 && mode() === 'link') {
+    <form class="dialog-form" [formGroup]="linkForm">
+      <mat-form-field>
+        <mat-label>Поиск клиента</mat-label>
+        <input formControlName="query" matInput />
+        <mat-hint>Поиск запускается от 2 символов</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>Тип связи</mat-label>
+        <select formControlName="relationType" matNativeControl>
+          @for (option of relationOptions; track option.value) {
+            <option [value]="option.value">{{ option.label }}</option>
+          }
+        </select>
+      </mat-form-field>
+
+      @if (searching()) {
+        <p class="hint">Поиск...</p>
+      }
+
+      @if (!searching() && searchResults().length > 0) {
+        <div class="results-list">
+          @for (result of searchResults(); track result.id) {
+            <button
+              class="result-item"
+              type="button"
+              [class.result-item-selected]="selectedPerson()?.id === result.id"
+              (click)="selectPerson(result)"
+            >
+              <span class="result-name">{{ result.fullName }}</span>
+              <span class="result-meta">{{ result.dateOfBirth || '—' }}</span>
+            </button>
+          }
+        </div>
+      }
+    </form>
+  }
+
+  @if (step() === 3) {
+    <section class="summary-card">
+      <p>
+        <strong>Режим:</strong>
+        {{ mode() === 'create' ? 'Новый человек' : 'Связать существующего' }}
+      </p>
+      <p><strong>Тип связи:</strong> {{ selectedRelationLabel }}</p>
+      @if (mode() === 'create') {
+        <p>
+          <strong>Человек:</strong>
+          {{ createForm.controls.lastName.value }} {{ createForm.controls.firstName.value }}
+          {{ createForm.controls.patronymic.value }}
+        </p>
+      } @else {
+        <p><strong>Человек:</strong> {{ selectedPerson()?.fullName || 'Не выбран' }}</p>
+      }
+    </section>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="cancel()">Отмена</button>
+  @if (step() > 1) {
+    <button mat-stroked-button type="button" (click)="goBack()">Назад</button>
+  }
+  @if (step() < 3) {
+    <button color="primary" mat-flat-button type="button" (click)="goNext()">Далее</button>
+  } @else {
+    <button
+      color="primary"
+      mat-flat-button
+      type="button"
+      [disabled]="submitting()"
+      (click)="submit()"
+    >
+      Сохранить
+    </button>
+  }
+</mat-dialog-actions>

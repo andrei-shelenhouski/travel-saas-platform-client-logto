@@ -425,7 +425,7 @@ describe('CreateInvoiceComponent', () => {
     expect(newRow.controls.commissionVat.value).toBe(12.5);
   });
 
-  it('updates netToPay and commissionVat when default commission is applied programmatically for B2B_AGENT', async () => {
+  it('updates netToPay and commissionVat with programmatic B2B_AGENT default commission', async () => {
     await createComponent();
 
     const cmp = component as unknown as {

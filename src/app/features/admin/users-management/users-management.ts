@@ -215,7 +215,9 @@ export class UsersManagementComponent {
     }
 
     const roleLabel = this.resolveRoleLabel(roleValue);
-    const roleChangeMessage = `Изменить роль пользователя ${user.fullName} на ${roleLabel}? Доступ обновится немедленно.`;
+    const roleChangeMessage =
+      `Изменить роль пользователя ${user.fullName} на ${roleLabel}? ` +
+      'Доступ обновится немедленно.';
 
     this.clearRoleUpdateError(user.id);
 

@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LeadSourceBadgeComponent } from './lead-source-badge';
 
 describe('LeadSourceBadgeComponent', () => {
-  let component: LeadSourceBadgeComponent;
   let fixture: ComponentFixture<LeadSourceBadgeComponent>;
 
   beforeEach(async () => {
@@ -12,7 +11,6 @@ describe('LeadSourceBadgeComponent', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(LeadSourceBadgeComponent);
-    component = fixture.componentInstance;
   });
 
   it('renders TourVisor badge with localized label', () => {

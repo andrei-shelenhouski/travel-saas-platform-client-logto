@@ -1,0 +1,440 @@
+<section class="traveler-profile-section">
+  <div class="traveler-profile-header">
+    <h2 class="traveler-profile-title">Профиль туриста</h2>
+  </div>
+
+  @if (loading()) {
+    <div class="flex justify-center py-6">
+      <mat-spinner diameter="32" />
+    </div>
+  } @else if (!hasPerson()) {
+    <!-- Empty state -->
+    <div class="traveler-profile-empty">
+      @if (!showCreateForm()) {
+        <p class="traveler-profile-empty-text">Профиль туриста не создан</p>
+        <button color="primary" mat-stroked-button type="button" (click)="startCreatePerson()">
+          <mat-icon>person_add</mat-icon>
+          Заполнить профиль туриста
+        </button>
+      } @else {
+        <form class="traveler-create-form" [formGroup]="createForm" (ngSubmit)="submitCreatePerson()">
+          <p class="form-hint">Введите имя и фамилию туриста</p>
+          <div class="traveler-create-fields">
+            <mat-form-field>
+              <mat-label>Фамилия</mat-label>
+              <input autocomplete="off" formControlName="lastName" matInput />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Имя</mat-label>
+              <input autocomplete="off" formControlName="firstName" matInput />
+            </mat-form-field>
+          </div>
+          <div class="form-actions">
+            <button color="primary" mat-flat-button type="submit" [disabled]="createLoading()">
+              Создать
+            </button>
+            <button mat-stroked-button type="button" (click)="cancelCreatePerson()">Отмена</button>
+          </div>
+        </form>
+      }
+    </div>
+  } @else {
+    @let p = person()!;
+
+    <!-- Core fields row -->
+    <div class="traveler-core-fields">
+      <!-- Date of birth -->
+      <div class="core-field-item">
+        <span class="core-field-label">Дата рождения</span>
+        @if (editingCoreField() === 'dateOfBirth') {
+          <form class="core-field-edit" [formGroup]="coreFieldForm" (ngSubmit)="saveCoreField()">
+            <mat-form-field class="core-field-input">
+              <mat-label>Дата рождения</mat-label>
+              <input formControlName="dateOfBirth" matInput type="date" />
+            </mat-form-field>
+            <button aria-label="Сохранить" mat-icon-button type="submit" [disabled]="coreFieldSaving()">
+              <mat-icon>check</mat-icon>
+            </button>
+            <button aria-label="Отмена" mat-icon-button type="button" (click)="cancelEditCoreField()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </form>
+        } @else {
+          <button
+            class="core-field-value"
+            type="button"
+            (click)="startEditCoreField('dateOfBirth')"
+          >
+            {{ formatDate(p.dateOfBirth) }}
+            <mat-icon class="core-field-edit-icon">edit</mat-icon>
+          </button>
+        }
+      </div>
+
+      <!-- Citizenship -->
+      <div class="core-field-item">
+        <span class="core-field-label">Гражданство</span>
+        @if (editingCoreField() === 'citizenship') {
+          <form class="core-field-edit" [formGroup]="coreFieldForm" (ngSubmit)="saveCoreField()">
+            <mat-form-field class="core-field-input">
+              <mat-label>Гражданство</mat-label>
+              <input autocomplete="off" formControlName="citizenship" matInput />
+            </mat-form-field>
+            <button aria-label="Сохранить" mat-icon-button type="submit" [disabled]="coreFieldSaving()">
+              <mat-icon>check</mat-icon>
+            </button>
+            <button aria-label="Отмена" mat-icon-button type="button" (click)="cancelEditCoreField()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </form>
+        } @else {
+          <button
+            class="core-field-value"
+            type="button"
+            (click)="startEditCoreField('citizenship')"
+          >
+            {{ p.citizenship || '—' }}
+            <mat-icon class="core-field-edit-icon">edit</mat-icon>
+          </button>
+        }
+      </div>
+
+      <!-- Gender -->
+      <div class="core-field-item">
+        <span class="core-field-label">Пол</span>
+        @if (editingCoreField() === 'gender') {
+          <form class="core-field-edit" [formGroup]="coreFieldForm" (ngSubmit)="saveCoreField()">
+            <mat-form-field class="core-field-input">
+              <mat-label>Пол</mat-label>
+              <mat-select formControlName="gender">
+                @for (opt of genderOptions; track opt.value) {
+                  <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <button aria-label="Сохранить" mat-icon-button type="submit" [disabled]="coreFieldSaving()">
+              <mat-icon>check</mat-icon>
+            </button>
+            <button aria-label="Отмена" mat-icon-button type="button" (click)="cancelEditCoreField()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </form>
+        } @else {
+          <button
+            class="core-field-value"
+            type="button"
+            (click)="startEditCoreField('gender')"
+          >
+            {{ p.gender ? (genderLabel[p.gender] ?? p.gender) : '—' }}
+            <mat-icon class="core-field-edit-icon">edit</mat-icon>
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Sub-sections -->
+    <mat-accordion class="traveler-accordion" multi>
+      <!-- Documents -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="subsection-icon">badge</mat-icon>
+            Документы
+            <span class="subsection-count">({{ p.documents.length }})</span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="subsection-body">
+          @if (p.documents.length > 0) {
+            <div class="doc-list">
+              @for (doc of p.documents; track doc.id) {
+                <div class="doc-item" [class]="docExpiryClass(doc)">
+                  <div class="doc-item-main">
+                    <span class="doc-type">{{ docTypeLabel[doc.type] }}</span>
+                    @if (doc.primary) {
+                      <span class="primary-star" title="Основной">★</span>
+                    }
+                    <span class="doc-number">
+                      @if (doc.series) {
+                        {{ doc.series }}&nbsp;
+                      }****{{ doc.numberLast4 }}
+                    </span>
+                    @if (doc.expiryDate) {
+                      <span class="doc-expiry">до {{ formatDate(doc.expiryDate) }}</span>
+                    }
+                  </div>
+                  <div class="doc-item-actions">
+                    @if (!doc.primary) {
+                      <button
+                        class="action-btn-sm"
+                        mat-stroked-button
+                        type="button"
+                        (click)="setDocPrimary(doc.id)"
+                      >
+                        Основной
+                      </button>
+                    }
+                    <button
+                      aria-label="Редактировать"
+                      mat-icon-button
+                      type="button"
+                      (click)="openEditDocForm(doc)"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button
+                      aria-label="Удалить"
+                      color="warn"
+                      mat-icon-button
+                      type="button"
+                      (click)="deleteDoc(doc.id)"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="subsection-empty">Нет документов</p>
+          }
+
+          @if (!showAddDocForm()) {
+            <button class="add-btn" mat-stroked-button type="button" (click)="openAddDocForm()">
+              <mat-icon>add</mat-icon>
+              Добавить документ
+            </button>
+          } @else {
+            <form class="inline-form" [formGroup]="addDocForm" (ngSubmit)="submitDocForm()">
+              <div class="inline-form-grid">
+                <mat-form-field>
+                  <mat-label>Тип документа</mat-label>
+                  <mat-select formControlName="type">
+                    @for (opt of docTypeOptions; track opt.value) {
+                      <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Серия</mat-label>
+                  <input autocomplete="off" formControlName="series" matInput />
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Номер</mat-label>
+                  <input autocomplete="off" formControlName="number" matInput />
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Дата выдачи</mat-label>
+                  <input formControlName="issueDate" matInput type="date" />
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Срок действия</mat-label>
+                  <input formControlName="expiryDate" matInput type="date" />
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Кем выдан</mat-label>
+                  <input autocomplete="off" formControlName="issuedBy" matInput />
+                </mat-form-field>
+              </div>
+              <div class="form-actions">
+                <button color="primary" mat-flat-button type="submit" [disabled]="docFormSaving()">
+                  {{ editingDocId() ? 'Сохранить' : 'Добавить' }}
+                </button>
+                <button mat-stroked-button type="button" (click)="cancelDocForm()">Отмена</button>
+              </div>
+            </form>
+          }
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Addresses -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="subsection-icon">home</mat-icon>
+            Адреса
+            <span class="subsection-count">({{ p.addresses.length }})</span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="subsection-body">
+          @for (group of groupedAddresses(p.addresses); track group.type) {
+            <div class="addr-group">
+              <p class="addr-group-label">{{ group.label }}</p>
+              @for (addr of group.items; track addr.id) {
+                <div class="addr-item">
+                  <span class="addr-line">{{ addrLine(addr) || '—' }}</span>
+                  <div class="doc-item-actions">
+                    <button
+                      aria-label="Редактировать"
+                      mat-icon-button
+                      type="button"
+                      (click)="openEditAddrForm(addr)"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button
+                      aria-label="Удалить"
+                      color="warn"
+                      mat-icon-button
+                      type="button"
+                      (click)="deleteAddr(addr.id)"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+          @if (p.addresses.length === 0) {
+            <p class="subsection-empty">Нет адресов</p>
+          }
+
+          @if (!showAddAddrForm()) {
+            <button class="add-btn" mat-stroked-button type="button" (click)="openAddAddrForm()">
+              <mat-icon>add</mat-icon>
+              Добавить адрес
+            </button>
+          } @else {
+            <form class="inline-form" [formGroup]="addAddrForm" (ngSubmit)="submitAddrForm()">
+              <div class="inline-form-grid">
+                <mat-form-field>
+                  <mat-label>Тип</mat-label>
+                  <mat-select formControlName="type">
+                    @for (opt of addrTypeOptions; track opt.value) {
+                      <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Страна</mat-label>
+                  <input autocomplete="off" formControlName="country" matInput />
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Регион</mat-label>
+                  <input autocomplete="off" formControlName="region" matInput />
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Город</mat-label>
+                  <input autocomplete="off" formControlName="city" matInput />
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Улица, дом, квартира</mat-label>
+                  <input autocomplete="off" formControlName="street" matInput />
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Индекс</mat-label>
+                  <input autocomplete="off" formControlName="postalCode" matInput />
+                </mat-form-field>
+              </div>
+              <div class="form-actions">
+                <button color="primary" mat-flat-button type="submit" [disabled]="addrFormSaving()">
+                  {{ editingAddrId() ? 'Сохранить' : 'Добавить' }}
+                </button>
+                <button mat-stroked-button type="button" (click)="cancelAddrForm()">Отмена</button>
+              </div>
+            </form>
+          }
+        </div>
+      </mat-expansion-panel>
+
+      <!-- Contacts -->
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon class="subsection-icon">contacts</mat-icon>
+            Контакты
+            <span class="subsection-count">({{ p.contacts.length }})</span>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="subsection-body">
+          @if (p.contacts.length > 0) {
+            <div class="contact-list">
+              @for (contact of p.contacts; track contact.id) {
+                <div class="contact-item">
+                  <div class="contact-item-main">
+                    <span class="contact-medium">{{ contactMediumLabel[contact.medium] }}</span>
+                    <span class="contact-value">{{ contact.value }}</span>
+                    @if (contact.primary) {
+                      <span class="primary-badge">основной</span>
+                    }
+                  </div>
+                  <div class="doc-item-actions">
+                    @if (!contact.primary) {
+                      <button
+                        class="action-btn-sm"
+                        mat-stroked-button
+                        type="button"
+                        (click)="setContactPrimary(contact.id)"
+                      >
+                        Основной
+                      </button>
+                    }
+                    <button
+                      aria-label="Редактировать"
+                      mat-icon-button
+                      type="button"
+                      (click)="openEditContactForm(contact)"
+                    >
+                      <mat-icon>edit</mat-icon>
+                    </button>
+                    <button
+                      aria-label="Удалить"
+                      color="warn"
+                      mat-icon-button
+                      type="button"
+                      (click)="deleteContact(contact.id)"
+                    >
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          } @else {
+            <p class="subsection-empty">Нет контактов</p>
+          }
+
+          @if (!showAddContactForm()) {
+            <button class="add-btn" mat-stroked-button type="button" (click)="openAddContactForm()">
+              <mat-icon>add</mat-icon>
+              Добавить контакт
+            </button>
+          } @else {
+            <form class="inline-form" [formGroup]="addContactForm" (ngSubmit)="submitContactForm()">
+              <div class="inline-form-grid">
+                <mat-form-field>
+                  <mat-label>Канал</mat-label>
+                  <mat-select formControlName="medium">
+                    @for (opt of contactMediumOptions; track opt.value) {
+                      <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field>
+                  <mat-label>Значение</mat-label>
+                  <input autocomplete="off" formControlName="value" matInput />
+                </mat-form-field>
+              </div>
+              <div class="form-actions">
+                <button
+                  color="primary"
+                  mat-flat-button
+                  type="submit"
+                  [disabled]="contactFormSaving()"
+                >
+                  {{ editingContactId() ? 'Сохранить' : 'Добавить' }}
+                </button>
+                <button mat-stroked-button type="button" (click)="cancelContactForm()">
+                  Отмена
+                </button>
+              </div>
+            </form>
+          }
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  }
+</section>

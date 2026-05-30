@@ -146,6 +146,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'persons/:id',
+        loadComponent: () =>
+          import('@app/features/clients/person-detail/person-detail').then(
+            (m) => m.PersonDetailComponent,
+          ),
+      },
+      {
         path: 'clients',
         loadComponent: () =>
           import('@app/features/clients/clients-list/clients-list').then(

@@ -1,0 +1,72 @@
+:host {
+  display: block;
+}
+
+.step-badge {
+  margin-bottom: 12px;
+  color: #4b5563;
+  font-size: 12px;
+}
+
+.mode-fieldset {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.mode-option {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.dialog-form {
+  display: grid;
+  gap: 12px;
+}
+
+.hint {
+  margin-top: 4px;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.results-list {
+  display: grid;
+  gap: 8px;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background: #fff;
+  padding: 10px;
+  text-align: left;
+}
+
+.result-item-selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+
+.result-name {
+  font-weight: 600;
+}
+
+.result-meta {
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.summary-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f9fafb;
+  padding: 12px;
+}
