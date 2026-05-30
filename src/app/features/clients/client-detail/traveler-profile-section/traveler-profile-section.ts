@@ -41,7 +41,7 @@ const CONTACT_MEDIUM_LABEL: Record<string, string> = {
   TELEGRAM: 'Telegram',
 };
 
-const GENDER_LABEL: Record<string, string> = {
+const GENDER_LABEL: Record<string, string | undefined> = {
   MALE: 'Мужской',
   FEMALE: 'Женский',
   OTHER: 'Другой',
