@@ -339,6 +339,7 @@ export class CreateInvoiceComponent {
     this.lineItemsArray.push(this.createLineItemGroup(newIndex));
     this.syncLineItemSortOrder();
     this.recalculateRow(newIndex);
+    this.bumpLineItemsVersion();
     this.form.markAsDirty();
   }
 
@@ -349,6 +350,7 @@ export class CreateInvoiceComponent {
 
     this.lineItemsArray.removeAt(index);
     this.syncLineItemSortOrder();
+    this.bumpLineItemsVersion();
     this.form.markAsDirty();
   }
 
@@ -362,6 +364,7 @@ export class CreateInvoiceComponent {
     this.lineItemsArray.removeAt(event.previousIndex);
     this.lineItemsArray.insert(event.currentIndex, moved);
     this.syncLineItemSortOrder();
+    this.bumpLineItemsVersion();
     this.form.markAsDirty();
   }
 
