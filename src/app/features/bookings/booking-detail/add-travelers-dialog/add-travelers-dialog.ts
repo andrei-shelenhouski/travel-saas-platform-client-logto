@@ -46,7 +46,8 @@ export class AddTravelersDialogComponent {
     const activeIds = new Set(this.data.activeRelationshipPersonIds ?? []);
 
     for (const member of this.familyMembers()) {
-      nextSelected[member.id] = activeIds.size > 0 ? activeIds.has(member.id) : member.active !== false;
+      nextSelected[member.id] =
+        activeIds.size > 0 ? activeIds.has(member.id) : member.active !== false;
     }
 
     this.selected.set(nextSelected);
@@ -66,6 +67,7 @@ export class AddTravelersDialogComponent {
 
   protected primaryDocument(member: PersonResponseDto): PersonDocumentResponseDto | undefined {
     const docs = this.docs(member);
+
     return docs.find((item) => item.primary) ?? docs[0];
   }
 
@@ -75,6 +77,7 @@ export class AddTravelersDialogComponent {
 
   protected selectedDocument(member: PersonResponseDto): PersonDocumentResponseDto | undefined {
     const selectedDocumentId = this.selectedDocumentId(member);
+
     return this.docs(member).find((item) => item.id === selectedDocumentId);
   }
 

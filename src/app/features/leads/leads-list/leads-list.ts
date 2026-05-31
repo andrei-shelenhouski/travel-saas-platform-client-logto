@@ -11,22 +11,34 @@ import {
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
+import {
+  DeleteLeadDialogComponent,
+  DeleteLeadDialogResult,
+} from '@app/features/leads/delete-lead-dialog/delete-lead-dialog';
 import { LeadSourceBadgeComponent } from '@app/features/leads/lead-source-badge/lead-source-badge';
 import { LeadsService } from '@app/services/leads.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
-import { MAT_BUTTON_TOGGLES, MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+import {
+  MAT_BUTTON_TOGGLES,
+  MAT_BUTTONS,
+  MAT_FORM_BUTTONS,
+  MAT_MENU,
+} from '@app/shared/material-imports';
 
 import { LeadsListFilterBarComponent } from '../leads-list-filter-bar/leads-list-filter-bar';
 
@@ -94,11 +106,15 @@ const LEAD_STATUSES = new Set<LeadStatus>([
     ...MAT_BUTTON_TOGGLES,
     ...MAT_BUTTONS,
     ...MAT_FORM_BUTTONS,
+    ...MAT_MENU,
     DatePipe,
+    MatChipsModule,
+    MatDialogModule,
     MatIcon,
     MatPaginatorModule,
     MatProgressSpinnerModule,
     MatTableModule,
+    MatTooltipModule,
     PageHeading,
     ReactiveFormsModule,
     RouterLink,
@@ -120,6 +136,7 @@ export class LeadsListComponent {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly dialog = inject(MatDialog);
 
   protected readonly pageSize = PAGE_SIZE;
 
@@ -129,6 +146,7 @@ export class LeadsListComponent {
 
   protected readonly showAgentFilter = computed(() => this.permissionService.canViewAllLeads());
   protected readonly canCreateLead = computed(() => this.permissionService.canCreateLead());
+  protected readonly canDeleteLead = computed(() => this.permissionService.canDeleteLead());
 
   readonly currentPage = signal(0);
   readonly statusFilter = signal<LeadStatus[]>([]);
@@ -138,6 +156,7 @@ export class LeadsListComponent {
   readonly dateFromFilter = signal('');
   readonly dateToFilter = signal('');
   readonly searchFilter = signal('');
+  readonly includeDeleted = signal(false);
   readonly searchControl = new FormControl('', { nonNullable: true });
 
   private readonly hydratedFromQueryParams = signal(false);
@@ -177,9 +196,20 @@ export class LeadsListComponent {
       dateFrom: this.dateFromFilter(),
       dateTo: this.dateToFilter(),
       search: this.searchFilter(),
+      includeDeleted: this.includeDeleted(),
     }),
     stream: ({ params }) => {
-      const { agentId, clientType, dateFrom, dateTo, page, search, source, status } = params;
+      const {
+        agentId,
+        clientType,
+        dateFrom,
+        dateTo,
+        includeDeleted,
+        page,
+        search,
+        source,
+        status,
+      } = params;
 
       return this.leadsService.findAll({
         page: page + 1,
@@ -191,6 +221,7 @@ export class LeadsListComponent {
         dateFrom: dateFrom || undefined,
         dateTo: dateTo || undefined,
         search: search || undefined,
+        includeDeleted: includeDeleted || undefined,
       });
     },
   });
@@ -221,23 +252,28 @@ export class LeadsListComponent {
     return undefined;
   });
 
-  protected readonly displayedColumns: (keyof (LeadResponseDto & {
-    dates: string;
-    name: string;
-  }))[] = [
-    'number',
-    'status',
-    'source',
-    'name',
-    'clientType',
-    'contactPhone',
-    'contactEmail',
-    'destination',
-    'dates',
-    'assignedAgentName',
-    'createdAt',
-    'updatedAt',
-  ];
+  protected readonly displayedColumns = computed<string[]>(() => {
+    const base: string[] = [
+      'number',
+      'status',
+      'source',
+      'name',
+      'clientType',
+      'contactPhone',
+      'contactEmail',
+      'destination',
+      'dates',
+      'assignedAgentName',
+      'createdAt',
+      'updatedAt',
+    ];
+
+    if (this.canDeleteLead()) {
+      base.push('actions');
+    }
+
+    return base;
+  });
 
   constructor() {
     this.syncStateFromQueryParams();
@@ -301,6 +337,36 @@ export class LeadsListComponent {
 
   navigateToLead(id: string): void {
     this.router.navigate(['/app/leads', id]);
+  }
+
+  isDeletedLead(lead: LeadResponseDto): boolean {
+    return Boolean(lead.deletedAt);
+  }
+
+  toggleIncludeDeleted(): void {
+    this.includeDeleted.update((v) => !v);
+    this.currentPage.set(0);
+  }
+
+  openDeleteDialog(event: Event, lead: LeadResponseDto): void {
+    event.stopPropagation();
+
+    const hasOffers = (lead.travelRequests ?? []).some((req) => (req.offersCount ?? 0) > 0);
+
+    const dialogRef = this.dialog.open(DeleteLeadDialogComponent, {
+      width: '480px',
+      data: {
+        leadId: lead.id,
+        leadNumber: lead.number,
+        hasOffers,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: DeleteLeadDialogResult | undefined) => {
+      if (result?.deleted) {
+        this.data.reload();
+      }
+    });
   }
 
   private syncStateFromQueryParams(): void {

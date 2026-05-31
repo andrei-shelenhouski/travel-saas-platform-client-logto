@@ -27,6 +27,10 @@ import { catchError, finalize, map } from 'rxjs/operators';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
 import { AssignDialogComponent } from '@app/features/leads/assign-dialog/assign-dialog';
+import {
+  DeleteLeadDialogComponent,
+  DeleteLeadDialogResult,
+} from '@app/features/leads/delete-lead-dialog/delete-lead-dialog';
 import { LeadSourceBadgeComponent } from '@app/features/leads/lead-source-badge/lead-source-badge';
 import { LinkLeadClientDialogComponent } from '@app/features/leads/link-lead-client-dialog/link-lead-client-dialog';
 // eslint-disable-next-line max-len
@@ -181,10 +185,18 @@ export class LeadDetailComponent {
     return this.permissions.canAssignLead();
   });
 
+  protected readonly canDeleteLeadDetail = computed(() => this.permissions.canDeleteLead());
+
+  protected readonly isDeletedLead = computed(() => Boolean(this.lead()?.deletedAt));
+
   protected readonly canManageLeadClient = computed(() => {
     const lead = this.lead();
 
     if (!lead) {
+      return false;
+    }
+
+    if (lead.deletedAt) {
       return false;
     }
 
@@ -944,6 +956,31 @@ export class LeadDetailComponent {
         this.activityItems.set(ordered);
         this.loadingMoreActivity.set(false);
       });
+  }
+
+  protected openDeleteDialog(): void {
+    const lead = this.lead();
+
+    if (!lead) {
+      return;
+    }
+
+    const hasOffers = this.offers().length > 0;
+
+    const dialogRef = this.dialog.open(DeleteLeadDialogComponent, {
+      width: '480px',
+      data: {
+        leadId: lead.id,
+        leadNumber: lead.number,
+        hasOffers,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: DeleteLeadDialogResult | undefined) => {
+      if (result?.deleted) {
+        void this.router.navigate(['/app/leads']);
+      }
+    });
   }
 
   protected goBackToLeads(): void {

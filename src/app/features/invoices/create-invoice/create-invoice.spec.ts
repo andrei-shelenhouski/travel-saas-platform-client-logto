@@ -579,7 +579,9 @@ describe('CreateInvoiceComponent', () => {
       of(createClient({ id: 'b2b-2', type: ClientType.B2B_AGENT, commissionPct: 10 })),
     );
 
-    cmp.onClientSelected(createClient({ id: 'b2b-2', type: ClientType.B2B_AGENT, commissionPct: 10 }));
+    cmp.onClientSelected(
+      createClient({ id: 'b2b-2', type: ClientType.B2B_AGENT, commissionPct: 10 }),
+    );
 
     // Initially all values are 0
     expect(cmp.pricingSummary().subtotal).toBe(0);

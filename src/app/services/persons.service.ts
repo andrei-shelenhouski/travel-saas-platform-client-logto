@@ -61,21 +61,19 @@ export class PersonsService {
 
     const params = new HttpParams().set('q', query.trim());
 
-    return this.http
-      .get<{ items: PersonResponseDto[] }>(`${PERSONS_URL}/search`, { params })
-      .pipe(
-        map((response) =>
-          response.items.map((person) => ({
-            id: person.id,
-            fullName: [person.lastName, person.firstName, person.patronymic]
-              .filter(Boolean)
-              .join(' '),
-            dateOfBirth: person.dateOfBirth,
-            citizenship: person.citizenship,
-            clientId: person.clientId,
-          })),
-        ),
-      );
+    return this.http.get<{ items: PersonResponseDto[] }>(`${PERSONS_URL}/search`, { params }).pipe(
+      map((response) =>
+        response.items.map((person) => ({
+          id: person.id,
+          fullName: [person.lastName, person.firstName, person.patronymic]
+            .filter(Boolean)
+            .join(' '),
+          dateOfBirth: person.dateOfBirth,
+          citizenship: person.citizenship,
+          clientId: person.clientId,
+        })),
+      ),
+    );
   }
 
   getRelationships(personId: string): Observable<PersonRelationshipResponseDto[]> {

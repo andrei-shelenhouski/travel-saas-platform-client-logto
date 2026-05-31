@@ -1,0 +1,40 @@
+<h2 mat-dialog-title>Удалить заявку?</h2>
+
+<mat-dialog-content>
+  <p class="text-sm text-gray-700">
+    Заявка <strong>{{ data.leadNumber }}</strong> будет удалена. Это действие нельзя отменить.
+  </p>
+
+  @if (data.hasOffers) {
+    <div class="mt-3 flex items-start gap-2 rounded-md border border-amber-200 bg-amber-50 p-3">
+      <mat-icon class="mt-0.5 shrink-0 text-amber-600" style="font-size: 18px; height: 18px; width: 18px;">warning</mat-icon>
+      <p class="text-sm text-amber-800">
+        У заявки есть связанные предложения — они тоже будут удалены.
+      </p>
+    </div>
+  }
+
+  @if (error()) {
+    <div class="mt-3 rounded-md border border-red-200 bg-red-50 p-3">
+      <p class="text-sm text-red-700">{{ error() }}</p>
+    </div>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" [disabled]="deleting()" (click)="onCancel()">
+    Отмена
+  </button>
+  <button
+    color="warn"
+    mat-flat-button
+    type="button"
+    [disabled]="deleting()"
+    (click)="onConfirm()"
+  >
+    @if (deleting()) {
+      <mat-spinner diameter="16" />
+    }
+    Удалить заявку
+  </button>
+</mat-dialog-actions>

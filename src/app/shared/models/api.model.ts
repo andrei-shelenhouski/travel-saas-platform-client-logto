@@ -407,6 +407,16 @@ export type CreateLeadDto = {
   assignedAgentId?: string;
 };
 
+export type DeletedByDto = {
+  id: string;
+  name: string;
+};
+
+export type DeleteLeadResponseDto = {
+  id: string;
+  deletedAt: string;
+};
+
 export type LeadResponseDto = {
   id: string;
   number: string;
@@ -434,6 +444,8 @@ export type LeadResponseDto = {
   convertedToClientId: string | null;
   createdAt: string;
   updatedAt: string;
+  deletedAt?: string | null;
+  deletedBy?: DeletedByDto | null;
   travelRequests?: RequestResponseDto[];
 };
 

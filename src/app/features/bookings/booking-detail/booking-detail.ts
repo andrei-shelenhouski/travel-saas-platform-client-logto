@@ -310,9 +310,7 @@ export class BookingDetailComponent {
               members: [person, ...family],
               activeRelationshipPersonIds: [
                 person.id,
-                ...relationships
-                  .filter((r) => r.status === 'ACTIVE')
-                  .map((r) => r.toPersonId),
+                ...relationships.filter((r) => r.status === 'ACTIVE').map((r) => r.toPersonId),
               ],
             })),
           ),
@@ -361,7 +359,11 @@ export class BookingDetailComponent {
 
     const dialogRef = this.dialog.open<
       AddTravelersDialogComponent,
-      { familyMembers: PersonResponseDto[]; returnDate?: string; activeRelationshipPersonIds: string[] },
+      {
+        familyMembers: PersonResponseDto[];
+        returnDate?: string;
+        activeRelationshipPersonIds: string[];
+      },
       { items: { personId: string; documentId?: string }[] }
     >(AddTravelersDialogComponent, {
       width: '760px',
@@ -386,6 +388,7 @@ export class BookingDetailComponent {
           const hasExistingLead = existingTravelers.some((t) => t.role === 'LEAD');
 
           let leadIdx = -1;
+
           if (!hasExistingLead) {
             const clientPersonId = booking.clientPersonId;
             const leadIndex = clientPersonId
