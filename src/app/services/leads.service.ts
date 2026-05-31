@@ -9,6 +9,7 @@ import type {
   ActivityListResponseDto,
   AssignLeadDto,
   CreateLeadDto,
+  DeleteLeadResponseDto,
   LeadResponseDto,
   LeadSource,
   LeadStatus,
@@ -38,6 +39,7 @@ export class LeadsService {
     dateFrom?: string;
     dateTo?: string;
     search?: string;
+    includeDeleted?: boolean;
   }): Observable<PaginatedLeadResponseDto> {
     let httpParams = new HttpParams();
 
@@ -83,6 +85,10 @@ export class LeadsService {
       httpParams = httpParams.set('search', params.search);
     }
 
+    if (params?.includeDeleted === true) {
+      httpParams = httpParams.set('includeDeleted', 'true');
+    }
+
     return this.http.get<PaginatedLeadResponseDto>(LEADS_URL, { params: httpParams });
   }
 
@@ -110,8 +116,8 @@ export class LeadsService {
     return this.http.patch<LeadResponseDto>(`${LEADS_URL}/${id}/assign`, dto);
   }
 
-  delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${LEADS_URL}/${id}`);
+  softDelete(id: string): Observable<DeleteLeadResponseDto> {
+    return this.http.delete<DeleteLeadResponseDto>(`${LEADS_URL}/${id}`);
   }
 
   convertToClient(id: string): Observable<LeadResponseDto> {

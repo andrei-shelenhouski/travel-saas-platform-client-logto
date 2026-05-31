@@ -28,7 +28,7 @@
     @let l = lead();
     @if (l) {
       <app-page-heading subtitle="Детали лида" [showBackButton]="true" [title]="l.number">
-        @if (!isTerminalLead()) {
+        @if (!isTerminalLead() && !isDeletedLead()) {
           <button mat-stroked-button type="button" (click)="startEditTravelDetails()">
             <mat-icon>edit</mat-icon>
             Редактировать детали тура
@@ -44,6 +44,13 @@
             (click)="applyAction(action)"
           >
             {{ getActionLabel(action) }}
+          </button>
+        }
+
+        @if (canDeleteLeadDetail() && !isDeletedLead()) {
+          <button color="warn" mat-stroked-button type="button" (click)="openDeleteDialog()">
+            <mat-icon>delete</mat-icon>
+            Удалить заявку
           </button>
         }
       </app-page-heading>

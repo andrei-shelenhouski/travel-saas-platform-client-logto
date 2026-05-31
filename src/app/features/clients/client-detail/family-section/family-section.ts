@@ -53,7 +53,7 @@ export class FamilySectionComponent {
     const map = new Map<string, PersonRelationshipResponseDto>();
 
     for (const relationship of this.familyData.value()?.relationships ?? []) {
-      map.set(relationship.toPersonId, relationship);
+      map.set(relationship.relatedPersonId, relationship);
     }
 
     return map;

@@ -99,7 +99,7 @@
             @for (item of relationships(); track item.id) {
               <li>
                 <span>{{ item.type }} · {{ relationshipStatusLabel(item.status) }}</span>
-                @if (relatedClientByPersonId().get(item.toPersonId); as relatedClientId) {
+                @if (relatedClientByPersonId().get(item.relatedPersonId); as relatedClientId) {
                   <button mat-button type="button" (click)="openClient(relatedClientId)">
                     Открыть клиента
                   </button>

@@ -113,8 +113,8 @@
             <app-traveler-profile-section
               [clientId]="client()!.id"
               [clientType]="client()!.type"
-              (primaryContactChanged)="onTravelerPrimaryContactChanged()"
               (personIdResolved)="onTravelerPersonIdResolved($event)"
+              (primaryContactChanged)="onTravelerPrimaryContactChanged()"
             />
 
             @if (client()?.personId || resolvedPersonId()) {

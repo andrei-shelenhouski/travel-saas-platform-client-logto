@@ -12,18 +12,23 @@ import {
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
+import {
+  DeleteLeadDialogComponent,
+  DeleteLeadDialogResult,
+} from '@app/features/leads/delete-lead-dialog/delete-lead-dialog';
 import { LeadSourceBadgeComponent } from '@app/features/leads/lead-source-badge/lead-source-badge';
 import { LeadsListFilterBarComponent } from '@app/features/leads/leads-list-filter-bar/leads-list-filter-bar';
 import { LeadsService } from '@app/services/leads.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
+import { MAT_BUTTON_TOGGLES, MAT_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { LeadSource, LeadStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
@@ -126,6 +131,7 @@ const TERMINAL_STATUSES = new Set<LeadStatusType>([
     MatIconModule,
     ...MAT_BUTTONS,
     ...MAT_BUTTON_TOGGLES,
+    ...MAT_MENU,
     PageHeading,
   ],
   templateUrl: './leads-kanban.html',
@@ -138,6 +144,7 @@ export class LeadsKanbanComponent {
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly dialog = inject(MatDialog);
 
   readonly statusOptions = LEAD_STATUS_OPTIONS;
   readonly clientTypeOptions = CLIENT_TYPE_OPTIONS;
@@ -164,6 +171,7 @@ export class LeadsKanbanComponent {
 
   readonly showAgentFilter = computed(() => this.permissionService.canViewAllLeads());
   readonly canCreateLead = computed(() => this.permissionService.canCreateLead());
+  readonly canDeleteLead = computed(() => this.permissionService.canDeleteLead());
 
   private readonly membersData = rxResource({
     stream: () => this.membersService.findAll(),
@@ -365,6 +373,27 @@ export class LeadsKanbanComponent {
 
   goToLead(lead: LeadResponseDto): void {
     this.router.navigate(['/app/leads', lead.id]);
+  }
+
+  protected openDeleteDialog(event: Event, lead: LeadResponseDto): void {
+    event.stopPropagation();
+
+    const hasOffers = (lead.travelRequests ?? []).some((req) => (req.offersCount ?? 0) > 0);
+
+    const dialogRef = this.dialog.open(DeleteLeadDialogComponent, {
+      width: '480px',
+      data: {
+        leadId: lead.id,
+        leadNumber: lead.number,
+        hasOffers,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result: DeleteLeadDialogResult | undefined) => {
+      if (result?.deleted) {
+        this.data.reload();
+      }
+    });
   }
 
   setPreferredView(view: 'table' | 'kanban'): void {
