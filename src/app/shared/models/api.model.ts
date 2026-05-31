@@ -408,19 +408,19 @@ export type CreateLeadDto = {
 };
 
 export type DeletedByDto = {
-  id: string;
-  name: string;
+  id?: string;
+  name?: string;
 };
 
 export type DeleteLeadResponseDto = {
-  id: string;
-  deletedAt: string;
+  id?: string;
+  deletedAt?: string;
 };
 
 export type LeadResponseDto = {
   id: string;
   number: string;
-  source: LeadSource | string;
+  source: LeadSource;
   clientId: string | null;
   clientName: string | null;
   clientType: string | null;
@@ -438,7 +438,7 @@ export type LeadResponseDto = {
   notes: string | null;
   assignedAgentId: string | null;
   assignedAgentName: string | null;
-  status: LeadStatus | string;
+  status: LeadStatus;
   expiresAt: string | null;
   createdById: string;
   convertedToClientId: string | null;
@@ -617,7 +617,7 @@ export type OfferResponseDto = {
   previousVersionId?: string;
   number?: string;
   version?: number;
-  status: OfferStatus | string;
+  status: OfferStatus;
   language?: string;
   offerDate?: string;
   validityDate?: string;
@@ -696,13 +696,22 @@ export type BookingDocumentResponseDto = {
   uploadedByName?: string;
 };
 
+/** OpenAPI: ExpiryWarning. Document expiry hint on a traveler. */
+export type ExpiryWarningDto = {
+  documentType?: string;
+  expiryDate?: string;
+  message?: string;
+};
+
 /** OpenAPI: BookingTravelerResponse. */
 export type BookingTravelerResponseDto = {
   id: string;
   personId: string;
   role: 'LEAD' | 'COMPANION' | (string & Record<never, never>);
+  documentId?: string;
   personSnapshot?: Record<string, unknown>;
-  expiryWarnings?: string[];
+  createdAt?: string;
+  expiryWarnings?: ExpiryWarningDto[];
 };
 
 /** OpenAPI: TravelerEntry. */
@@ -751,7 +760,7 @@ export type BookingResponseDto = {
   supplierConfirmationNumber?: string;
   assignedBackofficeId?: string;
   assignedBackofficeName?: string;
-  status: BookingStatus | string;
+  status: BookingStatus;
   cancellationReason?: string;
   internalNotes?: string;
   invoicesCount?: number;
@@ -778,7 +787,7 @@ export type TravelRequestSummaryDto = {
   returnDate?: string;
   adults?: number;
   children?: number;
-  status?: string;
+  status?: RequestStatus;
   offersCount?: number;
   createdAt?: string;
 };
@@ -795,7 +804,7 @@ export type OfferSummaryDto = {
   destination?: string;
   totalPrice?: number;
   currency?: string;
-  status?: string;
+  status?: OfferStatus;
   createdAt?: string;
 };
 
@@ -812,7 +821,7 @@ export type BookingSummaryDto = {
   destination?: string;
   departDate?: string;
   returnDate?: string;
-  status?: string;
+  status?: BookingStatus;
   totalPrice?: number;
   currency?: string;
   createdAt?: string;
@@ -850,7 +859,7 @@ export type InvoiceResponseDto = {
   number: string;
   bookingId: string;
   clientId: string;
-  clientType?: ClientType | string;
+  clientType?: ClientType;
   clientName?: string;
   clientSnapshot?: string;
   issuerSnapshot?: string;
@@ -865,7 +874,7 @@ export type InvoiceResponseDto = {
   amountInWords?: string;
   paymentTerms?: string;
   internalNotes?: string;
-  status: InvoiceStatus | string;
+  status: InvoiceStatus;
   cancellationReason?: string;
   publishedAt?: string;
   createdById?: string;
@@ -936,7 +945,7 @@ export type PaymentResponseDto = {
   amount: number;
   currency: string;
   paymentDate: string;
-  paymentMethod: PaymentMethod | string;
+  paymentMethod: PaymentMethod;
   reference?: string;
   source?: string;
   recordedByName?: string;
@@ -948,7 +957,7 @@ export type RecordPaymentRequestDto = {
   amount: number;
   currency: string;
   paymentDate: string;
-  paymentMethod: PaymentMethod | string;
+  paymentMethod: PaymentMethod;
   reference?: string;
 };
 
@@ -1035,7 +1044,7 @@ export type CreateClientDto = {
 export type ClientResponseDto = {
   id: string;
   organizationId: string;
-  type: ClientType | string;
+  type: ClientType;
   fullName: string | null;
   email: string | null;
   phone: string | null;
@@ -1125,7 +1134,7 @@ export type ContractResponseDto = {
   signedAt: string;
   expiresAt: string | null;
   signatureMethod: SignatureMethod | null;
-  status: ContractStatus | string;
+  status: ContractStatus;
   notes: string | null;
   createdById: string;
   createdAt: string;
@@ -1197,7 +1206,7 @@ export type RequestResponseDto = {
   adults: number | null;
   children: number | null;
   notes: string | null;
-  status: RequestStatus | string;
+  status: RequestStatus;
   offersCount: number;
   createdById: string;
   createdAt: string;
@@ -1453,13 +1462,18 @@ export type PersonSearchResultDto = {
   clientId?: string;
 };
 
-/** OpenAPI: PersonRelationshipResponse. */
+/** OpenAPI: RelationshipResponse. */
 export type PersonRelationshipResponseDto = {
   id: string;
   personId: string;
-  toPersonId: string;
+  relatedPersonId: string;
   type: PersonRelationshipType | (string & Record<never, never>);
+  inverseLabel?: string;
   status: PersonRelationshipStatus | (string & Record<never, never>);
+  customLabel?: string;
+  sinceDate?: string;
+  untilDate?: string;
+  notes?: string;
   createdAt?: string;
 };
 

@@ -310,7 +310,7 @@ export class BookingDetailComponent {
               members: [person, ...family],
               activeRelationshipPersonIds: [
                 person.id,
-                ...relationships.filter((r) => r.status === 'ACTIVE').map((r) => r.toPersonId),
+                ...relationships.filter((r) => r.status === 'ACTIVE').map((r) => r.relatedPersonId),
               ],
             })),
           ),

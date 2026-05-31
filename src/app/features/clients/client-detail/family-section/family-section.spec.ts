@@ -39,7 +39,7 @@ describe('FamilySectionComponent', () => {
                 {
                   id: 'rel-1',
                   personId: 'p-1',
-                  toPersonId: 'p-2',
+                  relatedPersonId: 'p-2',
                   type: 'SPOUSE_OF',
                   status: 'ACTIVE',
                 },
