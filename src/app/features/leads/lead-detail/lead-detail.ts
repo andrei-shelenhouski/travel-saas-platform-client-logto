@@ -185,7 +185,7 @@ export class LeadDetailComponent {
     return this.permissions.canAssignLead();
   });
 
-  protected readonly canDeleteLeadDetail = computed(() => this.permissions.canDeleteLead());
+  protected readonly canDeleteLeadDetail = this.permissions.canDeleteLead;
 
   protected readonly isDeletedLead = computed(() => Boolean(this.lead()?.deletedAt));
 

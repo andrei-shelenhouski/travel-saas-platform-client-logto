@@ -12,7 +12,7 @@ import {
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -109,7 +109,6 @@ const LEAD_STATUSES = new Set<LeadStatus>([
     ...MAT_MENU,
     DatePipe,
     MatChipsModule,
-    MatDialogModule,
     MatIcon,
     MatPaginatorModule,
     MatProgressSpinnerModule,
@@ -339,16 +338,16 @@ export class LeadsListComponent {
     this.router.navigate(['/app/leads', id]);
   }
 
-  isDeletedLead(lead: LeadResponseDto): boolean {
+  protected isDeletedLead(lead: LeadResponseDto): boolean {
     return Boolean(lead.deletedAt);
   }
 
-  toggleIncludeDeleted(): void {
+  protected toggleIncludeDeleted(): void {
     this.includeDeleted.update((v) => !v);
     this.currentPage.set(0);
   }
 
-  openDeleteDialog(event: Event, lead: LeadResponseDto): void {
+  protected openDeleteDialog(event: Event, lead: LeadResponseDto): void {
     event.stopPropagation();
 
     const hasOffers = (lead.travelRequests ?? []).some((req) => (req.offersCount ?? 0) > 0);
@@ -383,6 +382,7 @@ export class LeadsListComponent {
         const dateFrom = queryParams.get('dateFrom') ?? '';
         const dateTo = queryParams.get('dateTo') ?? '';
         const search = queryParams.get('search') ?? '';
+        const includeDeleted = queryParams.get('includeDeleted') === 'true';
 
         this.currentPage.set(Number.isFinite(page) && page > 1 ? page - 1 : 0);
         this.statusFilter.set(status);
@@ -392,6 +392,7 @@ export class LeadsListComponent {
         this.dateFromFilter.set(dateFrom);
         this.dateToFilter.set(dateTo);
         this.searchFilter.set(search);
+        this.includeDeleted.set(includeDeleted);
         this.searchControl.setValue(search, { emitEvent: false });
 
         this.hydratedFromQueryParams.set(true);
@@ -431,6 +432,7 @@ export class LeadsListComponent {
       const dateFrom = this.dateFromFilter();
       const dateTo = this.dateToFilter();
       const search = this.searchFilter();
+      const includeDeleted = this.includeDeleted();
       const page = this.currentPage();
 
       const queryParams: Record<string, string | number | undefined> = {
@@ -441,6 +443,7 @@ export class LeadsListComponent {
         dateFrom: dateFrom || undefined,
         dateTo: dateTo || undefined,
         search: search || undefined,
+        includeDeleted: includeDeleted ? 'true' : undefined,
         page: page > 0 ? page + 1 : undefined,
       };
 

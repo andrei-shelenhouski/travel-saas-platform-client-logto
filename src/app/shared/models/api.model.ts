@@ -413,8 +413,8 @@ export type DeletedByDto = {
 };
 
 export type DeleteLeadResponseDto = {
-  id?: string;
-  deletedAt?: string;
+  id: string;
+  deletedAt: string;
 };
 
 export type LeadResponseDto = {

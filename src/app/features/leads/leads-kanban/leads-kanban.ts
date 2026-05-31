@@ -375,7 +375,7 @@ export class LeadsKanbanComponent {
     this.router.navigate(['/app/leads', lead.id]);
   }
 
-  openDeleteDialog(event: Event, lead: LeadResponseDto): void {
+  protected openDeleteDialog(event: Event, lead: LeadResponseDto): void {
     event.stopPropagation();
 
     const hasOffers = (lead.travelRequests ?? []).some((req) => (req.offersCount ?? 0) > 0);

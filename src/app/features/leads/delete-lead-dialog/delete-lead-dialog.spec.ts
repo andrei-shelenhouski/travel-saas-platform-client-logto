@@ -1,4 +1,4 @@
-import { provideHttpClient } from '@angular/common/http';
+import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
@@ -13,16 +13,16 @@ describe('DeleteLeadDialogComponent', () => {
   let component: DeleteLeadDialogComponent;
   let leadsServiceMock: { softDelete: ReturnType<typeof vi.fn> };
   let dialogRefMock: { close: ReturnType<typeof vi.fn> };
-
-  const dialogData = {
-    leadId: 'lead-123',
-    leadNumber: 'L-042',
-    hasOffers: false,
-  };
+  let dialogData: { leadId: string; leadNumber: string; hasOffers: boolean };
 
   beforeEach(async () => {
     leadsServiceMock = { softDelete: vi.fn() };
     dialogRefMock = { close: vi.fn() };
+    dialogData = {
+      leadId: 'lead-123',
+      leadNumber: 'L-042',
+      hasOffers: false,
+    };
 
     await TestBed.configureTestingModule({
       imports: [DeleteLeadDialogComponent],
@@ -58,12 +58,43 @@ describe('DeleteLeadDialogComponent', () => {
     expect(dialogRefMock.close).toHaveBeenCalledWith({ deleted: true, leadId: 'lead-123' });
   });
 
+  it('should render warning banner when hasOffers is true', async () => {
+    TestBed.resetTestingModule();
+    await TestBed.configureTestingModule({
+      imports: [DeleteLeadDialogComponent],
+      providers: [
+        provideHttpClient(),
+        { provide: MAT_DIALOG_DATA, useValue: { ...dialogData, hasOffers: true } },
+        { provide: MatDialogRef, useValue: dialogRefMock },
+        { provide: LeadsService, useValue: leadsServiceMock },
+      ],
+    }).compileComponents();
+
+    const warningFixture = TestBed.createComponent(DeleteLeadDialogComponent);
+    warningFixture.detectChanges();
+
+    const text = (warningFixture.nativeElement as HTMLElement).textContent ?? '';
+    expect(text).toContain('есть связанные предложения');
+  });
+
   it('should show inline 409 error without closing the dialog', async () => {
-    const errorResponse = { status: 409, error: {}, message: 'Conflict' };
     leadsServiceMock.softDelete.mockReturnValue(
-      throwError(() => Object.assign(new Error(), errorResponse)),
+      throwError(
+        () =>
+          new HttpErrorResponse({
+            status: 409,
+            error: {},
+            statusText: 'Conflict',
+          }),
+      ),
     );
+
     (component as unknown as { onConfirm: () => void }).onConfirm();
+    fixture.detectChanges();
+
     expect(dialogRefMock.close).not.toHaveBeenCalled();
+
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+    expect(text).toContain('У заявки есть активное бронирование');
   });
 });
