@@ -30,23 +30,11 @@ import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 
 import { OffersListFilterBarComponent } from '../offers-list-filter-bar/offers-list-filter-bar';
 
+import { OFFER_STATUS_OPTIONS } from '@app/shared/models';
+
 import type { OfferResponseDto, OfferStatus } from '@app/shared/models';
 
 const OFFERS_VIEW_STORAGE_KEY = 'offers_view';
-
-type OfferStatusOption = {
-  value: OfferStatus;
-  label: string;
-};
-
-const OFFER_STATUS_OPTIONS: OfferStatusOption[] = [
-  { value: 'DRAFT', label: 'Черновик' },
-  { value: 'SENT', label: 'Отправлено' },
-  { value: 'VIEWED', label: 'Просмотрено' },
-  { value: 'ACCEPTED', label: 'Принято' },
-  { value: 'REJECTED', label: 'Отклонено' },
-  { value: 'EXPIRED', label: 'Истекло' },
-];
 
 const OFFER_STATUSES = new Set<OfferStatus>([
   'DRAFT',

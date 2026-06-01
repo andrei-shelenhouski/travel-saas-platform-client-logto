@@ -7,11 +7,9 @@ import {
   output,
   viewChild,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-
 import { DocumentRowComponent } from '@app/features/bookings/booking-detail/document-row/document-row';
-import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog.component';
 import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
+import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 
 import type { BookingDocumentResponseDto } from '@app/shared/models';
 
@@ -23,7 +21,7 @@ import type { BookingDocumentResponseDto } from '@app/shared/models';
   styleUrl: './document-list.scss',
 })
 export class DocumentListComponent {
-  private readonly dialog = inject(MatDialog);
+  private readonly confirmDialog = inject(ConfirmDialogService);
 
   readonly documents = input<BookingDocumentResponseDto[]>([]);
   readonly uploading = input<boolean>(false);
@@ -50,18 +48,14 @@ export class DocumentListComponent {
   }
 
   onDeleteRequest(doc: BookingDocumentResponseDto): void {
-    this.dialog
-      .open(ConfirmDialogComponent, {
-        data: {
-          title: 'Удалить документ',
-          message: `Удалить документ "${doc.filename ?? 'Документ'}"? Это действие необратимо.`,
-          confirmLabel: 'Удалить',
-          destructive: true,
-        },
-        width: '400px',
+    this.confirmDialog
+      .open({
+        title: 'Удалить документ',
+        message: `Удалить документ "${doc.filename ?? 'Документ'}"? Это действие необратимо.`,
+        confirmLabel: 'Удалить',
+        destructive: true,
       })
-      .afterClosed()
-      .subscribe((confirmed: boolean) => {
+      .subscribe((confirmed) => {
         if (confirmed) {
           this.deleteDocument.emit(doc);
         }

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { RouterLink } from '@angular/router';
 
 import { TagSelectorComponent } from '@app/shared/components';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
@@ -16,7 +15,7 @@ const TYPE_LABEL: Record<string, string> = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-client-profile-card',
-  imports: [RouterLink, TagSelectorComponent, ...MAT_BUTTONS],
+  imports: [TagSelectorComponent, ...MAT_BUTTONS],
   templateUrl: './client-profile-card.html',
   styleUrl: './client-profile-card.scss',
 })

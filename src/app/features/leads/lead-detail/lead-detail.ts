@@ -37,7 +37,6 @@ import { OrganizationMembersService } from '@app/services/organization-members.s
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
 import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
-import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { LeadStatus } from '@app/shared/models';
 import { MarkdownPipe } from '@app/shared/pipes/markdown-pipe';
@@ -94,7 +93,6 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     ...MAT_BUTTONS,
     ...MAT_FORM_BUTTONS,
     ...MAT_MENU,
-    StatusBadgeComponent,
     CustomFieldsSectionComponent,
     ClientTypeBadgeComponent,
     LeadDetailHeaderComponent,

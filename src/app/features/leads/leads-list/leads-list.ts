@@ -44,36 +44,16 @@ import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 
 import { LeadsListFilterBarComponent } from '../leads-list-filter-bar/leads-list-filter-bar';
 
-import type { LeadResponseDto, LeadSource, LeadStatus } from '@app/shared/models';
+import { CLIENT_TYPE_OPTIONS, LEAD_STATUS_OPTIONS } from '@app/shared/models';
+
+import type { LeadResponseDto, LeadStatus } from '@app/shared/models';
 
 const LEADS_VIEW_STORAGE_KEY = 'leads_view';
 
-type LeadStatusOption = {
-  value: LeadStatus;
-  label: string;
-};
-
 type SourceOption = {
-  value: LeadSource | string;
+  value: string;
   label: string;
 };
-
-const LEAD_STATUS_OPTIONS: LeadStatusOption[] = [
-  { value: 'NEW', label: 'Новый' },
-  { value: 'ASSIGNED', label: 'Назначен' },
-  { value: 'IN_PROGRESS', label: 'В работе' },
-  { value: 'OFFER_SENT', label: 'Отправлено КП' },
-  { value: 'WON', label: 'Выигран' },
-  { value: 'LOST', label: 'Проигран' },
-  { value: 'EXPIRED', label: 'Истек' },
-];
-
-const CLIENT_TYPE_OPTIONS = [
-  { value: 'INDIVIDUAL', label: 'Физ. лицо' },
-  { value: 'COMPANY', label: 'Компания' },
-  { value: 'B2B_AGENT', label: 'B2B агент' },
-  { value: 'AGENT', label: 'Агент' },
-];
 
 const LEAD_SOURCE_OPTIONS: SourceOption[] = [
   { value: 'MANUAL', label: 'Вручную' },
@@ -214,14 +194,6 @@ export class LeadsListComponent {
   protected readonly totalElements = computed(() => this.data.value()?.total ?? 0);
   protected readonly loading = computed(() => this.data.isLoading());
 
-  private readonly redirectOnForbidden = effect(() => {
-    const err = this.data.error();
-
-    if (err instanceof HttpErrorResponse && err.status === 403) {
-      void this.router.navigate(['/app/dashboard']);
-    }
-  });
-
   protected readonly error = computed(() => {
     const err = this.data.error();
 
@@ -260,6 +232,13 @@ export class LeadsListComponent {
   });
 
   constructor() {
+    effect(() => {
+      const err = this.data.error();
+
+      if (err instanceof HttpErrorResponse && err.status === 403) {
+        void this.router.navigate(['/app/dashboard']);
+      }
+    });
     this.syncStateFromQueryParams();
     this.syncSearchDebounce();
     this.syncQueryParamsFromState();

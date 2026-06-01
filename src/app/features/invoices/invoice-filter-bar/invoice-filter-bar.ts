@@ -2,15 +2,10 @@ import { ChangeDetectionStrategy, Component, input, output } from '@angular/core
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
-import { ClientType, InvoiceStatus } from '@app/shared/models';
+import { CLIENT_TYPE_OPTIONS, InvoiceStatus } from '@app/shared/models';
 
 type InvoiceStatusOption = {
   value: InvoiceStatus;
-  label: string;
-};
-
-type ClientTypeOption = {
-  value: ClientType;
   label: string;
 };
 
@@ -24,15 +19,6 @@ const STATUS_OPTIONS: InvoiceStatusOption[] = [
   { value: InvoiceStatus.PAID, label: 'Оплачен' },
   { value: InvoiceStatus.OVERDUE, label: 'Просрочен' },
   { value: InvoiceStatus.CANCELLED, label: 'Отменен' },
-];
-
-const CLIENT_TYPE_OPTIONS: ClientTypeOption[] = [
-  {
-    value: ClientType.INDIVIDUAL,
-    label: 'Физ. лицо',
-  },
-  { value: ClientType.COMPANY, label: 'Компания' },
-  { value: ClientType.B2B_AGENT, label: 'B2B агент' },
 ];
 
 @Component({

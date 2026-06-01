@@ -15,31 +15,8 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { distinctUntilChanged } from 'rxjs';
 
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
-import { BookingStatus } from '@app/shared/models';
+import { BOOKING_STATUS_OPTIONS, BookingStatus } from '@app/shared/models';
 import { compareDateRangeFilters, formatDate, parseDate } from '@app/shared/utils/date.utils';
-
-const BOOKING_STATUS_OPTIONS: { value: BookingStatus; label: string }[] = [
-  {
-    value: BookingStatus.PENDING_CONFIRMATION,
-    label: 'Ожидает подтверждения',
-  },
-  {
-    value: BookingStatus.CONFIRMED,
-    label: 'Подтверждено',
-  },
-  {
-    value: BookingStatus.IN_PROGRESS,
-    label: 'В поездке',
-  },
-  {
-    value: BookingStatus.COMPLETED,
-    label: 'Завершено',
-  },
-  {
-    value: BookingStatus.CANCELLED,
-    label: 'Отменено',
-  },
-];
 
 export type StaffOption = {
   id: string;

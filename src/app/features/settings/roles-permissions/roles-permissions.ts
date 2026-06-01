@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
@@ -10,8 +10,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { finalize, forkJoin } from 'rxjs';
 
 import { RolesApiService } from '@app/services/roles-api.service';
-import { ConfirmDialogComponent } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
 import type {
@@ -56,7 +56,7 @@ const DESCRIPTION_MAX_LENGTH = 240;
 export class RolesPermissionsComponent {
   private readonly fb = inject(FormBuilder);
   private readonly rolesApi = inject(RolesApiService);
-  private readonly dialog = inject(MatDialog);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly snackBar = inject(MatSnackBar);
 
   protected readonly roles = signal<RoleSummaryResponseDto[]>([]);
@@ -230,18 +230,15 @@ export class RolesPermissionsComponent {
     const name = role.name;
     const message = `Удалить роль «${name}»? Это действие нельзя отменить.`;
 
-    this.dialog
-      .open(ConfirmDialogComponent, {
-        data: {
-          title: 'Удалить роль',
-          message,
-          confirmLabel: 'Удалить',
-          cancelLabel: 'Отмена',
-          confirmColor: 'warn',
-        },
+    this.confirmDialog
+      .open({
+        title: 'Удалить роль',
+        message,
+        confirmLabel: 'Удалить',
+        cancelLabel: 'Отмена',
+        confirmColor: 'warn',
       })
-      .afterClosed()
-      .subscribe((confirmed: boolean | undefined) => {
+      .subscribe((confirmed) => {
         if (confirmed) {
           this.deleteRole(role);
         }

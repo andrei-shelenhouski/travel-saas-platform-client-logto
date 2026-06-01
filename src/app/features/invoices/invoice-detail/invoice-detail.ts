@@ -24,8 +24,8 @@ import { ClientsService } from '@app/services/clients.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { ActivityTimelineComponent } from '@app/shared/components/activity-timeline.component';
-import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog.component';
 import { MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
+import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { EntityType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
@@ -83,6 +83,7 @@ export class InvoiceDetailComponent {
   private readonly clientsService = inject(ClientsService);
   private readonly activitiesService = inject(ActivitiesService);
   private readonly dialog = inject(MatDialog);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly toast = inject(ToastService);
   readonly permissions = inject(PermissionService);
 
@@ -437,18 +438,14 @@ export class InvoiceDetailComponent {
       return;
     }
 
-    this.dialog
-      .open(ConfirmDialogComponent, {
-        data: {
-          title: 'Удалить платёж',
-          message: `Удалить платёж на ${payment.amount} ${payment.currency}?`,
-          confirmLabel: 'Удалить',
-          destructive: true,
-        },
-        width: '400px',
+    this.confirmDialog
+      .open({
+        title: 'Удалить платёж',
+        message: `Удалить платёж на ${payment.amount} ${payment.currency}?`,
+        confirmLabel: 'Удалить',
+        destructive: true,
       })
-      .afterClosed()
-      .subscribe((confirmed: boolean) => {
+      .subscribe((confirmed) => {
         if (!confirmed) {
           return;
         }

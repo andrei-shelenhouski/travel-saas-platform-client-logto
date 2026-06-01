@@ -30,8 +30,8 @@ import {
   OfferStatusChipComponent,
   RequestStatusChipComponent,
 } from '@app/shared/components';
-import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { MAT_BUTTONS, MAT_MENU, MAT_TABS } from '@app/shared/material-imports';
 import {
   ClientType,
@@ -115,6 +115,7 @@ export class ClientDetailComponent {
   private readonly commentsService = inject(CommentsService);
   private readonly tagsService = inject(TagsService);
   private readonly dialog = inject(MatDialog);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly toast = inject(ToastService);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
@@ -599,17 +600,14 @@ export class ClientDetailComponent {
       return;
     }
 
-    this.dialog
-      .open(ConfirmDialogComponent, {
-        data: {
-          title: 'Расторгнуть договор',
-          message: `Вы уверены, что хотите расторгнуть договор ${contract.contractNumber}? Это действие необратимо.`,
-          confirmLabel: 'Расторгнуть',
-          cancelLabel: 'Отмена',
-          confirmColor: 'warn',
-        },
+    this.confirmDialog
+      .open({
+        title: 'Расторгнуть договор',
+        message: `Вы уверены, что хотите расторгнуть договор ${contract.contractNumber}? Это действие необратимо.`,
+        confirmLabel: 'Расторгнуть',
+        cancelLabel: 'Отмена',
+        confirmColor: 'warn',
       })
-      .afterClosed()
       .subscribe((confirmed) => {
         if (!confirmed) {
           return;

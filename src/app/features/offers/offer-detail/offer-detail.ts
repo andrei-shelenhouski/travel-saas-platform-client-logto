@@ -22,8 +22,8 @@ import { BookingsService } from '@app/services/bookings.service';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
-import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { MAT_BUTTONS, MAT_DIALOG } from '@app/shared/material-imports';
 import { OfferStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
@@ -82,6 +82,7 @@ export class OfferDetailComponent {
   private readonly offersService = inject(OffersService);
   private readonly requestsService = inject(RequestsService);
   private readonly dialog = inject(MatDialog);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly toast = inject(ToastService);
   private readonly permissions = inject(PermissionService);
 
@@ -301,24 +302,21 @@ export class OfferDetailComponent {
     if (action === 'SEND' || action === 'ACCEPT' || action === 'REJECT' || action === 'DELETE') {
       const payload = payloads[action];
 
-      this.dialog
-        .open(ConfirmDialogComponent, { data: payload, width: '400px' })
-        .afterClosed()
-        .subscribe((confirmed: boolean) => {
-          if (!confirmed) {
-            return;
-          }
+      this.confirmDialog.open(payload).subscribe((confirmed) => {
+        if (!confirmed) {
+          return;
+        }
 
-          if (action === 'SEND') {
-            this.runStatusAction(currentOffer.id, OfferStatus.SENT);
-          } else if (action === 'ACCEPT') {
-            this.runStatusAction(currentOffer.id, OfferStatus.ACCEPTED);
-          } else if (action === 'REJECT') {
-            this.runStatusAction(currentOffer.id, OfferStatus.REJECTED);
-          } else if (action === 'DELETE') {
-            this.runDeleteAction(currentOffer.id);
-          }
-        });
+        if (action === 'SEND') {
+          this.runStatusAction(currentOffer.id, OfferStatus.SENT);
+        } else if (action === 'ACCEPT') {
+          this.runStatusAction(currentOffer.id, OfferStatus.ACCEPTED);
+        } else if (action === 'REJECT') {
+          this.runStatusAction(currentOffer.id, OfferStatus.REJECTED);
+        } else if (action === 'DELETE') {
+          this.runDeleteAction(currentOffer.id);
+        }
+      });
     }
   }
 
