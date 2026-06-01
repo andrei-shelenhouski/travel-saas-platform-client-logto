@@ -21,9 +21,11 @@ import { ActivitiesService } from '@app/services/activities.service';
 import { ClientsService } from '@app/services/clients.service';
 import { CommentsService } from '@app/services/comments.service';
 import { ContractsService } from '@app/services/contracts.service';
+import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { TagsService } from '@app/services/tags.service';
 import {
   BookingStatusChipComponent,
+  CustomFieldsSectionComponent,
   LeadStatusChipComponent,
   OfferStatusChipComponent,
   RequestStatusChipComponent,
@@ -48,6 +50,7 @@ import type {
   BookingSummaryDto,
   ClientResponseDto,
   ContractResponseDto,
+  CustomFieldValueDto,
   InvoiceResponseDto,
   LeadResponseDto,
   OfferSummaryDto,
@@ -86,6 +89,7 @@ type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices
     OfferStatusChipComponent,
     BookingStatusChipComponent,
     InvoiceStatusChipComponent,
+    CustomFieldsSectionComponent,
     MatPaginatorModule,
     ...MAT_BUTTONS,
     ...MAT_MENU,
@@ -106,6 +110,7 @@ export class ClientDetailComponent {
   private readonly authService = inject(AuthService);
   private readonly clientsService = inject(ClientsService);
   private readonly contractsService = inject(ContractsService);
+  private readonly customFieldsService = inject(CustomFieldsService);
   private readonly activitiesService = inject(ActivitiesService);
   private readonly commentsService = inject(CommentsService);
   private readonly tagsService = inject(TagsService);
@@ -256,6 +261,19 @@ export class ClientDetailComponent {
     },
   });
 
+  private readonly customFieldsData = rxResource<CustomFieldValueDto[], string | null>({
+    params: (): string | null => this.routeId() ?? null,
+    stream: ({ params }) => {
+      const id = params;
+
+      if (id === null) {
+        return EMPTY;
+      }
+
+      return this.customFieldsService.getClientValues(id);
+    },
+  });
+
   readonly typeLabel = TYPE_LABEL;
   readonly client = computed(() => this.data.value() ?? null);
   readonly loading = computed(() => this.data.isLoading());
@@ -292,6 +310,18 @@ export class ClientDetailComponent {
   readonly contracts = computed(() => this.contractsData.value()?.items ?? []);
   readonly contractsTotal = computed(() => this.contractsData.value()?.total ?? 0);
   readonly contractsLoading = computed(() => this.contractsData.isLoading());
+  readonly customFieldsSaving = signal(false);
+  readonly customFields = computed(() => {
+    return (this.customFieldsData.value() ?? []).map((field, index) => ({
+      definitionId: field.definitionId,
+      name: field.name,
+      fieldType: field.fieldType,
+      options: field.options ?? [],
+      value: field.value ?? '',
+      required: field.required ?? false,
+      sortOrder: field.sortOrder ?? index + 1,
+    }));
+  });
 
   readonly clientTags = computed<string[]>(() => {
     const tags = this.entityTagsData.value() ?? [];
@@ -420,6 +450,35 @@ export class ClientDetailComponent {
     if (pending === 0) {
       this.tagsSaveLoading.set(false);
     }
+  }
+
+  onSaveCustomFields(values: Record<string, string>): void {
+    const c = this.client();
+
+    if (!c) {
+      return;
+    }
+
+    this.customFieldsSaving.set(true);
+    this.customFieldsService
+      .upsertClientValues(c.id, { values })
+      .pipe(
+        map((updatedValues) => {
+          this.customFieldsData.set(updatedValues);
+
+          return updatedValues;
+        }),
+      )
+      .subscribe({
+        next: () => {
+          this.customFieldsSaving.set(false);
+          this.toast.showSuccess('Дополнительные поля сохранены');
+        },
+        error: (err) => {
+          this.customFieldsSaving.set(false);
+          this.toast.showError(err.error?.message ?? 'Не удалось сохранить дополнительные поля');
+        },
+      });
   }
 
   readonly resolvedPersonId = signal<string | null>(null);

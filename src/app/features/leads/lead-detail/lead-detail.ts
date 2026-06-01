@@ -7,6 +7,7 @@ import {
   effect,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import {
@@ -35,11 +36,13 @@ import { LeadSourceBadgeComponent } from '@app/features/leads/lead-source-badge/
 import { LinkLeadClientDialogComponent } from '@app/features/leads/link-lead-client-dialog/link-lead-client-dialog';
 // eslint-disable-next-line max-len
 import { PromoteLeadClientDialogComponent } from '@app/features/leads/promote-lead-client-dialog/promote-lead-client-dialog';
+import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
+import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
@@ -52,6 +55,7 @@ import { atLeastOneContactValidator } from '../leads.validators';
 import type {
   ActivityListResponseDto,
   ActivityResponseDto,
+  CustomFieldValueDto,
   LeadResponseDto,
   OfferResponseDto,
   RequestResponseDto,
@@ -110,6 +114,7 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     ...MAT_FORM_BUTTONS,
     ...MAT_MENU,
     StatusBadgeComponent,
+    CustomFieldsSectionComponent,
     ClientTypeBadgeComponent,
     LeadSourceBadgeComponent,
     PageHeading,
@@ -127,6 +132,7 @@ export class LeadDetailComponent {
   private readonly requestsService = inject(RequestsService);
   private readonly offersService = inject(OffersService);
   private readonly membersService = inject(OrganizationMembersService);
+  private readonly customFieldsService = inject(CustomFieldsService);
   private readonly toast = inject(ToastService);
 
   protected readonly permissions = inject(PermissionService);
@@ -167,6 +173,21 @@ export class LeadDetailComponent {
     },
   });
 
+  private readonly customFieldsData = rxResource<CustomFieldValueDto[], string | null>({
+    params: (): string | null => this.routeId() ?? null,
+    stream: ({ params }) => {
+      const id = params;
+
+      if (id === null) {
+        return EMPTY;
+      }
+
+      return this.customFieldsService.getLeadValues(id);
+    },
+  });
+
+  protected readonly customFieldsSection = viewChild(CustomFieldsSectionComponent);
+
   protected readonly lead = computed(
     () => this.travelDetailsData() ?? this.data.value()?.lead ?? null,
   );
@@ -178,6 +199,17 @@ export class LeadDetailComponent {
     return this.data.value()?.requests ?? [];
   });
   protected readonly offers = computed(() => this.data.value()?.offers ?? []);
+  protected readonly customFields = computed(() => {
+    return (this.customFieldsData.value() ?? []).map((field, index) => ({
+      definitionId: field.definitionId,
+      name: field.name,
+      fieldType: field.fieldType,
+      options: field.options ?? [],
+      value: field.value ?? '',
+      required: field.required ?? false,
+      sortOrder: field.sortOrder ?? index + 1,
+    }));
+  });
   protected readonly loading = computed(() => this.data.isLoading());
   protected readonly error = computed(() => this.data.error());
 
@@ -274,6 +306,7 @@ export class LeadDetailComponent {
   protected readonly activityTotal = signal(0);
   protected readonly activityPage = signal(1);
   protected readonly loadingMoreActivity = signal(false);
+  protected readonly savingCustomFields = signal(false);
 
   protected readonly canLoadMoreActivity = computed(() => {
     return this.activityItems().length < this.activityTotal();
@@ -451,6 +484,14 @@ export class LeadDetailComponent {
       return;
     }
 
+    if (this.customFields().length > 0) {
+      const section = this.customFieldsSection();
+
+      if (section && !section.ensureRequiredFieldsFilledForStatusChange()) {
+        return;
+      }
+    }
+
     this.statusActionLoading.set(action);
     this.leadsService.updateStatus(lead.id, { status: targetStatus }).subscribe({
       next: (updated) => {
@@ -464,6 +505,30 @@ export class LeadDetailComponent {
         this.statusActionLoading.set(null);
       },
     });
+  }
+
+  protected saveCustomFields(values: Record<string, string>): void {
+    const lead = this.lead();
+
+    if (!lead) {
+      return;
+    }
+
+    this.savingCustomFields.set(true);
+    this.customFieldsService
+      .upsertLeadValues(lead.id, { values })
+      .pipe(finalize(() => this.savingCustomFields.set(false)))
+      .subscribe({
+        next: (updatedValues) => {
+          this.customFieldsData.set(updatedValues);
+          this.toast.showSuccess('Дополнительные поля сохранены');
+        },
+        error: (err: unknown) => {
+          this.toast.showError(
+            this.getErrorMessage(err, 'Не удалось сохранить дополнительные поля'),
+          );
+        },
+      });
   }
 
   protected openAssignDialog(): void {

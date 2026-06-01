@@ -527,6 +527,16 @@
             </mat-tab-group>
           </section>
         </div>
+
+        @if (customFields().length > 0) {
+          <section class="client-custom-fields-card">
+            <app-custom-fields-section
+              [fields]="customFields()"
+              [saving]="customFieldsSaving()"
+              (saveRequested)="onSaveCustomFields($event)"
+            />
+          </section>
+        }
       </div>
     } @else {
       <p class="text-gray-500">Клиент не найден.</p>

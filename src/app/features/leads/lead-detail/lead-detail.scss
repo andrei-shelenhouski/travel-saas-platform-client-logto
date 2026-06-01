@@ -4,11 +4,16 @@
 
 .lead-header-card,
 .lead-card,
+.lead-custom-fields-card,
 .lead-booking-card {
   border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
   background: #ffffff;
   padding: 1rem;
+}
+
+.lead-custom-fields-card {
+  margin-top: 1rem;
 }
 
 .lead-header-card {

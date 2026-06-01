@@ -330,6 +330,15 @@ export const routes: Routes = [
         data: { permission: PermissionKey.ROLES_VIEW },
       },
       {
+        path: 'settings/custom-fields',
+        loadComponent: () =>
+          import('@app/features/settings/custom-fields/custom-fields').then(
+            (m) => m.CustomFieldsSettingsComponent,
+          ),
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.ROLES_VIEW },
+      },
+      {
         path: 'settings/roles',
         loadComponent: () =>
           import('@app/features/settings/roles-permissions/roles-permissions').then(

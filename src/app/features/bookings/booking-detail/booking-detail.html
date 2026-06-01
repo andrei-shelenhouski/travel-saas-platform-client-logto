@@ -123,6 +123,16 @@
             />
           </div>
         </div>
+
+        @if (customFields().length > 0) {
+          <section class="booking-custom-fields-card">
+            <app-custom-fields-section
+              [fields]="customFields()"
+              [saving]="customFieldsSaving()"
+              (saveRequested)="onSaveCustomFields($event)"
+            />
+          </section>
+        }
       </div>
     } @else {
       <section class="rounded-lg border border-gray-200 bg-white p-6 text-center">

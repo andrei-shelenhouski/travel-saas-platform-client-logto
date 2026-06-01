@@ -49,6 +49,10 @@
   gap: 1rem;
 }
 
+.booking-custom-fields-card {
+  margin-top: 1rem;
+}
+
 @media (min-width: 1024px) {
   .booking-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));

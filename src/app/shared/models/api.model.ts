@@ -40,6 +40,73 @@ export const ClientType = {
 } as const;
 export type ClientType = (typeof ClientType)[keyof typeof ClientType];
 
+export const CustomFieldEntityType = {
+  LEAD: 'LEAD',
+  BOOKING: 'BOOKING',
+  CLIENT: 'CLIENT',
+} as const;
+export type CustomFieldEntityType =
+  (typeof CustomFieldEntityType)[keyof typeof CustomFieldEntityType];
+
+export const CustomFieldType = {
+  TEXT: 'TEXT',
+  TEXTAREA: 'TEXTAREA',
+  DROPDOWN: 'DROPDOWN',
+  DATE: 'DATE',
+  URL: 'URL',
+} as const;
+export type CustomFieldType = (typeof CustomFieldType)[keyof typeof CustomFieldType];
+
+export type CreateCustomFieldDefinitionRequestDto = {
+  entityType: CustomFieldEntityType;
+  name: string;
+  fieldType: CustomFieldType;
+  options?: string[];
+  required?: boolean;
+  sortOrder?: number;
+};
+
+export type CustomFieldDefinitionRequestDto = {
+  name: string;
+  fieldType: CustomFieldType;
+  options?: string[];
+  required?: boolean;
+  sortOrder?: number;
+};
+
+export type CustomFieldDefinitionResponseDto = {
+  id: string;
+  organizationId: string;
+  entityType: CustomFieldEntityType | string;
+  fieldType: CustomFieldType;
+  name: string;
+  options?: string[];
+  required?: boolean;
+  active?: boolean;
+  sortOrder?: number;
+  createdAt?: string;
+  updatedAt?: string;
+  createdBy?: string;
+};
+
+export type CustomFieldValueDto = {
+  definitionId: string;
+  name: string;
+  fieldType: CustomFieldType;
+  options?: string[];
+  value?: string;
+  required?: boolean;
+  sortOrder?: number;
+};
+
+export type UpsertCustomFieldsRequestDto = {
+  values: Record<string, string>;
+};
+
+export type ReorderRequestDto = {
+  ids: string[];
+};
+
 /** Generic paginated response. All list endpoints return { items, total, page, limit }. */
 export type PaginatedDto<T> = {
   items: T[];

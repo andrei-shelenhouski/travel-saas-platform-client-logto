@@ -23,3 +23,4 @@ export * from './roles-api.service';
 export * from './organization-api-keys.service';
 export * from './webhook-subscriptions.service';
 export * from './tourvisor-integration.service';
+export * from './custom-fields.service';

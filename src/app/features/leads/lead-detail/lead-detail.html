@@ -137,7 +137,9 @@
                 <div class="lead-data-row">
                   <dt>Профиль</dt>
                   <dd>
-                    <a class="lead-link" [routerLink]="['/app/clients', l.clientId]">Открыть клиента</a>
+                    <a class="lead-link" [routerLink]="['/app/clients', l.clientId]"
+                      >Открыть клиента</a
+                    >
                   </dd>
                 </div>
               </dl>
@@ -145,7 +147,8 @@
               <div class="client-placeholder-card">
                 <p class="client-placeholder-title">Клиент не привязан</p>
                 <p class="client-placeholder-text">
-                  Этот лид ещё не привязан к клиенту. Привяжите существующего клиента или сохраните лид как новый профиль клиента.
+                  Этот лид ещё не привязан к клиенту. Привяжите существующего клиента или сохраните
+                  лид как новый профиль клиента.
                 </p>
 
                 <dl class="lead-data-list">
@@ -253,9 +256,7 @@
                     travelForm.controls.contactTelegram.hasError('maxlength') &&
                     travelForm.controls.contactTelegram.touched
                   ) {
-                    <mat-error
-                      >Telegram username не должен превышать 60 символов</mat-error
-                    >
+                    <mat-error>Telegram username не должен превышать 60 символов</mat-error>
                   }
                 </mat-form-field>
 
@@ -432,7 +433,9 @@
                 </div>
 
                 @if (canShowDateRangeError('add')) {
-                  <p class="request-form-error">Дата возвращения должна быть не раньше даты вылета.</p>
+                  <p class="request-form-error">
+                    Дата возвращения должна быть не раньше даты вылета.
+                  </p>
                 }
 
                 <div class="travel-form-actions">
@@ -696,6 +699,16 @@
             }
           </section>
         </div>
+
+        @if (customFields().length > 0) {
+          <section class="lead-custom-fields-card">
+            <app-custom-fields-section
+              [fields]="customFields()"
+              [saving]="savingCustomFields()"
+              (saveRequested)="saveCustomFields($event)"
+            />
+          </section>
+        }
 
         @if (bookingInfo(); as booking) {
           <section class="lead-booking-card">
