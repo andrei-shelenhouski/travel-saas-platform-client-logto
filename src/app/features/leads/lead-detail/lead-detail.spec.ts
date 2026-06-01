@@ -11,6 +11,7 @@ import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
 import { ToastService } from '@app/shared/services/toast.service';
 
+import { LeadDetailRequestsSectionComponent } from './lead-detail-requests-section/lead-detail-requests-section';
 import { LeadDetailComponent } from './lead-detail';
 
 import type { ActivityListResponseDto, LeadResponseDto } from '@app/shared/models';
@@ -184,49 +185,37 @@ describe('LeadDetailComponent', () => {
     expect(api.canManageLeadClient()).toBe(false);
   });
 
-  it('creates travel request from inline form', async () => {
-    const api = component as unknown as {
-      createTravelRequest: () => void;
-      saveTravelRequest: () => void;
-      addRequestForm: {
-        controls: {
-          destination: { setValue: (value: string) => void };
-          departDate: { setValue: (value: string) => void };
-          returnDate: { setValue: (value: string) => void };
-          adults: { setValue: (value: number) => void };
-          children: { setValue: (value: number) => void };
-        };
-      };
+  it('creates travel request via parent handler', async () => {
+    const parentApi = component as unknown as {
+      handleRequestCreated: (payload: {
+        destination: string;
+        departDate: string;
+        returnDate: string;
+        adults: number;
+        children: number;
+      }) => void;
       requests: () => { id: string }[];
     };
 
-    api.createTravelRequest();
-    api.addRequestForm.controls.destination.setValue('Rome');
-    api.addRequestForm.controls.departDate.setValue('2026-09-01');
-    api.addRequestForm.controls.returnDate.setValue('2026-09-07');
-    api.addRequestForm.controls.adults.setValue(2);
-    api.addRequestForm.controls.children.setValue(1);
-    api.saveTravelRequest();
+    parentApi.handleRequestCreated({
+      destination: 'Rome',
+      departDate: '2026-09-01',
+      returnDate: '2026-09-07',
+      adults: 2,
+      children: 1,
+    });
     await fixture.whenStable();
 
     expect(requestsServiceMock.create).toHaveBeenCalledTimes(1);
-    expect(api.requests().some((request) => request.id === 'request-new')).toBe(true);
+    expect(parentApi.requests().some((r) => r.id === 'request-new')).toBe(true);
   });
 
-  it('updates travel request from card editor', () => {
-    const api = component as unknown as {
-      editTravelRequest: (request: { id: string; destination: string }) => void;
-      saveEditedTravelRequest: (id: string) => void;
-      editRequestForm: {
-        controls: {
-          destination: { setValue: (value: string) => void };
-        };
-      };
+  it('updates travel request via parent handler', () => {
+    const parentApi = component as unknown as {
+      handleRequestUpdated: (payload: { requestId: string; destination: string }) => void;
     };
 
-    api.editTravelRequest({ id: 'request-1', destination: 'Turkey' });
-    api.editRequestForm.controls.destination.setValue('Updated request');
-    api.saveEditedTravelRequest('request-1');
+    parentApi.handleRequestUpdated({ requestId: 'request-1', destination: 'Updated request' });
 
     expect(requestsServiceMock.update).toHaveBeenCalledWith(
       'request-1',
@@ -248,12 +237,10 @@ describe('LeadDetailComponent', () => {
   });
 
   it('hides new offer action for closed request status', () => {
-    const api = component as unknown as {
-      canCreateOfferForRequest: (status: string) => boolean;
-    };
+    const section = getRequestsSection();
 
-    expect(api.canCreateOfferForRequest('CLOSED')).toBe(false);
-    expect(api.canCreateOfferForRequest('OPEN')).toBe(true);
+    expect(section.canCreateOfferForRequest('CLOSED')).toBe(false);
+    expect(section.canCreateOfferForRequest('OPEN')).toBe(true);
   });
 
   it('resets savingRequest after create error so user can retry', () => {
@@ -261,28 +248,16 @@ describe('LeadDetailComponent', () => {
       return throwError(() => new Error('create failed'));
     });
 
-    const api = component as unknown as {
-      createTravelRequest: () => void;
-      saveTravelRequest: () => void;
-      addRequestForm: {
-        controls: {
-          destination: { setValue: (value: string) => void };
-          departDate: { setValue: (value: string) => void };
-          returnDate: { setValue: (value: string) => void };
-        };
-      };
+    const parentApi = component as unknown as {
+      handleRequestCreated: (payload: Record<string, unknown>) => void;
       savingRequest: () => boolean;
     };
 
-    api.createTravelRequest();
-    api.addRequestForm.controls.destination.setValue('Paris');
-    api.addRequestForm.controls.departDate.setValue('2026-09-02');
-    api.addRequestForm.controls.returnDate.setValue('2026-09-09');
-    api.saveTravelRequest();
+    parentApi.handleRequestCreated({ destination: 'Paris' });
 
-    expect(api.savingRequest()).toBe(false);
+    expect(parentApi.savingRequest()).toBe(false);
 
-    api.saveTravelRequest();
+    parentApi.handleRequestCreated({ destination: 'Paris' });
 
     expect(requestsServiceMock.create).toHaveBeenCalledTimes(2);
   });
@@ -292,24 +267,16 @@ describe('LeadDetailComponent', () => {
       return throwError(() => new Error('update failed'));
     });
 
-    const api = component as unknown as {
-      editTravelRequest: (request: { id: string; destination: string }) => void;
-      saveEditedTravelRequest: (id: string) => void;
-      editRequestForm: {
-        controls: {
-          destination: { setValue: (value: string) => void };
-        };
-      };
+    const parentApi = component as unknown as {
+      handleRequestUpdated: (payload: Record<string, unknown>) => void;
       updatingRequest: () => boolean;
     };
 
-    api.editTravelRequest({ id: 'request-1', destination: 'Turkey' });
-    api.editRequestForm.controls.destination.setValue('Retry destination');
-    api.saveEditedTravelRequest('request-1');
+    parentApi.handleRequestUpdated({ requestId: 'request-1', destination: 'Retry' });
 
-    expect(api.updatingRequest()).toBe(false);
+    expect(parentApi.updatingRequest()).toBe(false);
 
-    api.saveEditedTravelRequest('request-1');
+    parentApi.handleRequestUpdated({ requestId: 'request-1', destination: 'Retry' });
 
     expect(requestsServiceMock.update).toHaveBeenCalledTimes(2);
   });
@@ -440,33 +407,18 @@ describe('LeadDetailComponent', () => {
     expect(api.travelForm.hasError('atLeastOneContactRequired')).toBe(false);
   });
 
-  it('returns TourVisor external lead id when source and id are present', () => {
-    const api = component as unknown as {
-      getTourvisorExternalLeadId: (lead: LeadResponseDto | null) => string | null;
+  function getRequestsSection(): LeadDetailRequestsSectionComponent {
+    const parentApi = component as unknown as {
+      requestsSection: () => LeadDetailRequestsSectionComponent | undefined;
     };
-    const lead = {
-      ...createLead({ source: 'TOURVISOR' }),
-      externalLeadId: 'TV-9001',
-    } as LeadResponseDto;
+    const section = parentApi.requestsSection();
 
-    const externalLeadId = api.getTourvisorExternalLeadId(lead);
+    if (!section) {
+      throw new Error('LeadDetailRequestsSectionComponent not found in view');
+    }
 
-    expect(externalLeadId).toBe('TV-9001');
-  });
-
-  it('returns null TourVisor external id when source is not TourVisor', () => {
-    const api = component as unknown as {
-      getTourvisorExternalLeadId: (lead: LeadResponseDto | null) => string | null;
-    };
-    const lead = {
-      ...createLead({ source: 'MANUAL' }),
-      externalLeadId: 'TV-9001',
-    } as LeadResponseDto;
-
-    const externalLeadId = api.getTourvisorExternalLeadId(lead);
-
-    expect(externalLeadId).toBeNull();
-  });
+    return section;
+  }
 });
 
 function createRequest(

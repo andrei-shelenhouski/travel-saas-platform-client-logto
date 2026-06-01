@@ -1,0 +1,41 @@
+<div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+  <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+    <mat-label>Клиент</mat-label>
+    <input
+      id="invoice-client"
+      matInput
+      type="text"
+      [formControl]="clientSearchControl()"
+      [matAutocomplete]="clientAutocomplete"
+      (blur)="onBlur()"
+    />
+    <mat-autocomplete
+      #clientAutocomplete="matAutocomplete"
+      autoActiveFirstOption="true"
+      (optionSelected)="onOptionSelected($event)"
+    >
+      @for (client of clientOptions(); track trackByClientId($index, client)) {
+        <mat-option [value]="displayFn()(client)">
+          {{ displayFn()(client) }}
+        </mat-option>
+      }
+    </mat-autocomplete>
+    @if (clientOptionsLoading()) {
+      <mat-hint>Поиск клиентов...</mat-hint>
+    }
+    @if (clientIdHasRequiredError() && clientIdTouched()) {
+      <mat-error>Требуется выбрать клиента</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+    <mat-label>Тип клиента</mat-label>
+    <input
+      id="invoice-client-type"
+      matInput
+      readonly
+      type="text"
+      [value]="clientTypeValue()"
+    />
+  </mat-form-field>
+</div>

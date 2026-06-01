@@ -1,5 +1,5 @@
 /* eslint-disable max-lines */
-import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource, takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
@@ -24,7 +24,7 @@ import { ClientsService } from '@app/services/clients.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { MAT_AUTOCOMPLETE, MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
+import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 import { formatClientSearchLabel } from '@app/shared/utils/client-display';
@@ -35,6 +35,10 @@ import {
   normalizePaymentTermsDays,
   todayIsoDate,
 } from '@app/shared/utils/invoice-defaults';
+
+import { InvoiceClientSelectorComponent } from './invoice-client-selector/invoice-client-selector';
+import { InvoiceLineItemsFormComponent } from './invoice-line-items-form/invoice-line-items-form';
+import { InvoiceTotalsDisplayComponent } from './invoice-totals-display/invoice-totals-display';
 
 import {
   dueDateAfterInvoiceDateValidator,
@@ -96,13 +100,13 @@ const EMPTY_CLIENTS_PAGE: PaginatedClientResponseDto = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-invoice',
   imports: [
-    DragDropModule,
     PageHeading,
     RouterLink,
     ReactiveFormsModule,
+    InvoiceClientSelectorComponent,
+    InvoiceLineItemsFormComponent,
+    InvoiceTotalsDisplayComponent,
     ...MAT_FORM_BUTTONS,
-    ...MAT_AUTOCOMPLETE,
-    ...MAT_ICONS,
   ],
   templateUrl: './create-invoice.html',
   styleUrl: './create-invoice.scss',
@@ -488,9 +492,10 @@ export class CreateInvoiceComponent {
     this.location.back();
   }
 
-  protected clientDisplayName(client: ClientResponseDto): string {
+  /** Arrow function so it can be passed as an `input()` to InvoiceClientSelectorComponent. */
+  protected readonly clientDisplayName = (client: ClientResponseDto): string => {
     return formatClientSearchLabel(client);
-  }
+  };
 
   protected trackByClientId(_: number, client: ClientResponseDto): string {
     return client.id;

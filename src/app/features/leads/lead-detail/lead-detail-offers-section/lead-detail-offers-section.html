@@ -1,0 +1,33 @@
+@if (offers().length > 0) {
+  <div class="request-offers-section">
+    <p class="request-offers-label">Предложения:</p>
+    <div class="offer-chip-list">
+      @for (offer of offers(); track offer.id) {
+        <a
+          class="offer-chip"
+          [attr.title]="getOfferTooltip(offer)"
+          [routerLink]="['/app/offers', offer.id]"
+        >
+          <span>{{ offer.number ?? offer.id.slice(0, 8) }}</span>
+          <span class="offer-status-chip" [class]="getOfferStatusClass(offer.status)">
+            {{ offer.status }}
+          </span>
+        </a>
+      }
+    </div>
+  </div>
+}
+
+@if (canCreateOffer()) {
+  <div class="request-create-offer-row">
+    <button
+      color="primary"
+      mat-flat-button
+      type="button"
+      (click)="createOfferClicked.emit(requestId())"
+    >
+      <mat-icon>add</mat-icon>
+      Создать предложение
+    </button>
+  </div>
+}

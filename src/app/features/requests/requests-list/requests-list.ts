@@ -115,7 +115,7 @@ export class RequestsListComponent {
     const departDateToValue = this.departDateTo();
 
     if (statusFilterValue.length > 0) {
-      list = list.filter((r) => statusFilterValue.includes(r.status as RequestStatus));
+      list = list.filter((r) => statusFilterValue.includes(r.status));
     }
 
     if (departDateFromValue) {

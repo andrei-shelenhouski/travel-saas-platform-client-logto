@@ -29,7 +29,6 @@ import {
   LeadStatusChipComponent,
   OfferStatusChipComponent,
   RequestStatusChipComponent,
-  TagSelectorComponent,
 } from '@app/shared/components';
 import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
@@ -43,6 +42,7 @@ import {
 } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
+import { ClientProfileCardComponent } from './client-profile-card/client-profile-card';
 import { FamilySectionComponent } from './family-section/family-section';
 import { TravelerProfileSectionComponent } from './traveler-profile-section/traveler-profile-section';
 
@@ -83,7 +83,6 @@ type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices
   selector: 'app-client-detail',
   imports: [
     RouterLink,
-    TagSelectorComponent,
     LeadStatusChipComponent,
     RequestStatusChipComponent,
     OfferStatusChipComponent,
@@ -95,6 +94,7 @@ type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices
     ...MAT_MENU,
     ...MAT_TABS,
     PageHeading,
+    ClientProfileCardComponent,
     FamilySectionComponent,
     TravelerProfileSectionComponent,
   ],
@@ -509,21 +509,6 @@ export class ClientDetailComponent {
 
   goToInvoice(invoice: InvoiceResponseDto): void {
     this.router.navigate(['/app/invoices', invoice.id]);
-  }
-
-  formatDate(iso: string | null | undefined): string {
-    if (!iso) {
-      return '—';
-    }
-
-    try {
-      return new Date(iso).toLocaleString(undefined, {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      });
-    } catch {
-      return iso;
-    }
   }
 
   formatDateShort(iso: string | null | undefined): string {

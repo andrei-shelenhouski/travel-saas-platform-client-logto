@@ -27,57 +27,19 @@
   } @else {
     @let l = lead();
     @if (l) {
-      <app-page-heading subtitle="Детали лида" [showBackButton]="true" [title]="l.number">
-        @if (!isTerminalLead() && !isDeletedLead()) {
-          <button mat-stroked-button type="button" (click)="startEditTravelDetails()">
-            <mat-icon>edit</mat-icon>
-            Редактировать детали тура
-          </button>
-        }
-
-        @for (action of visibleActions(); track action) {
-          <button
-            color="primary"
-            mat-flat-button
-            type="button"
-            [disabled]="isActionBusy(action)"
-            (click)="applyAction(action)"
-          >
-            {{ getActionLabel(action) }}
-          </button>
-        }
-
-        @if (canDeleteLeadDetail() && !isDeletedLead()) {
-          <button color="warn" mat-stroked-button type="button" (click)="openDeleteDialog()">
-            <mat-icon>delete</mat-icon>
-            Удалить заявку
-          </button>
-        }
-      </app-page-heading>
+      <app-lead-detail-header
+        [canDeleteLead]="canDeleteLeadDetail()"
+        [isDeletedLead]="isDeletedLead()"
+        [isTerminalLead]="isTerminalLead()"
+        [lead]="l"
+        [statusActionLoading]="statusActionLoading()"
+        [visibleActions]="visibleActions()"
+        (actionClicked)="applyAction($event)"
+        (deleteClicked)="openDeleteDialog()"
+        (editDetailsClicked)="startEditTravelDetails()"
+      />
 
       <div class="m-4">
-        <section class="lead-header-card">
-          <div class="lead-header-main">
-            <div>
-              <p class="lead-header-label">Номер лида</p>
-              <h1 class="lead-header-title">{{ l.number }}</h1>
-            </div>
-            <div class="lead-header-side">
-              <app-lead-source-badge [source]="l.source" />
-              <app-status-badge variant="lead" [status]="l.status" />
-            </div>
-          </div>
-          <div class="lead-header-meta">
-            @if (getTourvisorExternalLeadId(l); as externalLeadId) {
-              <p class="lead-header-meta-note">
-                <mat-icon>language</mat-icon>
-                <span>Номер заказа TourVisor #</span>
-                <strong>{{ externalLeadId }}</strong>
-              </p>
-            }
-          </div>
-        </section>
-
         <div class="lead-grid">
           <section class="lead-card">
             <div class="lead-card-header">
@@ -362,306 +324,20 @@
             </div>
           </section>
 
-          <section class="lead-card lead-requests-card">
-            <div class="lead-card-header">
-              <h2 class="lead-card-title">Запросы на тур</h2>
-              @if (showAddTravelRequest()) {
-                <button
-                  color="primary"
-                  mat-flat-button
-                  type="button"
-                  (click)="createTravelRequest()"
-                >
-                  Добавить запрос
-                </button>
-              }
-            </div>
-
-            @if (showAddRequestForm()) {
-              <form
-                class="request-form"
-                [formGroup]="addRequestForm"
-                (ngSubmit)="saveTravelRequest()"
-              >
-                <div class="request-form-grid">
-                  <mat-form-field appearance="outline">
-                    <mat-label>Направление</mat-label>
-                    <input formControlName="destination" matInput />
-                    @if (
-                      addRequestForm.controls.destination.invalid &&
-                      (addRequestForm.controls.destination.dirty ||
-                        addRequestForm.controls.destination.touched)
-                    ) {
-                      <mat-error>Укажите направление.</mat-error>
-                    }
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline">
-                    <mat-label>Назначить менеджера</mat-label>
-                    <mat-select formControlName="managerId">
-                      <mat-option value="">Без менеджера</mat-option>
-                      @for (agent of filteredAgents(); track agent.id) {
-                        <mat-option [value]="agent.userId">{{ agent.name }}</mat-option>
-                      }
-                    </mat-select>
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline">
-                    <mat-label>Дата вылета</mat-label>
-                    <input formControlName="departDate" matInput type="date" />
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline">
-                    <mat-label>Дата возвращения</mat-label>
-                    <input formControlName="returnDate" matInput type="date" />
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline">
-                    <mat-label>Взрослые</mat-label>
-                    <input formControlName="adults" matInput min="0" type="number" />
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline">
-                    <mat-label>Дети</mat-label>
-                    <input formControlName="children" matInput min="0" type="number" />
-                  </mat-form-field>
-
-                  <mat-form-field appearance="outline" class="request-form-notes">
-                    <mat-label>Заметки</mat-label>
-                    <textarea formControlName="notes" matInput rows="3"></textarea>
-                  </mat-form-field>
-                </div>
-
-                @if (canShowDateRangeError('add')) {
-                  <p class="request-form-error">
-                    Дата возвращения должна быть не раньше даты вылета.
-                  </p>
-                }
-
-                <div class="travel-form-actions">
-                  <button mat-button type="button" (click)="cancelAddTravelRequest()">
-                    Отмена
-                  </button>
-                  <button
-                    color="primary"
-                    mat-flat-button
-                    type="submit"
-                    [disabled]="savingRequest()"
-                  >
-                    Добавить
-                  </button>
-                </div>
-              </form>
-            }
-
-            @if (requests().length === 0) {
-              <p class="text-sm text-gray-500">Запросов на тур пока нет.</p>
-            } @else {
-              <div class="requests-grid">
-                @for (request of requests(); track request.id; let idx = $index) {
-                  <article class="request-card">
-                    @if (isEditingRequest(request.id)) {
-                      <form
-                        class="request-form"
-                        [formGroup]="editRequestForm"
-                        (ngSubmit)="saveEditedTravelRequest(request.id)"
-                      >
-                        <div class="request-form-grid">
-                          <mat-form-field appearance="outline">
-                            <mat-label>Направление</mat-label>
-                            <input formControlName="destination" matInput />
-                            @if (
-                              editRequestForm.controls.destination.invalid &&
-                              (editRequestForm.controls.destination.dirty ||
-                                editRequestForm.controls.destination.touched)
-                            ) {
-                              <mat-error>Укажите направление.</mat-error>
-                            }
-                          </mat-form-field>
-
-                          <mat-form-field appearance="outline">
-                            <mat-label>Назначить менеджера</mat-label>
-                            <mat-select formControlName="managerId">
-                              <mat-option value="">Без менеджера</mat-option>
-                              @for (agent of filteredAgents(); track agent.id) {
-                                <mat-option [value]="agent.userId">{{ agent.name }}</mat-option>
-                              }
-                            </mat-select>
-                          </mat-form-field>
-
-                          <mat-form-field appearance="outline">
-                            <mat-label>Дата вылета</mat-label>
-                            <input formControlName="departDate" matInput type="date" />
-                          </mat-form-field>
-
-                          <mat-form-field appearance="outline">
-                            <mat-label>Дата возвращения</mat-label>
-                            <input formControlName="returnDate" matInput type="date" />
-                          </mat-form-field>
-
-                          <mat-form-field appearance="outline">
-                            <mat-label>Взрослые</mat-label>
-                            <input formControlName="adults" matInput min="0" type="number" />
-                          </mat-form-field>
-
-                          <mat-form-field appearance="outline">
-                            <mat-label>Дети</mat-label>
-                            <input formControlName="children" matInput min="0" type="number" />
-                          </mat-form-field>
-
-                          <mat-form-field appearance="outline" class="request-form-notes">
-                            <mat-label>Заметки</mat-label>
-                            <textarea formControlName="notes" matInput rows="3"></textarea>
-                          </mat-form-field>
-                        </div>
-
-                        @if (canShowDateRangeError('edit')) {
-                          <p class="request-form-error">
-                            Дата возвращения должна быть не раньше даты вылета.
-                          </p>
-                        }
-
-                        <div class="travel-form-actions">
-                          <button mat-button type="button" (click)="cancelEditTravelRequest()">
-                            Отмена
-                          </button>
-                          <button
-                            color="primary"
-                            mat-flat-button
-                            type="submit"
-                            [disabled]="updatingRequest()"
-                          >
-                            Сохранить
-                          </button>
-                        </div>
-                      </form>
-                    } @else {
-                      <div class="request-view-header">
-                        <div class="request-id-status">
-                          <span class="request-id">{{ getRequestIdentifier(request, idx) }}</span>
-                          <span
-                            class="request-status-badge"
-                            [class]="getRequestStatusClass(request.status)"
-                          >
-                            {{ getRequestStatusLabel(request.status) }}
-                          </span>
-                        </div>
-                        <div class="request-view-actions">
-                          <button
-                            aria-label="Редактировать запрос на тур"
-                            mat-icon-button
-                            type="button"
-                            (click)="editTravelRequest(request)"
-                          >
-                            <mat-icon>edit</mat-icon>
-                          </button>
-                          <button
-                            aria-label="Другие действия"
-                            mat-icon-button
-                            type="button"
-                            [matMenuTriggerFor]="requestMenu"
-                          >
-                            <mat-icon>more_vert</mat-icon>
-                          </button>
-                          <mat-menu #requestMenu="matMenu">
-                            @if (!canDeleteRequest(request)) {
-                              <div
-                                class="delete-tooltip-wrapper"
-                                matTooltip="Нельзя удалить запрос с привязанными предложениями"
-                              >
-                                <button mat-menu-item type="button" [disabled]="true">
-                                  <mat-icon>delete</mat-icon>
-                                  <span>Удалить</span>
-                                </button>
-                              </div>
-                            } @else {
-                              <button
-                                mat-menu-item
-                                type="button"
-                                (click)="deleteRequest(request, idx)"
-                              >
-                                <mat-icon>delete</mat-icon>
-                                <span>Удалить</span>
-                              </button>
-                            }
-                          </mat-menu>
-                        </div>
-                      </div>
-
-                      <p class="request-summary-line">
-                        <span>{{ request.destination ?? '—' }}</span>
-                        <span class="request-dot">·</span>
-                        <span>{{ formatDateRange(request.departDate, request.returnDate) }}</span>
-                        <span class="request-dot">·</span>
-                        <span>{{ request.adults ?? 0 }} взр.</span>
-                        @if (request.children && request.children > 0) {
-                          <span>, {{ request.children }} дет.</span>
-                        }
-                      </p>
-
-                      @if (request.notes) {
-                        <div class="request-notes-container">
-                          <p
-                            class="request-notes markdown-body"
-                            [class.request-notes-expanded]="isNotesExpanded(request.id)"
-                            [class.whitespace-pre-wrap]="isNotesExpanded(request.id)"
-                            [innerHTML]="request.notes | markdown"
-                          ></p>
-                          @if (request.notes.length > 80) {
-                            <button
-                              class="request-notes-toggle"
-                              mat-button
-                              type="button"
-                              (click)="toggleNotesExpanded(request.id)"
-                            >
-                              {{ isNotesExpanded(request.id) ? 'Скрыть' : 'Показать ещё' }}
-                            </button>
-                          }
-                        </div>
-                      }
-
-                      @if (getOffersForRequest(request.id).length > 0) {
-                        <div class="request-offers-section">
-                          <p class="request-offers-label">Предложения:</p>
-                          <div class="offer-chip-list">
-                            @for (offer of getOffersForRequest(request.id); track offer.id) {
-                              <a
-                                class="offer-chip"
-                                [attr.title]="getOfferTooltip(offer)"
-                                [routerLink]="['/app/offers', offer.id]"
-                              >
-                                <span>{{ offer.number ?? offer.id.slice(0, 8) }}</span>
-                                <span
-                                  class="offer-status-chip"
-                                  [class]="getOfferStatusClass(offer.status)"
-                                >
-                                  {{ offer.status }}
-                                </span>
-                              </a>
-                            }
-                          </div>
-                        </div>
-                      }
-
-                      @if (canCreateOfferForRequest(request.status)) {
-                        <div class="request-create-offer-row">
-                          <button
-                            color="primary"
-                            mat-flat-button
-                            type="button"
-                            (click)="openNewOffer(request.id)"
-                          >
-                            <mat-icon>add</mat-icon>
-                            Создать предложение
-                          </button>
-                        </div>
-                      }
-                    }
-                  </article>
-                }
-              </div>
-            }
-          </section>
+          <app-lead-detail-requests-section
+            [canCreateOffer]="permissions.canCreateOffer()"
+            [deletingRequestId]="deletingRequestId()"
+            [filteredAgents]="filteredAgents()"
+            [offersByRequest]="offersByRequest()"
+            [requests]="requests()"
+            [savingRequest]="savingRequest()"
+            [showAddButton]="showAddTravelRequest()"
+            [updatingRequest]="updatingRequest()"
+            (createOfferClicked)="openNewOffer($event)"
+            (requestCreated)="handleRequestCreated($event)"
+            (requestDeleted)="handleRequestDeleted($event)"
+            (requestUpdated)="handleRequestUpdated($event)"
+          />
 
           <section class="lead-card lead-activity-card">
             <h2 class="lead-card-title">Журнал активности</h2>
@@ -669,7 +345,7 @@
             @if (activityItems().length === 0) {
               <p class="text-sm text-gray-500">Активности пока нет.</p>
             } @else {
-              <ul class="activity-list" role="list">
+              <ul class="activity-list">
                 @for (item of activityItems(); track item.id) {
                   <li class="activity-item" [class.activity-item-system]="isSystemEvent(item)">
                     <span aria-hidden="true" class="activity-icon-wrap">
