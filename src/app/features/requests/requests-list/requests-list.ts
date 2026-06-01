@@ -19,6 +19,7 @@ import { RequestsService } from '@app/services/requests.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { RequestStatusChipComponent } from '@app/shared/components/request-status-chip/request-status-chip';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
+import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 import { RequestStatus } from '@app/shared/models';
 
 import { RequestFilterBarComponent } from '../request-filter-bar/request-filter-bar';
@@ -28,8 +29,6 @@ import type {
   ManagerOption,
   RequestListFilterValue,
 } from '../request-filter-bar/request-filter-bar';
-
-export const PAGE_SIZE = 20;
 
 const REQUEST_STATUSES = new Set<RequestStatus>([
   RequestStatus.OPEN,
@@ -62,9 +61,10 @@ export class RequestsListComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly pageSize = PAGE_SIZE;
+  private readonly listState = createListState();
+  readonly currentPage = this.listState.currentPage;
+  protected readonly pageSize = this.listState.pageSize;
 
-  readonly currentPage = signal(0);
   readonly statusFilter = signal<RequestStatus[]>([]);
   readonly managerId = signal('');
   readonly departDateFrom = signal('');
@@ -166,7 +166,7 @@ export class RequestsListComponent {
   }
 
   onPageChange(event: PageEvent): void {
-    this.currentPage.set(event.pageIndex);
+    this.listState.onPageChange(event);
   }
 
   navigateToRequest(id: string): void {

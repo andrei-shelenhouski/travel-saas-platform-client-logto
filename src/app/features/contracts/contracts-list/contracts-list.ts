@@ -17,6 +17,7 @@ import {
 } from '@app/shared/components/confirm-dialog.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
+import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 import { ContractStatus, PermissionKey } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
@@ -27,8 +28,6 @@ import {
 import { boolLabel, clientTypeLabel, textOrDash } from '../contracts-format.utils';
 
 import type { ContractResponseDto } from '@app/shared/models';
-
-const PAGE_SIZE = 20;
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -56,9 +55,10 @@ export class ContractsListComponent {
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
 
-  protected readonly pageSize = PAGE_SIZE;
   protected readonly activeFilter = signal<ContractsFilterValue>({ status: '', clientId: '' });
-  readonly currentPage = signal(0);
+  private readonly listState = createListState();
+  readonly currentPage = this.listState.currentPage;
+  protected readonly pageSize = this.listState.pageSize;
   private readonly refreshTick = signal(0);
 
   readonly canCreateContracts = computed(() =>
@@ -124,7 +124,7 @@ export class ContractsListComponent {
   });
 
   onPageChange(event: PageEvent): void {
-    this.currentPage.set(event.pageIndex);
+    this.listState.onPageChange(event);
   }
 
   onFilterChange(value: ContractsFilterValue): void {

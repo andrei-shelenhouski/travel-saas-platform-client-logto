@@ -25,26 +25,18 @@ import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import { MAT_BUTTON_TOGGLES, MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+import { computeAgentOptions } from '@app/shared/utils/agent-options.util';
+import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 
 import { OffersListFilterBarComponent } from '../offers-list-filter-bar/offers-list-filter-bar';
 
-import type {
-  OfferResponseDto,
-  OfferStatus,
-  OrganizationMemberResponseDto,
-} from '@app/shared/models';
+import type { OfferResponseDto, OfferStatus } from '@app/shared/models';
 
-export const PAGE_SIZE = 20;
 const OFFERS_VIEW_STORAGE_KEY = 'offers_view';
 
 type OfferStatusOption = {
   value: OfferStatus;
   label: string;
-};
-
-type AgentOption = {
-  id: string;
-  name: string;
 };
 
 const OFFER_STATUS_OPTIONS: OfferStatusOption[] = [
@@ -97,14 +89,15 @@ export class OffersListComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly pageSize = PAGE_SIZE;
-
   protected readonly statusOptions = OFFER_STATUS_OPTIONS;
 
   protected readonly showAgentFilter = computed(() => this.permissionService.canViewAllOffers());
   protected readonly canCreateOffer = computed(() => this.permissionService.canCreateOffer());
 
-  readonly currentPage = signal(0);
+  private readonly listState = createListState();
+  readonly currentPage = this.listState.currentPage;
+  protected readonly pageSize = this.listState.pageSize;
+
   readonly statusFilter = signal<OfferStatus[]>([]);
   readonly selectedAgentId = signal('');
   readonly dateFromFilter = signal('');
@@ -119,17 +112,9 @@ export class OffersListComponent {
     stream: () => this.membersService.findAll(),
   });
 
-  protected readonly agentOptions = computed<AgentOption[]>(() => {
-    const members = this.membersData.value() ?? [];
-
-    return members
-      .filter((member) => this.isSalesAgent(member))
-      .map((member) => ({
-        id: member.userId,
-        name: member.name,
-      }))
-      .sort((a, b) => a.name.localeCompare(b.name, 'ru'));
-  });
+  protected readonly agentOptions = computeAgentOptions(
+    computed(() => this.membersData.value() ?? []),
+  );
 
   private readonly effectiveAgentId = computed(() => {
     if (this.showAgentFilter()) {
@@ -230,7 +215,7 @@ export class OffersListComponent {
   }
 
   onPageChange(event: PageEvent): void {
-    this.currentPage.set(event.pageIndex);
+    this.listState.onPageChange(event);
   }
 
   navigateToOffer(id: string): void {
@@ -337,11 +322,5 @@ export class OffersListComponent {
       .filter((item) => OFFER_STATUSES.has(item));
 
     return Array.from(new Set(statuses));
-  }
-
-  private isSalesAgent(member: OrganizationMemberResponseDto): boolean {
-    const role = member.role;
-
-    return member.active && (role === 'AGENT' || role === 'SALES_AGENT' || role === 'ADMIN');
   }
 }

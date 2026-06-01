@@ -23,6 +23,7 @@ import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
+import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 import { ClientType, InvoiceStatus } from '@app/shared/models';
 
 import { InvoiceFilterBarComponent } from '../invoice-filter-bar/invoice-filter-bar';
@@ -31,7 +32,6 @@ import { InvoiceSummaryCardsComponent } from '../invoice-summary-cards/invoice-s
 
 import type { InvoiceResponseDto, InvoiceSummaryResponseDto } from '@app/shared/models';
 
-export const PAGE_SIZE = 20;
 const INVOICE_STATUSES = new Set<InvoiceStatus>(Object.values(InvoiceStatus));
 const CLIENT_TYPES = new Set<ClientType>(Object.values(ClientType));
 
@@ -66,10 +66,12 @@ export class InvoicesListComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly pageSize = PAGE_SIZE;
   protected readonly canCreateInvoice = computed(() => this.permissions.canCreateInvoice());
 
-  protected readonly currentPage = signal(0);
+  private readonly listState = createListState();
+  protected readonly currentPage = this.listState.currentPage;
+  protected readonly pageSize = this.listState.pageSize;
+
   protected readonly statusFilter = signal<InvoiceStatus[]>([]);
   protected readonly clientTypeFilter = signal('');
   protected readonly dateFromFilter = signal('');
@@ -200,7 +202,7 @@ export class InvoicesListComponent {
   }
 
   onPageChange(event: PageEvent): void {
-    this.currentPage.set(event.pageIndex);
+    this.listState.onPageChange(event);
   }
 
   navigateToCreateInvoice(): void {
