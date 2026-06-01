@@ -16,6 +16,7 @@ import { distinctUntilChanged } from 'rxjs';
 
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { RequestStatus } from '@app/shared/models';
+import { compareDateRangeFilters, formatDate, parseDate } from '@app/shared/utils/date.utils';
 
 const REQUEST_STATUS_OPTIONS: { value: RequestStatus; label: string }[] = [
   {
@@ -77,8 +78,8 @@ export class RequestFilterBarComponent {
         {
           status: value.status,
           managerId: value.managerId,
-          departDateFrom: this.parseDate(value.departDateFrom),
-          departDateTo: this.parseDate(value.departDateTo),
+          departDateFrom: parseDate(value.departDateFrom),
+          departDateTo: parseDate(value.departDateTo),
         },
         { emitEvent: false },
       );
@@ -86,87 +87,31 @@ export class RequestFilterBarComponent {
 
     this.form.valueChanges
       .pipe(
-        distinctUntilChanged((a, b) =>
-          this.compareFilters(
-            {
-              status: a.status ?? [],
-              managerId: a.managerId ?? '',
-              departDateFrom: this.formatDate(a.departDateFrom ?? null),
-              departDateTo: this.formatDate(a.departDateTo ?? null),
-            },
-            {
-              status: b.status ?? [],
-              managerId: b.managerId ?? '',
-              departDateFrom: this.formatDate(b.departDateFrom ?? null),
-              departDateTo: this.formatDate(b.departDateTo ?? null),
-            },
-          ),
-        ),
+        distinctUntilChanged((a, b) => {
+          const fa = {
+            status: a.status ?? [],
+            managerId: a.managerId ?? '',
+            departDateFrom: formatDate(a.departDateFrom ?? null),
+            departDateTo: formatDate(a.departDateTo ?? null),
+          };
+          const fb = {
+            status: b.status ?? [],
+            managerId: b.managerId ?? '',
+            departDateFrom: formatDate(b.departDateFrom ?? null),
+            departDateTo: formatDate(b.departDateTo ?? null),
+          };
+
+          return fa.managerId === fb.managerId && compareDateRangeFilters(fa, fb);
+        }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((formValue) => {
         this.filterChange.emit({
           status: formValue.status ?? [],
           managerId: formValue.managerId ?? '',
-          departDateFrom: this.formatDate(formValue.departDateFrom ?? null),
-          departDateTo: this.formatDate(formValue.departDateTo ?? null),
+          departDateFrom: formatDate(formValue.departDateFrom ?? null),
+          departDateTo: formatDate(formValue.departDateTo ?? null),
         });
       });
-  }
-
-  private parseDate(value: string): Date | null {
-    if (!value) {
-      return null;
-    }
-
-    const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-
-    if (!match) {
-      return null;
-    }
-
-    const year = Number(match[1]);
-    const month = Number(match[2]);
-    const day = Number(match[3]);
-    const date = new Date(year, month - 1, day);
-
-    if (
-      Number.isNaN(date.getTime()) ||
-      date.getFullYear() !== year ||
-      date.getMonth() !== month - 1 ||
-      date.getDate() !== day
-    ) {
-      return null;
-    }
-
-    return date;
-  }
-
-  private formatDate(value: Date | null): string {
-    if (!value) {
-      return '';
-    }
-
-    const year = value.getFullYear();
-    const month = String(value.getMonth() + 1).padStart(2, '0');
-    const day = String(value.getDate()).padStart(2, '0');
-
-    return `${year}-${month}-${day}`;
-  }
-
-  private compareFilters(a: RequestListFilterValue, b: RequestListFilterValue): boolean {
-    if (a.managerId !== b.managerId) {
-      return false;
-    }
-
-    if (a.departDateFrom !== b.departDateFrom || a.departDateTo !== b.departDateTo) {
-      return false;
-    }
-
-    if (a.status.length !== b.status.length) {
-      return false;
-    }
-
-    return a.status.every((status, index) => status === b.status[index]);
   }
 }

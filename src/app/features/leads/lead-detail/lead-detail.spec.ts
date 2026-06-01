@@ -36,7 +36,7 @@ describe('LeadDetailComponent', () => {
   let router: Router;
 
   const leadsServiceMock = {
-    findById: vi.fn(() => of(createLead())),
+    getById: vi.fn(() => of(createLead())),
     updateStatus: vi.fn(() => of(createLead({ status: 'IN_PROGRESS' }))),
     assign: vi.fn(() =>
       of(createLead({ assignedAgentId: 'agent-1', assignedAgentName: 'Agent One' })),
@@ -172,7 +172,7 @@ describe('LeadDetailComponent', () => {
   });
 
   it('disables client actions for terminal lead status', () => {
-    leadsServiceMock.findById.mockReturnValueOnce(of(createLead({ status: 'WON' })));
+    leadsServiceMock.getById.mockReturnValueOnce(of(createLead({ status: 'WON' })));
 
     const terminalFixture = TestBed.createComponent(LeadDetailComponent);
     terminalFixture.detectChanges();

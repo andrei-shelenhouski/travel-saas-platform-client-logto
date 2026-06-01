@@ -209,7 +209,7 @@ export class LeadsKanbanComponent {
     stream: ({ params }) => {
       const { agentId, clientType, dateFrom, dateTo, search, source } = params;
 
-      return this.leadsService.findAll({
+      return this.leadsService.getList({
         page: 1,
         limit: KANBAN_FETCH_LIMIT,
         agentId: agentId || undefined,

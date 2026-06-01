@@ -1,9 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+import { HttpParamsBuilder } from '@app/shared/utils/http-params.builder';
 
 import type {
   ContractResponseDto,
@@ -22,27 +23,13 @@ export class ContractsService {
   private readonly http = inject(HttpClient);
 
   getList(params?: ListContractsQueryDto): Observable<PaginatedContractResponseDto> {
-    let httpParams = new HttpParams();
-
-    if (params?.clientId !== undefined && params.clientId) {
-      httpParams = httpParams.set('clientId', params.clientId);
-    }
-
-    if (params?.status !== undefined && params.status) {
-      httpParams = httpParams.set('status', params.status);
-    }
-
-    if (params?.page !== undefined) {
-      httpParams = httpParams.set('page', params.page);
-    }
-
-    if (params?.limit !== undefined) {
-      httpParams = httpParams.set('limit', params.limit);
-    }
-
-    if (params?.size !== undefined) {
-      httpParams = httpParams.set('size', params.size);
-    }
+    const httpParams = new HttpParamsBuilder()
+      .set('clientId', params?.clientId || null)
+      .set('status', params?.status || null)
+      .set('page', params?.page)
+      .set('limit', params?.limit)
+      .set('size', params?.size)
+      .build();
 
     return this.http.get<PaginatedContractResponseDto>(CONTRACTS_URL, { params: httpParams });
   }
@@ -51,19 +38,11 @@ export class ContractsService {
     clientId: string,
     params?: Pick<ListContractsQueryDto, 'page' | 'limit' | 'size'>,
   ): Observable<PaginatedContractResponseDto> {
-    let httpParams = new HttpParams();
-
-    if (params?.page !== undefined) {
-      httpParams = httpParams.set('page', params.page);
-    }
-
-    if (params?.limit !== undefined) {
-      httpParams = httpParams.set('limit', params.limit);
-    }
-
-    if (params?.size !== undefined) {
-      httpParams = httpParams.set('size', params.size);
-    }
+    const httpParams = new HttpParamsBuilder()
+      .set('page', params?.page)
+      .set('limit', params?.limit)
+      .set('size', params?.size)
+      .build();
 
     return this.http.get<PaginatedContractResponseDto>(`${CLIENTS_URL}/${clientId}/contracts`, {
       params: httpParams,

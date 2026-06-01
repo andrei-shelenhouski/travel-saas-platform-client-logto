@@ -1,9 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+import { HttpParamsBuilder } from '@app/shared/utils/http-params.builder';
 
 import type {
   AddBookingTravelerRequestDto,
@@ -40,45 +41,16 @@ export class BookingsService {
     departDateTo?: string;
     travelerPersonId?: string;
   }): Observable<PaginatedBookingResponseDto> {
-    let httpParams = new HttpParams();
-
-    if (params?.page !== undefined) {
-      httpParams = httpParams.set('page', params.page);
-    }
-
-    if (params?.limit !== undefined) {
-      httpParams = httpParams.set('limit', params.limit);
-    }
-
-    if (params?.status !== undefined) {
-      const statuses = Array.isArray(params.status)
-        ? params.status.filter(Boolean)
-        : [params.status];
-
-      for (const status of statuses) {
-        httpParams = httpParams.append('status', status);
-      }
-    }
-
-    if (params?.offerId !== undefined) {
-      httpParams = httpParams.set('offerId', params.offerId);
-    }
-
-    if (params?.assignedBackofficeId !== undefined) {
-      httpParams = httpParams.set('assignedBackofficeId', params.assignedBackofficeId);
-    }
-
-    if (params?.departDateFrom !== undefined) {
-      httpParams = httpParams.set('departDateFrom', params.departDateFrom);
-    }
-
-    if (params?.departDateTo !== undefined) {
-      httpParams = httpParams.set('departDateTo', params.departDateTo);
-    }
-
-    if (params?.travelerPersonId !== undefined) {
-      httpParams = httpParams.set('traveler_person_id', params.travelerPersonId);
-    }
+    const httpParams = new HttpParamsBuilder()
+      .set('page', params?.page)
+      .set('limit', params?.limit)
+      .appendArray('status', params?.status as string | string[] | undefined)
+      .set('offerId', params?.offerId)
+      .set('assignedBackofficeId', params?.assignedBackofficeId)
+      .set('departDateFrom', params?.departDateFrom)
+      .set('departDateTo', params?.departDateTo)
+      .set('traveler_person_id', params?.travelerPersonId)
+      .build();
 
     return this.http.get<PaginatedBookingResponseDto>(BOOKINGS_URL, { params: httpParams });
   }
@@ -110,13 +82,10 @@ export class BookingsService {
     id: string,
     params?: { page?: number; limit?: number },
   ): Observable<PaginatedInvoiceResponseDto> {
-    let httpParams = new HttpParams();
-
-    const page = params?.page ?? 1;
-    const limit = params?.limit ?? 20;
-
-    httpParams = httpParams.set('page', page);
-    httpParams = httpParams.set('limit', limit);
+    const httpParams = new HttpParamsBuilder()
+      .set('page', params?.page ?? 1)
+      .set('limit', params?.limit ?? 20)
+      .build();
 
     return this.http.get<PaginatedInvoiceResponseDto>(`${BOOKINGS_URL}/${id}/invoices`, {
       params: httpParams,

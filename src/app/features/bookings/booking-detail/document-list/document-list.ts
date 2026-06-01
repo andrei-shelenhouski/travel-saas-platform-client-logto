@@ -2,14 +2,15 @@ import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
+  inject,
   input,
   output,
-  signal,
   viewChild,
 } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 
 import { DocumentRowComponent } from '@app/features/bookings/booking-detail/document-row/document-row';
-import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
+import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog.component';
 import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 
 import type { BookingDocumentResponseDto } from '@app/shared/models';
@@ -17,11 +18,13 @@ import type { BookingDocumentResponseDto } from '@app/shared/models';
 @Component({
   selector: 'app-document-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DocumentRowComponent, ConfirmationDialogComponent, ...MAT_BUTTONS, ...MAT_ICONS],
+  imports: [DocumentRowComponent, ...MAT_BUTTONS, ...MAT_ICONS],
   templateUrl: './document-list.html',
   styleUrl: './document-list.scss',
 })
 export class DocumentListComponent {
+  private readonly dialog = inject(MatDialog);
+
   readonly documents = input<BookingDocumentResponseDto[]>([]);
   readonly uploading = input<boolean>(false);
 
@@ -29,10 +32,6 @@ export class DocumentListComponent {
   readonly deleteDocument = output<BookingDocumentResponseDto>();
 
   private readonly fileInput = viewChild.required<ElementRef<HTMLInputElement>>('fileInput');
-
-  readonly deleteDialogOpen = signal(false);
-  readonly pendingDelete = signal<BookingDocumentResponseDto | null>(null);
-  readonly deleteConfirmMessage = signal('');
 
   triggerUpload(): void {
     this.fileInput().nativeElement.click();
@@ -51,26 +50,21 @@ export class DocumentListComponent {
   }
 
   onDeleteRequest(doc: BookingDocumentResponseDto): void {
-    this.pendingDelete.set(doc);
-    this.deleteConfirmMessage.set(
-      `Удалить документ "${doc.filename ?? 'Документ'}"? Это действие необратимо.`,
-    );
-    this.deleteDialogOpen.set(true);
-  }
-
-  onDeleteCancel(): void {
-    this.deleteDialogOpen.set(false);
-    this.pendingDelete.set(null);
-  }
-
-  onDeleteConfirm(): void {
-    const doc = this.pendingDelete();
-
-    if (doc) {
-      this.deleteDocument.emit(doc);
-    }
-
-    this.deleteDialogOpen.set(false);
-    this.pendingDelete.set(null);
+    this.dialog
+      .open(ConfirmDialogComponent, {
+        data: {
+          title: 'Удалить документ',
+          message: `Удалить документ "${doc.filename ?? 'Документ'}"? Это действие необратимо.`,
+          confirmLabel: 'Удалить',
+          destructive: true,
+        },
+        width: '400px',
+      })
+      .afterClosed()
+      .subscribe((confirmed: boolean) => {
+        if (confirmed) {
+          this.deleteDocument.emit(doc);
+        }
+      });
   }
 }

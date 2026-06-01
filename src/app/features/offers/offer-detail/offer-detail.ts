@@ -22,7 +22,7 @@ import { BookingsService } from '@app/services/bookings.service';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
-import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
+import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS, MAT_DIALOG } from '@app/shared/material-imports';
 import { OfferStatus } from '@app/shared/models';
@@ -68,7 +68,6 @@ const ACTION_LABELS: Record<OfferAction, string> = {
     DecimalPipe,
     RouterLink,
     OfferTimelineComponent,
-    ConfirmationDialogComponent,
     PageHeading,
     ...MAT_BUTTONS,
     ...MAT_DIALOG,
@@ -139,14 +138,6 @@ export class OfferDetailComponent {
   });
 
   protected readonly actionLoading = signal(false);
-  protected readonly confirmOpen = signal(false);
-  protected readonly confirmPayload = signal<{
-    action: 'SEND' | 'ACCEPT' | 'REJECT' | 'DELETE';
-    title: string;
-    message: string;
-    confirmLabel: string;
-    danger: boolean;
-  } | null>(null);
 
   protected readonly displayOfferNumber = computed(
     () => this.offer()?.number ?? this.offer()?.id ?? '',
@@ -277,83 +268,58 @@ export class OfferDetailComponent {
       return;
     }
 
-    const payloads = {
+    const payloads: Record<
+      'SEND' | 'ACCEPT' | 'REJECT' | 'DELETE',
+      { title: string; message: string; confirmLabel: string; destructive: boolean }
+    > = {
       SEND: {
-        action: 'SEND' as const,
         title: 'Отправить предложение',
         message: 'Отправить это предложение клиенту?',
         confirmLabel: 'Отправить',
-        danger: false,
+        destructive: false,
       },
       ACCEPT: {
-        action: 'ACCEPT' as const,
         title: 'Принять предложение',
         message: 'Пометить предложение как принятое? Это действие нельзя отменить.',
         confirmLabel: 'Принять',
-        danger: true,
+        destructive: true,
       },
       REJECT: {
-        action: 'REJECT' as const,
         title: 'Отклонить предложение',
         message: 'Пометить предложение как отклонённое клиентом?',
         confirmLabel: 'Отклонить',
-        danger: true,
+        destructive: true,
       },
       DELETE: {
-        action: 'DELETE' as const,
         title: 'Удалить предложение',
         message: 'Удалить этот черновик предложения?',
         confirmLabel: 'Удалить',
-        danger: true,
+        destructive: true,
       },
     };
 
     if (action === 'SEND' || action === 'ACCEPT' || action === 'REJECT' || action === 'DELETE') {
-      this.confirmPayload.set(payloads[action]);
-      this.confirmOpen.set(true);
+      const payload = payloads[action];
+
+      this.dialog
+        .open(ConfirmDialogComponent, { data: payload, width: '400px' })
+        .afterClosed()
+        .subscribe((confirmed: boolean) => {
+          if (!confirmed) {
+            return;
+          }
+
+          if (action === 'SEND') {
+            this.runStatusAction(currentOffer.id, OfferStatus.SENT);
+          } else if (action === 'ACCEPT') {
+            this.runStatusAction(currentOffer.id, OfferStatus.ACCEPTED);
+          } else if (action === 'REJECT') {
+            this.runStatusAction(currentOffer.id, OfferStatus.REJECTED);
+          } else if (action === 'DELETE') {
+            this.runDeleteAction(currentOffer.id);
+          }
+        });
     }
-  }
-
-  protected onConfirmDialogConfirm(): void {
-    const payload = this.confirmPayload();
-    const currentOffer = this.offer();
-
-    if (!payload || !currentOffer) {
-      this.confirmOpen.set(false);
-      this.confirmPayload.set(null);
-
-      return;
-    }
-
-    this.confirmOpen.set(false);
-    this.confirmPayload.set(null);
-
-    if (payload.action === 'SEND') {
-      this.runStatusAction(currentOffer.id, OfferStatus.SENT);
-
-      return;
-    }
-
-    if (payload.action === 'ACCEPT') {
-      this.runStatusAction(currentOffer.id, OfferStatus.ACCEPTED);
-
-      return;
-    }
-
-    if (payload.action === 'REJECT') {
-      this.runStatusAction(currentOffer.id, OfferStatus.REJECTED);
-
-      return;
-    }
-
-    if (payload.action === 'DELETE') {
-      this.runDeleteAction(currentOffer.id);
-    }
-  }
-
-  protected onConfirmDialogCancel(): void {
-    this.confirmOpen.set(false);
-    this.confirmPayload.set(null);
   }
 
   protected openPdfPreview(): void {

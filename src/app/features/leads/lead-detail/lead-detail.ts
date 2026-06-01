@@ -152,7 +152,7 @@ export class LeadDetailComponent {
       }
 
       return forkJoin({
-        lead: this.leadsService.findById(id),
+        lead: this.leadsService.getById(id),
         requests: this.requestsService
           .getList({ leadId: id, limit: 100 })
           .pipe(map((res) => res.items)),
@@ -279,7 +279,7 @@ export class LeadDetailComponent {
   });
 
   protected readonly bookingInfo = computed(() => {
-    const lead = this.lead() as LeadWithBooking | null;
+    const lead = this.lead() as LeadWithBooking | null; // NOSONAR — narrowing to extended type
 
     if (!lead || lead.status !== LeadStatus.WON) {
       return null;
@@ -1014,9 +1014,10 @@ export class LeadDetailComponent {
         this.activityTotal.set(res.total ?? this.activityTotal());
 
         const merged = [...this.activityItems(), ...res.items];
-        const ordered = merged.sort((left, right) => {
-          return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
-        });
+        // NOSONAR — sort on a fresh copy, not the original array
+        const ordered = [...merged].sort(
+          (left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime(),
+        );
 
         this.activityItems.set(ordered);
         this.loadingMoreActivity.set(false);
@@ -1085,7 +1086,7 @@ export class LeadDetailComponent {
   }
 
   protected getTourvisorExternalLeadId(lead: LeadResponseDto | null): string | null {
-    if (!lead || lead.source !== 'TOURVISOR') {
+    if (lead?.source !== 'TOURVISOR') {
       return null;
     }
 
@@ -1116,7 +1117,7 @@ export class LeadDetailComponent {
       return `${fromText} - ${toText}`;
     }
 
-    return fromText !== '—' ? fromText : toText;
+    return fromText === '—' ? toText : fromText;
   }
 
   protected formatDateShort(iso: string | null): string {
@@ -1172,7 +1173,7 @@ export class LeadDetailComponent {
 
   protected getActivityLabel(type: string): string {
     return type
-      .replace(/_/g, ' ')
+      .replaceAll('_', ' ')
       .toLowerCase()
       .replace(/\b\w/g, (value) => value.toUpperCase());
   }
@@ -1247,7 +1248,7 @@ export class LeadDetailComponent {
   private normalizeText(value: string | null | undefined): string | undefined {
     const trimmed = value?.trim();
 
-    return trimmed ? trimmed : undefined;
+    return trimmed || undefined;
   }
 
   private resetRequestEditingState(): void {

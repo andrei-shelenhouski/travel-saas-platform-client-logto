@@ -1,5 +1,10 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
+import {
+  StatusChipComponent,
+  type StatusChipConfig,
+} from '@app/shared/components/status-chip/status-chip';
+
 export const BOOKING_STATUS_COLORS: Record<string, string> = {
   PENDING_CONFIRMATION: '#d97706',
   PENDING: '#d97706',
@@ -20,42 +25,20 @@ export const BOOKING_STATUS_LABELS: Record<string, string> = {
   CANCELLED: 'Отменено',
 };
 
+const BOOKING_STATUS_CONFIG: StatusChipConfig = Object.fromEntries(
+  Object.keys(BOOKING_STATUS_LABELS).map((key) => [
+    key,
+    { label: BOOKING_STATUS_LABELS[key], backgroundColor: BOOKING_STATUS_COLORS[key] },
+  ]),
+);
+
 @Component({
   selector: 'app-booking-status-chip',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './booking-status-chip.html',
-  styleUrl: './booking-status-chip.scss',
+  imports: [StatusChipComponent],
+  template: `<app-status-chip [config]="config" [status]="status()" />`,
 })
 export class BookingStatusChipComponent {
   readonly status = input<string | null | undefined>(null);
-
-  label(): string {
-    const status = this.status();
-
-    if (!status) {
-      return '—';
-    }
-
-    return BOOKING_STATUS_LABELS[status] ?? status;
-  }
-
-  backgroundColor(): string {
-    const status = this.status();
-
-    if (!status) {
-      return '#e5e7eb';
-    }
-
-    return BOOKING_STATUS_COLORS[status] ?? '#73787a';
-  }
-
-  textColor(): string {
-    const status = this.status();
-
-    if (!status || !(status in BOOKING_STATUS_COLORS)) {
-      return '#1f2937';
-    }
-
-    return '#ffffff';
-  }
+  protected readonly config = BOOKING_STATUS_CONFIG;
 }

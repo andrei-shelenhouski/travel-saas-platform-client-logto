@@ -210,7 +210,7 @@ export class LeadsListComponent {
         status,
       } = params;
 
-      return this.leadsService.findAll({
+      return this.leadsService.getList({
         page: page + 1,
         limit: PAGE_SIZE,
         status: status.length > 0 ? status : undefined,

@@ -24,14 +24,3 @@
     }
   </div>
 </section>
-
-<app-confirmation-dialog
-  cancelLabel="Отмена"
-  confirmLabel="Удалить"
-  title="Удалить документ"
-  [danger]="true"
-  [message]="deleteConfirmMessage()"
-  [open]="deleteDialogOpen()"
-  (cancel)="onDeleteCancel()"
-  (confirm)="onDeleteConfirm()"
-/>
