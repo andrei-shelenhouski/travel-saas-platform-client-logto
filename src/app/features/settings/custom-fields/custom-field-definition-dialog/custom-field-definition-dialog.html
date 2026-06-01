@@ -4,7 +4,7 @@
   <form class="definition-form" [formGroup]="form">
     <mat-form-field appearance="outline">
       <mat-label>Название</mat-label>
-      <input matInput formControlName="name" />
+      <input formControlName="name" matInput />
       @if (form.controls.name.hasError('required') && form.controls.name.touched) {
         <mat-error>Обязательное поле</mat-error>
       }
@@ -30,7 +30,7 @@
     @if (isDropdown()) {
       <mat-form-field appearance="outline">
         <mat-label>Опции (через запятую)</mat-label>
-        <textarea matInput rows="3" formControlName="optionsText"></textarea>
+        <textarea formControlName="optionsText" matInput rows="3"></textarea>
         @if (form.controls.optionsText.hasError('required') && form.controls.optionsText.touched) {
           <mat-error>Добавьте хотя бы одну опцию</mat-error>
         }
@@ -39,7 +39,7 @@
   </form>
 </div>
 
-<div mat-dialog-actions align="end">
+<div align="end" mat-dialog-actions>
   <button mat-button type="button" (click)="cancel()">Отмена</button>
   <button color="primary" mat-flat-button type="button" (click)="submit()">Сохранить</button>
 </div>

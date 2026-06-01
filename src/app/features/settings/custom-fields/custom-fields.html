@@ -29,17 +29,17 @@
                 <div
                   cdkDropList
                   class="definitions-list"
-                  [cdkDropListDisabled]="reordering()"
                   [cdkDropListData]="activeDefinitions()"
+                  [cdkDropListDisabled]="reordering()"
                   (cdkDropListDropped)="drop($event)"
                 >
                   @for (definition of activeDefinitions(); track definition.id) {
                     <article cdkDrag class="definition-item">
                       <button
-                        class="drag-handle"
-                        cdkDragHandle
-                        type="button"
                         aria-label="Перетащить поле"
+                        cdkDragHandle
+                        class="drag-handle"
+                        type="button"
                       >
                         <mat-icon>drag_indicator</mat-icon>
                       </button>

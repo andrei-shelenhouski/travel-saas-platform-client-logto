@@ -65,15 +65,15 @@ export class PersonDetailComponent {
   protected readonly person = computed(() => this.personData.value()?.person ?? null);
   protected readonly relationships = computed(() => this.personData.value()?.relationships ?? []);
   protected readonly relatedClientByPersonId = computed(() => {
-    const map = new Map<string, string>();
+    const clientsMap = new Map<string, string>();
 
     for (const person of this.personData.value()?.family ?? []) {
       if (person.clientId) {
-        map.set(person.id, person.clientId);
+        clientsMap.set(person.id, person.clientId);
       }
     }
 
-    return map;
+    return clientsMap;
   });
   protected readonly bookings = computed(() => this.personData.value()?.bookings ?? []);
   protected readonly loading = computed(() => this.personData.isLoading());

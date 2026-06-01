@@ -36,7 +36,7 @@
               @if (!field.value) {
                 —
               } @else if (field.fieldType === fieldType.URL) {
-                <a [href]="field.value" rel="noopener noreferrer" target="_blank">{{
+                <a rel="noopener noreferrer" target="_blank" [href]="field.value">{{
                   field.value
                 }}</a>
               } @else {
@@ -82,8 +82,8 @@
               <mat-label>{{ field.name }}</mat-label>
               <input
                 matInput
-                [type]="field.fieldType === fieldType.URL ? 'url' : 'text'"
                 [formControlName]="field.definitionId"
+                [type]="field.fieldType === fieldType.URL ? 'url' : 'text'"
               />
               @if (isRequiredError(field.definitionId)) {
                 <mat-error>Обязательное поле</mat-error>

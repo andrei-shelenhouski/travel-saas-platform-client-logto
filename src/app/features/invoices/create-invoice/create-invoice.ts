@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { Location } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
