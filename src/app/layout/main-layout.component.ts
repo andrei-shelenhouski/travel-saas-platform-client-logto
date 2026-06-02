@@ -70,6 +70,12 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
     requiredPermission: PermissionKey.ROLES_VIEW,
   },
   {
+    path: '/app/settings/custom-fields',
+    icon: 'tune',
+    label: 'Пользовательские поля',
+    requiredPermission: PermissionKey.ROLES_VIEW,
+  },
+  {
     path: '/app/settings',
     icon: 'settings',
     label: 'Настройки',

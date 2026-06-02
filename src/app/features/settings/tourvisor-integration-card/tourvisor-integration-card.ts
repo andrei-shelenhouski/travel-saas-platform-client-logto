@@ -10,7 +10,6 @@ import {
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
-import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -20,9 +19,9 @@ import { finalize } from 'rxjs';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { TourvisorIntegrationService } from '@app/services/tourvisor-integration.service';
-import { ConfirmDialogComponent } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { OrgRole } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
@@ -61,7 +60,7 @@ export class TourvisorIntegrationCardComponent {
   private readonly membersService = inject(OrganizationMembersService);
   private readonly permissions = inject(PermissionService);
   private readonly integrationService = inject(TourvisorIntegrationService);
-  private readonly dialog = inject(MatDialog);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly toast = inject(ToastService);
 
   private readonly relativeTimeFormatter = new Intl.RelativeTimeFormat(this.locale, {
@@ -294,18 +293,15 @@ export class TourvisorIntegrationCardComponent {
   protected confirmDisconnect(): void {
     this.inlineError.set(null);
 
-    this.dialog
-      .open(ConfirmDialogComponent, {
-        data: {
-          title: 'Отключить TourVisor?',
-          message: 'Новые заявки больше не будут импортироваться.',
-          confirmLabel: 'Отключить',
-          cancelLabel: 'Отмена',
-          confirmColor: 'warn',
-        },
+    this.confirmDialog
+      .open({
+        title: 'Отключить TourVisor?',
+        message: 'Новые заявки больше не будут импортироваться.',
+        confirmLabel: 'Отключить',
+        cancelLabel: 'Отмена',
+        confirmColor: 'warn',
       })
-      .afterClosed()
-      .subscribe((confirmed: boolean | undefined) => {
+      .subscribe((confirmed) => {
         if (confirmed) {
           this.disconnect();
         }
@@ -451,12 +447,13 @@ export class TourvisorIntegrationCardComponent {
 
   private getErrorMessage(error: unknown, fallback: string): string {
     if (error instanceof HttpErrorResponse) {
-      const apiMessage =
-        typeof error.error?.message === 'string'
-          ? error.error.message
-          : typeof error.error?.error === 'string'
-            ? error.error.error
-            : null;
+      let apiMessage: string | null = null;
+
+      if (typeof error.error?.message === 'string') {
+        apiMessage = error.error.message;
+      } else if (typeof error.error?.error === 'string') {
+        apiMessage = error.error.error;
+      }
 
       if (apiMessage) {
         return apiMessage;

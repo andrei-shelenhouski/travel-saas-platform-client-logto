@@ -6,8 +6,9 @@ import { of } from 'rxjs';
 import { BookingsService } from '@app/services/bookings.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
+import { PAGE_SIZE } from '@app/shared/utils/list-state';
 
-import { BookingsListComponent, PAGE_SIZE } from './bookings-list';
+import { BookingsListComponent } from './bookings-list';
 
 describe('BookingsListComponent', () => {
   let component: BookingsListComponent;

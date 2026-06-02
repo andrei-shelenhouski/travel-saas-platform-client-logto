@@ -23,16 +23,11 @@ import { OrganizationMembersService } from '@app/services/organization-members.s
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
-import { OfferStatus } from '@app/shared/models';
+import { OFFER_STATUS_OPTIONS, OfferStatus } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import type { OfferResponseDto, OfferStatus as OfferStatusType } from '@app/shared/models';
 import type { OrganizationMemberResponseDto } from '@app/shared/models';
-
-type OfferStatusOption = {
-  value: OfferStatusType;
-  label: string;
-};
 
 type AgentOption = {
   id: string;
@@ -47,15 +42,6 @@ type KanbanColumnConfig = {
 
 const OFFERS_VIEW_STORAGE_KEY = 'offers_view';
 const KANBAN_FETCH_LIMIT = 100;
-
-const OFFER_STATUS_OPTIONS: OfferStatusOption[] = [
-  { value: OfferStatus.DRAFT, label: 'Черновик' },
-  { value: OfferStatus.SENT, label: 'Отправлено' },
-  { value: OfferStatus.VIEWED, label: 'Просмотрено' },
-  { value: OfferStatus.ACCEPTED, label: 'Принято' },
-  { value: OfferStatus.REJECTED, label: 'Отклонено' },
-  { value: OfferStatus.EXPIRED, label: 'Истекло' },
-];
 
 const KANBAN_COLUMNS: KanbanColumnConfig[] = [
   {

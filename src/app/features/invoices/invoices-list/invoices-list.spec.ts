@@ -7,9 +7,10 @@ import { of } from 'rxjs';
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { InvoiceStatus } from '@app/shared/models';
+import { PAGE_SIZE } from '@app/shared/utils/list-state';
 
 import { InvoiceSummaryCardsComponent } from '../invoice-summary-cards/invoice-summary-cards';
-import { InvoicesListComponent, PAGE_SIZE } from './invoices-list';
+import { InvoicesListComponent } from './invoices-list';
 
 describe('InvoicesListComponent', () => {
   let component: InvoicesListComponent;

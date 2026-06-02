@@ -39,49 +39,21 @@ import {
   MAT_FORM_BUTTONS,
   MAT_MENU,
 } from '@app/shared/material-imports';
+import { computeAgentOptions } from '@app/shared/utils/agent-options.util';
+import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 
 import { LeadsListFilterBarComponent } from '../leads-list-filter-bar/leads-list-filter-bar';
 
-import type {
-  LeadResponseDto,
-  LeadSource,
-  LeadStatus,
-  OrganizationMemberResponseDto,
-} from '@app/shared/models';
-export const PAGE_SIZE = 20;
+import { CLIENT_TYPE_OPTIONS, LEAD_STATUS_OPTIONS } from '@app/shared/models';
+
+import type { LeadResponseDto, LeadStatus } from '@app/shared/models';
+
 const LEADS_VIEW_STORAGE_KEY = 'leads_view';
 
-type LeadStatusOption = {
-  value: LeadStatus;
-  label: string;
-};
-
-type AgentOption = {
-  id: string;
-  name: string;
-};
-
 type SourceOption = {
-  value: LeadSource | string;
+  value: string;
   label: string;
 };
-
-const LEAD_STATUS_OPTIONS: LeadStatusOption[] = [
-  { value: 'NEW', label: 'Новый' },
-  { value: 'ASSIGNED', label: 'Назначен' },
-  { value: 'IN_PROGRESS', label: 'В работе' },
-  { value: 'OFFER_SENT', label: 'Отправлено КП' },
-  { value: 'WON', label: 'Выигран' },
-  { value: 'LOST', label: 'Проигран' },
-  { value: 'EXPIRED', label: 'Истек' },
-];
-
-const CLIENT_TYPE_OPTIONS = [
-  { value: 'INDIVIDUAL', label: 'Физ. лицо' },
-  { value: 'COMPANY', label: 'Компания' },
-  { value: 'B2B_AGENT', label: 'B2B агент' },
-  { value: 'AGENT', label: 'Агент' },
-];
 
 const LEAD_SOURCE_OPTIONS: SourceOption[] = [
   { value: 'MANUAL', label: 'Вручную' },
@@ -137,8 +109,6 @@ export class LeadsListComponent {
   private readonly destroyRef = inject(DestroyRef);
   private readonly dialog = inject(MatDialog);
 
-  protected readonly pageSize = PAGE_SIZE;
-
   protected readonly statusOptions = LEAD_STATUS_OPTIONS;
   protected readonly clientTypeOptions = CLIENT_TYPE_OPTIONS;
   protected readonly sourceOptions = LEAD_SOURCE_OPTIONS;
@@ -147,7 +117,10 @@ export class LeadsListComponent {
   protected readonly canCreateLead = computed(() => this.permissionService.canCreateLead());
   protected readonly canDeleteLead = computed(() => this.permissionService.canDeleteLead());
 
-  readonly currentPage = signal(0);
+  private readonly listState = createListState();
+  readonly currentPage = this.listState.currentPage;
+  protected readonly pageSize = this.listState.pageSize;
+
   readonly statusFilter = signal<LeadStatus[]>([]);
   readonly selectedAgentId = signal('');
   readonly clientTypeFilter = signal('');
@@ -165,17 +138,9 @@ export class LeadsListComponent {
     stream: () => this.membersService.findAll(),
   });
 
-  protected readonly agentOptions = computed<AgentOption[]>(() => {
-    const members = this.membersData.value() ?? [];
-
-    return members
-      .filter((member) => this.isSalesAgent(member))
-      .map((member) => ({
-        id: member.userId,
-        name: member.name,
-      }))
-      .sort((a, b) => a.name.localeCompare(b.name, 'ru'));
-  });
+  protected readonly agentOptions = computeAgentOptions(
+    computed(() => this.membersData.value() ?? []),
+  );
 
   private readonly effectiveAgentId = computed(() => {
     if (this.showAgentFilter()) {
@@ -210,7 +175,7 @@ export class LeadsListComponent {
         status,
       } = params;
 
-      return this.leadsService.findAll({
+      return this.leadsService.getList({
         page: page + 1,
         limit: PAGE_SIZE,
         status: status.length > 0 ? status : undefined,
@@ -228,14 +193,6 @@ export class LeadsListComponent {
   protected readonly leads = computed(() => this.data.value()?.items ?? []);
   protected readonly totalElements = computed(() => this.data.value()?.total ?? 0);
   protected readonly loading = computed(() => this.data.isLoading());
-
-  private readonly redirectOnForbidden = effect(() => {
-    const err = this.data.error();
-
-    if (err instanceof HttpErrorResponse && err.status === 403) {
-      void this.router.navigate(['/app/dashboard']);
-    }
-  });
 
   protected readonly error = computed(() => {
     const err = this.data.error();
@@ -275,6 +232,13 @@ export class LeadsListComponent {
   });
 
   constructor() {
+    effect(() => {
+      const err = this.data.error();
+
+      if (err instanceof HttpErrorResponse && err.status === 403) {
+        void this.router.navigate(['/app/dashboard']);
+      }
+    });
     this.syncStateFromQueryParams();
     this.syncSearchDebounce();
     this.syncQueryParamsFromState();
@@ -316,7 +280,7 @@ export class LeadsListComponent {
   }
 
   onPageChange(event: PageEvent): void {
-    this.currentPage.set(event.pageIndex);
+    this.listState.onPageChange(event);
   }
 
   getTravelDatesLabel(lead: LeadResponseDto): string {
@@ -480,11 +444,5 @@ export class LeadsListComponent {
       .filter((item) => LEAD_STATUSES.has(item));
 
     return Array.from(new Set(statuses));
-  }
-
-  private isSalesAgent(member: OrganizationMemberResponseDto): boolean {
-    const role = member.role;
-
-    return member.active && (role === 'AGENT' || role === 'SALES_AGENT' || role === 'ADMIN');
   }
 }

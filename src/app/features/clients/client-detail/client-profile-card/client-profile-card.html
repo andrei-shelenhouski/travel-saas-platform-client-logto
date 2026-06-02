@@ -1,0 +1,80 @@
+<section class="client-card">
+  <div class="client-card-header">
+    <h2 class="client-card-title">Детали клиента</h2>
+  </div>
+
+  <dl class="client-data-list">
+    <div class="client-data-row">
+      <dt>Тип клиента</dt>
+      <dd>{{ typeLabel[client().type] }}</dd>
+    </div>
+    @if (client().email) {
+      <div class="client-data-row">
+        <dt>Электронная почта</dt>
+        <dd>{{ client().email }}</dd>
+      </div>
+    }
+    @if (client().phone) {
+      <div class="client-data-row">
+        <dt>Телефон</dt>
+        <dd>{{ client().phone }}</dd>
+      </div>
+    }
+    @if (client().notes) {
+      <div class="client-data-row">
+        <dt>Заметки</dt>
+        <dd class="whitespace-pre-wrap">{{ client().notes }}</dd>
+      </div>
+    }
+    @if (isB2BAgent()) {
+      @if (client().trademark) {
+        <div class="client-data-row">
+          <dt>Торговая марка</dt>
+          <dd>{{ client().trademark }}</dd>
+        </div>
+      }
+      @if (client().registrationCert) {
+        <div class="client-data-row">
+          <dt>Свидетельство о регистрации</dt>
+          <dd>{{ client().registrationCert }}</dd>
+        </div>
+      }
+      @if (client().taxationType) {
+        <div class="client-data-row">
+          <dt>Система налогообложения</dt>
+          <dd>{{ client().taxationType }}</dd>
+        </div>
+      }
+      @if (client().directorName) {
+        <div class="client-data-row">
+          <dt>ФИО директора</dt>
+          <dd>{{ client().directorName }}</dd>
+        </div>
+      }
+      <div class="client-data-row">
+        <dt>Действительный член РАТА</dt>
+        <dd>{{ client().rataMember ? 'Да' : 'Нет' }}</dd>
+      </div>
+    }
+    <div class="client-data-row">
+      <dt>Создан</dt>
+      <dd>{{ formatDate(client().createdAt) }}</dd>
+    </div>
+    <div class="client-data-row">
+      <dt>ID</dt>
+      <dd class="font-mono text-xs text-gray-600">{{ client().id }}</dd>
+    </div>
+  </dl>
+
+  <div class="mt-4">
+    @if (tagsLoading()) {
+      <p class="text-sm text-gray-500">Загрузка тегов…</p>
+    } @else {
+      <app-tag-selector
+        label="Теги"
+        [selected]="clientTags()"
+        (selectionChange)="tagsChanged.emit($event)"
+      />
+    }
+  </div>
+</section>

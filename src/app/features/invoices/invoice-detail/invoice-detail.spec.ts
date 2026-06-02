@@ -329,24 +329,61 @@ describe('InvoiceDetailComponent', () => {
   });
 
   it('opens delete payment confirmation', () => {
+    const confirmOpen = vi.fn(() => of(false));
+
+    (
+      component as unknown as {
+        confirmDialog: { open: (config: unknown) => unknown };
+      }
+    ).confirmDialog.open = confirmOpen;
     (component as unknown as { data: { set: (invoice: InvoiceResponseDto) => void } }).data.set({
       ...makeInvoice('ISSUED'),
       payments: [makePayment()],
     } as InvoiceResponseDto);
     component.confirmDeletePayment(makePayment());
 
-    expect(component.deletePaymentConfirmOpen()).toBe(true);
-    expect(component.pendingDeletePaymentId()).toBe('payment-1');
+    expect(confirmOpen).toHaveBeenCalledWith(
+      expect.objectContaining({
+        title: 'Удалить платёж',
+        confirmLabel: 'Удалить',
+        destructive: true,
+      }),
+    );
   });
 
-  it('deletes a payment on confirm', () => {
+  it('deletes a payment after confirmation', () => {
+    const confirmOpen = vi.fn(() => of(true));
+
+    (
+      component as unknown as {
+        confirmDialog: { open: (config: unknown) => unknown };
+      }
+    ).confirmDialog.open = confirmOpen;
+
+    const dataReload = vi.fn();
+    const activitiesReload = vi.fn();
+
+    (
+      component as unknown as {
+        data: { reload: () => void };
+        activitiesData: { reload: () => void };
+      }
+    ).data.reload = dataReload;
+    (
+      component as unknown as {
+        data: { reload: () => void };
+        activitiesData: { reload: () => void };
+      }
+    ).activitiesData.reload = activitiesReload;
+
     (component as unknown as { data: { set: (invoice: InvoiceResponseDto) => void } }).data.set(
       makeInvoice('ISSUED'),
     );
     component.confirmDeletePayment(makePayment());
-    component.onDeletePaymentConfirm();
 
     expect(invoicesService.deletePayment).toHaveBeenCalledWith('invoice-1', 'payment-1');
+    expect(dataReload).toHaveBeenCalled();
+    expect(activitiesReload).toHaveBeenCalled();
     expect(toast.showSuccess).toHaveBeenCalledWith('Платёж удалён');
   });
 });

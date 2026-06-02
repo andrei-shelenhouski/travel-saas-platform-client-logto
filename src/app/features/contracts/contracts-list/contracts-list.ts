@@ -2,7 +2,6 @@ import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { MatDialog } from '@angular/material/dialog';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -11,12 +10,10 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '@app/auth/auth.service';
 import { ContractsService } from '@app/services/contracts.service';
-import {
-  ConfirmDialogComponent,
-  ConfirmDialogData,
-} from '@app/shared/components/confirm-dialog.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
+import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 import { ContractStatus, PermissionKey } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
@@ -27,8 +24,6 @@ import {
 import { boolLabel, clientTypeLabel, textOrDash } from '../contracts-format.utils';
 
 import type { ContractResponseDto } from '@app/shared/models';
-
-const PAGE_SIZE = 20;
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -52,13 +47,14 @@ const PAGE_SIZE = 20;
 export class ContractsListComponent {
   private readonly contractsService = inject(ContractsService);
   private readonly authService = inject(AuthService);
-  private readonly dialog = inject(MatDialog);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly toast = inject(ToastService);
   private readonly router = inject(Router);
 
-  protected readonly pageSize = PAGE_SIZE;
   protected readonly activeFilter = signal<ContractsFilterValue>({ status: '', clientId: '' });
-  readonly currentPage = signal(0);
+  private readonly listState = createListState();
+  readonly currentPage = this.listState.currentPage;
+  protected readonly pageSize = this.listState.pageSize;
   private readonly refreshTick = signal(0);
 
   readonly canCreateContracts = computed(() =>
@@ -124,7 +120,7 @@ export class ContractsListComponent {
   });
 
   onPageChange(event: PageEvent): void {
-    this.currentPage.set(event.pageIndex);
+    this.listState.onPageChange(event);
   }
 
   onFilterChange(value: ContractsFilterValue): void {
@@ -164,17 +160,14 @@ export class ContractsListComponent {
       return;
     }
 
-    const data: ConfirmDialogData = {
-      title: 'Расторгнуть договор',
-      message: `Вы уверены, что хотите расторгнуть договор ${contract.contractNumber}? Это действие нельзя отменить.`,
-      confirmLabel: 'Расторгнуть',
-      cancelLabel: 'Отмена',
-      confirmColor: 'warn',
-    };
-
-    this.dialog
-      .open(ConfirmDialogComponent, { data })
-      .afterClosed()
+    this.confirmDialog
+      .open({
+        title: 'Расторгнуть договор',
+        message: `Вы уверены, что хотите расторгнуть договор ${contract.contractNumber}? Это действие нельзя отменить.`,
+        confirmLabel: 'Расторгнуть',
+        cancelLabel: 'Отмена',
+        confirmColor: 'warn',
+      })
       .subscribe((confirmed) => {
         if (!confirmed) {
           return;

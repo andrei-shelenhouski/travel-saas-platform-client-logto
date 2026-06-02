@@ -1,0 +1,10 @@
+.definition-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.75rem;
+  min-width: min(680px, 80vw);
+}
+
+.definition-form mat-form-field:last-child {
+  grid-column: 1 / -1;
+}

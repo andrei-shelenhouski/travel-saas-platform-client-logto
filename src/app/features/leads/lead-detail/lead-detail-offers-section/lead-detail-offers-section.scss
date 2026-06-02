@@ -1,0 +1,88 @@
+.request-offers-section {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.request-offers-label {
+  margin: 0 0 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+}
+
+.request-create-offer-row {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.offer-chip-list {
+  margin-top: 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.offer-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid #bfdbfe;
+  border-radius: 9999px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 0.75rem;
+  padding: 0.15rem 0.6rem;
+  text-decoration: none;
+}
+
+.offer-chip:hover {
+  background: #dbeafe;
+}
+
+.offer-status-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.12rem 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.offer-status-draft {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.offer-status-sent {
+  background: #dbeafe;
+  color: #1e3a8a;
+}
+
+.offer-status-viewed {
+  background: #e0f2fe;
+  color: #0c4a6e;
+}
+
+.offer-status-accepted {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.offer-status-rejected {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.offer-status-expired {
+  background: #7f1d1d;
+  color: #ffffff;
+}
+
+.offer-status-default {
+  background: #f3f4f6;
+  color: #4b5563;
+}

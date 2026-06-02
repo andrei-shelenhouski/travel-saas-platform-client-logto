@@ -1,0 +1,223 @@
+:host {
+  display: block;
+}
+
+@media (min-width: 900px) {
+  :host {
+    grid-column: 1 / -1;
+  }
+}
+
+// Card base — needed because this component is outside lead-detail's encapsulation scope
+.lead-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  padding: 1rem;
+}
+
+.lead-card-title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.lead-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.requests-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.request-form {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.request-form-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.request-form-notes {
+  grid-column: 1 / -1;
+}
+
+.request-form-error {
+  margin: 0;
+  color: #b91c1c;
+  font-size: 0.75rem;
+}
+
+.request-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.6rem;
+  padding: 0.75rem;
+}
+
+.request-view-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.request-id-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.request-id {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.request-status-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.12rem 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.request-view-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.request-summary-line {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #111827;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.request-dot {
+  color: #9ca3af;
+}
+
+.request-notes-container {
+  margin-top: 0.5rem;
+}
+
+.request-notes {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.request-notes-expanded {
+  -webkit-line-clamp: unset;
+  word-break: break-word;
+}
+
+.request-notes-toggle {
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  min-height: auto;
+  padding: 0.25rem 0.5rem;
+}
+
+.delete-tooltip-wrapper {
+  cursor: not-allowed;
+}
+
+.request-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.request-meta-row {
+  margin-top: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.request-destination {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.request-meta-text {
+  margin: 0;
+  color: #4b5563;
+  font-size: 0.8rem;
+}
+
+.request-dates,
+.request-offers-count {
+  margin: 0.35rem 0 0;
+  font-size: 0.8rem;
+  color: #4b5563;
+}
+
+.request-status-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.12rem 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.request-status-open {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.request-status-quoted {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.request-status-closed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.request-status-default {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.request-actions {
+  margin-top: 0.6rem;
+}
+
+@media (min-width: 900px) {
+  .requests-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .request-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

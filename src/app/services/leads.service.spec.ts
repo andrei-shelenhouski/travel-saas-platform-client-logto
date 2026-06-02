@@ -38,7 +38,7 @@ describe('LeadsService', () => {
   });
 
   it('serializes status filter as repeated query params', () => {
-    service.findAll({ status: ['NEW', 'ASSIGNED'] }).subscribe();
+    service.getList({ status: ['NEW', 'ASSIGNED'] }).subscribe();
 
     const [, options] = httpClient.get.mock.calls[0] as [string, { params: HttpParams }];
 

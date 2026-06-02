@@ -1,5 +1,10 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 
+import {
+  StatusChipComponent,
+  type StatusChipConfig,
+} from '@app/shared/components/status-chip/status-chip';
+
 export const LEAD_STATUS_COLORS: Record<string, string> = {
   NEW: '#73787a',
   OPEN: '#2b9db8',
@@ -26,42 +31,21 @@ export const LEAD_STATUS_LABELS: Record<string, string> = {
   CLOSED: 'Закрыт',
 };
 
+const LEAD_STATUS_CONFIG: StatusChipConfig = Object.fromEntries(
+  Object.keys(LEAD_STATUS_LABELS).map((key) => [
+    key,
+    { label: LEAD_STATUS_LABELS[key], backgroundColor: LEAD_STATUS_COLORS[key] },
+  ]),
+);
+
 @Component({
   selector: 'app-lead-status-chip',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [StatusChipComponent],
   templateUrl: './lead-status-chip.html',
   styleUrl: './lead-status-chip.scss',
 })
 export class LeadStatusChipComponent {
   readonly status = input<string | null | undefined>(null);
-
-  label(): string {
-    const status = this.status();
-
-    if (!status) {
-      return '—';
-    }
-
-    return LEAD_STATUS_LABELS[status] ?? status;
-  }
-
-  backgroundColor(): string {
-    const status = this.status();
-
-    if (!status) {
-      return '#e5e7eb';
-    }
-
-    return LEAD_STATUS_COLORS[status] ?? '#73787a';
-  }
-
-  textColor(): string {
-    const status = this.status();
-
-    if (!status || !(status in LEAD_STATUS_COLORS)) {
-      return '#1f2937';
-    }
-
-    return '#ffffff';
-  }
+  protected readonly config = LEAD_STATUS_CONFIG;
 }

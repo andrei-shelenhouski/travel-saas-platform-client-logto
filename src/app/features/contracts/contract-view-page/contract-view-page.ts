@@ -7,16 +7,12 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '@app/auth/auth.service';
 import { ContractsService } from '@app/services/contracts.service';
-import {
-  ConfirmDialogComponent,
-  ConfirmDialogData,
-} from '@app/shared/components/confirm-dialog.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ContractStatus, PermissionKey } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
@@ -44,7 +40,7 @@ export class ContractViewPageComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly contractsService = inject(ContractsService);
   private readonly authService = inject(AuthService);
-  private readonly dialog = inject(MatDialog);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly toast = inject(ToastService);
 
   readonly contract = signal<ContractResponseDto | null>(null);
@@ -90,17 +86,14 @@ export class ContractViewPageComponent implements OnInit {
       return;
     }
 
-    const data: ConfirmDialogData = {
-      title: 'Расторгнуть договор',
-      message: `Вы уверены, что хотите расторгнуть договор ${contract.contractNumber}? Это действие нельзя отменить.`,
-      confirmLabel: 'Расторгнуть',
-      cancelLabel: 'Отмена',
-      confirmColor: 'warn',
-    };
-
-    this.dialog
-      .open(ConfirmDialogComponent, { data })
-      .afterClosed()
+    this.confirmDialog
+      .open({
+        title: 'Расторгнуть договор',
+        message: `Вы уверены, что хотите расторгнуть договор ${contract.contractNumber}? Это действие нельзя отменить.`,
+        confirmLabel: 'Расторгнуть',
+        cancelLabel: 'Отмена',
+        confirmColor: 'warn',
+      })
       .subscribe((confirmed) => {
         if (!confirmed) {
           return;

@@ -2,8 +2,8 @@
   display: block;
 }
 
-.lead-header-card,
 .lead-card,
+.lead-custom-fields-card,
 .lead-booking-card {
   border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
@@ -11,62 +11,8 @@
   padding: 1rem;
 }
 
-.lead-header-card {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
-.lead-header-main {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  gap: 0.75rem;
-}
-
-.lead-header-side {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.lead-header-meta {
-  width: 100%;
-}
-
-.lead-header-meta-note {
-  margin: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.875rem;
-  color: #14532d;
-  background: #ecfdf3;
-  border: 1px solid #bbf7d0;
-  border-radius: 0.5rem;
-  padding: 0.35rem 0.6rem;
-}
-
-.lead-header-meta-note mat-icon {
-  font-size: 1rem;
-  width: 1rem;
-  height: 1rem;
-}
-
-.lead-header-label {
-  margin: 0;
-  font-size: 0.75rem;
-  color: #6b7280;
-}
-
-.lead-header-title {
-  margin: 0;
-  font-size: 1.35rem;
-  font-weight: 700;
-  color: #111827;
+.lead-custom-fields-card {
+  margin-top: 1rem;
 }
 
 .lead-grid {
@@ -187,267 +133,6 @@
   color: #6b7280;
 }
 
-.requests-grid {
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 0.75rem;
-}
-
-.request-form {
-  display: grid;
-  gap: 0.5rem;
-}
-
-.request-form-grid {
-  display: grid;
-  grid-template-columns: repeat(1, minmax(0, 1fr));
-  gap: 0.5rem;
-}
-
-.request-form-notes {
-  grid-column: 1 / -1;
-}
-
-.request-form-error {
-  margin: 0;
-  color: #b91c1c;
-  font-size: 0.75rem;
-}
-
-.request-card {
-  border: 1px solid #e5e7eb;
-  border-radius: 0.6rem;
-  padding: 0.75rem;
-}
-
-.request-view-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-}
-
-.request-id-status {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.request-id {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #111827;
-}
-
-.request-status-badge {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 9999px;
-  padding: 0.12rem 0.5rem;
-  font-size: 0.72rem;
-  font-weight: 600;
-}
-
-.request-view-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
-}
-
-.request-summary-line {
-  margin: 0;
-  font-size: 0.875rem;
-  color: #111827;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.request-dot {
-  color: #9ca3af;
-}
-
-.request-notes-container {
-  margin-top: 0.5rem;
-}
-
-.request-notes {
-  margin: 0;
-  font-size: 0.875rem;
-  color: #6b7280;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: -webkit-box;
-  -webkit-line-clamp: 1;
-  -webkit-box-orient: vertical;
-}
-
-.request-notes-expanded {
-  -webkit-line-clamp: unset;
-  word-break: break-word;
-}
-
-.request-notes-toggle {
-  margin-top: 0.25rem;
-  font-size: 0.75rem;
-  min-height: auto;
-  padding: 0.25rem 0.5rem;
-}
-
-.request-offers-section {
-  margin-top: 0.75rem;
-  padding-top: 0.75rem;
-  border-top: 1px solid #e5e7eb;
-}
-
-.request-offers-label {
-  margin: 0 0 0.4rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.025em;
-}
-
-.delete-tooltip-wrapper {
-  cursor: not-allowed;
-}
-
-.request-create-offer-row {
-  margin-top: 0.75rem;
-  display: flex;
-  justify-content: flex-end;
-}
-
-.request-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.request-meta-row {
-  margin-top: 0.35rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.request-destination {
-  margin: 0;
-  font-size: 0.95rem;
-  font-weight: 600;
-}
-
-.request-meta-text {
-  margin: 0;
-  color: #4b5563;
-  font-size: 0.8rem;
-}
-
-.request-dates,
-.request-offers-count {
-  margin: 0.35rem 0 0;
-  font-size: 0.8rem;
-  color: #4b5563;
-}
-
-.request-status-chip,
-.offer-status-chip {
-  display: inline-flex;
-  align-items: center;
-  border-radius: 9999px;
-  padding: 0.12rem 0.5rem;
-  font-size: 0.72rem;
-  font-weight: 600;
-}
-
-.request-status-open {
-  background: #f3f4f6;
-  color: #374151;
-}
-
-.request-status-quoted {
-  background: #ffedd5;
-  color: #9a3412;
-}
-
-.request-status-closed {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.request-status-default {
-  background: #f3f4f6;
-  color: #4b5563;
-}
-
-.offer-chip-list {
-  margin-top: 0.6rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
-}
-
-.offer-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  border: 1px solid #bfdbfe;
-  border-radius: 9999px;
-  background: #eff6ff;
-  color: #1e3a8a;
-  font-size: 0.75rem;
-  padding: 0.15rem 0.6rem;
-  text-decoration: none;
-}
-
-.offer-chip:hover {
-  background: #dbeafe;
-}
-
-.offer-status-draft {
-  background: #f3f4f6;
-  color: #374151;
-}
-
-.offer-status-sent {
-  background: #dbeafe;
-  color: #1e3a8a;
-}
-
-.offer-status-viewed {
-  background: #e0f2fe;
-  color: #0c4a6e;
-}
-
-.offer-status-accepted {
-  background: #dcfce7;
-  color: #166534;
-}
-
-.offer-status-rejected {
-  background: #fee2e2;
-  color: #991b1b;
-}
-
-.offer-status-expired {
-  background: #7f1d1d;
-  color: #ffffff;
-}
-
-.offer-status-default {
-  background: #f3f4f6;
-  color: #4b5563;
-}
-
-.request-actions {
-  margin-top: 0.6rem;
-}
 
 .activity-list {
   list-style: none;
@@ -542,7 +227,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .lead-requests-card,
   .lead-activity-card {
     grid-column: 1 / -1;
   }
@@ -552,14 +236,6 @@
   }
 
   .travel-count-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .requests-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .request-form-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }

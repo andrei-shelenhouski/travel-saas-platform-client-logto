@@ -1,0 +1,104 @@
+<section class="custom-fields-card">
+  <div class="custom-fields-header">
+    <button
+      class="custom-fields-toggle"
+      type="button"
+      [attr.aria-expanded]="expanded()"
+      (click)="toggleExpanded()"
+    >
+      <mat-icon>{{ expanded() ? 'expand_less' : 'expand_more' }}</mat-icon>
+      <span>{{ title() }}</span>
+    </button>
+
+    @if (canEdit() && expanded() && !editing()) {
+      <button mat-stroked-button type="button" (click)="startEdit()">Изменить</button>
+    }
+  </div>
+
+  @if (expanded()) {
+    @if (statusValidationMessage(); as validationMessage) {
+      <p class="custom-fields-validation-error">{{ validationMessage }}</p>
+    }
+
+    @if (sortedFields().length === 0) {
+      <p class="custom-fields-empty">Дополнительные поля не настроены.</p>
+    } @else if (!editing()) {
+      <dl class="custom-fields-list">
+        @for (field of sortedFields(); track field.definitionId) {
+          <div class="custom-fields-row">
+            <dt>
+              {{ field.name }}
+              @if (field.required) {
+                <span class="custom-fields-required">*</span>
+              }
+            </dt>
+            <dd>
+              @if (!field.value) {
+                —
+              } @else if (field.fieldType === fieldType.URL) {
+                <a rel="noopener noreferrer" target="_blank" [href]="field.value">{{
+                  field.value
+                }}</a>
+              } @else {
+                {{ field.value }}
+              }
+            </dd>
+          </div>
+        }
+      </dl>
+    } @else {
+      <form class="custom-fields-form" [formGroup]="form" (ngSubmit)="save()">
+        @for (field of sortedFields(); track field.definitionId) {
+          @if (field.fieldType === fieldType.DROPDOWN) {
+            <mat-form-field appearance="outline">
+              <mat-label>{{ field.name }}</mat-label>
+              <mat-select [formControlName]="field.definitionId">
+                @for (option of field.options; track option) {
+                  <mat-option [value]="option">{{ option }}</mat-option>
+                }
+              </mat-select>
+              @if (isRequiredError(field.definitionId)) {
+                <mat-error>Обязательное поле</mat-error>
+              }
+            </mat-form-field>
+          } @else if (field.fieldType === fieldType.TEXTAREA) {
+            <mat-form-field appearance="outline">
+              <mat-label>{{ field.name }}</mat-label>
+              <textarea matInput rows="3" [formControlName]="field.definitionId"></textarea>
+              @if (isRequiredError(field.definitionId)) {
+                <mat-error>Обязательное поле</mat-error>
+              }
+            </mat-form-field>
+          } @else if (field.fieldType === fieldType.DATE) {
+            <mat-form-field appearance="outline">
+              <mat-label>{{ field.name }}</mat-label>
+              <input matInput type="date" [formControlName]="field.definitionId" />
+              @if (isRequiredError(field.definitionId)) {
+                <mat-error>Обязательное поле</mat-error>
+              }
+            </mat-form-field>
+          } @else {
+            <mat-form-field appearance="outline">
+              <mat-label>{{ field.name }}</mat-label>
+              <input
+                matInput
+                [formControlName]="field.definitionId"
+                [type]="field.fieldType === fieldType.URL ? 'url' : 'text'"
+              />
+              @if (isRequiredError(field.definitionId)) {
+                <mat-error>Обязательное поле</mat-error>
+              }
+            </mat-form-field>
+          }
+        }
+
+        <div class="custom-fields-actions">
+          <button mat-button type="button" (click)="cancelEdit()">Отмена</button>
+          <button color="primary" mat-flat-button type="submit" [disabled]="saving()">
+            Сохранить
+          </button>
+        </div>
+      </form>
+    }
+  }
+</section>

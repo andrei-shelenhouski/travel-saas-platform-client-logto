@@ -1,9 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+import { HttpParamsBuilder } from '@app/shared/utils/http-params.builder';
 
 import type {
   ActivityListResponseDto,
@@ -28,8 +29,7 @@ const LEADS_STATS_URL = `${environment.baseUrl}/api/leads/stats`;
 export class LeadsService {
   private readonly http = inject(HttpClient);
 
-  // eslint-disable-next-line complexity
-  findAll(params?: {
+  getList(params?: {
     page?: number;
     limit?: number;
     status?: LeadStatus | LeadStatus[];
@@ -41,53 +41,18 @@ export class LeadsService {
     search?: string;
     includeDeleted?: boolean;
   }): Observable<PaginatedLeadResponseDto> {
-    let httpParams = new HttpParams();
-
-    if (params?.page !== undefined) {
-      httpParams = httpParams.set('page', params.page);
-    }
-
-    if (params?.limit !== undefined) {
-      httpParams = httpParams.set('limit', params.limit);
-    }
-
-    if (params?.status !== undefined) {
-      const statuses = Array.isArray(params.status)
-        ? params.status.filter((value) => Boolean(value))
-        : [params.status];
-
-      for (const status of statuses) {
-        httpParams = httpParams.append('status', status);
-      }
-    }
-
-    if (params?.agentId !== undefined) {
-      httpParams = httpParams.set('agentId', params.agentId);
-    }
-
-    if (params?.clientType !== undefined) {
-      httpParams = httpParams.set('clientType', params.clientType);
-    }
-
-    if (params?.source !== undefined) {
-      httpParams = httpParams.set('source', params.source);
-    }
-
-    if (params?.dateFrom !== undefined) {
-      httpParams = httpParams.set('dateFrom', params.dateFrom);
-    }
-
-    if (params?.dateTo !== undefined) {
-      httpParams = httpParams.set('dateTo', params.dateTo);
-    }
-
-    if (params?.search !== undefined) {
-      httpParams = httpParams.set('search', params.search);
-    }
-
-    if (params?.includeDeleted === true) {
-      httpParams = httpParams.set('includeDeleted', 'true');
-    }
+    const httpParams = new HttpParamsBuilder()
+      .set('page', params?.page)
+      .set('limit', params?.limit)
+      .appendArray('status', params?.status as string | string[] | undefined)
+      .set('agentId', params?.agentId)
+      .set('clientType', params?.clientType)
+      .set('source', params?.source)
+      .set('dateFrom', params?.dateFrom)
+      .set('dateTo', params?.dateTo)
+      .set('search', params?.search)
+      .set('includeDeleted', params?.includeDeleted === true ? 'true' : null)
+      .build();
 
     return this.http.get<PaginatedLeadResponseDto>(LEADS_URL, { params: httpParams });
   }
@@ -96,7 +61,7 @@ export class LeadsService {
     return this.http.get<Record<string, number>>(LEADS_STATS_URL);
   }
 
-  findById(id: string): Observable<LeadResponseDto> {
+  getById(id: string): Observable<LeadResponseDto> {
     return this.http.get<LeadResponseDto>(`${LEADS_URL}/${id}`);
   }
 
@@ -140,15 +105,10 @@ export class LeadsService {
     id: string,
     params?: { page?: number; limit?: number },
   ): Observable<ActivityListResponseDto> {
-    let httpParams = new HttpParams();
-
-    if (params?.page !== undefined) {
-      httpParams = httpParams.set('page', params.page);
-    }
-
-    if (params?.limit !== undefined) {
-      httpParams = httpParams.set('limit', params.limit);
-    }
+    const httpParams = new HttpParamsBuilder()
+      .set('page', params?.page)
+      .set('limit', params?.limit)
+      .build();
 
     return this.http.get<ActivityListResponseDto>(`${LEADS_URL}/${id}/activity`, {
       params: httpParams,

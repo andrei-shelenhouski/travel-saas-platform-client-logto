@@ -21,14 +21,13 @@ import { PermissionService } from '@app/services/permission.service';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
+import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 import { BookingStatus } from '@app/shared/models';
 
 import { BookingFilterBarComponent } from '../booking-filter-bar/booking-filter-bar';
 
 import type { BookingResponseDto } from '@app/shared/models';
 import type { BookingListFilterValue, StaffOption } from '../booking-filter-bar/booking-filter-bar';
-
-export const PAGE_SIZE = 20;
 
 const BOOKING_STATUSES = new Set<BookingStatus>([
   BookingStatus.PENDING_CONFIRMATION,
@@ -66,9 +65,10 @@ export class BookingsListComponent {
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
 
-  protected readonly pageSize = PAGE_SIZE;
+  private readonly listState = createListState();
+  readonly currentPage = this.listState.currentPage;
+  protected readonly pageSize = this.listState.pageSize;
 
-  readonly currentPage = signal(0);
   readonly statusFilter = signal<BookingStatus[]>([]);
   readonly assignedBackofficeId = signal('');
   readonly departDateFrom = signal('');
@@ -160,7 +160,7 @@ export class BookingsListComponent {
   }
 
   onPageChange(event: PageEvent): void {
-    this.currentPage.set(event.pageIndex);
+    this.listState.onPageChange(event);
   }
 
   navigateToBooking(id: string): void {

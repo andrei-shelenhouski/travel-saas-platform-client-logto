@@ -24,20 +24,26 @@ describe('RequestStatusChipComponent', () => {
     fixture.componentRef.setInput('status', null);
     fixture.detectChanges();
 
-    expect(component.label()).toBe('—');
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+
+    expect(text).toContain('—');
   });
 
   it('should display correct label for known status', () => {
     fixture.componentRef.setInput('status', 'QUOTED');
     fixture.detectChanges();
 
-    expect(component.label()).toBe('Предложение готово');
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+
+    expect(text).toContain('Предложение готово');
   });
 
   it('should display status as-is for unknown status', () => {
     fixture.componentRef.setInput('status', 'UNKNOWN_STATUS');
     fixture.detectChanges();
 
-    expect(component.label()).toBe('UNKNOWN_STATUS');
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+
+    expect(text).toContain('UNKNOWN_STATUS');
   });
 });

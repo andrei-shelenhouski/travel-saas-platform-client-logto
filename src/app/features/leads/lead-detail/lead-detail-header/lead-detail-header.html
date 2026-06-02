@@ -1,0 +1,49 @@
+<app-page-heading subtitle="Детали лида" [showBackButton]="true" [title]="lead().number">
+  @if (!isTerminalLead() && !isDeletedLead()) {
+    <button mat-stroked-button type="button" (click)="editDetailsClicked.emit()">
+      <mat-icon>edit</mat-icon>
+      Редактировать детали тура
+    </button>
+  }
+
+  @for (action of visibleActions(); track action) {
+    <button
+      color="primary"
+      mat-flat-button
+      type="button"
+      [disabled]="isActionBusy(action)"
+      (click)="actionClicked.emit(action)"
+    >
+      {{ getActionLabel(action) }}
+    </button>
+  }
+
+  @if (canDeleteLead() && !isDeletedLead()) {
+    <button color="warn" mat-stroked-button type="button" (click)="deleteClicked.emit()">
+      <mat-icon>delete</mat-icon>
+      Удалить заявку
+    </button>
+  }
+</app-page-heading>
+
+<section class="lead-header-card">
+  <div class="lead-header-main">
+    <div>
+      <p class="lead-header-label">Номер лида</p>
+      <h1 class="lead-header-title">{{ lead().number }}</h1>
+    </div>
+    <div class="lead-header-side">
+      <app-lead-source-badge [source]="lead().source" />
+      <app-status-badge variant="lead" [status]="lead().status" />
+    </div>
+  </div>
+  <div class="lead-header-meta">
+    @if (tourvisorExternalLeadId(); as externalLeadId) {
+      <p class="lead-header-meta-note">
+        <mat-icon>language</mat-icon>
+        <span>Номер заказа TourVisor #</span>
+        <strong>{{ externalLeadId }}</strong>
+      </p>
+    }
+  </div>
+</section>

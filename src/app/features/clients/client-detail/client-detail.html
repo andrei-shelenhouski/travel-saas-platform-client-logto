@@ -28,86 +28,12 @@
         </section>
 
         <div class="client-grid">
-          <section class="client-card">
-            <div class="client-card-header">
-              <h2 class="client-card-title">Детали клиента</h2>
-            </div>
-
-            <dl class="client-data-list">
-              <div class="client-data-row">
-                <dt>Тип клиента</dt>
-                <dd>{{ typeLabel[c.type] }}</dd>
-              </div>
-              @if (c.email) {
-                <div class="client-data-row">
-                  <dt>Электронная почта</dt>
-                  <dd>{{ c.email }}</dd>
-                </div>
-              }
-              @if (c.phone) {
-                <div class="client-data-row">
-                  <dt>Телефон</dt>
-                  <dd>{{ c.phone }}</dd>
-                </div>
-              }
-              @if (c.notes) {
-                <div class="client-data-row">
-                  <dt>Заметки</dt>
-                  <dd class="whitespace-pre-wrap">{{ c.notes }}</dd>
-                </div>
-              }
-              @if (isB2BAgent()) {
-                @if (c.trademark) {
-                  <div class="client-data-row">
-                    <dt>Торговая марка</dt>
-                    <dd>{{ c.trademark }}</dd>
-                  </div>
-                }
-                @if (c.registrationCert) {
-                  <div class="client-data-row">
-                    <dt>Свидетельство о регистрации</dt>
-                    <dd>{{ c.registrationCert }}</dd>
-                  </div>
-                }
-                @if (c.taxationType) {
-                  <div class="client-data-row">
-                    <dt>Система налогообложения</dt>
-                    <dd>{{ c.taxationType }}</dd>
-                  </div>
-                }
-                @if (c.directorName) {
-                  <div class="client-data-row">
-                    <dt>ФИО директора</dt>
-                    <dd>{{ c.directorName }}</dd>
-                  </div>
-                }
-                <div class="client-data-row">
-                  <dt>Действительный член РАТА</dt>
-                  <dd>{{ c.rataMember ? 'Да' : 'Нет' }}</dd>
-                </div>
-              }
-              <div class="client-data-row">
-                <dt>Создан</dt>
-                <dd>{{ formatDate(c.createdAt) }}</dd>
-              </div>
-              <div class="client-data-row">
-                <dt>ID</dt>
-                <dd class="font-mono text-xs text-gray-600">{{ c.id }}</dd>
-              </div>
-            </dl>
-
-            <div class="mt-4">
-              @if (tagsLoading()) {
-                <p class="text-sm text-gray-500">Загрузка тегов…</p>
-              } @else {
-                <app-tag-selector
-                  label="Теги"
-                  [selected]="clientTags()"
-                  (selectionChange)="onTagsChange($event)"
-                />
-              }
-            </div>
-          </section>
+          <app-client-profile-card
+            [client]="c"
+            [clientTags]="clientTags()"
+            [tagsLoading]="tagsLoading()"
+            (tagsChanged)="onTagsChange($event)"
+          />
 
           @if (client()?.type === 'INDIVIDUAL') {
             <app-traveler-profile-section
@@ -527,6 +453,16 @@
             </mat-tab-group>
           </section>
         </div>
+
+        @if (customFields().length > 0) {
+          <section class="client-custom-fields-card">
+            <app-custom-fields-section
+              [fields]="customFields()"
+              [saving]="customFieldsSaving()"
+              (saveRequested)="onSaveCustomFields($event)"
+            />
+          </section>
+        }
       </div>
     } @else {
       <p class="text-gray-500">Клиент не найден.</p>

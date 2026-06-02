@@ -1,0 +1,18 @@
+<div class="mt-3 space-y-1 text-sm text-gray-700">
+  <p>
+    Промежуточный итог: {{ formatAmount(totals().subtotal) }} {{ currency() }}
+  </p>
+
+  @if (isB2bMode()) {
+    <p>
+      Общая комиссия: {{ formatAmount(totals().totalCommission) }} {{ currency() }}
+    </p>
+    <p>
+      Общий НДС: {{ formatAmount(totals().totalVat) }} {{ currency() }}
+    </p>
+  }
+
+  <p class="text-base font-semibold text-gray-900">
+    ИТОГО К ОПЛАТЕ: {{ formatAmount(totals().total) }} {{ currency() }}
+  </p>
+</div>

@@ -250,14 +250,3 @@
     }
   }
 </div>
-
-<app-confirmation-dialog
-  cancelLabel="Отмена"
-  [confirmLabel]="confirmPayload()?.confirmLabel ?? 'Подтвердить'"
-  [danger]="confirmPayload()?.danger ?? false"
-  [message]="confirmPayload()?.message ?? ''"
-  [open]="confirmOpen()"
-  [title]="confirmPayload()?.title ?? 'Подтверждение'"
-  (cancel)="onConfirmDialogCancel()"
-  (confirm)="onConfirmDialogConfirm()"
-/>

@@ -495,14 +495,3 @@
   }
 </div>
 
-<!-- ===== DELETE PAYMENT CONFIRMATION ===== -->
-<app-confirmation-dialog
-  cancelLabel="Отмена"
-  confirmLabel="Удалить"
-  title="Удалить платёж"
-  [danger]="true"
-  [message]="deletePaymentMessage()"
-  [open]="deletePaymentConfirmOpen()"
-  (cancel)="onDeletePaymentCancel()"
-  (confirm)="onDeletePaymentConfirm()"
-/>

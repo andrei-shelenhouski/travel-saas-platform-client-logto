@@ -29,25 +29,20 @@ import { OrganizationMembersService } from '@app/services/organization-members.s
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTON_TOGGLES, MAT_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
-import { LeadSource, LeadStatus } from '@app/shared/models';
+import {
+  CLIENT_TYPE_OPTIONS,
+  LEAD_STATUS_OPTIONS,
+  LeadSource,
+  LeadStatus,
+} from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
 import type { LeadResponseDto, LeadStatus as LeadStatusType } from '@app/shared/models';
 import type { OrganizationMemberResponseDto } from '@app/shared/models';
 
-type LeadStatusOption = {
-  value: LeadStatusType;
-  label: string;
-};
-
 type AgentOption = {
   id: string;
   name: string;
-};
-
-type ClientTypeOption = {
-  value: string;
-  label: string;
 };
 
 type SourceOption = {
@@ -63,23 +58,6 @@ type KanbanColumnConfig = {
 
 const LEADS_VIEW_STORAGE_KEY = 'leads_view';
 const KANBAN_FETCH_LIMIT = 100;
-
-const LEAD_STATUS_OPTIONS: LeadStatusOption[] = [
-  { value: LeadStatus.NEW, label: 'Новый' },
-  { value: LeadStatus.ASSIGNED, label: 'Назначен' },
-  { value: LeadStatus.IN_PROGRESS, label: 'В работе' },
-  { value: LeadStatus.OFFER_SENT, label: 'Отправлено КП' },
-  { value: LeadStatus.WON, label: 'Выигран' },
-  { value: LeadStatus.LOST, label: 'Проигран' },
-  { value: LeadStatus.EXPIRED, label: 'Истек' },
-];
-
-const CLIENT_TYPE_OPTIONS: ClientTypeOption[] = [
-  { value: 'INDIVIDUAL', label: 'Физ. лицо' },
-  { value: 'COMPANY', label: 'Компания' },
-  { value: 'B2B_AGENT', label: 'B2B агент' },
-  { value: 'AGENT', label: 'Агент' },
-];
 
 const LEAD_SOURCE_OPTIONS: SourceOption[] = [
   { value: 'MANUAL', label: 'Вручную' },
@@ -209,7 +187,7 @@ export class LeadsKanbanComponent {
     stream: ({ params }) => {
       const { agentId, clientType, dateFrom, dateTo, search, source } = params;
 
-      return this.leadsService.findAll({
+      return this.leadsService.getList({
         page: 1,
         limit: KANBAN_FETCH_LIMIT,
         agentId: agentId || undefined,

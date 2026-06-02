@@ -25,7 +25,7 @@ describe('RolesPermissionsComponent', () => {
     replacePermissions: ReturnType<typeof vi.fn>;
     deleteRole: ReturnType<typeof vi.fn>;
   };
-  let dialogOpenSpy: ReturnType<typeof vi.spyOn>;
+  let confirmOpenSpy: ReturnType<typeof vi.spyOn>;
 
   const roleSummaries: RoleSummaryResponseDto[] = [
     {
@@ -108,9 +108,7 @@ describe('RolesPermissionsComponent', () => {
     fixture = TestBed.createComponent(RolesPermissionsComponent);
     component = fixture.componentInstance;
 
-    dialogOpenSpy = vi
-      .spyOn(component['dialog'], 'open')
-      .mockReturnValue({ afterClosed: () => of(false) } as never);
+    confirmOpenSpy = vi.spyOn(component['confirmDialog'], 'open').mockReturnValue(of(false));
     vi.spyOn(component['snackBar'], 'open').mockReturnValue({
       dismiss: vi.fn(),
       afterDismissed: () => of(undefined),
@@ -214,17 +212,17 @@ describe('RolesPermissionsComponent', () => {
   });
 
   it('opens confirmation dialog and deletes role after confirmation', () => {
-    dialogOpenSpy.mockReturnValueOnce({ afterClosed: () => of(true) } as never);
+    confirmOpenSpy.mockReturnValueOnce(of(true));
 
     component['confirmDeleteRole'](roleSummaries[1], new MouseEvent('click'));
 
-    expect(dialogOpenSpy).toHaveBeenCalled();
+    expect(confirmOpenSpy).toHaveBeenCalled();
     expect(rolesApi.deleteRole).toHaveBeenCalledWith('role-custom');
   });
 
   it('shows inline delete error when backend returns 409', () => {
     rolesApi.deleteRole.mockReturnValueOnce(throwError(() => ({ status: 409 })));
-    dialogOpenSpy.mockReturnValueOnce({ afterClosed: () => of(true) } as never);
+    confirmOpenSpy.mockReturnValueOnce(of(true));
 
     component['confirmDeleteRole'](roleSummaries[1], new MouseEvent('click'));
 

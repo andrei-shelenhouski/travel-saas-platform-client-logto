@@ -24,8 +24,8 @@ import { ClientsService } from '@app/services/clients.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { ActivityTimelineComponent } from '@app/shared/components/activity-timeline.component';
-import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog.component';
 import { MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
+import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { EntityType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
@@ -70,7 +70,6 @@ const STATUS_LABELS: Record<string, string> = {
     MatTableModule,
     DecimalPipe,
     ActivityTimelineComponent,
-    ConfirmationDialogComponent,
     ...MAT_FORM_BUTTONS,
     ...MAT_ICONS,
   ],
@@ -84,6 +83,7 @@ export class InvoiceDetailComponent {
   private readonly clientsService = inject(ClientsService);
   private readonly activitiesService = inject(ActivitiesService);
   private readonly dialog = inject(MatDialog);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly toast = inject(ToastService);
   readonly permissions = inject(PermissionService);
 
@@ -229,14 +229,6 @@ export class InvoiceDetailComponent {
 
   readonly actionLoading = signal(false);
   readonly cancelDialogOpen = signal(false);
-  readonly deletePaymentConfirmOpen = signal(false);
-  readonly pendingDeletePaymentId = signal<string | null>(null);
-  readonly pendingDeletePaymentLabel = signal<string>('');
-  readonly deletePaymentMessage = computed(() => {
-    const amount = this.pendingDeletePaymentLabel();
-
-    return `Удалить платёж на ${amount}?`;
-  });
 
   // ---- Forms ----
 
@@ -440,40 +432,36 @@ export class InvoiceDetailComponent {
   }
 
   confirmDeletePayment(payment: PaymentResponseDto): void {
-    this.pendingDeletePaymentId.set(payment.id);
-    this.pendingDeletePaymentLabel.set(`${payment.amount} ${payment.currency}`);
-    this.deletePaymentConfirmOpen.set(true);
-  }
-
-  onDeletePaymentConfirm(): void {
     const inv = this.invoice();
-    const paymentId = this.pendingDeletePaymentId();
 
-    if (!inv || !paymentId || this.actionLoading()) {
+    if (!inv || this.actionLoading()) {
       return;
     }
-    this.actionLoading.set(true);
-    this.invoicesService.deletePayment(inv.id, paymentId).subscribe({
-      next: () => {
-        this.data.reload();
-        this.activitiesData.reload();
-        this.toast.showSuccess('Платёж удалён');
-      },
-      error: (err) =>
-        this.toast.showError(err.error?.message ?? err.message ?? 'Ошибка удаления платежа'),
-      complete: () => {
-        this.actionLoading.set(false);
-        this.deletePaymentConfirmOpen.set(false);
-        this.pendingDeletePaymentId.set(null);
-        this.pendingDeletePaymentLabel.set('');
-      },
-    });
-  }
 
-  onDeletePaymentCancel(): void {
-    this.deletePaymentConfirmOpen.set(false);
-    this.pendingDeletePaymentId.set(null);
-    this.pendingDeletePaymentLabel.set('');
+    this.confirmDialog
+      .open({
+        title: 'Удалить платёж',
+        message: `Удалить платёж на ${payment.amount} ${payment.currency}?`,
+        confirmLabel: 'Удалить',
+        destructive: true,
+      })
+      .subscribe((confirmed) => {
+        if (!confirmed) {
+          return;
+        }
+
+        this.actionLoading.set(true);
+        this.invoicesService.deletePayment(inv.id, payment.id).subscribe({
+          next: () => {
+            this.data.reload();
+            this.activitiesData.reload();
+            this.toast.showSuccess('Платёж удалён');
+          },
+          error: (err) =>
+            this.toast.showError(err.error?.message ?? err.message ?? 'Ошибка удаления платежа'),
+          complete: () => this.actionLoading.set(false),
+        });
+      });
   }
 
   // ---- Private helpers ----

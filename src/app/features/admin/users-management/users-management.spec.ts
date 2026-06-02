@@ -7,6 +7,7 @@ import { of, Subject, throwError } from 'rxjs';
 import { PermissionService } from '@app/services/permission.service';
 import { RolesApiService } from '@app/services/roles-api.service';
 import { UsersService } from '@app/services/users.service';
+import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 
 import { UsersManagementComponent } from './users-management';
 
@@ -16,6 +17,7 @@ describe('UsersManagementComponent', () => {
   let fixture: ComponentFixture<UsersManagementComponent>;
   let component: UsersManagementComponent;
   let dialogOpenSpy: ReturnType<typeof vi.spyOn>;
+  let confirmOpenSpy: ReturnType<typeof vi.spyOn>;
   let usersService: {
     getList: ReturnType<typeof vi.fn>;
     changeRole: ReturnType<typeof vi.fn>;
@@ -105,6 +107,7 @@ describe('UsersManagementComponent', () => {
         { provide: UsersService, useValue: usersService },
         { provide: RolesApiService, useValue: rolesApi },
         { provide: PermissionService, useValue: permissionService },
+        { provide: ConfirmDialogService, useValue: { open: vi.fn(() => of(false)) } },
       ],
     }).compileComponents();
 
@@ -114,6 +117,7 @@ describe('UsersManagementComponent', () => {
     dialogOpenSpy = vi
       .spyOn(component['dialog'], 'open')
       .mockReturnValue({ afterClosed: () => of(false) } as never);
+    confirmOpenSpy = vi.spyOn(component['confirmDialog'], 'open');
     vi.spyOn(component['snackBar'], 'open').mockReturnValue({
       dismiss: vi.fn(),
       afterDismissed: () => of(undefined),
@@ -202,9 +206,7 @@ describe('UsersManagementComponent', () => {
   });
 
   it('should send roleId payload in change role request after confirmation', () => {
-    dialogOpenSpy.mockReturnValueOnce({
-      afterClosed: () => of(true),
-    } as never);
+    confirmOpenSpy.mockReturnValueOnce(of(true));
 
     component['onRoleChange'](activeUser, 'role-admin');
 
@@ -215,9 +217,7 @@ describe('UsersManagementComponent', () => {
   });
 
   it('should send roleId payload in change role request for custom role after confirmation', () => {
-    dialogOpenSpy.mockReturnValueOnce({
-      afterClosed: () => of(true),
-    } as never);
+    confirmOpenSpy.mockReturnValueOnce(of(true));
 
     component['onRoleChange'](activeUser, 'role-custom');
 
@@ -228,14 +228,12 @@ describe('UsersManagementComponent', () => {
     const pendingRoleUpdate$ = new Subject<OrgUserResponseDto>();
 
     usersService.changeRole.mockReturnValueOnce(pendingRoleUpdate$);
-    dialogOpenSpy.mockReturnValue({
-      afterClosed: () => of(true),
-    } as never);
+    confirmOpenSpy.mockReturnValue(of(true));
 
     component['onRoleChange'](activeUser, 'role-admin');
     component['onRoleChange'](secondActiveUser, 'role-admin');
 
-    expect(dialogOpenSpy).toHaveBeenCalledTimes(1);
+    expect(confirmOpenSpy).toHaveBeenCalledTimes(1);
     expect(usersService.changeRole).toHaveBeenCalledTimes(1);
     expect(component['updatingRoleId']()).toBe('u-1');
 
@@ -257,9 +255,7 @@ describe('UsersManagementComponent', () => {
         error: { message: 'LAST_ADMIN_PROTECTED' },
       })),
     );
-    dialogOpenSpy.mockReturnValueOnce({
-      afterClosed: () => of(true),
-    } as never);
+    confirmOpenSpy.mockReturnValueOnce(of(true));
 
     component['onRoleChange'](activeUser, 'role-admin');
 
@@ -269,9 +265,7 @@ describe('UsersManagementComponent', () => {
   });
 
   it('should deactivate user after confirmation', () => {
-    dialogOpenSpy.mockReturnValue({
-      afterClosed: () => of(true),
-    } as never);
+    confirmOpenSpy.mockReturnValue(of(true));
 
     component['openDeactivateDialog'](activeUser);
 

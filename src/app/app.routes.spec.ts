@@ -23,6 +23,17 @@ describe('app.routes', () => {
     expect(integrationsRoute?.data?.['permission']).toBe(PermissionKey.ROLES_VIEW);
   });
 
+  it('guards settings/custom-fields with roles:view permission', () => {
+    const appRoute = routes.find((route) => route.path === 'app');
+    const customFieldsRoute = appRoute?.children?.find(
+      (route) => route.path === 'settings/custom-fields',
+    );
+
+    expect(customFieldsRoute).toBeTruthy();
+    expect(customFieldsRoute?.canActivate).toContain(permissionGuard);
+    expect(customFieldsRoute?.data?.['permission']).toBe(PermissionKey.ROLES_VIEW);
+  });
+
   it('guards contracts with contracts:view permission', () => {
     const appRoute = routes.find((route) => route.path === 'app');
     const contractsRoute = appRoute?.children?.find((route) => route.path === 'contracts');

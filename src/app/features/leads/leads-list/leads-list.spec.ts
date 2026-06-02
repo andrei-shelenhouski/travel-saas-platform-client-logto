@@ -7,9 +7,10 @@ import { of } from 'rxjs';
 import { LeadsService } from '@app/services/leads.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
+import { PAGE_SIZE } from '@app/shared/utils/list-state';
 
 import { LeadsListFilterBarComponent } from '../leads-list-filter-bar/leads-list-filter-bar';
-import { LeadsListComponent, PAGE_SIZE } from './leads-list';
+import { LeadsListComponent } from './leads-list';
 
 describe('LeadsListComponent', () => {
   let component: LeadsListComponent;
@@ -24,7 +25,7 @@ describe('LeadsListComponent', () => {
         provideRouter([]),
         {
           provide: LeadsService,
-          useValue: { findAll: () => of({ items: [], total: 0, page: 1, limit: PAGE_SIZE }) },
+          useValue: { getList: () => of({ items: [], total: 0, page: 1, limit: PAGE_SIZE }) },
         },
         {
           provide: OrganizationMembersService,
@@ -36,6 +37,7 @@ describe('LeadsListComponent', () => {
             currentUserId: () => null,
             canViewAllLeads: () => true,
             canCreateLead: () => true,
+            canDeleteLead: () => true,
           },
         },
       ],

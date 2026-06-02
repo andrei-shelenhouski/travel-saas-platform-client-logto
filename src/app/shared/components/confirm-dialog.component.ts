@@ -9,6 +9,8 @@ export type ConfirmDialogData = {
   confirmLabel?: string;
   cancelLabel?: string;
   confirmColor?: ThemePalette;
+  /** Use for destructive actions — renders the confirm button in warn (red) colour. */
+  destructive?: boolean;
 };
 
 @Component({
@@ -25,7 +27,7 @@ export type ConfirmDialogData = {
       <button
         mat-flat-button
         type="button"
-        [color]="data.confirmColor ?? 'primary'"
+        [color]="data.destructive ? 'warn' : (data.confirmColor ?? 'primary')"
         [mat-dialog-close]="true"
       >
         {{ data.confirmLabel ?? 'Подтвердить' }}

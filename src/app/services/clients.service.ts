@@ -1,9 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+import { HttpParamsBuilder } from '@app/shared/utils/http-params.builder';
 
 import type {
   ClientResponseDto,
@@ -33,23 +34,12 @@ export class ClientsService {
     page?: number;
     limit?: number;
   }): Observable<PaginatedClientResponseDto> {
-    let httpParams = new HttpParams();
-
-    if (params?.type !== undefined) {
-      httpParams = httpParams.set('type', params.type);
-    }
-
-    if (params?.search !== undefined && params.search.length >= 2) {
-      httpParams = httpParams.set('search', params.search);
-    }
-
-    if (params?.page !== undefined) {
-      httpParams = httpParams.set('page', params.page);
-    }
-
-    if (params?.limit !== undefined) {
-      httpParams = httpParams.set('limit', params.limit);
-    }
+    const httpParams = new HttpParamsBuilder()
+      .set('type', params?.type)
+      .set('search', params?.search && params.search.length >= 2 ? params.search : null)
+      .set('page', params?.page)
+      .set('limit', params?.limit)
+      .build();
 
     return this.http.get<PaginatedClientResponseDto>(CLIENTS_URL, { params: httpParams });
   }
@@ -93,15 +83,10 @@ export class ClientsService {
     clientId: string,
     params?: { page?: number; limit?: number },
   ): Observable<PaginatedLeadResponseDto> {
-    let httpParams = new HttpParams();
-
-    if (params?.page !== undefined) {
-      httpParams = httpParams.set('page', params.page);
-    }
-
-    if (params?.limit !== undefined) {
-      httpParams = httpParams.set('limit', params.limit);
-    }
+    const httpParams = new HttpParamsBuilder()
+      .set('page', params?.page)
+      .set('limit', params?.limit)
+      .build();
 
     return this.http.get<PaginatedLeadResponseDto>(`${CLIENTS_URL}/${clientId}/leads`, {
       params: httpParams,
@@ -112,15 +97,10 @@ export class ClientsService {
     clientId: string,
     params?: { page?: number; limit?: number },
   ): Observable<PaginatedInvoiceResponseDto> {
-    let httpParams = new HttpParams();
-
-    if (params?.page !== undefined) {
-      httpParams = httpParams.set('page', params.page);
-    }
-
-    if (params?.limit !== undefined) {
-      httpParams = httpParams.set('limit', params.limit);
-    }
+    const httpParams = new HttpParamsBuilder()
+      .set('page', params?.page)
+      .set('limit', params?.limit)
+      .build();
 
     return this.http.get<PaginatedInvoiceResponseDto>(`${CLIENTS_URL}/${clientId}/invoices`, {
       params: httpParams,
@@ -131,15 +111,10 @@ export class ClientsService {
     clientId: string,
     params?: { page?: number; limit?: number },
   ): Observable<PaginatedOfferSummaryDto> {
-    let httpParams = new HttpParams();
-
-    if (params?.page !== undefined) {
-      httpParams = httpParams.set('page', params.page);
-    }
-
-    if (params?.limit !== undefined) {
-      httpParams = httpParams.set('limit', params.limit);
-    }
+    const httpParams = new HttpParamsBuilder()
+      .set('page', params?.page)
+      .set('limit', params?.limit)
+      .build();
 
     return this.http.get<PaginatedOfferSummaryDto>(`${CLIENTS_URL}/${clientId}/offers`, {
       params: httpParams,
@@ -150,15 +125,10 @@ export class ClientsService {
     clientId: string,
     params?: { page?: number; limit?: number },
   ): Observable<PaginatedBookingSummaryDto> {
-    let httpParams = new HttpParams();
-
-    if (params?.page !== undefined) {
-      httpParams = httpParams.set('page', params.page);
-    }
-
-    if (params?.limit !== undefined) {
-      httpParams = httpParams.set('limit', params.limit);
-    }
+    const httpParams = new HttpParamsBuilder()
+      .set('page', params?.page)
+      .set('limit', params?.limit)
+      .build();
 
     return this.http.get<PaginatedBookingSummaryDto>(`${CLIENTS_URL}/${clientId}/bookings`, {
       params: httpParams,
@@ -170,15 +140,10 @@ export class ClientsService {
     clientId: string,
     params?: { page?: number; limit?: number },
   ): Observable<PaginatedTravelRequestSummaryDto> {
-    let httpParams = new HttpParams();
-
-    if (params?.page !== undefined) {
-      httpParams = httpParams.set('page', params.page);
-    }
-
-    if (params?.limit !== undefined) {
-      httpParams = httpParams.set('limit', params.limit);
-    }
+    const httpParams = new HttpParamsBuilder()
+      .set('page', params?.page)
+      .set('limit', params?.limit)
+      .build();
 
     return this.http.get<PaginatedTravelRequestSummaryDto>(`${CLIENTS_URL}/${clientId}/requests`, {
       params: httpParams,

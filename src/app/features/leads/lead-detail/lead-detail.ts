@@ -1,4 +1,3 @@
-/* eslint-disable max-lines */
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -7,16 +6,10 @@ import {
   effect,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import {
-  AbstractControl,
-  FormBuilder,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -31,17 +24,19 @@ import {
   DeleteLeadDialogComponent,
   DeleteLeadDialogResult,
 } from '@app/features/leads/delete-lead-dialog/delete-lead-dialog';
-import { LeadSourceBadgeComponent } from '@app/features/leads/lead-source-badge/lead-source-badge';
+import { LeadDetailHeaderComponent } from '@app/features/leads/lead-detail/lead-detail-header/lead-detail-header';
+// eslint-disable-next-line max-len
+import { LeadDetailRequestsSectionComponent } from '@app/features/leads/lead-detail/lead-detail-requests-section/lead-detail-requests-section';
 import { LinkLeadClientDialogComponent } from '@app/features/leads/link-lead-client-dialog/link-lead-client-dialog';
 // eslint-disable-next-line max-len
 import { PromoteLeadClientDialogComponent } from '@app/features/leads/promote-lead-client-dialog/promote-lead-client-dialog';
+import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
-import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
+import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { LeadStatus } from '@app/shared/models';
 import { MarkdownPipe } from '@app/shared/pipes/markdown-pipe';
@@ -52,11 +47,16 @@ import { atLeastOneContactValidator } from '../leads.validators';
 import type {
   ActivityListResponseDto,
   ActivityResponseDto,
+  CustomFieldValueDto,
   LeadResponseDto,
   OfferResponseDto,
   RequestResponseDto,
 } from '@app/shared/models';
-type LeadAction = 'assign' | 'to_in_progress' | 'to_offer_sent' | 'mark_lost';
+import type { LeadAction } from './lead-detail-header/lead-detail-header';
+import type {
+  CreateRequestPayload,
+  UpdateRequestPayload,
+} from './lead-detail-requests-section/lead-detail-requests-section';
 
 type LeadWithBooking = LeadResponseDto & {
   bookingId?: string | null;
@@ -73,23 +73,7 @@ type LeadDetailLoadData = {
 
 const SALES_ROLES = new Set(['AGENT', 'SALES_AGENT', 'ADMIN', 'MANAGER']);
 const TERMINAL_STATUSES = new Set<string>([LeadStatus.WON, LeadStatus.LOST, LeadStatus.EXPIRED]);
-const REQUEST_TERMINAL_STATUSES = new Set<string>(['CLOSED']);
 const ACTIVITY_PAGE_SIZE = 20;
-const OFFER_STATUS_CLASS: Record<string, string> = {
-  DRAFT: 'offer-status-draft',
-  SENT: 'offer-status-sent',
-  VIEWED: 'offer-status-viewed',
-  ACCEPTED: 'offer-status-accepted',
-  REJECTED: 'offer-status-rejected',
-  EXPIRED: 'offer-status-expired',
-};
-
-const ACTION_LABELS: Record<LeadAction, string> = {
-  assign: 'Назначить',
-  to_in_progress: 'В работе',
-  to_offer_sent: 'КП отправлено',
-  mark_lost: 'Проигран',
-};
 
 const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
   to_in_progress: LeadStatus.IN_PROGRESS,
@@ -109,10 +93,10 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     ...MAT_BUTTONS,
     ...MAT_FORM_BUTTONS,
     ...MAT_MENU,
-    StatusBadgeComponent,
+    CustomFieldsSectionComponent,
     ClientTypeBadgeComponent,
-    LeadSourceBadgeComponent,
-    PageHeading,
+    LeadDetailHeaderComponent,
+    LeadDetailRequestsSectionComponent,
     MarkdownPipe,
   ],
   templateUrl: './lead-detail.html',
@@ -127,6 +111,7 @@ export class LeadDetailComponent {
   private readonly requestsService = inject(RequestsService);
   private readonly offersService = inject(OffersService);
   private readonly membersService = inject(OrganizationMembersService);
+  private readonly customFieldsService = inject(CustomFieldsService);
   private readonly toast = inject(ToastService);
 
   protected readonly permissions = inject(PermissionService);
@@ -146,7 +131,7 @@ export class LeadDetailComponent {
       }
 
       return forkJoin({
-        lead: this.leadsService.findById(id),
+        lead: this.leadsService.getById(id),
         requests: this.requestsService
           .getList({ leadId: id, limit: 100 })
           .pipe(map((res) => res.items)),
@@ -167,6 +152,22 @@ export class LeadDetailComponent {
     },
   });
 
+  private readonly customFieldsData = rxResource<CustomFieldValueDto[], string | null>({
+    params: (): string | null => this.routeId() ?? null,
+    stream: ({ params }) => {
+      const id = params;
+
+      if (id === null) {
+        return EMPTY;
+      }
+
+      return this.customFieldsService.getLeadValues(id);
+    },
+  });
+
+  protected readonly customFieldsSection = viewChild(CustomFieldsSectionComponent);
+  protected readonly requestsSection = viewChild(LeadDetailRequestsSectionComponent);
+
   protected readonly lead = computed(
     () => this.travelDetailsData() ?? this.data.value()?.lead ?? null,
   );
@@ -178,6 +179,17 @@ export class LeadDetailComponent {
     return this.data.value()?.requests ?? [];
   });
   protected readonly offers = computed(() => this.data.value()?.offers ?? []);
+  protected readonly customFields = computed(() => {
+    return (this.customFieldsData.value() ?? []).map((field, index) => ({
+      definitionId: field.definitionId,
+      name: field.name,
+      fieldType: field.fieldType,
+      options: field.options ?? [],
+      value: field.value ?? '',
+      required: field.required ?? false,
+      sortOrder: field.sortOrder ?? index + 1,
+    }));
+  });
   protected readonly loading = computed(() => this.data.isLoading());
   protected readonly error = computed(() => this.data.error());
 
@@ -247,7 +259,7 @@ export class LeadDetailComponent {
   });
 
   protected readonly bookingInfo = computed(() => {
-    const lead = this.lead() as LeadWithBooking | null;
+    const lead = this.lead() as LeadWithBooking | null; // NOSONAR — narrowing to extended type
 
     if (!lead || lead.status !== LeadStatus.WON) {
       return null;
@@ -274,6 +286,7 @@ export class LeadDetailComponent {
   protected readonly activityTotal = signal(0);
   protected readonly activityPage = signal(1);
   protected readonly loadingMoreActivity = signal(false);
+  protected readonly savingCustomFields = signal(false);
 
   protected readonly canLoadMoreActivity = computed(() => {
     return this.activityItems().length < this.activityTotal();
@@ -283,12 +296,9 @@ export class LeadDetailComponent {
   protected readonly assignLoading = signal(false);
   protected readonly savingTravelDetails = signal(false);
   protected readonly editingTravelDetails = signal(false);
-  protected readonly showAddRequestForm = signal(false);
   protected readonly savingRequest = signal(false);
-  protected readonly editingRequestId = signal<string | null>(null);
   protected readonly updatingRequest = signal(false);
   protected readonly deletingRequestId = signal<string | null>(null);
-  protected readonly expandedNotesRequestId = signal<string | null>(null);
 
   protected readonly travelForm = this.formBuilder.group(
     {
@@ -311,48 +321,6 @@ export class LeadDetailComponent {
       notes: this.formBuilder.control<string>(''),
     },
     { validators: [atLeastOneContactValidator] },
-  );
-
-  protected readonly addRequestForm = this.formBuilder.group(
-    {
-      destination: this.formBuilder.control<string>('', {
-        validators: [Validators.required],
-      }),
-      departDate: this.formBuilder.control<string>(''),
-      returnDate: this.formBuilder.control<string>(''),
-      adults: this.formBuilder.control<number | null>(1, {
-        validators: [Validators.min(0)],
-      }),
-      children: this.formBuilder.control<number | null>(0, {
-        validators: [Validators.min(0)],
-      }),
-      notes: this.formBuilder.control<string>(''),
-      managerId: this.formBuilder.control<string>(''),
-    },
-    {
-      validators: [this.returnDateAfterDepartDateValidator()],
-    },
-  );
-
-  protected readonly editRequestForm = this.formBuilder.group(
-    {
-      destination: this.formBuilder.control<string>('', {
-        validators: [Validators.required],
-      }),
-      departDate: this.formBuilder.control<string>(''),
-      returnDate: this.formBuilder.control<string>(''),
-      adults: this.formBuilder.control<number | null>(1, {
-        validators: [Validators.min(0)],
-      }),
-      children: this.formBuilder.control<number | null>(0, {
-        validators: [Validators.min(0)],
-      }),
-      notes: this.formBuilder.control<string>(''),
-      managerId: this.formBuilder.control<string>(''),
-    },
-    {
-      validators: [this.returnDateAfterDepartDateValidator()],
-    },
   );
 
   protected readonly filteredAgents = computed(() => {
@@ -405,12 +373,8 @@ export class LeadDetailComponent {
       this.activityItems.set(ordered);
       this.patchTravelForm(value.lead);
       this.editingTravelDetails.set(false);
-      this.resetRequestEditingState();
+      this.requestsSection()?.resetState();
     });
-  }
-
-  protected getActionLabel(action: LeadAction): string {
-    return ACTION_LABELS[action];
   }
 
   protected getAvailableActions(status: string): LeadAction[] {
@@ -426,10 +390,6 @@ export class LeadDetailComponent {
       default:
         return [];
     }
-  }
-
-  protected isActionBusy(action: LeadAction): boolean {
-    return this.statusActionLoading() === action;
   }
 
   protected applyAction(action: LeadAction): void {
@@ -451,6 +411,14 @@ export class LeadDetailComponent {
       return;
     }
 
+    if (this.customFields().length > 0) {
+      const section = this.customFieldsSection();
+
+      if (section && !section.ensureRequiredFieldsFilledForStatusChange()) {
+        return;
+      }
+    }
+
     this.statusActionLoading.set(action);
     this.leadsService.updateStatus(lead.id, { status: targetStatus }).subscribe({
       next: (updated) => {
@@ -464,6 +432,30 @@ export class LeadDetailComponent {
         this.statusActionLoading.set(null);
       },
     });
+  }
+
+  protected saveCustomFields(values: Record<string, string>): void {
+    const lead = this.lead();
+
+    if (!lead) {
+      return;
+    }
+
+    this.savingCustomFields.set(true);
+    this.customFieldsService
+      .upsertLeadValues(lead.id, { values })
+      .pipe(finalize(() => this.savingCustomFields.set(false)))
+      .subscribe({
+        next: (updatedValues) => {
+          this.customFieldsData.set(updatedValues);
+          this.toast.showSuccess('Дополнительные поля сохранены');
+        },
+        error: (err: unknown) => {
+          this.toast.showError(
+            this.getErrorMessage(err, 'Не удалось сохранить дополнительные поля'),
+          );
+        },
+      });
   }
 
   protected openAssignDialog(): void {
@@ -636,67 +628,30 @@ export class LeadDetailComponent {
       });
   }
 
-  protected createTravelRequest(): void {
-    this.showAddRequestForm.update((value) => !value);
-
-    if (!this.showAddRequestForm()) {
-      this.addRequestForm.reset({
-        destination: '',
-        departDate: '',
-        returnDate: '',
-        adults: 1,
-        children: 0,
-        notes: '',
-        managerId: '',
-      });
-    }
-  }
-
-  protected saveTravelRequest(): void {
+  protected handleRequestCreated(payload: CreateRequestPayload): void {
     const lead = this.lead();
 
     if (!lead || this.savingRequest()) {
       return;
     }
 
-    if (this.addRequestForm.invalid) {
-      this.addRequestForm.markAllAsTouched();
-
-      return;
-    }
-
-    const value = this.addRequestForm.getRawValue();
-
     this.savingRequest.set(true);
     this.requestsService
       .create({
         leadId: lead.id,
-        destination: this.normalizeText(value.destination),
-        departDate: this.normalizeText(value.departDate),
-        returnDate: this.normalizeText(value.returnDate),
-        adults: value.adults ?? undefined,
-        children: value.children ?? undefined,
-        notes: this.normalizeText(value.notes),
-        managerId: this.normalizeText(value.managerId),
+        destination: payload.destination,
+        departDate: payload.departDate,
+        returnDate: payload.returnDate,
+        adults: payload.adults,
+        children: payload.children,
+        notes: payload.notes,
+        managerId: payload.managerId,
       })
-      .pipe(
-        finalize(() => {
-          this.savingRequest.set(false);
-        }),
-      )
+      .pipe(finalize(() => this.savingRequest.set(false)))
       .subscribe({
         next: (created) => {
           this.requestsData.update((items) => [created, ...items]);
-          this.showAddRequestForm.set(false);
-          this.addRequestForm.reset({
-            destination: '',
-            departDate: '',
-            returnDate: '',
-            adults: 1,
-            children: 0,
-            notes: '',
-            managerId: '',
-          });
+          this.requestsSection()?.resetAfterCreate();
           this.toast.showSuccess('Запрос на тур создан');
         },
         error: (err: unknown) => {
@@ -705,77 +660,31 @@ export class LeadDetailComponent {
       });
   }
 
-  protected cancelAddTravelRequest(): void {
-    this.showAddRequestForm.set(false);
-    this.addRequestForm.reset({
-      destination: '',
-      departDate: '',
-      returnDate: '',
-      adults: 1,
-      children: 0,
-      notes: '',
-      managerId: '',
-    });
-  }
+  protected handleRequestUpdated(payload: UpdateRequestPayload): void {
+    const { requestId, ...updateData } = payload;
 
-  protected editTravelRequest(request: RequestResponseDto): void {
-    this.editingRequestId.set(request.id);
-    this.editRequestForm.reset({
-      destination: request.destination ?? '',
-      departDate: this.asDateInputValue(request.departDate),
-      returnDate: this.asDateInputValue(request.returnDate),
-      adults: request.adults ?? 1,
-      children: request.children ?? 0,
-      notes: request.notes ?? '',
-      managerId: request.managerId ?? '',
-    });
-  }
-
-  protected cancelEditTravelRequest(): void {
-    this.editingRequestId.set(null);
-  }
-
-  protected saveEditedTravelRequest(requestId: string): void {
     if (this.updatingRequest()) {
       return;
     }
 
-    if (this.editRequestForm.invalid) {
-      this.editRequestForm.markAllAsTouched();
-
-      return;
-    }
-
-    const value = this.editRequestForm.getRawValue();
-
     this.updatingRequest.set(true);
     this.requestsService
       .update(requestId, {
-        destination: this.normalizeText(value.destination),
-        departDate: this.normalizeText(value.departDate),
-        returnDate: this.normalizeText(value.returnDate),
-        adults: value.adults ?? undefined,
-        children: value.children ?? undefined,
-        notes: this.normalizeText(value.notes),
-        managerId: this.normalizeText(value.managerId),
+        destination: updateData.destination,
+        departDate: updateData.departDate,
+        returnDate: updateData.returnDate,
+        adults: updateData.adults,
+        children: updateData.children,
+        notes: updateData.notes,
+        managerId: updateData.managerId,
       })
-      .pipe(
-        finalize(() => {
-          this.updatingRequest.set(false);
-        }),
-      )
+      .pipe(finalize(() => this.updatingRequest.set(false)))
       .subscribe({
         next: (updated) => {
           this.requestsData.update((items) => {
-            return items.map((item) => {
-              if (item.id === requestId) {
-                return updated;
-              }
-
-              return item;
-            });
+            return items.map((item) => (item.id === requestId ? updated : item));
           });
-          this.editingRequestId.set(null);
+          this.requestsSection()?.resetAfterEdit();
           this.toast.showSuccess('Запрос на тур обновлён');
         },
         error: (err: unknown) => {
@@ -784,44 +693,18 @@ export class LeadDetailComponent {
       });
   }
 
-  protected isEditingRequest(requestId: string): boolean {
-    return this.editingRequestId() === requestId;
-  }
-
-  protected getRequestIdentifier(request: RequestResponseDto, index: number): string {
-    return `TR-${index + 1}`;
-  }
-
-  protected canDeleteRequest(request: RequestResponseDto): boolean {
-    const offersCount = request.offersCount ?? 0;
-
-    return offersCount === 0;
-  }
-
-  protected deleteRequest(request: RequestResponseDto, index: number): void {
-    if (!this.canDeleteRequest(request) || this.deletingRequestId()) {
+  protected handleRequestDeleted(event: { requestId: string; index: number }): void {
+    if (this.deletingRequestId()) {
       return;
     }
 
-    const confirmed = confirm(
-      `Вы уверены, что хотите удалить ${this.getRequestIdentifier(request, index)}?`,
-    );
-
-    if (!confirmed) {
-      return;
-    }
-
-    this.deletingRequestId.set(request.id);
+    this.deletingRequestId.set(event.requestId);
     this.requestsService
-      .delete(request.id)
-      .pipe(
-        finalize(() => {
-          this.deletingRequestId.set(null);
-        }),
-      )
+      .delete(event.requestId)
+      .pipe(finalize(() => this.deletingRequestId.set(null)))
       .subscribe({
         next: () => {
-          this.requestsData.update((items) => items.filter((item) => item.id !== request.id));
+          this.requestsData.update((items) => items.filter((item) => item.id !== event.requestId));
           this.toast.showSuccess('Запрос на тур удалён');
         },
         error: (err: unknown) => {
@@ -834,87 +717,6 @@ export class LeadDetailComponent {
     void this.router.navigate(['/app/offers/new'], {
       queryParams: { requestId },
     });
-  }
-
-  protected canCreateOfferForRequest(status: string): boolean {
-    return !REQUEST_TERMINAL_STATUSES.has(status) && this.permissions.canCreateOffer();
-  }
-
-  protected getRequestStatusClass(status: string | null | undefined): string {
-    if (status === 'OPEN') {
-      return 'request-status-open';
-    }
-
-    if (status === 'QUOTED') {
-      return 'request-status-quoted';
-    }
-
-    if (status === 'CLOSED') {
-      return 'request-status-closed';
-    }
-
-    return 'request-status-default';
-  }
-
-  protected getRequestStatusLabel(status: string | null | undefined): string {
-    if (status === 'OPEN') {
-      return 'Открыт';
-    }
-
-    if (status === 'QUOTED') {
-      return 'Оценён';
-    }
-
-    if (status === 'CLOSED') {
-      return 'Закрыт';
-    }
-
-    return status ?? 'Неизвестно';
-  }
-
-  protected getOfferStatusClass(status: string | null | undefined): string {
-    if (!status) {
-      return 'offer-status-default';
-    }
-
-    return OFFER_STATUS_CLASS[status] ?? 'offer-status-default';
-  }
-
-  protected getOfferTooltip(offer: OfferResponseDto): string {
-    const amount = offer.total;
-    const currency = offer.currency;
-
-    if (amount === null || amount === undefined) {
-      return 'Итого не указано';
-    }
-
-    if (!currency) {
-      return `Итого: ${amount}`;
-    }
-
-    return `Итого: ${amount} ${currency}`;
-  }
-
-  protected toggleNotesExpanded(requestId: string): void {
-    const current = this.expandedNotesRequestId();
-
-    this.expandedNotesRequestId.set(current === requestId ? null : requestId);
-  }
-
-  protected isNotesExpanded(requestId: string): boolean {
-    return this.expandedNotesRequestId() === requestId;
-  }
-
-  protected canShowDateRangeError(formName: 'add' | 'edit'): boolean {
-    const form = formName === 'add' ? this.addRequestForm : this.editRequestForm;
-
-    if (!form.hasError('invalidReturnDateRange')) {
-      return false;
-    }
-
-    const returnDateControl = form.get('returnDate');
-
-    return Boolean(returnDateControl?.dirty || returnDateControl?.touched);
   }
 
   protected loadMoreActivity(): void {
@@ -949,9 +751,10 @@ export class LeadDetailComponent {
         this.activityTotal.set(res.total ?? this.activityTotal());
 
         const merged = [...this.activityItems(), ...res.items];
-        const ordered = merged.sort((left, right) => {
-          return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
-        });
+        // NOSONAR — sort on a fresh copy, not the original array
+        const ordered = [...merged].sort(
+          (left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime(),
+        );
 
         this.activityItems.set(ordered);
         this.loadingMoreActivity.set(false);
@@ -997,10 +800,6 @@ export class LeadDetailComponent {
     return null;
   }
 
-  protected getOffersForRequest(requestId: string): OfferResponseDto[] {
-    return this.offersByRequest().get(requestId) ?? [];
-  }
-
   protected getAgentInitials(name: string | null): string {
     if (!name) {
       return 'NA';
@@ -1019,23 +818,6 @@ export class LeadDetailComponent {
     return parts.map((part) => part[0]?.toUpperCase() ?? '').join('');
   }
 
-  protected getTourvisorExternalLeadId(lead: LeadResponseDto | null): string | null {
-    if (!lead || lead.source !== 'TOURVISOR') {
-      return null;
-    }
-
-    const dynamicLead = lead as Record<string, unknown>;
-    const externalLeadId = dynamicLead['externalLeadId'] ?? dynamicLead['external_lead_id'];
-
-    if (typeof externalLeadId === 'string') {
-      const trimmed = externalLeadId.trim();
-
-      return trimmed.length > 0 ? trimmed : null;
-    }
-
-    return null;
-  }
-
   protected formatDateRange(
     from: string | null | undefined,
     to: string | null | undefined,
@@ -1051,7 +833,7 @@ export class LeadDetailComponent {
       return `${fromText} - ${toText}`;
     }
 
-    return fromText !== '—' ? fromText : toText;
+    return fromText === '—' ? toText : fromText;
   }
 
   protected formatDateShort(iso: string | null): string {
@@ -1107,7 +889,7 @@ export class LeadDetailComponent {
 
   protected getActivityLabel(type: string): string {
     return type
-      .replace(/_/g, ' ')
+      .replaceAll('_', ' ')
       .toLowerCase()
       .replace(/\b\w/g, (value) => value.toUpperCase());
   }
@@ -1182,50 +964,7 @@ export class LeadDetailComponent {
   private normalizeText(value: string | null | undefined): string | undefined {
     const trimmed = value?.trim();
 
-    return trimmed ? trimmed : undefined;
-  }
-
-  private resetRequestEditingState(): void {
-    this.showAddRequestForm.set(false);
-    this.savingRequest.set(false);
-    this.editingRequestId.set(null);
-    this.updatingRequest.set(false);
-    this.addRequestForm.reset({
-      destination: '',
-      departDate: '',
-      returnDate: '',
-      adults: 1,
-      children: 0,
-      notes: '',
-      managerId: '',
-    });
-    this.editRequestForm.reset({
-      destination: '',
-      departDate: '',
-      returnDate: '',
-      adults: 1,
-      children: 0,
-      notes: '',
-      managerId: '',
-    });
-  }
-
-  private returnDateAfterDepartDateValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const group = control;
-      const departDate = String(group.get('departDate')?.value ?? '').trim();
-      const returnDate = String(group.get('returnDate')?.value ?? '').trim();
-
-      if (!departDate || !returnDate) {
-        return null;
-      }
-
-      if (returnDate >= departDate) {
-        return null;
-      }
-
-      return { invalidReturnDateRange: true };
-    };
+    return trimmed || undefined;
   }
 
   private getErrorMessage(err: unknown, fallback: string): string {
@@ -1242,11 +981,5 @@ export class LeadDetailComponent {
     }
 
     return fallback;
-  }
-
-  private getActivityActorFromPayload(item: ActivityResponseDto): string | null {
-    const payload = item.payload;
-
-    return payload && typeof payload['actorName'] === 'string' ? payload['actorName'] : null;
   }
 }

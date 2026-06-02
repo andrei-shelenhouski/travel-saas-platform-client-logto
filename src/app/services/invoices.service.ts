@@ -1,9 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+import { HttpParamsBuilder } from '@app/shared/utils/http-params.builder';
 
 import type {
   CancelInvoiceDto,
@@ -32,43 +33,17 @@ const INVOICES_URL = `${environment.baseUrl}/api/invoices`;
 export class InvoicesService {
   private readonly http = inject(HttpClient);
 
-  // eslint-disable-next-line complexity
   getList(params?: InvoiceFilterQueryDto): Observable<PaginatedInvoiceResponseDto> {
-    let httpParams = new HttpParams();
-
-    if (params?.page !== undefined) {
-      httpParams = httpParams.set('page', params.page);
-    }
-
-    if (params?.limit !== undefined) {
-      httpParams = httpParams.set('limit', params.limit);
-    }
-
-    if (params?.status !== undefined) {
-      params.status.forEach((status) => {
-        httpParams = httpParams.append('status', status);
-      });
-    }
-
-    if (params?.clientType !== undefined) {
-      httpParams = httpParams.set('clientType', params.clientType);
-    }
-
-    if (params?.dateFrom !== undefined && params.dateFrom.length > 0) {
-      httpParams = httpParams.set('dateFrom', params.dateFrom);
-    }
-
-    if (params?.dateTo !== undefined && params.dateTo.length > 0) {
-      httpParams = httpParams.set('dateTo', params.dateTo);
-    }
-
-    if (params?.currency !== undefined && params.currency.length > 0) {
-      httpParams = httpParams.set('currency', params.currency);
-    }
-
-    if (params?.search !== undefined && params.search.length > 0) {
-      httpParams = httpParams.set('search', params.search);
-    }
+    const httpParams = new HttpParamsBuilder()
+      .set('page', params?.page)
+      .set('limit', params?.limit)
+      .appendArray('status', params?.status)
+      .set('clientType', params?.clientType)
+      .set('dateFrom', params?.dateFrom && params.dateFrom.length > 0 ? params.dateFrom : null)
+      .set('dateTo', params?.dateTo && params.dateTo.length > 0 ? params.dateTo : null)
+      .set('currency', params?.currency && params.currency.length > 0 ? params.currency : null)
+      .set('search', params?.search && params.search.length > 0 ? params.search : null)
+      .build();
 
     return this.http.get<PaginatedInvoiceResponseDto>(INVOICES_URL, { params: httpParams });
   }

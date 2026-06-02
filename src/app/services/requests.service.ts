@@ -1,9 +1,10 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+import { HttpParamsBuilder } from '@app/shared/utils/http-params.builder';
 
 import type {
   CreateRequestDto,
@@ -31,23 +32,12 @@ export class RequestsService {
     leadId?: string;
     managerId?: string;
   }): Observable<PaginatedRequestResponseDto> {
-    let httpParams = new HttpParams();
-
-    if (params?.page !== undefined) {
-      httpParams = httpParams.set('page', params.page);
-    }
-
-    if (params?.limit !== undefined) {
-      httpParams = httpParams.set('limit', params.limit);
-    }
-
-    if (params?.leadId !== undefined) {
-      httpParams = httpParams.set('leadId', params.leadId);
-    }
-
-    if (params?.managerId !== undefined) {
-      httpParams = httpParams.set('managerId', params.managerId);
-    }
+    const httpParams = new HttpParamsBuilder()
+      .set('page', params?.page)
+      .set('limit', params?.limit)
+      .set('leadId', params?.leadId)
+      .set('managerId', params?.managerId)
+      .build();
 
     return this.http.get<PaginatedRequestResponseDto>(REQUESTS_URL, { params: httpParams });
   }

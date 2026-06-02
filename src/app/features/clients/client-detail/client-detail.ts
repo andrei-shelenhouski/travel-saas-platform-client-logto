@@ -21,16 +21,17 @@ import { ActivitiesService } from '@app/services/activities.service';
 import { ClientsService } from '@app/services/clients.service';
 import { CommentsService } from '@app/services/comments.service';
 import { ContractsService } from '@app/services/contracts.service';
+import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { TagsService } from '@app/services/tags.service';
 import {
   BookingStatusChipComponent,
+  CustomFieldsSectionComponent,
   LeadStatusChipComponent,
   OfferStatusChipComponent,
   RequestStatusChipComponent,
-  TagSelectorComponent,
 } from '@app/shared/components';
-import { ConfirmDialogComponent } from '@app/shared/components/confirm-dialog.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { MAT_BUTTONS, MAT_MENU, MAT_TABS } from '@app/shared/material-imports';
 import {
   ClientType,
@@ -41,6 +42,7 @@ import {
 } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
 
+import { ClientProfileCardComponent } from './client-profile-card/client-profile-card';
 import { FamilySectionComponent } from './family-section/family-section';
 import { TravelerProfileSectionComponent } from './traveler-profile-section/traveler-profile-section';
 
@@ -48,6 +50,7 @@ import type {
   BookingSummaryDto,
   ClientResponseDto,
   ContractResponseDto,
+  CustomFieldValueDto,
   InvoiceResponseDto,
   LeadResponseDto,
   OfferSummaryDto,
@@ -80,17 +83,18 @@ type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices
   selector: 'app-client-detail',
   imports: [
     RouterLink,
-    TagSelectorComponent,
     LeadStatusChipComponent,
     RequestStatusChipComponent,
     OfferStatusChipComponent,
     BookingStatusChipComponent,
     InvoiceStatusChipComponent,
+    CustomFieldsSectionComponent,
     MatPaginatorModule,
     ...MAT_BUTTONS,
     ...MAT_MENU,
     ...MAT_TABS,
     PageHeading,
+    ClientProfileCardComponent,
     FamilySectionComponent,
     TravelerProfileSectionComponent,
   ],
@@ -106,10 +110,12 @@ export class ClientDetailComponent {
   private readonly authService = inject(AuthService);
   private readonly clientsService = inject(ClientsService);
   private readonly contractsService = inject(ContractsService);
+  private readonly customFieldsService = inject(CustomFieldsService);
   private readonly activitiesService = inject(ActivitiesService);
   private readonly commentsService = inject(CommentsService);
   private readonly tagsService = inject(TagsService);
   private readonly dialog = inject(MatDialog);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly toast = inject(ToastService);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
@@ -256,6 +262,19 @@ export class ClientDetailComponent {
     },
   });
 
+  private readonly customFieldsData = rxResource<CustomFieldValueDto[], string | null>({
+    params: (): string | null => this.routeId() ?? null,
+    stream: ({ params }) => {
+      const id = params;
+
+      if (id === null) {
+        return EMPTY;
+      }
+
+      return this.customFieldsService.getClientValues(id);
+    },
+  });
+
   readonly typeLabel = TYPE_LABEL;
   readonly client = computed(() => this.data.value() ?? null);
   readonly loading = computed(() => this.data.isLoading());
@@ -292,6 +311,18 @@ export class ClientDetailComponent {
   readonly contracts = computed(() => this.contractsData.value()?.items ?? []);
   readonly contractsTotal = computed(() => this.contractsData.value()?.total ?? 0);
   readonly contractsLoading = computed(() => this.contractsData.isLoading());
+  readonly customFieldsSaving = signal(false);
+  readonly customFields = computed(() => {
+    return (this.customFieldsData.value() ?? []).map((field, index) => ({
+      definitionId: field.definitionId,
+      name: field.name,
+      fieldType: field.fieldType,
+      options: field.options ?? [],
+      value: field.value ?? '',
+      required: field.required ?? false,
+      sortOrder: field.sortOrder ?? index + 1,
+    }));
+  });
 
   readonly clientTags = computed<string[]>(() => {
     const tags = this.entityTagsData.value() ?? [];
@@ -422,6 +453,27 @@ export class ClientDetailComponent {
     }
   }
 
+  onSaveCustomFields(values: Record<string, string>): void {
+    const c = this.client();
+
+    if (!c) {
+      return;
+    }
+
+    this.customFieldsSaving.set(true);
+    this.customFieldsService.upsertClientValues(c.id, { values }).subscribe({
+      next: (updatedValues) => {
+        this.customFieldsData.set(updatedValues);
+        this.customFieldsSaving.set(false);
+        this.toast.showSuccess('Дополнительные поля сохранены');
+      },
+      error: (err) => {
+        this.customFieldsSaving.set(false);
+        this.toast.showError(err.error?.message ?? 'Не удалось сохранить дополнительные поля');
+      },
+    });
+  }
+
   readonly resolvedPersonId = signal<string | null>(null);
 
   protected onTravelerPersonIdResolved(personId: string): void {
@@ -450,21 +502,6 @@ export class ClientDetailComponent {
 
   goToInvoice(invoice: InvoiceResponseDto): void {
     this.router.navigate(['/app/invoices', invoice.id]);
-  }
-
-  formatDate(iso: string | null | undefined): string {
-    if (!iso) {
-      return '—';
-    }
-
-    try {
-      return new Date(iso).toLocaleString(undefined, {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      });
-    } catch {
-      return iso;
-    }
   }
 
   formatDateShort(iso: string | null | undefined): string {
@@ -555,17 +592,14 @@ export class ClientDetailComponent {
       return;
     }
 
-    this.dialog
-      .open(ConfirmDialogComponent, {
-        data: {
-          title: 'Расторгнуть договор',
-          message: `Вы уверены, что хотите расторгнуть договор ${contract.contractNumber}? Это действие необратимо.`,
-          confirmLabel: 'Расторгнуть',
-          cancelLabel: 'Отмена',
-          confirmColor: 'warn',
-        },
+    this.confirmDialog
+      .open({
+        title: 'Расторгнуть договор',
+        message: `Вы уверены, что хотите расторгнуть договор ${contract.contractNumber}? Это действие необратимо.`,
+        confirmLabel: 'Расторгнуть',
+        cancelLabel: 'Отмена',
+        confirmColor: 'warn',
       })
-      .afterClosed()
       .subscribe((confirmed) => {
         if (!confirmed) {
           return;

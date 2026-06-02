@@ -6,8 +6,9 @@ import { of } from 'rxjs';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { RequestsService } from '@app/services/requests.service';
 import { RequestStatus } from '@app/shared/models';
+import { PAGE_SIZE } from '@app/shared/utils/list-state';
 
-import { PAGE_SIZE, RequestsListComponent } from './requests-list';
+import { RequestsListComponent } from './requests-list';
 
 describe('RequestsListComponent', () => {
   let component: RequestsListComponent;

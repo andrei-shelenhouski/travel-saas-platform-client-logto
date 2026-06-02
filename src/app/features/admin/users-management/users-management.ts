@@ -12,8 +12,8 @@ import { catchError, finalize, forkJoin, of } from 'rxjs';
 import { PermissionService } from '@app/services/permission.service';
 import { RolesApiService } from '@app/services/roles-api.service';
 import { UsersService } from '@app/services/users.service';
-import { ConfirmDialogComponent } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { OrgRole } from '@app/shared/models';
 
@@ -62,6 +62,7 @@ export class UsersManagementComponent {
   private readonly rolesApi = inject(RolesApiService);
   private readonly permissions = inject(PermissionService);
   private readonly dialog = inject(MatDialog);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly snackBar = inject(MatSnackBar);
 
   protected readonly apiRoleOptions = signal<RoleOption[]>([]);
@@ -221,17 +222,14 @@ export class UsersManagementComponent {
 
     this.clearRoleUpdateError(user.id);
 
-    this.dialog
-      .open(ConfirmDialogComponent, {
-        data: {
-          title: this.roleConfirmTitle,
-          message: roleChangeMessage,
-          confirmLabel: this.roleConfirmLabel,
-          cancelLabel: this.cancelLabel,
-        },
+    this.confirmDialog
+      .open({
+        title: this.roleConfirmTitle,
+        message: roleChangeMessage,
+        confirmLabel: this.roleConfirmLabel,
+        cancelLabel: this.cancelLabel,
       })
-      .afterClosed()
-      .subscribe((confirmed: boolean | undefined) => {
+      .subscribe((confirmed) => {
         if (confirmed) {
           this.submitRoleChange(user, roleValue);
         }
@@ -243,18 +241,15 @@ export class UsersManagementComponent {
       user.fullName
     }? Пользователь немедленно потеряет доступ к системе.`;
 
-    this.dialog
-      .open(ConfirmDialogComponent, {
-        data: {
-          title: 'Деактивировать пользователя',
-          message: deactivateMessage,
-          confirmLabel: 'Деактивировать',
-          cancelLabel: 'Отмена',
-          confirmColor: 'warn',
-        },
+    this.confirmDialog
+      .open({
+        title: 'Деактивировать пользователя',
+        message: deactivateMessage,
+        confirmLabel: 'Деактивировать',
+        cancelLabel: 'Отмена',
+        confirmColor: 'warn',
       })
-      .afterClosed()
-      .subscribe((confirmed: boolean | undefined) => {
+      .subscribe((confirmed) => {
         if (confirmed) {
           this.deactivateUser(user.id);
         }

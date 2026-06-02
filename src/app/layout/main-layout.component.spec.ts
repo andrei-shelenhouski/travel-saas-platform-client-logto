@@ -117,6 +117,12 @@ describe('MainLayoutComponent', () => {
     );
   });
 
+  it('should show Custom Fields nav link when roles:view is allowed', () => {
+    expect(component.navLinks().some((link) => link.path === '/app/settings/custom-fields')).toBe(
+      true,
+    );
+  });
+
   it('should hide Roles & Permissions nav link when roles:view is missing', () => {
     rolesViewAllowed = false;
 
@@ -140,6 +146,19 @@ describe('MainLayoutComponent', () => {
 
     expect(
       restrictedComponent.navLinks().some((link) => link.path === '/app/settings/integrations'),
+    ).toBe(false);
+  });
+
+  it('should hide Custom Fields nav link when roles:view is missing', () => {
+    rolesViewAllowed = false;
+
+    const restrictedFixture = TestBed.createComponent(MainLayoutComponent);
+    const restrictedComponent = restrictedFixture.componentInstance;
+
+    restrictedFixture.detectChanges();
+
+    expect(
+      restrictedComponent.navLinks().some((link) => link.path === '/app/settings/custom-fields'),
     ).toBe(false);
   });
 

@@ -1,0 +1,45 @@
+<h2 mat-dialog-title>{{ modeLabel() }} поле</h2>
+
+<div mat-dialog-content>
+  <form class="definition-form" [formGroup]="form">
+    <mat-form-field appearance="outline">
+      <mat-label>Название</mat-label>
+      <input formControlName="name" matInput />
+      @if (form.controls.name.hasError('required') && form.controls.name.touched) {
+        <mat-error>Обязательное поле</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Тип</mat-label>
+      <mat-select formControlName="fieldType">
+        @for (fieldType of fieldTypes; track fieldType) {
+          <mat-option [value]="fieldType">{{ fieldType }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Обязательное</mat-label>
+      <mat-select formControlName="required">
+        <mat-option [value]="true">Да</mat-option>
+        <mat-option [value]="false">Нет</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    @if (isDropdown()) {
+      <mat-form-field appearance="outline">
+        <mat-label>Опции (через запятую)</mat-label>
+        <textarea formControlName="optionsText" matInput rows="3"></textarea>
+        @if (form.controls.optionsText.hasError('required') && form.controls.optionsText.touched) {
+          <mat-error>Добавьте хотя бы одну опцию</mat-error>
+        }
+      </mat-form-field>
+    }
+  </form>
+</div>
+
+<div align="end" mat-dialog-actions>
+  <button mat-button type="button" (click)="cancel()">Отмена</button>
+  <button color="primary" mat-flat-button type="button" (click)="submit()">Сохранить</button>
+</div>

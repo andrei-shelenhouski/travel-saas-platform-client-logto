@@ -6,6 +6,7 @@ import {
   effect,
   inject,
   signal,
+  viewChild,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
@@ -15,9 +16,11 @@ import { EMPTY, forkJoin, of } from 'rxjs';
 import { finalize, map, switchMap } from 'rxjs/operators';
 
 import { BookingsService } from '@app/services/bookings.service';
+import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PersonsService } from '@app/services/persons.service';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
+import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { BookingStatus } from '@app/shared/models';
@@ -38,6 +41,7 @@ import type {
   BookingDocumentResponseDto,
   BookingResponseDto,
   BookingTravelerResponseDto,
+  CustomFieldValueDto,
   InvoiceResponseDto,
   PersonResponseDto,
   UpdateBookingDto,
@@ -58,6 +62,7 @@ import type {
     PageHeading,
     TravelDetailsSectionComponent,
     BookingTravelersSectionComponent,
+    CustomFieldsSectionComponent,
     ...MAT_BUTTONS,
   ],
   templateUrl: './booking-detail.html',
@@ -67,6 +72,7 @@ export class BookingDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly bookingsService = inject(BookingsService);
+  private readonly customFieldsService = inject(CustomFieldsService);
   private readonly permissions = inject(PermissionService);
   private readonly personsService = inject(PersonsService);
   private readonly toast = inject(ToastService);
@@ -143,11 +149,39 @@ export class BookingDetailComponent {
   });
 
   readonly actionLoading = signal(false);
+  readonly customFieldsSaving = signal(false);
   readonly savingTravel = signal(false);
   readonly savingOps = signal(false);
   readonly uploading = signal(false);
 
   readonly cancellationDialogOpen = signal(false);
+
+  readonly customFieldsSection = viewChild(CustomFieldsSectionComponent);
+
+  private readonly customFieldsData = rxResource<CustomFieldValueDto[], string | null>({
+    params: (): string | null => this.routeId() ?? null,
+    stream: ({ params }) => {
+      const id = params;
+
+      if (id === null) {
+        return EMPTY;
+      }
+
+      return this.customFieldsService.getBookingValues(id);
+    },
+  });
+
+  readonly customFields = computed(() => {
+    return (this.customFieldsData.value() ?? []).map((field, index) => ({
+      definitionId: field.definitionId,
+      name: field.name,
+      fieldType: field.fieldType,
+      options: field.options ?? [],
+      value: field.value ?? '',
+      required: field.required ?? false,
+      sortOrder: field.sortOrder ?? index + 1,
+    }));
+  });
 
   constructor() {
     effect(() => {
@@ -162,6 +196,14 @@ export class BookingDetailComponent {
 
     if (!b || this.actionLoading()) {
       return;
+    }
+
+    if (this.customFields().length > 0) {
+      const section = this.customFieldsSection();
+
+      if (section && !section.ensureRequiredFieldsFilledForStatusChange()) {
+        return;
+      }
     }
 
     this.actionLoading.set(true);
@@ -186,6 +228,14 @@ export class BookingDetailComponent {
       return;
     }
 
+    if (this.customFields().length > 0) {
+      const section = this.customFieldsSection();
+
+      if (section && !section.ensureRequiredFieldsFilledForStatusChange()) {
+        return;
+      }
+    }
+
     this.cancellationDialogOpen.set(false);
     this.actionLoading.set(true);
     this.bookingsService
@@ -195,6 +245,27 @@ export class BookingDetailComponent {
         next: (updated) => this.patchBooking(updated),
         error: (err) =>
           this.toast.showError(err.error?.message ?? 'Не удалось отменить бронирование'),
+      });
+  }
+
+  onSaveCustomFields(values: Record<string, string>): void {
+    const b = this.booking();
+
+    if (!b) {
+      return;
+    }
+
+    this.customFieldsSaving.set(true);
+    this.customFieldsService
+      .upsertBookingValues(b.id, { values })
+      .pipe(finalize(() => this.customFieldsSaving.set(false)))
+      .subscribe({
+        next: (updatedValues) => {
+          this.customFieldsData.set(updatedValues);
+          this.toast.showSuccess('Дополнительные поля сохранены');
+        },
+        error: (err) =>
+          this.toast.showError(err.error?.message ?? 'Не удалось сохранить дополнительные поля'),
       });
   }
 
