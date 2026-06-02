@@ -38,7 +38,8 @@ const REQUEST_STATUS_CONFIG: StatusChipConfig = Object.fromEntries(
   selector: 'app-request-status-chip',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [StatusChipComponent],
-  template: `<app-status-chip [config]="config" [status]="status()" />`,
+  templateUrl: './request-status-chip.html',
+  styleUrl: './request-status-chip.scss',
 })
 export class RequestStatusChipComponent {
   readonly status = input<string | null | undefined>(null);

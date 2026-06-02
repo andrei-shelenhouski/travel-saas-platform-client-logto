@@ -1,114 +1,107 @@
-<app-page-heading subtitle="Settings" title="Пользовательские поля" />
+<app-page-heading subtitle="Настройки" title="Пользовательские поля" />
 
-@if (!permissions.isAdmin()) {
-  <section class="access-denied">
-    <h2>Доступ запрещен</h2>
-    <p>Только администратор может управлять пользовательскими полями.</p>
-  </section>
-} @else {
-  <section class="custom-fields-page">
-    <mat-tab-group animationDuration="0ms" (selectedIndexChange)="onTabChange($event)">
-      @for (tab of entityTabs; track tab.entityType) {
-        <mat-tab [label]="tab.label">
-          @if (selectedLoading()) {
-            <div class="loading-wrap">
-              <div aria-hidden="true" class="spinner"></div>
+<section class="custom-fields-page">
+  <mat-tab-group animationDuration="0ms" (selectedIndexChange)="onTabChange($event)">
+    @for (tab of entityTabs; track tab.entityType) {
+      <mat-tab [label]="tab.label">
+        @if (selectedLoading()) {
+          <div class="loading-wrap">
+            <div aria-hidden="true" class="spinner"></div>
+          </div>
+        } @else {
+          <div class="tab-content">
+            <div class="tab-actions">
+              <button color="primary" mat-flat-button type="button" (click)="addField()">
+                <mat-icon>add</mat-icon>
+                Добавить поле
+              </button>
             </div>
-          } @else {
-            <div class="tab-content">
-              <div class="tab-actions">
-                <button color="primary" mat-flat-button type="button" (click)="addField()">
-                  <mat-icon>add</mat-icon>
-                  Добавить поле
-                </button>
-              </div>
 
-              @if (activeDefinitions().length === 0) {
-                <p class="empty-state">Активные поля отсутствуют.</p>
-              } @else {
-                <div
-                  cdkDropList
-                  class="definitions-list"
-                  [cdkDropListData]="activeDefinitions()"
-                  [cdkDropListDisabled]="reordering()"
-                  (cdkDropListDropped)="drop($event)"
-                >
-                  @for (definition of activeDefinitions(); track definition.id) {
-                    <article cdkDrag class="definition-item">
-                      <button
-                        aria-label="Перетащить поле"
-                        cdkDragHandle
-                        class="drag-handle"
-                        type="button"
-                      >
-                        <mat-icon>drag_indicator</mat-icon>
-                      </button>
+            @if (activeDefinitions().length === 0) {
+              <p class="empty-state">Активные поля отсутствуют.</p>
+            } @else {
+              <div
+                cdkDropList
+                class="definitions-list"
+                [cdkDropListData]="activeDefinitions()"
+                [cdkDropListDisabled]="reordering()"
+                (cdkDropListDropped)="drop($event)"
+              >
+                @for (definition of activeDefinitions(); track definition.id) {
+                  <article cdkDrag class="definition-item">
+                    <button
+                      aria-label="Перетащить поле"
+                      cdkDragHandle
+                      class="drag-handle"
+                      type="button"
+                    >
+                      <mat-icon>drag_indicator</mat-icon>
+                    </button>
 
-                      <div class="definition-meta">
-                        <p class="definition-name">
-                          {{ definition.name }}
-                          @if (definition.required) {
-                            <span class="required-badge">Обязательное</span>
-                          }
-                        </p>
-                        <p class="definition-subtitle">{{ definition.fieldType }}</p>
-                        @if (definition.fieldType === 'DROPDOWN' && definition.options?.length) {
-                          <p class="definition-options">{{ definition.options?.join(', ') }}</p>
+                    <div class="definition-meta">
+                      <p class="definition-name">
+                        {{ definition.name }}
+                        @if (definition.required) {
+                          <span class="required-badge">Обязательное</span>
                         }
-                      </div>
-
-                      <button
-                        aria-label="Действия"
-                        mat-icon-button
-                        type="button"
-                        [disabled]="busyFieldId() === definition.id"
-                        [matMenuTriggerFor]="fieldActionsMenu"
-                      >
-                        <mat-icon>more_vert</mat-icon>
-                      </button>
-
-                      <mat-menu #fieldActionsMenu="matMenu">
-                        <button mat-menu-item type="button" (click)="editField(definition)">
-                          Редактировать
-                        </button>
-                        <button mat-menu-item type="button" (click)="deactivateField(definition)">
-                          Деактивировать
-                        </button>
-                      </mat-menu>
-                    </article>
-                  }
-                </div>
-              }
-
-              <section class="inactive-section">
-                <button class="inactive-toggle" type="button" (click)="toggleInactive()">
-                  <mat-icon>
-                    {{ inactiveExpanded()[selectedEntity()] ? 'expand_less' : 'expand_more' }}
-                  </mat-icon>
-                  Неактивные ({{ inactiveDefinitions().length }})
-                </button>
-
-                @if (inactiveExpanded()[selectedEntity()]) {
-                  @if (inactiveDefinitions().length === 0) {
-                    <p class="empty-state">Неактивные поля отсутствуют.</p>
-                  } @else {
-                    <div class="inactive-list">
-                      @for (definition of inactiveDefinitions(); track definition.id) {
-                        <article class="definition-item inactive">
-                          <div class="definition-meta">
-                            <p class="definition-name">{{ definition.name }}</p>
-                            <p class="definition-subtitle">{{ definition.fieldType }}</p>
-                          </div>
-                        </article>
+                      </p>
+                      <p class="definition-subtitle">{{ definition.fieldType }}</p>
+                      @if (definition.fieldType === 'DROPDOWN' && definition.options?.length) {
+                        <p class="definition-options">{{ definition.options?.join(', ') }}</p>
                       }
                     </div>
-                  }
+
+                    <button
+                      aria-label="Действия"
+                      mat-icon-button
+                      type="button"
+                      [disabled]="busyFieldId() === definition.id"
+                      [matMenuTriggerFor]="fieldActionsMenu"
+                    >
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+
+                    <mat-menu #fieldActionsMenu="matMenu">
+                      <button mat-menu-item type="button" (click)="editField(definition)">
+                        Редактировать
+                      </button>
+                      <button mat-menu-item type="button" (click)="deactivateField(definition)">
+                        Деактивировать
+                      </button>
+                    </mat-menu>
+                  </article>
                 }
-              </section>
-            </div>
-          }
-        </mat-tab>
-      }
-    </mat-tab-group>
-  </section>
-}
+              </div>
+            }
+
+            <section class="inactive-section">
+              <button class="inactive-toggle" type="button" (click)="toggleInactive()">
+                <mat-icon>
+                  {{ inactiveExpanded()[selectedEntity()] ? 'expand_less' : 'expand_more' }}
+                </mat-icon>
+                Неактивные ({{ inactiveDefinitions().length }})
+              </button>
+
+              @if (inactiveExpanded()[selectedEntity()]) {
+                @if (inactiveDefinitions().length === 0) {
+                  <p class="empty-state">Неактивные поля отсутствуют.</p>
+                } @else {
+                  <div class="inactive-list">
+                    @for (definition of inactiveDefinitions(); track definition.id) {
+                      <article class="definition-item inactive">
+                        <div class="definition-meta">
+                          <p class="definition-name">{{ definition.name }}</p>
+                          <p class="definition-subtitle">{{ definition.fieldType }}</p>
+                        </div>
+                      </article>
+                    }
+                  </div>
+                }
+              }
+            </section>
+          </div>
+        }
+      </mat-tab>
+    }
+  </mat-tab-group>
+</section>

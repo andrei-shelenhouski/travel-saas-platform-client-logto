@@ -461,25 +461,17 @@ export class ClientDetailComponent {
     }
 
     this.customFieldsSaving.set(true);
-    this.customFieldsService
-      .upsertClientValues(c.id, { values })
-      .pipe(
-        map((updatedValues) => {
-          this.customFieldsData.set(updatedValues);
-
-          return updatedValues;
-        }),
-      )
-      .subscribe({
-        next: () => {
-          this.customFieldsSaving.set(false);
-          this.toast.showSuccess('Дополнительные поля сохранены');
-        },
-        error: (err) => {
-          this.customFieldsSaving.set(false);
-          this.toast.showError(err.error?.message ?? 'Не удалось сохранить дополнительные поля');
-        },
-      });
+    this.customFieldsService.upsertClientValues(c.id, { values }).subscribe({
+      next: (updatedValues) => {
+        this.customFieldsData.set(updatedValues);
+        this.customFieldsSaving.set(false);
+        this.toast.showSuccess('Дополнительные поля сохранены');
+      },
+      error: (err) => {
+        this.customFieldsSaving.set(false);
+        this.toast.showError(err.error?.message ?? 'Не удалось сохранить дополнительные поля');
+      },
+    });
   }
 
   readonly resolvedPersonId = signal<string | null>(null);

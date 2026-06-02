@@ -46,7 +46,8 @@ const OFFER_STATUS_CONFIG: StatusChipConfig = Object.fromEntries(
   selector: 'app-offer-status-chip',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [StatusChipComponent],
-  template: `<app-status-chip [config]="config" [status]="status()" />`,
+  templateUrl: './offer-status-chip.html',
+  styleUrl: './offer-status-chip.scss',
 })
 export class OfferStatusChipComponent {
   readonly status = input<string | null | undefined>(null);

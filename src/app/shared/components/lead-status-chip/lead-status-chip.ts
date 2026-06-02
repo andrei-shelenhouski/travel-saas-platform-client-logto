@@ -42,7 +42,8 @@ const LEAD_STATUS_CONFIG: StatusChipConfig = Object.fromEntries(
   selector: 'app-lead-status-chip',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [StatusChipComponent],
-  template: `<app-status-chip [config]="config" [status]="status()" />`,
+  templateUrl: './lead-status-chip.html',
+  styleUrl: './lead-status-chip.scss',
 })
 export class LeadStatusChipComponent {
   readonly status = input<string | null | undefined>(null);

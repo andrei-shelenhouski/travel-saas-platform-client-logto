@@ -7,7 +7,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { finalize } from 'rxjs';
 
 import { CustomFieldsService } from '@app/services/custom-fields.service';
-import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { CustomFieldEntityType } from '@app/shared/models';
@@ -48,7 +47,6 @@ export class CustomFieldsSettingsComponent {
   private readonly toast = inject(ToastService);
   private readonly dialog = inject(MatDialog);
 
-  protected readonly permissions = inject(PermissionService);
   protected readonly entityTabs = ENTITY_TABS;
 
   protected readonly selectedEntity = signal<(typeof ENTITY_TABS)[number]['entityType']>(

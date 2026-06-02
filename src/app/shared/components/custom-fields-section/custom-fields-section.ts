@@ -71,6 +71,10 @@ export class CustomFieldsSectionComponent {
   }
 
   protected startEdit(): void {
+    if (!this.canEdit()) {
+      return;
+    }
+
     this.expanded.set(true);
     this.statusValidationMessage.set(null);
     this.editing.set(true);
@@ -84,6 +88,10 @@ export class CustomFieldsSectionComponent {
   }
 
   protected save(): void {
+    if (!this.canEdit()) {
+      return;
+    }
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
 
@@ -100,7 +108,6 @@ export class CustomFieldsSectionComponent {
 
     this.statusValidationMessage.set(null);
     this.saveRequested.emit(values);
-    this.editing.set(false);
   }
 
   ensureRequiredFieldsFilledForStatusChange(): boolean {
@@ -127,7 +134,7 @@ export class CustomFieldsSectionComponent {
       `Заполните обязательные дополнительные поля: ${missingRequired.map((field) => field.name).join(', ')}`,
     );
 
-    if (!this.editing()) {
+    if (!this.editing() && this.canEdit()) {
       this.editing.set(true);
       this.rebuildForm(this.sortedFields());
     }
