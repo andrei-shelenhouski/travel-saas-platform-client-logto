@@ -24,20 +24,26 @@ describe('OfferStatusChipComponent', () => {
     fixture.componentRef.setInput('status', null);
     fixture.detectChanges();
 
-    expect(component.label()).toBe('—');
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+
+    expect(text).toContain('—');
   });
 
   it('should display correct label for known status', () => {
     fixture.componentRef.setInput('status', 'SENT');
     fixture.detectChanges();
 
-    expect(component.label()).toBe('Отправлено');
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+
+    expect(text).toContain('Отправлено');
   });
 
   it('should display status as-is for unknown status', () => {
     fixture.componentRef.setInput('status', 'UNKNOWN_STATUS');
     fixture.detectChanges();
 
-    expect(component.label()).toBe('UNKNOWN_STATUS');
+    const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+
+    expect(text).toContain('UNKNOWN_STATUS');
   });
 });

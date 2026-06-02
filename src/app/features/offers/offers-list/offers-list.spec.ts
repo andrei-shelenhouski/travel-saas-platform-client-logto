@@ -7,9 +7,10 @@ import { of } from 'rxjs';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
+import { PAGE_SIZE } from '@app/shared/utils/list-state';
 
 import { OffersListFilterBarComponent } from '../offers-list-filter-bar/offers-list-filter-bar';
-import { OffersListComponent, PAGE_SIZE } from './offers-list';
+import { OffersListComponent } from './offers-list';
 
 describe('OffersListComponent', () => {
   let component: OffersListComponent;

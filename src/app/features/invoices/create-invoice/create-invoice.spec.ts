@@ -113,6 +113,8 @@ describe('CreateInvoiceComponent', () => {
   async function createComponent(
     queryParams: Record<string, string> = {},
     routeParams: Record<string, string> = {},
+    invoiceForGetById: InvoiceResponseDto = createInvoice(),
+    clientForGetById: ClientResponseDto = createClient(),
   ): Promise<void> {
     bookingsService = {
       getById: vi.fn(() => of(createBooking())),
@@ -120,12 +122,12 @@ describe('CreateInvoiceComponent', () => {
 
     clientsService = {
       getList: vi.fn(() => of({ items: [], total: 0, page: 1, limit: 10 })),
-      getById: vi.fn(() => of(createClient())),
+      getById: vi.fn(() => of(clientForGetById)),
     };
 
     invoicesService = {
       create: vi.fn(() => of(createInvoice())),
-      getById: vi.fn(() => of(createInvoice())),
+      getById: vi.fn(() => of(invoiceForGetById)),
       update: vi.fn(() => of(createInvoice())),
     };
 
@@ -506,6 +508,101 @@ describe('CreateInvoiceComponent', () => {
     expect(cmp.form.controls.internalNotes.value).toBe('Test note');
     expect(cmp.lineItemsArray.length).toBe(1);
     expect(cmp.lineItemsArray.at(0).controls.description.value).toBe('Hotel accommodation');
+  });
+
+  it('patches edit form from datetime dates and legacy line-item aliases', async () => {
+    const legacyInvoice = {
+      ...createInvoice({
+        invoiceDate: '2026-05-01T00:00:00Z',
+        dueDate: '2026-05-08T00:00:00Z',
+        lineItems: [
+          {
+            id: 'li-legacy',
+            description: 'Legacy item',
+            serviceDateFrom: '2026-05-02',
+            serviceDateTo: '2026-05-03',
+            travelers: '2 adults',
+            quantity: undefined,
+            unitPrice: undefined,
+            total: 1200,
+            tourCost: undefined,
+          },
+        ],
+      }),
+    } as InvoiceResponseDto & {
+      lineItems: {
+        id: string;
+        description: string;
+        serviceDateFrom: string;
+        serviceDateTo: string;
+        travelers: string;
+        quantity?: number;
+        unitPrice?: number;
+        total: number;
+        tourCost?: number;
+        price?: number;
+        amount?: number;
+      }[];
+    };
+
+    legacyInvoice.lineItems[0].price = 300;
+    legacyInvoice.lineItems[0].amount = 4;
+
+    await createComponent({}, { id: 'invoice-1' }, legacyInvoice);
+
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const cmp = component as unknown as {
+      form: CreateInvoiceComponent['form'];
+      lineItemsArray: CreateInvoiceComponent['lineItemsArray'];
+    };
+
+    expect(cmp.form.controls.invoiceDate.value).toBe('2026-05-01');
+    expect(cmp.form.controls.dueDate.value).toBe('2026-05-08');
+    expect(cmp.lineItemsArray.at(0).controls.unitPrice.value).toBe(300);
+    expect(cmp.lineItemsArray.at(0).controls.quantity.value).toBe(4);
+    expect(cmp.lineItemsArray.at(0).controls.tourCost.value).toBe(1200);
+    expect(cmp.lineItemsArray.at(0).controls.total.value).toBe(1200);
+  });
+
+  it('applies client default commission percent in B2B edit mode when commission fields are missing', async () => {
+    const b2bInvoice = createInvoice({
+      clientType: ClientType.B2B_AGENT,
+      lineItems: [
+        {
+          id: 'li-b2b-1',
+          description: 'B2B line',
+          quantity: 1,
+          unitPrice: 1000,
+          total: 1000,
+          tourCost: undefined,
+          commissionAmount: undefined,
+        },
+      ],
+    });
+
+    await createComponent(
+      {},
+      { id: 'invoice-1' },
+      b2bInvoice,
+      createClient({
+        id: 'client-1',
+        type: ClientType.B2B_AGENT,
+        commissionPct: 10,
+      }),
+    );
+
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const cmp = component as unknown as {
+      lineItemsArray: CreateInvoiceComponent['lineItemsArray'];
+    };
+
+    expect(cmp.lineItemsArray.at(0).controls.tourCost.value).toBe(1000);
+    expect(cmp.lineItemsArray.at(0).controls.commissionPct.value).toBe(10);
+    expect(cmp.lineItemsArray.at(0).controls.commissionAmount.value).toBe(100);
   });
 
   it('calls update service and navigates to detail on submit in edit mode', async () => {

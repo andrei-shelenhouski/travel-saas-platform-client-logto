@@ -4,6 +4,7 @@ import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angul
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
+import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
@@ -11,8 +12,8 @@ import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
 import { ToastService } from '@app/shared/services/toast.service';
 
-import { LeadDetailRequestsSectionComponent } from './lead-detail-requests-section/lead-detail-requests-section';
 import { LeadDetailComponent } from './lead-detail';
+import { LeadDetailRequestsSectionComponent } from './lead-detail-requests-section/lead-detail-requests-section';
 
 import type { ActivityListResponseDto, LeadResponseDto } from '@app/shared/models';
 
@@ -74,11 +75,19 @@ describe('LeadDetailComponent', () => {
         },
         { provide: OrganizationMembersService, useValue: organizationMembersServiceMock },
         {
+          provide: CustomFieldsService,
+          useValue: {
+            getLeadValues: () => of([]),
+            upsertLeadValues: () => of([]),
+          },
+        },
+        {
           provide: PermissionService,
           useValue: {
             canConvertLead: () => false,
             canAssignLead: () => true,
             canCreateOffer: () => true,
+            canDeleteLead: () => true,
           },
         },
         {
@@ -237,7 +246,9 @@ describe('LeadDetailComponent', () => {
   });
 
   it('hides new offer action for closed request status', () => {
-    const section = getRequestsSection();
+    const section = getRequestsSection() as unknown as {
+      canCreateOfferForRequest: (status: string | null | undefined) => boolean;
+    };
 
     expect(section.canCreateOfferForRequest('CLOSED')).toBe(false);
     expect(section.canCreateOfferForRequest('OPEN')).toBe(true);

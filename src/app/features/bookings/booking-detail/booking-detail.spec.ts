@@ -4,6 +4,7 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
 import { BookingsService } from '@app/services/bookings.service';
+import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PersonsService } from '@app/services/persons.service';
@@ -95,6 +96,13 @@ describe('BookingDetailComponent', () => {
           useValue: {
             getByClientId: vi.fn(() => of({ id: 'person-1' })),
             getFamily: vi.fn(() => of([])),
+          },
+        },
+        {
+          provide: CustomFieldsService,
+          useValue: {
+            getBookingValues: vi.fn(() => of([])),
+            upsertBookingValues: vi.fn(() => of([])),
           },
         },
         {

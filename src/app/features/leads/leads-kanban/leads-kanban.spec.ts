@@ -20,8 +20,8 @@ describe('LeadsKanbanComponent', () => {
   let fixture: ComponentFixture<LeadsKanbanComponent>;
 
   const leadsServiceMock = {
-    findAll: () => of({ items: [], total: 0, page: 1, limit: 200 }),
-    updateStatus: () => of(createLead({ status: 'IN_PROGRESS' })),
+    getList: vi.fn(() => of({ items: [], total: 0, page: 1, limit: 200 })),
+    updateStatus: vi.fn(() => of(createLead({ status: 'IN_PROGRESS' }))),
   };
 
   const toastServiceMock = {
@@ -44,6 +44,7 @@ describe('LeadsKanbanComponent', () => {
             currentUserId: () => null,
             canViewAllLeads: () => true,
             canCreateLead: () => true,
+            canDeleteLead: () => true,
           },
         },
         { provide: ToastService, useValue: toastServiceMock },
@@ -101,12 +102,12 @@ describe('LeadsKanbanComponent', () => {
   });
 
   it('forwards source filter to leads API query', () => {
-    const findAllSpy = vi.spyOn(leadsServiceMock, 'findAll');
+    const getListSpy = vi.spyOn(leadsServiceMock, 'getList');
 
     component.onSourceFilterChange('TOURVISOR');
     fixture.detectChanges();
 
-    expect(findAllSpy).toHaveBeenLastCalledWith(
+    expect(getListSpy).toHaveBeenLastCalledWith(
       expect.objectContaining({
         source: 'TOURVISOR',
       }),

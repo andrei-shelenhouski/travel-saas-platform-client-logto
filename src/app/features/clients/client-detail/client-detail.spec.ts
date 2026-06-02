@@ -8,6 +8,7 @@ import { of, Subject } from 'rxjs';
 import { AuthService } from '@app/auth/auth.service';
 import { ClientsService } from '@app/services/clients.service';
 import { ContractsService } from '@app/services/contracts.service';
+import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { TagsService } from '@app/services/tags.service';
 import { ClientType } from '@app/shared/models';
 import { ToastService } from '@app/shared/services/toast.service';
@@ -131,6 +132,13 @@ describe('ClientDetailComponent', () => {
         provideNoopAnimations(),
         { provide: ClientsService, useValue: mockClientsService },
         { provide: ContractsService, useValue: mockContractsService },
+        {
+          provide: CustomFieldsService,
+          useValue: {
+            getClientValues: vi.fn(() => of([])),
+            upsertClientValues: vi.fn(() => of([])),
+          },
+        },
         { provide: TagsService, useValue: mockTagsService },
         {
           provide: AuthService,
@@ -264,11 +272,11 @@ describe('ClientDetailComponent', () => {
   });
 
   it('should format date correctly', () => {
-    expect(component.formatDate('2026-01-01T12:00:00Z')).toContain('Jan');
+    expect(component.formatDateShort('2026-01-01T12:00:00Z')).toContain('Jan');
   });
 
   it('should handle null date gracefully', () => {
-    expect(component.formatDate(null)).toBe('—');
+    expect(component.formatDateShort(null)).toBe('—');
     expect(component.formatDateShort(undefined)).toBe('—');
   });
 });

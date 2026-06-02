@@ -36,15 +36,14 @@ import {
   todayIsoDate,
 } from '@app/shared/utils/invoice-defaults';
 
-import { InvoiceClientSelectorComponent } from './invoice-client-selector/invoice-client-selector';
-import { InvoiceLineItemsFormComponent } from './invoice-line-items-form/invoice-line-items-form';
-import { InvoiceTotalsDisplayComponent } from './invoice-totals-display/invoice-totals-display';
-
 import {
   dueDateAfterInvoiceDateValidator,
   minLineItemsValidator,
   toSafeNumber,
 } from './create-invoice.utils';
+import { InvoiceClientSelectorComponent } from './invoice-client-selector/invoice-client-selector';
+import { InvoiceLineItemsFormComponent } from './invoice-line-items-form/invoice-line-items-form';
+import { InvoiceTotalsDisplayComponent } from './invoice-totals-display/invoice-totals-display';
 
 import type {
   BookingResponseDto,
@@ -52,10 +51,16 @@ import type {
   ClientType as ClientTypeValue,
   CreateInvoiceDto,
   CreateInvoiceLineItemDto,
+  InvoiceLineItemResponseDto,
   InvoiceResponseDto,
   PaginatedClientResponseDto,
   UpdateInvoiceDto,
 } from '@app/shared/models';
+
+type InvoiceLineItemWithLegacyAliases = InvoiceLineItemResponseDto & {
+  price?: number | string;
+  amount?: number | string;
+};
 
 type InvoiceLineItemFormGroup = FormGroup<{
   sortOrder: FormControl<number>;
@@ -415,6 +420,15 @@ export class CreateInvoiceComponent {
       return;
     }
 
+    if (row.controls.commissionAmount.value === null) {
+      row.controls.commissionPct.setValue(null);
+
+      this.updateB2bCalculatedFields(row);
+      this.form.markAsDirty();
+
+      return;
+    }
+
     const tourCost = toSafeNumber(row.controls.tourCost.value);
     const commissionAmount = Math.max(0, toSafeNumber(row.controls.commissionAmount.value));
     const commissionPct = tourCost > 0 ? (commissionAmount / tourCost) * 100 : 0;
@@ -641,12 +655,21 @@ export class CreateInvoiceComponent {
   }
 
   private patchFormFromInvoice(invoice: InvoiceResponseDto): void {
+    const invoiceDate = this.normalizeDateForDateInput(
+      invoice.invoiceDate,
+      this.initialInvoiceDate,
+    );
+    const dueDate = this.normalizeDateForDateInput(
+      invoice.dueDate,
+      addDaysToIsoDate(invoiceDate, 1),
+    );
+
     this.form.patchValue({
       bookingId: invoice.bookingId ?? '',
       clientId: invoice.clientId,
       clientType: this.normalizeClientType(invoice.clientType ?? ''),
-      invoiceDate: invoice.invoiceDate,
-      dueDate: invoice.dueDate,
+      invoiceDate,
+      dueDate,
       currency: invoice.currency,
       language: invoice.language ?? '',
       paymentTerms: invoice.paymentTerms ?? '',
@@ -664,16 +687,21 @@ export class CreateInvoiceComponent {
       this.lineItemsArray.removeAt(this.lineItemsArray.length - 1);
     }
 
-    items.forEach((item, index) => {
+    items.forEach((rawItem, index) => {
+      const item = rawItem as InvoiceLineItemWithLegacyAliases;
+      const quantity = this.resolveLineItemQuantityForEdit(item);
+      const unitPrice = this.resolveLineItemUnitPriceForEdit(item, quantity);
+      const tourCost = this.resolveLineItemTourCostForEdit(item, unitPrice, quantity);
+
       this.lineItemsArray.at(index).patchValue({
         description: item.description ?? '',
         serviceDateFrom: item.serviceDateFrom ?? '',
         serviceDateTo: item.serviceDateTo ?? '',
         travelers: item.travelers ?? '',
-        unitPrice: item.unitPrice ?? null,
-        quantity: item.quantity ?? 1,
-        tourCost: item.tourCost ?? null,
-        commissionAmount: item.commissionAmount ?? null,
+        unitPrice,
+        quantity,
+        tourCost,
+        commissionAmount: this.toNullableNumber(item.commissionAmount),
       });
     });
 
@@ -693,6 +721,11 @@ export class CreateInvoiceComponent {
       next: (client) => {
         this.selectedClient.set(client);
         this.selectedClientCommissionPct.set(client.commissionPct ?? null);
+
+        if (this.form.controls.clientType.value === ClientType.B2B_AGENT) {
+          this.applyDefaultCommissionPctToRows();
+        }
+
         this.clientSearchControl.setValue(this.clientDisplayName(client), { emitEvent: false });
       },
       error: (err) => {
@@ -753,8 +786,9 @@ export class CreateInvoiceComponent {
     for (let index = 0; index < this.lineItemsArray.length; index++) {
       const row = this.lineItemsArray.at(index);
       const currentPct = row.controls.commissionPct.value;
+      const commissionAmount = row.controls.commissionAmount.value;
 
-      if (currentPct === null || currentPct === 0) {
+      if (currentPct === null || (currentPct === 0 && commissionAmount === null)) {
         row.controls.commissionPct.setValue(defaultPct);
         this.recalculateRow(index);
       }
@@ -1027,5 +1061,94 @@ export class CreateInvoiceComponent {
     }
 
     return ClientType.INDIVIDUAL;
+  }
+
+  private normalizeDateForDateInput(value: string | null | undefined, fallback: string): string {
+    const trimmed = value?.trim() ?? '';
+
+    if (trimmed.length === 0) {
+      return fallback;
+    }
+
+    return trimmed.slice(0, 10);
+  }
+
+  private toNullableNumber(value: unknown): number | null {
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+
+    const parsed = Number(value);
+
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+
+    return null;
+  }
+
+  private resolveLineItemQuantityForEdit(item: InvoiceLineItemWithLegacyAliases): number {
+    const quantity = this.toNullableNumber(item.quantity);
+
+    if (quantity !== null && quantity > 0) {
+      return quantity;
+    }
+
+    const amountAlias = this.toNullableNumber(item.amount);
+
+    if (amountAlias !== null && amountAlias > 0) {
+      return amountAlias;
+    }
+
+    return 1;
+  }
+
+  private resolveLineItemUnitPriceForEdit(
+    item: InvoiceLineItemWithLegacyAliases,
+    quantity: number,
+  ): number | null {
+    const unitPrice = this.toNullableNumber(item.unitPrice);
+
+    if (unitPrice !== null) {
+      return unitPrice;
+    }
+
+    const priceAlias = this.toNullableNumber(item.price);
+
+    if (priceAlias !== null) {
+      return priceAlias;
+    }
+
+    const total = this.toNullableNumber(item.total);
+
+    if (total !== null && quantity > 0) {
+      return total / quantity;
+    }
+
+    return null;
+  }
+
+  private resolveLineItemTourCostForEdit(
+    item: InvoiceLineItemWithLegacyAliases,
+    unitPrice: number | null,
+    quantity: number,
+  ): number | null {
+    const tourCost = this.toNullableNumber(item.tourCost);
+
+    if (tourCost !== null) {
+      return tourCost;
+    }
+
+    const total = this.toNullableNumber(item.total);
+
+    if (total !== null) {
+      return total;
+    }
+
+    if (unitPrice !== null) {
+      return unitPrice * quantity;
+    }
+
+    return null;
   }
 }
