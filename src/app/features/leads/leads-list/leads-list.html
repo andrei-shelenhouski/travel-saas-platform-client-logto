@@ -121,8 +121,8 @@
         <th *matHeaderCellDef mat-header-cell>Статус</th>
         <td *matCellDef="let element" mat-cell>
           @if (isDeletedLead(element)) {
-            <span class="inline-flex items-center rounded px-2 py-0.5 text-xs font-semibold tracking-wide bg-gray-200 text-gray-600">
-              УДАЛЕНО
+            <span class="inline-flex items-center rounded-full bg-gray-200 px-2.5 py-0.5 text-xs font-medium text-gray-600">
+              Удалено
             </span>
           } @else {
             <app-status-badge variant="lead" [status]="element.status" />

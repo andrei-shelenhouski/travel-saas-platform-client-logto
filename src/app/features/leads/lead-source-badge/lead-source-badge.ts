@@ -31,6 +31,24 @@ const SOURCE_BADGE_CONFIG: Record<string, LeadSourceBadgeConfig> = {
     backgroundColor: '#e8f6ea',
     icon: 'language',
   },
+  TELEGRAM: {
+    label: 'Telegram',
+    color: '#0088cc',
+    backgroundColor: '#e0f2ff',
+    icon: 'send',
+  },
+  FACEBOOK_ADS: {
+    label: 'Facebook Ads',
+    color: '#1877f2',
+    backgroundColor: '#e7f3ff',
+    icon: 'facebook',
+  },
+  DIRECT_ENTRY: {
+    label: 'Автоматически',
+    color: '#b45309',
+    backgroundColor: '#ffedd5',
+    icon: 'cloud_done',
+  },
 };
 
 @Component({
