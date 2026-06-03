@@ -6,6 +6,14 @@
         class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
       ></div>
     </div>
+  } @else if (hasError()) {
+    <section class="m-4 rounded-lg border border-red-200 bg-red-50 p-6">
+      <h2 class="text-lg font-semibold text-red-900">Не удалось открыть запрос</h2>
+      <p class="mt-2 text-sm text-red-800">{{ loadErrorMessage() }}</p>
+      <button class="mt-4" mat-flat-button routerLink="/app/requests" type="button">
+        Назад к запросам
+      </button>
+    </section>
   } @else {
     @let r = request();
     @if (r) {
@@ -25,20 +33,6 @@
       </app-page-heading>
 
       <div class="m-4">
-        <section class="request-header-card">
-          <div class="request-header-main">
-            <div>
-              <p class="request-header-label">Запрос на поездку</p>
-              <h2 class="request-header-title">{{ r.destination }}</h2>
-            </div>
-            <span
-              class="inline-block rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800"
-            >
-              {{ r.status }}
-            </span>
-          </div>
-        </section>
-
         <div class="request-grid">
           <section class="request-card">
             <div class="request-card-header">
@@ -97,7 +91,7 @@
         </div>
       </div>
     } @else {
-      <p class="text-gray-500">Запрос не найден.</p>
+      <p class="m-4 text-sm text-gray-500">Запрос не найден.</p>
     }
   }
 </div>

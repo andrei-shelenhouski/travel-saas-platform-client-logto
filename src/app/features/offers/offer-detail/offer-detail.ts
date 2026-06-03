@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
+import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EMPTY, of } from 'rxjs';
@@ -69,6 +70,7 @@ const ACTION_LABELS: Record<OfferAction, string> = {
     RouterLink,
     OfferTimelineComponent,
     PageHeading,
+    MatTableModule,
     ...MAT_BUTTONS,
     ...MAT_DIALOG,
   ],
@@ -222,6 +224,9 @@ export class OfferDetailComponent {
   });
 
   protected readonly ACTION_LABELS = ACTION_LABELS;
+
+  readonly accommodationColumns = ['hotel', 'roomType', 'mealPlan', 'dates', 'nights', 'price'];
+  readonly serviceColumns = ['serviceType', 'description', 'quantity', 'unitPrice', 'total'];
 
   constructor() {
     effect(() => {

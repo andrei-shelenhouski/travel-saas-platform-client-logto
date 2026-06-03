@@ -11,6 +11,12 @@ import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 import type { RequestResponseDto } from '@app/shared/models';
 
+type LoadError = {
+  status?: number;
+  error?: { message?: string };
+  message?: string;
+};
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-request-detail',
@@ -41,6 +47,28 @@ export class RequestDetailComponent {
   readonly request = computed(() => this.data.value() ?? null);
   readonly loading = computed(() => this.data.isLoading());
   readonly travelRequestSubtitle = 'Запрос на поездку';
+
+  protected readonly hasError = computed(
+    () => this.data.error() !== undefined && this.data.error() !== null,
+  );
+
+  protected readonly loadErrorMessage = computed(() => {
+    const error = this.data.error() as LoadError | undefined;
+
+    if (!error) {
+      return '';
+    }
+
+    if (error.status === 404) {
+      return 'Запрос не найден';
+    }
+
+    if (error.status === 403) {
+      return 'У вас нет доступа к этому запросу';
+    }
+
+    return error.error?.message ?? error.message ?? 'Не удалось загрузить запрос';
+  });
 
   constructor() {
     effect(() => {
