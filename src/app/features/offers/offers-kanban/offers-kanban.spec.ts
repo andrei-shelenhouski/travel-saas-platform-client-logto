@@ -9,7 +9,7 @@ import { vi } from 'vitest';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { OffersKanbanComponent } from './offers-kanban';
 
@@ -24,9 +24,8 @@ describe('OffersKanbanComponent', () => {
     setStatus: () => of(createOffer({ status: 'SENT' })),
   };
 
-  const toastServiceMock = {
-    show: () => undefined,
-    showError: () => undefined,
+  const snackBarMock = {
+    open: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -46,7 +45,7 @@ describe('OffersKanbanComponent', () => {
             canCreateOffer: () => true,
           },
         },
-        { provide: ToastService, useValue: toastServiceMock },
+        { provide: MatSnackBar, useValue: snackBarMock },
       ],
     }).compileComponents();
 
@@ -75,7 +74,7 @@ describe('OffersKanbanComponent', () => {
   });
 
   it('reverts optimistic move and shows 400 transition error', () => {
-    const showErrorSpy = vi.spyOn(toastServiceMock, 'showError');
+    const showErrorSpy = vi.spyOn(snackBarMock, 'open');
     const setStatusSpy = vi
       .spyOn(offersServiceMock, 'setStatus')
       .mockReturnValue(throwError(() => new HttpErrorResponse({ status: 400 })));
@@ -97,7 +96,9 @@ describe('OffersKanbanComponent', () => {
     expect(previousColumn).toHaveLength(1);
     expect(targetColumn).toHaveLength(0);
     expect(offer.status).toBe('DRAFT');
-    expect(showErrorSpy).toHaveBeenCalledWith('Недопустимый переход статуса');
+    expect(showErrorSpy).toHaveBeenCalledWith('Недопустимый переход статуса', 'Close', {
+      duration: 5000,
+    });
   });
 });
 

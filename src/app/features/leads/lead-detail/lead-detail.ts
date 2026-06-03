@@ -40,7 +40,7 @@ import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fiel
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { LeadStatus } from '@app/shared/models';
 import { MarkdownPipe } from '@app/shared/pipes/markdown-pipe';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { atLeastOneContactValidator } from '../leads.validators';
 
@@ -112,7 +112,7 @@ export class LeadDetailComponent {
   private readonly offersService = inject(OffersService);
   private readonly membersService = inject(OrganizationMembersService);
   private readonly customFieldsService = inject(CustomFieldsService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
 
   protected readonly permissions = inject(PermissionService);
 
@@ -423,10 +423,12 @@ export class LeadDetailComponent {
     this.leadsService.updateStatus(lead.id, { status: targetStatus }).subscribe({
       next: (updated) => {
         this.travelDetailsData.set(updated);
-        this.toast.showSuccess('Статус лида обновлён');
+        this.snackBar.open('Статус лида обновлён', 'Close', { duration: 4000 });
       },
       error: (err: unknown) => {
-        this.toast.showError(this.getErrorMessage(err, 'Не удалось обновить статус'));
+        this.snackBar.open(this.getErrorMessage(err, 'Не удалось обновить статус'), 'Close', {
+          duration: 5000,
+        });
       },
       complete: () => {
         this.statusActionLoading.set(null);
@@ -448,11 +450,13 @@ export class LeadDetailComponent {
       .subscribe({
         next: (updatedValues) => {
           this.customFieldsData.set(updatedValues);
-          this.toast.showSuccess('Дополнительные поля сохранены');
+          this.snackBar.open('Дополнительные поля сохранены', 'Close', { duration: 4000 });
         },
         error: (err: unknown) => {
-          this.toast.showError(
+          this.snackBar.open(
             this.getErrorMessage(err, 'Не удалось сохранить дополнительные поля'),
+            'Close',
+            { duration: 5000 },
           );
         },
       });
@@ -491,10 +495,12 @@ export class LeadDetailComponent {
     this.leadsService.assign(lead.id, { agentId }).subscribe({
       next: (updated) => {
         this.travelDetailsData.set(updated);
-        this.toast.showSuccess('Лид переназначен');
+        this.snackBar.open('Лид переназначен', 'Close', { duration: 4000 });
       },
       error: (err: unknown) => {
-        this.toast.showError(this.getErrorMessage(err, 'Не удалось назначить лид'));
+        this.snackBar.open(this.getErrorMessage(err, 'Не удалось назначить лид'), 'Close', {
+          duration: 5000,
+        });
       },
       complete: () => {
         this.assignLoading.set(false);
@@ -524,7 +530,7 @@ export class LeadDetailComponent {
 
       this.travelDetailsData.set(updatedLead);
       this.patchTravelForm(updatedLead);
-      this.toast.showSuccess('Клиент привязан к лиду');
+      this.snackBar.open('Клиент привязан к лиду', 'Close', { duration: 4000 });
     });
   }
 
@@ -550,7 +556,7 @@ export class LeadDetailComponent {
 
       this.travelDetailsData.set(updatedLead);
       this.patchTravelForm(updatedLead);
-      this.toast.showSuccess('Лид сохранён как новый клиент');
+      this.snackBar.open('Лид сохранён как новый клиент', 'Close', { duration: 4000 });
     });
   }
 
@@ -617,10 +623,11 @@ export class LeadDetailComponent {
           this.travelDetailsData.set(updated);
           this.patchTravelForm(updated);
           this.editingTravelDetails.set(false);
-          this.toast.showSuccess('Детали тура обновлены');
+          this.snackBar.open('Детали тура обновлены', 'Close', { duration: 4000 });
         },
         error: (err: unknown) => {
-          this.toast.showError(this.getErrorMessage(err, 'Не удалось обновить детали тура'));
+          // prettier-ignore
+          this.snackBar.open(this.getErrorMessage(err, 'Не удалось обновить детали тура'), 'Close', { duration: 5000 });
         },
         complete: () => {
           this.savingTravelDetails.set(false);
@@ -652,10 +659,11 @@ export class LeadDetailComponent {
         next: (created) => {
           this.requestsData.update((items) => [created, ...items]);
           this.requestsSection()?.resetAfterCreate();
-          this.toast.showSuccess('Запрос на тур создан');
+          this.snackBar.open('Запрос на тур создан', 'Close', { duration: 4000 });
         },
         error: (err: unknown) => {
-          this.toast.showError(this.getErrorMessage(err, 'Не удалось создать запрос на тур'));
+          // prettier-ignore
+          this.snackBar.open(this.getErrorMessage(err, 'Не удалось создать запрос на тур'), 'Close', { duration: 5000 });
         },
       });
   }
@@ -685,10 +693,11 @@ export class LeadDetailComponent {
             return items.map((item) => (item.id === requestId ? updated : item));
           });
           this.requestsSection()?.resetAfterEdit();
-          this.toast.showSuccess('Запрос на тур обновлён');
+          this.snackBar.open('Запрос на тур обновлён', 'Close', { duration: 4000 });
         },
         error: (err: unknown) => {
-          this.toast.showError(this.getErrorMessage(err, 'Не удалось обновить запрос на тур'));
+          // prettier-ignore
+          this.snackBar.open(this.getErrorMessage(err, 'Не удалось обновить запрос на тур'), 'Close', { duration: 5000 });
         },
       });
   }
@@ -705,10 +714,11 @@ export class LeadDetailComponent {
       .subscribe({
         next: () => {
           this.requestsData.update((items) => items.filter((item) => item.id !== event.requestId));
-          this.toast.showSuccess('Запрос на тур удалён');
+          this.snackBar.open('Запрос на тур удалён', 'Close', { duration: 4000 });
         },
         error: (err: unknown) => {
-          this.toast.showError(this.getErrorMessage(err, 'Не удалось удалить запрос на тур'));
+          const msg = this.getErrorMessage(err, 'Не удалось удалить запрос на тур');
+          this.snackBar.open(msg, 'Close', { duration: 5000 });
         },
       });
   }
@@ -736,7 +746,8 @@ export class LeadDetailComponent {
       })
       .pipe(
         catchError((err) => {
-          this.toast.showError(this.getErrorMessage(err, 'Не удалось загрузить активность'));
+          // prettier-ignore
+          this.snackBar.open(this.getErrorMessage(err, 'Не удалось загрузить активность'), 'Close', { duration: 5000 });
 
           return of({
             items: [],

@@ -9,7 +9,7 @@ import { InvoicesService } from '@app/services/invoices.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { PermissionService } from '@app/services/permission.service';
 import { BookingStatus } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { InvoiceListMiniComponent } from './invoice-list-mini';
 
@@ -42,8 +42,8 @@ describe('InvoiceListMiniComponent', () => {
   let permissionService: {
     canCreateInvoice: ReturnType<typeof vi.fn>;
   };
-  let toastService: {
-    showError: ReturnType<typeof vi.fn>;
+  let snackBar: {
+    open: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(async () => {
@@ -69,8 +69,8 @@ describe('InvoiceListMiniComponent', () => {
       canCreateInvoice: vi.fn(() => true),
     };
 
-    toastService = {
-      showError: vi.fn(),
+    snackBar = {
+      open: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -81,7 +81,7 @@ describe('InvoiceListMiniComponent', () => {
         { provide: InvoicesService, useValue: invoicesService },
         { provide: OrganizationSettingsService, useValue: organizationSettingsService },
         { provide: PermissionService, useValue: permissionService },
-        { provide: ToastService, useValue: toastService },
+        { provide: MatSnackBar, useValue: snackBar },
       ],
     }).compileComponents();
 
@@ -184,7 +184,7 @@ describe('InvoiceListMiniComponent', () => {
     expect(component.createInvoiceError()).toContain(
       'В этом бронировании нет позиций для выставления счета',
     );
-    expect(toastService.showError).not.toHaveBeenCalled();
+    expect(snackBar.open).not.toHaveBeenCalled();
     expect(component.creatingInvoice()).toBe(false);
   });
 
@@ -201,7 +201,7 @@ describe('InvoiceListMiniComponent', () => {
     component.onCreateInvoice();
 
     expect(component.createInvoiceError()).toBe('');
-    expect(toastService.showError).toHaveBeenCalled();
+    expect(snackBar.open).toHaveBeenCalled();
     expect(component.creatingInvoice()).toBe(false);
   });
 

@@ -6,7 +6,7 @@ import { of } from 'rxjs';
 import { BookingsService } from '@app/services/bookings.service';
 import { ClientsService } from '@app/services/clients.service';
 import { PersonsService } from '@app/services/persons.service';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { CreateBookingComponent } from './create-booking';
 
@@ -42,11 +42,8 @@ describe('CreateBookingComponent', () => {
           },
         },
         {
-          provide: ToastService,
-          useValue: {
-            showSuccess: vi.fn(),
-            showError: vi.fn(),
-          },
+          provide: MatSnackBar,
+          useValue: { open: vi.fn() },
         },
       ],
     }).compileComponents();

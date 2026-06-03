@@ -43,7 +43,7 @@ import {
   MAT_ICONS,
 } from '@app/shared/material-imports';
 import { OfferStatus } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type { OfferResponseDto, UpdateOfferDto } from '@app/shared/models';
 type AccommodationFormGroup = FormGroup<{
@@ -114,7 +114,7 @@ export class OfferEditComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly offersService = inject(OffersService);
   private readonly dialog = inject(MatDialog);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
   private readonly fb = inject(FormBuilder);
 
   readonly offer = signal<OfferResponseDto | null>(null);
@@ -183,8 +183,10 @@ export class OfferEditComponent implements OnInit {
     this.offersService.getById(id).subscribe({
       next: (o) => this.handleLoadedOffer(o),
       error: (err) => {
-        this.toast.showError(
+        this.snackBar.open(
           err.error?.message ?? err.message ?? 'Не удалось загрузить предложение',
+          'Close',
+          { duration: 5000 },
         );
         this.router.navigate(['/app/offers']);
       },
@@ -194,7 +196,9 @@ export class OfferEditComponent implements OnInit {
 
   private handleLoadedOffer(offer: OfferResponseDto): void {
     if (offer.status !== OfferStatus.DRAFT) {
-      this.toast.showError('Редактировать можно только черновики предложений.');
+      this.snackBar.open('Редактировать можно только черновики предложений.', 'Close', {
+        duration: 5000,
+      });
       this.router.navigate(['/app/offers', offer.id]);
 
       return;
@@ -409,7 +413,7 @@ export class OfferEditComponent implements OnInit {
         next: (updated) => {
           this.offer.set(updated);
           this.form.markAsPristine();
-          this.toast.showSuccess('Черновик предложения обновлён');
+          this.snackBar.open('Черновик предложения обновлён', 'Close', { duration: 4000 });
           this.openPdfPreviewDialog(updated.id, updated.number);
         },
         error: (err) => {
@@ -436,7 +440,7 @@ export class OfferEditComponent implements OnInit {
       next: (updated) => {
         this.offer.set(updated);
         this.form.markAsPristine();
-        this.toast.showSuccess('Черновик предложения обновлён');
+        this.snackBar.open('Черновик предложения обновлён', 'Close', { duration: 4000 });
         this.router.navigate(['/app/offers', o.id]);
       },
       error: (err) => {

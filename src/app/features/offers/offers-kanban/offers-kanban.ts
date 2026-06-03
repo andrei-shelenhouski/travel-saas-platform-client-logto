@@ -24,7 +24,7 @@ import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
 import { OFFER_STATUS_OPTIONS, OfferStatus } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type { OfferResponseDto, OfferStatus as OfferStatusType } from '@app/shared/models';
 import type { OrganizationMemberResponseDto } from '@app/shared/models';
@@ -102,7 +102,7 @@ export class OffersKanbanComponent {
   private readonly offersService = inject(OffersService);
   private readonly membersService = inject(OrganizationMembersService);
   private readonly permissionService = inject(PermissionService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -294,7 +294,7 @@ export class OffersKanbanComponent {
         transferArrayItem(currList, prevList, event.currentIndex, event.previousIndex);
         offer.status = previousStatus;
         this.itemsByStatus.update((map) => ({ ...map }));
-        this.toast.showError(this.getDropErrorMessage(err));
+        this.snackBar.open(this.getDropErrorMessage(err), 'Close', { duration: 5000 });
       },
     });
   }

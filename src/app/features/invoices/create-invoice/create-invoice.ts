@@ -26,7 +26,7 @@ import { OrganizationSettingsService } from '@app/services/organization-settings
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { formatClientSearchLabel } from '@app/shared/utils/client-display';
 import {
   addDaysToIsoDate,
@@ -126,7 +126,7 @@ export class CreateInvoiceComponent {
   private readonly clientsService = inject(ClientsService);
   private readonly invoicesService = inject(InvoicesService);
   private readonly organizationSettingsService = inject(OrganizationSettingsService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
   private readonly fb = inject(FormBuilder);
 
   protected readonly saving = signal(false);
@@ -477,7 +477,7 @@ export class CreateInvoiceComponent {
       this.invoicesService.update(this.invoiceId!, this.buildUpdateInvoiceDto()).subscribe({
         next: () => {
           this.form.markAsPristine();
-          this.toast.showSuccess('Счёт обновлён');
+          this.snackBar.open('Счёт обновлён', 'Close', { duration: 4000 });
           this.router.navigate(['/app/invoices', this.invoiceId]);
         },
         error: (err) => {
@@ -490,7 +490,7 @@ export class CreateInvoiceComponent {
       this.invoicesService.create(this.buildCreateInvoiceDto()).subscribe({
         next: (created) => {
           this.form.markAsPristine();
-          this.toast.showSuccess('Черновик счёта сохранён');
+          this.snackBar.open('Черновик счёта сохранён', 'Close', { duration: 4000 });
           this.router.navigate(['/app/invoices', created.id]);
         },
         error: (err) => {

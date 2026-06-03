@@ -7,7 +7,7 @@ import { of } from 'rxjs';
 import { AuthService } from '@app/auth/auth.service';
 import { ContractsService } from '@app/services/contracts.service';
 import { ContractStatus, PermissionKey } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ContractViewPageComponent } from './contract-view-page';
 
@@ -57,11 +57,8 @@ describe('ContractViewPageComponent', () => {
           },
         },
         {
-          provide: ToastService,
-          useValue: {
-            showSuccess: vi.fn(),
-            showError: vi.fn(),
-          },
+          provide: MatSnackBar,
+          useValue: { open: vi.fn() },
         },
         {
           provide: ActivatedRoute,

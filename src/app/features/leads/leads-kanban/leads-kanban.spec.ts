@@ -9,7 +9,7 @@ import { vi } from 'vitest';
 import { LeadsService } from '@app/services/leads.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { LeadsKanbanComponent } from './leads-kanban';
 
@@ -24,9 +24,8 @@ describe('LeadsKanbanComponent', () => {
     updateStatus: vi.fn(() => of(createLead({ status: 'IN_PROGRESS' }))),
   };
 
-  const toastServiceMock = {
-    show: () => undefined,
-    showError: () => undefined,
+  const snackBarMock = {
+    open: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -47,7 +46,7 @@ describe('LeadsKanbanComponent', () => {
             canDeleteLead: () => true,
           },
         },
-        { provide: ToastService, useValue: toastServiceMock },
+        { provide: MatSnackBar, useValue: snackBarMock },
       ],
     }).compileComponents();
 
@@ -76,7 +75,7 @@ describe('LeadsKanbanComponent', () => {
   });
 
   it('reverts optimistic move and shows 400 transition error', () => {
-    const showErrorSpy = vi.spyOn(toastServiceMock, 'showError');
+    const showErrorSpy = vi.spyOn(snackBarMock, 'open');
     const updateStatusSpy = vi
       .spyOn(leadsServiceMock, 'updateStatus')
       .mockReturnValue(throwError(() => new HttpErrorResponse({ status: 400 })));
@@ -98,7 +97,9 @@ describe('LeadsKanbanComponent', () => {
     expect(previousColumn).toHaveLength(1);
     expect(targetColumn).toHaveLength(0);
     expect(lead.status).toBe('NEW');
-    expect(showErrorSpy).toHaveBeenCalledWith('Недопустимый переход статуса');
+    expect(showErrorSpy).toHaveBeenCalledWith('Недопустимый переход статуса', 'Close', {
+      duration: 5000,
+    });
   });
 
   it('forwards source filter to leads API query', () => {

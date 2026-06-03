@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-
 import { MatSnackBar } from '@angular/material/snack-bar';
+
 import { catchError, MonoTypeOperatorFunction, throwError } from 'rxjs';
 
 const GENERIC_ERROR = 'Something went wrong. Please try again.';
@@ -24,7 +24,7 @@ export class ApiErrorHandlerService {
 
       const { status } = err;
 
-      // 5xx / network errors handled globally by errorHandlerInterceptor (ToastService)
+      // 5xx / network errors handled globally by errorHandlerInterceptor (MatSnackBar)
       if (!status || status === 0 || status >= 500) {
         return throwError(() => err);
       }

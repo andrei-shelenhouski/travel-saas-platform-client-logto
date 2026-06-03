@@ -15,7 +15,7 @@ import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ContractStatus, PermissionKey } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { boolLabel, clientTypeLabel, textOrDash } from '../contracts-format.utils';
 
@@ -41,7 +41,7 @@ export class ContractViewPageComponent implements OnInit {
   private readonly contractsService = inject(ContractsService);
   private readonly authService = inject(AuthService);
   private readonly confirmDialog = inject(ConfirmDialogService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
 
   readonly contract = signal<ContractResponseDto | null>(null);
   readonly loading = signal(true);
@@ -102,10 +102,10 @@ export class ContractViewPageComponent implements OnInit {
         this.contractsService.terminate(contract.id).subscribe({
           next: (updated) => {
             this.contract.set(updated);
-            this.toast.showSuccess('Договор расторгнут');
+            this.snackBar.open('Договор расторгнут', 'Close', { duration: 4000 });
           },
           error: () => {
-            this.toast.showError('Не удалось расторгнуть договор');
+            this.snackBar.open('Не удалось расторгнуть договор', 'Close', { duration: 5000 });
           },
         });
       });

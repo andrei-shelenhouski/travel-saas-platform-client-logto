@@ -35,7 +35,7 @@ import {
   LeadSource,
   LeadStatus,
 } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type { LeadResponseDto, LeadStatus as LeadStatusType } from '@app/shared/models';
 import type { OrganizationMemberResponseDto } from '@app/shared/models';
@@ -119,7 +119,7 @@ export class LeadsKanbanComponent {
   private readonly leadsService = inject(LeadsService);
   private readonly membersService = inject(OrganizationMembersService);
   private readonly permissionService = inject(PermissionService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
   private readonly dialog = inject(MatDialog);
@@ -344,7 +344,7 @@ export class LeadsKanbanComponent {
         transferArrayItem(currList, prevList, event.currentIndex, event.previousIndex);
         lead.status = previousStatus;
         this.itemsByStatus.update((map) => ({ ...map }));
-        this.toast.showError(this.getDropErrorMessage(err));
+        this.snackBar.open(this.getDropErrorMessage(err), 'Close', { duration: 5000 });
       },
     });
   }

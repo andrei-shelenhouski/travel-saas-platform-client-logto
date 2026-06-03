@@ -15,7 +15,7 @@ import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.servic
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 import { ContractStatus, PermissionKey } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import {
   ContractsFilterBarComponent,
@@ -48,7 +48,7 @@ export class ContractsListComponent {
   private readonly contractsService = inject(ContractsService);
   private readonly authService = inject(AuthService);
   private readonly confirmDialog = inject(ConfirmDialogService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
   private readonly router = inject(Router);
 
   protected readonly activeFilter = signal<ContractsFilterValue>({ status: '', clientId: '' });
@@ -176,10 +176,10 @@ export class ContractsListComponent {
         this.contractsService.terminate(contract.id).subscribe({
           next: () => {
             this.refreshTick.update((value) => value + 1);
-            this.toast.showSuccess('Договор расторгнут');
+            this.snackBar.open('Договор расторгнут', 'Close', { duration: 4000 });
           },
           error: () => {
-            this.toast.showError('Не удалось расторгнуть договор');
+            this.snackBar.open('Не удалось расторгнуть договор', 'Close', { duration: 5000 });
           },
         });
       });

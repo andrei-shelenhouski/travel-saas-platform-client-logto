@@ -40,7 +40,7 @@ import {
   PermissionKey,
   SignatureMethod,
 } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ClientProfileCardComponent } from './client-profile-card/client-profile-card';
 import { FamilySectionComponent } from './family-section/family-section';
@@ -116,7 +116,7 @@ export class ClientDetailComponent {
   private readonly tagsService = inject(TagsService);
   private readonly dialog = inject(MatDialog);
   private readonly confirmDialog = inject(ConfirmDialogService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
 
@@ -428,7 +428,7 @@ export class ClientDetailComponent {
         .subscribe({
           next: checkDone,
           error: () => {
-            this.toast.showError('Не удалось добавить тег');
+            this.snackBar.open('Не удалось добавить тег', 'Close', { duration: 5000 });
             checkDone();
           },
         });
@@ -443,7 +443,7 @@ export class ClientDetailComponent {
       this.tagsService.detach(tag.id, EntityType.Client, c.id).subscribe({
         next: checkDone,
         error: () => {
-          this.toast.showError('Не удалось удалить тег');
+          this.snackBar.open('Не удалось удалить тег', 'Close', { duration: 5000 });
           checkDone();
         },
       });
@@ -465,11 +465,15 @@ export class ClientDetailComponent {
       next: (updatedValues) => {
         this.customFieldsData.set(updatedValues);
         this.customFieldsSaving.set(false);
-        this.toast.showSuccess('Дополнительные поля сохранены');
+        this.snackBar.open('Дополнительные поля сохранены', 'Close', { duration: 4000 });
       },
       error: (err) => {
         this.customFieldsSaving.set(false);
-        this.toast.showError(err.error?.message ?? 'Не удалось сохранить дополнительные поля');
+        this.snackBar.open(
+          err.error?.message ?? 'Не удалось сохранить дополнительные поля',
+          'Close',
+          { duration: 5000 },
+        );
       },
     });
   }
@@ -610,7 +614,7 @@ export class ClientDetailComponent {
             this.refreshContracts();
           },
           error: () => {
-            this.toast.showError('Не удалось расторгнуть договор');
+            this.snackBar.open('Не удалось расторгнуть договор', 'Close', { duration: 5000 });
           },
         });
       });

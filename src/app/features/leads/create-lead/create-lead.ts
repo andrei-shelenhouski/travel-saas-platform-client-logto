@@ -35,7 +35,7 @@ import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientResponseDto, CreateLeadDto, LeadResponseDto, OrgRole } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { formatClientSearchLabel } from '@app/shared/utils/client-display';
 
 import { atLeastOneContactValidator } from '../leads.validators';
@@ -117,7 +117,7 @@ export class CreateLeadComponent {
   private readonly meService = inject(MeService);
   private readonly permissionService = inject(PermissionService);
   private readonly router = inject(Router);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
 
   protected readonly form: CreateLeadForm = this.fb.nonNullable.group(
     {
@@ -304,7 +304,7 @@ export class CreateLeadComponent {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (created: LeadResponseDto) => {
-          this.toast.showSuccess('Лид создан');
+          this.snackBar.open('Лид создан', 'Close', { duration: 4000 });
           void this.router.navigate(['/app/leads', created.id]);
         },
         error: (err: HttpErrorResponse) => {

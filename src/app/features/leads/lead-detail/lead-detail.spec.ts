@@ -10,7 +10,7 @@ import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { LeadDetailComponent } from './lead-detail';
 import { LeadDetailRequestsSectionComponent } from './lead-detail-requests-section/lead-detail-requests-section';
@@ -91,11 +91,8 @@ describe('LeadDetailComponent', () => {
           },
         },
         {
-          provide: ToastService,
-          useValue: {
-            showSuccess: () => undefined,
-            showError: () => undefined,
-          },
+          provide: MatSnackBar,
+          useValue: { open: vi.fn() },
         },
       ],
     }).compileComponents();

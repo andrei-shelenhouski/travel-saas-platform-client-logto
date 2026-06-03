@@ -8,7 +8,6 @@ export { TagSelectorComponent } from './tag-selector.component';
 export { CommentComponent } from './comment.component';
 export { ConfirmDialogComponent } from './confirm-dialog.component';
 export type { ConfirmDialogData } from './confirm-dialog.component';
-export { ToastComponent } from './toast.component';
 export { StatusBadgeComponent } from './status-badge.component';
 export { BookingStatusChipComponent } from './booking-status-chip/booking-status-chip';
 export { LeadStatusChipComponent } from './lead-status-chip/lead-status-chip';

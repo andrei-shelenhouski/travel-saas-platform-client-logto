@@ -9,7 +9,7 @@ import { ClientsService } from '@app/services/clients.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { ClientType } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { CreateInvoiceComponent } from './create-invoice';
 
@@ -162,11 +162,8 @@ describe('CreateInvoiceComponent', () => {
           },
         },
         {
-          provide: ToastService,
-          useValue: {
-            showSuccess: vi.fn(),
-            showError: vi.fn(),
-          },
+          provide: MatSnackBar,
+          useValue: { open: vi.fn() },
         },
         {
           provide: ActivatedRoute,

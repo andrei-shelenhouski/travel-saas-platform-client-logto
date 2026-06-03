@@ -23,7 +23,7 @@ import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { OrgRole } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type {
   TourvisorIntegrationSettingsResponseDto,
@@ -61,7 +61,7 @@ export class TourvisorIntegrationCardComponent {
   private readonly permissions = inject(PermissionService);
   private readonly integrationService = inject(TourvisorIntegrationService);
   private readonly confirmDialog = inject(ConfirmDialogService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
 
   private readonly relativeTimeFormatter = new Intl.RelativeTimeFormat(this.locale, {
     numeric: 'auto',
@@ -224,8 +224,10 @@ export class TourvisorIntegrationCardComponent {
             authkey: '',
             defaultAgentId: normalized.defaultAgentId ?? '',
           });
-          this.toast.showSuccess(
+          this.snackBar.open(
             wasConnected ? 'Настройки TourVisor обновлены.' : 'TourVisor успешно подключён.',
+            'Close',
+            { duration: 4000 },
           );
         },
         error: (error: unknown) => {
@@ -279,7 +281,7 @@ export class TourvisorIntegrationCardComponent {
       .pipe(finalize(() => this.syncing.set(false)))
       .subscribe({
         next: () => {
-          this.toast.showSuccess('Синхронизация TourVisor запущена.');
+          this.snackBar.open('Синхронизация TourVisor запущена.', 'Close', { duration: 4000 });
           this.scheduleSettingsRefresh();
         },
         error: (error: unknown) => {
@@ -324,7 +326,7 @@ export class TourvisorIntegrationCardComponent {
           });
           this.connectionTestState.set(null);
           this.connectionTestMessage.set(null);
-          this.toast.showSuccess('TourVisor отключён.');
+          this.snackBar.open('TourVisor отключён.', 'Close', { duration: 4000 });
         },
         error: (error: unknown) => {
           this.inlineError.set(this.getErrorMessage(error, 'Не удалось отключить TourVisor.'));
@@ -369,7 +371,11 @@ export class TourvisorIntegrationCardComponent {
       },
       error: (error: unknown) => {
         this.agentOptions.set([]);
-        this.toast.showError(this.getErrorMessage(error, 'Не удалось загрузить список агентов.'));
+        this.snackBar.open(
+          this.getErrorMessage(error, 'Не удалось загрузить список агентов.'),
+          'Close',
+          { duration: 5000 },
+        );
       },
     });
   }

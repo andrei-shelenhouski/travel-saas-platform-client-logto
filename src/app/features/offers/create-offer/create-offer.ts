@@ -46,7 +46,7 @@ import {
   MAT_FORM_BUTTONS,
   MAT_ICONS,
 } from '@app/shared/material-imports';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type { CreateOfferDto, RequestResponseDto, UpdateOfferDto } from '@app/shared/models';
 type AccommodationFormGroup = FormGroup<{
@@ -119,7 +119,7 @@ export class CreateOfferComponent implements OnInit {
   private readonly organizationSettingsService = inject(OrganizationSettingsService);
   private readonly offersService = inject(OffersService);
   private readonly dialog = inject(MatDialog);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
   private readonly fb = inject(FormBuilder);
 
   readonly request = signal<RequestResponseDto | null>(null);
@@ -352,7 +352,7 @@ export class CreateOfferComponent implements OnInit {
     const requestId = this.requestId();
 
     if (!requestId) {
-      this.toast.showError('Сохраните черновик перед предпросмотром.');
+      this.snackBar.open('Сохраните черновик перед предпросмотром.', 'Close', { duration: 5000 });
 
       return;
     }
@@ -391,7 +391,7 @@ export class CreateOfferComponent implements OnInit {
           next: (created) => {
             this.createdDraftId.set(created.id);
             this.form.markAsPristine();
-            this.toast.showSuccess('Черновик предложения сохранён');
+            this.snackBar.open('Черновик предложения сохранён', 'Close', { duration: 4000 });
             this.openPdfPreviewDialog(created.id, created.number);
           },
           error: (err) => {
@@ -430,7 +430,7 @@ export class CreateOfferComponent implements OnInit {
       this.offersService.update(existingId, updateDto).subscribe({
         next: (updated) => {
           this.form.markAsPristine();
-          this.toast.showSuccess('Черновик предложения сохранён');
+          this.snackBar.open('Черновик предложения сохранён', 'Close', { duration: 4000 });
           this.router.navigate(['/app/offers', updated.id]);
         },
         error: (err) => {
@@ -444,7 +444,7 @@ export class CreateOfferComponent implements OnInit {
       this.offersService.create(dto).subscribe({
         next: (created) => {
           this.form.markAsPristine();
-          this.toast.showSuccess('Черновик предложения сохранён');
+          this.snackBar.open('Черновик предложения сохранён', 'Close', { duration: 4000 });
           this.router.navigate(['/app/offers', created.id]);
         },
         error: (err) => {

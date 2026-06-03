@@ -10,7 +10,7 @@ import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { CustomFieldEntityType } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { CustomFieldDefinitionDialogComponent } from './custom-field-definition-dialog/custom-field-definition-dialog';
 
@@ -44,7 +44,7 @@ type BooleanByEntity = Record<(typeof ENTITY_TABS)[number]['entityType'], boolea
 })
 export class CustomFieldsSettingsComponent {
   private readonly customFieldsService = inject(CustomFieldsService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
 
   protected readonly entityTabs = ENTITY_TABS;
@@ -143,11 +143,13 @@ export class CustomFieldsSettingsComponent {
         .createDefinition(result.payload as CreateCustomFieldDefinitionRequestDto)
         .subscribe({
           next: () => {
-            this.toast.showSuccess('Поле добавлено');
+            this.snackBar.open('Поле добавлено', 'Close', { duration: 4000 });
             this.loadDefinitions(entityType, true);
           },
           error: (error) =>
-            this.toast.showError(error.error?.message ?? 'Не удалось добавить поле'),
+            this.snackBar.open(error.error?.message ?? 'Не удалось добавить поле', 'Close', {
+              duration: 5000,
+            }),
         });
     });
   }
@@ -174,11 +176,13 @@ export class CustomFieldsSettingsComponent {
         .pipe(finalize(() => this.busyFieldId.set(null)))
         .subscribe({
           next: () => {
-            this.toast.showSuccess('Поле обновлено');
+            this.snackBar.open('Поле обновлено', 'Close', { duration: 4000 });
             this.loadDefinitions(entityType, true);
           },
           error: (error) =>
-            this.toast.showError(error.error?.message ?? 'Не удалось обновить поле'),
+            this.snackBar.open(error.error?.message ?? 'Не удалось обновить поле', 'Close', {
+              duration: 5000,
+            }),
         });
     });
   }
@@ -190,11 +194,13 @@ export class CustomFieldsSettingsComponent {
       .pipe(finalize(() => this.busyFieldId.set(null)))
       .subscribe({
         next: () => {
-          this.toast.showSuccess('Поле деактивировано');
+          this.snackBar.open('Поле деактивировано', 'Close', { duration: 4000 });
           this.loadDefinitions(this.selectedEntity(), true);
         },
         error: (error) =>
-          this.toast.showError(error.error?.message ?? 'Не удалось деактивировать поле'),
+          this.snackBar.open(error.error?.message ?? 'Не удалось деактивировать поле', 'Close', {
+            duration: 5000,
+          }),
       });
   }
 
@@ -225,11 +231,13 @@ export class CustomFieldsSettingsComponent {
       .pipe(finalize(() => this.reordering.set(false)))
       .subscribe({
         next: () => {
-          this.toast.showSuccess('Порядок сохранен');
+          this.snackBar.open('Порядок сохранен', 'Close', { duration: 4000 });
           this.loadDefinitions(entityType, true);
         },
         error: (error) =>
-          this.toast.showError(error.error?.message ?? 'Не удалось сохранить порядок'),
+          this.snackBar.open(error.error?.message ?? 'Не удалось сохранить порядок', 'Close', {
+            duration: 5000,
+          }),
       });
   }
 
@@ -259,7 +267,9 @@ export class CustomFieldsSettingsComponent {
           this.loadedByEntity.update((state) => ({ ...state, [entityType]: true }));
         },
         error: (error) => {
-          this.toast.showError(error.error?.message ?? 'Не удалось загрузить поля');
+          this.snackBar.open(error.error?.message ?? 'Не удалось загрузить поля', 'Close', {
+            duration: 5000,
+          });
         },
       });
   }

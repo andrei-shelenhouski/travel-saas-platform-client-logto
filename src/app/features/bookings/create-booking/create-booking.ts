@@ -34,7 +34,7 @@ import {
   MAT_FORM_BUTTONS,
 } from '@app/shared/material-imports';
 import { BOOKING_STATUS_OPTIONS, BookingStatus, PersonDocumentType } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type {
   BookingStatus as BookingStatusType,
@@ -92,7 +92,7 @@ export class CreateBookingComponent {
   private readonly bookingsService = inject(BookingsService);
   private readonly clientsService = inject(ClientsService);
   private readonly personsService = inject(PersonsService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
 
   protected readonly loadingClients = signal(false);
   protected readonly loadingTravelerContext = signal(false);
@@ -282,7 +282,7 @@ export class CreateBookingComponent {
     const clientPerson = this.clientPerson();
 
     if (!clientPerson) {
-      this.toast.showError('Сначала выберите клиента');
+      this.snackBar.open('Сначала выберите клиента', 'Close', { duration: 5000 });
 
       return;
     }
@@ -329,7 +329,7 @@ export class CreateBookingComponent {
     const clientPersonId = this.clientPerson()?.id;
 
     if (clientPersonId === personId) {
-      this.toast.showError('Нельзя удалить клиента из списка туристов');
+      this.snackBar.open('Нельзя удалить клиента из списка туристов', 'Close', { duration: 5000 });
 
       return;
     }
@@ -471,7 +471,7 @@ export class CreateBookingComponent {
     const attachedTravelers = this.attachedTravelersCount();
 
     if (attachedTravelers === 0) {
-      this.toast.showError('Добавьте хотя бы одного туриста');
+      this.snackBar.open('Добавьте хотя бы одного туриста', 'Close', { duration: 5000 });
 
       return;
     }
@@ -511,11 +511,13 @@ export class CreateBookingComponent {
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({
         next: (booking) => {
-          this.toast.showSuccess('Бронирование создано');
+          this.snackBar.open('Бронирование создано', 'Close', { duration: 4000 });
           void this.router.navigate(['/app/bookings', booking.id]);
         },
         error: (error) => {
-          this.toast.showError(error?.error?.message ?? 'Не удалось создать бронирование');
+          this.snackBar.open(error?.error?.message ?? 'Не удалось создать бронирование', 'Close', {
+            duration: 5000,
+          });
         },
       });
   }
@@ -582,7 +584,7 @@ export class CreateBookingComponent {
           ]);
         },
         error: () => {
-          this.toast.showError('Не удалось загрузить туристов клиента');
+          this.snackBar.open('Не удалось загрузить туристов клиента', 'Close', { duration: 5000 });
         },
       });
   }

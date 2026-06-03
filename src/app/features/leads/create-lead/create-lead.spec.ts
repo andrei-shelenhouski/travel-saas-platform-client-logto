@@ -11,7 +11,7 @@ import { MeService } from '@app/services/me.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { ClientType } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { CreateLeadComponent } from './create-lead';
 
@@ -23,8 +23,8 @@ describe('CreateLeadComponent', () => {
   let leadsServiceMock: { create: ReturnType<typeof vi.fn> };
   let routerNavigateSpy: ReturnType<typeof vi.spyOn>;
 
-  const toastMock = {
-    showSuccess: vi.fn(),
+  const snackBarMock = {
+    open: vi.fn(),
   };
 
   const meServiceMock = {
@@ -60,7 +60,7 @@ describe('CreateLeadComponent', () => {
         { provide: MeService, useValue: meServiceMock },
         { provide: PermissionService, useValue: permissionServiceMock },
         { provide: OrganizationMembersService, useValue: membersServiceMock },
-        { provide: ToastService, useValue: toastMock },
+        { provide: MatSnackBar, useValue: snackBarMock },
       ],
     }).compileComponents();
 
@@ -180,7 +180,7 @@ describe('CreateLeadComponent', () => {
       }),
     );
     expect(routerNavigateSpy).toHaveBeenCalledWith(['/app/leads', 'lead-777']);
-    expect(toastMock.showSuccess).toHaveBeenCalled();
+    expect(snackBarMock.open).toHaveBeenCalledWith('Лид создан', 'Close', { duration: 4000 });
   });
 
   it('sets field server errors from 422 response', () => {

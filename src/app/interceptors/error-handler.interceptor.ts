@@ -1,12 +1,12 @@
 import { HttpEvent, HttpHandlerFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
 import { catchError, Observable, throwError } from 'rxjs';
 
 import { MeService } from '@app/services/me.service';
 import { OrganizationStateService } from '@app/services/organization-state.service';
-import { ToastService } from '@app/shared/services/toast.service';
 
 const GENERIC_ERROR_MESSAGE = 'Something went wrong. Please try again.';
 
@@ -17,7 +17,7 @@ export function errorHandlerInterceptor(
   const orgState = inject(OrganizationStateService);
   const meService = inject(MeService);
   const router = inject(Router);
-  const toast = inject(ToastService);
+  const snackBar = inject(MatSnackBar);
 
   return next(req).pipe(
     catchError((err) => {
@@ -51,8 +51,10 @@ export function errorHandlerInterceptor(
       // Global user feedback for server/network errors (5xx, 0, undefined)
       if (status === undefined || status === null || status >= 500) {
         const message = err.error?.message ?? err.message;
-        toast.showError(
+        snackBar.open(
           message && String(message).trim() ? String(message) : GENERIC_ERROR_MESSAGE,
+          'Close',
+          { duration: 5000 },
         );
       }
 

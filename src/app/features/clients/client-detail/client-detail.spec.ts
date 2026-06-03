@@ -11,7 +11,7 @@ import { ContractsService } from '@app/services/contracts.service';
 import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { TagsService } from '@app/services/tags.service';
 import { ClientType } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ClientDetailComponent } from './client-detail';
 
@@ -48,9 +48,8 @@ describe('ClientDetailComponent', () => {
   let mockDialog: {
     open: ReturnType<typeof vi.fn>;
   };
-  let mockToastService: {
-    showError: ReturnType<typeof vi.fn>;
-    showSuccess: ReturnType<typeof vi.fn>;
+  let mockSnackBar: {
+    open: ReturnType<typeof vi.fn>;
   };
   let mockRouter: {
     navigate: ReturnType<typeof vi.fn>;
@@ -116,9 +115,8 @@ describe('ClientDetailComponent', () => {
       })),
     };
 
-    mockToastService = {
-      showError: vi.fn(),
-      showSuccess: vi.fn(),
+    mockSnackBar = {
+      open: vi.fn(),
     };
 
     mockRouter = {
@@ -146,7 +144,7 @@ describe('ClientDetailComponent', () => {
             hasPermission: vi.fn(() => true),
           },
         },
-        { provide: ToastService, useValue: mockToastService },
+        { provide: MatSnackBar, useValue: mockSnackBar },
         { provide: MatDialog, useValue: mockDialog },
         { provide: Router, useValue: mockRouter },
         {

@@ -11,7 +11,7 @@ import { OrganizationSettingsService } from '@app/services/organization-settings
 import { PermissionService } from '@app/services/permission.service';
 import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { BookingStatus, ClientType } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   addDaysToIsoDate,
   normalizeInvoiceCurrency,
@@ -58,7 +58,7 @@ export class InvoiceListMiniComponent {
   private readonly invoicesService = inject(InvoicesService);
   private readonly organizationSettingsService = inject(OrganizationSettingsService);
   private readonly permissions = inject(PermissionService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
 
   readonly invoices = input<InvoiceResponseDto[]>([]);
   readonly booking = input.required<BookingResponseDto>();
@@ -133,7 +133,9 @@ export class InvoiceListMiniComponent {
             return;
           }
 
-          this.toast.showError('Не удалось создать счет из бронирования');
+          this.snackBar.open('Не удалось создать счет из бронирования', 'Close', {
+            duration: 5000,
+          });
         },
       });
   }
