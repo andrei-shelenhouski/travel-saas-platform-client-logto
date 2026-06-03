@@ -33,6 +33,7 @@ import { MeService } from '@app/services/me.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageContentComponent } from '@app/shared/components';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientResponseDto, CreateLeadDto, LeadResponseDto, OrgRole } from '@app/shared/models';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -104,6 +105,7 @@ function isFieldErrorMap(value: unknown): value is FieldErrorMap {
     MatProgressSpinnerModule,
     ...MAT_FORM_BUTTONS,
     PageHeading,
+    PageContentComponent,
   ],
   templateUrl: './create-lead.html',
   styleUrl: './create-lead.scss',

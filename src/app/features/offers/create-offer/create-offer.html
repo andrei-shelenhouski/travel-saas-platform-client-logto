@@ -2,7 +2,7 @@
   <a mat-button routerLink="/app/offers">Отмена</a>
 </app-page-heading>
 
-<div class="p-4">
+<app-page-content>
   @if (requestLoading()) {
     <div class="flex justify-center py-12">
       <div
@@ -15,12 +15,8 @@
       <p class="text-sm text-red-600">{{ error() }}</p>
     }
 
-    <form class="space-y-6" [formGroup]="form" (ngSubmit)="onSubmit()">
-      <section class="rounded-lg border border-gray-200 bg-white p-4">
-        <h2 class="text-base font-semibold text-gray-900">
-          Детали поездки
-        </h2>
-
+    <form class="space-y-4" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <app-form-section title="Детали поездки">
         @if (request(); as req) {
           <div
             class="mt-3 flex flex-wrap items-center gap-2 rounded-md border border-sky-200 bg-sky-50 px-3 py-2 text-sm text-sky-900"
@@ -119,14 +115,11 @@
             </mat-button-toggle-group>
           </div>
         </div>
-      </section>
+      </app-form-section>
 
-      <section
-        class="rounded-lg border border-gray-200 bg-white p-4"
-        formArrayName="accommodations"
-      >
-        <div class="flex items-center justify-between">
-          <h2 class="text-base font-semibold text-gray-900">Размещение</h2>
+      <app-form-section formArrayName="accommodations" title="Размещение">
+        <div class="flex items-center justify-between mt-1">
+          <span></span>
           <button mat-stroked-button type="button" (click)="addAccommodation()">
             Добавить размещение
           </button>
@@ -246,11 +239,11 @@
             </div>
           }
         </div>
-      </section>
+      </app-form-section>
 
-      <section class="rounded-lg border border-gray-200 bg-white p-4" formArrayName="services">
-        <div class="flex items-center justify-between">
-          <h2 class="text-base font-semibold text-gray-900">Услуги</h2>
+      <app-form-section formArrayName="services" title="Услуги">
+        <div class="flex items-center justify-between mt-1">
+          <span></span>
           <button mat-stroked-button type="button" (click)="addService()">Добавить услугу</button>
         </div>
 
@@ -316,10 +309,9 @@
             </div>
           }
         </div>
-      </section>
+      </app-form-section>
 
-      <section class="rounded-lg border border-gray-200 bg-white p-4">
-        <h2 class="text-base font-semibold text-gray-900">Итоговая стоимость</h2>
+      <app-form-section title="Итоговая стоимость">
         <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-4">
           <div>
             <label
@@ -364,14 +356,14 @@
           Скидка: {{ pricingSummary().discountAmount | number: '1.2-2' }} | Скидка
           %: {{ pricingSummary().discountPct | number: '1.2-2' }}%
         </p>
-      </section>
+      </app-form-section>
 
-      <section class="rounded-lg border border-gray-200 bg-white p-4">
+      <app-form-section title="Внутренние заметки">
         <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
           <mat-label>Внутренние заметки</mat-label>
           <textarea formControlName="internalNotes" matInput rows="4"></textarea>
         </mat-form-field>
-      </section>
+      </app-form-section>
 
       <div class="flex flex-wrap gap-3">
         <button
@@ -396,4 +388,4 @@
       </div>
     </form>
   }
-</div>
+</app-page-content>

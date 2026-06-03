@@ -1,20 +1,11 @@
 <div class="request-detail-page">
-  @if (loading()) {
-    <div class="flex justify-center py-12">
-      <div
-        aria-hidden="true"
-        class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-      ></div>
-    </div>
-  } @else if (hasError()) {
-    <section class="m-4 rounded-lg border border-red-200 bg-red-50 p-6">
-      <h2 class="text-lg font-semibold text-red-900">Не удалось открыть запрос</h2>
-      <p class="mt-2 text-sm text-red-800">{{ loadErrorMessage() }}</p>
-      <button class="mt-4" mat-flat-button routerLink="/app/requests" type="button">
-        Назад к запросам
-      </button>
-    </section>
-  } @else {
+  <app-loading-state
+    errorBackLabel="Назад к запросам"
+    errorBackLink="/app/requests"
+    errorTitle="Не удалось открыть запрос"
+    [error]="hasError() ? loadErrorMessage() : null"
+    [loading]="loading()"
+  >
     @let r = request();
     @if (r) {
       <app-page-heading
@@ -32,13 +23,9 @@
         </button>
       </app-page-heading>
 
-      <div class="m-4">
+      <app-page-content>
         <div class="request-grid">
-          <section class="request-card">
-            <div class="request-card-header">
-              <h2 class="request-card-title">Детали</h2>
-            </div>
-
+          <app-detail-section title="Детали">
             <dl class="request-data-list">
               <div class="request-data-row">
                 <dt>Направление</dt>
@@ -87,11 +74,11 @@
                 <dd class="font-mono text-xs text-gray-600">{{ r.managerId }}</dd>
               </div>
             </dl>
-          </section>
+          </app-detail-section>
         </div>
-      </div>
+      </app-page-content>
     } @else {
       <p class="m-4 text-sm text-gray-500">Запрос не найден.</p>
     }
-  }
+  </app-loading-state>
 </div>

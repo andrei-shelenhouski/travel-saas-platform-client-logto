@@ -14,3 +14,7 @@ export { LeadStatusChipComponent } from './lead-status-chip/lead-status-chip';
 export { OfferStatusChipComponent } from './offer-status-chip/offer-status-chip';
 export { RequestStatusChipComponent } from './request-status-chip/request-status-chip';
 export { CustomFieldsSectionComponent } from './custom-fields-section/custom-fields-section';
+export { PageContentComponent } from './page-content/page-content';
+export { LoadingStateComponent } from './loading-state/loading-state';
+export { DetailSectionComponent } from './detail-section/detail-section';
+export { FormSectionComponent } from './form-section/form-section';

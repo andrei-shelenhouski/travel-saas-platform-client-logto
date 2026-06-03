@@ -29,7 +29,9 @@ import {
   BookingStatusChipComponent,
   CustomFieldsSectionComponent,
   LeadStatusChipComponent,
+  LoadingStateComponent,
   OfferStatusChipComponent,
+  PageContentComponent,
   RequestStatusChipComponent,
 } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
@@ -98,6 +100,8 @@ type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices
     ...MAT_MENU,
     ...MAT_TABS,
     PageHeading,
+    LoadingStateComponent,
+    PageContentComponent,
     ClientProfileCardComponent,
     FamilySectionComponent,
     TravelerProfileSectionComponent,

@@ -7,6 +7,11 @@ import { map } from 'rxjs/operators';
 
 import { RequestsService } from '@app/services/requests.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import {
+  DetailSectionComponent,
+  LoadingStateComponent,
+  PageContentComponent,
+} from '@app/shared/components';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 import type { RequestResponseDto } from '@app/shared/models';
@@ -20,7 +25,14 @@ type LoadError = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-request-detail',
-  imports: [RouterLink, ...MAT_BUTTONS, PageHeading],
+  imports: [
+    RouterLink,
+    ...MAT_BUTTONS,
+    PageHeading,
+    LoadingStateComponent,
+    PageContentComponent,
+    DetailSectionComponent,
+  ],
   templateUrl: './request-detail.html',
   styleUrl: './request-detail.scss',
 })

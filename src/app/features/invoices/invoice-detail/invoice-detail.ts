@@ -25,6 +25,11 @@ import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { ActivityTimelineComponent } from '@app/shared/components/activity-timeline.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import {
+  DetailSectionComponent,
+  LoadingStateComponent,
+  PageContentComponent,
+} from '@app/shared/components';
 import { MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { EntityType } from '@app/shared/models';
@@ -78,6 +83,9 @@ const STATUS_LABELS: Record<string, string> = {
     DecimalPipe,
     ActivityTimelineComponent,
     PageHeading,
+    LoadingStateComponent,
+    PageContentComponent,
+    DetailSectionComponent,
     ...MAT_FORM_BUTTONS,
     ...MAT_ICONS,
   ],

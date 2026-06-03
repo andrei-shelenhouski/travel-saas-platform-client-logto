@@ -1,20 +1,11 @@
 <div class="offer-detail-page">
-  @if (loading()) {
-    <div class="flex justify-center py-12">
-      <div
-        aria-hidden="true"
-        class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-      ></div>
-    </div>
-  } @else if (hasError()) {
-    <section class="rounded-lg border border-red-200 bg-red-50 p-6">
-      <h2 class="text-lg font-semibold text-red-900">Не удалось открыть предложение</h2>
-      <p class="mt-2 text-sm text-red-800">{{ loadErrorMessage() }}</p>
-      <button class="mt-4" mat-flat-button type="button" (click)="onBackClick()">
-        Назад к предложениям
-      </button>
-    </section>
-  } @else {
+  <app-loading-state
+    errorBackLabel="Назад к предложениям"
+    errorBackLink="/app/offers"
+    errorTitle="Не удалось открыть предложение"
+    [error]="hasError() ? loadErrorMessage() : null"
+    [loading]="loading()"
+  >
     @let o = offer();
     @if (o) {
       <app-page-heading [showBackButton]="true" [subtitle]="pageSubtitle" [title]="pageTitle()">
@@ -38,7 +29,7 @@
         }
       </app-page-heading>
 
-      <div class="m-4">
+      <app-page-content>
         @if (hasVersionHistory() || request.value()) {
           <section class="offer-header-card">
             @if (hasVersionHistory()) {
@@ -70,11 +61,7 @@
         }
 
         <div class="offer-grid">
-          <section class="offer-card">
-            <div class="offer-card-header">
-              <h2 class="offer-card-title">Детали предложения</h2>
-            </div>
-
+          <app-detail-section title="Детали предложения">
             <dl class="offer-data-list">
               <div class="offer-data-row">
                 <dt>Язык</dt>
@@ -108,13 +95,9 @@
                 <dd>{{ o.currency || '—' }}</dd>
               </div>
             </dl>
-          </section>
+          </app-detail-section>
 
-          <section class="offer-card offer-table-card">
-            <div class="offer-card-header">
-              <h2 class="offer-card-title">Размещение</h2>
-            </div>
-
+          <app-detail-section title="Размещение">
             <div class="overflow-x-auto">
               <mat-table class="w-full" [dataSource]="o.accommodations ?? []">
                 <ng-container matColumnDef="hotel">
@@ -162,14 +145,10 @@
                 </ng-container>
               </mat-table>
             </div>
-          </section>
+          </app-detail-section>
 
           @if ((o.services?.length ?? 0) > 0) {
-            <section class="offer-card offer-table-card">
-              <div class="offer-card-header">
-                <h2 class="offer-card-title">Услуги</h2>
-              </div>
-
+            <app-detail-section title="Услуги">
               <div class="overflow-x-auto">
                 <mat-table class="w-full" [dataSource]="o.services ?? []">
                   <ng-container matColumnDef="serviceType">
@@ -201,14 +180,10 @@
                   <mat-row *matRowDef="let row; columns: serviceColumns" />
                 </mat-table>
               </div>
-            </section>
+            </app-detail-section>
           }
 
-          <section class="offer-card">
-            <div class="offer-card-header">
-              <h2 class="offer-card-title">Стоимость</h2>
-            </div>
-
+          <app-detail-section title="Стоимость">
             <dl class="offer-data-list">
               <div class="offer-data-row">
                 <dt>Сумма без скидки</dt>
@@ -225,24 +200,21 @@
                 </dd>
               </div>
             </dl>
-          </section>
+          </app-detail-section>
 
           @if (canSeeInternalNotes() && o.internalNotes) {
-            <section class="offer-card">
-              <div class="offer-card-header">
-                <h2 class="offer-card-title">Внутренние заметки</h2>
-              </div>
+            <app-detail-section title="Внутренние заметки">
               <p class="mt-2 whitespace-pre-line text-sm text-gray-700">{{ o.internalNotes }}</p>
-            </section>
+            </app-detail-section>
           }
 
           <section class="offer-card">
             <app-offer-timeline [offer]="o" />
           </section>
         </div>
-      </div>
+      </app-page-content>
     } @else {
       <p class="text-gray-500">Предложение не найдено.</p>
     }
-  }
+  </app-loading-state>
 </div>

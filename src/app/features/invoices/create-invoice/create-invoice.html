@@ -8,7 +8,7 @@
   </app-page-heading>
 }
 
-<div class="space-y-6 p-4">
+<app-page-content>
   @if (error()) {
     <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
   }
@@ -22,12 +22,8 @@
     </p>
   }
 
-  <form class="space-y-6" [formGroup]="form" (ngSubmit)="onSubmit()">
-    <section class="rounded-lg border border-gray-200 bg-white p-4">
-      <h2 class="text-base font-semibold text-gray-900">
-        Заголовок счёта
-      </h2>
-
+  <form class="space-y-4" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <app-form-section title="Заголовок счёта">
       <div class="mt-4">
         <app-invoice-client-selector
           [clientIdHasRequiredError]="form.controls.clientId.hasError('required')"
@@ -83,7 +79,7 @@
           Срок оплаты должен быть равен или позже даты счёта.
         </p>
       }
-    </section>
+    </app-form-section>
 
     <section class="rounded-lg border border-gray-200 bg-white p-4">
       <app-invoice-line-items-form
@@ -99,27 +95,20 @@
       />
     </section>
 
-    <section class="rounded-lg border border-gray-200 bg-white p-4">
-      <h2 class="text-base font-semibold text-gray-900">
-        Сводка
-      </h2>
+    <app-form-section title="Сводка">
       <app-invoice-totals-display
         [currency]="form.controls.currency.value"
         [isB2bMode]="isB2bMode()"
         [totals]="pricingSummary()"
       />
-    </section>
+    </app-form-section>
 
-    <section class="rounded-lg border border-gray-200 bg-white p-4">
-      <h2 class="text-base font-semibold text-gray-900">
-        Внутренние заметки
-      </h2>
-
+    <app-form-section title="Внутренние заметки">
       <mat-form-field appearance="outline" class="mt-3 w-full" subscriptSizing="dynamic">
         <mat-label>Заметки</mat-label>
         <textarea formControlName="internalNotes" matInput rows="4"></textarea>
       </mat-form-field>
-    </section>
+    </app-form-section>
 
     <div class="flex flex-wrap gap-3">
       <button
@@ -145,4 +134,4 @@
       </button>
     </div>
   </form>
-</div>
+</app-page-content>

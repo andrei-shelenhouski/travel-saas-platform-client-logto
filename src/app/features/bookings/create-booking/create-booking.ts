@@ -27,6 +27,7 @@ import { BookingsService } from '@app/services/bookings.service';
 import { ClientsService } from '@app/services/clients.service';
 import { PersonsService } from '@app/services/persons.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { FormSectionComponent, PageContentComponent } from '@app/shared/components';
 import {
   MAT_AUTOCOMPLETE,
   MAT_BUTTONS,
@@ -76,6 +77,8 @@ type InlineTraveler = {
     ReactiveFormsModule,
     RouterLink,
     PageHeading,
+    PageContentComponent,
+    FormSectionComponent,
     ...MAT_FORM_BUTTONS,
     ...MAT_BUTTONS,
     ...MAT_AUTOCOMPLETE,
