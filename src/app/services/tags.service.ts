@@ -4,6 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+import { ApiErrorHandlerService } from '@app/shared/services/api-error-handler.service';
 
 import type {
   AttachTagDto,
@@ -22,9 +23,10 @@ const TAGS_URL = `${environment.baseUrl}/api/tags`;
 @Injectable({ providedIn: 'root' })
 export class TagsService {
   private readonly http = inject(HttpClient);
+  private readonly errorHandler = inject(ApiErrorHandlerService);
 
   create(dto: CreateTagDto): Observable<TagResponseDto> {
-    return this.http.post<TagResponseDto>(TAGS_URL, dto);
+    return this.http.post<TagResponseDto>(TAGS_URL, dto).pipe(this.errorHandler.catch());
   }
 
   findAll(params?: { entityType?: EntityType; entityId?: string }): Observable<TagResponseDto[]> {
@@ -38,24 +40,27 @@ export class TagsService {
       httpParams = httpParams.set('entityId', params.entityId);
     }
 
-    return this.http
-      .get<PaginatedTagResponseDto>(TAGS_URL, { params: httpParams })
-      .pipe(map((res) => res.items));
+    return this.http.get<PaginatedTagResponseDto>(TAGS_URL, { params: httpParams }).pipe(
+      this.errorHandler.catch(),
+      map((res) => res.items),
+    );
   }
 
   findById(id: string): Observable<TagResponseDto> {
-    return this.http.get<TagResponseDto>(`${TAGS_URL}/${id}`);
+    return this.http.get<TagResponseDto>(`${TAGS_URL}/${id}`).pipe(this.errorHandler.catch());
   }
 
   delete(id: string): Observable<void> {
-    return this.http.delete<void>(`${TAGS_URL}/${id}`);
+    return this.http.delete<void>(`${TAGS_URL}/${id}`).pipe(this.errorHandler.catch());
   }
 
   attach(tagId: string, dto: AttachTagDto): Observable<void> {
-    return this.http.post<void>(`${TAGS_URL}/${tagId}/attach`, dto);
+    return this.http.post<void>(`${TAGS_URL}/${tagId}/attach`, dto).pipe(this.errorHandler.catch());
   }
 
   detach(tagId: string, entityType: string, entityId: string): Observable<void> {
-    return this.http.delete<void>(`${TAGS_URL}/${tagId}/attach/${entityType}/${entityId}`);
+    return this.http
+      .delete<void>(`${TAGS_URL}/${tagId}/attach/${entityType}/${entityId}`)
+      .pipe(this.errorHandler.catch());
   }
 }

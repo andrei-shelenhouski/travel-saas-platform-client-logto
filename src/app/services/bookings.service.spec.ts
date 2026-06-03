@@ -4,6 +4,7 @@ import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 
 import { environment } from '@environments/environment';
+import { ApiErrorHandlerService } from '@app/shared/services/api-error-handler.service';
 
 import { BookingsService } from './bookings.service';
 
@@ -29,10 +30,8 @@ describe('BookingsService', () => {
     TestBed.configureTestingModule({
       providers: [
         BookingsService,
-        {
-          provide: HttpClient,
-          useValue: httpClient,
-        },
+        { provide: HttpClient, useValue: httpClient },
+        { provide: ApiErrorHandlerService, useValue: { catch: () => (source: unknown) => source } },
       ],
     });
 

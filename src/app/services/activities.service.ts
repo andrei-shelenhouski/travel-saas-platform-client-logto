@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+import { ApiErrorHandlerService } from '@app/shared/services/api-error-handler.service';
 import type {
   ActivityListResponseDto,
   ActivityResponseDto,
@@ -19,9 +20,10 @@ const ACTIVITIES_URL = `${environment.baseUrl}/api/activities`;
 @Injectable({ providedIn: 'root' })
 export class ActivitiesService {
   private readonly http = inject(HttpClient);
+  private readonly errorHandler = inject(ApiErrorHandlerService);
 
   create(dto: CreateActivityDto): Observable<ActivityResponseDto> {
-    return this.http.post<ActivityResponseDto>(ACTIVITIES_URL, dto);
+    return this.http.post<ActivityResponseDto>(ACTIVITIES_URL, dto).pipe(this.errorHandler.catch());
   }
 
   findByEntity(params: {
@@ -42,12 +44,16 @@ export class ActivitiesService {
       httpParams = httpParams.set('limit', params.limit);
     }
 
-    return this.http.get<ActivityListResponseDto>(ACTIVITIES_URL, {
-      params: httpParams,
-    });
+    return this.http
+      .get<ActivityListResponseDto>(ACTIVITIES_URL, {
+        params: httpParams,
+      })
+      .pipe(this.errorHandler.catch());
   }
 
   findById(id: string): Observable<ActivityResponseDto> {
-    return this.http.get<ActivityResponseDto>(`${ACTIVITIES_URL}/${id}`);
+    return this.http
+      .get<ActivityResponseDto>(`${ACTIVITIES_URL}/${id}`)
+      .pipe(this.errorHandler.catch());
   }
 }

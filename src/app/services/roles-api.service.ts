@@ -4,6 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+import { ApiErrorHandlerService } from '@app/shared/services/api-error-handler.service';
 
 import type {
   CreateRoleRequestDto,
@@ -24,25 +25,30 @@ const PERMISSIONS_URL = `${environment.baseUrl}/api/permissions`;
 @Injectable({ providedIn: 'root' })
 export class RolesApiService {
   private readonly http = inject(HttpClient);
+  private readonly errorHandler = inject(ApiErrorHandlerService);
 
   /** GET /api/roles. */
   listRoles(): Observable<RoleSummaryResponseDto[]> {
-    return this.http.get<RoleSummaryResponseDto[]>(ROLES_URL);
+    return this.http.get<RoleSummaryResponseDto[]>(ROLES_URL).pipe(this.errorHandler.catch());
   }
 
   /** GET /api/roles/{id}. */
   getRole(id: string): Observable<RoleDetailResponseDto> {
-    return this.http.get<RoleDetailResponseDto>(`${ROLES_URL}/${id}`);
+    return this.http
+      .get<RoleDetailResponseDto>(`${ROLES_URL}/${id}`)
+      .pipe(this.errorHandler.catch());
   }
 
   /** POST /api/roles. */
   createRole(dto: CreateRoleRequestDto): Observable<RoleDetailResponseDto> {
-    return this.http.post<RoleDetailResponseDto>(ROLES_URL, dto);
+    return this.http.post<RoleDetailResponseDto>(ROLES_URL, dto).pipe(this.errorHandler.catch());
   }
 
   /** PUT /api/roles/{id}. */
   updateRole(id: string, dto: UpdateRoleRequestDto): Observable<RoleDetailResponseDto> {
-    return this.http.put<RoleDetailResponseDto>(`${ROLES_URL}/${id}`, dto);
+    return this.http
+      .put<RoleDetailResponseDto>(`${ROLES_URL}/${id}`, dto)
+      .pipe(this.errorHandler.catch());
   }
 
   /** PUT /api/roles/{id}/permissions. */
@@ -50,16 +56,20 @@ export class RolesApiService {
     id: string,
     dto: ReplacePermissionsRequestDto,
   ): Observable<RoleDetailResponseDto> {
-    return this.http.put<RoleDetailResponseDto>(`${ROLES_URL}/${id}/permissions`, dto);
+    return this.http
+      .put<RoleDetailResponseDto>(`${ROLES_URL}/${id}/permissions`, dto)
+      .pipe(this.errorHandler.catch());
   }
 
   /** DELETE /api/roles/{id}. */
   deleteRole(id: string): Observable<void> {
-    return this.http.delete<void>(`${ROLES_URL}/${id}`);
+    return this.http.delete<void>(`${ROLES_URL}/${id}`).pipe(this.errorHandler.catch());
   }
 
   /** GET /api/permissions. */
   listPermissions(): Observable<PermissionGroupResponseDto[]> {
-    return this.http.get<PermissionGroupResponseDto[]>(PERMISSIONS_URL);
+    return this.http
+      .get<PermissionGroupResponseDto[]>(PERMISSIONS_URL)
+      .pipe(this.errorHandler.catch());
   }
 }

@@ -3,6 +3,8 @@ import { TestBed } from '@angular/core/testing';
 
 import { of } from 'rxjs';
 
+import { ApiErrorHandlerService } from '@app/shared/services/api-error-handler.service';
+
 import { LeadsService } from './leads.service';
 
 describe('LeadsService', () => {
@@ -27,10 +29,8 @@ describe('LeadsService', () => {
     TestBed.configureTestingModule({
       providers: [
         LeadsService,
-        {
-          provide: HttpClient,
-          useValue: httpClient,
-        },
+        { provide: HttpClient, useValue: httpClient },
+        { provide: ApiErrorHandlerService, useValue: { catch: () => (source: unknown) => source } },
       ],
     });
 

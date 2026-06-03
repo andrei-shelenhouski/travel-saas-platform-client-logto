@@ -4,6 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+import { ApiErrorHandlerService } from '@app/shared/services/api-error-handler.service';
 import { HttpParamsBuilder } from '@app/shared/utils/http-params.builder';
 
 import type {
@@ -28,6 +29,7 @@ const LEADS_STATS_URL = `${environment.baseUrl}/api/leads/stats`;
 @Injectable({ providedIn: 'root' })
 export class LeadsService {
   private readonly http = inject(HttpClient);
+  private readonly errorHandler = inject(ApiErrorHandlerService);
 
   getList(params?: {
     page?: number;
@@ -54,50 +56,66 @@ export class LeadsService {
       .set('includeDeleted', params?.includeDeleted === true ? 'true' : null)
       .build();
 
-    return this.http.get<PaginatedLeadResponseDto>(LEADS_URL, { params: httpParams });
+    return this.http
+      .get<PaginatedLeadResponseDto>(LEADS_URL, { params: httpParams })
+      .pipe(this.errorHandler.catch());
   }
 
   getStatistics(): Observable<Record<string, number>> {
-    return this.http.get<Record<string, number>>(LEADS_STATS_URL);
+    return this.http.get<Record<string, number>>(LEADS_STATS_URL).pipe(this.errorHandler.catch());
   }
 
   getById(id: string): Observable<LeadResponseDto> {
-    return this.http.get<LeadResponseDto>(`${LEADS_URL}/${id}`);
+    return this.http.get<LeadResponseDto>(`${LEADS_URL}/${id}`).pipe(this.errorHandler.catch());
   }
 
   create(dto: CreateLeadDto): Observable<LeadResponseDto> {
-    return this.http.post<LeadResponseDto>(LEADS_URL, dto);
+    return this.http.post<LeadResponseDto>(LEADS_URL, dto).pipe(this.errorHandler.catch());
   }
 
   update(id: string, dto: UpdateLeadDto): Observable<LeadResponseDto> {
-    return this.http.put<LeadResponseDto>(`${LEADS_URL}/${id}`, dto);
+    return this.http
+      .put<LeadResponseDto>(`${LEADS_URL}/${id}`, dto)
+      .pipe(this.errorHandler.catch());
   }
 
   updateStatus(id: string, dto: UpdateLeadStatusDto): Observable<LeadResponseDto> {
-    return this.http.put<LeadResponseDto>(`${LEADS_URL}/${id}/status`, dto);
+    return this.http
+      .put<LeadResponseDto>(`${LEADS_URL}/${id}/status`, dto)
+      .pipe(this.errorHandler.catch());
   }
 
   assign(id: string, dto: AssignLeadDto): Observable<LeadResponseDto> {
-    return this.http.patch<LeadResponseDto>(`${LEADS_URL}/${id}/assign`, dto);
+    return this.http
+      .patch<LeadResponseDto>(`${LEADS_URL}/${id}/assign`, dto)
+      .pipe(this.errorHandler.catch());
   }
 
   softDelete(id: string): Observable<DeleteLeadResponseDto> {
-    return this.http.delete<DeleteLeadResponseDto>(`${LEADS_URL}/${id}`);
+    return this.http
+      .delete<DeleteLeadResponseDto>(`${LEADS_URL}/${id}`)
+      .pipe(this.errorHandler.catch());
   }
 
   convertToClient(id: string): Observable<LeadResponseDto> {
-    return this.http.post<LeadResponseDto>(`${LEADS_URL}/${id}/convert-to-client`, {});
+    return this.http
+      .post<LeadResponseDto>(`${LEADS_URL}/${id}/convert-to-client`, {})
+      .pipe(this.errorHandler.catch());
   }
 
   linkClient(id: string, dto: LinkLeadClientDto): Observable<LeadResponseDto> {
-    return this.http.patch<LeadResponseDto>(`${LEADS_URL}/${id}/client`, dto);
+    return this.http
+      .patch<LeadResponseDto>(`${LEADS_URL}/${id}/client`, dto)
+      .pipe(this.errorHandler.catch());
   }
 
   promoteToClient(
     id: string,
     dto: PromoteLeadToClientDto,
   ): Observable<PromoteLeadToClientResponseDto> {
-    return this.http.post<PromoteLeadToClientResponseDto>(`${LEADS_URL}/${id}/promote-client`, dto);
+    return this.http
+      .post<PromoteLeadToClientResponseDto>(`${LEADS_URL}/${id}/promote-client`, dto)
+      .pipe(this.errorHandler.catch());
   }
 
   /** GET /api/leads/{id}/activity. Returns paginated activity history for this lead. */
@@ -110,8 +128,10 @@ export class LeadsService {
       .set('limit', params?.limit)
       .build();
 
-    return this.http.get<ActivityListResponseDto>(`${LEADS_URL}/${id}/activity`, {
-      params: httpParams,
-    });
+    return this.http
+      .get<ActivityListResponseDto>(`${LEADS_URL}/${id}/activity`, {
+        params: httpParams,
+      })
+      .pipe(this.errorHandler.catch());
   }
 }

@@ -4,6 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+import { ApiErrorHandlerService } from '@app/shared/services/api-error-handler.service';
 
 import type { CreateOrganizationDto, OrganizationResponseDto } from '@app/shared/models';
 
@@ -16,8 +17,11 @@ const ORGANIZATIONS_URL = `${environment.baseUrl}/api/organizations`;
 @Injectable({ providedIn: 'root' })
 export class OrganizationsService {
   private readonly http = inject(HttpClient);
+  private readonly errorHandler = inject(ApiErrorHandlerService);
 
   create(dto: CreateOrganizationDto): Observable<OrganizationResponseDto> {
-    return this.http.post<OrganizationResponseDto>(ORGANIZATIONS_URL, dto);
+    return this.http
+      .post<OrganizationResponseDto>(ORGANIZATIONS_URL, dto)
+      .pipe(this.errorHandler.catch());
   }
 }

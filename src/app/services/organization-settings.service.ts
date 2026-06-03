@@ -4,6 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+import { ApiErrorHandlerService } from '@app/shared/services/api-error-handler.service';
 
 import type {
   OrganizationSettingsResponseDto,
@@ -16,17 +17,24 @@ const ORGANIZATION_SETTINGS_LOGO_URL = `${ORGANIZATION_SETTINGS_URL}/logo`;
 @Injectable({ providedIn: 'root' })
 export class OrganizationSettingsService {
   private readonly http = inject(HttpClient);
+  private readonly errorHandler = inject(ApiErrorHandlerService);
 
   get(): Observable<OrganizationSettingsResponseDto> {
-    return this.http.get<OrganizationSettingsResponseDto>(ORGANIZATION_SETTINGS_URL);
+    return this.http
+      .get<OrganizationSettingsResponseDto>(ORGANIZATION_SETTINGS_URL)
+      .pipe(this.errorHandler.catch());
   }
 
   update(dto: UpdateOrganizationSettingsDto): Observable<OrganizationSettingsResponseDto> {
-    return this.http.put<OrganizationSettingsResponseDto>(ORGANIZATION_SETTINGS_URL, dto);
+    return this.http
+      .put<OrganizationSettingsResponseDto>(ORGANIZATION_SETTINGS_URL, dto)
+      .pipe(this.errorHandler.catch());
   }
 
   getLogo(): Observable<string> {
-    return this.http.get(ORGANIZATION_SETTINGS_LOGO_URL, { responseType: 'text' });
+    return this.http
+      .get(ORGANIZATION_SETTINGS_LOGO_URL, { responseType: 'text' })
+      .pipe(this.errorHandler.catch());
   }
 
   uploadLogo(file: File): Observable<void> {
@@ -34,6 +42,8 @@ export class OrganizationSettingsService {
 
     formData.append('file', file);
 
-    return this.http.post<void>(ORGANIZATION_SETTINGS_LOGO_URL, formData);
+    return this.http
+      .post<void>(ORGANIZATION_SETTINGS_LOGO_URL, formData)
+      .pipe(this.errorHandler.catch());
   }
 }

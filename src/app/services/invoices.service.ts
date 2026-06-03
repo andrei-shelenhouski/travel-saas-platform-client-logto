@@ -4,6 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+import { ApiErrorHandlerService } from '@app/shared/services/api-error-handler.service';
 import { HttpParamsBuilder } from '@app/shared/utils/http-params.builder';
 
 import type {
@@ -32,6 +33,7 @@ const INVOICES_URL = `${environment.baseUrl}/api/invoices`;
 @Injectable({ providedIn: 'root' })
 export class InvoicesService {
   private readonly http = inject(HttpClient);
+  private readonly errorHandler = inject(ApiErrorHandlerService);
 
   getList(params?: InvoiceFilterQueryDto): Observable<PaginatedInvoiceResponseDto> {
     const httpParams = new HttpParamsBuilder()
@@ -45,46 +47,66 @@ export class InvoicesService {
       .set('search', params?.search && params.search.length > 0 ? params.search : null)
       .build();
 
-    return this.http.get<PaginatedInvoiceResponseDto>(INVOICES_URL, { params: httpParams });
+    return this.http
+      .get<PaginatedInvoiceResponseDto>(INVOICES_URL, { params: httpParams })
+      .pipe(this.errorHandler.catch());
   }
 
   getById(id: string): Observable<InvoiceResponseDto> {
-    return this.http.get<InvoiceResponseDto>(`${INVOICES_URL}/${id}`);
+    return this.http
+      .get<InvoiceResponseDto>(`${INVOICES_URL}/${id}`)
+      .pipe(this.errorHandler.catch());
   }
 
   getSummary(): Observable<InvoiceSummaryResponseDto> {
-    return this.http.get<InvoiceSummaryResponseDto>(`${INVOICES_URL}/summary`);
+    return this.http
+      .get<InvoiceSummaryResponseDto>(`${INVOICES_URL}/summary`)
+      .pipe(this.errorHandler.catch());
   }
 
   create(dto: CreateInvoiceDto): Observable<InvoiceResponseDto> {
-    return this.http.post<InvoiceResponseDto>(INVOICES_URL, dto);
+    return this.http.post<InvoiceResponseDto>(INVOICES_URL, dto).pipe(this.errorHandler.catch());
   }
 
   update(id: string, dto: UpdateInvoiceDto): Observable<InvoiceResponseDto> {
-    return this.http.put<InvoiceResponseDto>(`${INVOICES_URL}/${id}`, dto);
+    return this.http
+      .put<InvoiceResponseDto>(`${INVOICES_URL}/${id}`, dto)
+      .pipe(this.errorHandler.catch());
   }
 
   publish(id: string): Observable<InvoiceResponseDto> {
-    return this.http.put<InvoiceResponseDto>(`${INVOICES_URL}/${id}/publish`, {});
+    return this.http
+      .put<InvoiceResponseDto>(`${INVOICES_URL}/${id}/publish`, {})
+      .pipe(this.errorHandler.catch());
   }
 
   cancel(id: string, dto: CancelInvoiceDto): Observable<InvoiceResponseDto> {
-    return this.http.put<InvoiceResponseDto>(`${INVOICES_URL}/${id}/cancel`, dto);
+    return this.http
+      .put<InvoiceResponseDto>(`${INVOICES_URL}/${id}/cancel`, dto)
+      .pipe(this.errorHandler.catch());
   }
 
   getPdf(id: string): Observable<Blob> {
-    return this.http.get(`${INVOICES_URL}/${id}/pdf`, { responseType: 'blob' });
+    return this.http
+      .get(`${INVOICES_URL}/${id}/pdf`, { responseType: 'blob' })
+      .pipe(this.errorHandler.catch());
   }
 
   listPayments(invoiceId: string): Observable<PaymentResponseDto[]> {
-    return this.http.get<PaymentResponseDto[]>(`${INVOICES_URL}/${invoiceId}/payments`);
+    return this.http
+      .get<PaymentResponseDto[]>(`${INVOICES_URL}/${invoiceId}/payments`)
+      .pipe(this.errorHandler.catch());
   }
 
   recordPayment(invoiceId: string, dto: RecordPaymentRequestDto): Observable<PaymentResponseDto> {
-    return this.http.post<PaymentResponseDto>(`${INVOICES_URL}/${invoiceId}/payments`, dto);
+    return this.http
+      .post<PaymentResponseDto>(`${INVOICES_URL}/${invoiceId}/payments`, dto)
+      .pipe(this.errorHandler.catch());
   }
 
   deletePayment(invoiceId: string, paymentId: string): Observable<void> {
-    return this.http.delete<void>(`${INVOICES_URL}/${invoiceId}/payments/${paymentId}`);
+    return this.http
+      .delete<void>(`${INVOICES_URL}/${invoiceId}/payments/${paymentId}`)
+      .pipe(this.errorHandler.catch());
   }
 }
