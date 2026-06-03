@@ -4,12 +4,12 @@
   flex-direction: column;
 }
 
-.invoice-link {
-  color: #0e7490;
+.link {
+  color: var(--color-primary);
   font-weight: 600;
   text-decoration: none;
-}
 
-.invoice-link:hover {
-  text-decoration: underline;
+  &:hover {
+    text-decoration: underline;
+  }
 }

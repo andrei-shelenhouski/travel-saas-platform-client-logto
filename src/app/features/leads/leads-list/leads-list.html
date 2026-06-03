@@ -1,7 +1,4 @@
-<app-page-heading
-  title="Лиды"
-  [subtitle]="'Всего: ' + totalElements() + ' лидов'"
->
+<app-page-heading title="Лиды" [subtitle]="'Всего: ' + totalElements() + ' лидов'">
   @if (canCreateLead()) {
     <a matButton="filled" routerLink="/app/leads/new">
       <mat-icon>add</mat-icon>
@@ -73,11 +70,16 @@
     <p class="mb-4 text-sm text-red-600">{{ error() }}</p>
   }
 
-  <div class="table-wrap overflow-scroll">
+  <div class="table-wrap">
     <table mat-table [dataSource]="leads()" [multiTemplateDataRows]="true">
       <ng-container matColumnDef="name">
         <th *matHeaderCellDef mat-header-cell>Клиент</th>
-        <td *matCellDef="let element" mat-cell [class.line-through]="isDeletedLead(element)" [class.opacity-40]="isDeletedLead(element)">
+        <td
+          *matCellDef="let element"
+          mat-cell
+          [class.line-through]="isDeletedLead(element)"
+          [class.opacity-40]="isDeletedLead(element)"
+        >
           @if (element.companyName) {
             <span class="block text-sm font-semibold">{{ element.companyName }}</span>
             <span class="block text-xs text-gray-500">{{ element.clientName }}</span>
@@ -93,6 +95,17 @@
           <span class="block text-sm font-semibold">
             {{ element.number }}
           </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="isClient">
+        <th *matHeaderCellDef mat-header-cell>Клиент</th>
+        <td *matCellDef="let element" mat-cell [class.opacity-40]="isDeletedLead(element)">
+          @if (element.clientId) {
+            <mat-icon aria-label="Клиент" class="check-icon">person_check</mat-icon>
+          } @else {
+            <mat-icon aria-label="Не клиент" class="off-icon">person_off</mat-icon>
+          }
         </td>
       </ng-container>
 
@@ -121,7 +134,9 @@
         <th *matHeaderCellDef mat-header-cell>Статус</th>
         <td *matCellDef="let element" mat-cell>
           @if (isDeletedLead(element)) {
-            <span class="inline-flex items-center rounded-full bg-gray-200 px-2.5 py-0.5 text-xs font-medium text-gray-600">
+            <span
+              class="inline-flex items-center rounded-full bg-gray-200 px-2.5 py-0.5 text-xs font-medium text-gray-600"
+            >
               Удалено
             </span>
           } @else {
@@ -219,11 +234,7 @@
           <div class="m-10 align-middle text-center">
             @if (loading()) {
               <p class="pb-4">Загрузка лидов...</p>
-              <mat-spinner
-                aria-label="Загрузка лидов"
-                class="mx-auto"
-                diameter="36"
-              />
+              <mat-spinner aria-label="Загрузка лидов" class="mx-auto" diameter="36" />
             } @else {
               <p>Нет лидов по текущим фильтрам</p>
             }

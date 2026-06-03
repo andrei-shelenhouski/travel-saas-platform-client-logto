@@ -9,6 +9,8 @@ import {
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EMPTY, of } from 'rxjs';
@@ -90,6 +92,8 @@ type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices
     InvoiceStatusChipComponent,
     CustomFieldsSectionComponent,
     MatPaginatorModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
     ...MAT_BUTTONS,
     ...MAT_MENU,
     ...MAT_TABS,
@@ -274,6 +278,26 @@ export class ClientDetailComponent {
       return this.customFieldsService.getClientValues(id);
     },
   });
+
+  readonly leadsColumns = ['number', 'status', 'createdAt'] as const;
+  readonly requestsColumns = [
+    'destination',
+    'dates',
+    'travelers',
+    'status',
+    'offersCount',
+  ] as const;
+  readonly offersColumns = ['offerNumber', 'destination', 'total', 'status', 'createdAt'] as const;
+  readonly bookingsColumns = ['bookingNumber', 'destination', 'dates', 'status', 'total'] as const;
+  readonly invoicesColumns = ['number', 'invoiceDate', 'dueDate', 'status', 'total'] as const;
+  readonly contractsColumns = [
+    'contractNumber',
+    'signedAt',
+    'expiresAt',
+    'signatureMethod',
+    'status',
+    'actions',
+  ] as const;
 
   readonly typeLabel = TYPE_LABEL;
   readonly client = computed(() => this.data.value() ?? null);

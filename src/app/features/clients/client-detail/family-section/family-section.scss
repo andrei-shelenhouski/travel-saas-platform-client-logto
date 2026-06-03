@@ -4,7 +4,7 @@
 }
 
 .client-card {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--mat-sys-outline-variant);
   border-radius: 0.75rem;
   background: #ffffff;
   padding: 1rem;
@@ -22,52 +22,26 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--mat-sys-on-surface);
 }
 
 .family-empty {
   padding: 2rem;
   text-align: center;
-  color: #6b7280;
+  color: var(--mat-sys-on-surface-variant);
   font-size: 0.875rem;
 }
 
-.family-table {
-  width: 100%;
-  border-collapse: collapse;
+.link {
+  color: var(--color-primary);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
-.family-table thead {
-  background-color: #f9fafb;
-}
-
-.family-table th {
-  padding: 0.75rem 1rem;
-  text-align: left;
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.family-table td {
-  padding: 0.75rem 1rem;
-  font-size: 0.875rem;
-  color: #111827;
-  border-bottom: 1px solid #f3f4f6;
-}
-
-.family-table tbody tr {
-  cursor: pointer;
-  transition: background-color 150ms;
-}
-
-.family-table tbody tr:hover {
-  background-color: #f9fafb;
-}
-
-.family-row-inactive td {
-  color: #9ca3af;
+.family-row-inactive .mat-mdc-cell {
+  color: var(--mat-sys-on-surface-variant);
   font-style: italic;
 }

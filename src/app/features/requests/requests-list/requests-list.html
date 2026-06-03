@@ -17,7 +17,7 @@
     <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
   }
 
-  <div class="table-wrap overflow-scroll">
+  <div class="table-wrap">
     <table mat-table [dataSource]="requests()">
       <ng-container matColumnDef="destination">
         <th *matHeaderCellDef mat-header-cell>
