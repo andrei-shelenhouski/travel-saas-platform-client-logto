@@ -78,6 +78,11 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'bookings/new',
+    redirectTo: 'app/bookings/new',
+    pathMatch: 'full',
+  },
+  {
     path: 'bookings/:id',
     redirectTo: 'app/bookings/:id',
   },
@@ -248,6 +253,15 @@ export const routes: Routes = [
           import('@app/features/offers/offers-list/offers-list').then((m) => m.OffersListComponent),
       },
       // Bookings: /app/bookings/:id
+      {
+        path: 'bookings/new',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.BOOKINGS_UPDATE },
+        loadComponent: () =>
+          import('@app/features/bookings/create-booking/create-booking').then(
+            (m) => m.CreateBookingComponent,
+          ),
+      },
       {
         path: 'bookings/:id',
         loadComponent: () =>

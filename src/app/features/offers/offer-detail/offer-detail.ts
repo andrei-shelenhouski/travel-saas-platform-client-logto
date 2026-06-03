@@ -26,7 +26,7 @@ import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { MAT_BUTTONS, MAT_DIALOG } from '@app/shared/material-imports';
 import { OfferStatus } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type {
   OfferResponseDto,
@@ -83,7 +83,7 @@ export class OfferDetailComponent {
   private readonly requestsService = inject(RequestsService);
   private readonly dialog = inject(MatDialog);
   private readonly confirmDialog = inject(ConfirmDialogService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
   private readonly permissions = inject(PermissionService);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
@@ -226,7 +226,7 @@ export class OfferDetailComponent {
   constructor() {
     effect(() => {
       if (this.routeId() === null) {
-        this.toast.showError('Offer ID is missing');
+        this.snackBar.open('Offer ID is missing', 'Close', { duration: 5000 });
         this.router.navigate(['/app/offers']);
       }
     });
@@ -253,7 +253,7 @@ export class OfferDetailComponent {
       const linkedBookingId = this.resolvedBookingId();
 
       if (!linkedBookingId) {
-        this.toast.showError('Booking is not available for this offer');
+        this.snackBar.open('Booking is not available for this offer', 'Close', { duration: 5000 });
 
         return;
       }
@@ -369,7 +369,7 @@ export class OfferDetailComponent {
           this.data.set(updated);
 
           if (newStatus === OfferStatus.SENT) {
-            this.toast.showSuccess('Предложение отправлено');
+            this.snackBar.open('Предложение отправлено', 'Close', { duration: 4000 });
           }
 
           if (newStatus === OfferStatus.ACCEPTED) {
@@ -380,23 +380,27 @@ export class OfferDetailComponent {
                 : undefined;
 
             if (linkedBookingId) {
-              this.toast.showSuccess('Предложение принято');
+              this.snackBar.open('Предложение принято', 'Close', { duration: 4000 });
               this.router.navigate(['/app/bookings', linkedBookingId]);
             } else {
-              this.toast.showSuccess(
+              this.snackBar.open(
                 'Предложение принято. Бронирование появится в ближайшее время.',
+                'Close',
+                { duration: 4000 },
               );
             }
           }
 
           if (newStatus === OfferStatus.REJECTED) {
-            this.toast.showSuccess('Предложение отклонено');
+            this.snackBar.open('Предложение отклонено', 'Close', { duration: 4000 });
           }
         },
         error: (err) => {
           this.data.set(currentOffer);
-          this.toast.showError(
+          this.snackBar.open(
             err.error?.message ?? err.message ?? 'Не удалось выполнить действие',
+            'Close',
+            { duration: 5000 },
           );
         },
       });
@@ -410,12 +414,14 @@ export class OfferDetailComponent {
       .pipe(finalize(() => this.actionLoading.set(false)))
       .subscribe({
         next: () => {
-          this.toast.showSuccess('Предложение удалено');
+          this.snackBar.open('Предложение удалено', 'Close', { duration: 4000 });
           this.router.navigate(['/app/offers']);
         },
         error: (err) => {
-          this.toast.showError(
+          this.snackBar.open(
             err.error?.message ?? err.message ?? 'Не удалось удалить предложение',
+            'Close',
+            { duration: 5000 },
           );
         },
       });
@@ -429,12 +435,14 @@ export class OfferDetailComponent {
       .pipe(finalize(() => this.actionLoading.set(false)))
       .subscribe({
         next: (revisedOffer) => {
-          this.toast.showSuccess('Исправление создано');
+          this.snackBar.open('Исправление создано', 'Close', { duration: 4000 });
           this.router.navigate(['/app/offers', revisedOffer.id, 'edit']);
         },
         error: (err) => {
-          this.toast.showError(
+          this.snackBar.open(
             err.error?.message ?? err.message ?? 'Не удалось создать исправление',
+            'Close',
+            { duration: 5000 },
           );
         },
       });

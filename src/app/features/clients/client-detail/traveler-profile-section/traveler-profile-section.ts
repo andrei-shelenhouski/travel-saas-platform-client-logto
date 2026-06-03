@@ -18,7 +18,7 @@ import { catchError, of } from 'rxjs';
 
 import { PersonsService } from '@app/services/persons.service';
 import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type {
   CreatePersonRequestDto,
@@ -98,7 +98,7 @@ export class TravelerProfileSectionComponent {
   }));
 
   private readonly personsService = inject(PersonsService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
   private readonly fb = inject(FormBuilder);
 
   private readonly personVersion = signal(0);
@@ -114,7 +114,7 @@ export class TravelerProfileSectionComponent {
             return of(null);
           }
 
-          this.toast.showError('Не удалось загрузить профиль туриста');
+          this.snackBar.open('Не удалось загрузить профиль туриста', 'Close', { duration: 5000 });
 
           return of(null);
         }),
@@ -278,7 +278,7 @@ export class TravelerProfileSectionComponent {
       },
       error: () => {
         this.createLoading.set(false);
-        this.toast.showError('Не удалось создать профиль туриста');
+        this.snackBar.open('Не удалось создать профиль туриста', 'Close', { duration: 5000 });
       },
     });
   }
@@ -329,7 +329,7 @@ export class TravelerProfileSectionComponent {
       },
       error: () => {
         this.coreFieldSaving.set(false);
-        this.toast.showError('Не удалось сохранить');
+        this.snackBar.open('Не удалось сохранить', 'Close', { duration: 5000 });
       },
     });
   }
@@ -407,7 +407,7 @@ export class TravelerProfileSectionComponent {
       },
       error: () => {
         this.docFormSaving.set(false);
-        this.toast.showError('Не удалось сохранить документ');
+        this.snackBar.open('Не удалось сохранить документ', 'Close', { duration: 5000 });
       },
     });
   }
@@ -421,7 +421,7 @@ export class TravelerProfileSectionComponent {
 
     this.personsService.deleteDocument(p.id, docId).subscribe({
       next: () => this.personVersion.update((v) => v + 1),
-      error: () => this.toast.showError('Не удалось удалить документ'),
+      error: () => this.snackBar.open('Не удалось удалить документ', 'Close', { duration: 5000 }),
     });
   }
 
@@ -434,7 +434,8 @@ export class TravelerProfileSectionComponent {
 
     this.personsService.setDocumentPrimary(p.id, docId).subscribe({
       next: () => this.personVersion.update((v) => v + 1),
-      error: () => this.toast.showError('Не удалось установить основной документ'),
+      error: () =>
+        this.snackBar.open('Не удалось установить основной документ', 'Close', { duration: 5000 }),
     });
   }
 
@@ -503,7 +504,7 @@ export class TravelerProfileSectionComponent {
       },
       error: () => {
         this.addrFormSaving.set(false);
-        this.toast.showError('Не удалось сохранить адрес');
+        this.snackBar.open('Не удалось сохранить адрес', 'Close', { duration: 5000 });
       },
     });
   }
@@ -517,7 +518,7 @@ export class TravelerProfileSectionComponent {
 
     this.personsService.deleteAddress(p.id, addrId).subscribe({
       next: () => this.personVersion.update((v) => v + 1),
-      error: () => this.toast.showError('Не удалось удалить адрес'),
+      error: () => this.snackBar.open('Не удалось удалить адрес', 'Close', { duration: 5000 }),
     });
   }
 
@@ -578,7 +579,7 @@ export class TravelerProfileSectionComponent {
       },
       error: () => {
         this.contactFormSaving.set(false);
-        this.toast.showError('Не удалось сохранить контакт');
+        this.snackBar.open('Не удалось сохранить контакт', 'Close', { duration: 5000 });
       },
     });
   }
@@ -592,7 +593,7 @@ export class TravelerProfileSectionComponent {
 
     this.personsService.deleteContact(p.id, ctcId).subscribe({
       next: () => this.personVersion.update((v) => v + 1),
-      error: () => this.toast.showError('Не удалось удалить контакт'),
+      error: () => this.snackBar.open('Не удалось удалить контакт', 'Close', { duration: 5000 }),
     });
   }
 
@@ -608,7 +609,8 @@ export class TravelerProfileSectionComponent {
         this.personVersion.update((v) => v + 1);
         this.primaryContactChanged.emit();
       },
-      error: () => this.toast.showError('Не удалось установить основной контакт'),
+      error: () =>
+        this.snackBar.open('Не удалось установить основной контакт', 'Close', { duration: 5000 }),
     });
   }
 }

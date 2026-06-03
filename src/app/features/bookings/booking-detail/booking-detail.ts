@@ -24,7 +24,7 @@ import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fiel
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { BookingStatus } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { AccommodationTableComponent } from './accommodation-table/accommodation-table';
 import { AddTravelersDialogComponent } from './add-travelers-dialog/add-travelers-dialog';
@@ -38,8 +38,10 @@ import { OperationsSectionComponent } from './operations-section/operations-sect
 import { TravelDetailsSectionComponent } from './travel-details-section/travel-details-section';
 
 import type {
+  BookingAccommodationDto,
   BookingDocumentResponseDto,
   BookingResponseDto,
+  BookingServiceInputEntryDto,
   BookingTravelerResponseDto,
   CustomFieldValueDto,
   InvoiceResponseDto,
@@ -75,7 +77,7 @@ export class BookingDetailComponent {
   private readonly customFieldsService = inject(CustomFieldsService);
   private readonly permissions = inject(PermissionService);
   private readonly personsService = inject(PersonsService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
 
   readonly BookingStatus = BookingStatus;
@@ -124,9 +126,11 @@ export class BookingDetailComponent {
   readonly travelers = computed(() => this.allData.value()?.travelers ?? []);
   readonly canViewInvoices = computed(() => this.permissions.canViewInvoices());
   readonly canManageTravelers = computed(() => this.permissions.canUpdateBookings());
-  readonly showLegacyTravelers = computed(
-    () => this.travelers().length === 0 && Boolean(this.booking()?.travelers),
-  );
+  readonly showLegacyTravelers = computed(() => {
+    const legacyTravelers = this.booking()?.travelers;
+
+    return this.travelers().length === 0 && typeof legacyTravelers === 'string';
+  });
   readonly loading = computed(() => this.allData.isLoading());
   readonly loadError = computed(() => this.allData.error());
   readonly loadNotFound = computed(() => {
@@ -152,6 +156,8 @@ export class BookingDetailComponent {
   readonly customFieldsSaving = signal(false);
   readonly savingTravel = signal(false);
   readonly savingOps = signal(false);
+  readonly savingAccommodation = signal(false);
+  readonly savingServices = signal(false);
   readonly uploading = signal(false);
 
   readonly cancellationDialogOpen = signal(false);
@@ -213,7 +219,11 @@ export class BookingDetailComponent {
       .subscribe({
         next: (updated) => this.patchBooking(updated),
         error: (err) =>
-          this.toast.showError(err.error?.message ?? 'Не удалось обновить статус бронирования'),
+          this.snackBar.open(
+            err.error?.message ?? 'Не удалось обновить статус бронирования',
+            'Close',
+            { duration: 5000 },
+          ),
       });
   }
 
@@ -244,7 +254,9 @@ export class BookingDetailComponent {
       .subscribe({
         next: (updated) => this.patchBooking(updated),
         error: (err) =>
-          this.toast.showError(err.error?.message ?? 'Не удалось отменить бронирование'),
+          this.snackBar.open(err.error?.message ?? 'Не удалось отменить бронирование', 'Close', {
+            duration: 5000,
+          }),
       });
   }
 
@@ -262,10 +274,14 @@ export class BookingDetailComponent {
       .subscribe({
         next: (updatedValues) => {
           this.customFieldsData.set(updatedValues);
-          this.toast.showSuccess('Дополнительные поля сохранены');
+          this.snackBar.open('Дополнительные поля сохранены', 'Close', { duration: 4000 });
         },
         error: (err) =>
-          this.toast.showError(err.error?.message ?? 'Не удалось сохранить дополнительные поля'),
+          this.snackBar.open(
+            err.error?.message ?? 'Не удалось сохранить дополнительные поля',
+            'Close',
+            { duration: 5000 },
+          ),
       });
   }
 
@@ -287,10 +303,58 @@ export class BookingDetailComponent {
       .subscribe({
         next: (updated) => {
           this.patchBooking(updated);
-          this.toast.showSuccess('Детали тура обновлены');
+          this.snackBar.open('Детали тура обновлены', 'Close', { duration: 4000 });
         },
         error: (err) =>
-          this.toast.showError(err.error?.message ?? 'Не удалось сохранить изменения'),
+          this.snackBar.open(err.error?.message ?? 'Не удалось сохранить изменения', 'Close', {
+            duration: 5000,
+          }),
+      });
+  }
+
+  onSaveServices(services: BookingServiceInputEntryDto[]): void {
+    const b = this.booking();
+
+    if (!b) {
+      return;
+    }
+
+    this.savingServices.set(true);
+    this.bookingsService
+      .update(b.id, { services })
+      .pipe(finalize(() => this.savingServices.set(false)))
+      .subscribe({
+        next: (updated) => {
+          this.patchBooking(updated);
+          this.snackBar.open('Услуги обновлены', 'Close', { duration: 4000 });
+        },
+        error: (err) =>
+          this.snackBar.open(err.error?.message ?? 'Не удалось сохранить услуги', 'Close', {
+            duration: 5000,
+          }),
+      });
+  }
+
+  onSaveAccommodation(details: BookingAccommodationDto[]): void {
+    const b = this.booking();
+
+    if (!b) {
+      return;
+    }
+
+    this.savingAccommodation.set(true);
+    this.bookingsService
+      .update(b.id, { accommodationDetails: details })
+      .pipe(finalize(() => this.savingAccommodation.set(false)))
+      .subscribe({
+        next: (updated) => {
+          this.patchBooking(updated);
+          this.snackBar.open('Проживание обновлено', 'Close', { duration: 4000 });
+        },
+        error: (err) =>
+          this.snackBar.open(err.error?.message ?? 'Не удалось сохранить проживание', 'Close', {
+            duration: 5000,
+          }),
       });
   }
 
@@ -308,10 +372,12 @@ export class BookingDetailComponent {
       .subscribe({
         next: (updated) => {
           this.patchBooking(updated);
-          this.toast.showSuccess('Операционные данные обновлены');
+          this.snackBar.open('Операционные данные обновлены', 'Close', { duration: 4000 });
         },
         error: (err) =>
-          this.toast.showError(err.error?.message ?? 'Не удалось сохранить изменения'),
+          this.snackBar.open(err.error?.message ?? 'Не удалось сохранить изменения', 'Close', {
+            duration: 5000,
+          }),
       });
   }
 
@@ -333,9 +399,12 @@ export class BookingDetailComponent {
         if (current) {
           this.allData.set({ ...current, documents: [...current.documents, ...uploaded] });
         }
-        this.toast.showSuccess(`Загружено файлов: ${uploaded.length}`);
+        this.snackBar.open(`Загружено файлов: ${uploaded.length}`, 'Close', { duration: 4000 });
       },
-      error: (err) => this.toast.showError(err.error?.message ?? 'Не удалось загрузить файл'),
+      error: (err) =>
+        this.snackBar.open(err.error?.message ?? 'Не удалось загрузить файл', 'Close', {
+          duration: 5000,
+        }),
     });
   }
 
@@ -356,9 +425,12 @@ export class BookingDetailComponent {
             documents: current.documents.filter((d) => d.id !== doc.id),
           });
         }
-        this.toast.showSuccess('Документ удален');
+        this.snackBar.open('Документ удален', 'Close', { duration: 4000 });
       },
-      error: (err) => this.toast.showError(err.error?.message ?? 'Не удалось удалить документ'),
+      error: (err) =>
+        this.snackBar.open(err.error?.message ?? 'Не удалось удалить документ', 'Close', {
+          duration: 5000,
+        }),
     });
   }
 
@@ -390,7 +462,8 @@ export class BookingDetailComponent {
       .subscribe({
         next: ({ members, activeRelationshipPersonIds }) =>
           this.openAddTravelersDialog(members, activeRelationshipPersonIds),
-        error: () => this.toast.showError('Не удалось загрузить список семьи'),
+        error: () =>
+          this.snackBar.open('Не удалось загрузить список семьи', 'Close', { duration: 5000 }),
       });
   }
 
@@ -414,8 +487,14 @@ export class BookingDetailComponent {
           travelers: current.travelers.filter((item) => item.id !== traveler.id),
         });
       },
-      error: () => this.toast.showError('Не удалось удалить туриста'),
+      error: () => this.snackBar.open('Не удалось удалить туриста', 'Close', { duration: 5000 }),
     });
+  }
+
+  isDirectEntrySource(booking: BookingResponseDto): boolean {
+    const source = booking.source?.trim().toUpperCase();
+
+    return source === 'DIRECT_ENTRY' || source === 'DIRECT';
   }
 
   private openAddTravelersDialog(
@@ -493,7 +572,8 @@ export class BookingDetailComponent {
             travelers: [...current.travelers, ...addedTravelers],
           });
         },
-        error: () => this.toast.showError('Не удалось добавить туристов'),
+        error: () =>
+          this.snackBar.open('Не удалось добавить туристов', 'Close', { duration: 5000 }),
       });
   }
 

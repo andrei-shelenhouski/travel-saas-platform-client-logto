@@ -9,7 +9,7 @@ import { vi } from 'vitest';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { RequestsService } from '@app/services/requests.service';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { CreateOfferComponent } from './create-offer';
 
@@ -41,9 +41,8 @@ describe('CreateOfferComponent', () => {
     open: vi.fn(),
   };
 
-  const toastServiceMock = {
-    showError: vi.fn(),
-    showSuccess: vi.fn(),
+  const snackBarMock = {
+    open: vi.fn(),
   };
 
   afterEach(() => {
@@ -173,7 +172,7 @@ describe('CreateOfferComponent', () => {
         { provide: RequestsService, useValue: requestsServiceMock },
         { provide: OrganizationSettingsService, useValue: organizationSettingsServiceMock },
         { provide: OffersService, useValue: offersServiceMock },
-        { provide: ToastService, useValue: toastServiceMock },
+        { provide: MatSnackBar, useValue: snackBarMock },
         { provide: MatDialog, useValue: matDialogMock },
       ],
     }).compileComponents();

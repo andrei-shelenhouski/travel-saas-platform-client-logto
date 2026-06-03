@@ -1,0 +1,267 @@
+<app-page-heading subtitle="Прямое бронирование без лида/оффера" title="Новое бронирование">
+  <a mat-button routerLink="/app/bookings">Отмена</a>
+</app-page-heading>
+
+<div class="p-4">
+  <form class="space-y-6" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <section class="rounded-lg border border-gray-200 bg-white p-4">
+      <h2 class="text-base font-semibold text-gray-900">Основные данные</h2>
+
+      <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-4">
+        <mat-form-field class="lg:col-span-2" subscriptSizing="dynamic">
+          <mat-label>Клиент</mat-label>
+          <input
+            formControlName="clientQuery"
+            matInput
+            [matAutocomplete]="clientAutocomplete"
+          />
+          <mat-autocomplete
+            #clientAutocomplete="matAutocomplete"
+            [displayWith]="displayClient"
+            (optionSelected)="onClientSelected($event)"
+          >
+            @for (client of clientOptions(); track client.id) {
+              <mat-option [value]="client">
+                {{ displayClient(client) }}
+              </mat-option>
+            }
+          </mat-autocomplete>
+          @if (loadingClients()) {
+            <mat-hint>Поиск клиентов...</mat-hint>
+          } @else {
+            <mat-hint>Введите минимум 2 символа</mat-hint>
+          }
+          @if (form.controls.clientId.invalid && form.controls.clientId.touched) {
+            <mat-error>Выберите клиента</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Статус</mat-label>
+          <mat-select formControlName="status">
+            @for (option of bookingStatusOptions; track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Общая стоимость</mat-label>
+          <input formControlName="totalPrice" matInput min="0" type="number" />
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Направление</mat-label>
+          <input formControlName="destination" matInput />
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Дата выезда</mat-label>
+          <input formControlName="departDate" matInput type="date" />
+          @if (form.controls.departDate.invalid && form.controls.departDate.touched) {
+            <mat-error>Укажите дату выезда</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Дата возврата</mat-label>
+          <input formControlName="returnDate" matInput type="date" />
+          @if (form.controls.returnDate.invalid && form.controls.returnDate.touched) {
+            <mat-error>Укажите дату возврата</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Взрослые</mat-label>
+          <input formControlName="adults" matInput min="1" type="number" />
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Дети</mat-label>
+          <input formControlName="children" matInput min="0" type="number" />
+        </mat-form-field>
+      </div>
+
+      <mat-form-field class="mt-2 w-full" subscriptSizing="dynamic">
+        <mat-label>Внутренняя заметка</mat-label>
+        <textarea formControlName="internalNotes" matInput rows="3"></textarea>
+      </mat-form-field>
+    </section>
+
+    <section class="rounded-lg border border-gray-200 bg-white p-4">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 class="text-base font-semibold text-gray-900">Туристы</h2>
+
+        <button
+          mat-stroked-button
+          type="button"
+          [disabled]="loadingTravelerContext() || !clientPerson()"
+          (click)="openTravelerPicker()"
+        >
+          Выбрать из существующих
+        </button>
+      </div>
+
+      @if (loadingTravelerContext()) {
+        <p class="mt-2 text-sm text-gray-600">Загрузка списка туристов...</p>
+      }
+
+      @if (travelersCountWarning(); as warning) {
+        <p class="mt-2 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          {{ warning }}
+        </p>
+      }
+
+      @if (documentExpiryWarnings().length > 0) {
+        <div class="mt-2 space-y-1">
+          @for (warning of documentExpiryWarnings(); track warning) {
+            <p class="rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+              {{ warning }}
+            </p>
+          }
+        </div>
+      }
+
+      <div class="mt-4 space-y-2">
+        @for (traveler of existingTravelers(); track traveler.personId) {
+          <div class="traveler-row">
+            <div>
+              <p class="font-medium">{{ personNameById(traveler.personId) }}</p>
+              <p class="text-xs text-gray-500">{{ existingTravelerDocumentLabel(traveler) }}</p>
+            </div>
+
+            <div class="traveler-actions">
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Роль</mat-label>
+                <mat-select
+                  [value]="traveler.role"
+                  (valueChange)="setExistingTravelerRole(traveler.personId, $event)"
+                >
+                  @for (option of travelerRoleOptions; track option.value) {
+                    <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <button mat-stroked-button type="button" (click)="removeExistingTraveler(traveler.personId)">
+                Удалить
+              </button>
+            </div>
+          </div>
+        }
+
+        @for (traveler of inlineTravelers(); track traveler.localId) {
+          <div class="traveler-row">
+            <div>
+              <p class="font-medium">{{ traveler.person.lastName }} {{ traveler.person.firstName }}</p>
+              <p class="text-xs text-gray-500">
+                @if (traveler.person.document) {
+                  {{ traveler.person.document.type }} {{ traveler.person.document.series || '' }}
+                } @else {
+                  Документ не указан
+                }
+              </p>
+            </div>
+
+            <div class="traveler-actions">
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Роль</mat-label>
+                <mat-select [value]="traveler.role" (valueChange)="setInlineTravelerRole(traveler.localId, $event)">
+                  @for (option of travelerRoleOptions; track option.value) {
+                    <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <button mat-stroked-button type="button" (click)="removeInlineTraveler(traveler.localId)">
+                Удалить
+              </button>
+            </div>
+          </div>
+        }
+
+        @if (attachedTravelersCount() === 0) {
+          <p class="text-sm text-gray-500">Туристы пока не добавлены.</p>
+        }
+      </div>
+    </section>
+
+    <section class="rounded-lg border border-gray-200 bg-white p-4">
+      <h2 class="text-base font-semibold text-gray-900">Новый турист (inline)</h2>
+
+      <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-4" [formGroup]="inlineTravelerForm">
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Фамилия</mat-label>
+          <input formControlName="lastName" matInput />
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Имя</mat-label>
+          <input formControlName="firstName" matInput />
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Отчество</mat-label>
+          <input formControlName="patronymic" matInput />
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Роль</mat-label>
+          <mat-select formControlName="role">
+            @for (option of travelerRoleOptions; track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Дата рождения</mat-label>
+          <input formControlName="dateOfBirth" matInput type="date" />
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Гражданство</mat-label>
+          <input formControlName="citizenship" matInput />
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Тип документа</mat-label>
+          <mat-select formControlName="documentType">
+            <mat-option value="">Не указывать</mat-option>
+            @for (type of documentTypeOptions; track type) {
+              <mat-option [value]="type">{{ type }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Серия</mat-label>
+          <input formControlName="documentSeries" matInput />
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Номер</mat-label>
+          <input formControlName="documentNumber" matInput />
+        </mat-form-field>
+
+        <mat-form-field subscriptSizing="dynamic">
+          <mat-label>Срок действия</mat-label>
+          <input formControlName="documentExpiryDate" matInput type="date" />
+        </mat-form-field>
+      </div>
+
+      <div class="mt-2">
+        <button color="primary" mat-stroked-button type="button" (click)="addInlineTraveler()">
+          Добавить inline туриста
+        </button>
+      </div>
+    </section>
+
+    <div class="flex justify-end gap-2">
+      <a mat-button routerLink="/app/bookings">Отмена</a>
+      <button color="primary" mat-flat-button type="submit" [disabled]="saving()">
+        Создать бронирование
+      </button>
+    </div>
+  </form>
+</div>

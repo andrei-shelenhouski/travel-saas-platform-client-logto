@@ -64,7 +64,16 @@
               <h2 class="booking-header-title">{{ b.number }}</h2>
               <p class="booking-header-subtitle"><span>ID:</span> {{ b.id }}</p>
             </div>
-            <app-booking-status-chip [status]="b.status" />
+            <div class="flex items-center gap-2">
+              @if (isDirectEntrySource(b)) {
+                <span
+                  class="inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-medium text-indigo-800"
+                >
+                  Direct Entry
+                </span>
+              }
+              <app-booking-status-chip [status]="b.status" />
+            </div>
           </div>
         </section>
 
@@ -94,12 +103,20 @@
               </section>
             }
 
-            <app-accommodation-table [accommodationDetails]="b.accommodationDetails" />
+            <app-accommodation-table
+              [accommodationDetails]="b.accommodationDetails"
+              [editable]="true"
+              [saving]="savingAccommodation()"
+              (save)="onSaveAccommodation($event)"
+            />
 
             @if (b.servicesSnapshot?.length) {
               <app-additional-services-table
                 [currency]="b.currency"
+                [editable]="true"
+                [saving]="savingServices()"
                 [services]="b.servicesSnapshot"
+                (save)="onSaveServices($event)"
               />
             }
 

@@ -9,7 +9,7 @@ import { of, throwError } from 'rxjs';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { TourvisorIntegrationService } from '@app/services/tourvisor-integration.service';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { TourvisorIntegrationCardComponent } from './tourvisor-integration-card';
 
@@ -36,9 +36,8 @@ describe('TourvisorIntegrationCardComponent', () => {
     findAll: ReturnType<typeof vi.fn>;
   };
 
-  let toast: {
-    showSuccess: ReturnType<typeof vi.fn>;
-    showError: ReturnType<typeof vi.fn>;
+  let snackBar: {
+    open: ReturnType<typeof vi.fn>;
   };
 
   beforeEach(async () => {
@@ -71,9 +70,8 @@ describe('TourvisorIntegrationCardComponent', () => {
       ),
     };
 
-    toast = {
-      showSuccess: vi.fn(),
-      showError: vi.fn(),
+    snackBar = {
+      open: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -93,7 +91,7 @@ describe('TourvisorIntegrationCardComponent', () => {
         },
         { provide: TourvisorIntegrationService, useValue: integrationService },
         { provide: MatDialog, useValue: dialog },
-        { provide: ToastService, useValue: toast },
+        { provide: MatSnackBar, useValue: snackBar },
       ],
     }).compileComponents();
 
@@ -157,7 +155,9 @@ describe('TourvisorIntegrationCardComponent', () => {
       ingestOrderTypes: [0, 1, 2, 3, 4, 5, 6],
     });
     expect(api.isConnected()).toBe(true);
-    expect(toast.showSuccess).toHaveBeenCalledWith('TourVisor успешно подключён.');
+    expect(snackBar.open).toHaveBeenCalledWith('TourVisor успешно подключён.', 'Close', {
+      duration: 4000,
+    });
   });
 
   it('shows inline API errors in connect flow', () => {
@@ -215,7 +215,9 @@ describe('TourvisorIntegrationCardComponent', () => {
 
       expect(integrationService.syncNow).toHaveBeenCalled();
       expect(integrationService.getSettings).toHaveBeenCalledTimes(2);
-      expect(toast.showSuccess).toHaveBeenCalledWith('Синхронизация TourVisor запущена.');
+      expect(snackBar.open).toHaveBeenCalledWith('Синхронизация TourVisor запущена.', 'Close', {
+        duration: 4000,
+      });
     } finally {
       vi.useRealTimers();
     }
@@ -270,7 +272,9 @@ describe('TourvisorIntegrationCardComponent', () => {
 
     failingFixture.detectChanges();
 
-    expect(toast.showError).toHaveBeenCalledWith('Agent service unavailable');
+    expect(snackBar.open).toHaveBeenCalledWith('Agent service unavailable', 'Close', {
+      duration: 5000,
+    });
   });
 });
 

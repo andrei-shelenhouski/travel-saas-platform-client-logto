@@ -11,7 +11,7 @@ import { PersonsService } from '@app/services/persons.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type {
   BookingResponseDto,
@@ -32,7 +32,7 @@ export class PersonDetailComponent {
   private readonly personsService = inject(PersonsService);
   private readonly clientsService = inject(ClientsService);
   private readonly bookingsService = inject(BookingsService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((params) => params.get('id'))));
 
@@ -154,10 +154,11 @@ export class PersonDetailComponent {
       )
       .subscribe({
         next: (client) => {
-          this.toast.showSuccess('Профиль клиента создан');
+          this.snackBar.open('Профиль клиента создан', 'Close', { duration: 4000 });
           void this.router.navigate(['/app/clients', client.id]);
         },
-        error: () => this.toast.showError('Не удалось создать профиль клиента'),
+        error: () =>
+          this.snackBar.open('Не удалось создать профиль клиента', 'Close', { duration: 5000 }),
       });
   }
 }

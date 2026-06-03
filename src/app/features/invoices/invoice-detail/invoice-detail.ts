@@ -27,7 +27,7 @@ import { ActivityTimelineComponent } from '@app/shared/components/activity-timel
 import { MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { EntityType } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type {
   ActivityTimelineItem,
@@ -84,7 +84,7 @@ export class InvoiceDetailComponent {
   private readonly activitiesService = inject(ActivitiesService);
   private readonly dialog = inject(MatDialog);
   private readonly confirmDialog = inject(ConfirmDialogService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
   readonly permissions = inject(PermissionService);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
@@ -343,7 +343,7 @@ export class InvoiceDetailComponent {
     const reason = this.cancelReasonControl.value.trim();
 
     if (!reason) {
-      this.toast.showError('Укажите причину отмены');
+      this.snackBar.open('Укажите причину отмены', 'Close', { duration: 5000 });
 
       return;
     }
@@ -353,9 +353,12 @@ export class InvoiceDetailComponent {
         this.data.set(updated);
         this.activitiesData.reload();
         this.cancelDialogOpen.set(false);
-        this.toast.showSuccess('Счёт отменён');
+        this.snackBar.open('Счёт отменён', 'Close', { duration: 4000 });
       },
-      error: (err) => this.toast.showError(err.error?.message ?? err.message ?? 'Ошибка отмены'),
+      error: (err) =>
+        this.snackBar.open(err.error?.message ?? err.message ?? 'Ошибка отмены', 'Close', {
+          duration: 5000,
+        }),
       complete: () => this.actionLoading.set(false),
     });
   }
@@ -396,7 +399,9 @@ export class InvoiceDetailComponent {
         setTimeout(() => URL.revokeObjectURL(url), 0);
       },
       error: (err) =>
-        this.toast.showError(err.error?.message ?? err.message ?? 'Ошибка скачивания PDF'),
+        this.snackBar.open(err.error?.message ?? err.message ?? 'Ошибка скачивания PDF', 'Close', {
+          duration: 5000,
+        }),
       complete: () => this.actionLoading.set(false),
     });
   }
@@ -455,10 +460,14 @@ export class InvoiceDetailComponent {
           next: () => {
             this.data.reload();
             this.activitiesData.reload();
-            this.toast.showSuccess('Платёж удалён');
+            this.snackBar.open('Платёж удалён', 'Close', { duration: 4000 });
           },
           error: (err) =>
-            this.toast.showError(err.error?.message ?? err.message ?? 'Ошибка удаления платежа'),
+            this.snackBar.open(
+              err.error?.message ?? err.message ?? 'Ошибка удаления платежа',
+              'Close',
+              { duration: 5000 },
+            ),
           complete: () => this.actionLoading.set(false),
         });
       });

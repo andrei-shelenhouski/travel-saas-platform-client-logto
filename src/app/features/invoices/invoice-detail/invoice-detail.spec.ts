@@ -12,7 +12,7 @@ import { ActivitiesService } from '@app/services/activities.service';
 import { ClientsService } from '@app/services/clients.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { InvoiceDetailComponent } from './invoice-detail';
 
@@ -37,9 +37,8 @@ describe('InvoiceDetailComponent', () => {
   let activitiesService: { findByEntity: ReturnType<typeof vi.fn> };
   let dialog: { open: ReturnType<typeof vi.fn> };
 
-  let toast: {
-    showSuccess: ReturnType<typeof vi.fn>;
-    showError: ReturnType<typeof vi.fn>;
+  let snackBar: {
+    open: ReturnType<typeof vi.fn>;
   };
 
   const makeInvoice = (status: InvoiceResponseDto['status']): InvoiceResponseDto => ({
@@ -123,9 +122,8 @@ describe('InvoiceDetailComponent', () => {
       open: vi.fn(() => ({ afterClosed: () => of(undefined) })),
     };
 
-    toast = {
-      showSuccess: vi.fn(),
-      showError: vi.fn(),
+    snackBar = {
+      open: vi.fn(),
     };
 
     await TestBed.configureTestingModule({
@@ -145,8 +143,8 @@ describe('InvoiceDetailComponent', () => {
           useValue: clientsService,
         },
         {
-          provide: ToastService,
-          useValue: toast,
+          provide: MatSnackBar,
+          useValue: snackBar,
         },
         {
           provide: PermissionService,
@@ -230,7 +228,7 @@ describe('InvoiceDetailComponent', () => {
     component.confirmCancel();
 
     expect(invoicesService.cancel).toHaveBeenCalledWith('invoice-1', { reason: 'Test reason' });
-    expect(toast.showSuccess).toHaveBeenCalledWith('Счёт отменён');
+    expect(snackBar.open).toHaveBeenCalledWith('Счёт отменён', 'Close', { duration: 4000 });
   });
 
   it('does not cancel when reason is empty', () => {
@@ -239,7 +237,7 @@ describe('InvoiceDetailComponent', () => {
     component.confirmCancel();
 
     expect(invoicesService.cancel).not.toHaveBeenCalled();
-    expect(toast.showError).toHaveBeenCalled();
+    expect(snackBar.open).toHaveBeenCalled();
   });
 
   it('opens record payment dialog with invoice context', () => {
@@ -384,6 +382,6 @@ describe('InvoiceDetailComponent', () => {
     expect(invoicesService.deletePayment).toHaveBeenCalledWith('invoice-1', 'payment-1');
     expect(dataReload).toHaveBeenCalled();
     expect(activitiesReload).toHaveBeenCalled();
-    expect(toast.showSuccess).toHaveBeenCalledWith('Платёж удалён');
+    expect(snackBar.open).toHaveBeenCalledWith('Платёж удалён', 'Close', { duration: 4000 });
   });
 });

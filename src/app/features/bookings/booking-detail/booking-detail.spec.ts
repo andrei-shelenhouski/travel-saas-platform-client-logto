@@ -9,7 +9,7 @@ import { OrganizationMembersService } from '@app/services/organization-members.s
 import { PermissionService } from '@app/services/permission.service';
 import { PersonsService } from '@app/services/persons.service';
 import { BookingStatus } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { BookingDetailComponent } from './booking-detail';
 
@@ -110,8 +110,8 @@ describe('BookingDetailComponent', () => {
           useValue: permissionService,
         },
         {
-          provide: ToastService,
-          useValue: { showSuccess: vi.fn(), showError: vi.fn() },
+          provide: MatSnackBar,
+          useValue: { open: vi.fn() },
         },
       ],
     }).compileComponents();

@@ -4,6 +4,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { environment } from '@environments/environment';
+import { ApiErrorHandlerService } from '@app/shared/services/api-error-handler.service';
 
 import type {
   ChangeRoleRequestDto,
@@ -24,6 +25,7 @@ const USERS_URL = `${environment.baseUrl}/api/users`;
 @Injectable({ providedIn: 'root' })
 export class UsersService {
   private readonly http = inject(HttpClient);
+  private readonly errorHandler = inject(ApiErrorHandlerService);
 
   /** GET /api/users. List users with optional role / isActive filters. */
   getList(params?: {
@@ -50,36 +52,46 @@ export class UsersService {
       httpParams = httpParams.set('size', params.limit);
     }
 
-    return this.http.get<PaginatedOrgUserResponseDto>(USERS_URL, { params: httpParams });
+    return this.http
+      .get<PaginatedOrgUserResponseDto>(USERS_URL, { params: httpParams })
+      .pipe(this.errorHandler.catch());
   }
 
   /** POST /api/users. Invite a new user to the organization. Returns 201. */
   invite(dto: InviteUserRequestDto): Observable<OrgUserResponseDto> {
-    return this.http.post<OrgUserResponseDto>(USERS_URL, dto);
+    return this.http.post<OrgUserResponseDto>(USERS_URL, dto).pipe(this.errorHandler.catch());
   }
 
   /** GET /api/users/{id}. */
   getById(id: string): Observable<OrgUserResponseDto> {
-    return this.http.get<OrgUserResponseDto>(`${USERS_URL}/${id}`);
+    return this.http.get<OrgUserResponseDto>(`${USERS_URL}/${id}`).pipe(this.errorHandler.catch());
   }
 
   /** PUT /api/users/{id}. Update fullName and/or role. */
   update(id: string, dto: UpdateUserRequestDto): Observable<OrgUserResponseDto> {
-    return this.http.put<OrgUserResponseDto>(`${USERS_URL}/${id}`, dto);
+    return this.http
+      .put<OrgUserResponseDto>(`${USERS_URL}/${id}`, dto)
+      .pipe(this.errorHandler.catch());
   }
 
   /** PUT /api/users/{id}/role. Update role without changing profile fields. */
   changeRole(id: string, dto: ChangeRoleRequestDto): Observable<OrgUserResponseDto> {
-    return this.http.put<OrgUserResponseDto>(`${USERS_URL}/${id}/role`, dto);
+    return this.http
+      .put<OrgUserResponseDto>(`${USERS_URL}/${id}/role`, dto)
+      .pipe(this.errorHandler.catch());
   }
 
   /** PUT /api/users/{id}/deactivate. */
   deactivate(id: string): Observable<OrgUserResponseDto> {
-    return this.http.put<OrgUserResponseDto>(`${USERS_URL}/${id}/deactivate`, {});
+    return this.http
+      .put<OrgUserResponseDto>(`${USERS_URL}/${id}/deactivate`, {})
+      .pipe(this.errorHandler.catch());
   }
 
   /** PUT /api/users/{id}/reactivate. */
   reactivate(id: string): Observable<OrgUserResponseDto> {
-    return this.http.put<OrgUserResponseDto>(`${USERS_URL}/${id}/reactivate`, {});
+    return this.http
+      .put<OrgUserResponseDto>(`${USERS_URL}/${id}/reactivate`, {})
+      .pipe(this.errorHandler.catch());
   }
 }

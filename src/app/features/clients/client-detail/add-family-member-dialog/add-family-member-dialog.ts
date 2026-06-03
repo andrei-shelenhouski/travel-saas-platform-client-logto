@@ -12,7 +12,7 @@ import {
   PersonRelationshipType,
   PersonSearchResultDto,
 } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 type AddFamilyMemberDialogData = {
   personId: string;
@@ -43,7 +43,7 @@ const RELATION_LABEL: Record<string, string> = {
 export class AddFamilyMemberDialogComponent {
   private readonly fb = inject(FormBuilder);
   private readonly personsService = inject(PersonsService);
-  private readonly toast = inject(ToastService);
+  private readonly snackBar = inject(MatSnackBar);
   protected readonly dialogRef = inject(
     MatDialogRef<AddFamilyMemberDialogComponent, AddFamilyMemberDialogResult>,
   );
@@ -203,7 +203,8 @@ export class AddFamilyMemberDialogComponent {
         )
         .subscribe({
           next: () => this.dialogRef.close({ saved: true }),
-          error: () => this.toast.showError('Не удалось добавить члена семьи'),
+          error: () =>
+            this.snackBar.open('Не удалось добавить члена семьи', 'Close', { duration: 5000 }),
         });
 
       return;
@@ -220,7 +221,7 @@ export class AddFamilyMemberDialogComponent {
       .pipe(finalize(() => this.submitting.set(false)))
       .subscribe({
         next: () => this.dialogRef.close({ saved: true }),
-        error: () => this.toast.showError('Не удалось добавить связь'),
+        error: () => this.snackBar.open('Не удалось добавить связь', 'Close', { duration: 5000 }),
       });
   }
 }

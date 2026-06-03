@@ -10,7 +10,7 @@ import { BookingsService } from '@app/services/bookings.service';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { OfferDetailComponent } from './offer-detail';
 
@@ -60,9 +60,8 @@ describe('OfferDetailComponent', () => {
     canViewAllOffers: vi.fn(() => true),
   };
 
-  const toastServiceMock = {
-    showSuccess: vi.fn(),
-    showError: vi.fn(),
+  const snackBarMock = {
+    open: vi.fn(),
   };
 
   beforeEach(async () => {
@@ -83,7 +82,7 @@ describe('OfferDetailComponent', () => {
         { provide: BookingsService, useValue: bookingsServiceMock },
         { provide: RequestsService, useValue: requestsServiceMock },
         { provide: PermissionService, useValue: permissionServiceMock },
-        { provide: ToastService, useValue: toastServiceMock },
+        { provide: MatSnackBar, useValue: snackBarMock },
       ],
     }).compileComponents();
 

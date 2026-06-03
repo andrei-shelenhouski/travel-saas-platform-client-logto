@@ -8,7 +8,7 @@ import { of } from 'rxjs';
 import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { PermissionService } from '@app/services/permission.service';
 import { CustomFieldEntityType, CustomFieldType } from '@app/shared/models';
-import { ToastService } from '@app/shared/services/toast.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { CustomFieldsSettingsComponent } from './custom-fields';
 
@@ -57,11 +57,8 @@ describe('CustomFieldsSettingsComponent', () => {
           },
         },
         {
-          provide: ToastService,
-          useValue: {
-            showSuccess: vi.fn(),
-            showError: vi.fn(),
-          },
+          provide: MatSnackBar,
+          useValue: { open: vi.fn() },
         },
         {
           provide: MatDialog,
