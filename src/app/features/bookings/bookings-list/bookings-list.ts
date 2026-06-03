@@ -119,7 +119,7 @@ export class BookingsListComponent {
     departDateTo: this.departDateTo(),
   }));
 
-  readonly showCreateBookingButton = computed(() => this.permissions.canCreateOffer());
+  readonly showCreateBookingButton = computed(() => this.permissions.canUpdateBookings());
 
   protected readonly bookings = computed(() => this.data.value()?.items ?? []);
   protected readonly totalElements = computed(() => this.data.value()?.total ?? 0);
@@ -131,6 +131,7 @@ export class BookingsListComponent {
     'destination',
     'departDate',
     'returnDate',
+    'source',
     'expiringDocuments',
     'status',
     'assignedBackofficeName',
@@ -168,7 +169,7 @@ export class BookingsListComponent {
   }
 
   navigateToCreateBooking(): void {
-    this.router.navigate(['/app/offers']);
+    this.router.navigate(['/bookings/new']);
   }
 
   onRowKeydown(event: KeyboardEvent, id: string): void {
@@ -219,6 +220,12 @@ export class BookingsListComponent {
     const expiryDate = firstHint.expiryDate || '—';
 
     return `${label} [${person}] истекает ${expiryDate} — менее 6 месяцев до возвращения`;
+  }
+
+  isDirectEntrySource(booking: BookingResponseDto): boolean {
+    const source = booking.source?.trim().toUpperCase();
+
+    return source === 'DIRECT_ENTRY' || source === 'DIRECT';
   }
 
   private syncStateFromQueryParams(): void {

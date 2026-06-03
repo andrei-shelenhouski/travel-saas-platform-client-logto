@@ -3,20 +3,23 @@ import { inject, Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
 
-import { environment } from '@environments/environment';
 import { HttpParamsBuilder } from '@app/shared/utils/http-params.builder';
+import { environment } from '@environments/environment';
 
 import type {
   AddBookingTravelerRequestDto,
   BookingDocumentResponseDto,
   BookingResponseDto,
+  BookingSource,
   BookingStatus,
   BookingTravelerResponseDto,
   CreateBookingDto,
+  DirectBookingRequestDto,
   PaginatedBookingResponseDto,
   PaginatedInvoiceResponseDto,
   UpdateBookingDto,
   UpdateBookingStatusDto,
+  UpdateBookingTravelerRequestDto,
 } from '@app/shared/models';
 
 const BOOKINGS_URL = `${environment.baseUrl}/api/bookings`;
@@ -40,16 +43,18 @@ export class BookingsService {
     departDateFrom?: string;
     departDateTo?: string;
     travelerPersonId?: string;
+    source?: BookingSource;
   }): Observable<PaginatedBookingResponseDto> {
     const httpParams = new HttpParamsBuilder()
       .set('page', params?.page)
       .set('limit', params?.limit)
-      .appendArray('status', params?.status as string | string[] | undefined)
+      .appendArray('status', params?.status)
       .set('offerId', params?.offerId)
       .set('assignedBackofficeId', params?.assignedBackofficeId)
       .set('departDateFrom', params?.departDateFrom)
       .set('departDateTo', params?.departDateTo)
       .set('traveler_person_id', params?.travelerPersonId)
+      .set('source', params?.source)
       .build();
 
     return this.http.get<PaginatedBookingResponseDto>(BOOKINGS_URL, { params: httpParams });
@@ -66,6 +71,11 @@ export class BookingsService {
 
   create(dto: CreateBookingDto): Observable<BookingResponseDto> {
     return this.http.post<BookingResponseDto>(BOOKINGS_URL, dto);
+  }
+
+  /** POST /api/bookings/direct. Creates a booking with inline travelers payload. */
+  createDirect(dto: DirectBookingRequestDto): Observable<BookingResponseDto> {
+    return this.http.post<BookingResponseDto>(`${BOOKINGS_URL}/direct`, dto);
   }
 
   update(id: string, dto: UpdateBookingDto): Observable<BookingResponseDto> {
@@ -113,6 +123,18 @@ export class BookingsService {
   /** DELETE /api/bookings/{id}/travelers/{travelerId}. */
   removeTraveler(id: string, travelerId: string): Observable<void> {
     return this.http.delete<void>(`${BOOKINGS_URL}/${id}/travelers/${travelerId}`);
+  }
+
+  /** PATCH /api/bookings/{id}/travelers/{travelerId}. */
+  updateTraveler(
+    id: string,
+    travelerId: string,
+    dto: UpdateBookingTravelerRequestDto,
+  ): Observable<BookingTravelerResponseDto> {
+    return this.http.patch<BookingTravelerResponseDto>(
+      `${BOOKINGS_URL}/${id}/travelers/${travelerId}`,
+      dto,
+    );
   }
 
   /** POST /api/bookings/{id}/documents. */

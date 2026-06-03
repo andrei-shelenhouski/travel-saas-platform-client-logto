@@ -24,6 +24,15 @@ export type BookingServiceSnapshotEntryDto = {
   total?: number;
 };
 
+/** OpenAPI: BookingServiceInputEntry. Write payload for services in create/update requests. */
+export type BookingServiceInputEntryDto = {
+  type?: string;
+  description?: string;
+  qty?: number;
+  unitPrice?: number;
+  currency?: string;
+};
+
 export const BookingStatus = {
   PENDING_CONFIRMATION: 'PENDING_CONFIRMATION',
   CONFIRMED: 'CONFIRMED',
@@ -35,6 +44,7 @@ export const BookingStatus = {
   PAID: 'COMPLETED',
 } as const;
 export type BookingStatus = (typeof BookingStatus)[keyof typeof BookingStatus];
+export type BookingSource = string;
 
 /** OpenAPI: CreateBookingRequest. POST /api/bookings. */
 export type CreateBookingDto = {
@@ -57,6 +67,7 @@ export type UpdateBookingDto = {
   internalNotes?: string;
   assignedBackofficeId?: string;
   accommodationDetails?: BookingAccommodationDto[];
+  services?: BookingServiceInputEntryDto[];
   destination?: string;
   departDate?: string;
   returnDate?: string;
@@ -101,9 +112,56 @@ export type TravelerEntryDto = {
   documentId?: string;
 };
 
-/** OpenAPI: AddBookingTravelerRequest. POST /api/bookings/:id/travelers body. */
+/** OpenAPI: AddTravelersRequest. POST /api/bookings/{id}/travelers body. */
 export type AddBookingTravelerRequestDto = {
   travelers: TravelerEntryDto[];
+};
+
+/** OpenAPI: UpdateTravelerRequest. PATCH /api/bookings/{id}/travelers/{travelerId} body. */
+export type UpdateBookingTravelerRequestDto = {
+  documentId?: string;
+};
+
+/** OpenAPI: InlineDocument (used by direct booking traveler inline person). */
+export type InlineDocumentDto = {
+  type?: 'INTL_PASSPORT' | 'NATIONAL_ID' | 'BIRTH_CERTIFICATE' | 'DRIVER_LICENSE' | 'OTHER';
+  series?: string;
+  number?: string;
+  expiryDate?: string;
+};
+
+/** OpenAPI: InlinePerson (used by direct booking traveler inline person). */
+export type InlinePersonDto = {
+  firstName: string;
+  lastName: string;
+  patronymic?: string;
+  dateOfBirth?: string;
+  citizenship?: string;
+  document?: InlineDocumentDto;
+};
+
+/** OpenAPI: DirectTravelerEntry. */
+export type DirectTravelerEntryDto = {
+  personId?: string;
+  person?: InlinePersonDto;
+  documentId?: string;
+  role?: 'LEAD' | 'COMPANION';
+};
+
+/** OpenAPI: DirectBookingRequest. POST /api/bookings/direct. */
+export type DirectBookingRequestDto = {
+  clientId: string;
+  destination?: string;
+  departDate?: string;
+  returnDate?: string;
+  adults?: number;
+  children?: number;
+  status?: BookingStatus;
+  accommodationDetails?: BookingAccommodationDto[];
+  services?: BookingServiceInputEntryDto[];
+  assignedBackofficeId?: string;
+  internalNotes?: string;
+  travelers?: DirectTravelerEntryDto[];
 };
 
 /** OpenAPI: BookingExpiringDocumentHint. */
@@ -140,6 +198,7 @@ export type BookingResponseDto = {
   supplierConfirmationNumber?: string;
   assignedBackofficeId?: string;
   assignedBackofficeName?: string;
+  source?: BookingSource;
   status: BookingStatus;
   cancellationReason?: string;
   internalNotes?: string;
@@ -147,8 +206,7 @@ export type BookingResponseDto = {
   documentsCount?: number;
   hasExpiringDocuments?: boolean;
   expiringDocuments?: BookingExpiringDocumentHintDto[];
-  travelers?: string;
-  bookingTravelers?: BookingTravelerResponseDto[];
+  travelers?: BookingTravelerResponseDto[] | string;
   clientPersonId?: string;
   createdById?: string;
   createdAt: string;

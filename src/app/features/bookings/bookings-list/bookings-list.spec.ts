@@ -36,7 +36,7 @@ describe('BookingsListComponent', () => {
         {
           provide: PermissionService,
           useValue: {
-            canCreateOffer: () => true,
+            canUpdateBookings: () => true,
           },
         },
       ],

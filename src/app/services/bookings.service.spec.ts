@@ -13,6 +13,7 @@ describe('BookingsService', () => {
     get: ReturnType<typeof vi.fn>;
     post: ReturnType<typeof vi.fn>;
     put: ReturnType<typeof vi.fn>;
+    patch: ReturnType<typeof vi.fn>;
     delete: ReturnType<typeof vi.fn>;
   };
 
@@ -21,6 +22,7 @@ describe('BookingsService', () => {
       get: vi.fn(() => of({ items: [], total: 0, page: 1, limit: 20 })),
       post: vi.fn(() => of({ id: 'doc-1' })),
       put: vi.fn(() => of({ id: 'booking-1' })),
+      patch: vi.fn(() => of({ id: 'traveler-1' })),
       delete: vi.fn(() => of(undefined)),
     };
 
@@ -45,6 +47,14 @@ describe('BookingsService', () => {
     expect(options.params.getAll('status')).toEqual(['CONFIRMED', 'CANCELLED']);
   });
 
+  it('forwards source filter query param', () => {
+    service.getList({ source: 'DIRECT' }).subscribe();
+
+    const [, options] = httpClient.get.mock.calls[0] as [string, { params: HttpParams }];
+
+    expect(options.params.get('source')).toBe('DIRECT');
+  });
+
   it('uploads booking document using multipart form data', () => {
     const file = new File(['test'], 'voucher.pdf', { type: 'application/pdf' });
 
@@ -66,6 +76,28 @@ describe('BookingsService', () => {
     );
     expect(httpClient.delete).toHaveBeenCalledWith(
       `${environment.baseUrl}/api/bookings/booking-1/documents/doc-1`,
+    );
+  });
+
+  it('calls direct booking endpoint with payload', () => {
+    const payload = { clientId: 'client-1', travelers: [{ role: 'LEAD' as const }] };
+
+    service.createDirect(payload).subscribe();
+
+    expect(httpClient.post).toHaveBeenCalledWith(
+      `${environment.baseUrl}/api/bookings/direct`,
+      payload,
+    );
+  });
+
+  it('calls booking traveler patch endpoint with expected URL', () => {
+    const payload = { documentId: 'doc-2' };
+
+    service.updateTraveler('booking-1', 'traveler-1', payload).subscribe();
+
+    expect(httpClient.patch).toHaveBeenCalledWith(
+      `${environment.baseUrl}/api/bookings/booking-1/travelers/traveler-1`,
+      payload,
     );
   });
 

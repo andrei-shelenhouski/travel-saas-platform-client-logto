@@ -2,7 +2,7 @@
   @if (showCreateBookingButton()) {
     <button color="primary" mat-flat-button type="button" (click)="navigateToCreateBooking()">
       <mat-icon>add</mat-icon>
-      <span>+Новое бронирование</span>
+      <span>Новое бронирование</span>
     </button>
   }
 </app-page-heading>
@@ -71,6 +71,21 @@
               [title]="expiringDocumentTooltip(element)"
             >
               Документ ⚠
+            </span>
+          } @else {
+            —
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="source">
+        <th *matHeaderCellDef mat-header-cell>Источник</th>
+        <td *matCellDef="let element" mat-cell>
+          @if (isDirectEntrySource(element)) {
+            <span
+              class="inline-flex rounded-full bg-indigo-100 px-2 py-1 text-xs font-semibold text-indigo-800"
+            >
+              Direct Entry
             </span>
           } @else {
             —

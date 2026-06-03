@@ -38,8 +38,10 @@ import { OperationsSectionComponent } from './operations-section/operations-sect
 import { TravelDetailsSectionComponent } from './travel-details-section/travel-details-section';
 
 import type {
+  BookingAccommodationDto,
   BookingDocumentResponseDto,
   BookingResponseDto,
+  BookingServiceInputEntryDto,
   BookingTravelerResponseDto,
   CustomFieldValueDto,
   InvoiceResponseDto,
@@ -124,9 +126,11 @@ export class BookingDetailComponent {
   readonly travelers = computed(() => this.allData.value()?.travelers ?? []);
   readonly canViewInvoices = computed(() => this.permissions.canViewInvoices());
   readonly canManageTravelers = computed(() => this.permissions.canUpdateBookings());
-  readonly showLegacyTravelers = computed(
-    () => this.travelers().length === 0 && Boolean(this.booking()?.travelers),
-  );
+  readonly showLegacyTravelers = computed(() => {
+    const legacyTravelers = this.booking()?.travelers;
+
+    return this.travelers().length === 0 && typeof legacyTravelers === 'string';
+  });
   readonly loading = computed(() => this.allData.isLoading());
   readonly loadError = computed(() => this.allData.error());
   readonly loadNotFound = computed(() => {
@@ -152,6 +156,8 @@ export class BookingDetailComponent {
   readonly customFieldsSaving = signal(false);
   readonly savingTravel = signal(false);
   readonly savingOps = signal(false);
+  readonly savingAccommodation = signal(false);
+  readonly savingServices = signal(false);
   readonly uploading = signal(false);
 
   readonly cancellationDialogOpen = signal(false);
@@ -294,6 +300,47 @@ export class BookingDetailComponent {
       });
   }
 
+  onSaveServices(services: BookingServiceInputEntryDto[]): void {
+    const b = this.booking();
+
+    if (!b) {
+      return;
+    }
+
+    this.savingServices.set(true);
+    this.bookingsService
+      .update(b.id, { services })
+      .pipe(finalize(() => this.savingServices.set(false)))
+      .subscribe({
+        next: (updated) => {
+          this.patchBooking(updated);
+          this.toast.showSuccess('Услуги обновлены');
+        },
+        error: (err) => this.toast.showError(err.error?.message ?? 'Не удалось сохранить услуги'),
+      });
+  }
+
+  onSaveAccommodation(details: BookingAccommodationDto[]): void {
+    const b = this.booking();
+
+    if (!b) {
+      return;
+    }
+
+    this.savingAccommodation.set(true);
+    this.bookingsService
+      .update(b.id, { accommodationDetails: details })
+      .pipe(finalize(() => this.savingAccommodation.set(false)))
+      .subscribe({
+        next: (updated) => {
+          this.patchBooking(updated);
+          this.toast.showSuccess('Проживание обновлено');
+        },
+        error: (err) =>
+          this.toast.showError(err.error?.message ?? 'Не удалось сохранить проживание'),
+      });
+  }
+
   onSaveOperations(dto: UpdateBookingDto): void {
     const b = this.booking();
 
@@ -416,6 +463,12 @@ export class BookingDetailComponent {
       },
       error: () => this.toast.showError('Не удалось удалить туриста'),
     });
+  }
+
+  isDirectEntrySource(booking: BookingResponseDto): boolean {
+    const source = booking.source?.trim().toUpperCase();
+
+    return source === 'DIRECT_ENTRY' || source === 'DIRECT';
   }
 
   private openAddTravelersDialog(
