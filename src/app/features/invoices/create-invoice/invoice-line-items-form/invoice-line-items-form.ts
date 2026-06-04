@@ -25,6 +25,7 @@ type InvoiceLineItemFormGroup = FormGroup<{
   selector: 'app-invoice-line-items-form',
   imports: [DragDropModule, ReactiveFormsModule, ...MAT_FORM_BUTTONS, ...MAT_ICONS],
   templateUrl: './invoice-line-items-form.html',
+  styleUrl: './invoice-line-items-form.scss',
 })
 export class InvoiceLineItemsFormComponent {
   /** The FormArray owned by the parent — mutations go directly through the shared reference. */

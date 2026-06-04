@@ -57,8 +57,8 @@
                   <span>Лиды</span>
                 </ng-template>
                 @if (leadsLoading()) {
-                  <div class="flex justify-center py-12">
-                    <mat-spinner aria-label="Загрузка лидов..." class="mx-auto" diameter="36" />
+                  <div class="client-tab-loading">
+                    <mat-spinner aria-label="Загрузка лидов..." diameter="36" />
                   </div>
                 } @else if (leads().length === 0) {
                   <div class="client-history-empty">
@@ -69,7 +69,7 @@
                     <table mat-table [dataSource]="leads()">
                       <ng-container matColumnDef="number">
                         <th *matHeaderCellDef mat-header-cell>Лид №</th>
-                        <td *matCellDef="let row" class="font-medium" mat-cell>{{ row.number }}</td>
+                        <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.number }}</td>
                       </ng-container>
                       <ng-container matColumnDef="status">
                         <th *matHeaderCellDef mat-header-cell>Статус</th>
@@ -101,8 +101,8 @@
                   <span>Запросы</span>
                 </ng-template>
                 @if (requestsLoading()) {
-                  <div class="flex justify-center py-12">
-                    <mat-spinner aria-label="Загрузка запросов..." class="mx-auto" diameter="36" />
+                  <div class="client-tab-loading">
+                    <mat-spinner aria-label="Загрузка запросов..." diameter="36" />
                   </div>
                 } @else if (requests().length === 0) {
                   <div class="client-history-empty">
@@ -113,7 +113,7 @@
                     <table mat-table [dataSource]="requests()">
                       <ng-container matColumnDef="destination">
                         <th *matHeaderCellDef mat-header-cell>Направление</th>
-                        <td *matCellDef="let row" class="font-medium" mat-cell>{{ row.destination ?? '—' }}</td>
+                        <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.destination ?? '—' }}</td>
                       </ng-container>
                       <ng-container matColumnDef="dates">
                         <th *matHeaderCellDef mat-header-cell>Даты</th>
@@ -155,8 +155,8 @@
                   <span>Предложения</span>
                 </ng-template>
                 @if (offersLoading()) {
-                  <div class="flex justify-center py-12">
-                    <mat-spinner aria-label="Загрузка предложений..." class="mx-auto" diameter="36" />
+                  <div class="client-tab-loading">
+                    <mat-spinner aria-label="Загрузка предложений..." diameter="36" />
                   </div>
                 } @else if (offers().length === 0) {
                   <div class="client-history-empty">
@@ -167,7 +167,7 @@
                     <table mat-table [dataSource]="offers()">
                       <ng-container matColumnDef="offerNumber">
                         <th *matHeaderCellDef mat-header-cell>Предложение №</th>
-                        <td *matCellDef="let row" class="font-medium" mat-cell>{{ row.offerNumber ?? '—' }}</td>
+                        <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.offerNumber ?? '—' }}</td>
                       </ng-container>
                       <ng-container matColumnDef="destination">
                         <th *matHeaderCellDef mat-header-cell>Направление</th>
@@ -213,8 +213,8 @@
                   <span>Бронирования</span>
                 </ng-template>
                 @if (bookingsLoading()) {
-                  <div class="flex justify-center py-12">
-                    <mat-spinner aria-label="Загрузка бронирований..." class="mx-auto" diameter="36" />
+                  <div class="client-tab-loading">
+                    <mat-spinner aria-label="Загрузка бронирований..." diameter="36" />
                   </div>
                 } @else if (bookings().length === 0) {
                   <div class="client-history-empty">
@@ -225,7 +225,7 @@
                     <table mat-table [dataSource]="bookings()">
                       <ng-container matColumnDef="bookingNumber">
                         <th *matHeaderCellDef mat-header-cell>Бронирование №</th>
-                        <td *matCellDef="let row" class="font-medium" mat-cell>{{ row.bookingNumber ?? '—' }}</td>
+                        <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.bookingNumber ?? '—' }}</td>
                       </ng-container>
                       <ng-container matColumnDef="destination">
                         <th *matHeaderCellDef mat-header-cell>Направление</th>
@@ -273,8 +273,8 @@
                   <span>Счета</span>
                 </ng-template>
                 @if (invoicesLoading()) {
-                  <div class="flex justify-center py-12">
-                    <mat-spinner aria-label="Загрузка счетов..." class="mx-auto" diameter="36" />
+                  <div class="client-tab-loading">
+                    <mat-spinner aria-label="Загрузка счетов..." diameter="36" />
                   </div>
                 } @else if (invoices().length === 0) {
                   <div class="client-history-empty">
@@ -285,7 +285,7 @@
                     <table mat-table [dataSource]="invoices()">
                       <ng-container matColumnDef="number">
                         <th *matHeaderCellDef mat-header-cell>Счёт №</th>
-                        <td *matCellDef="let row" class="font-medium" mat-cell>{{ row.number }}</td>
+                        <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.number }}</td>
                       </ng-container>
                       <ng-container matColumnDef="invoiceDate">
                         <th *matHeaderCellDef mat-header-cell>Дата счёта</th>
@@ -340,8 +340,8 @@
                   </div>
 
                   @if (contractsLoading()) {
-                    <div class="flex justify-center py-12">
-                      <mat-spinner aria-label="Загрузка договоров..." class="mx-auto" diameter="36" />
+                    <div class="client-tab-loading">
+                      <mat-spinner aria-label="Загрузка договоров..." diameter="36" />
                     </div>
                   } @else if (contracts().length === 0) {
                     <div class="client-history-empty">
@@ -361,7 +361,7 @@
                       <table class="contracts-table" mat-table [dataSource]="contracts()">
                         <ng-container matColumnDef="contractNumber">
                           <th *matHeaderCellDef mat-header-cell>Номер</th>
-                          <td *matCellDef="let row" class="font-medium" mat-cell>{{ row.contractNumber }}</td>
+                          <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.contractNumber }}</td>
                         </ng-container>
                         <ng-container matColumnDef="signedAt">
                           <th *matHeaderCellDef mat-header-cell>Дата подписания</th>
@@ -424,7 +424,7 @@
 
                     @if (contractsTotal() > contractsPageSize) {
                       <mat-paginator
-                        class="pt-2"
+                        class="contracts-paginator"
                         [length]="contractsTotal()"
                         [pageIndex]="contractsPageIndex()"
                         [pageSize]="contractsPageSize"
@@ -450,7 +450,7 @@
         }
       </app-page-content>
     } @else {
-      <p class="text-gray-500">Клиент не найден.</p>
+      <p class="client-not-found">Клиент не найден.</p>
     }
   </app-loading-state>
 </div>

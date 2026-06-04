@@ -1,1 +1,60 @@
 /* Create organization styles */
+:host {
+  display: block;
+}
+
+.create-org-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9fafb;
+  padding: 1rem;
+}
+
+.create-org-card {
+  width: 100%;
+  max-width: 24rem;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  padding: 1.5rem;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+.create-org-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-bottom: 1rem;
+}
+
+.create-org-back-icon {
+  font-size: 1rem;
+}
+
+.create-org-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 1rem;
+}
+
+.create-org-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.create-org-field {
+  width: 100%;
+}
+
+.create-org-error {
+  font-size: 0.875rem;
+  color: #dc2626;
+}
+
+.create-org-submit {
+  width: 100%;
+}

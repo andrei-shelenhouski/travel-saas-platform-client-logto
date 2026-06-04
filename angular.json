@@ -28,7 +28,6 @@
               }
             ],
             "styles": [
-              "tailwindcss/index.css",
               "src/material-theme.scss",
               "src/styles.scss"
             ],

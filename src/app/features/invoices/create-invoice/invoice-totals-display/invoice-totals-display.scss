@@ -1,0 +1,22 @@
+:host {
+  display: block;
+}
+
+.totals-display {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.totals-row {
+  margin: 0;
+
+  &--final {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #111827;
+  }
+}

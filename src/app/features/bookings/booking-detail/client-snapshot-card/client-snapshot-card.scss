@@ -1,0 +1,68 @@
+.snapshot-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 1rem;
+}
+
+.snapshot-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.snapshot-title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.snapshot-profile-link {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.snapshot-profile-icon {
+  font-size: 0.875rem !important;
+  width: 0.875rem !important;
+  height: 0.875rem !important;
+}
+
+.snapshot-data-grid {
+  margin-top: 0.75rem;
+  display: grid;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.snapshot-label {
+  color: #6b7280;
+}
+
+.snapshot-value {
+  margin: 0;
+  font-weight: 500;
+  color: #111827;
+}
+
+.snapshot-contact-link {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

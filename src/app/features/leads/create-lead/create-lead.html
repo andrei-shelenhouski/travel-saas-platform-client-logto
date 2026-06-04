@@ -1,19 +1,28 @@
-<app-page-heading title="Новый лид">
-  <a matButton="filled" routerLink="/app/leads">
-    <span aria-hidden="true" class="material-icons text-base">chevron_left</span>
-    <span>Назад к лидам</span>
-  </a>
+<app-page-heading backLink="/app/leads" title="Новый лид" [showBackButton]="true">
+  <button mat-stroked-button routerLink="/app/leads" type="button" [disabled]="loading()">
+    <span>Отмена</span>
+  </button>
+  <button color="primary" mat-flat-button type="submit" [disabled]="loading()">
+    @if (loading()) {
+      <span class="create-lead-submit-loading">
+        <mat-spinner diameter="16"></mat-spinner>
+        <span>Сохранение...</span>
+      </span>
+    } @else {
+      <span>Сохранить</span>
+    }
+  </button>
 </app-page-heading>
 
 <app-page-content>
-  <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+  <div class="create-lead-card">
     @if (error()) {
-      <p class="mb-4 text-sm text-red-600">{{ error() }}</p>
+      <p class="create-lead-error">{{ error() }}</p>
     }
 
-    <form class="grid grid-cols-1 gap-4 lg:grid-cols-2" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form class="create-lead-form" [formGroup]="form" (ngSubmit)="onSubmit()">
       @if (!isNewClientMode()) {
-        <mat-form-field appearance="outline" class="lg:col-span-1" subscriptSizing="dynamic">
+        <mat-form-field appearance="outline">
           <mat-label>Поиск клиента</mat-label>
           <input
             matInput
@@ -28,14 +37,10 @@
           <mat-hint>Минимум 2 символа</mat-hint>
         </mat-form-field>
       } @else {
-        <div
-          class="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700 lg:col-span-1"
-        >
-          Режим нового клиента включен.
-        </div>
+        <div class="create-lead-new-client-notice">Режим нового клиента включен.</div>
       }
 
-      <div class="flex items-center lg:justify-end">
+      <div class="create-lead-mode-toggle">
         @if (!isNewClientMode()) {
           <button
             mat-stroked-button
@@ -65,7 +70,7 @@
         @for (client of clientOptions(); track client.id) {
           <mat-option [value]="client">
             {{ clientDisplayFn(client) }}
-            <span class="ml-2 text-xs text-gray-500">{{ client.phone || client.email || '' }}</span>
+            <span class="client-option-meta">{{ client.phone || client.email || '' }}</span>
           </mat-option>
         }
 
@@ -74,7 +79,7 @@
         }
       </mat-autocomplete>
 
-      <mat-form-field appearance="outline" class="lg:col-span-1" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline">
         <mat-label>Имя клиента</mat-label>
         <input
           formControlName="clientName"
@@ -103,7 +108,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="lg:col-span-1" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline">
         <mat-label>Телефон</mat-label>
         <input
           formControlName="contactPhone"
@@ -121,7 +126,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="lg:col-span-1" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline">
         <mat-label>Email</mat-label>
         <input
           formControlName="contactEmail"
@@ -139,9 +144,8 @@
         }
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="lg:col-span-1 w-full" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline">
         <mat-label>Telegram</mat-label>
-        <mat-icon matPrefix>send</mat-icon>
         <input
           formControlName="contactTelegram"
           matInput
@@ -150,11 +154,10 @@
           [readonly]="contactLocked()"
         />
         @if (
-          form.controls.contactTelegram.hasError('maxlength') && form.controls.contactTelegram.touched
+          form.controls.contactTelegram.hasError('maxlength') &&
+          form.controls.contactTelegram.touched
         ) {
-          <mat-error
-            >Telegram username не должен превышать 60 символов</mat-error
-          >
+          <mat-error>Telegram username не должен превышать 60 символов</mat-error>
         }
         @if (hasServerError('contactTelegram')) {
           <mat-error>{{ serverErrorText('contactTelegram') }}</mat-error>
@@ -162,12 +165,12 @@
       </mat-form-field>
 
       @if (showContactGroupError()) {
-        <p class="lg:col-span-2 -mt-2 text-sm text-red-600">
+        <p class="create-lead-contact-error create-lead-full-row">
           Укажите хотя бы один контакт: телефон, email или Telegram.
         </p>
       }
 
-      <mat-form-field appearance="outline" class="lg:col-span-2" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline" class="create-lead-full-row">
         <mat-label>Направление</mat-label>
         <input formControlName="destination" id="destination" matInput type="text" />
         @if (form.controls.destination.hasError('required') && form.controls.destination.touched) {
@@ -178,7 +181,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline">
         <mat-label>Выезд с</mat-label>
         <input formControlName="departDateFrom" id="departDateFrom" matInput type="date" />
         @if (hasServerError('departDateFrom')) {
@@ -186,7 +189,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline">
         <mat-label>Выезд по</mat-label>
         <input formControlName="departDateTo" id="departDateTo" matInput type="date" />
         @if (form.hasError('departDateRangeInvalid') && form.controls.departDateTo.touched) {
@@ -197,7 +200,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline">
         <mat-label>Возвращение с</mat-label>
         <input formControlName="returnDateFrom" id="returnDateFrom" matInput type="date" />
         @if (form.hasError('returnBeforeDepart') && form.controls.returnDateFrom.touched) {
@@ -208,7 +211,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline">
         <mat-label>Возвращение по</mat-label>
         <input formControlName="returnDateTo" id="returnDateTo" matInput type="date" />
         @if (hasServerError('returnDateTo')) {
@@ -216,7 +219,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline">
         <mat-label>Взрослые</mat-label>
         <input formControlName="adults" id="adults" matInput min="1" type="number" />
         @if (form.controls.adults.hasError('min') && form.controls.adults.touched) {
@@ -227,7 +230,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field appearance="outline" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline">
         <mat-label>Дети</mat-label>
         <input formControlName="children" id="children" matInput min="0" type="number" />
         @if (form.controls.children.hasError('min') && form.controls.children.touched) {
@@ -238,7 +241,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="lg:col-span-2" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline" class="create-lead-full-row">
         <mat-label>Заметки</mat-label>
         <textarea formControlName="notes" id="notes" matInput rows="3"></textarea>
         @if (hasServerError('notes')) {
@@ -247,7 +250,7 @@
       </mat-form-field>
 
       @if (showAssignAgent()) {
-        <mat-form-field appearance="outline" class="lg:col-span-2" subscriptSizing="dynamic">
+        <mat-form-field appearance="outline" class="create-lead-full-row">
           <mat-label>Назначить</mat-label>
           <mat-select formControlName="assignedAgentId" id="assignedAgentId">
             <mat-option value="">Не назначено</mat-option>
@@ -261,13 +264,13 @@
         </mat-form-field>
       }
 
-      <div class="flex flex-wrap gap-3 pt-2 lg:col-span-2">
+      <div class="create-lead-form-actions create-lead-full-row">
         <button mat-stroked-button routerLink="/app/leads" type="button" [disabled]="loading()">
           <span>Отмена</span>
         </button>
         <button color="primary" mat-flat-button type="submit" [disabled]="loading()">
           @if (loading()) {
-            <span class="inline-flex items-center gap-2">
+            <span class="create-lead-submit-loading">
               <mat-spinner diameter="16"></mat-spinner>
               <span>Сохранение...</span>
             </span>

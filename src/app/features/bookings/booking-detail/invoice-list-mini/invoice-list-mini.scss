@@ -1,0 +1,111 @@
+.invoice-mini-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 1rem;
+}
+
+.invoice-mini-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.invoice-mini-title {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.invoice-mini-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.invoice-mini-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 9999px;
+  border: 2px solid currentcolor;
+  border-top-color: transparent;
+  animation: invoice-mini-spin 0.75s linear infinite;
+}
+
+@keyframes invoice-mini-spin {
+  to { transform: rotate(360deg); }
+}
+
+.invoice-mini-error {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: #dc2626;
+}
+
+.invoice-mini-list {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.invoice-mini-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #f3f4f6;
+  border-radius: 0.375rem;
+  padding: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  transition: background 0.1s;
+
+  &:hover {
+    background: #f9fafb;
+  }
+}
+
+.invoice-mini-item-info {
+  min-width: 0;
+}
+
+.invoice-mini-item-number {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+.invoice-mini-item-meta {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.invoice-mini-item-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.invoice-mini-item-total {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.invoice-mini-status-badge {
+  border-radius: 9999px;
+  padding: 0.125rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.invoice-mini-empty {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}

@@ -10,9 +10,8 @@
   }
 </app-page-heading>
 
-<div class="space-y-4 p-4">
+<div class="invoices-list-content">
   <app-invoice-summary-cards
-    class="m-4"
     [currency]="summary().currency"
     [drafts]="summary().drafts"
     [overdueAmount]="summary().overdueAmount"
@@ -38,7 +37,7 @@
   />
 
   @if (error()) {
-    <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
+    <p class="invoices-list-error" role="alert">{{ error() }}</p>
   }
 
   <div class="table-wrap">
@@ -114,12 +113,11 @@
       ></tr>
       <tr *matNoDataRow>
         <td [attr.colspan]="displayedColumns.length">
-          <div class="m-10 align-middle text-center">
+          <div class="invoices-list-empty">
             @if (loading()) {
-              <p class="pb-4">Загрузка счетов...</p>
+              <p class="invoices-list-loading-text">Загрузка счетов...</p>
               <mat-spinner
                 aria-label="Загрузка счетов"
-                class="mx-auto"
                 diameter="36"
               />
             } @else {

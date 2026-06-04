@@ -1,1 +1,43 @@
 /* Callback page styles */
+:host {
+  display: block;
+}
+
+.callback-page {
+  min-height: 100vh;
+  background: linear-gradient(
+    to bottom right,
+    var(--color-primary-600),
+    var(--color-primary-500),
+    var(--color-primary-700)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.callback-content {
+  text-align: center;
+  color: #ffffff;
+}
+
+.callback-icon-wrap {
+  margin-bottom: 1rem;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.callback-icon {
+  width: 4rem;
+  height: 4rem;
+  margin-inline: auto;
+}
+
+.callback-message {
+  font-size: 1.25rem;
+  font-weight: 500;
+}

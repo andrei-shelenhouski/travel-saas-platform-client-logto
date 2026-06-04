@@ -1,6 +1,6 @@
 {
-  "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.type": "newLineEachExpressionAfterCountLimitExceptIfOnlyOne",
-  "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.count": 120,
+  "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.type": "newLineEachExpressionAfterCountLimit",
+  "importSorter.importStringConfiguration.maximumNumberOfImportExpressionsPerLine.count": 9999,
   "importSorter.importStringConfiguration.trailingComma": "multiLine",
   "importSorter.generalConfiguration.sortOnBeforeSave": true,
   "importSorter.sortConfiguration.customOrderingRules.rules": [
@@ -33,6 +33,10 @@
   "terminal.integrated.fontFamily": "monospace",
   "editor.tabSize": 2,
   "editor.formatOnSave": true,
+  "eslint.format.enable": true,
+  "[typescript]": {
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  },
   "[json]": {
     "editor.defaultFormatter": "vscode.json-language-features"
   },

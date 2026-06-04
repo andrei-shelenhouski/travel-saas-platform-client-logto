@@ -25,6 +25,6 @@ describe('InvoiceStatusChipComponent', () => {
     const chip = fixture.nativeElement.querySelector('span') as HTMLSpanElement;
 
     expect(chip.textContent?.trim()).toBe('Отменен');
-    expect(chip.className).toContain('line-through');
+    expect(chip.className).toContain('invoice-status-chip--cancelled');
   });
 });

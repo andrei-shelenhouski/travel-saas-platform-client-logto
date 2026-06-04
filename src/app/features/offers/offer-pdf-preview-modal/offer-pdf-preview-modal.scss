@@ -2,6 +2,41 @@
   display: block;
 }
 
+.pdf-dialog-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pdf-dialog-title-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pdf-dialog-title-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pdf-spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 9999px;
+  animation: offer-pdf-spin 0.7s linear infinite;
+}
+
+@keyframes offer-pdf-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .pdf-container {
   min-height: 50vh;
   max-height: 80vh;

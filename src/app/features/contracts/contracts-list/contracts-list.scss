@@ -13,3 +13,29 @@
     text-decoration: underline;
   }
 }
+
+.contracts-list-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.contracts-list-error {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #dc2626;
+}
+
+.contracts-list-empty {
+  padding: 2.5rem;
+  text-align: center;
+
+  mat-spinner {
+    margin: 0 auto;
+  }
+}
+
+.contracts-list-loading-text {
+  margin-bottom: 1rem;
+}

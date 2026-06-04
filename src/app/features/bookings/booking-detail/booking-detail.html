@@ -50,11 +50,9 @@
               <h2 class="booking-header-title">{{ b.number }}</h2>
               <p class="booking-header-subtitle"><span>ID:</span> {{ b.id }}</p>
             </div>
-            <div class="flex items-center gap-2">
+            <div class="booking-status-row">
               @if (isDirectEntrySource(b)) {
-                <span
-                  class="inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-medium text-indigo-800"
-                >
+                <span class="booking-direct-entry-badge">
                   Direct Entry
                 </span>
               }
@@ -64,7 +62,7 @@
         </section>
 
         <div class="booking-grid">
-          <div class="booking-grid-left space-y-4">
+          <div class="booking-grid-left">
             <app-client-snapshot-card [clientId]="b.clientId" [snapshot]="b.clientSnapshot" />
 
             <app-travel-details-section
@@ -83,9 +81,9 @@
                 (removeTraveler)="onRemoveTraveler($event)"
               />
             } @else {
-              <section class="rounded-lg border border-gray-200 bg-white p-4">
-                <h3 class="mb-2 text-sm font-semibold text-gray-900">Туристы</h3>
-                <p class="text-sm text-gray-700">{{ b.travelers }}</p>
+              <section class="booking-section-card">
+                <h3 class="booking-section-title">Туристы</h3>
+                <p class="booking-section-text">{{ b.travelers }}</p>
               </section>
             }
 
@@ -113,7 +111,7 @@
             />
           </div>
 
-          <div class="booking-grid-right space-y-4">
+          <div class="booking-grid-right">
             @if (canViewInvoices()) {
               <app-invoice-list-mini [booking]="b" [invoices]="invoices()" />
             }
@@ -138,8 +136,8 @@
         }
       </app-page-content>
     } @else {
-      <section class="rounded-lg border border-gray-200 bg-white p-6 text-center">
-        <p class="text-gray-500">Бронирование не найдено</p>
+      <section class="booking-not-found-card">
+        <p class="booking-not-found-text">Бронирование не найдено</p>
       </section>
     }
   </app-loading-state>

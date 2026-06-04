@@ -1,5 +1,10 @@
 @use '@angular/material' as mat;
 
+.layout-container {
+  height: 100vh;
+  width: 100vw;
+}
+
 .sidebar {
   color-scheme: dark;
   width: 15rem;
@@ -16,4 +21,160 @@
     gap: 0.95rem;
     margin: 1.2rem 1rem 1rem;
   }
+
+  .logo-image {
+    width: 100%;
+  }
+}
+
+.sidebar-nav {
+  min-height: 0;
+  flex: 1;
+  padding-inline: 0.5rem;
+}
+
+.nav-item-section-margin {
+  margin-top: 1rem;
+}
+
+.drawer-content-wrap {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.app-header {
+  display: flex;
+  height: 3.5rem;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e5e7eb;
+  background-color: #ffffff;
+  padding-inline: 1rem;
+}
+
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.user-avatar {
+  height: 2.25rem;
+  width: 2.25rem;
+  border-radius: 9999px;
+  object-fit: cover;
+  box-shadow: 0 0 0 2px #e5e7eb;
+}
+
+.user-avatar-initials {
+  display: flex;
+  height: 2.25rem;
+  width: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: var(--color-primary-100);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  box-shadow: 0 0 0 2px #e5e7eb;
+}
+
+.user-display-name {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.role-badge {
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+
+  &--admin {
+    background-color: #ede9fe;
+    color: #5b21b6;
+  }
+
+  &--agent {
+    background-color: #fef3c7;
+    color: #92400e;
+  }
+
+  &--viewer {
+    background-color: #e0f2fe;
+    color: #075985;
+  }
+}
+
+.logout-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logout-icon {
+  font-size: 1rem;
+}
+
+.org-menu-loading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.org-menu-spinner {
+  font-size: 1rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.org-item-content {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.org-item-info {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.org-item-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.org-item-role {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.org-item-active {
+  font-weight: 600;
+}
+
+.org-item-check {
+  flex-shrink: 0;
+  color: var(--color-primary-600);
+}
+
+.app-main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: auto;
 }

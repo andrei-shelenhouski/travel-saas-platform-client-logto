@@ -6,20 +6,61 @@ import { RouterModule } from '@angular/router';
   selector: 'app-loading-state',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatButtonModule, RouterModule],
+  styles: `
+    .loading-center {
+      display: flex;
+      justify-content: center;
+      padding-block: 3rem;
+    }
+
+    .loading-spinner {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      border: 2px solid #e5e7eb;
+      border-top-color: var(--mat-sys-primary, #4f46e5);
+      animation: spin 0.75s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .error-section {
+      border: 1px solid #fecaca;
+      border-radius: 0.5rem;
+      background: #fef2f2;
+      padding: 1.5rem;
+    }
+
+    .error-title {
+      margin: 0;
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #7f1d1d;
+    }
+
+    .error-text {
+      margin: 0.5rem 0 0;
+      font-size: 0.875rem;
+      color: #991b1b;
+    }
+
+    .error-back {
+      margin-top: 1rem;
+    }
+  `,
   template: `
     @if (loading()) {
-      <div class="flex justify-center py-12">
-        <div
-          aria-hidden="true"
-          class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-        ></div>
+      <div class="loading-center">
+        <div aria-hidden="true" class="loading-spinner"></div>
       </div>
     } @else if (error()) {
-      <section class="rounded-lg border border-red-200 bg-red-50 p-6">
-        <h2 class="text-lg font-semibold text-red-900">{{ errorTitle() }}</h2>
-        <p class="mt-2 text-sm text-red-800">{{ error() }}</p>
+      <section class="error-section">
+        <h2 class="error-title">{{ errorTitle() }}</h2>
+        <p class="error-text">{{ error() }}</p>
         @if (errorBackLink()) {
-          <a class="mt-4" mat-button [routerLink]="errorBackLink()">{{ errorBackLabel() }}</a>
+          <a class="error-back" mat-button [routerLink]="errorBackLink()">{{ errorBackLabel() }}</a>
         }
       </section>
     } @else {

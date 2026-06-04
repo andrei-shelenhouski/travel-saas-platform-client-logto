@@ -1,0 +1,41 @@
+.document-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid #f3f4f6;
+  border-radius: 0.375rem;
+  padding-inline: 0.75rem;
+  padding-block: 0.5rem;
+}
+
+.document-row-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.document-row-icon {
+  flex-shrink: 0;
+  color: #9ca3af;
+}
+
+.document-row-details {
+  min-width: 0;
+}
+
+.document-row-name {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+.document-row-meta {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #6b7280;
+}

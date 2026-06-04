@@ -1,8 +1,8 @@
 <h2 mat-dialog-title>Назначить лид</h2>
 
 <mat-dialog-content>
-  <div class="pt-4">
-    <mat-form-field appearance="outline" class="w-full">
+  <div class="assign-dialog-content">
+    <mat-form-field appearance="outline" class="assign-search-field">
       <mat-label>Поиск агента</mat-label>
       <input
         #assignSearchInput
@@ -23,11 +23,11 @@
           <span class="agent-avatar">{{ getAgentInitials(agent.name) }}</span>
           <span class="assign-agent-text">
             <span>{{ agent.name }}</span>
-            <span class="text-xs text-gray-500">{{ agent.email }}</span>
+            <span class="assign-agent-email">{{ agent.email }}</span>
           </span>
         </button>
       } @empty {
-        <p class="text-sm text-gray-500">Активные агенты не найдены.</p>
+        <p class="assign-empty-message">Активные агенты не найдены.</p>
       }
     </div>
   </div>

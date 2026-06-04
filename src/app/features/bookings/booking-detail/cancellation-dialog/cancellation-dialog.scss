@@ -1,0 +1,38 @@
+.cancellation-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgb(0 0 0 / 0.5);
+}
+
+.cancellation-dialog-panel {
+  margin-inline: 1rem;
+  width: 100%;
+  max-width: 28rem;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  padding: 1.5rem;
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.cancellation-dialog-title {
+  margin: 0 0 1rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.cancellation-dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cancellation-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}

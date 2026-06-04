@@ -2,4 +2,9 @@
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+
+  padding: 1rem;
+  background-color: #fff;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 0.5rem;
 }

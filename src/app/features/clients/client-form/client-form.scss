@@ -56,6 +56,94 @@
   }
 }
 
+.client-form-body {
+  padding: 1rem;
+}
+
+.client-form-loading {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.client-form-spinner {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 9999px;
+  border: 2px solid var(--color-primary);
+  border-top-color: transparent;
+  animation: cf-spin 0.75s linear infinite;
+}
+
+@keyframes cf-spin {
+  to { transform: rotate(360deg); }
+}
+
+.client-form-error {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  color: #dc2626;
+}
+
+.client-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.client-form-type-label {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.client-type-grid {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.client-form-two-col {
+  display: grid;
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.client-form-consent-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.client-form-consent-date {
+  width: 12rem;
+}
+
+.client-form-commission-field {
+  width: 12rem;
+}
+
+.client-form-actions {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.client-form-back-icon {
+  font-size: 1rem;
+}
+
+@media (min-width: 640px) {
+  .client-type-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .client-form-two-col {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .agent-requisites-section {
   display: flex;
   flex-direction: column;

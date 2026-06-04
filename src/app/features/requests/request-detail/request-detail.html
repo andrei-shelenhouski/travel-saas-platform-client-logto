@@ -48,9 +48,7 @@
               <div class="request-data-row">
                 <dt>Статус</dt>
                 <dd>
-                  <span
-                    class="inline-block rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800"
-                  >
+                  <span class="request-status-badge">
                     {{ r.status }}
                   </span>
                 </dd>
@@ -58,7 +56,7 @@
               @if (r.notes) {
                 <div class="request-data-row">
                   <dt>Заметки</dt>
-                  <dd class="whitespace-pre-wrap">{{ r.notes }}</dd>
+                  <dd class="request-data-notes">{{ r.notes }}</dd>
                 </div>
               }
               @if (r.leadId) {
@@ -71,14 +69,14 @@
               }
               <div class="request-data-row">
                 <dt>ID менеджера</dt>
-                <dd class="font-mono text-xs text-gray-600">{{ r.managerId }}</dd>
+                <dd class="request-manager-id">{{ r.managerId }}</dd>
               </div>
             </dl>
           </app-detail-section>
         </div>
       </app-page-content>
     } @else {
-      <p class="m-4 text-sm text-gray-500">Запрос не найден.</p>
+      <p class="request-not-found">Запрос не найден.</p>
     }
   </app-loading-state>
 </div>

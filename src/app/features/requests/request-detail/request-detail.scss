@@ -62,3 +62,33 @@
 .request-link:hover {
   text-decoration: underline;
 }
+
+.request-status-badge {
+  display: inline-block;
+  border-radius: 9999px;
+  background: #f3f4f6;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.request-manager-id {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: #4b5563;
+  margin: 0;
+}
+
+.request-data-notes {
+  margin: 0;
+  color: #111827;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+}
+
+.request-not-found {
+  margin: 1rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}

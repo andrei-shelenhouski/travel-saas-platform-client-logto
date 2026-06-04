@@ -1,1 +1,61 @@
 /* Home page styles */
+:host {
+  display: block;
+}
+
+.home-page {
+  min-height: 100vh;
+  background: linear-gradient(
+    to bottom right,
+    var(--color-primary-600),
+    var(--color-primary-500),
+    var(--color-primary-700)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.home-content {
+  max-width: 56rem;
+  width: 100%;
+}
+
+.home-card {
+  background-color: #ffffff;
+  border-radius: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+  overflow: hidden;
+}
+
+.home-card-header {
+  background: linear-gradient(to right, var(--color-primary-500), var(--color-primary-700));
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.home-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.025em;
+
+  @media (min-width: 768px) {
+    font-size: 3rem;
+  }
+}
+
+.home-subtitle {
+  color: var(--color-primary-100);
+  font-size: 1.125rem;
+}
+
+.home-footer {
+  text-align: center;
+  margin-top: 2rem;
+  color: #ffffff;
+  font-size: 0.875rem;
+  opacity: 0.8;
+}

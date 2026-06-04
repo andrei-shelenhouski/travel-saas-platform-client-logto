@@ -59,7 +59,7 @@ const SOURCE_BADGE_CONFIG: Record<string, LeadSourceBadgeConfig> = {
   styleUrl: './lead-source-badge.scss',
 })
 export class LeadSourceBadgeComponent {
-  readonly source = input<LeadSource | string | null | undefined>(null);
+  readonly source = input<LeadSource | null | undefined>(null);
   readonly size = input<LeadSourceBadgeSize>('default');
 
   protected readonly badge = computed(() => {
@@ -72,7 +72,7 @@ export class LeadSourceBadgeComponent {
     return SOURCE_BADGE_CONFIG[source] ?? this.buildFallbackBadge(source);
   });
 
-  private buildFallbackBadge(source: string): LeadSourceBadgeConfig {
+  private buildFallbackBadge(source: LeadSource): LeadSourceBadgeConfig {
     return {
       label: this.humanizeSource(source),
       color: '#334155',

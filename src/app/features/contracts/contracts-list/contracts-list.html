@@ -6,15 +6,14 @@
   }
 </app-page-heading>
 
-<div class="p-4">
+<div class="contracts-list-content">
   <app-contracts-filter-bar
-    class="m-4"
     [value]="activeFilter()"
     (filterChange)="onFilterChange($event)"
   />
 
   @if (error()) {
-    <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
+    <p class="contracts-list-error" role="alert">{{ error() }}</p>
   }
 
   <div class="table-wrap">
@@ -169,10 +168,10 @@
       <tr *matRowDef="let row; columns: displayedColumns" class="table-row" mat-row></tr>
       <tr *matNoDataRow>
         <td [attr.colspan]="displayedColumns.length">
-          <div class="m-10 align-middle text-center">
+          <div class="contracts-list-empty">
             @if (loading()) {
-              <p class="pb-4">Загрузка договоров...</p>
-              <mat-spinner aria-label="Загрузка договоров" class="mx-auto" diameter="36" />
+              <p class="contracts-list-loading-text">Загрузка договоров...</p>
+              <mat-spinner aria-label="Загрузка договоров" diameter="36" />
             } @else {
               <p>Договоры по текущим фильтрам не найдены</p>
             }

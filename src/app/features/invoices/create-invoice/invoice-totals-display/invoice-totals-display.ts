@@ -12,6 +12,7 @@ export type InvoiceTotals = {
   selector: 'app-invoice-totals-display',
   imports: [],
   templateUrl: './invoice-totals-display.html',
+  styleUrl: './invoice-totals-display.scss',
 })
 export class InvoiceTotalsDisplayComponent {
   readonly totals = input.required<InvoiceTotals>();

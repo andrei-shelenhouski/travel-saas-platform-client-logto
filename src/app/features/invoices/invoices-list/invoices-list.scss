@@ -13,3 +13,29 @@
     text-decoration: underline;
   }
 }
+
+.invoices-list-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.invoices-list-error {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #dc2626;
+}
+
+.invoices-list-empty {
+  padding: 2.5rem;
+  text-align: center;
+
+  mat-spinner {
+    margin: 0 auto;
+  }
+}
+
+.invoices-list-loading-text {
+  margin-bottom: 1rem;
+}

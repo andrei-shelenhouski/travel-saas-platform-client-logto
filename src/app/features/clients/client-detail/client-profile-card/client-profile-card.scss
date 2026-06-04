@@ -43,3 +43,23 @@
   color: #111827;
   font-size: 0.875rem;
 }
+
+.client-notes-cell {
+  white-space: pre-wrap;
+}
+
+.client-id-cell {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: #4b5563;
+}
+
+.client-tags-section {
+  margin-top: 1rem;
+}
+
+.client-tags-loading {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}

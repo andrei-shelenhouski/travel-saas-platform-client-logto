@@ -131,6 +131,7 @@
 
 .request-notes-expanded {
   -webkit-line-clamp: unset;
+  white-space: pre-wrap;
   word-break: break-word;
 }
 
@@ -143,6 +144,12 @@
 
 .delete-tooltip-wrapper {
   cursor: not-allowed;
+}
+
+.requests-empty-message {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
 }
 
 .request-header {

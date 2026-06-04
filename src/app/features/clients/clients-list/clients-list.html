@@ -1,18 +1,15 @@
-<app-page-heading
-  subtitle="Всего: {{ totalElements() }} клиентов"
-  title="Клиенты"
->
+<app-page-heading subtitle="Всего: {{ totalElements() }} клиентов" title="Клиенты">
   <button color="primary" mat-flat-button type="button" (click)="navigateToCreateClient()">
     <mat-icon>add</mat-icon>
     <span>Новый клиент</span>
   </button>
 </app-page-heading>
 
-<div class="p-4">
-  <app-client-filter-bar class="m-4" (filterChange)="onFilterChange($event)" />
+<div class="clients-list-body">
+  <app-client-filter-bar (filterChange)="onFilterChange($event)" />
 
   @if (error()) {
-    <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
+    <p class="clients-list-error" role="alert">{{ error() }}</p>
   }
 
   <div class="table-wrap">
@@ -20,9 +17,9 @@
       <ng-container matColumnDef="name">
         <th *matHeaderCellDef mat-header-cell>Имя</th>
         <td *matCellDef="let element" mat-cell>
-          <span class="block text-sm font-semibold">{{ displayName(element) }}</span>
+          <span class="cell-primary">{{ displayName(element) }}</span>
           @if (displaySubtitle(element); as subtitle) {
-            <span class="block text-xs text-gray-500">{{ subtitle }}</span>
+            <span class="cell-secondary">{{ subtitle }}</span>
           }
         </td>
       </ng-container>
@@ -68,21 +65,16 @@
         class="table-row"
         mat-row
         (click)="navigateToClient(row.id)"
+        (keydown.enter)="navigateToClient(row.id)"
       ></tr>
       <tr *matNoDataRow>
         <td [attr.colspan]="displayedColumns.length">
-          <div class="m-10 align-middle text-center">
+          <div class="table-empty-state">
             @if (loading()) {
-              <p class="pb-4">Загрузка клиентов...</p>
-              <mat-spinner
-                aria-label="Загрузка клиентов"
-                class="mx-auto"
-                diameter="36"
-              />
+              <p class="clients-list-loading-text">Загрузка клиентов...</p>
+              <mat-spinner aria-label="Загрузка клиентов" diameter="36" />
             } @else {
-              <p>
-                Упс, клиенты не найдены. Попробуйте изменить фильтры.
-              </p>
+              <p>Упс, клиенты не найдены. Попробуйте изменить фильтры.</p>
 
               <span class="or-divider">или</span>
 
@@ -104,14 +96,12 @@
     </table>
   </div>
 
-  @if (totalElements() > pageSize) {
-    <mat-paginator
-      aria-label="Пагинация клиентов"
-      [length]="totalElements()"
-      [pageIndex]="currentPage()"
-      [pageSize]="pageSize"
-      [showFirstLastButtons]="true"
-      (page)="onPageChange($event)"
-    />
-  }
+  <mat-paginator
+    aria-label="Пагинация клиентов"
+    [length]="totalElements()"
+    [pageIndex]="currentPage()"
+    [pageSize]="pageSize"
+    [showFirstLastButtons]="true"
+    (page)="onPageChange($event)"
+  />
 </div>

@@ -1,0 +1,54 @@
+.booking-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 1rem;
+}
+
+.booking-header-left {
+  min-width: 0;
+}
+
+.booking-header-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.booking-back-link {
+  color: #6b7280;
+
+  &:hover {
+    color: var(--color-primary);
+  }
+}
+
+.booking-back-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+}
+
+.booking-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.booking-id {
+  margin: 0.125rem 0 0;
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.booking-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}

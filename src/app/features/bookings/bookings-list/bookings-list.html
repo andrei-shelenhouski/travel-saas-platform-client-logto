@@ -7,16 +7,15 @@
   }
 </app-page-heading>
 
-<div class="space-y-4 p-4">
+<div class="bookings-list-body">
   <app-booking-filter-bar
-    class="m-4"
     [staffOptions]="staffOptions()"
     [value]="filterValue()"
     (filterChange)="onFilterChange($event)"
   />
 
   @if (error()) {
-    <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
+    <p class="bookings-list-error" role="alert">{{ error() }}</p>
   }
 
   <div class="table-wrap">
@@ -67,7 +66,7 @@
         <td *matCellDef="let element" mat-cell>
           @if (hasExpiringDocumentBadge(element)) {
             <span
-              class="inline-flex rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-800"
+              class="status-badge status-badge--expiring"
               [title]="expiringDocumentTooltip(element)"
             >
               Документ ⚠
@@ -82,9 +81,7 @@
         <th *matHeaderCellDef mat-header-cell>Источник</th>
         <td *matCellDef="let element" mat-cell>
           @if (isDirectEntrySource(element)) {
-            <span
-              class="inline-flex items-center rounded-full bg-indigo-100 px-2.5 py-0.5 text-xs font-medium text-indigo-800"
-            >
+            <span class="status-badge status-badge--direct-entry">
               Direct Entry
             </span>
           } @else {
@@ -118,10 +115,10 @@
       ></tr>
       <tr *matNoDataRow>
         <td [attr.colspan]="displayedColumns.length">
-          <div class="m-10 align-middle text-center">
+          <div class="table-empty-state">
             @if (loading()) {
-              <p class="pb-4">Загрузка бронирований...</p>
-              <mat-spinner aria-label="Загрузка бронирований" class="mx-auto" diameter="36" />
+              <p class="table-empty-state-message">Загрузка бронирований...</p>
+              <mat-spinner aria-label="Загрузка бронирований" diameter="36" />
             } @else {
               <p>Нет бронирований по текущим фильтрам</p>
             }

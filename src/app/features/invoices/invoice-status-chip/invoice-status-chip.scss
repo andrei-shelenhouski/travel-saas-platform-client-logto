@@ -1,3 +1,44 @@
 :host {
   display: inline-flex;
 }
+
+.invoice-status-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  padding: 0.125rem 0.625rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+
+  &--draft {
+    background: #f3f4f6;
+    color: #374151;
+  }
+
+  &--issued {
+    background: #e0f2fe;
+    color: #0369a1;
+  }
+
+  &--partially-paid {
+    background: #ccfbf1;
+    color: #0f766e;
+  }
+
+  &--paid {
+    background: #dcfce7;
+    color: #15803d;
+  }
+
+  &--overdue {
+    background: #fee2e2;
+    color: #b91c1c;
+  }
+
+  &--cancelled {
+    background: #f3f4f6;
+    color: #6b7280;
+    text-decoration: line-through;
+  }
+}

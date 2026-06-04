@@ -1,8 +1,6 @@
-<h2 class="flex items-center justify-between gap-4" mat-dialog-title>
-  <span class="min-w-0 truncate"
-    >Счёт №{{ data.invoiceNumber }}</span
-  >
-  <div class="flex items-center gap-2">
+<h2 class="pdf-dialog-title" mat-dialog-title>
+  <span class="pdf-dialog-title-text">Счёт №{{ data.invoiceNumber }}</span>
+  <div class="pdf-dialog-title-actions">
     <button
       mat-stroked-button
       type="button"
@@ -26,16 +24,13 @@
   <div class="pdf-container">
     @if (loading()) {
       <div aria-live="polite" class="pdf-state" role="status">
-        <div
-          aria-hidden="true"
-          class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-        ></div>
+        <div aria-hidden="true" class="pdf-spinner"></div>
       </div>
     } @else if (error()) {
       <div aria-live="assertive" class="pdf-state pdf-error" role="alert">
         <span>{{ errorMessage() }}</span>
         <button
-          class="mt-2"
+          class="pdf-error-retry"
           mat-stroked-button
           type="button"
           (click)="retry()"

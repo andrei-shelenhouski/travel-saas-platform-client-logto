@@ -1,1 +1,36 @@
+.clients-list-body {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
 
+.clients-list-error {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  color: #dc2626;
+}
+
+.cell-primary {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.cell-secondary {
+  display: block;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.table-empty-state {
+  margin: 2.5rem;
+  text-align: center;
+
+  mat-spinner {
+    margin: 0 auto;
+  }
+}
+
+.clients-list-loading-text {
+  margin-bottom: 1rem;
+}

@@ -1,6 +1,6 @@
-<section class="rounded-lg border border-gray-200 bg-white p-4">
-  <div class="flex items-center justify-between">
-    <h2 class="text-sm font-semibold text-gray-900">Проживание</h2>
+<section class="accommodation-card">
+  <div class="accommodation-header">
+    <h2 class="accommodation-title">Проживание</h2>
     @if (editable() && !editing()) {
       <button mat-icon-button type="button" (click)="startEdit()">
         <mat-icon>edit</mat-icon>
@@ -9,14 +9,12 @@
   </div>
 
   @if (editing()) {
-    <div class="mt-3">
+    <div class="accommodation-edit-body">
       @if (editRows().length === 0) {
-        <p class="text-sm text-gray-500">Нет записей</p>
+        <p class="accommodation-empty">Нет записей</p>
       } @else {
         @for (row of editRows(); track $index) {
-          <div
-            class="flex items-center justify-between border-b border-gray-100 py-2 text-sm last:border-none"
-          >
+          <div class="accommodation-edit-row">
             <span>{{ row.hotelName || '—' }}, {{ row.roomType || '—' }}</span>
             <button mat-icon-button type="button" (click)="removeRow($index)">
               <mat-icon>delete</mat-icon>
@@ -25,38 +23,38 @@
         }
       }
 
-      <form class="mt-3 space-y-3" [formGroup]="rowForm">
-        <div class="grid gap-3 sm:grid-cols-2">
-          <mat-form-field class="w-full">
+      <form class="accommodation-add-form" [formGroup]="rowForm">
+        <div class="accommodation-form-grid">
+          <mat-form-field>
             <mat-label>Отель</mat-label>
             <input formControlName="hotelName" matInput />
           </mat-form-field>
 
-          <mat-form-field class="w-full">
+          <mat-form-field>
             <mat-label>Тип номера</mat-label>
             <input formControlName="roomType" matInput />
           </mat-form-field>
         </div>
 
-        <div class="grid gap-3 sm:grid-cols-2">
-          <mat-form-field class="w-full">
+        <div class="accommodation-form-grid">
+          <mat-form-field>
             <mat-label>Питание</mat-label>
             <input formControlName="mealPlan" matInput />
           </mat-form-field>
 
-          <mat-form-field class="w-full">
+          <mat-form-field>
             <mat-label>Стоимость</mat-label>
             <input formControlName="total" matInput type="number" />
           </mat-form-field>
         </div>
 
-        <div class="grid gap-3 sm:grid-cols-2">
-          <mat-form-field class="w-full">
+        <div class="accommodation-form-grid">
+          <mat-form-field>
             <mat-label>Заезд</mat-label>
             <input formControlName="checkinDate" matInput type="date" />
           </mat-form-field>
 
-          <mat-form-field class="w-full">
+          <mat-form-field>
             <mat-label>Выезд</mat-label>
             <input formControlName="checkoutDate" matInput type="date" />
           </mat-form-field>
@@ -67,7 +65,7 @@
         </div>
       </form>
 
-      <div class="mt-3 flex justify-end gap-2">
+      <div class="accommodation-form-actions">
         <button mat-button type="button" (click)="cancelEdit()">Отмена</button>
         <button color="primary" mat-flat-button type="button" [disabled]="saving()" (click)="onSave()">
           <span>Сохранить</span>
@@ -75,37 +73,37 @@
       </div>
     </div>
   } @else {
-    <div class="mt-3 overflow-x-auto">
-      <table class="min-w-full text-sm">
+    <div class="accommodation-table-wrap">
+      <table class="accommodation-table">
         <thead>
-          <tr class="border-b text-left text-gray-500">
-            <th class="px-2 py-2 font-medium">Отель</th>
-            <th class="px-2 py-2 font-medium">Номер</th>
-            <th class="px-2 py-2 font-medium">Питание</th>
-            <th class="px-2 py-2 font-medium">Заезд</th>
-            <th class="px-2 py-2 font-medium">Выезд</th>
-            <th class="px-2 py-2 font-medium text-right">Ночей</th>
-            <th class="px-2 py-2 font-medium text-right">Стоимость</th>
+          <tr class="accommodation-thead-row">
+            <th class="accommodation-th">Отель</th>
+            <th class="accommodation-th">Номер</th>
+            <th class="accommodation-th">Питание</th>
+            <th class="accommodation-th">Заезд</th>
+            <th class="accommodation-th">Выезд</th>
+            <th class="accommodation-th accommodation-th--right">Ночей</th>
+            <th class="accommodation-th accommodation-th--right">Стоимость</th>
           </tr>
         </thead>
         <tbody>
           @for (row of rows(); track $index) {
-            <tr class="border-b border-gray-100 last:border-none">
-              <td class="px-2 py-2">{{ row.hotelName || '—' }}</td>
-              <td class="px-2 py-2">{{ row.roomType || '—' }}</td>
-              <td class="px-2 py-2">{{ row.mealPlan || '—' }}</td>
-              <td class="px-2 py-2">
+            <tr class="accommodation-tbody-row">
+              <td class="accommodation-td">{{ row.hotelName || '—' }}</td>
+              <td class="accommodation-td">{{ row.roomType || '—' }}</td>
+              <td class="accommodation-td">{{ row.mealPlan || '—' }}</td>
+              <td class="accommodation-td">
                 {{ row.checkinDate ? (row.checkinDate | date: 'mediumDate') : '—' }}
               </td>
-              <td class="px-2 py-2">
+              <td class="accommodation-td">
                 {{ row.checkoutDate ? (row.checkoutDate | date: 'mediumDate') : '—' }}
               </td>
-              <td class="px-2 py-2 text-right">{{ row.nights ?? '—' }}</td>
-              <td class="px-2 py-2 text-right">{{ row.total ?? '—' }}</td>
+              <td class="accommodation-td accommodation-td--right">{{ row.nights ?? '—' }}</td>
+              <td class="accommodation-td accommodation-td--right">{{ row.total ?? '—' }}</td>
             </tr>
           } @empty {
             <tr>
-              <td class="px-2 py-3 text-gray-500" colspan="7">Нет данных о проживании</td>
+              <td class="accommodation-td accommodation-td--empty" colspan="7">Нет данных о проживании</td>
             </tr>
           }
         </tbody>

@@ -5,16 +5,15 @@
 
 </app-page-heading>
 
-<div class="space-y-4 p-4">
+<div class="requests-list-content">
   <app-request-filter-bar
-    class="m-4"
     [managerOptions]="managerOptions()"
     [value]="filterValue()"
     (filterChange)="onFilterChange($event)"
   />
 
   @if (error()) {
-    <p class="text-sm text-red-600" role="alert">{{ error() }}</p>
+    <p class="requests-list-error" role="alert">{{ error() }}</p>
   }
 
   <div class="table-wrap">
@@ -47,7 +46,7 @@
         <td *matCellDef="let element" mat-cell>
           {{ element.adults || '—' }}
           @if (element.children) {
-            <span class="text-gray-500"
+            <span class="requests-list-children"
               >/ {{ element.children }} детей</span
             >
           }
@@ -86,12 +85,11 @@
       ></tr>
       <tr *matNoDataRow>
         <td [attr.colspan]="displayedColumns.length">
-          <div class="m-10 align-middle text-center">
+          <div class="requests-list-empty">
             @if (loading()) {
-              <p class="pb-4">Загрузка заявок...</p>
+              <p class="requests-list-loading-text">Загрузка заявок...</p>
               <mat-spinner
                 aria-label="Загрузка заявок"
-                class="mx-auto"
                 diameter="36"
               />
             } @else {
