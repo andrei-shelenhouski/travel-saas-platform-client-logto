@@ -1,6 +1,9 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-export type StatusChipConfig = Record<string, { label: string; backgroundColor: string; textColor?: string }>;
+export type StatusChipConfig = Record<
+  string,
+  { label: string; backgroundColor: string; textColor?: string }
+>;
 
 @Component({
   selector: 'app-status-chip',

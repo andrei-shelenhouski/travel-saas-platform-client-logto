@@ -25,9 +25,9 @@ const OFFER_STATUS_CLASS: Record<string, string> = {
 export class LeadDetailOffersSectionComponent {
   readonly offers = input<OfferResponseDto[]>([]);
   readonly canCreateOffer = input<boolean>(false);
-  readonly requestId = input.required<string>();
+  readonly leadId = input.required<string>();
 
-  readonly createOfferClicked = output<string>();
+  readonly createOfferClicked = output<void>();
 
   protected getOfferStatusClass(status: string | null | undefined): string {
     if (!status) {

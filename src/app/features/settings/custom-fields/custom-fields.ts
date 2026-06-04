@@ -14,7 +14,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { CustomFieldDefinitionDialogComponent } from './custom-field-definition-dialog/custom-field-definition-dialog';
 
-// eslint-disable-next-line max-len
 import type { CustomFieldDefinitionDialogResult } from './custom-field-definition-dialog/custom-field-definition-dialog';
 
 import type {

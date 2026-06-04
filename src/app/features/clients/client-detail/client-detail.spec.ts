@@ -21,7 +21,6 @@ import type {
   InvoiceResponseDto,
   LeadResponseDto,
   OfferSummaryDto,
-  TravelRequestSummaryDto,
 } from '@app/shared/models';
 
 describe('ClientDetailComponent', () => {
@@ -30,7 +29,6 @@ describe('ClientDetailComponent', () => {
   let mockClientsService: {
     getById: ReturnType<typeof vi.fn>;
     getLeads: ReturnType<typeof vi.fn>;
-    getRequests: ReturnType<typeof vi.fn>;
     getOffers: ReturnType<typeof vi.fn>;
     getBookings: ReturnType<typeof vi.fn>;
     getInvoices: ReturnType<typeof vi.fn>;
@@ -91,7 +89,6 @@ describe('ClientDetailComponent', () => {
     mockClientsService = {
       getById: vi.fn(() => of(mockClient)),
       getLeads: vi.fn(() => of({ items: [], totalItems: 0, totalPages: 0 })),
-      getRequests: vi.fn(() => of({ items: [], totalItems: 0, totalPages: 0 })),
       getOffers: vi.fn(() => of({ items: [], totalItems: 0, totalPages: 0 })),
       getBookings: vi.fn(() => of({ items: [], totalItems: 0, totalPages: 0 })),
       getInvoices: vi.fn(() => of({ items: [], totalItems: 0, totalPages: 0 })),
@@ -195,14 +192,6 @@ describe('ClientDetailComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/leads', 'lead-1']);
   });
 
-  it('should navigate to request detail when row is clicked', () => {
-    const request: Partial<TravelRequestSummaryDto> = { id: 'req-1', leadId: 'lead-1' };
-
-    component.goToRequest(request as TravelRequestSummaryDto);
-
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/requests', 'req-1']);
-  });
-
   it('should navigate to offer detail when row is clicked', () => {
     const offer: Partial<OfferSummaryDto> = { id: 'offer-1' };
 
@@ -227,24 +216,6 @@ describe('ClientDetailComponent', () => {
     expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/invoices', 'invoice-1']);
   });
 
-  it('should load the next tab data on tab change', () => {
-    const paramMap = convertToParamMap({ id: 'client-1' });
-
-    paramMapSubject.next(paramMap);
-    fixture.detectChanges();
-
-    vi.mocked(mockClientsService.getRequests).mockClear();
-
-    component.onSelectedTabChange(1); // Switch to requests tab
-    fixture.detectChanges();
-
-    // This test checks if switching tabs triggers data loading.
-    // The new implementation uses rxResource with trigger signals.
-    // The service is called reactively, not directly in onSelectedTabChange.
-    // We should verify the trigger was set rather than the service call.
-    expect(mockClientsService.getRequests).toHaveBeenCalledWith('client-1', { page: 1, limit: 20 });
-  });
-
   it('loads contracts when B2B contracts tab is selected', async () => {
     const paramMap = convertToParamMap({ id: 'client-1' });
 
@@ -260,7 +231,7 @@ describe('ClientDetailComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    component.onSelectedTabChange(5);
+    component.onSelectedTabChange(4);
     fixture.detectChanges();
 
     expect(mockContractsService.getByClient).toHaveBeenCalledWith('client-1', {

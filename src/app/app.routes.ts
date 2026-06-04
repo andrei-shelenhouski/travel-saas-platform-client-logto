@@ -201,21 +201,6 @@ export const routes: Routes = [
             (m) => m.ContractsListComponent,
           ),
       },
-      // Requests: /app/requests/:id
-      {
-        path: 'requests/:id',
-        loadComponent: () =>
-          import('@app/features/requests/request-detail/request-detail').then(
-            (m) => m.RequestDetailComponent,
-          ),
-      },
-      {
-        path: 'requests',
-        loadComponent: () =>
-          import('@app/features/requests/requests-list/requests-list').then(
-            (m) => m.RequestsListComponent,
-          ),
-      },
       // Offers: /app/offers/:id (more specific first)
       {
         path: 'offers/new',

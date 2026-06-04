@@ -384,8 +384,8 @@
                 <span class="invoice-detail-label">Остаток:</span>
                 <span
                   class="invoice-detail-value--medium"
-                  [class.invoice-remaining--paid]="remainingAmount() <= 0"
                   [class.invoice-remaining--due]="remainingAmount() > 0"
+                  [class.invoice-remaining--paid]="remainingAmount() <= 0"
                 >
                   {{ remainingAmount() | number: '1.2-2' }} {{ inv.currency }}
                 </span>

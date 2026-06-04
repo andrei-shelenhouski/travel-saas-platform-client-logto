@@ -41,7 +41,6 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
     label: 'Договоры',
     requiredPermission: PermissionKey.CONTRACTS_VIEW,
   },
-  { path: '/app/requests', icon: 'alt_route', label: 'Запросы' },
   { path: '/app/offers', icon: 'send', label: 'Предложения' },
   { path: '/app/bookings', icon: 'flight', label: 'Бронирования' },
   {

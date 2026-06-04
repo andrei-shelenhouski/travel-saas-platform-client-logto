@@ -310,19 +310,11 @@
           </div>
         </section>
 
-        <app-lead-detail-requests-section
+        <app-lead-detail-offers-section
           [canCreateOffer]="permissions.canCreateOffer()"
-          [deletingRequestId]="deletingRequestId()"
-          [filteredAgents]="filteredAgents()"
-          [offersByRequest]="offersByRequest()"
-          [requests]="requests()"
-          [savingRequest]="savingRequest()"
-          [showAddButton]="showAddTravelRequest()"
-          [updatingRequest]="updatingRequest()"
-          (createOfferClicked)="openNewOffer($event)"
-          (requestCreated)="handleRequestCreated($event)"
-          (requestDeleted)="handleRequestDeleted($event)"
-          (requestUpdated)="handleRequestUpdated($event)"
+          [leadId]="l.id"
+          [offers]="offers()"
+          (createOfferClicked)="openNewOffer()"
         />
 
         <section class="lead-card lead-activity-card">

@@ -22,7 +22,6 @@ import { OfferTimelineComponent } from '@app/features/offers/offer-timeline/offe
 import { BookingsService } from '@app/services/bookings.service';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
-import { RequestsService } from '@app/services/requests.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import {
   DetailSectionComponent,
@@ -37,7 +36,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import type {
   OfferResponseDto,
   PaginatedBookingResponseDto,
-  RequestResponseDto,
   UpdateOfferStatusDto,
 } from '@app/shared/models';
 
@@ -90,7 +88,6 @@ export class OfferDetailComponent {
   private readonly router = inject(Router);
   private readonly bookingsService = inject(BookingsService);
   private readonly offersService = inject(OffersService);
-  private readonly requestsService = inject(RequestsService);
   private readonly dialog = inject(MatDialog);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly snackBar = inject(MatSnackBar);
@@ -116,19 +113,6 @@ export class OfferDetailComponent {
   protected readonly hasError = computed(
     () => this.data.error() !== undefined && this.data.error() !== null,
   );
-
-  protected readonly request = rxResource<RequestResponseDto, string | null>({
-    params: (): string | null => this.offer()?.requestId ?? null,
-    stream: ({ params }) => {
-      const requestId = params;
-
-      if (requestId === null) {
-        return EMPTY;
-      }
-
-      return this.requestsService.getById(requestId);
-    },
-  });
 
   protected readonly loadErrorMessage = computed(() => {
     const error = this.data.error() as LoadError | undefined;

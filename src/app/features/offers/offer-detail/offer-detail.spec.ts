@@ -10,7 +10,6 @@ import { OfferPdfPreviewModalComponent } from '@app/features/offers/offer-pdf-pr
 import { BookingsService } from '@app/services/bookings.service';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
-import { RequestsService } from '@app/services/requests.service';
 
 import { OfferDetailComponent } from './offer-detail';
 
@@ -26,28 +25,6 @@ describe('OfferDetailComponent', () => {
     delete: vi.fn(() => of(void 0)),
     revise: vi.fn(() => of(createOffer({ id: 'offer-2', status: 'DRAFT' }))),
     getPdf: vi.fn(() => of(new Blob(['pdf'], { type: 'application/pdf' }))),
-  };
-
-  const requestsServiceMock = {
-    getById: vi.fn(() =>
-      of({
-        id: 'request-1',
-        leadId: 'lead-1',
-        managerId: null,
-        managerName: null,
-        destination: 'Italy',
-        departDate: null,
-        returnDate: null,
-        adults: null,
-        children: null,
-        notes: null,
-        status: 'OPEN',
-        offersCount: 1,
-        createdById: 'user-1',
-        createdAt: '2026-04-01T00:00:00.000Z',
-        updatedAt: '2026-04-01T00:00:00.000Z',
-      }),
-    ),
   };
 
   const bookingsServiceMock = {
@@ -80,7 +57,6 @@ describe('OfferDetailComponent', () => {
         },
         { provide: OffersService, useValue: offersServiceMock },
         { provide: BookingsService, useValue: bookingsServiceMock },
-        { provide: RequestsService, useValue: requestsServiceMock },
         { provide: PermissionService, useValue: permissionServiceMock },
         { provide: MatSnackBar, useValue: snackBarMock },
       ],

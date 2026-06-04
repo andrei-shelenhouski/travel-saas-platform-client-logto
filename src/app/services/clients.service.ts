@@ -18,7 +18,6 @@ import type {
   PaginatedInvoiceResponseDto,
   PaginatedLeadResponseDto,
   PaginatedOfferSummaryDto,
-  PaginatedTravelRequestSummaryDto,
   UpdateClientDto,
   UpdateContactDto,
 } from '@app/shared/models';
@@ -147,23 +146,6 @@ export class ClientsService {
 
     return this.http
       .get<PaginatedBookingSummaryDto>(`${CLIENTS_URL}/${clientId}/bookings`, {
-        params: httpParams,
-      })
-      .pipe(this.errorHandler.catch());
-  }
-
-  /** GET /api/clients/{id}/requests. Returns paginated travel-request summaries for the client. */
-  getRequests(
-    clientId: string,
-    params?: { page?: number; limit?: number },
-  ): Observable<PaginatedTravelRequestSummaryDto> {
-    const httpParams = new HttpParamsBuilder()
-      .set('page', params?.page)
-      .set('limit', params?.limit)
-      .build();
-
-    return this.http
-      .get<PaginatedTravelRequestSummaryDto>(`${CLIENTS_URL}/${clientId}/requests`, {
         params: httpParams,
       })
       .pipe(this.errorHandler.catch());

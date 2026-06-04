@@ -473,59 +473,6 @@ export type OrganizationApiKey = {
   createdBy: string;
 };
 
-// ----- Requests -----
-
-export const RequestStatus = {
-  OPEN: 'OPEN',
-  QUOTED: 'QUOTED',
-  CLOSED: 'CLOSED',
-} as const;
-export type RequestStatus = (typeof RequestStatus)[keyof typeof RequestStatus];
-
-/** OpenAPI: CreateTravelRequestRequest. POST /api/requests body. */
-export type CreateRequestDto = {
-  leadId: string;
-  destination?: string;
-  departDate?: string;
-  returnDate?: string;
-  adults?: number;
-  children?: number;
-  notes?: string;
-  managerId?: string;
-};
-
-/** OpenAPI: TravelRequestResponse. */
-export type RequestResponseDto = {
-  id: string;
-  leadId: string;
-  managerId: string | null;
-  managerName: string | null;
-  destination: string | null;
-  departDate: string | null;
-  returnDate: string | null;
-  adults: number | null;
-  children: number | null;
-  notes: string | null;
-  status: RequestStatus;
-  offersCount: number;
-  createdById: string;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type PaginatedRequestResponseDto = PaginatedDto<RequestResponseDto>;
-
-/** OpenAPI: UpdateTravelRequestRequest. PUT /api/requests/{id} body. */
-export type UpdateRequestDto = {
-  destination?: string;
-  departDate?: string;
-  returnDate?: string;
-  adults?: number;
-  children?: number;
-  notes?: string;
-  managerId?: string;
-};
-
 // ----- Activities -----
 
 export type CreateActivityDto = {

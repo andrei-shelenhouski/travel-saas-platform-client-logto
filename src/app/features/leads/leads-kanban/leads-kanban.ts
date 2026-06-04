@@ -145,6 +145,7 @@ export class LeadsKanbanComponent {
     WON: [],
     LOST: [],
     EXPIRED: [],
+    CONVERTED: [],
   });
 
   readonly showAgentFilter = computed(() => this.permissionService.canViewAllLeads());
@@ -242,6 +243,7 @@ export class LeadsKanbanComponent {
         WON: [],
         LOST: [],
         EXPIRED: [],
+        CONVERTED: [],
       };
 
       for (const lead of value.items) {
@@ -356,7 +358,7 @@ export class LeadsKanbanComponent {
   protected openDeleteDialog(event: Event, lead: LeadResponseDto): void {
     event.stopPropagation();
 
-    const hasOffers = (lead.travelRequests ?? []).some((req) => (req.offersCount ?? 0) > 0);
+    const hasOffers = (lead.offers ?? []).length > 0;
 
     const dialogRef = this.dialog.open(DeleteLeadDialogComponent, {
       width: '480px',

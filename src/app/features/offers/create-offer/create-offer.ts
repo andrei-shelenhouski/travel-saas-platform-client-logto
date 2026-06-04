@@ -35,9 +35,9 @@ import {
   toSafeNumber,
 } from '@app/features/offers/offer-builder.utils';
 import { OfferPdfPreviewModalComponent } from '@app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal';
+import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
-import { RequestsService } from '@app/services/requests.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { FormSectionComponent, PageContentComponent } from '@app/shared/components';
 import {
@@ -49,7 +49,7 @@ import {
 } from '@app/shared/material-imports';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import type { CreateOfferDto, RequestResponseDto, UpdateOfferDto } from '@app/shared/models';
+import type { CreateOfferDto, LeadResponseDto, UpdateOfferDto } from '@app/shared/models';
 type AccommodationFormGroup = FormGroup<{
   hotelName: FormControl<string>;
   roomType: FormControl<string>;
@@ -118,30 +118,30 @@ const SERVICE_TYPE_OPTIONS = [
 export class CreateOfferComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly requestsService = inject(RequestsService);
+  private readonly leadsService = inject(LeadsService);
   private readonly organizationSettingsService = inject(OrganizationSettingsService);
   private readonly offersService = inject(OffersService);
   private readonly dialog = inject(MatDialog);
   private readonly snackBar = inject(MatSnackBar);
   private readonly fb = inject(FormBuilder);
 
-  readonly request = signal<RequestResponseDto | null>(null);
-  readonly requestLoading = signal(true);
-  readonly requestPrefillWarning = signal('');
+  readonly lead = signal<LeadResponseDto | null>(null);
+  readonly leadLoading = signal(true);
+  readonly leadPrefillWarning = signal('');
   readonly saving = signal(false);
   readonly previewing = signal(false);
   readonly error = signal('');
-  readonly requestId = signal<string | null>(null);
+  readonly leadId = signal<string | null>(null);
   readonly createdDraftId = signal<string | null>(null);
   readonly destinationNotSetLabel = 'Направление не указано';
-  readonly prefilledRequestCode = computed(() => {
-    const request = this.request();
+  readonly prefilledLeadNumber = computed(() => {
+    const lead = this.lead();
 
-    if (!request) {
+    if (!lead) {
       return null;
     }
 
-    return `TR-${this.getRequestCodeSuffix(request.id)}`;
+    return lead.number;
   });
 
   readonly form: OfferBuilderFormGroup = this.fb.nonNullable.group({
@@ -191,11 +191,11 @@ export class CreateOfferComponent implements OnInit {
   readonly serviceTypeOptions = SERVICE_TYPE_OPTIONS;
 
   ngOnInit(): void {
-    const requestId = this.route.snapshot.queryParamMap.get('requestId');
+    const leadId = this.route.snapshot.queryParamMap.get('leadId');
 
-    if (requestId) {
-      this.requestId.set(requestId);
-      this.requestPrefillWarning.set('');
+    if (leadId) {
+      this.leadId.set(leadId);
+      this.leadPrefillWarning.set('');
     }
 
     this.organizationSettingsService.get().subscribe({
@@ -214,33 +214,33 @@ export class CreateOfferComponent implements OnInit {
       },
     });
 
-    if (!requestId) {
-      this.requestLoading.set(false);
+    if (!leadId) {
+      this.leadLoading.set(false);
 
       return;
     }
 
-    this.requestsService
-      .getById(requestId)
-      .pipe(finalize(() => this.requestLoading.set(false)))
+    this.leadsService
+      .getById(leadId)
+      .pipe(finalize(() => this.leadLoading.set(false)))
       .subscribe({
-        next: (request) => {
-          this.request.set(request);
-          this.requestPrefillWarning.set('');
+        next: (lead) => {
+          this.lead.set(lead);
+          this.leadPrefillWarning.set('');
           this.form.patchValue({
-            destination: request.destination ?? '',
-            departDate: request.departDate ?? '',
-            returnDate: request.returnDate ?? '',
-            adults: request.adults ?? 1,
-            children: request.children ?? 0,
+            destination: lead.destination ?? '',
+            departDate: lead.departDateFrom ?? '',
+            returnDate: lead.returnDateFrom ?? '',
+            adults: lead.adults ?? 1,
+            children: lead.children ?? 0,
           });
 
           const firstAccommodation = this.accommodationsArray.at(0);
 
           if (firstAccommodation) {
             firstAccommodation.patchValue({
-              checkinDate: request.departDate ?? '',
-              checkoutDate: request.returnDate ?? '',
+              checkinDate: lead.departDateFrom ?? '',
+              checkoutDate: lead.returnDateFrom ?? '',
             });
           }
 
@@ -248,15 +248,13 @@ export class CreateOfferComponent implements OnInit {
         },
         error: (err: unknown) => {
           if (err instanceof HttpErrorResponse && err.status === 404) {
-            this.request.set(null);
-            this.requestPrefillWarning.set(
-              'Запрос на поездку не найден. Заполните детали поездки вручную и продолжайте создание предложения.',
-            );
+            this.lead.set(null);
+            this.leadPrefillWarning.set('Лид не найден. Заполните детали вручную.');
 
             return;
           }
 
-          this.error.set(this.getErrorMessage(err, 'Не удалось загрузить данные запроса.'));
+          this.error.set(this.getErrorMessage(err, 'Не удалось загрузить данные лида.'));
         },
       });
   }
@@ -352,9 +350,9 @@ export class CreateOfferComponent implements OnInit {
       return;
     }
 
-    const requestId = this.requestId();
+    const leadId = this.leadId();
 
-    if (!requestId) {
+    if (!leadId) {
       this.snackBar.open('Сохраните черновик перед предпросмотром.', 'Close', { duration: 5000 });
 
       return;
@@ -386,7 +384,7 @@ export class CreateOfferComponent implements OnInit {
           },
         });
     } else {
-      const dto = this.buildCreateDto(requestId);
+      const dto = this.buildCreateDto(leadId);
       this.offersService
         .create(dto)
         .pipe(finalize(() => this.previewing.set(false)))
@@ -409,10 +407,10 @@ export class CreateOfferComponent implements OnInit {
       return;
     }
 
-    const requestId = this.requestId();
+    const leadId = this.leadId();
 
-    if (!requestId) {
-      this.error.set('Невозможно сохранить: это предложение не привязано к запросу на тур.');
+    if (!leadId) {
+      this.error.set('Невозможно сохранить: это предложение не привязано к лиду.');
 
       return;
     }
@@ -443,7 +441,7 @@ export class CreateOfferComponent implements OnInit {
         complete: () => this.saving.set(false),
       });
     } else {
-      const dto = this.buildCreateDto(requestId);
+      const dto = this.buildCreateDto(leadId);
       this.offersService.create(dto).subscribe({
         next: (created) => {
           this.form.markAsPristine();
@@ -472,12 +470,12 @@ export class CreateOfferComponent implements OnInit {
     });
   }
 
-  private buildCreateDto(requestId: string): CreateOfferDto {
+  private buildCreateDto(leadId: string): CreateOfferDto {
     const v = this.form.getRawValue();
     const pricing = this.pricingSummary();
 
     return {
-      requestId,
+      leadId,
       language: v.language,
       currency: v.currency,
       ...(v.destination?.trim() && { destination: v.destination.trim() }),
@@ -608,12 +606,5 @@ export class CreateOfferComponent implements OnInit {
     }
 
     return fallbackMessage;
-  }
-
-  private getRequestCodeSuffix(requestId: string): string {
-    const parts = requestId.split('-').filter(Boolean);
-    const suffix = parts.at(-1) ?? requestId;
-
-    return suffix.toUpperCase();
   }
 }

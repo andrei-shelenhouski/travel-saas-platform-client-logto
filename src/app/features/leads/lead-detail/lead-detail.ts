@@ -25,17 +25,16 @@ import {
   DeleteLeadDialogResult,
 } from '@app/features/leads/delete-lead-dialog/delete-lead-dialog';
 import { LeadDetailHeaderComponent } from '@app/features/leads/lead-detail/lead-detail-header/lead-detail-header';
-// eslint-disable-next-line max-len
-import { LeadDetailRequestsSectionComponent } from '@app/features/leads/lead-detail/lead-detail-requests-section/lead-detail-requests-section';
+
+import { LeadDetailOffersSectionComponent } from '@app/features/leads/lead-detail/lead-detail-offers-section/lead-detail-offers-section';
 import { LinkLeadClientDialogComponent } from '@app/features/leads/link-lead-client-dialog/link-lead-client-dialog';
-// eslint-disable-next-line max-len
+
 import { PromoteLeadClientDialogComponent } from '@app/features/leads/promote-lead-client-dialog/promote-lead-client-dialog';
 import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { RequestsService } from '@app/services/requests.service';
 import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
 import { LoadingStateComponent, PageContentComponent } from '@app/shared/components';
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
@@ -51,13 +50,8 @@ import type {
   CustomFieldValueDto,
   LeadResponseDto,
   OfferResponseDto,
-  RequestResponseDto,
 } from '@app/shared/models';
 import type { LeadAction } from './lead-detail-header/lead-detail-header';
-import type {
-  CreateRequestPayload,
-  UpdateRequestPayload,
-} from './lead-detail-requests-section/lead-detail-requests-section';
 
 type LeadWithBooking = LeadResponseDto & {
   bookingId?: string | null;
@@ -67,7 +61,6 @@ type LeadWithBooking = LeadResponseDto & {
 
 type LeadDetailLoadData = {
   lead: LeadResponseDto;
-  requests: RequestResponseDto[];
   offers: OfferResponseDto[];
   activities: ActivityListResponseDto;
 };
@@ -97,7 +90,7 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     CustomFieldsSectionComponent,
     ClientTypeBadgeComponent,
     LeadDetailHeaderComponent,
-    LeadDetailRequestsSectionComponent,
+    LeadDetailOffersSectionComponent,
     MarkdownPipe,
     LoadingStateComponent,
     PageContentComponent,
@@ -111,7 +104,6 @@ export class LeadDetailComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly dialog = inject(MatDialog);
   private readonly leadsService = inject(LeadsService);
-  private readonly requestsService = inject(RequestsService);
   private readonly offersService = inject(OffersService);
   private readonly membersService = inject(OrganizationMembersService);
   private readonly customFieldsService = inject(CustomFieldsService);
@@ -121,8 +113,6 @@ export class LeadDetailComponent {
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
   private readonly travelDetailsData = signal<LeadResponseDto | null>(null);
-  private readonly requestsData = signal<RequestResponseDto[]>([]);
-  private readonly requestsDataInitialized = signal(false);
 
   private readonly data = rxResource<LeadDetailLoadData, string | null>({
     params: (): string | null => this.routeId() ?? null,
@@ -135,9 +125,6 @@ export class LeadDetailComponent {
 
       return forkJoin({
         lead: this.leadsService.getById(id),
-        requests: this.requestsService
-          .getList({ leadId: id, limit: 100 })
-          .pipe(map((res) => res.items)),
         offers: this.offersService
           .getList({ leadId: id, limit: 100 })
           .pipe(map((res) => res.items)),
@@ -169,18 +156,10 @@ export class LeadDetailComponent {
   });
 
   protected readonly customFieldsSection = viewChild(CustomFieldsSectionComponent);
-  protected readonly requestsSection = viewChild(LeadDetailRequestsSectionComponent);
 
   protected readonly lead = computed(
     () => this.travelDetailsData() ?? this.data.value()?.lead ?? null,
   );
-  protected readonly requests = computed(() => {
-    if (this.requestsDataInitialized()) {
-      return this.requestsData();
-    }
-
-    return this.data.value()?.requests ?? [];
-  });
   protected readonly offers = computed(() => this.data.value()?.offers ?? []);
   protected readonly customFields = computed(() => {
     return (this.customFieldsData.value() ?? []).map((field, index) => ({
@@ -240,27 +219,6 @@ export class LeadDetailComponent {
     return l ? this.isTerminalStatus(l.status) : true;
   });
 
-  protected readonly showAddTravelRequest = computed(() => !this.isTerminalLead());
-
-  protected readonly offersByRequest = computed(() => {
-    const mapByRequest = new Map<string, OfferResponseDto[]>();
-
-    for (const offer of this.offers()) {
-      const requestId = offer.requestId;
-
-      if (!requestId) {
-        continue;
-      }
-
-      const list = mapByRequest.get(requestId) ?? [];
-
-      list.push(offer);
-      mapByRequest.set(requestId, list);
-    }
-
-    return mapByRequest;
-  });
-
   protected readonly bookingInfo = computed(() => {
     const lead = this.lead() as LeadWithBooking | null; // NOSONAR — narrowing to extended type
 
@@ -299,9 +257,6 @@ export class LeadDetailComponent {
   protected readonly assignLoading = signal(false);
   protected readonly savingTravelDetails = signal(false);
   protected readonly editingTravelDetails = signal(false);
-  protected readonly savingRequest = signal(false);
-  protected readonly updatingRequest = signal(false);
-  protected readonly deletingRequestId = signal<string | null>(null);
 
   protected readonly travelForm = this.formBuilder.group(
     {
@@ -364,8 +319,6 @@ export class LeadDetailComponent {
       }
 
       this.travelDetailsData.set(value.lead);
-      this.requestsData.set(value.requests);
-      this.requestsDataInitialized.set(true);
       this.activityPage.set(1);
       this.activityTotal.set(value.activities.total ?? value.activities.items.length);
 
@@ -376,7 +329,6 @@ export class LeadDetailComponent {
       this.activityItems.set(ordered);
       this.patchTravelForm(value.lead);
       this.editingTravelDetails.set(false);
-      this.requestsSection()?.resetState();
     });
   }
 
@@ -638,97 +590,15 @@ export class LeadDetailComponent {
       });
   }
 
-  protected handleRequestCreated(payload: CreateRequestPayload): void {
+  protected openNewOffer(): void {
     const lead = this.lead();
 
-    if (!lead || this.savingRequest()) {
+    if (!lead) {
       return;
     }
 
-    this.savingRequest.set(true);
-    this.requestsService
-      .create({
-        leadId: lead.id,
-        destination: payload.destination,
-        departDate: payload.departDate,
-        returnDate: payload.returnDate,
-        adults: payload.adults,
-        children: payload.children,
-        notes: payload.notes,
-        managerId: payload.managerId,
-      })
-      .pipe(finalize(() => this.savingRequest.set(false)))
-      .subscribe({
-        next: (created) => {
-          this.requestsData.update((items) => [created, ...items]);
-          this.requestsSection()?.resetAfterCreate();
-          this.snackBar.open('Запрос на тур создан', 'Close', { duration: 4000 });
-        },
-        error: (err: unknown) => {
-          // prettier-ignore
-          this.snackBar.open(this.getErrorMessage(err, 'Не удалось создать запрос на тур'), 'Close', { duration: 5000 });
-        },
-      });
-  }
-
-  protected handleRequestUpdated(payload: UpdateRequestPayload): void {
-    const { requestId, ...updateData } = payload;
-
-    if (this.updatingRequest()) {
-      return;
-    }
-
-    this.updatingRequest.set(true);
-    this.requestsService
-      .update(requestId, {
-        destination: updateData.destination,
-        departDate: updateData.departDate,
-        returnDate: updateData.returnDate,
-        adults: updateData.adults,
-        children: updateData.children,
-        notes: updateData.notes,
-        managerId: updateData.managerId,
-      })
-      .pipe(finalize(() => this.updatingRequest.set(false)))
-      .subscribe({
-        next: (updated) => {
-          this.requestsData.update((items) => {
-            return items.map((item) => (item.id === requestId ? updated : item));
-          });
-          this.requestsSection()?.resetAfterEdit();
-          this.snackBar.open('Запрос на тур обновлён', 'Close', { duration: 4000 });
-        },
-        error: (err: unknown) => {
-          // prettier-ignore
-          this.snackBar.open(this.getErrorMessage(err, 'Не удалось обновить запрос на тур'), 'Close', { duration: 5000 });
-        },
-      });
-  }
-
-  protected handleRequestDeleted(event: { requestId: string; index: number }): void {
-    if (this.deletingRequestId()) {
-      return;
-    }
-
-    this.deletingRequestId.set(event.requestId);
-    this.requestsService
-      .delete(event.requestId)
-      .pipe(finalize(() => this.deletingRequestId.set(null)))
-      .subscribe({
-        next: () => {
-          this.requestsData.update((items) => items.filter((item) => item.id !== event.requestId));
-          this.snackBar.open('Запрос на тур удалён', 'Close', { duration: 4000 });
-        },
-        error: (err: unknown) => {
-          const msg = this.getErrorMessage(err, 'Не удалось удалить запрос на тур');
-          this.snackBar.open(msg, 'Close', { duration: 5000 });
-        },
-      });
-  }
-
-  protected openNewOffer(requestId: string): void {
     void this.router.navigate(['/app/offers/new'], {
-      queryParams: { requestId },
+      queryParams: { leadId: lead.id },
     });
   }
 

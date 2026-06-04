@@ -26,7 +26,6 @@ export class OffersService {
 
   getList(params?: {
     status?: OfferStatus | OfferStatus[];
-    requestId?: string;
     leadId?: string;
     agentId?: string;
     page?: number;
@@ -37,7 +36,6 @@ export class OffersService {
   }): Observable<PaginatedOfferResponseDto> {
     const httpParams = new HttpParamsBuilder()
       .appendArray('status', params?.status as string | string[] | undefined)
-      .set('requestId', params?.requestId)
       .set('leadId', params?.leadId)
       .set('agentId', params?.agentId)
       .set('page', params?.page)
