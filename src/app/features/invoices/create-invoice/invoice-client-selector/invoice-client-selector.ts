@@ -11,6 +11,7 @@ import type { ClientResponseDto } from '@app/shared/models';
   selector: 'app-invoice-client-selector',
   imports: [ReactiveFormsModule, ...MAT_FORM_BUTTONS, ...MAT_AUTOCOMPLETE],
   templateUrl: './invoice-client-selector.html',
+  styleUrl: './invoice-client-selector.scss',
 })
 export class InvoiceClientSelectorComponent {
   /** The standalone search input control (owned by parent). */

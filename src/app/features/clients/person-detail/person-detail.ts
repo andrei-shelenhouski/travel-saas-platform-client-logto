@@ -9,6 +9,11 @@ import { BookingsService } from '@app/services/bookings.service';
 import { ClientsService } from '@app/services/clients.service';
 import { PersonsService } from '@app/services/persons.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import {
+  DetailSectionComponent,
+  LoadingStateComponent,
+  PageContentComponent,
+} from '@app/shared/components';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -22,7 +27,13 @@ import type {
 @Component({
   selector: 'app-person-detail',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [PageHeading, ...MAT_BUTTONS],
+  imports: [
+    PageHeading,
+    LoadingStateComponent,
+    PageContentComponent,
+    DetailSectionComponent,
+    ...MAT_BUTTONS,
+  ],
   templateUrl: './person-detail.html',
   styleUrl: './person-detail.scss',
 })

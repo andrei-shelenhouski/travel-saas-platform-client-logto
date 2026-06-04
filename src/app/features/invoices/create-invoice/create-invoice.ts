@@ -24,6 +24,7 @@ import { ClientsService } from '@app/services/clients.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { FormSectionComponent, PageContentComponent } from '@app/shared/components';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -106,6 +107,8 @@ const EMPTY_CLIENTS_PAGE: PaginatedClientResponseDto = {
   selector: 'app-create-invoice',
   imports: [
     PageHeading,
+    PageContentComponent,
+    FormSectionComponent,
     RouterLink,
     ReactiveFormsModule,
     InvoiceClientSelectorComponent,

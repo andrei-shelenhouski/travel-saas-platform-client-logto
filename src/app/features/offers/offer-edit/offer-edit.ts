@@ -35,6 +35,7 @@ import {
 import { OfferPdfPreviewModalComponent } from '@app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal';
 import { OffersService } from '@app/services/offers.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { FormSectionComponent, PageContentComponent } from '@app/shared/components';
 import {
   MAT_BUTTON_TOGGLES,
   MAT_BUTTONS,
@@ -105,6 +106,8 @@ const SERVICE_TYPE_OPTIONS = [
     ...MAT_DIALOG,
     ...MAT_ICONS,
     PageHeading,
+    PageContentComponent,
+    FormSectionComponent,
   ],
   templateUrl: './offer-edit.html',
   styleUrl: './offer-edit.scss',

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ContractsService } from '@app/services/contracts.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { LoadingStateComponent, PageContentComponent } from '@app/shared/components';
 
 import { ContractFormComponent } from '../contract-form/contract-form';
 
@@ -12,7 +13,7 @@ import type { ContractResponseDto, UpdateContractDto } from '@app/shared/models'
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-edit-contract-page',
-  imports: [ContractFormComponent, PageHeading],
+  imports: [ContractFormComponent, PageHeading, PageContentComponent, LoadingStateComponent],
   templateUrl: './edit-contract-page.html',
   styleUrl: './edit-contract-page.scss',
 })

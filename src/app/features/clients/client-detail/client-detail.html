@@ -1,12 +1,5 @@
 <div class="client-detail-page">
-  @if (loading()) {
-    <div class="flex justify-center py-12">
-      <div
-        aria-hidden="true"
-        class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-      ></div>
-    </div>
-  } @else {
+  <app-loading-state [loading]="loading()">
     @let c = client();
     @if (c) {
       <app-page-heading
@@ -17,7 +10,7 @@
         <a mat-stroked-button [relativeTo]="route" [routerLink]="['edit']">Редактировать клиента</a>
       </app-page-heading>
 
-      <div class="m-4">
+      <app-page-content>
         <section class="client-header-card">
           <div class="client-header-main">
             <div>
@@ -64,42 +57,39 @@
                   <span>Лиды</span>
                 </ng-template>
                 @if (leadsLoading()) {
-                  <div class="flex justify-center py-12">
-                    <div
-                      aria-hidden="true"
-                      class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-                    ></div>
+                  <div class="client-tab-loading">
+                    <mat-spinner aria-label="Загрузка лидов..." diameter="36" />
                   </div>
                 } @else if (leads().length === 0) {
                   <div class="client-history-empty">
                     <p>Нет лидов</p>
                   </div>
                 } @else {
-                  <div class="overflow-x-auto">
-                    <table class="client-history-table">
-                      <thead>
-                        <tr>
-                          <th>Лид №</th>
-                          <th>Статус</th>
-                          <th>Создано</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @for (lead of leads(); track lead.id) {
-                          <tr
-                            tabindex="0"
-                            (click)="goToLead(lead)"
-                            (keydown.enter)="goToLead(lead)"
-                            (keydown.space)="goToLead(lead); $event.preventDefault()"
-                          >
-                            <td class="font-medium">{{ lead.number }}</td>
-                            <td>
-                              <app-lead-status-chip [status]="lead.status" />
-                            </td>
-                            <td class="text-gray-600">{{ formatDateShort(lead.createdAt) }}</td>
-                          </tr>
-                        }
-                      </tbody>
+                  <div class="table-wrap">
+                    <table mat-table [dataSource]="leads()">
+                      <ng-container matColumnDef="number">
+                        <th *matHeaderCellDef mat-header-cell>Лид №</th>
+                        <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.number }}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="status">
+                        <th *matHeaderCellDef mat-header-cell>Статус</th>
+                        <td *matCellDef="let row" mat-cell>
+                          <app-lead-status-chip [status]="row.status" />
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="createdAt">
+                        <th *matHeaderCellDef mat-header-cell>Создано</th>
+                        <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.createdAt) }}</td>
+                      </ng-container>
+                      <tr *matHeaderRowDef="leadsColumns" class="table-header-row" mat-header-row></tr>
+                      <tr
+                        *matRowDef="let row; columns: leadsColumns"
+                        class="table-row"
+                        mat-row
+                        tabindex="0"
+                        (click)="goToLead(row)"
+                        (keydown.enter)="goToLead(row)"
+                      ></tr>
                     </table>
                   </div>
                 }
@@ -111,51 +101,49 @@
                   <span>Запросы</span>
                 </ng-template>
                 @if (requestsLoading()) {
-                  <div class="flex justify-center py-12">
-                    <div
-                      aria-hidden="true"
-                      class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-                    ></div>
+                  <div class="client-tab-loading">
+                    <mat-spinner aria-label="Загрузка запросов..." diameter="36" />
                   </div>
                 } @else if (requests().length === 0) {
                   <div class="client-history-empty">
                     <p>Нет запросов</p>
                   </div>
                 } @else {
-                  <div class="overflow-x-auto">
-                    <table class="client-history-table">
-                      <thead>
-                        <tr>
-                          <th>Направление</th>
-                          <th>Даты</th>
-                          <th>Путешественники</th>
-                          <th>Статус</th>
-                          <th>Предложения</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @for (req of requests(); track req.id) {
-                          <tr
-                            tabindex="0"
-                            (click)="goToRequest(req)"
-                            (keydown.enter)="goToRequest(req)"
-                            (keydown.space)="goToRequest(req); $event.preventDefault()"
-                          >
-                            <td class="font-medium">{{ req.destination ?? '—' }}</td>
-                            <td class="text-gray-600">
-                              {{ formatDateShort(req.departDate) }} –
-                              {{ formatDateShort(req.returnDate) }}
-                            </td>
-                            <td class="text-gray-600">
-                              {{ req.adults ?? 0 }} + {{ req.children ?? 0 }}
-                            </td>
-                            <td>
-                              <app-request-status-chip [status]="req.status" />
-                            </td>
-                            <td class="text-gray-600">{{ req.offersCount ?? 0 }}</td>
-                          </tr>
-                        }
-                      </tbody>
+                  <div class="table-wrap">
+                    <table mat-table [dataSource]="requests()">
+                      <ng-container matColumnDef="destination">
+                        <th *matHeaderCellDef mat-header-cell>Направление</th>
+                        <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.destination ?? '—' }}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="dates">
+                        <th *matHeaderCellDef mat-header-cell>Даты</th>
+                        <td *matCellDef="let row" mat-cell>
+                          {{ formatDateShort(row.departDate) }} – {{ formatDateShort(row.returnDate) }}
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="travelers">
+                        <th *matHeaderCellDef mat-header-cell>Путешественники</th>
+                        <td *matCellDef="let row" mat-cell>{{ (row.adults ?? 0) }} + {{ (row.children ?? 0) }}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="status">
+                        <th *matHeaderCellDef mat-header-cell>Статус</th>
+                        <td *matCellDef="let row" mat-cell>
+                          <app-request-status-chip [status]="row.status" />
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="offersCount">
+                        <th *matHeaderCellDef mat-header-cell>Предложения</th>
+                        <td *matCellDef="let row" mat-cell>{{ row.offersCount ?? 0 }}</td>
+                      </ng-container>
+                      <tr *matHeaderRowDef="requestsColumns" class="table-header-row" mat-header-row></tr>
+                      <tr
+                        *matRowDef="let row; columns: requestsColumns"
+                        class="table-row"
+                        mat-row
+                        tabindex="0"
+                        (click)="goToRequest(row)"
+                        (keydown.enter)="goToRequest(row)"
+                      ></tr>
                     </table>
                   </div>
                 }
@@ -167,52 +155,53 @@
                   <span>Предложения</span>
                 </ng-template>
                 @if (offersLoading()) {
-                  <div class="flex justify-center py-12">
-                    <div
-                      aria-hidden="true"
-                      class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-                    ></div>
+                  <div class="client-tab-loading">
+                    <mat-spinner aria-label="Загрузка предложений..." diameter="36" />
                   </div>
                 } @else if (offers().length === 0) {
                   <div class="client-history-empty">
                     <p>Нет предложений</p>
                   </div>
                 } @else {
-                  <div class="overflow-x-auto">
-                    <table class="client-history-table">
-                      <thead>
-                        <tr>
-                          <th>Предложение №</th>
-                          <th>Направление</th>
-                          <th>Итого</th>
-                          <th>Статус</th>
-                          <th>Создано</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @for (offer of offers(); track offer.id) {
-                          <tr
-                            tabindex="0"
-                            (click)="goToOffer(offer)"
-                            (keydown.enter)="goToOffer(offer)"
-                            (keydown.space)="goToOffer(offer); $event.preventDefault()"
-                          >
-                            <td class="font-medium">{{ offer.offerNumber ?? '—' }}</td>
-                            <td class="text-gray-600">{{ offer.destination ?? '—' }}</td>
-                            <td>
-                              @if (offer.totalPrice !== null && offer.totalPrice !== undefined) {
-                                {{ offer.totalPrice }} {{ offer.currency ?? '' }}
-                              } @else {
-                                —
-                              }
-                            </td>
-                            <td>
-                              <app-offer-status-chip [status]="offer.status" />
-                            </td>
-                            <td class="text-gray-600">{{ formatDateShort(offer.createdAt) }}</td>
-                          </tr>
-                        }
-                      </tbody>
+                  <div class="table-wrap">
+                    <table mat-table [dataSource]="offers()">
+                      <ng-container matColumnDef="offerNumber">
+                        <th *matHeaderCellDef mat-header-cell>Предложение №</th>
+                        <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.offerNumber ?? '—' }}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="destination">
+                        <th *matHeaderCellDef mat-header-cell>Направление</th>
+                        <td *matCellDef="let row" mat-cell>{{ row.destination ?? '—' }}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="total">
+                        <th *matHeaderCellDef mat-header-cell>Итого</th>
+                        <td *matCellDef="let row" mat-cell>
+                          @if (row.totalPrice !== null && row.totalPrice !== undefined) {
+                            {{ row.totalPrice }} {{ row.currency ?? '' }}
+                          } @else {
+                            —
+                          }
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="status">
+                        <th *matHeaderCellDef mat-header-cell>Статус</th>
+                        <td *matCellDef="let row" mat-cell>
+                          <app-offer-status-chip [status]="row.status" />
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="createdAt">
+                        <th *matHeaderCellDef mat-header-cell>Создано</th>
+                        <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.createdAt) }}</td>
+                      </ng-container>
+                      <tr *matHeaderRowDef="offersColumns" class="table-header-row" mat-header-row></tr>
+                      <tr
+                        *matRowDef="let row; columns: offersColumns"
+                        class="table-row"
+                        mat-row
+                        tabindex="0"
+                        (click)="goToOffer(row)"
+                        (keydown.enter)="goToOffer(row)"
+                      ></tr>
                     </table>
                   </div>
                 }
@@ -224,57 +213,55 @@
                   <span>Бронирования</span>
                 </ng-template>
                 @if (bookingsLoading()) {
-                  <div class="flex justify-center py-12">
-                    <div
-                      aria-hidden="true"
-                      class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-                    ></div>
+                  <div class="client-tab-loading">
+                    <mat-spinner aria-label="Загрузка бронирований..." diameter="36" />
                   </div>
                 } @else if (bookings().length === 0) {
                   <div class="client-history-empty">
                     <p>Нет бронирований</p>
                   </div>
                 } @else {
-                  <div class="overflow-x-auto">
-                    <table class="client-history-table">
-                      <thead>
-                        <tr>
-                          <th>Бронирование №</th>
-                          <th>Направление</th>
-                          <th>Даты</th>
-                          <th>Статус</th>
-                          <th>Итого</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @for (booking of bookings(); track booking.id) {
-                          <tr
-                            tabindex="0"
-                            (click)="goToBooking(booking)"
-                            (keydown.enter)="goToBooking(booking)"
-                            (keydown.space)="goToBooking(booking); $event.preventDefault()"
-                          >
-                            <td class="font-medium">{{ booking.bookingNumber ?? '—' }}</td>
-                            <td class="text-gray-600">{{ booking.destination ?? '—' }}</td>
-                            <td class="text-gray-600">
-                              {{ formatDateShort(booking.departDate) }} –
-                              {{ formatDateShort(booking.returnDate) }}
-                            </td>
-                            <td>
-                              <app-booking-status-chip [status]="booking.status" />
-                            </td>
-                            <td>
-                              @if (
-                                booking.totalPrice !== null && booking.totalPrice !== undefined
-                              ) {
-                                {{ booking.totalPrice }} {{ booking.currency ?? '' }}
-                              } @else {
-                                —
-                              }
-                            </td>
-                          </tr>
-                        }
-                      </tbody>
+                  <div class="table-wrap">
+                    <table mat-table [dataSource]="bookings()">
+                      <ng-container matColumnDef="bookingNumber">
+                        <th *matHeaderCellDef mat-header-cell>Бронирование №</th>
+                        <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.bookingNumber ?? '—' }}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="destination">
+                        <th *matHeaderCellDef mat-header-cell>Направление</th>
+                        <td *matCellDef="let row" mat-cell>{{ row.destination ?? '—' }}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="dates">
+                        <th *matHeaderCellDef mat-header-cell>Даты</th>
+                        <td *matCellDef="let row" mat-cell>
+                          {{ formatDateShort(row.departDate) }} – {{ formatDateShort(row.returnDate) }}
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="status">
+                        <th *matHeaderCellDef mat-header-cell>Статус</th>
+                        <td *matCellDef="let row" mat-cell>
+                          <app-booking-status-chip [status]="row.status" />
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="total">
+                        <th *matHeaderCellDef mat-header-cell>Итого</th>
+                        <td *matCellDef="let row" mat-cell>
+                          @if (row.totalPrice !== null && row.totalPrice !== undefined) {
+                            {{ row.totalPrice }} {{ row.currency ?? '' }}
+                          } @else {
+                            —
+                          }
+                        </td>
+                      </ng-container>
+                      <tr *matHeaderRowDef="bookingsColumns" class="table-header-row" mat-header-row></tr>
+                      <tr
+                        *matRowDef="let row; columns: bookingsColumns"
+                        class="table-row"
+                        mat-row
+                        tabindex="0"
+                        (click)="goToBooking(row)"
+                        (keydown.enter)="goToBooking(row)"
+                      ></tr>
                     </table>
                   </div>
                 }
@@ -286,54 +273,53 @@
                   <span>Счета</span>
                 </ng-template>
                 @if (invoicesLoading()) {
-                  <div class="flex justify-center py-12">
-                    <div
-                      aria-hidden="true"
-                      class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-                    ></div>
+                  <div class="client-tab-loading">
+                    <mat-spinner aria-label="Загрузка счетов..." diameter="36" />
                   </div>
                 } @else if (invoices().length === 0) {
                   <div class="client-history-empty">
                     <p>Нет счетов</p>
                   </div>
                 } @else {
-                  <div class="overflow-x-auto">
-                    <table class="client-history-table">
-                      <thead>
-                        <tr>
-                          <th>Счёт №</th>
-                          <th>Дата счёта</th>
-                          <th>Срок оплаты</th>
-                          <th>Статус</th>
-                          <th>Итого</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        @for (invoice of invoices(); track invoice.id) {
-                          <tr
-                            tabindex="0"
-                            (click)="goToInvoice(invoice)"
-                            (keydown.enter)="goToInvoice(invoice)"
-                            (keydown.space)="goToInvoice(invoice); $event.preventDefault()"
-                          >
-                            <td class="font-medium">{{ invoice.number }}</td>
-                            <td class="text-gray-600">
-                              {{ formatDateShort(invoice.invoiceDate) }}
-                            </td>
-                            <td class="text-gray-600">{{ formatDateShort(invoice.dueDate) }}</td>
-                            <td>
-                              <app-invoice-status-chip [status]="invoice.status" />
-                            </td>
-                            <td>
-                              @if (invoice.total !== null && invoice.total !== undefined) {
-                                {{ invoice.total }} {{ invoice.currency }}
-                              } @else {
-                                —
-                              }
-                            </td>
-                          </tr>
-                        }
-                      </tbody>
+                  <div class="table-wrap">
+                    <table mat-table [dataSource]="invoices()">
+                      <ng-container matColumnDef="number">
+                        <th *matHeaderCellDef mat-header-cell>Счёт №</th>
+                        <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.number }}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="invoiceDate">
+                        <th *matHeaderCellDef mat-header-cell>Дата счёта</th>
+                        <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.invoiceDate) }}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="dueDate">
+                        <th *matHeaderCellDef mat-header-cell>Срок оплаты</th>
+                        <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.dueDate) }}</td>
+                      </ng-container>
+                      <ng-container matColumnDef="status">
+                        <th *matHeaderCellDef mat-header-cell>Статус</th>
+                        <td *matCellDef="let row" mat-cell>
+                          <app-invoice-status-chip [status]="row.status" />
+                        </td>
+                      </ng-container>
+                      <ng-container matColumnDef="total">
+                        <th *matHeaderCellDef mat-header-cell>Итого</th>
+                        <td *matCellDef="let row" mat-cell>
+                          @if (row.total !== null && row.total !== undefined) {
+                            {{ row.total }} {{ row.currency }}
+                          } @else {
+                            —
+                          }
+                        </td>
+                      </ng-container>
+                      <tr *matHeaderRowDef="invoicesColumns" class="table-header-row" mat-header-row></tr>
+                      <tr
+                        *matRowDef="let row; columns: invoicesColumns"
+                        class="table-row"
+                        mat-row
+                        tabindex="0"
+                        (click)="goToInvoice(row)"
+                        (keydown.enter)="goToInvoice(row)"
+                      ></tr>
                     </table>
                   </div>
                 }
@@ -354,11 +340,8 @@
                   </div>
 
                   @if (contractsLoading()) {
-                    <div class="flex justify-center py-12">
-                      <div
-                        aria-hidden="true"
-                        class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-                      ></div>
+                    <div class="client-tab-loading">
+                      <mat-spinner aria-label="Загрузка договоров..." diameter="36" />
                     </div>
                   } @else if (contracts().length === 0) {
                     <div class="client-history-empty">
@@ -374,72 +357,74 @@
                       }
                     </div>
                   } @else {
-                    <div class="overflow-x-auto">
-                      <table class="client-history-table contracts-table">
-                        <thead>
-                          <tr>
-                            <th>Номер</th>
-                            <th>Дата подписания</th>
-                            <th>Действует до</th>
-                            <th>Способ подписания</th>
-                            <th>Статус</th>
-                            <th>Действия</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          @for (contract of contracts(); track contract.id) {
-                            <tr>
-                              <td class="font-medium">{{ contract.contractNumber }}</td>
-                              <td class="text-gray-600">
-                                {{ formatDateShort(contract.signedAt) }}
-                              </td>
-                              <td class="text-gray-600">
-                                {{ formatDateShort(contract.expiresAt) }}
-                              </td>
-                              <td>{{ contractSignatureLabel(contract.signatureMethod) }}</td>
-                              <td>
-                                <span [class]="contractStatusClass(contract.status)">
-                                  {{ contract.status }}
-                                </span>
-                              </td>
-                              <td>
-                                <button
-                                  aria-label="Действия с договором"
-                                  mat-icon-button
-                                  type="button"
-                                  [disabled]="!canManageContract(contract)"
-                                  [matMenuTriggerFor]="contractActionsMenu"
-                                >
-                                  <span aria-hidden="true" class="material-icons">more_vert</span>
-                                </button>
-                                <mat-menu #contractActionsMenu="matMenu">
-                                  <button
-                                    mat-menu-item
-                                    type="button"
-                                    [disabled]="!canManageContract(contract)"
-                                    (click)="openEditContractDialog(contract)"
-                                  >
-                                    <span>Редактировать</span>
-                                  </button>
-                                  <button
-                                    mat-menu-item
-                                    type="button"
-                                    [disabled]="!canManageContract(contract)"
-                                    (click)="terminateContract(contract)"
-                                  >
-                                    <span>Расторгнуть</span>
-                                  </button>
-                                </mat-menu>
-                              </td>
-                            </tr>
-                          }
-                        </tbody>
+                    <div class="table-wrap">
+                      <table class="contracts-table" mat-table [dataSource]="contracts()">
+                        <ng-container matColumnDef="contractNumber">
+                          <th *matHeaderCellDef mat-header-cell>Номер</th>
+                          <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.contractNumber }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="signedAt">
+                          <th *matHeaderCellDef mat-header-cell>Дата подписания</th>
+                          <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.signedAt) }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="expiresAt">
+                          <th *matHeaderCellDef mat-header-cell>Действует до</th>
+                          <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.expiresAt) }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="signatureMethod">
+                          <th *matHeaderCellDef mat-header-cell>Способ подписания</th>
+                          <td *matCellDef="let row" mat-cell>{{ contractSignatureLabel(row.signatureMethod) }}</td>
+                        </ng-container>
+                        <ng-container matColumnDef="status">
+                          <th *matHeaderCellDef mat-header-cell>Статус</th>
+                          <td *matCellDef="let row" mat-cell>
+                            <span [class]="contractStatusClass(row.status)">{{ row.status }}</span>
+                          </td>
+                        </ng-container>
+                        <ng-container matColumnDef="actions">
+                          <th *matHeaderCellDef mat-header-cell>Действия</th>
+                          <td *matCellDef="let row" mat-cell>
+                            <button
+                              aria-label="Действия с договором"
+                              mat-icon-button
+                              type="button"
+                              [disabled]="!canManageContract(row)"
+                              [matMenuTriggerFor]="contractActionsMenu"
+                            >
+                              <span aria-hidden="true" class="material-icons">more_vert</span>
+                            </button>
+                            <mat-menu #contractActionsMenu="matMenu">
+                              <button
+                                mat-menu-item
+                                type="button"
+                                [disabled]="!canManageContract(row)"
+                                (click)="openEditContractDialog(row)"
+                              >
+                                <span>Редактировать</span>
+                              </button>
+                              <button
+                                mat-menu-item
+                                type="button"
+                                [disabled]="!canManageContract(row)"
+                                (click)="terminateContract(row)"
+                              >
+                                <span>Расторгнуть</span>
+                              </button>
+                            </mat-menu>
+                          </td>
+                        </ng-container>
+                        <tr *matHeaderRowDef="contractsColumns" class="table-header-row" mat-header-row></tr>
+                        <tr
+                          *matRowDef="let row; columns: contractsColumns"
+                          class="table-row"
+                          mat-row
+                        ></tr>
                       </table>
                     </div>
 
                     @if (contractsTotal() > contractsPageSize) {
                       <mat-paginator
-                        class="pt-2"
+                        class="contracts-paginator"
                         [length]="contractsTotal()"
                         [pageIndex]="contractsPageIndex()"
                         [pageSize]="contractsPageSize"
@@ -463,9 +448,9 @@
             />
           </section>
         }
-      </div>
+      </app-page-content>
     } @else {
-      <p class="text-gray-500">Клиент не найден.</p>
+      <p class="client-not-found">Клиент не найден.</p>
     }
-  }
+  </app-loading-state>
 </div>

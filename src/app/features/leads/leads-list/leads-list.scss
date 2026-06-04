@@ -1,3 +1,85 @@
+.leads-list-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.leads-list-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.leads-list-deleted-active {
+  color: var(--color-primary);
+}
+
+.leads-list-error {
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  color: #dc2626;
+}
+
 .mat-column-destination {
   max-width: 20rem;
+}
+
+.check-icon {
+  color: #16a34a;
+}
+
+.off-icon {
+  color: #73787a;
+}
+
+.cell-primary {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.cell-secondary {
+  display: block;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.cell-deleted {
+  text-decoration: line-through;
+  opacity: 0.4;
+}
+
+.cell-faded {
+  opacity: 0.4;
+}
+
+.table-cell-actions {
+  text-align: right;
+}
+
+.table-row-disabled {
+  cursor: default;
+}
+
+.menu-item-danger {
+  color: #dc2626;
+}
+
+.menu-item-danger-icon {
+  color: #dc2626;
+}
+
+.table-empty-state {
+  margin: 2.5rem;
+  text-align: center;
+}
+
+.table-empty-loading-text {
+  padding-bottom: 1rem;
+}
+
+.table-spinner {
+  margin-inline: auto;
 }

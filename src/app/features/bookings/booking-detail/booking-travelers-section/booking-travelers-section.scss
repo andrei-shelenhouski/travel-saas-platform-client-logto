@@ -39,6 +39,10 @@
   text-align: left;
 }
 
+.traveler-table-wrap {
+  overflow-x: auto;
+}
+
 .traveler-empty {
   color: #6b7280;
 }
@@ -46,6 +50,10 @@
 .traveler-row-inactive {
   color: #9ca3af;
   font-style: italic;
+}
+
+.traveler-actions-cell {
+  text-align: right;
 }
 
 .lead-badge {

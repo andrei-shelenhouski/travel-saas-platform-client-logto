@@ -1,18 +1,18 @@
-<mat-drawer-container class="h-screen w-screen">
+<mat-drawer-container class="layout-container">
   <mat-drawer class="sidebar" mode="side" opened>
     <div class="logo">
-      <img alt="Logo" class="w-auto" src="/assets/logo-dark.png" />
+      <img alt="Logo" class="logo-image" src="/assets/logo-dark.png" />
     </div>
 
     <!-- Navigation links -->
-    <mat-nav-list class="min-h-0 flex-1 px-2">
+    <mat-nav-list class="sidebar-nav">
       @for (link of navLinks(); track link.path) {
         <a
           #rla="routerLinkActive"
           mat-list-item
           routerLinkActive
           [activated]="rla.isActive"
-          [class.mt-4]="link.sectionMargin"
+          [class.nav-item-section-margin]="link.sectionMargin"
           [routerLink]="link.path"
           [routerLinkActiveOptions]="{ exact: true }"
         >
@@ -24,8 +24,8 @@
   </mat-drawer>
 
   <mat-drawer-content>
-    <div class="flex h-full flex-col">
-      <header class="flex h-14 items-center justify-between border-b border-gray-200 bg-white px-4">
+    <div class="drawer-content-wrap">
+      <header class="app-header">
         <button
           #orgMenuTrigger="matMenuTrigger"
           mat-button
@@ -40,8 +40,8 @@
         <mat-menu #orgMenu="matMenu">
           @if (orgSwitcherLoading()) {
             <button disabled mat-menu-item type="button">
-              <span class="flex items-center gap-2">
-                <span aria-hidden="true" class="material-icons animate-spin text-base">sync</span>
+              <span class="org-menu-loading">
+                <span aria-hidden="true" class="material-icons org-menu-spinner">sync</span>
                 <span>Загрузка организаций…</span>
               </span>
             </button>
@@ -50,19 +50,17 @@
               <button
                 mat-menu-item
                 type="button"
-                [class.font-semibold]="org.organizationId === activeOrgId"
+                [class.org-item-active]="org.organizationId === activeOrgId"
                 (click)="switchOrganization(org)"
               >
                 <mat-icon>business</mat-icon>
-                <span class="flex w-full items-center justify-between gap-3">
-                  <span class="flex min-w-0 flex-col">
-                    <span class="truncate">{{ org.organizationName }}</span>
-                    <span class="text-xs text-gray-500">{{ orgRoleLabel(org) }}</span>
+                <span class="org-item-content">
+                  <span class="org-item-info">
+                    <span class="org-item-name">{{ org.organizationName }}</span>
+                    <span class="org-item-role">{{ orgRoleLabel(org) }}</span>
                   </span>
                   @if (org.organizationId === activeOrgId) {
-                    <mat-icon class="!text-primary-600 shrink-0" fontSet="material-icons"
-                      >check</mat-icon
-                    >
+                    <mat-icon class="org-item-check" fontSet="material-icons">check</mat-icon>
                   }
                 </span>
               </button>
@@ -80,43 +78,38 @@
           </a>
         </mat-menu>
 
-        <div class="flex items-center gap-3">
+        <div class="header-user">
           @if (userPicture(); as userPicture) {
             <img
-              class="h-9 w-9 rounded-full object-cover ring-2 ring-gray-200"
+              class="user-avatar"
               [alt]="userDisplay()"
               [src]="userPicture"
             />
           } @else {
-            <div
-              class="flex h-9 w-9 items-center justify-center rounded-full bg-primary-100 text-sm font-medium text-primary ring-2 ring-gray-200"
-            >
+            <div class="user-avatar-initials">
               {{ userInitial() }}
             </div>
           }
-          <span class="text-sm text-gray-600">{{ userDisplay() }}</span>
+          <span class="user-display-name">{{ userDisplay() }}</span>
           <span
-            class="rounded-full px-2.5 py-0.5 text-xs font-medium"
-            [class]="
-              permissions.roleLabel() === 'Admin'
-                ? 'bg-violet-100 text-violet-800'
-                : permissions.roleLabel() === 'Agent'
-                  ? 'bg-amber-100 text-amber-800'
-                  : 'bg-sky-100 text-sky-800'
-            "
+            class="role-badge"
+            [class.role-badge--admin]="permissions.roleLabel() === 'Admin'"
+            [class.role-badge--agent]="permissions.roleLabel() === 'Agent'"
+            [class.role-badge--viewer]="permissions.roleLabel() !== 'Admin' && permissions.roleLabel() !== 'Agent'"
           >
             {{ permissions.roleLabel() }}
           </span>
-          <button class="flex items-center gap-2" mat-button type="button" (click)="logout()">
-            <span aria-hidden="true" class="material-icons text-base">logout</span
-            ><span>Выйти</span>
+          <button class="logout-button" mat-button type="button" (click)="logout()">
+            <span aria-hidden="true" class="material-icons logout-icon">logout</span>
+            <span>Выйти</span>
           </button>
         </div>
       </header>
-      <main class="flex flex-col flex-1 overflow-auto">
+      <main class="app-main">
         @for (reloadKey of [outletReloadKey()]; track reloadKey) {
           <router-outlet />
         }
-      </main></div
-  ></mat-drawer-content>
+      </main>
+    </div>
+  </mat-drawer-content>
 </mat-drawer-container>

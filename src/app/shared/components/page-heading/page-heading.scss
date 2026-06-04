@@ -22,12 +22,17 @@
   );
 }
 
-.title-and-type h1 {
+.page-heading-title {
+  font-size: 1.25rem;
+  font-weight: 600;
   color: color-mix(in oklab, white 94%, var(--mat-sys-primary));
+  margin: 0;
 }
 
-.title-and-type p {
+.page-heading-subtitle {
+  font-size: 0.875rem;
   color: color-mix(in oklab, white 78%, var(--mat-sys-primary));
+  margin: 0.25rem 0 0;
 }
 
 .actions {
@@ -37,10 +42,12 @@
   justify-content: flex-end;
   display: flex;
   padding-right: 1rem;
+  padding-block: 1rem;
   gap: 1rem;
 }
 
 :host {
   display: grid;
   grid-template-columns: auto 1fr;
+  background-color: #ffffff;
 }

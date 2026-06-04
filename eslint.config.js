@@ -64,13 +64,6 @@ const tsLintRulesBase = {
   curly: 'error',
   'guard-for-in': 'error',
   'max-classes-per-file': ['error', 1],
-  'max-len': [
-    'warn',
-    {
-      code: 120,
-      comments: 160,
-    },
-  ],
   'no-bitwise': 'error',
   'no-console': 'off',
   'no-new-wrappers': 'error',

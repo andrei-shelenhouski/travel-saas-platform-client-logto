@@ -1,55 +1,44 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-  <div class="w-full max-w-lg">
-    <div class="mb-8 text-center">
-      <div class="mb-4 flex justify-center">
-        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-100">
-          <span class="material-icons text-3xl text-primary-600">business</span>
+<div class="select-org-page">
+  <div class="select-org-content">
+    <div class="select-org-header">
+      <div class="select-org-icon-wrap">
+        <div class="select-org-icon">
+          <span class="material-icons select-org-icon-glyph">business</span>
         </div>
       </div>
-      <h1 class="text-2xl font-semibold text-gray-900">
-        Выберите организацию
-      </h1>
-      <p class="mt-2 text-sm text-gray-500">
+      <h1 class="select-org-title">Выберите организацию</h1>
+      <p class="select-org-description">
         У вас есть доступ к нескольким организациям. Выберите одну, чтобы продолжить.
       </p>
     </div>
 
     @if (isLoading()) {
-      <p class="text-center text-gray-600">
+      <p class="select-org-loading">
         <span>Загрузка организаций…</span>
       </p>
     } @else if (organizations().length === 0) {
-      <p class="text-center text-gray-600">Организации не найдены.</p>
+      <p class="select-org-empty">Организации не найдены.</p>
     } @else {
-      <ul class="space-y-3" role="list">
+      <ul class="select-org-list" role="list">
         @for (org of organizations(); track org.organizationId) {
           <li>
             <button
-              class="group w-full rounded-xl border border-gray-200 bg-white p-4 text-left shadow-sm transition-all hover:border-primary-300 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-500"
+              class="select-org-item"
               type="button"
               (click)="select(org)"
             >
-              <div class="flex items-center justify-between gap-4">
-                <div class="flex min-w-0 items-center gap-3">
-                  <div
-                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gray-100 group-hover:bg-primary-50"
-                  >
-                    <span class="material-icons text-xl text-gray-500 group-hover:text-primary-600"
-                      >business</span
-                    >
+              <div class="select-org-item-content">
+                <div class="select-org-item-left">
+                  <div class="select-org-item-icon">
+                    <span class="material-icons select-org-item-icon-glyph">business</span>
                   </div>
-                  <span class="truncate font-medium text-gray-900">{{ org.organizationName }}</span>
+                  <span class="select-org-item-name">{{ org.organizationName }}</span>
                 </div>
-                <div class="flex shrink-0 items-center gap-2">
-                  <span
-                    class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium"
-                    [class]="roleBadgeClass(org)"
-                  >
+                <div class="select-org-item-right">
+                  <span [class]="roleBadgeClass(org)">
                     {{ roleLabel(org) }}
                   </span>
-                  <span class="material-icons text-base text-gray-400 group-hover:text-primary-500"
-                    >arrow_forward_ios</span
-                  >
+                  <span class="material-icons select-org-item-arrow">arrow_forward_ios</span>
                 </div>
               </div>
             </button>

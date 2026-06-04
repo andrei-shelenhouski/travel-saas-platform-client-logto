@@ -4,12 +4,38 @@
   flex-direction: column;
 }
 
-.invoice-link {
-  color: #0e7490;
+.link {
+  color: var(--color-primary);
   font-weight: 600;
   text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
-.invoice-link:hover {
-  text-decoration: underline;
+.invoices-list-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.invoices-list-error {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #dc2626;
+}
+
+.invoices-list-empty {
+  padding: 2.5rem;
+  text-align: center;
+
+  mat-spinner {
+    margin: 0 auto;
+  }
+}
+
+.invoices-list-loading-text {
+  margin-bottom: 1rem;
 }

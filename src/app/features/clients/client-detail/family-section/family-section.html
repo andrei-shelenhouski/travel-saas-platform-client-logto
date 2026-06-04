@@ -5,47 +5,52 @@
   </div>
 
   @if (loading()) {
-    <p class="family-empty">Загрузка...</p>
+    <div class="family-loading">
+      <mat-spinner aria-label="Загрузка членов семьи..." diameter="36" />
+    </div>
   } @else if (family().length === 0) {
     <p class="family-empty">Связи пока не добавлены</p>
   } @else {
-    <div class="overflow-x-auto">
-      <table class="family-table">
-        <thead>
-          <tr>
-            <th>Имя</th>
-            <th>Дата рождения</th>
-            <th>Связь</th>
-            <th>Профиль клиента</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (member of family(); track trackMember($index, member)) {
-            <tr
-              tabindex="0"
-              [class.family-row-inactive]="relationshipInactive(member)"
-              (click)="openPersonCard(member)"
-              (keydown.enter)="openPersonCard(member)"
-              (keydown.space)="openPersonCard(member); $event.preventDefault()"
-            >
-              <td>{{ fullName(member) }}</td>
-              <td>{{ member.dateOfBirth || '—' }}</td>
-              <td>{{ relationLabel(member) }}</td>
-              <td>
-                @if (member.clientId) {
-                  <a
-                    [routerLink]="['/app/clients', member.clientId]"
-                    (click)="$event.stopPropagation()"
-                  >
-                    Открыть
-                  </a>
-                } @else {
-                  —
-                }
-              </td>
-            </tr>
-          }
-        </tbody>
+    <div class="table-wrap">
+      <table mat-table [dataSource]="family()">
+        <ng-container matColumnDef="name">
+          <th *matHeaderCellDef mat-header-cell>Имя</th>
+          <td *matCellDef="let row" mat-cell>{{ fullName(row) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="dateOfBirth">
+          <th *matHeaderCellDef mat-header-cell>Дата рождения</th>
+          <td *matCellDef="let row" mat-cell>{{ row.dateOfBirth || '—' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="relation">
+          <th *matHeaderCellDef mat-header-cell>Связь</th>
+          <td *matCellDef="let row" mat-cell>{{ relationLabel(row) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="clientProfile">
+          <th *matHeaderCellDef mat-header-cell>Профиль клиента</th>
+          <td *matCellDef="let row" mat-cell>
+            @if (row.clientId) {
+              <a
+                class="link"
+                [routerLink]="['/app/clients', row.clientId]"
+                (click)="$event.stopPropagation()"
+              >
+                Открыть
+              </a>
+            } @else {
+              —
+            }
+          </td>
+        </ng-container>
+        <tr *matHeaderRowDef="columns" class="table-header-row" mat-header-row></tr>
+        <tr
+          *matRowDef="let row; columns: columns"
+          class="table-row"
+          mat-row
+          tabindex="0"
+          [class.family-row-inactive]="relationshipInactive(row)"
+          (click)="openPersonCard(row)"
+          (keydown.enter)="openPersonCard(row)"
+        ></tr>
       </table>
     </div>
   }

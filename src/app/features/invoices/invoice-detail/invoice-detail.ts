@@ -24,6 +24,12 @@ import { ClientsService } from '@app/services/clients.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { ActivityTimelineComponent } from '@app/shared/components/activity-timeline.component';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import {
+  DetailSectionComponent,
+  LoadingStateComponent,
+  PageContentComponent,
+} from '@app/shared/components';
 import { MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { EntityType } from '@app/shared/models';
@@ -35,6 +41,12 @@ import type {
   InvoiceResponseDto,
   PaymentResponseDto,
 } from '@app/shared/models';
+
+type LoadError = {
+  status?: number;
+  error?: { message?: string };
+  message?: string;
+};
 
 const PAYMENT_METHOD_LABELS: Record<string, string> = {
   BANK_TRANSFER: 'Банковский перевод',
@@ -70,6 +82,10 @@ const STATUS_LABELS: Record<string, string> = {
     MatTableModule,
     DecimalPipe,
     ActivityTimelineComponent,
+    PageHeading,
+    LoadingStateComponent,
+    PageContentComponent,
+    DetailSectionComponent,
     ...MAT_FORM_BUTTONS,
     ...MAT_ICONS,
   ],
@@ -127,6 +143,26 @@ export class InvoiceDetailComponent {
   readonly invoice = computed(() => this.data.value() ?? null);
   readonly loading = computed(() => this.data.isLoading());
   readonly timelineItems = computed(() => this.activitiesData.value() ?? []);
+
+  readonly hasError = computed(() => this.data.error() !== undefined && this.data.error() !== null);
+
+  readonly loadErrorMessage = computed(() => {
+    const error = this.data.error() as LoadError | undefined;
+
+    if (!error) {
+      return '';
+    }
+
+    if (error.status === 404) {
+      return 'Счёт не найден';
+    }
+
+    if (error.status === 403) {
+      return 'У вас нет доступа к этому счёту';
+    }
+
+    return error.error?.message ?? error.message ?? 'Не удалось загрузить счёт';
+  });
 
   private readonly unresolvedClientId = computed(() => {
     const inv = this.invoice();

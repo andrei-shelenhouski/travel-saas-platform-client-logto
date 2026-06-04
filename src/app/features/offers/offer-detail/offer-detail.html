@@ -1,30 +1,15 @@
 <div class="offer-detail-page">
-  @if (loading()) {
-    <div class="flex justify-center py-12">
-      <div
-        aria-hidden="true"
-        class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-      ></div>
-    </div>
-  } @else if (hasError()) {
-    <section class="rounded-lg border border-red-200 bg-red-50 p-6">
-      <h2 class="text-lg font-semibold text-red-900">Не удалось открыть предложение</h2>
-      <p class="mt-2 text-sm text-red-800">{{ loadErrorMessage() }}</p>
-      <button class="mt-4" mat-flat-button type="button" (click)="onBackClick()">
-        Назад к предложениям
-      </button>
-    </section>
-  } @else {
+  <app-loading-state
+    errorBackLabel="Назад к предложениям"
+    errorBackLink="/app/offers"
+    errorTitle="Не удалось открыть предложение"
+    [error]="hasError() ? loadErrorMessage() : null"
+    [loading]="loading()"
+  >
     @let o = offer();
     @if (o) {
       <app-page-heading [showBackButton]="true" [subtitle]="pageSubtitle" [title]="pageTitle()">
-        <button
-          mat-stroked-button
-          type="button"
-          (click)="openPdfPreview()"
-        >
-          Предварительный просмотр
-        </button>
+        <button mat-stroked-button type="button" (click)="openPdfPreview()">Предпросмотр</button>
         @for (action of allowedActions(); track action) {
           <button
             mat-flat-button
@@ -38,65 +23,41 @@
         }
       </app-page-heading>
 
-      <div class="m-4">
-        <section class="offer-header-card">
-          <div class="offer-header-main">
-            <div>
-              <p class="offer-header-label">Предложение {{ displayOfferNumber() }}</p>
-              <h2 class="offer-header-title">
-                @if (o.destination) {
-                  {{ o.destination }}
-                } @else {
-                  <span>Предложение без названия</span>
-                }
-              </h2>
-            </div>
-            <div class="flex items-center gap-2">
-              <span class="offer-version-badge">{{ displayVersion() }}</span>
-              <span
-                [class]="
-                  'inline-block rounded-full px-2.5 py-0.5 text-xs font-medium ' +
-                  statusBadgeClass()
-                "
-              >
-                {{ o.status }}
-              </span>
-            </div>
-          </div>
+      <app-page-content>
+        @if (hasVersionHistory() || request.value()) {
+          <section class="offer-header-card">
+            @if (hasVersionHistory()) {
+              <div class="offer-version-history">
+                <span>История версий:</span>
+                <a
+                  class="offer-link offer-version-link"
+                  [routerLink]="['/app/offers', o.previousVersionId]"
+                >
+                  {{ o.previousVersionId }}
+                </a>
+              </div>
+            }
 
-          @if (hasVersionHistory()) {
-            <div class="text-sm text-gray-600">
-              <span>История версий:</span>
-              <a
-                class="ml-1 text-primary hover:underline"
-                [routerLink]="['/app/offers', o.previousVersionId]"
-              >
-                {{ o.previousVersionId }}
-              </a>
-            </div>
-          }
-
-          @if (request.value(); as requestData) {
-            <nav aria-label="Breadcrumb" class="text-sm">
-              <ol class="flex flex-wrap items-center gap-2 text-gray-600">
-                @if (requestData.leadId; as leadId) {
-                  <li>
-                    <a class="offer-link" [routerLink]="['/app/leads', leadId]">Лид</a>
+            @if (request.value(); as requestData) {
+              <nav aria-label="Breadcrumb" class="offer-breadcrumb">
+                <ol class="offer-breadcrumb-list">
+                  @if (requestData.leadId; as leadId) {
+                    <li>
+                      <a class="offer-link" [routerLink]="['/app/leads', leadId]">Лид</a>
+                    </li>
+                    <li>/</li>
+                  }
+                  <li class="offer-breadcrumb-destination">
+                    Запрос: {{ requestData.destination || 'Запрос на тур' }}
                   </li>
-                  <li>/</li>
-                }
-                <li class="truncate">Запрос: {{ requestData.destination || 'Запрос на тур' }}</li>
-              </ol>
-            </nav>
-          }
-        </section>
+                </ol>
+              </nav>
+            }
+          </section>
+        }
 
         <div class="offer-grid">
-          <section class="offer-card">
-            <div class="offer-card-header">
-              <h2 class="offer-card-title">Детали предложения</h2>
-            </div>
-
+          <app-detail-section title="Детали предложения">
             <dl class="offer-data-list">
               <div class="offer-data-row">
                 <dt>Язык</dt>
@@ -130,89 +91,142 @@
                 <dd>{{ o.currency || '—' }}</dd>
               </div>
             </dl>
-          </section>
+          </app-detail-section>
 
-          <section class="offer-card offer-table-card">
-            <div class="offer-card-header">
-              <h2 class="offer-card-title">Размещение</h2>
+          <app-detail-section title="Размещение">
+            <div class="offer-table-card">
+              <mat-table class="offer-detail-table" [dataSource]="o.accommodations ?? []">
+                <ng-container matColumnDef="hotel">
+                  <mat-header-cell *matHeaderCellDef class="offer-col-header"
+                    >Отель</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row" class="offer-col-cell">{{
+                    row.hotelName || '—'
+                  }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="roomType">
+                  <mat-header-cell *matHeaderCellDef class="offer-col-header"
+                    >Тип номера</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row" class="offer-col-cell">{{
+                    row.roomType || '—'
+                  }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="mealPlan">
+                  <mat-header-cell *matHeaderCellDef class="offer-col-header"
+                    >Питание</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row" class="offer-col-cell">{{
+                    row.mealPlan || '—'
+                  }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="dates">
+                  <mat-header-cell *matHeaderCellDef class="offer-col-header">Даты</mat-header-cell>
+                  <mat-cell *matCellDef="let row" class="offer-col-cell">
+                    {{ row.checkinDate ? (row.checkinDate | date: 'mediumDate') : '—' }} –
+                    {{ row.checkoutDate ? (row.checkoutDate | date: 'mediumDate') : '—' }}
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="nights">
+                  <mat-header-cell *matHeaderCellDef class="offer-col-header"
+                    >Ночей</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row" class="offer-col-cell">{{
+                    getAccommodationNights(row.checkinDate, row.checkoutDate)
+                  }}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="price">
+                  <mat-header-cell
+                    *matHeaderCellDef
+                    class="offer-col-header offer-col-header--right"
+                    >Цена</mat-header-cell
+                  >
+                  <mat-cell *matCellDef="let row" class="offer-col-cell offer-col-cell--right"
+                    >{{ row.unitPrice ?? 0 | number: '1.0-2' }} {{ o.currency }}</mat-cell
+                  >
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="accommodationColumns" />
+                <mat-row *matRowDef="let row; columns: accommodationColumns" />
+
+                <ng-container>
+                  <tr mat-no-data-row>
+                    <td class="offer-table-no-data" [attr.colspan]="accommodationColumns.length">
+                      Нет размещений
+                    </td>
+                  </tr>
+                </ng-container>
+              </mat-table>
             </div>
-
-            <table class="offer-table">
-              <thead>
-                <tr>
-                  <th>Отель</th>
-                  <th>Тип номера</th>
-                  <th>Питание</th>
-                  <th>Даты</th>
-                  <th>Ночей</th>
-                  <th class="text-right">Цена</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (row of o.accommodations ?? []; track $index) {
-                  <tr>
-                    <td>{{ row.hotelName || '—' }}</td>
-                    <td>{{ row.roomType || '—' }}</td>
-                    <td>{{ row.mealPlan || '—' }}</td>
-                    <td>
-                      {{ row.checkinDate ? (row.checkinDate | date: 'mediumDate') : '—' }} –
-                      {{ row.checkoutDate ? (row.checkoutDate | date: 'mediumDate') : '—' }}
-                    </td>
-                    <td>{{ getAccommodationNights(row.checkinDate, row.checkoutDate) }}</td>
-                    <td class="text-right">
-                      {{ row.unitPrice ?? 0 | number: '1.0-2' }} {{ o.currency }}
-                    </td>
-                  </tr>
-                } @empty {
-                  <tr>
-                    <td class="offer-table-empty" colspan="6">Нет размещений</td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </section>
+          </app-detail-section>
 
           @if ((o.services?.length ?? 0) > 0) {
-            <section class="offer-card offer-table-card">
-              <div class="offer-card-header">
-                <h2 class="offer-card-title">Услуги</h2>
-              </div>
+            <app-detail-section title="Услуги">
+              <div class="offer-table-card">
+                <mat-table class="offer-detail-table" [dataSource]="o.services ?? []">
+                  <ng-container matColumnDef="serviceType">
+                    <mat-header-cell *matHeaderCellDef class="offer-col-header"
+                      >Тип</mat-header-cell
+                    >
+                    <mat-cell *matCellDef="let row" class="offer-col-cell">{{
+                      row.serviceType || '—'
+                    }}</mat-cell>
+                  </ng-container>
 
-              <table class="offer-table">
-                <thead>
-                  <tr>
-                    <th>Тип</th>
-                    <th>Описание</th>
-                    <th>Количество</th>
-                    <th class="text-right">Цена за ед.</th>
-                    <th class="text-right">Итого</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (row of o.services ?? []; track $index) {
-                    <tr>
-                      <td>{{ row.serviceType || '—' }}</td>
-                      <td>{{ row.description || '—' }}</td>
-                      <td>{{ row.quantity ?? 0 }}</td>
-                      <td class="text-right">
-                        {{ row.unitPrice ?? 0 | number: '1.0-2' }} {{ o.currency }}
-                      </td>
-                      <td class="text-right">
-                        {{ (row.quantity ?? 0) * (row.unitPrice ?? 0) | number: '1.0-2' }}
-                        {{ o.currency }}
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </section>
+                  <ng-container matColumnDef="description">
+                    <mat-header-cell *matHeaderCellDef class="offer-col-header"
+                      >Описание</mat-header-cell
+                    >
+                    <mat-cell *matCellDef="let row" class="offer-col-cell">{{
+                      row.description || '—'
+                    }}</mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="quantity">
+                    <mat-header-cell *matHeaderCellDef class="offer-col-header"
+                      >Количество</mat-header-cell
+                    >
+                    <mat-cell *matCellDef="let row" class="offer-col-cell">{{
+                      row.quantity ?? 0
+                    }}</mat-cell>
+                  </ng-container>
+
+                  <ng-container matColumnDef="unitPrice">
+                    <mat-header-cell
+                      *matHeaderCellDef
+                      class="offer-col-header offer-col-header--right"
+                      >Цена за ед.</mat-header-cell
+                    >
+                    <mat-cell *matCellDef="let row" class="offer-col-cell offer-col-cell--right"
+                      >{{ row.unitPrice ?? 0 | number: '1.0-2' }} {{ o.currency }}</mat-cell
+                    >
+                  </ng-container>
+
+                  <ng-container matColumnDef="total">
+                    <mat-header-cell
+                      *matHeaderCellDef
+                      class="offer-col-header offer-col-header--right"
+                      >Итого</mat-header-cell
+                    >
+                    <mat-cell *matCellDef="let row" class="offer-col-cell offer-col-cell--right"
+                      >{{ (row.quantity ?? 0) * (row.unitPrice ?? 0) | number: '1.0-2' }}
+                      {{ o.currency }}</mat-cell
+                    >
+                  </ng-container>
+
+                  <mat-header-row *matHeaderRowDef="serviceColumns" />
+                  <mat-row *matRowDef="let row; columns: serviceColumns" />
+                </mat-table>
+              </div>
+            </app-detail-section>
           }
 
-          <section class="offer-card">
-            <div class="offer-card-header">
-              <h2 class="offer-card-title">Стоимость</h2>
-            </div>
-
+          <app-detail-section title="Стоимость">
             <dl class="offer-data-list">
               <div class="offer-data-row">
                 <dt>Сумма без скидки</dt>
@@ -223,30 +237,27 @@
                 <dd>{{ o.discountAmount ?? 0 | number: '1.0-2' }} {{ o.currency }}</dd>
               </div>
               <div class="offer-data-row offer-pricing-total">
-                <dt class="font-semibold text-gray-900">Итого</dt>
-                <dd class="text-base font-bold text-gray-900">
+                <dt class="offer-pricing-total-label">Итого</dt>
+                <dd class="offer-pricing-total-value">
                   {{ o.total ?? 0 | number: '1.0-2' }} {{ o.currency }}
                 </dd>
               </div>
             </dl>
-          </section>
+          </app-detail-section>
 
           @if (canSeeInternalNotes() && o.internalNotes) {
-            <section class="offer-card">
-              <div class="offer-card-header">
-                <h2 class="offer-card-title">Внутренние заметки</h2>
-              </div>
-              <p class="mt-2 whitespace-pre-line text-sm text-gray-700">{{ o.internalNotes }}</p>
-            </section>
+            <app-detail-section title="Внутренние заметки">
+              <p class="offer-internal-notes">{{ o.internalNotes }}</p>
+            </app-detail-section>
           }
 
           <section class="offer-card">
             <app-offer-timeline [offer]="o" />
           </section>
         </div>
-      </div>
+      </app-page-content>
     } @else {
-      <p class="text-gray-500">Предложение не найдено.</p>
+      <p class="offer-not-found">Предложение не найдено.</p>
     }
-  }
+  </app-loading-state>
 </div>

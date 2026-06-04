@@ -23,6 +23,7 @@ import {
 } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
 
 import { catchError, debounceTime, distinctUntilChanged, finalize, of, switchMap } from 'rxjs';
@@ -32,10 +33,10 @@ import { LeadsService } from '@app/services/leads.service';
 import { MeService } from '@app/services/me.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
+import { PageContentComponent } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientResponseDto, CreateLeadDto, LeadResponseDto, OrgRole } from '@app/shared/models';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { formatClientSearchLabel } from '@app/shared/utils/client-display';
 
 import { atLeastOneContactValidator } from '../leads.validators';
@@ -104,6 +105,7 @@ function isFieldErrorMap(value: unknown): value is FieldErrorMap {
     MatProgressSpinnerModule,
     ...MAT_FORM_BUTTONS,
     PageHeading,
+    PageContentComponent,
   ],
   templateUrl: './create-lead.html',
   styleUrl: './create-lead.scss',
@@ -131,7 +133,7 @@ export class CreateLeadComponent {
       departDateTo: [''],
       returnDateFrom: [''],
       returnDateTo: [''],
-      adults: [1, [Validators.required, Validators.min(1)]],
+      adults: [2, [Validators.required, Validators.min(1)]],
       children: [0, [Validators.required, Validators.min(0)]],
       notes: [''],
       assignedAgentId: [''],

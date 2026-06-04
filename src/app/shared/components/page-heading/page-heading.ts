@@ -10,7 +10,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
   styleUrl: './page-heading.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    class: 'bg-white sticky top-0 z-10',
+    class: 'sticky-0',
   },
 })
 export class PageHeading {

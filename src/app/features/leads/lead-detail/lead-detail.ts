@@ -37,6 +37,7 @@ import { OrganizationMembersService } from '@app/services/organization-members.s
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
 import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
+import { LoadingStateComponent, PageContentComponent } from '@app/shared/components';
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { LeadStatus } from '@app/shared/models';
 import { MarkdownPipe } from '@app/shared/pipes/markdown-pipe';
@@ -98,6 +99,8 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     LeadDetailHeaderComponent,
     LeadDetailRequestsSectionComponent,
     MarkdownPipe,
+    LoadingStateComponent,
+    PageContentComponent,
   ],
   templateUrl: './lead-detail.html',
   styleUrl: './lead-detail.scss',

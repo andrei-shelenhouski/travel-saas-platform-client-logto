@@ -27,7 +27,6 @@ import {
 import { ClientTypeBadgeComponent } from '../client-type-badge/client-type-badge';
 
 import type { ClientResponseDto } from '@app/shared/models';
-
 export const PAGE_SIZE = 20;
 
 @Component({

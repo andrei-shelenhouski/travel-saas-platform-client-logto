@@ -1,16 +1,16 @@
 <div
   aria-labelledby="cancel-dialog-title"
   aria-modal="true"
-  class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+  class="cancellation-dialog-overlay"
   role="dialog"
 >
-  <div class="mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
-    <h2 class="text-lg font-semibold text-gray-900" id="cancel-dialog-title">
+  <div class="cancellation-dialog-panel">
+    <h2 class="cancellation-dialog-title" id="cancel-dialog-title">
       Отмена бронирования
     </h2>
 
-    <form class="mt-4 space-y-4" [formGroup]="form" (ngSubmit)="onSubmit()">
-      <mat-form-field class="w-full">
+    <form class="cancellation-dialog-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field>
         <mat-label>Причина отмены</mat-label>
         <textarea
           cdkAutosizeMaxRows="6"
@@ -24,7 +24,7 @@
         }
       </mat-form-field>
 
-      <div class="flex justify-end gap-3">
+      <div class="cancellation-dialog-actions">
         <button mat-button type="button" (click)="cancelled.emit()">Отмена</button>
         <button color="warn" mat-flat-button type="submit" [disabled]="form.invalid">
           <span>Подтвердить</span>

@@ -6,7 +6,7 @@
       <p class="promote-error" role="alert">{{ submitError() }}</p>
     }
 
-    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>Тип клиента</mat-label>
       <mat-select formControlName="type">
         <mat-option [value]="ClientType.INDIVIDUAL">Физ. лицо</mat-option>
@@ -15,7 +15,7 @@
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>Полное имя</mat-label>
       <input formControlName="fullName" matInput type="text" />
       @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
@@ -27,7 +27,7 @@
     </mat-form-field>
 
     @if (isCompanyType()) {
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Название компании</mat-label>
         <input formControlName="companyName" matInput type="text" />
         @if (form.controls.companyName.hasError('required') && form.controls.companyName.touched) {
@@ -38,7 +38,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Юридический адрес</mat-label>
         <input formControlName="legalAddress" matInput type="text" />
         @if (
@@ -52,7 +52,7 @@
       </mat-form-field>
 
       <div class="promote-grid-two">
-        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>УНП</mat-label>
           <input formControlName="unp" matInput type="text" />
           @if (form.controls.unp.hasError('pattern') && form.controls.unp.touched) {
@@ -63,7 +63,7 @@
           }
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>ОКПО</mat-label>
           <input formControlName="okpo" matInput type="text" />
           @if (hasServerError('okpo')) {
@@ -73,7 +73,7 @@
       </div>
 
       <div class="promote-grid-two">
-        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>IBAN</mat-label>
           <input formControlName="iban" matInput type="text" />
           @if (hasServerError('iban')) {
@@ -81,7 +81,7 @@
           }
         </mat-form-field>
 
-        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <mat-form-field appearance="outline" subscriptSizing="dynamic">
           <mat-label>Название банка</mat-label>
           <input formControlName="bankName" matInput type="text" />
           @if (hasServerError('bankName')) {
@@ -90,7 +90,7 @@
         </mat-form-field>
       </div>
 
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>БИК</mat-label>
         <input formControlName="bik" matInput type="text" />
         @if (hasServerError('bik')) {
@@ -100,7 +100,7 @@
     }
 
     <div class="promote-grid-two">
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Телефон</mat-label>
         <input formControlName="phone" matInput type="tel" />
         @if (hasServerError('phone')) {
@@ -108,7 +108,7 @@
         }
       </mat-form-field>
 
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <mat-form-field appearance="outline" subscriptSizing="dynamic">
         <mat-label>Электронная почта</mat-label>
         <input formControlName="email" matInput type="email" />
         @if (form.controls.email.hasError('email') && form.controls.email.touched) {
@@ -120,7 +120,7 @@
       </mat-form-field>
     </div>
 
-    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>Telegram</mat-label>
       <input formControlName="telegramHandle" matInput type="text" />
       @if (hasServerError('telegramHandle')) {
@@ -128,7 +128,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+    <mat-form-field appearance="outline" subscriptSizing="dynamic">
       <mat-label>Заметки</mat-label>
       <textarea formControlName="notes" matInput rows="3"></textarea>
       @if (hasServerError('notes')) {
@@ -148,7 +148,7 @@
       }
 
       @if (form.controls.dataConsentGiven.value) {
-        <mat-form-field appearance="outline" class="w-56" subscriptSizing="dynamic">
+        <mat-form-field appearance="outline" class="promote-consent-date-field" subscriptSizing="dynamic">
           <mat-label>Дата согласия</mat-label>
           <input formControlName="dataConsentDate" matInput type="date" />
           @if (

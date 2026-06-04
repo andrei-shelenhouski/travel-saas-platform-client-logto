@@ -22,6 +22,7 @@ import { PersonsService } from '@app/services/persons.service';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { LoadingStateComponent, PageContentComponent } from '@app/shared/components';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { BookingStatus } from '@app/shared/models';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -62,6 +63,8 @@ import type {
     InvoiceListMiniComponent,
     OperationsSectionComponent,
     PageHeading,
+    LoadingStateComponent,
+    PageContentComponent,
     TravelDetailsSectionComponent,
     BookingTravelersSectionComponent,
     CustomFieldsSectionComponent,

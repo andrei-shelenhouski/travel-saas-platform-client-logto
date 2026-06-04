@@ -23,7 +23,7 @@
     @if (client().notes) {
       <div class="client-data-row">
         <dt>Заметки</dt>
-        <dd class="whitespace-pre-wrap">{{ client().notes }}</dd>
+        <dd class="client-notes-cell">{{ client().notes }}</dd>
       </div>
     }
     @if (isB2BAgent()) {
@@ -62,13 +62,13 @@
     </div>
     <div class="client-data-row">
       <dt>ID</dt>
-      <dd class="font-mono text-xs text-gray-600">{{ client().id }}</dd>
+      <dd class="client-id-cell">{{ client().id }}</dd>
     </div>
   </dl>
 
-  <div class="mt-4">
+  <div class="client-tags-section">
     @if (tagsLoading()) {
-      <p class="text-sm text-gray-500">Загрузка тегов…</p>
+      <p class="client-tags-loading">Загрузка тегов…</p>
     } @else {
       <app-tag-selector
         label="Теги"

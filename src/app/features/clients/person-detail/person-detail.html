@@ -1,11 +1,4 @@
-@if (loading()) {
-  <div class="flex justify-center py-12">
-    <div
-      aria-hidden="true"
-      class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-    ></div>
-  </div>
-} @else {
+<app-loading-state [loading]="loading()">
   @let p = person();
   @if (p) {
     <app-page-heading
@@ -26,106 +19,102 @@
       }
     </app-page-heading>
 
-    <div class="person-detail-grid">
-      <section class="person-card">
-        <h2>Профиль</h2>
-        <p class="dependent-badge">Зависимый</p>
-        <dl>
-          <div>
-            <dt>Дата рождения</dt>
-            <dd>
-              {{ formatDate(p.dateOfBirth) }}
-              @if (age() !== null) {
-                ({{ age() }} лет)
-              }
-            </dd>
-          </div>
-          <div>
-            <dt>Гражданство</dt>
-            <dd>{{ p.citizenship || '—' }}</dd>
-          </div>
-          <div>
-            <dt>Телефон</dt>
-            <dd>{{ p.contacts[0]?.value || '—' }}</dd>
-          </div>
-        </dl>
-      </section>
-
-      <section class="person-card">
-        <h2>Документы</h2>
-        @if (p.documents.length === 0) {
-          <p>Нет документов</p>
-        } @else {
-          <ul>
-            @for (doc of p.documents; track doc.id) {
-              <li>{{ doc.type }} · {{ doc.series || '' }} ****{{ doc.numberLast4 }}</li>
-            }
-          </ul>
-        }
-      </section>
-
-      <section class="person-card">
-        <h2>Адреса</h2>
-        @if (p.addresses.length === 0) {
-          <p>Нет адресов</p>
-        } @else {
-          <ul>
-            @for (addr of p.addresses; track addr.id) {
-              <li>{{ addr.type }} · {{ addr.city || '—' }}</li>
-            }
-          </ul>
-        }
-      </section>
-
-      <section class="person-card">
-        <h2>Контакты</h2>
-        @if (p.contacts.length === 0) {
-          <p>Нет контактов</p>
-        } @else {
-          <ul>
-            @for (contact of p.contacts; track contact.id) {
-              <li>{{ contact.medium }} · {{ contact.value }}</li>
-            }
-          </ul>
-        }
-      </section>
-
-      <section class="person-card">
-        <h2>Связи</h2>
-        @if (relationships().length === 0) {
-          <p>Нет связей</p>
-        } @else {
-          <ul>
-            @for (item of relationships(); track item.id) {
-              <li>
-                <span>{{ item.type }} · {{ relationshipStatusLabel(item.status) }}</span>
-                @if (relatedClientByPersonId().get(item.relatedPersonId); as relatedClientId) {
-                  <button mat-button type="button" (click)="openClient(relatedClientId)">
-                    Открыть клиента
-                  </button>
+    <app-page-content>
+      <div class="person-detail-grid">
+        <app-detail-section title="Профиль">
+          <p class="dependent-badge">Зависимый</p>
+          <dl>
+            <div>
+              <dt>Дата рождения</dt>
+              <dd>
+                {{ formatDate(p.dateOfBirth) }}
+                @if (age() !== null) {
+                  ({{ age() }} лет)
                 }
-              </li>
-            }
-          </ul>
-        }
-      </section>
+              </dd>
+            </div>
+            <div>
+              <dt>Гражданство</dt>
+              <dd>{{ p.citizenship || '—' }}</dd>
+            </div>
+            <div>
+              <dt>Телефон</dt>
+              <dd>{{ p.contacts[0]?.value || '—' }}</dd>
+            </div>
+          </dl>
+        </app-detail-section>
 
-      <section class="person-card">
-        <h2>История бронирований</h2>
-        @if (bookings().length === 0) {
-          <p>Нет бронирований</p>
-        } @else {
-          <ul>
-            @for (booking of bookings(); track booking.id) {
-              <li>
-                <button mat-button type="button" (click)="openBooking(booking.id)">
-                  {{ booking.number || booking.id }}
-                </button>
-              </li>
-            }
-          </ul>
-        }
-      </section>
-    </div>
+        <app-detail-section title="Документы">
+          @if (p.documents.length === 0) {
+            <p>Нет документов</p>
+          } @else {
+            <ul>
+              @for (doc of p.documents; track doc.id) {
+                <li>{{ doc.type }} · {{ doc.series || '' }} ****{{ doc.numberLast4 }}</li>
+              }
+            </ul>
+          }
+        </app-detail-section>
+
+        <app-detail-section title="Адреса">
+          @if (p.addresses.length === 0) {
+            <p>Нет адресов</p>
+          } @else {
+            <ul>
+              @for (addr of p.addresses; track addr.id) {
+                <li>{{ addr.type }} · {{ addr.city || '—' }}</li>
+              }
+            </ul>
+          }
+        </app-detail-section>
+
+        <app-detail-section title="Контакты">
+          @if (p.contacts.length === 0) {
+            <p>Нет контактов</p>
+          } @else {
+            <ul>
+              @for (contact of p.contacts; track contact.id) {
+                <li>{{ contact.medium }} · {{ contact.value }}</li>
+              }
+            </ul>
+          }
+        </app-detail-section>
+
+        <app-detail-section title="Связи">
+          @if (relationships().length === 0) {
+            <p>Нет связей</p>
+          } @else {
+            <ul>
+              @for (item of relationships(); track item.id) {
+                <li>
+                  <span>{{ item.type }} · {{ relationshipStatusLabel(item.status) }}</span>
+                  @if (relatedClientByPersonId().get(item.relatedPersonId); as relatedClientId) {
+                    <button mat-button type="button" (click)="openClient(relatedClientId)">
+                      Открыть клиента
+                    </button>
+                  }
+                </li>
+              }
+            </ul>
+          }
+        </app-detail-section>
+
+        <app-detail-section title="История бронирований">
+          @if (bookings().length === 0) {
+            <p>Нет бронирований</p>
+          } @else {
+            <ul>
+              @for (booking of bookings(); track booking.id) {
+                <li>
+                  <button mat-button type="button" (click)="openBooking(booking.id)">
+                    {{ booking.number || booking.id }}
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+        </app-detail-section>
+      </div>
+    </app-page-content>
   }
-}
+</app-loading-state>

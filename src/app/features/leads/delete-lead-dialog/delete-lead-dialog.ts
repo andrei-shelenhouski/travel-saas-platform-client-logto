@@ -20,6 +20,7 @@ export type DeleteLeadDialogResult = { deleted: true; leadId: string } | { delet
   selector: 'app-delete-lead-dialog',
   imports: [MatDialogModule, MatIconModule, MatProgressSpinnerModule, ...MAT_BUTTONS],
   templateUrl: './delete-lead-dialog.html',
+  styleUrl: './delete-lead-dialog.scss',
 })
 export class DeleteLeadDialogComponent {
   private readonly dialogRef = inject(

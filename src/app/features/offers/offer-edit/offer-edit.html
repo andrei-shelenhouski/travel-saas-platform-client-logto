@@ -2,61 +2,57 @@
   <a mat-button [routerLink]="['/app/offers', offer()?.id]">Отмена</a>
 </app-page-heading>
 
-<div class="p-4">
+<app-page-content>
   @if (loading()) {
-    <div class="flex justify-center py-12">
-      <div
-        aria-hidden="true"
-        class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-      ></div>
+    <div class="offer-edit-loading">
+      <div aria-hidden="true" class="offer-edit-spinner"></div>
     </div>
   } @else {
     @if (error()) {
-      <p class="text-sm text-red-600">{{ error() }}</p>
+      <p class="offer-edit-error">{{ error() }}</p>
     }
 
-    <form class="space-y-6" [formGroup]="form" (ngSubmit)="onSubmit()">
-      <section class="rounded-lg border border-gray-200 bg-white p-4">
-        <h2 class="text-base font-semibold text-gray-900">Детали поездки</h2>
-        <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-4">
-          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+    <form class="offer-edit-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <app-form-section title="Детали поездки">
+        <div class="offer-edit-grid-4">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Направление</mat-label>
             <input formControlName="destination" id="destination" matInput type="text" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Город вылета</mat-label>
             <input formControlName="departureCity" id="departureCity" matInput type="text" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Дата вылета</mat-label>
             <input formControlName="departDate" id="departDate" matInput type="date" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Дата возвращения</mat-label>
             <input formControlName="returnDate" id="returnDate" matInput type="date" />
           </mat-form-field>
         </div>
 
-        <div class="mt-2 grid grid-cols-1 gap-4 lg:grid-cols-6">
-          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+        <div class="offer-edit-grid-6">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Взрослые</mat-label>
             <input formControlName="adults" id="adults" matInput min="0" type="number" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Дети</mat-label>
             <input formControlName="children" id="children" matInput min="0" type="number" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Действительно до</mat-label>
             <input formControlName="validityDate" id="validityDate" matInput type="date" />
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Валюта</mat-label>
             <mat-select formControlName="currency" id="currency">
               @for (currency of currencyOptions; track currency) {
@@ -65,10 +61,8 @@
             </mat-select>
           </mat-form-field>
 
-          <div class="lg:col-span-2">
-            <label class="mb-2 block text-sm font-medium text-gray-700" for="edit-offer-language">
-              Язык
-            </label>
+          <div class="offer-edit-grid-col-span-2">
+            <label class="offer-edit-field-label" for="edit-offer-language"> Язык </label>
             <mat-button-toggle-group
               aria-label="Язык предложения"
               formControlName="language"
@@ -82,30 +76,31 @@
             </mat-button-toggle-group>
           </div>
         </div>
-      </section>
+      </app-form-section>
 
-      <section
-        class="rounded-lg border border-gray-200 bg-white p-4"
-        formArrayName="accommodations"
-      >
-        <div class="flex items-center justify-between">
-          <h2 class="text-base font-semibold text-gray-900">Размещение</h2>
+      <app-form-section formArrayName="accommodations" title="Размещение">
+        <div class="offer-edit-section-toolbar">
+          <span></span>
           <button mat-stroked-button type="button" (click)="addAccommodation()">
             Добавить размещение
           </button>
         </div>
 
         @if (form.controls.accommodations.hasError('minItems')) {
-          <p class="mt-2 text-sm text-red-600">Требуется хотя бы одна строка размещения.</p>
+          <p class="offer-edit-error">Требуется хотя бы одна строка размещения.</p>
         }
 
-        <div cdkDropList class="mt-4 space-y-3" (cdkDropListDropped)="dropAccommodation($event)">
+        <div
+          cdkDropList
+          class="offer-edit-rows-list"
+          (cdkDropListDropped)="dropAccommodation($event)"
+        >
           @for (row of accommodationsArray.controls; track $index) {
-            <div cdkDrag class="rounded-md border border-gray-200 p-3" [formGroupName]="$index">
-              <div class="grid grid-cols-1 gap-3 lg:grid-cols-9">
+            <div cdkDrag class="offer-edit-row-card" [formGroupName]="$index">
+              <div class="offer-edit-accommodation-grid">
                 <mat-form-field
                   appearance="outline"
-                  class="lg:col-span-2"
+                  class="offer-edit-col-2"
                   subscriptSizing="dynamic"
                 >
                   <mat-label>Название отеля</mat-label>
@@ -119,7 +114,7 @@
 
                 <mat-form-field
                   appearance="outline"
-                  class="lg:col-span-1"
+                  class="offer-edit-col-1"
                   subscriptSizing="dynamic"
                 >
                   <mat-label>Тип номера</mat-label>
@@ -128,7 +123,7 @@
 
                 <mat-form-field
                   appearance="outline"
-                  class="lg:col-span-1"
+                  class="offer-edit-col-1"
                   subscriptSizing="dynamic"
                 >
                   <mat-label>Питание</mat-label>
@@ -142,7 +137,7 @@
 
                 <mat-form-field
                   appearance="outline"
-                  class="lg:col-span-1"
+                  class="offer-edit-col-1"
                   subscriptSizing="dynamic"
                 >
                   <mat-label>Заезд</mat-label>
@@ -151,7 +146,7 @@
 
                 <mat-form-field
                   appearance="outline"
-                  class="lg:col-span-1"
+                  class="offer-edit-col-1"
                   subscriptSizing="dynamic"
                 >
                   <mat-label>Выезд</mat-label>
@@ -160,19 +155,19 @@
 
                 <mat-form-field
                   appearance="outline"
-                  class="lg:col-span-1"
+                  class="offer-edit-col-1"
                   subscriptSizing="dynamic"
                 >
                   <mat-label>Цена за ед.</mat-label>
                   <input formControlName="unitPrice" matInput min="0" type="number" />
                 </mat-form-field>
 
-                <div class="flex flex-col justify-center text-sm text-gray-700">
+                <div class="offer-edit-row-summary">
                   <span>Ночей: {{ accommodationNights($index) }}</span>
                   <span>Итого: {{ accommodationTotal($index) | number: '1.2-2' }}</span>
                 </div>
 
-                <div class="flex items-center justify-end gap-2">
+                <div class="offer-edit-row-actions">
                   <button
                     aria-label="Удалить размещение"
                     mat-icon-button
@@ -188,26 +183,26 @@
                 row.hasError('invalidDateRange') &&
                 (row.controls.checkoutDate.touched || row.controls.checkinDate.touched)
               ) {
-                <p class="mt-2 text-sm text-red-600">Дата выезда должна быть позже даты заезда.</p>
+                <p class="offer-edit-error">Дата выезда должна быть позже даты заезда.</p>
               }
             </div>
           }
         </div>
-      </section>
+      </app-form-section>
 
-      <section class="rounded-lg border border-gray-200 bg-white p-4" formArrayName="services">
-        <div class="flex items-center justify-between">
-          <h2 class="text-base font-semibold text-gray-900">Услуги</h2>
+      <app-form-section formArrayName="services" title="Услуги">
+        <div class="offer-edit-section-toolbar">
+          <span></span>
           <button mat-stroked-button type="button" (click)="addService()">Добавить услугу</button>
         </div>
 
-        <div cdkDropList class="mt-4 space-y-3" (cdkDropListDropped)="dropService($event)">
+        <div cdkDropList class="offer-edit-rows-list" (cdkDropListDropped)="dropService($event)">
           @for (row of servicesArray.controls; track $index) {
-            <div cdkDrag class="rounded-md border border-gray-200 p-3" [formGroupName]="$index">
-              <div class="grid grid-cols-1 gap-3 lg:grid-cols-8">
+            <div cdkDrag class="offer-edit-row-card" [formGroupName]="$index">
+              <div class="offer-edit-services-grid">
                 <mat-form-field
                   appearance="outline"
-                  class="lg:col-span-2"
+                  class="offer-edit-col-2"
                   subscriptSizing="dynamic"
                 >
                   <mat-label>Тип услуги</mat-label>
@@ -220,7 +215,7 @@
 
                 <mat-form-field
                   appearance="outline"
-                  class="lg:col-span-2"
+                  class="offer-edit-col-2"
                   subscriptSizing="dynamic"
                 >
                   <mat-label>Описание</mat-label>
@@ -229,7 +224,7 @@
 
                 <mat-form-field
                   appearance="outline"
-                  class="lg:col-span-1"
+                  class="offer-edit-col-1"
                   subscriptSizing="dynamic"
                 >
                   <mat-label>Количество</mat-label>
@@ -238,18 +233,18 @@
 
                 <mat-form-field
                   appearance="outline"
-                  class="lg:col-span-1"
+                  class="offer-edit-col-1"
                   subscriptSizing="dynamic"
                 >
                   <mat-label>Цена за ед.</mat-label>
                   <input formControlName="unitPrice" matInput min="0" type="number" />
                 </mat-form-field>
 
-                <div class="flex flex-col justify-center text-sm text-gray-700">
+                <div class="offer-edit-row-summary">
                   <span>Итого: {{ serviceTotal($index) | number: '1.2-2' }}</span>
                 </div>
 
-                <div class="flex items-center justify-end">
+                <div class="offer-edit-row-actions">
                   <button
                     aria-label="Удалить услугу"
                     mat-icon-button
@@ -263,16 +258,12 @@
             </div>
           }
         </div>
-      </section>
+      </app-form-section>
 
-      <section class="rounded-lg border border-gray-200 bg-white p-4">
-        <h2 class="text-base font-semibold text-gray-900">Итоговая стоимость</h2>
-        <div class="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-4">
+      <app-form-section title="Итоговая стоимость">
+        <div class="offer-edit-grid-4">
           <div>
-            <label
-              class="mb-2 block text-sm font-medium text-gray-700"
-              for="edit-offer-discount-mode"
-            >
+            <label class="offer-edit-field-label" for="edit-offer-discount-mode">
               Тип скидки
             </label>
             <mat-button-toggle-group
@@ -287,54 +278,55 @@
             </mat-button-toggle-group>
           </div>
 
-          <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>Размер скидки</mat-label>
             <input formControlName="discountValue" matInput min="0" type="number" />
           </mat-form-field>
 
-          <div class="rounded-md bg-gray-50 p-3 text-sm">
-            <p class="text-gray-500">Сумма без скидки</p>
-            <p class="font-semibold text-gray-900">
+          <div class="offer-edit-summary-card">
+            <p class="offer-edit-summary-label">Сумма без скидки</p>
+            <p class="offer-edit-summary-value">
               {{ pricingSummary().subtotal | number: '1.2-2' }} {{ form.controls.currency.value }}
             </p>
           </div>
 
-          <div class="rounded-md bg-gray-50 p-3 text-sm">
-            <p class="text-gray-500">Итого</p>
-            <p class="font-semibold text-gray-900">
+          <div class="offer-edit-summary-card">
+            <p class="offer-edit-summary-label">Итого</p>
+            <p class="offer-edit-summary-value">
               {{ pricingSummary().total | number: '1.2-2' }} {{ form.controls.currency.value }}
             </p>
           </div>
         </div>
 
-        <p class="mt-2 text-xs text-gray-500">
-          Скидка: {{ pricingSummary().discountAmount | number: '1.2-2' }} | Скидка
-          %: {{ pricingSummary().discountPct | number: '1.2-2' }}%
+        <p class="offer-edit-discount-note">
+          Скидка: {{ pricingSummary().discountAmount | number: '1.2-2' }} | Скидка %:
+          {{ pricingSummary().discountPct | number: '1.2-2' }}%
         </p>
-      </section>
+      </app-form-section>
 
-      <section class="rounded-lg border border-gray-200 bg-white p-4">
-        <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+      <app-form-section title="Внутренние заметки">
+        <mat-form-field
+          appearance="outline"
+          class="offer-edit-notes-field"
+          subscriptSizing="dynamic"
+        >
           <mat-label>Внутренние заметки</mat-label>
           <textarea formControlName="internalNotes" matInput rows="4"></textarea>
         </mat-form-field>
-      </section>
+      </app-form-section>
 
-      <div class="flex flex-wrap gap-3">
+      <div class="offer-edit-actions">
         <button
           mat-stroked-button
           type="button"
           [disabled]="saving() || previewing()"
           (click)="onPreviewClick()"
         >
-          Предварительный просмотр
+          Предпросмотр
         </button>
         <button color="primary" mat-flat-button type="submit" [disabled]="saving() || form.invalid">
           @if (saving()) {
-            <span
-              aria-hidden="true"
-              class="inline-block h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
-            ></span>
+            <span aria-hidden="true" class="offer-edit-btn-spinner"></span>
           } @else {
             Сохранить как черновик
           }
@@ -343,4 +335,4 @@
       </div>
     </form>
   }
-</div>
+</app-page-content>

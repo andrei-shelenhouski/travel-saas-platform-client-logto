@@ -1,1 +1,33 @@
-/* Offers list styles */
+:host {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.offers-list-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.offers-list-error {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  color: #dc2626;
+}
+
+.offers-list-number {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.offers-list-empty {
+  padding: 2.5rem;
+  text-align: center;
+}
+
+.offers-list-empty-text {
+  padding-bottom: 1rem;
+}

@@ -39,12 +39,11 @@ import {
   MAT_FORM_BUTTONS,
   MAT_MENU,
 } from '@app/shared/material-imports';
+import { CLIENT_TYPE_OPTIONS, LEAD_STATUS_OPTIONS } from '@app/shared/models';
 import { computeAgentOptions } from '@app/shared/utils/agent-options.util';
 import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 
 import { LeadsListFilterBarComponent } from '../leads-list-filter-bar/leads-list-filter-bar';
-
-import { CLIENT_TYPE_OPTIONS, LEAD_STATUS_OPTIONS } from '@app/shared/models';
 
 import type { LeadResponseDto, LeadStatus } from '@app/shared/models';
 
@@ -214,6 +213,7 @@ export class LeadsListComponent {
       'status',
       'source',
       'name',
+      'isClient',
       'clientType',
       'contactPhone',
       'contactEmail',

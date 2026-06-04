@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
-export type StatusChipConfig = Record<string, { label: string; backgroundColor: string }>;
+export type StatusChipConfig = Record<string, { label: string; backgroundColor: string; textColor?: string }>;
 
 @Component({
   selector: 'app-status-chip',
@@ -57,6 +57,6 @@ export class StatusChipComponent {
       return '#1f2937';
     }
 
-    return '#ffffff';
+    return this.config()[status].textColor ?? '#ffffff';
   });
 }

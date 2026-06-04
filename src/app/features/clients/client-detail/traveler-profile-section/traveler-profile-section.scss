@@ -17,6 +17,12 @@
   margin: 0;
 }
 
+.traveler-profile-loading {
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem 0;
+}
+
 // Empty state
 
 .traveler-profile-empty {
@@ -111,7 +117,7 @@
 
 .core-field-edit {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.25rem;
 }
 

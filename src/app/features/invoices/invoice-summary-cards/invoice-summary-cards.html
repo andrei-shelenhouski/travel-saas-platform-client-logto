@@ -1,38 +1,32 @@
-<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+<div class="summary-cards-grid">
   <button
     aria-label="Фильтр по черновикам счетов"
-    class="group flex flex-col rounded-xl border bg-white p-4 text-left shadow-sm transition hover:shadow-md"
+    class="summary-card"
     type="button"
-    [class.border-gray-200]="!isDraftActive()"
-    [class.border-primary-500]="isDraftActive()"
-    [class.ring-2]="isDraftActive()"
-    [class.ring-primary-200]="isDraftActive()"
+    [class.summary-card--active]="isDraftActive()"
     (click)="onDraftClick()"
   >
-    <div class="flex items-center gap-2 text-gray-500">
-      <span aria-hidden="true" class="material-icons text-lg">edit_note</span>
-      <span class="text-sm font-medium">Черновики</span>
+    <div class="summary-card-header">
+      <span aria-hidden="true" class="material-icons summary-card-icon">edit_note</span>
+      <span class="summary-card-label">Черновики</span>
     </div>
-    <p class="mt-2 text-2xl font-bold text-primary">{{ drafts() }}</p>
-    <p class="mt-2 text-xs text-gray-500">Нажмите для фильтрации</p>
+    <p class="summary-card-count">{{ drafts() }}</p>
+    <p class="summary-card-hint">Нажмите для фильтрации</p>
   </button>
 
   <button
     aria-label="Фильтр по счетам в ожидании оплаты"
-    class="group flex flex-col rounded-xl border bg-white p-4 text-left shadow-sm transition hover:shadow-md"
+    class="summary-card"
     type="button"
-    [class.border-gray-200]="!isPendingActive()"
-    [class.border-primary-500]="isPendingActive()"
-    [class.ring-2]="isPendingActive()"
-    [class.ring-primary-200]="isPendingActive()"
+    [class.summary-card--active]="isPendingActive()"
     (click)="onPendingClick()"
   >
-    <div class="flex items-center gap-2 text-gray-500">
-      <span aria-hidden="true" class="material-icons text-lg">schedule</span>
-      <span class="text-sm font-medium">Ожидают оплаты</span>
+    <div class="summary-card-header">
+      <span aria-hidden="true" class="material-icons summary-card-icon">schedule</span>
+      <span class="summary-card-label">Ожидают оплаты</span>
     </div>
-    <p class="mt-2 text-2xl font-bold text-primary">{{ pendingCount() }}</p>
-    <p class="mt-2 text-xs text-gray-500">
+    <p class="summary-card-count">{{ pendingCount() }}</p>
+    <p class="summary-card-hint">
       <span>Сумма:</span>
       {{ formatAmount(pendingAmount()) }} {{ currency() }}
     </p>
@@ -40,20 +34,17 @@
 
   <button
     aria-label="Фильтр по просроченным счетам"
-    class="group flex flex-col rounded-xl border bg-white p-4 text-left shadow-sm transition hover:shadow-md"
+    class="summary-card"
     type="button"
-    [class.border-gray-200]="!isOverdueActive()"
-    [class.border-primary-500]="isOverdueActive()"
-    [class.ring-2]="isOverdueActive()"
-    [class.ring-primary-200]="isOverdueActive()"
+    [class.summary-card--active]="isOverdueActive()"
     (click)="onOverdueClick()"
   >
-    <div class="flex items-center gap-2 text-gray-500">
-      <span aria-hidden="true" class="material-icons text-lg">warning</span>
-      <span class="text-sm font-medium">Просрочено</span>
+    <div class="summary-card-header">
+      <span aria-hidden="true" class="material-icons summary-card-icon">warning</span>
+      <span class="summary-card-label">Просрочено</span>
     </div>
-    <p class="mt-2 text-2xl font-bold text-primary">{{ overdueCount() }}</p>
-    <p class="mt-2 text-xs text-gray-500">
+    <p class="summary-card-count">{{ overdueCount() }}</p>
+    <p class="summary-card-hint">
       <span>Сумма:</span>
       {{ formatAmount(overdueAmount()) }} {{ currency() }}
     </p>

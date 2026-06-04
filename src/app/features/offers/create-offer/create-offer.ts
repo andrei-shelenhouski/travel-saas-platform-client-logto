@@ -39,6 +39,7 @@ import { OffersService } from '@app/services/offers.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { RequestsService } from '@app/services/requests.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { FormSectionComponent, PageContentComponent } from '@app/shared/components';
 import {
   MAT_BUTTON_TOGGLES,
   MAT_BUTTONS,
@@ -103,6 +104,8 @@ const SERVICE_TYPE_OPTIONS = [
     ReactiveFormsModule,
     DragDropModule,
     PageHeading,
+    PageContentComponent,
+    FormSectionComponent,
     ...MAT_FORM_BUTTONS,
     ...MAT_BUTTONS,
     ...MAT_BUTTON_TOGGLES,

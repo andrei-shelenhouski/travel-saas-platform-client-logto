@@ -1,69 +1,106 @@
-<div class="lead-detail-page">
-  @if (loading()) {
-    <div class="flex justify-center py-12">
-      <div
-        aria-hidden="true"
-        class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-      ></div>
-    </div>
-  } @else if (getErrorStatus() === 404) {
-    <section class="rounded-lg border border-red-200 bg-red-50 p-6">
-      <h2 class="text-lg font-semibold text-red-900">Лид не найден</h2>
-      <p class="mt-2 text-sm text-red-800">
-        Лид не существует или недоступен в текущей организации.
-      </p>
-      <button class="mt-4" color="primary" mat-flat-button type="button" (click)="goBackToLeads()">
-        Назад к лидам
-      </button>
-    </section>
-  } @else if (getErrorStatus() === 403) {
-    <section class="rounded-lg border border-amber-200 bg-amber-50 p-6">
-      <h2 class="text-lg font-semibold text-amber-900">Доступ запрещён</h2>
-      <p class="mt-2 text-sm text-amber-800">У вас нет доступа к этому лиду.</p>
-      <button class="mt-4" color="primary" mat-flat-button type="button" (click)="goBackToLeads()">
-        Назад к лидам
-      </button>
-    </section>
-  } @else {
-    @let l = lead();
-    @if (l) {
-      <app-lead-detail-header
-        [canDeleteLead]="canDeleteLeadDetail()"
-        [isDeletedLead]="isDeletedLead()"
-        [isTerminalLead]="isTerminalLead()"
-        [lead]="l"
-        [statusActionLoading]="statusActionLoading()"
-        [visibleActions]="visibleActions()"
-        (actionClicked)="applyAction($event)"
-        (deleteClicked)="openDeleteDialog()"
-        (editDetailsClicked)="startEditTravelDetails()"
-      />
+<app-loading-state
+  errorBackLabel="Назад к лидам"
+  errorBackLink="/app/leads"
+  errorTitle="Ошибка загрузки"
+  [error]="
+    error()
+      ? getErrorStatus() === 404
+        ? 'Лид не найден'
+        : getErrorStatus() === 403
+          ? 'Доступ запрещён'
+          : 'Не удалось загрузить лид'
+      : null
+  "
+  [loading]="loading()"
+>
+  @let l = lead();
+  @if (l) {
+    <app-lead-detail-header
+      [canDeleteLead]="canDeleteLeadDetail()"
+      [isDeletedLead]="isDeletedLead()"
+      [isTerminalLead]="isTerminalLead()"
+      [lead]="l"
+      [statusActionLoading]="statusActionLoading()"
+      [visibleActions]="visibleActions()"
+      (actionClicked)="applyAction($event)"
+      (deleteClicked)="openDeleteDialog()"
+      (editDetailsClicked)="startEditTravelDetails()"
+    />
 
-      <div class="m-4">
-        <div class="lead-grid">
-          <section class="lead-card">
-            <div class="lead-card-header">
-              <h2 class="lead-card-title">Клиент</h2>
+    <app-page-content>
+      <div class="lead-grid">
+        <section class="lead-card">
+          <div class="lead-card-header">
+            <h2 class="lead-card-title">Клиент</h2>
 
-              @if (l.clientId && canManageLeadClient()) {
-                <button
-                  aria-label="Действия с клиентом"
-                  mat-icon-button
-                  type="button"
-                  [matMenuTriggerFor]="clientActionsMenu"
-                >
-                  <mat-icon>more_vert</mat-icon>
+            @if (l.clientId && canManageLeadClient()) {
+              <button
+                aria-label="Действия с клиентом"
+                mat-icon-button
+                type="button"
+                [matMenuTriggerFor]="clientActionsMenu"
+              >
+                <mat-icon>more_vert</mat-icon>
+              </button>
+
+              <mat-menu #clientActionsMenu="matMenu">
+                <button mat-menu-item type="button" (click)="openLinkClientDialog()">
+                  Изменить клиента
                 </button>
+              </mat-menu>
+            }
+          </div>
 
-                <mat-menu #clientActionsMenu="matMenu">
-                  <button mat-menu-item type="button" (click)="openLinkClientDialog()">
-                    Изменить клиента
-                  </button>
-                </mat-menu>
-              }
-            </div>
+          @if (l.clientId) {
+            <dl class="lead-data-list">
+              <div class="lead-data-row">
+                <dt>Имя</dt>
+                <dd>{{ l.clientName ?? '—' }}</dd>
+              </div>
+              <div class="lead-data-row">
+                <dt>Тип</dt>
+                <dd>
+                  @if (l.clientType) {
+                    <app-client-type-badge [type]="l.clientType" />
+                  } @else {
+                    —
+                  }
+                </dd>
+              </div>
+              <div class="lead-data-row">
+                <dt>Телефон</dt>
+                <dd>{{ l.contactPhone ?? '—' }}</dd>
+              </div>
+              <div class="lead-data-row">
+                <dt>Email</dt>
+                <dd>{{ l.contactEmail ?? '—' }}</dd>
+              </div>
+              <div class="lead-data-row">
+                <dt>
+                  <span class="dt-icon-label">
+                    <mat-icon class="dt-icon">send</mat-icon>
+                    <span>Telegram</span>
+                  </span>
+                </dt>
+                <dd>{{ l.contactTelegram ?? '—' }}</dd>
+              </div>
+              <div class="lead-data-row">
+                <dt>Профиль</dt>
+                <dd>
+                  <a class="lead-link" [routerLink]="['/app/clients', l.clientId]"
+                    >Открыть клиента</a
+                  >
+                </dd>
+              </div>
+            </dl>
+          } @else {
+            <div class="client-placeholder-card">
+              <p class="client-placeholder-title">Клиент не привязан</p>
+              <p class="client-placeholder-text">
+                Этот лид ещё не привязан к клиенту. Привяжите существующего клиента или сохраните
+                лид как новый профиль клиента.
+              </p>
 
-            @if (l.clientId) {
               <dl class="lead-data-list">
                 <div class="lead-data-row">
                   <dt>Имя</dt>
@@ -89,316 +126,264 @@
                 </div>
                 <div class="lead-data-row">
                   <dt>
-                    <span class="flex items-center gap-1">
-                      <mat-icon class="text-base leading-none">send</mat-icon>
+                    <span class="dt-icon-label">
+                      <mat-icon class="dt-icon">send</mat-icon>
                       <span>Telegram</span>
                     </span>
                   </dt>
                   <dd>{{ l.contactTelegram ?? '—' }}</dd>
                 </div>
-                <div class="lead-data-row">
-                  <dt>Профиль</dt>
-                  <dd>
-                    <a class="lead-link" [routerLink]="['/app/clients', l.clientId]"
-                      >Открыть клиента</a
-                    >
-                  </dd>
-                </div>
               </dl>
-            } @else {
-              <div class="client-placeholder-card">
-                <p class="client-placeholder-title">Клиент не привязан</p>
-                <p class="client-placeholder-text">
-                  Этот лид ещё не привязан к клиенту. Привяжите существующего клиента или сохраните
-                  лид как новый профиль клиента.
-                </p>
 
-                <dl class="lead-data-list">
-                  <div class="lead-data-row">
-                    <dt>Имя</dt>
-                    <dd>{{ l.clientName ?? '—' }}</dd>
-                  </div>
-                  <div class="lead-data-row">
-                    <dt>Тип</dt>
-                    <dd>
-                      @if (l.clientType) {
-                        <app-client-type-badge [type]="l.clientType" />
-                      } @else {
-                        —
-                      }
-                    </dd>
-                  </div>
-                  <div class="lead-data-row">
-                    <dt>Телефон</dt>
-                    <dd>{{ l.contactPhone ?? '—' }}</dd>
-                  </div>
-                  <div class="lead-data-row">
-                    <dt>Email</dt>
-                    <dd>{{ l.contactEmail ?? '—' }}</dd>
-                  </div>
-                  <div class="lead-data-row">
-                    <dt>
-                      <span class="flex items-center gap-1">
-                        <mat-icon class="text-base leading-none">send</mat-icon>
-                        <span>Telegram</span>
-                      </span>
-                    </dt>
-                    <dd>{{ l.contactTelegram ?? '—' }}</dd>
-                  </div>
-                </dl>
-
-                @if (canManageLeadClient()) {
-                  <div class="client-placeholder-actions">
-                    <button mat-stroked-button type="button" (click)="openLinkClientDialog()">
-                      Привязать существующего клиента
-                    </button>
-                    <button
-                      color="primary"
-                      mat-flat-button
-                      type="button"
-                      (click)="openPromoteClientDialog()"
-                    >
-                      Сохранить как нового клиента
-                    </button>
-                  </div>
-                }
-              </div>
-            }
-          </section>
-
-          <section class="lead-card">
-            <div class="lead-card-header">
-              <h2 class="lead-card-title">Детали тура</h2>
-            </div>
-
-            @if (editingTravelDetails()) {
-              <form class="travel-form" [formGroup]="travelForm" (ngSubmit)="saveTravelDetails()">
-                <mat-form-field appearance="outline">
-                  <mat-label>Телефон</mat-label>
-                  <input
-                    formControlName="contactPhone"
-                    matInput
-                    placeholder="+375291234567"
-                    type="tel"
-                  />
-                  @if (
-                    travelForm.controls.contactPhone.hasError('pattern') &&
-                    travelForm.controls.contactPhone.touched
-                  ) {
-                    <mat-error>Введите корректный номер телефона</mat-error>
-                  }
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Email</mat-label>
-                  <input
-                    formControlName="contactEmail"
-                    matInput
-                    placeholder="client@example.com"
-                    type="email"
-                  />
-                  @if (
-                    travelForm.controls.contactEmail.hasError('email') &&
-                    travelForm.controls.contactEmail.touched
-                  ) {
-                    <mat-error>Введите корректный email</mat-error>
-                  }
-                </mat-form-field>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Telegram</mat-label>
-                  <mat-icon matPrefix>send</mat-icon>
-                  <input
-                    formControlName="contactTelegram"
-                    matInput
-                    maxlength="60"
-                    placeholder="@handle or t.me/..."
-                  />
-                  @if (
-                    travelForm.controls.contactTelegram.hasError('maxlength') &&
-                    travelForm.controls.contactTelegram.touched
-                  ) {
-                    <mat-error>Telegram username не должен превышать 60 символов</mat-error>
-                  }
-                </mat-form-field>
-
-                @if (showTravelContactGroupError()) {
-                  <p class="col-span-3 -mt-2 text-sm text-red-600">
-                    Укажите хотя бы один контакт: телефон, email или Telegram.
-                  </p>
-                }
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Направление</mat-label>
-                  <input formControlName="destination" matInput />
-                </mat-form-field>
-
-                <div class="travel-date-grid">
-                  <mat-form-field appearance="outline">
-                    <mat-label>Выезд с</mat-label>
-                    <input formControlName="departDateFrom" matInput type="date" />
-                  </mat-form-field>
-                  <mat-form-field appearance="outline">
-                    <mat-label>Выезд по</mat-label>
-                    <input formControlName="departDateTo" matInput type="date" />
-                  </mat-form-field>
-                  <mat-form-field appearance="outline">
-                    <mat-label>Возвращение с</mat-label>
-                    <input formControlName="returnDateFrom" matInput type="date" />
-                  </mat-form-field>
-                  <mat-form-field appearance="outline">
-                    <mat-label>Возвращение по</mat-label>
-                    <input formControlName="returnDateTo" matInput type="date" />
-                  </mat-form-field>
-                </div>
-
-                <div class="travel-count-grid">
-                  <mat-form-field appearance="outline">
-                    <mat-label>Взрослые</mat-label>
-                    <input formControlName="adults" matInput min="0" type="number" />
-                  </mat-form-field>
-                  <mat-form-field appearance="outline">
-                    <mat-label>Дети</mat-label>
-                    <input formControlName="children" matInput min="0" type="number" />
-                  </mat-form-field>
-                </div>
-
-                <mat-form-field appearance="outline">
-                  <mat-label>Заметки</mat-label>
-                  <textarea formControlName="notes" matInput rows="3"></textarea>
-                </mat-form-field>
-
-                <div class="travel-form-actions">
-                  <button mat-button type="button" (click)="cancelEditTravelDetails()">
-                    Отмена
+              @if (canManageLeadClient()) {
+                <div class="client-placeholder-actions">
+                  <button mat-stroked-button type="button" (click)="openLinkClientDialog()">
+                    Привязать существующего клиента
                   </button>
                   <button
                     color="primary"
                     mat-flat-button
-                    type="submit"
-                    [disabled]="savingTravelDetails()"
+                    type="button"
+                    (click)="openPromoteClientDialog()"
                   >
-                    Сохранить
+                    Сохранить как нового клиента
                   </button>
                 </div>
-              </form>
-            } @else {
-              <dl class="lead-data-list">
-                <div class="lead-data-row">
-                  <dt>Направление</dt>
-                  <dd>{{ l.destination ?? '—' }}</dd>
-                </div>
-                <div class="lead-data-row">
-                  <dt>Даты</dt>
-                  <dd>{{ formatDateRange(l.departDateFrom, l.returnDateTo) }}</dd>
-                </div>
-                <div class="lead-data-row">
-                  <dt>Взрослые / дети</dt>
-                  <dd>{{ l.adults ?? 0 }} / {{ l.children ?? 0 }}</dd>
-                </div>
-                <div class="lead-data-row">
-                  <dt>Заметки</dt>
-                  <dd class="whitespace-pre-wrap markdown-body">
-                    <div [innerHTML]="l.notes ?? '—' | markdown"></div>
-                  </dd>
-                </div>
-              </dl>
-            }
-          </section>
-
-          <section class="lead-card">
-            <h2 class="lead-card-title">Агент</h2>
-            <div class="agent-row">
-              <span class="agent-avatar" [attr.aria-label]="l.assignedAgentName || 'Не назначен'">
-                {{ getAgentInitials(l.assignedAgentName) }}
-              </span>
-              <div class="agent-info">
-                <p class="agent-name">{{ l.assignedAgentName ?? 'Не назначен' }}</p>
-                <p class="agent-meta">Назначенный агент</p>
-              </div>
-              @if (canReassign()) {
-                <button mat-stroked-button type="button" (click)="openAssignDialog()">
-                  Переназначить
-                </button>
               }
             </div>
-          </section>
+          }
+        </section>
 
-          <app-lead-detail-requests-section
-            [canCreateOffer]="permissions.canCreateOffer()"
-            [deletingRequestId]="deletingRequestId()"
-            [filteredAgents]="filteredAgents()"
-            [offersByRequest]="offersByRequest()"
-            [requests]="requests()"
-            [savingRequest]="savingRequest()"
-            [showAddButton]="showAddTravelRequest()"
-            [updatingRequest]="updatingRequest()"
-            (createOfferClicked)="openNewOffer($event)"
-            (requestCreated)="handleRequestCreated($event)"
-            (requestDeleted)="handleRequestDeleted($event)"
-            (requestUpdated)="handleRequestUpdated($event)"
-          />
+        <section class="lead-card">
+          <div class="lead-card-header">
+            <h2 class="lead-card-title">Детали тура</h2>
+          </div>
 
-          <section class="lead-card lead-activity-card">
-            <h2 class="lead-card-title">Журнал активности</h2>
-
-            @if (activityItems().length === 0) {
-              <p class="text-sm text-gray-500">Активности пока нет.</p>
-            } @else {
-              <ul class="activity-list">
-                @for (item of activityItems(); track item.id) {
-                  <li class="activity-item" [class.activity-item-system]="isSystemEvent(item)">
-                    <span aria-hidden="true" class="activity-icon-wrap">
-                      <mat-icon class="activity-icon">{{ getActivityIcon(item.type) }}</mat-icon>
-                    </span>
-                    <div class="activity-content">
-                      <p class="activity-label">{{ getActivityLabel(item.type) }}</p>
-                      <p class="activity-meta">
-                        {{ getActivityActor(item) }} · {{ formatDateTime(item.createdAt) }}
-                      </p>
-                    </div>
-                  </li>
+          @if (editingTravelDetails()) {
+            <form class="travel-form" [formGroup]="travelForm" (ngSubmit)="saveTravelDetails()">
+              <mat-form-field appearance="outline">
+                <mat-label>Телефон</mat-label>
+                <input
+                  formControlName="contactPhone"
+                  matInput
+                  placeholder="+375291234567"
+                  type="tel"
+                />
+                @if (
+                  travelForm.controls.contactPhone.hasError('pattern') &&
+                  travelForm.controls.contactPhone.touched
+                ) {
+                  <mat-error>Введите корректный номер телефона</mat-error>
                 }
-              </ul>
+              </mat-form-field>
 
-              @if (canLoadMoreActivity()) {
-                <button
-                  class="mt-4"
-                  mat-stroked-button
-                  type="button"
-                  [disabled]="loadingMoreActivity()"
-                  (click)="loadMoreActivity()"
-                >
-                  Загрузить ещё
-                </button>
+              <mat-form-field appearance="outline">
+                <mat-label>Email</mat-label>
+                <input
+                  formControlName="contactEmail"
+                  matInput
+                  placeholder="client@example.com"
+                  type="email"
+                />
+                @if (
+                  travelForm.controls.contactEmail.hasError('email') &&
+                  travelForm.controls.contactEmail.touched
+                ) {
+                  <mat-error>Введите корректный email</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Telegram</mat-label>
+                <mat-icon matPrefix>send</mat-icon>
+                <input
+                  formControlName="contactTelegram"
+                  matInput
+                  maxlength="60"
+                  placeholder="@handle or t.me/..."
+                />
+                @if (
+                  travelForm.controls.contactTelegram.hasError('maxlength') &&
+                  travelForm.controls.contactTelegram.touched
+                ) {
+                  <mat-error>Telegram username не должен превышать 60 символов</mat-error>
+                }
+              </mat-form-field>
+
+              @if (showTravelContactGroupError()) {
+                <p class="travel-form-contact-error">
+                  Укажите хотя бы один контакт: телефон, email или Telegram.
+                </p>
               }
+
+              <mat-form-field appearance="outline">
+                <mat-label>Направление</mat-label>
+                <input formControlName="destination" matInput />
+              </mat-form-field>
+
+              <div class="travel-date-grid">
+                <mat-form-field appearance="outline">
+                  <mat-label>Выезд с</mat-label>
+                  <input formControlName="departDateFrom" matInput type="date" />
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Выезд по</mat-label>
+                  <input formControlName="departDateTo" matInput type="date" />
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Возвращение с</mat-label>
+                  <input formControlName="returnDateFrom" matInput type="date" />
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Возвращение по</mat-label>
+                  <input formControlName="returnDateTo" matInput type="date" />
+                </mat-form-field>
+              </div>
+
+              <div class="travel-count-grid">
+                <mat-form-field appearance="outline">
+                  <mat-label>Взрослые</mat-label>
+                  <input formControlName="adults" matInput min="0" type="number" />
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                  <mat-label>Дети</mat-label>
+                  <input formControlName="children" matInput min="0" type="number" />
+                </mat-form-field>
+              </div>
+
+              <mat-form-field appearance="outline">
+                <mat-label>Заметки</mat-label>
+                <textarea formControlName="notes" matInput rows="3"></textarea>
+              </mat-form-field>
+
+              <div class="travel-form-actions">
+                <button mat-button type="button" (click)="cancelEditTravelDetails()">Отмена</button>
+                <button
+                  color="primary"
+                  mat-flat-button
+                  type="submit"
+                  [disabled]="savingTravelDetails()"
+                >
+                  Сохранить
+                </button>
+              </div>
+            </form>
+          } @else {
+            <dl class="lead-data-list">
+              <div class="lead-data-row">
+                <dt>Направление</dt>
+                <dd>{{ l.destination ?? '—' }}</dd>
+              </div>
+              <div class="lead-data-row">
+                <dt>Даты</dt>
+                <dd>{{ formatDateRange(l.departDateFrom, l.returnDateTo) }}</dd>
+              </div>
+              <div class="lead-data-row">
+                <dt>Взрослые / дети</dt>
+                <dd>{{ l.adults ?? 0 }} / {{ l.children ?? 0 }}</dd>
+              </div>
+              <div class="lead-data-row">
+                <dt>Заметки</dt>
+                <dd class="lead-notes-cell markdown-body">
+                  <div [innerHTML]="l.notes ?? '—' | markdown"></div>
+                </dd>
+              </div>
+            </dl>
+          }
+        </section>
+
+        <section class="lead-card">
+          <h2 class="lead-card-title">Агент</h2>
+          <div class="agent-row">
+            <span class="agent-avatar" [attr.aria-label]="l.assignedAgentName || 'Не назначен'">
+              {{ getAgentInitials(l.assignedAgentName) }}
+            </span>
+            <div class="agent-info">
+              <p class="agent-name">{{ l.assignedAgentName ?? 'Не назначен' }}</p>
+              <p class="agent-meta">Назначенный агент</p>
+            </div>
+            @if (canReassign()) {
+              <button mat-stroked-button type="button" (click)="openAssignDialog()">
+                Переназначить
+              </button>
             }
-          </section>
-        </div>
+          </div>
+        </section>
 
-        @if (customFields().length > 0) {
-          <section class="lead-custom-fields-card">
-            <app-custom-fields-section
-              [fields]="customFields()"
-              [saving]="savingCustomFields()"
-              (saveRequested)="saveCustomFields($event)"
-            />
-          </section>
-        }
+        <app-lead-detail-requests-section
+          [canCreateOffer]="permissions.canCreateOffer()"
+          [deletingRequestId]="deletingRequestId()"
+          [filteredAgents]="filteredAgents()"
+          [offersByRequest]="offersByRequest()"
+          [requests]="requests()"
+          [savingRequest]="savingRequest()"
+          [showAddButton]="showAddTravelRequest()"
+          [updatingRequest]="updatingRequest()"
+          (createOfferClicked)="openNewOffer($event)"
+          (requestCreated)="handleRequestCreated($event)"
+          (requestDeleted)="handleRequestDeleted($event)"
+          (requestUpdated)="handleRequestUpdated($event)"
+        />
 
-        @if (bookingInfo(); as booking) {
-          <section class="lead-booking-card">
-            <p>
-              <span>Бронирование:</span>
-              <a class="lead-link" [routerLink]="['/app/bookings', booking.id]">{{
-                booking.number
-              }}</a>
-            </p>
-          </section>
-        }
+        <section class="lead-card lead-activity-card">
+          <h2 class="lead-card-title">Журнал активности</h2>
+
+          @if (activityItems().length === 0) {
+            <p class="activity-empty-message">Активности пока нет.</p>
+          } @else {
+            <ul class="activity-list">
+              @for (item of activityItems(); track item.id) {
+                <li class="activity-item" [class.activity-item-system]="isSystemEvent(item)">
+                  <span aria-hidden="true" class="activity-icon-wrap">
+                    <mat-icon class="activity-icon">{{ getActivityIcon(item.type) }}</mat-icon>
+                  </span>
+                  <div class="activity-content">
+                    <p class="activity-label">{{ getActivityLabel(item.type) }}</p>
+                    <p class="activity-meta">
+                      {{ getActivityActor(item) }} · {{ formatDateTime(item.createdAt) }}
+                    </p>
+                  </div>
+                </li>
+              }
+            </ul>
+
+            @if (canLoadMoreActivity()) {
+              <button
+                class="activity-load-more"
+                mat-stroked-button
+                type="button"
+                [disabled]="loadingMoreActivity()"
+                (click)="loadMoreActivity()"
+              >
+                Загрузить ещё
+              </button>
+            }
+          }
+        </section>
       </div>
-    } @else {
-      <p class="text-gray-500">Лид не найден.</p>
-    }
+
+      @if (customFields().length > 0) {
+        <section class="lead-custom-fields-card">
+          <app-custom-fields-section
+            [fields]="customFields()"
+            [saving]="savingCustomFields()"
+            (saveRequested)="saveCustomFields($event)"
+          />
+        </section>
+      }
+
+      @if (bookingInfo(); as booking) {
+        <section class="lead-booking-card">
+          <p>
+            <span>Бронирование:</span>
+            <a class="lead-link" [routerLink]="['/app/bookings', booking.id]">{{
+              booking.number
+            }}</a>
+          </p>
+        </section>
+      }
+    </app-page-content>
+  } @else {
+    <p class="lead-not-found">Лид не найден.</p>
   }
-</div>
+</app-loading-state>

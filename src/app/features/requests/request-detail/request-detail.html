@@ -1,12 +1,11 @@
 <div class="request-detail-page">
-  @if (loading()) {
-    <div class="flex justify-center py-12">
-      <div
-        aria-hidden="true"
-        class="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent"
-      ></div>
-    </div>
-  } @else {
+  <app-loading-state
+    errorBackLabel="Назад к запросам"
+    errorBackLink="/app/requests"
+    errorTitle="Не удалось открыть запрос"
+    [error]="hasError() ? loadErrorMessage() : null"
+    [loading]="loading()"
+  >
     @let r = request();
     @if (r) {
       <app-page-heading
@@ -24,27 +23,9 @@
         </button>
       </app-page-heading>
 
-      <div class="m-4">
-        <section class="request-header-card">
-          <div class="request-header-main">
-            <div>
-              <p class="request-header-label">Запрос на поездку</p>
-              <h2 class="request-header-title">{{ r.destination }}</h2>
-            </div>
-            <span
-              class="inline-block rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800"
-            >
-              {{ r.status }}
-            </span>
-          </div>
-        </section>
-
+      <app-page-content>
         <div class="request-grid">
-          <section class="request-card">
-            <div class="request-card-header">
-              <h2 class="request-card-title">Детали</h2>
-            </div>
-
+          <app-detail-section title="Детали">
             <dl class="request-data-list">
               <div class="request-data-row">
                 <dt>Направление</dt>
@@ -67,9 +48,7 @@
               <div class="request-data-row">
                 <dt>Статус</dt>
                 <dd>
-                  <span
-                    class="inline-block rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-800"
-                  >
+                  <span class="request-status-badge">
                     {{ r.status }}
                   </span>
                 </dd>
@@ -77,7 +56,7 @@
               @if (r.notes) {
                 <div class="request-data-row">
                   <dt>Заметки</dt>
-                  <dd class="whitespace-pre-wrap">{{ r.notes }}</dd>
+                  <dd class="request-data-notes">{{ r.notes }}</dd>
                 </div>
               }
               @if (r.leadId) {
@@ -90,14 +69,14 @@
               }
               <div class="request-data-row">
                 <dt>ID менеджера</dt>
-                <dd class="font-mono text-xs text-gray-600">{{ r.managerId }}</dd>
+                <dd class="request-manager-id">{{ r.managerId }}</dd>
               </div>
             </dl>
-          </section>
+          </app-detail-section>
         </div>
-      </div>
+      </app-page-content>
     } @else {
-      <p class="text-gray-500">Запрос не найден.</p>
+      <p class="request-not-found">Запрос не найден.</p>
     }
-  }
+  </app-loading-state>
 </div>

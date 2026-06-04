@@ -1,3 +1,55 @@
 :host {
   display: block;
 }
+
+.login-page {
+  display: flex;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9fafb;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 24rem;
+  border-radius: 1rem;
+  background-color: #ffffff;
+  padding: 2.5rem;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+.login-header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.login-brand {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.login-tagline {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.login-button {
+  width: 100%;
+}
+
+.login-spinner {
+  display: inline-block;
+}
+
+.login-error {
+  margin-top: 1rem;
+  border-radius: 6px;
+  background-color: #fef2f2;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #dc2626;
+}

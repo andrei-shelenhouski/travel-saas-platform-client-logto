@@ -13,7 +13,7 @@ html {
  * Brand design system (token-based)
  * Primary: rgba(0, 140, 166, 1) = #008CA6
  */
-@theme {
+:root {
   /* Primary scale */
   --color-primary-50: #e6f6f8;
   --color-primary-100: #b3e4eb;
@@ -64,5 +64,13 @@ html {
     &:hover {
       text-decoration: underline;
     }
+  }
+}
+
+.sticky {
+  &-0 {
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
 }

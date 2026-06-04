@@ -1,7 +1,4 @@
-<app-page-heading
-  title="Лиды"
-  [subtitle]="'Всего: ' + totalElements() + ' лидов'"
->
+<app-page-heading title="Лиды" [subtitle]="'Всего: ' + totalElements() + ' лидов'">
   @if (canCreateLead()) {
     <a matButton="filled" routerLink="/app/leads/new">
       <mat-icon>add</mat-icon>
@@ -9,20 +6,26 @@
     </a>
   }
   <mat-button-toggle-group appearance="standard" hideSingleSelectionIndicator value="table">
-    <mat-button-toggle routerLink="/app/leads" value="table" (click)="setPreferredView('table')">
+    <mat-button-toggle
+      routerLink="/app/leads"
+      value="table"
+      (click)="setPreferredView('table')"
+      (keydown.enter)="setPreferredView('table')"
+    >
       <mat-icon>list</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       routerLink="/app/leads/kanban"
       value="kanban"
       (click)="setPreferredView('kanban')"
+      (keydown.enter)="setPreferredView('kanban')"
     >
       <mat-icon>view_kanban</mat-icon>
     </mat-button-toggle>
   </mat-button-toggle-group>
 </app-page-heading>
 
-<div class="space-y-4 p-4">
+<div class="leads-list-body">
   <app-leads-list-filter-bar
     [agentOptions]="agentOptions()"
     [clientTypeFilter]="clientTypeFilter()"
@@ -45,11 +48,11 @@
   />
 
   @if (canDeleteLead()) {
-    <div class="flex flex-wrap items-center gap-2">
+    <div class="leads-list-toolbar">
       <button
         mat-stroked-button
         type="button"
-        [class.text-primary]="includeDeleted()"
+        [class.leads-list-deleted-active]="includeDeleted()"
         (click)="toggleIncludeDeleted()"
       >
         <mat-icon>{{ includeDeleted() ? 'visibility_off' : 'visibility' }}</mat-icon>
@@ -70,49 +73,58 @@
   }
 
   @if (error()) {
-    <p class="mb-4 text-sm text-red-600">{{ error() }}</p>
+    <p class="leads-list-error">{{ error() }}</p>
   }
 
-  <div class="table-wrap overflow-scroll">
+  <div class="table-wrap">
     <table mat-table [dataSource]="leads()" [multiTemplateDataRows]="true">
       <ng-container matColumnDef="name">
         <th *matHeaderCellDef mat-header-cell>Клиент</th>
-        <td *matCellDef="let element" mat-cell [class.line-through]="isDeletedLead(element)" [class.opacity-40]="isDeletedLead(element)">
+        <td *matCellDef="let element" mat-cell [class.cell-deleted]="isDeletedLead(element)">
           @if (element.companyName) {
-            <span class="block text-sm font-semibold">{{ element.companyName }}</span>
-            <span class="block text-xs text-gray-500">{{ element.clientName }}</span>
+            <span class="cell-primary">{{ element.companyName }}</span>
+            <span class="cell-secondary">{{ element.clientName }}</span>
           } @else {
-            <span class="block text-sm font-semibold">{{ element.clientName }}</span>
+            <span class="cell-primary">{{ element.clientName }}</span>
           }
         </td>
       </ng-container>
 
       <ng-container matColumnDef="number">
         <th *matHeaderCellDef mat-header-cell>Лид #</th>
-        <td *matCellDef="let element" mat-cell [class.opacity-40]="isDeletedLead(element)">
-          <span class="block text-sm font-semibold">
-            {{ element.number }}
-          </span>
+        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
+          <span class="cell-primary">{{ element.number }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="isClient">
+        <th *matHeaderCellDef mat-header-cell>Клиент</th>
+        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
+          @if (element.clientId) {
+            <mat-icon aria-label="Клиент" class="check-icon">person_check</mat-icon>
+          } @else {
+            <mat-icon aria-label="Не клиент" class="off-icon">person_off</mat-icon>
+          }
         </td>
       </ng-container>
 
       <ng-container matColumnDef="clientType">
         <th *matHeaderCellDef mat-header-cell>Тип</th>
-        <td *matCellDef="let element" mat-cell [class.opacity-40]="isDeletedLead(element)">
+        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
           <app-client-type-badge [type]="element.clientType" />
         </td>
       </ng-container>
 
       <ng-container matColumnDef="destination">
         <th *matHeaderCellDef mat-header-cell>Направление</th>
-        <td *matCellDef="let element" mat-cell [class.opacity-40]="isDeletedLead(element)">
+        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
           {{ element.destination ?? '—' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="dates">
         <th *matHeaderCellDef mat-header-cell>Даты</th>
-        <td *matCellDef="let element" mat-cell [class.opacity-40]="isDeletedLead(element)">
+        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
           {{ getTravelDatesLabel(element) }}
         </td>
       </ng-container>
@@ -120,54 +132,51 @@
       <ng-container matColumnDef="status">
         <th *matHeaderCellDef mat-header-cell>Статус</th>
         <td *matCellDef="let element" mat-cell>
-          @if (isDeletedLead(element)) {
-            <span class="inline-flex items-center rounded-full bg-gray-200 px-2.5 py-0.5 text-xs font-medium text-gray-600">
-              Удалено
-            </span>
-          } @else {
-            <app-status-badge variant="lead" [status]="element.status" />
-          }
+          <app-status-badge
+            variant="lead"
+            [status]="isDeletedLead(element) ? 'DELETED' : element.status"
+          />
         </td>
       </ng-container>
 
       <ng-container matColumnDef="assignedAgentName">
         <th *matHeaderCellDef mat-header-cell>Агент</th>
-        <td *matCellDef="let element" mat-cell [class.opacity-40]="isDeletedLead(element)">
+        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
           {{ element.assignedAgentName ?? '—' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="createdAt">
         <th *matHeaderCellDef mat-header-cell>Создан</th>
-        <td *matCellDef="let element" mat-cell [class.opacity-40]="isDeletedLead(element)">
+        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
           {{ element.createdAt | date: 'dd MMM yyyy' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="updatedAt">
         <th *matHeaderCellDef mat-header-cell>Дата обновления</th>
-        <td *matCellDef="let element" mat-cell [class.opacity-40]="isDeletedLead(element)">
+        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
           {{ element.updatedAt | date: 'dd MMM yyyy' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="contactEmail">
         <th *matHeaderCellDef mat-header-cell>Электронная почта</th>
-        <td *matCellDef="let element" mat-cell [class.opacity-40]="isDeletedLead(element)">
+        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
           {{ element.contactEmail ?? '—' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="contactPhone">
         <th *matHeaderCellDef mat-header-cell>Телефон</th>
-        <td *matCellDef="let element" mat-cell [class.opacity-40]="isDeletedLead(element)">
+        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
           {{ element.contactPhone ?? '—' }}
         </td>
       </ng-container>
 
       <ng-container matColumnDef="source">
         <th *matHeaderCellDef mat-header-cell>Источник</th>
-        <td *matCellDef="let element" mat-cell [class.opacity-40]="isDeletedLead(element)">
+        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
           <app-lead-source-badge [source]="element.source" />
         </td>
       </ng-container>
@@ -175,7 +184,7 @@
       @if (canDeleteLead()) {
         <ng-container matColumnDef="actions">
           <th *matHeaderCellDef mat-header-cell></th>
-          <td *matCellDef="let element" class="text-right" mat-cell>
+          <td *matCellDef="let element" class="table-cell-actions" mat-cell>
             @if (!isDeletedLead(element)) {
               <button
                 aria-label="Действия с заявкой"
@@ -195,12 +204,12 @@
       <mat-menu #rowMenu="matMenu">
         <ng-template let-lead="lead" matMenuContent>
           <button
-            class="text-red-600"
+            class="menu-item-danger"
             mat-menu-item
             type="button"
             (click)="openDeleteDialog($event, lead)"
           >
-            <mat-icon class="text-red-600">delete</mat-icon>
+            <mat-icon class="menu-item-danger-icon">delete</mat-icon>
             Удалить заявку
           </button>
         </ng-template>
@@ -211,19 +220,16 @@
         *matRowDef="let row; columns: displayedColumns()"
         class="table-row"
         mat-row
-        [class.cursor-default]="isDeletedLead(row)"
+        [class.table-row-disabled]="isDeletedLead(row)"
         (click)="isDeletedLead(row) ? null : navigateToLead(row.id)"
+        (keydown.enter)="isDeletedLead(row) ? null : navigateToLead(row.id)"
       ></tr>
       <tr *matNoDataRow>
         <td [attr.colspan]="displayedColumns().length">
-          <div class="m-10 align-middle text-center">
+          <div class="table-empty-state">
             @if (loading()) {
-              <p class="pb-4">Загрузка лидов...</p>
-              <mat-spinner
-                aria-label="Загрузка лидов"
-                class="mx-auto"
-                diameter="36"
-              />
+              <p class="table-empty-loading-text">Загрузка лидов...</p>
+              <mat-spinner aria-label="Загрузка лидов" class="table-spinner" diameter="36" />
             } @else {
               <p>Нет лидов по текущим фильтрам</p>
             }
@@ -233,14 +239,12 @@
     </table>
   </div>
 
-  @if (totalElements() > pageSize) {
-    <mat-paginator
-      aria-label="Пагинация лидов"
-      [length]="totalElements()"
-      [pageIndex]="currentPage()"
-      [pageSize]="pageSize"
-      [showFirstLastButtons]="true"
-      (page)="onPageChange($event)"
-    />
-  }
+  <mat-paginator
+    aria-label="Пагинация лидов"
+    [length]="totalElements()"
+    [pageIndex]="currentPage()"
+    [pageSize]="pageSize"
+    [showFirstLastButtons]="true"
+    (page)="onPageChange($event)"
+  />
 </div>

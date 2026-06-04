@@ -76,18 +76,18 @@ export class SelectOrganizationComponent implements OnInit {
     const role = org.role;
 
     if (role === 'ADMIN') {
-      return 'bg-violet-100 text-violet-800';
+      return 'org-role-badge org-role-badge--admin';
     }
 
     if (role === 'MANAGER') {
-      return 'bg-sky-100 text-sky-800';
+      return 'org-role-badge org-role-badge--manager';
     }
 
     if (role === 'BACK_OFFICE') {
-      return 'bg-teal-100 text-teal-800';
+      return 'org-role-badge org-role-badge--backoffice';
     }
 
-    return 'bg-amber-100 text-amber-800';
+    return 'org-role-badge org-role-badge--member';
   }
 
   select(org: OrganizationWithRoleDto): void {

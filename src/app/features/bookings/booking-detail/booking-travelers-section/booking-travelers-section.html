@@ -13,7 +13,7 @@
   @if (travelers().length === 0) {
     <p class="traveler-empty">Туристы не добавлены</p>
   } @else {
-    <div class="overflow-x-auto">
+    <div class="traveler-table-wrap">
       <table class="traveler-table">
         <thead>
           <tr>
@@ -35,7 +35,7 @@
               </td>
               <td>{{ personName(traveler) }}</td>
               <td>{{ documentLabel(traveler) }}</td>
-              <td class="text-right">
+              <td class="traveler-actions-cell">
                 <button
                   mat-button
                   type="button"

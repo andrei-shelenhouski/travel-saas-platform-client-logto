@@ -22,7 +22,7 @@
   </mat-button-toggle-group>
 </app-page-heading>
 
-<div class="space-y-4 p-4">
+<div class="offers-list-content">
   <app-offers-list-filter-bar
     [agentOptions]="agentOptions()"
     [dateFromFilter]="dateFromFilter()"
@@ -39,15 +39,15 @@
   />
 
   @if (error()) {
-    <p class="mb-4 text-sm text-red-600">{{ error() }}</p>
+    <p class="offers-list-error">{{ error() }}</p>
   }
 
-  <div class="table-wrap overflow-scroll">
+  <div class="table-wrap">
     <table mat-table [dataSource]="offers()" [multiTemplateDataRows]="true">
       <ng-container matColumnDef="number">
         <th *matHeaderCellDef mat-header-cell>КП #</th>
         <td *matCellDef="let element" mat-cell>
-          <span class="block text-sm font-semibold">
+          <span class="offers-list-number">
             {{ element.number }}
           </span>
         </td>
@@ -95,12 +95,11 @@
       ></tr>
       <tr *matNoDataRow>
         <td [attr.colspan]="displayedColumns.length">
-          <div class="m-10 align-middle text-center">
+          <div class="offers-list-empty">
             @if (loading()) {
-              <p class="pb-4">Загрузка предложений...</p>
+              <p class="offers-list-empty-text">Загрузка предложений...</p>
               <mat-spinner
                 aria-label="Загрузка предложений"
-                class="mx-auto"
                 diameter="36"
               />
             } @else {

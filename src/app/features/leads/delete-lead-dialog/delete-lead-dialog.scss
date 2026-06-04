@@ -1,0 +1,44 @@
+.dialog-body-text {
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.dialog-warning-block {
+  margin-top: 0.75rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #fde68a;
+  background-color: #fffbeb;
+  padding: 0.75rem;
+}
+
+.dialog-warning-icon {
+  flex-shrink: 0;
+  font-size: 1.125rem;
+  height: 1.125rem;
+  width: 1.125rem;
+  color: #d97706;
+  margin-top: 0.125rem;
+}
+
+.dialog-warning-text {
+  font-size: 0.875rem;
+  color: #92400e;
+  margin: 0;
+}
+
+.dialog-error-block {
+  margin-top: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #fecaca;
+  background-color: #fef2f2;
+  padding: 0.75rem;
+}
+
+.dialog-error-text {
+  font-size: 0.875rem;
+  color: #b91c1c;
+  margin: 0;
+}

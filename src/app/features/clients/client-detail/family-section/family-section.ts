@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
 import { Router, RouterLink } from '@angular/router';
 
 import { forkJoin } from 'rxjs';
@@ -23,12 +25,13 @@ const RELATION_LABEL: Record<string, string> = {
 @Component({
   selector: 'app-family-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, ...MAT_BUTTONS],
+  imports: [RouterLink, MatTableModule, MatProgressSpinnerModule, ...MAT_BUTTONS],
   templateUrl: './family-section.html',
   styleUrl: './family-section.scss',
 })
 export class FamilySectionComponent {
   readonly personId = input.required<string>();
+  readonly columns = ['name', 'dateOfBirth', 'relation', 'clientProfile'] as const;
 
   private readonly personsService = inject(PersonsService);
   private readonly dialog = inject(MatDialog);

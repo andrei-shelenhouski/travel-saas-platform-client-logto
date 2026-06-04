@@ -1,5 +1,5 @@
-<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-  <mat-form-field>
+<div class="offers-filter-grid">
+  <mat-form-field subscriptSizing="dynamic">
     <mat-label>Статусы</mat-label>
     <mat-select
       multiple
@@ -13,7 +13,7 @@
   </mat-form-field>
 
   @if (showAgentFilter()) {
-    <mat-form-field>
+    <mat-form-field subscriptSizing="dynamic">
       <mat-label>Агент</mat-label>
       <mat-select
         [value]="selectedAgentId()"
@@ -27,7 +27,7 @@
     </mat-form-field>
   }
 
-  <mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
     <mat-label>Создано с</mat-label>
     <input
       matInput
@@ -37,7 +37,7 @@
     />
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
     <mat-label>Создано по</mat-label>
     <input
       matInput
@@ -47,12 +47,8 @@
     />
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
     <mat-label>Поиск</mat-label>
-    <input
-      matInput
-      placeholder="Клиент, направление, номер КП"
-      [formControl]="searchControl()"
-    />
+    <input matInput placeholder="Клиент, направление, номер КП" [formControl]="searchControl()" />
   </mat-form-field>
 </div>

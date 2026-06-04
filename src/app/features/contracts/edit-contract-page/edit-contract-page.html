@@ -4,28 +4,23 @@
   [showBackButton]="true"
 />
 
-<section class="contract-edit-shell" [attr.aria-busy]="loading()">
-  @if (loading()) {
-    <div class="contract-edit-loading">
-      <div class="contract-edit-loading-spinner"></div>
-      <p aria-live="polite" class="contract-edit-loading-text" role="status">
-        Загрузка договора...
-      </p>
-    </div>
-  } @else if (contract()) {
-    <div class="contract-edit-card">
-      <p class="contract-edit-note">
-        После сохранения клиент увидит обновлённые данные в карточке договора.
-      </p>
+<app-loading-state [loading]="loading()">
+  @if (contract()) {
+    <app-page-content>
+      <div class="contract-edit-card">
+        <p class="contract-edit-note">
+          После сохранения клиент увидит обновлённые данные в карточке договора.
+        </p>
 
-      <app-contract-form
-        [initialContract]="contract()"
-        [mode]="'edit'"
-        [saving]="saving()"
-        [submitError]="submitError()"
-        (cancelled)="cancel()"
-        (updateSubmitted)="onUpdateSubmitted($event)"
-      />
-    </div>
+        <app-contract-form
+          [initialContract]="contract()"
+          [mode]="'edit'"
+          [saving]="saving()"
+          [submitError]="submitError()"
+          (cancelled)="cancel()"
+          (updateSubmitted)="onUpdateSubmitted($event)"
+        />
+      </div>
+    </app-page-content>
   }
-</section>
+</app-loading-state>

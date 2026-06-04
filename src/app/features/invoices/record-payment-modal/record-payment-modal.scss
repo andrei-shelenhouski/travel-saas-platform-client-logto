@@ -1,3 +1,19 @@
+.record-payment-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.record-payment-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.record-payment-field {
+  width: 100%;
+}
+
 .button-spinner {
   display: inline-block;
   width: 14px;

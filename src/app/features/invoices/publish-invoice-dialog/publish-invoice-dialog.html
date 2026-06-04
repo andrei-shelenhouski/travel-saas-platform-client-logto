@@ -1,37 +1,19 @@
-<h2 mat-dialog-title>
-  Опубликовать счёт {{ data.invoiceNumber }}?
-</h2>
+<h2 mat-dialog-title>Опубликовать счёт {{ data.invoiceNumber }}?</h2>
 
 <mat-dialog-content>
   <p>
-    После публикации счёт нельзя будет редактировать. Данные клиента и исполнителя будут зафиксированы.
+    После публикации счёт нельзя будет редактировать. Данные клиента и исполнителя будут
+    зафиксированы.
   </p>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button
-    mat-stroked-button
-    type="button"
-    (click)="previewPdf()"
-  >
+  <button mat-stroked-button type="button" (click)="previewPdf()">
     <mat-icon>preview</mat-icon>
-    Предварительный просмотр
+    Предпросмотр
   </button>
-  <button
-    mat-button
-    type="button"
-    [disabled]="loading()"
-    (click)="cancel()"
-  >
-    Отмена
-  </button>
-  <button
-    color="primary"
-    mat-flat-button
-    type="button"
-    [disabled]="loading()"
-    (click)="confirm()"
-  >
+  <button mat-button type="button" [disabled]="loading()" (click)="cancel()">Отмена</button>
+  <button color="primary" mat-flat-button type="button" [disabled]="loading()" (click)="confirm()">
     @if (loading()) {
       <mat-spinner diameter="20"></mat-spinner>
     } @else {

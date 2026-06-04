@@ -1,12 +1,12 @@
-<div class="flex min-h-screen items-center justify-center bg-gray-50">
-  <div class="w-full max-w-sm rounded-2xl bg-white p-10 shadow-md">
-    <div class="mb-8 text-center">
-      <p class="text-3xl font-bold text-primary">TravelOps</p>
-      <p class="mt-2 text-sm text-gray-500">CRM for travel agencies</p>
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-header">
+      <p class="login-brand">TravelOps</p>
+      <p class="login-tagline">CRM for travel agencies</p>
     </div>
 
     <button
-      class="w-full"
+      class="login-button"
       color="primary"
       mat-flat-button
       type="button"
@@ -14,14 +14,14 @@
       (click)="signIn()"
     >
       @if (isLoading()) {
-        <mat-spinner class="inline-block" diameter="20" />
+        <mat-spinner class="login-spinner" diameter="20" />
       } @else {
         Sign in with Google
       }
     </button>
 
     @if (errorMessage()) {
-      <p class="mt-4 rounded-md bg-red-50 px-4 py-2 text-center text-sm text-red-600" role="alert">
+      <p class="login-error" role="alert">
         {{ errorMessage() }}
       </p>
     }

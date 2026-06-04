@@ -1,5 +1,5 @@
-<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-  <mat-form-field>
+<div class="filter-bar-grid">
+  <mat-form-field subscriptSizing="dynamic">
     <mat-label>Статусы</mat-label>
     <mat-select
       multiple
@@ -12,7 +12,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
     <mat-label>Тип клиента</mat-label>
     <mat-select
       [value]="clientTypeFilter()"
@@ -25,7 +25,7 @@
     </mat-select>
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
     <mat-label>Дата счета с</mat-label>
     <input
       matInput
@@ -35,7 +35,7 @@
     />
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
     <mat-label>Дата счета по</mat-label>
     <input
       matInput
@@ -45,7 +45,7 @@
     />
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
     <mat-label>Валюта</mat-label>
     <input
       matInput
@@ -55,12 +55,8 @@
     />
   </mat-form-field>
 
-  <mat-form-field>
+  <mat-form-field subscriptSizing="dynamic">
     <mat-label>Поиск</mat-label>
-    <input
-      matInput
-      placeholder="Номер счета или имя клиента"
-      [formControl]="searchControl()"
-    />
+    <input matInput placeholder="Номер счета или имя клиента" [formControl]="searchControl()" />
   </mat-form-field>
 </div>

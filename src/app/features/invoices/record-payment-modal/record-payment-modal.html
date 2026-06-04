@@ -1,10 +1,10 @@
-<h2 class="text-lg font-semibold text-gray-900" mat-dialog-title>
+<h2 class="record-payment-title" mat-dialog-title>
   Записать платёж - Счёт #{{ data.invoiceNumber }}
 </h2>
 
 <form [formGroup]="form" (ngSubmit)="save()">
-  <mat-dialog-content class="space-y-3">
-    <mat-form-field class="w-full" subscriptSizing="dynamic">
+  <mat-dialog-content class="record-payment-content">
+    <mat-form-field class="record-payment-field" subscriptSizing="dynamic">
       <mat-label>Сумма</mat-label>
       <input formControlName="amount" matInput min="0.01" step="0.01" type="number" />
       <span matSuffix>{{ data.currency }}</span>
@@ -22,7 +22,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field class="w-full" subscriptSizing="dynamic">
+    <mat-form-field class="record-payment-field" subscriptSizing="dynamic">
       <mat-label>Способ оплаты</mat-label>
       <mat-select formControlName="paymentMethod">
         @for (method of paymentMethodOptions; track method) {
@@ -52,7 +52,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field class="w-full" subscriptSizing="dynamic">
+    <mat-form-field class="record-payment-field" subscriptSizing="dynamic">
       <mat-label> Номер платёжного поручения / примечание </mat-label>
       <input formControlName="reference" matInput />
     </mat-form-field>

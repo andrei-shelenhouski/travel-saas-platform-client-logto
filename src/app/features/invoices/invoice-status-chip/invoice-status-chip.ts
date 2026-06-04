@@ -2,13 +2,13 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 
 import { InvoiceStatus } from '@app/shared/models';
 
-const INVOICE_STATUS_CLASSES: Record<string, string> = {
-  DRAFT: 'bg-gray-100 text-gray-700',
-  ISSUED: 'bg-sky-100 text-sky-700',
-  PARTIALLY_PAID: 'bg-teal-100 text-teal-700',
-  PAID: 'bg-green-100 text-green-700',
-  OVERDUE: 'bg-red-100 text-red-700',
-  CANCELLED: 'bg-gray-100 text-gray-500 line-through',
+const INVOICE_STATUS_MODIFIER: Record<string, string> = {
+  DRAFT: 'invoice-status-chip--draft',
+  ISSUED: 'invoice-status-chip--issued',
+  PARTIALLY_PAID: 'invoice-status-chip--partially-paid',
+  PAID: 'invoice-status-chip--paid',
+  OVERDUE: 'invoice-status-chip--overdue',
+  CANCELLED: 'invoice-status-chip--cancelled',
 };
 
 const INVOICE_STATUS_LABELS: Record<string, string> = {
@@ -29,10 +29,10 @@ const INVOICE_STATUS_LABELS: Record<string, string> = {
 export class InvoiceStatusChipComponent {
   readonly status = input.required<string>();
 
-  protected readonly classes = computed(() => {
+  protected readonly chipClass = computed(() => {
     const status = this.status();
 
-    return INVOICE_STATUS_CLASSES[status] ?? 'bg-gray-100 text-gray-500';
+    return INVOICE_STATUS_MODIFIER[status] ?? 'invoice-status-chip--draft';
   });
 
   protected readonly label = computed(() => {

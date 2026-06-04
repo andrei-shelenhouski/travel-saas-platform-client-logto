@@ -1,14 +1,14 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-  <div class="w-full max-w-sm rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+<div class="create-org-page">
+  <div class="create-org-card">
     @if (fromApp) {
-      <a class="mb-4 inline-flex items-center gap-1.5" mat-button routerLink="/app/dashboard">
-        <span aria-hidden="true" class="material-icons text-base">arrow_back</span>
+      <a class="create-org-back-link" mat-button routerLink="/app/dashboard">
+        <span aria-hidden="true" class="material-icons create-org-back-icon">arrow_back</span>
         <span>Назад на панель управления</span>
       </a>
     }
-    <h1 class="text-xl font-semibold text-gray-900 mb-4">Создать организацию</h1>
-    <form class="flex flex-col gap-4" [formGroup]="form" (ngSubmit)="onSubmit()">
-      <mat-form-field appearance="outline" class="w-full" subscriptSizing="dynamic">
+    <h1 class="create-org-title">Создать организацию</h1>
+    <form class="create-org-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="create-org-field" subscriptSizing="dynamic">
         <mat-label>Название организации</mat-label>
         <input formControlName="name" id="name" matInput placeholder="Acme Tours" type="text" />
         @if (form.controls.name.hasError('required') && form.controls.name.touched) {
@@ -16,10 +16,10 @@
         }
       </mat-form-field>
       @if (error()) {
-        <p class="text-sm text-red-600">{{ error() }}</p>
+        <p class="create-org-error">{{ error() }}</p>
       }
       <button
-        class="w-full"
+        class="create-org-submit"
         color="primary"
         mat-flat-button
         type="submit"

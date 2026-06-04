@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 
 import { of } from 'rxjs';
@@ -10,7 +11,6 @@ import { BookingsService } from '@app/services/bookings.service';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
 import { RequestsService } from '@app/services/requests.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { OfferDetailComponent } from './offer-detail';
 
@@ -97,7 +97,7 @@ describe('OfferDetailComponent', () => {
     const text = fixture.nativeElement.textContent as string;
 
     expect(text).toContain('Предложение OF-100');
-    expect(text).toContain('Предварительный просмотр');
+    expect(text).toContain('Предпросмотр');
   });
 
   it('calls revise and navigates to edit for revised offer', () => {

@@ -72,7 +72,7 @@
   }
 
   @if (!hasRequests()) {
-    <p class="text-sm text-gray-500">Запросов на тур пока нет.</p>
+    <p class="requests-empty-message">Запросов на тур пока нет.</p>
   } @else {
     <div class="requests-grid">
       @for (request of requests(); track request.id; let idx = $index) {
@@ -214,7 +214,6 @@
                 <p
                   class="request-notes markdown-body"
                   [class.request-notes-expanded]="isNotesExpanded(request.id)"
-                  [class.whitespace-pre-wrap]="isNotesExpanded(request.id)"
                   [innerHTML]="request.notes | markdown"
                 ></p>
                 @if (request.notes.length > 80) {
