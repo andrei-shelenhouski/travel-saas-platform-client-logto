@@ -106,7 +106,7 @@ export type UpdateOfferStatusDto = {
 export type OfferResponseDto = {
   id: string;
   organizationId?: string;
-  requestId?: string;
+  source?: string;
   leadId?: string;
   previousVersionId?: string;
   number?: string;

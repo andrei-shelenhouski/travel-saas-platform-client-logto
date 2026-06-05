@@ -51,3 +51,14 @@ export const AppRole = {
   Agent: 'Agent',
 } as const;
 export type AppRole = (typeof AppRole)[keyof typeof AppRole];
+
+// ----- Custom Field Value (embedded in BookingResponse, LeadResponse, ClientResponse) -----
+
+/** OpenAPI: CustomFieldValueDto. Inline in entity responses. */
+export type CustomFieldValueDto = {
+  definitionId: string;
+  name: string;
+  fieldType: 'TEXT' | 'TEXTAREA' | 'DROPDOWN' | 'DATE' | 'URL';
+  options?: string[];
+  value?: string;
+};

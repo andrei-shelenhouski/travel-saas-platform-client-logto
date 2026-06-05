@@ -113,7 +113,11 @@ export class BookingTravelersSectionComponent {
       return false;
     }
 
-    if (documentType !== 'INTL_PASSPORT' && documentType !== 'NATIONAL_ID') {
+    if (
+      documentType !== 'INTL_PASSPORT' &&
+      documentType !== 'NATIONAL_ID' &&
+      documentType !== 'NATIONAL_PASSPORT'
+    ) {
       return false;
     }
 

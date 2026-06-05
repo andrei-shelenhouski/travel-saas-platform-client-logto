@@ -2,7 +2,7 @@
  * Booking domain types aligned with OpenAPI spec.
  */
 
-import type { PaginatedDto } from './common.model';
+import type { CustomFieldValueDto, PaginatedDto } from './common.model';
 
 /** OpenAPI: BookingAccommodationDto. Accommodation in booking requests and responses. */
 export type BookingAccommodationDto = {
@@ -12,7 +12,9 @@ export type BookingAccommodationDto = {
   checkinDate?: string;
   checkoutDate?: string;
   nights?: number;
+  unitPrice?: number;
   total?: number;
+  currency?: string;
 };
 
 /** OpenAPI: BookingServiceSnapshotEntry. Additional services in BookingResponse. */
@@ -125,7 +127,7 @@ export type UpdateBookingTravelerRequestDto = {
 
 /** OpenAPI: InlineDocument (used by direct booking traveler inline person). */
 export type InlineDocumentDto = {
-  type?: 'INTL_PASSPORT' | 'NATIONAL_ID' | 'BIRTH_CERTIFICATE' | 'DRIVER_LICENSE' | 'OTHER';
+  type?: 'INTL_PASSPORT' | 'NATIONAL_PASSPORT' | 'NATIONAL_ID' | 'BIRTH_CERTIFICATE' | 'DRIVER_LICENSE' | 'OTHER';
   series?: string;
   number?: string;
   expiryDate?: string;
@@ -208,6 +210,7 @@ export type BookingResponseDto = {
   hasExpiringDocuments?: boolean;
   expiringDocuments?: BookingExpiringDocumentHintDto[];
   travelers?: BookingTravelerResponseDto[] | string;
+  customFields?: CustomFieldValueDto[];
   clientPersonId?: string;
   createdById?: string;
   createdAt: string;

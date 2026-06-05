@@ -13,12 +13,12 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { catchError, of } from 'rxjs';
 
 import { PersonsService } from '@app/services/persons.service';
 import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type {
   CreatePersonRequestDto,
@@ -32,7 +32,8 @@ import type {
 } from '@app/shared/models';
 const DOC_TYPE_LABEL: Record<string, string> = {
   INTL_PASSPORT: 'Загранпаспорт',
-  NATIONAL_ID: 'Паспорт РБ',
+  NATIONAL_PASSPORT: 'Паспорт',
+  NATIONAL_ID: 'ID карта',
   BIRTH_CERTIFICATE: 'Свидетельство о рождении',
   DRIVER_LICENSE: 'Водительское удостоверение',
   OTHER: 'Другое',

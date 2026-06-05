@@ -2,9 +2,8 @@
  * Organization, User, Role, Permission, and supporting domain types.
  */
 
-import type { PaginatedDto } from './common.model';
+import type { CustomFieldValueDto, EntityType, PaginatedDto } from './common.model';
 import type { ClientType } from './client.model';
-import type { EntityType } from './common.model';
 
 // ----- Org Role -----
 
@@ -392,15 +391,7 @@ export type CustomFieldDefinitionResponseDto = {
   createdBy?: string;
 };
 
-export type CustomFieldValueDto = {
-  definitionId: string;
-  name: string;
-  fieldType: CustomFieldType;
-  options?: string[];
-  value?: string;
-  required?: boolean;
-  sortOrder?: number;
-};
+export { CustomFieldValueDto };
 
 export type UpsertCustomFieldsRequestDto = {
   values: Record<string, string>;

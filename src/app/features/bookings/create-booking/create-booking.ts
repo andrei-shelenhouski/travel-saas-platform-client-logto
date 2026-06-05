@@ -565,7 +565,7 @@ export class CreateBookingComponent {
       return false;
     }
 
-    if (type !== 'INTL_PASSPORT' && type !== 'NATIONAL_ID') {
+    if (type !== 'INTL_PASSPORT' && type !== 'NATIONAL_ID' && type !== 'NATIONAL_PASSPORT') {
       return false;
     }
 

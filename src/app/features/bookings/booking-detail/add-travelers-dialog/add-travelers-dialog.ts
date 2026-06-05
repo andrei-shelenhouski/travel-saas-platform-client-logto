@@ -238,7 +238,11 @@ export class AddTravelersDialogComponent {
       return false;
     }
 
-    if (document.type !== 'INTL_PASSPORT' && document.type !== 'NATIONAL_ID') {
+    if (
+      document.type !== 'INTL_PASSPORT' &&
+      document.type !== 'NATIONAL_ID' &&
+      document.type !== 'NATIONAL_PASSPORT'
+    ) {
       return false;
     }
 

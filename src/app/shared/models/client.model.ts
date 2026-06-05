@@ -2,7 +2,7 @@
  * Client, Contact, and Person domain types aligned with OpenAPI spec.
  */
 
-import type { PaginatedDto } from './common.model';
+import type { CustomFieldValueDto, PaginatedDto } from './common.model';
 
 export const ClientType = {
   INDIVIDUAL: 'INDIVIDUAL',
@@ -100,6 +100,7 @@ export type ClientResponseDto = {
   updatedAt: string;
   contacts: ContactResponseDto[];
   personId?: string | null;
+  customFields?: CustomFieldValueDto[];
 };
 
 export type PaginatedClientResponseDto = PaginatedDto<ClientResponseDto>;
@@ -129,6 +130,7 @@ export type UpdateClientDto = {
 
 export const PersonDocumentType = {
   INTL_PASSPORT: 'INTL_PASSPORT',
+  NATIONAL_PASSPORT: 'NATIONAL_PASSPORT',
   NATIONAL_ID: 'NATIONAL_ID',
   BIRTH_CERTIFICATE: 'BIRTH_CERTIFICATE',
   DRIVER_LICENSE: 'DRIVER_LICENSE',
