@@ -41,8 +41,10 @@ export class DocumentRowComponent {
         const a = globalThis.document.createElement('a');
         a.href = objectUrl;
         a.download = doc.filename ?? 'document';
+        globalThis.document.body.appendChild(a);
         a.click();
-        URL.revokeObjectURL(objectUrl);
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(objectUrl), 100);
         this.downloading.set(false);
       },
       error: () => this.downloading.set(false),
