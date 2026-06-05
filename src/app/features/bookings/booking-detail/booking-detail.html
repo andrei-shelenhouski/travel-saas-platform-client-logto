@@ -94,15 +94,13 @@
               (save)="onSaveAccommodation($event)"
             />
 
-            @if (b.servicesSnapshot?.length) {
-              <app-additional-services-table
-                [currency]="b.currency"
-                [editable]="true"
-                [saving]="savingServices()"
-                [services]="b.servicesSnapshot"
-                (save)="onSaveServices($event)"
-              />
-            }
+            <app-additional-services-table
+              [currency]="b.currency"
+              [editable]="true"
+              [saving]="savingServices()"
+              [services]="b.servicesSnapshot"
+              (save)="onSaveServices($event)"
+            />
 
             <app-operations-section
               [booking]="b"

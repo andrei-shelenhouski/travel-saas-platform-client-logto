@@ -39,7 +39,12 @@
         <div class="accommodation-form-grid">
           <mat-form-field>
             <mat-label>Питание</mat-label>
-            <input formControlName="mealPlan" matInput />
+            <mat-select formControlName="mealPlan">
+              <mat-option value="">Не указано</mat-option>
+              @for (meal of mealPlanOptions; track meal) {
+                <mat-option [value]="meal">{{ meal }}</mat-option>
+              }
+            </mat-select>
           </mat-form-field>
 
           <mat-form-field>
@@ -65,12 +70,14 @@
         </div>
       </form>
 
-      <div class="accommodation-form-actions">
-        <button mat-button type="button" (click)="cancelEdit()">Отмена</button>
-        <button color="primary" mat-flat-button type="button" [disabled]="saving()" (click)="onSave()">
-          <span>Сохранить</span>
-        </button>
-      </div>
+      @if (!hideActions()) {
+        <div class="accommodation-form-actions">
+          <button mat-button type="button" (click)="cancelEdit()">Отмена</button>
+          <button color="primary" mat-flat-button type="button" [disabled]="saving()" (click)="onSave()">
+            <span>Сохранить</span>
+          </button>
+        </div>
+      }
     </div>
   } @else {
     <div class="accommodation-table-wrap">

@@ -12,6 +12,7 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 import { calculateNights } from '@app/features/offers/offer-builder.utils';
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
+import { MEAL_PLAN_OPTIONS } from '@app/shared/models';
 
 import type { BookingAccommodationDto } from '@app/shared/models';
 
@@ -28,6 +29,7 @@ export class AccommodationTableComponent {
   readonly accommodationDetails = input<BookingAccommodationDto[] | null | undefined>(null);
   readonly editable = input<boolean>(false);
   readonly saving = input<boolean>(false);
+  readonly hideActions = input<boolean>(false);
   readonly save = output<BookingAccommodationDto[]>();
 
   readonly rows = computed<BookingAccommodationDto[]>(() => {
@@ -55,6 +57,8 @@ export class AccommodationTableComponent {
 
   readonly editing = signal(false);
   readonly editRows = signal<BookingAccommodationDto[]>([]);
+
+  readonly mealPlanOptions = MEAL_PLAN_OPTIONS;
 
   readonly rowForm = this.fb.nonNullable.group({
     hotelName: [''],

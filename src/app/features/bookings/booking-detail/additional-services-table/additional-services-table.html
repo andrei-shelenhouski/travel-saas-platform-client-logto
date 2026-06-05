@@ -27,7 +27,12 @@
         <div class="services-form-grid">
           <mat-form-field>
             <mat-label>Тип услуги</mat-label>
-            <input formControlName="type" matInput />
+            <mat-select formControlName="type">
+              <mat-option value="">Не указано</mat-option>
+              @for (serviceType of serviceTypeOptions; track serviceType) {
+                <mat-option [value]="serviceType">{{ serviceTypeLabel(serviceType) }}</mat-option>
+              }
+            </mat-select>
           </mat-form-field>
 
           <mat-form-field>
@@ -60,12 +65,14 @@
         </div>
       </form>
 
-      <div class="services-form-actions">
-        <button mat-button type="button" (click)="cancelEdit()">Отмена</button>
-        <button color="primary" mat-flat-button type="button" [disabled]="saving()" (click)="onSave()">
-          <span>Сохранить</span>
-        </button>
-      </div>
+      @if (!hideActions()) {
+        <div class="services-form-actions">
+          <button mat-button type="button" (click)="cancelEdit()">Отмена</button>
+          <button color="primary" mat-flat-button type="button" [disabled]="saving()" (click)="onSave()">
+            <span>Сохранить</span>
+          </button>
+        </div>
+      }
     </div>
   } @else {
     <div class="services-table-wrap">

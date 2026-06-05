@@ -11,20 +11,12 @@ import {
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
+import { SERVICE_TYPE_OPTIONS, serviceTypeLabel } from '@app/shared/models';
 
 import type {
   BookingServiceInputEntryDto,
   BookingServiceSnapshotEntryDto,
 } from '@app/shared/models';
-
-const SERVICE_TYPE_LABELS: Record<string, string> = {
-  TRANSFER: 'Трансфер',
-  EXCURSION: 'Экскурсия',
-  VISA: 'Виза',
-  INSURANCE: 'Страховка',
-  FLIGHT: 'Перелет',
-  OTHER: 'Другое',
-};
 
 @Component({
   selector: 'app-additional-services-table',
@@ -40,9 +32,13 @@ export class AdditionalServicesTableComponent {
   readonly currency = input<string | null | undefined>(null);
   readonly editable = input<boolean>(false);
   readonly saving = input<boolean>(false);
+  readonly hideActions = input<boolean>(false);
   readonly save = output<BookingServiceInputEntryDto[]>();
 
   readonly rows = computed<BookingServiceSnapshotEntryDto[]>(() => this.services() ?? []);
+
+  readonly serviceTypeOptions = SERVICE_TYPE_OPTIONS;
+  readonly serviceTypeLabel = serviceTypeLabel;
 
   readonly editing = signal(false);
   readonly editRows = signal<BookingServiceInputEntryDto[]>([]);
@@ -54,14 +50,6 @@ export class AdditionalServicesTableComponent {
     unitPrice: this.fb.control<number | null>(null),
     currency: [''],
   });
-
-  serviceTypeLabel(type: string | null | undefined): string {
-    if (!type) {
-      return '—';
-    }
-
-    return SERVICE_TYPE_LABELS[type] ?? type;
-  }
 
   startEdit(): void {
     this.editRows.set(
