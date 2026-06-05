@@ -46,6 +46,7 @@ import {
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ClientProfileCardComponent } from './client-profile-card/client-profile-card';
+import { ContactsSectionComponent } from './contacts-section/contacts-section';
 import { FamilySectionComponent } from './family-section/family-section';
 import { TravelerProfileSectionComponent } from './traveler-profile-section/traveler-profile-section';
 
@@ -100,6 +101,7 @@ type ClientHistoryTab = 'leads' | 'offers' | 'bookings' | 'invoices' | 'contract
     LoadingStateComponent,
     PageContentComponent,
     ClientProfileCardComponent,
+    ContactsSectionComponent,
     FamilySectionComponent,
     TravelerProfileSectionComponent,
   ],

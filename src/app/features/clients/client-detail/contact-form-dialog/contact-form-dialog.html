@@ -1,0 +1,65 @@
+<h2 mat-dialog-title>
+  {{ data.mode === 'create' ? 'Добавить контакт' : 'Редактировать контакт' }}
+</h2>
+
+<mat-dialog-content>
+  <form class="contact-form" [formGroup]="form">
+    <mat-form-field appearance="outline" class="contact-form-field">
+      <mat-label>Полное имя</mat-label>
+      <input formControlName="fullName" matInput />
+      @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
+        <mat-error>Введите имя</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="contact-form-field">
+      <mat-label>Должность / роль</mat-label>
+      <input formControlName="role" matInput />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="contact-form-field">
+      <mat-label>Телефон</mat-label>
+      <input formControlName="phone" matInput placeholder="+375291234567" type="tel" />
+      @if (form.controls.phone.hasError('pattern') && form.controls.phone.touched) {
+        <mat-error>Введите корректный номер телефона</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="contact-form-field">
+      <mat-label>Email</mat-label>
+      <input formControlName="email" matInput type="email" />
+      @if (form.controls.email.hasError('email') && form.controls.email.touched) {
+        <mat-error>Введите корректный email</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="contact-form-field">
+      <mat-label>Telegram</mat-label>
+      <input formControlName="telegramHandle" matInput maxlength="60" placeholder="@handle" />
+      @if (form.controls.telegramHandle.hasError('maxlength') && form.controls.telegramHandle.touched) {
+        <mat-error>Не более 60 символов</mat-error>
+      }
+    </mat-form-field>
+
+    @if (showContactMethodError) {
+      <p class="contact-form-contact-error">Укажите хотя бы один способ связи</p>
+    }
+
+    <div class="contact-form-primary-row">
+      <mat-checkbox color="primary" formControlName="isPrimary">Основной контакт</mat-checkbox>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" [disabled]="submitting()" (click)="cancel()">Отмена</button>
+  <button
+    color="primary"
+    mat-flat-button
+    type="button"
+    [disabled]="submitting()"
+    (click)="submit()"
+  >
+    {{ data.mode === 'create' ? 'Создать' : 'Сохранить' }}
+  </button>
+</mat-dialog-actions>

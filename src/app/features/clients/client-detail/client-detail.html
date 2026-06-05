@@ -41,6 +41,10 @@
             }
           }
 
+          @if (client()?.type === 'COMPANY' || client()?.type === 'B2B_AGENT') {
+            <app-contacts-section [clientId]="client()!.id" />
+          }
+
           <section class="client-card client-history-card">
             <div class="client-card-header">
               <h2 class="client-card-title">История</h2>

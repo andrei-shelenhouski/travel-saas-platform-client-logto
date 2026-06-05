@@ -1,0 +1,70 @@
+<section class="client-card">
+  <div class="client-card-header">
+    <h2 class="client-card-title">Контакты</h2>
+    <button mat-stroked-button type="button" (click)="openAddDialog()">+ Добавить контакт</button>
+  </div>
+
+  @if (loading()) {
+    <div class="contacts-loading">
+      <mat-spinner aria-label="Загрузка контактов..." diameter="36" />
+    </div>
+  } @else if (contacts().length === 0) {
+    <p class="contacts-empty">Контакты пока не добавлены</p>
+  } @else {
+    <ul class="contacts-list">
+      @for (contact of contacts(); track contact.id) {
+        <li class="contact-item">
+          <div class="contact-main">
+            <div class="contact-name-row">
+              <span class="contact-name">{{ contact.fullName ?? '—' }}</span>
+              @if (contact.primary) {
+                <span class="contact-primary-badge">Основной</span>
+              }
+            </div>
+            @if (contact.role) {
+              <p class="contact-role">{{ contact.role }}</p>
+            }
+            <div class="contact-details">
+              @if (contact.phone) {
+                <span class="contact-detail">
+                  <mat-icon class="contact-detail-icon">phone</mat-icon>
+                  {{ contact.phone }}
+                </span>
+              }
+              @if (contact.email) {
+                <span class="contact-detail">
+                  <mat-icon class="contact-detail-icon">email</mat-icon>
+                  {{ contact.email }}
+                </span>
+              }
+              @if (contact.telegramHandle) {
+                <span class="contact-detail">
+                  <mat-icon class="contact-detail-icon">send</mat-icon>
+                  {{ contact.telegramHandle }}
+                </span>
+              }
+            </div>
+          </div>
+
+          <div class="contact-actions">
+            @if (!contact.primary) {
+              <button
+                mat-stroked-button
+                type="button"
+                (click)="makePrimary(contact)"
+              >
+                Сделать основным
+              </button>
+            }
+            <button mat-stroked-button type="button" (click)="openEditDialog(contact)">
+              Редактировать
+            </button>
+            <button color="warn" mat-stroked-button type="button" (click)="deleteContact(contact)">
+              Удалить
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

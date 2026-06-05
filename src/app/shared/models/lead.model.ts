@@ -49,6 +49,7 @@ export type CreateLeadDto = {
   children?: number;
   notes?: string;
   assignedAgentId?: string;
+  contactPersonId?: string;
 };
 
 export type DeletedByDto = {
@@ -72,6 +73,7 @@ export type LeadResponseDto = {
   contactEmail: string | null;
   contactTelegram: string | null;
   companyName: string | null;
+  contactPersonId?: string | null;
   destination: string | null;
   departDateFrom: string | null;
   departDateTo: string | null;
@@ -132,6 +134,11 @@ export type PromoteLeadToClientResponseDto = {
 /** OpenAPI: AssignLeadRequest. PATCH /api/leads/{id}/assign body. */
 export type AssignLeadDto = {
   agentId: string;
+};
+
+/** OpenAPI: UpdateLeadContactPersonRequest. PATCH /api/leads/{id}/contact-person body. */
+export type UpdateLeadContactPersonDto = {
+  contactPersonId: string;
 };
 
 // ----- Status option constants -----

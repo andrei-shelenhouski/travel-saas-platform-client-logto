@@ -1,0 +1,20 @@
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 480px;
+}
+
+.contact-form-field {
+  width: 100%;
+}
+
+.contact-form-contact-error {
+  color: var(--mat-sys-error);
+  font-size: 12px;
+  margin: -8px 0 4px;
+}
+
+.contact-form-primary-row {
+  margin-top: 4px;
+}

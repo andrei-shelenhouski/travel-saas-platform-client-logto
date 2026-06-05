@@ -63,7 +63,31 @@
 
         <div class="booking-grid">
           <div class="booking-grid-left">
-            <app-client-snapshot-card [clientId]="b.clientId" [snapshot]="b.clientSnapshot" />
+            <app-client-snapshot-card
+              [canUpdate]="canUpdateContactPerson()"
+              [clientId]="b.clientId"
+              [snapshot]="b.clientSnapshot"
+              (changeRequested)="onContactPersonChangeRequested()"
+            />
+            @if (canUpdateContactPerson() && clientContactsForBooking().length > 0) {
+              <div class="contact-person-menu-wrap">
+                <button
+                  mat-stroked-button
+                  type="button"
+                  [matMenuTriggerFor]="bookingContactMenu"
+                >
+                  Выбрать контактное лицо
+                </button>
+                <mat-menu #bookingContactMenu="matMenu">
+                  @for (contact of clientContactsForBooking(); track contact.id) {
+                    <button mat-menu-item type="button" (click)="onChangeContactPerson(contact)">
+                      {{ contact.fullName }}{{ contact.role ? ' — ' + contact.role : '' }}
+                      @if (contact.primary) { (Основной) }
+                    </button>
+                  }
+                </mat-menu>
+              </div>
+            }
 
             <app-travel-details-section
               [booking]="b"

@@ -19,6 +19,7 @@ import type {
   PaginatedLeadResponseDto,
   PromoteLeadToClientDto,
   PromoteLeadToClientResponseDto,
+  UpdateLeadContactPersonDto,
   UpdateLeadDto,
   UpdateLeadStatusDto,
 } from '@app/shared/models';
@@ -115,6 +116,12 @@ export class LeadsService {
   ): Observable<PromoteLeadToClientResponseDto> {
     return this.http
       .post<PromoteLeadToClientResponseDto>(`${LEADS_URL}/${id}/promote-client`, dto)
+      .pipe(this.errorHandler.catch());
+  }
+
+  updateContactPerson(id: string, dto: UpdateLeadContactPersonDto): Observable<LeadResponseDto> {
+    return this.http
+      .patch<LeadResponseDto>(`${LEADS_URL}/${id}/contact-person`, dto)
       .pipe(this.errorHandler.catch());
   }
 

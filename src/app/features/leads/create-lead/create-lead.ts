@@ -21,6 +21,7 @@ import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
+import { MatSelectChange } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -36,7 +37,13 @@ import { PermissionService } from '@app/services/permission.service';
 import { PageContentComponent } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
-import { ClientResponseDto, CreateLeadDto, LeadResponseDto, OrgRole } from '@app/shared/models';
+import {
+  ClientResponseDto,
+  ContactResponseDto,
+  CreateLeadDto,
+  LeadResponseDto,
+  OrgRole,
+} from '@app/shared/models';
 import { formatClientSearchLabel } from '@app/shared/utils/client-display';
 
 import { atLeastOneContactValidator } from '../leads.validators';
@@ -154,8 +161,20 @@ export class CreateLeadComponent {
   protected readonly isNewClientMode = signal(false);
   protected readonly selectedClient = signal<ClientResponseDto | null>(null);
   protected readonly contactLocked = signal(false);
+  protected readonly clientContacts = signal<ContactResponseDto[]>([]);
+  protected readonly selectedContactPersonId = signal<string>('');
 
   protected readonly showAssignAgent = computed(() => this.permissionService.canAssignLead());
+  protected readonly showContactPersonPicker = computed(() => {
+    const client = this.selectedClient();
+
+    return (
+      !this.isNewClientMode() &&
+      client !== null &&
+      (client.type === 'COMPANY' || client.type === 'B2B_AGENT') &&
+      this.clientContacts().length > 0
+    );
+  });
   protected readonly selfUserId = computed(() => this.meService.getMeData()?.id ?? '');
   protected readonly agentOptions = signal<AgentOption[]>([]);
 
@@ -194,6 +213,8 @@ export class CreateLeadComponent {
     this.noClientsFound.set(false);
     this.selectedClient.set(null);
     this.contactLocked.set(false);
+    this.clientContacts.set([]);
+    this.selectedContactPersonId.set('');
     this.isNewClientMode.set(true);
 
     this.clientSearch.setValue('', { emitEvent: false });
@@ -299,6 +320,12 @@ export class CreateLeadComponent {
       dto.assignedAgentId = this.selfUserId();
     }
 
+    const contactPersonId = this.selectedContactPersonId();
+
+    if (contactPersonId) {
+      dto.contactPersonId = contactPersonId;
+    }
+
     this.loading.set(true);
 
     this.leadsService
@@ -355,6 +382,8 @@ export class CreateLeadComponent {
     this.selectedClient.set(client);
     this.contactLocked.set(true);
     this.noClientsFound.set(false);
+    this.clientContacts.set([]);
+    this.selectedContactPersonId.set('');
 
     this.clientSearch.setValue(this.clientDisplayFn(client), { emitEvent: false });
     this.form.patchValue(
@@ -372,6 +401,45 @@ export class CreateLeadComponent {
     this.form.controls.contactPhone.disable({ emitEvent: false });
     this.form.controls.contactEmail.disable({ emitEvent: false });
     this.form.controls.contactTelegram.disable({ emitEvent: false });
+
+    if (client.type === 'COMPANY' || client.type === 'B2B_AGENT') {
+      this.clientsService
+        .listContacts(client.id)
+        .pipe(takeUntilDestroyed(this.destroyRef))
+        .subscribe((contacts) => {
+          this.clientContacts.set(contacts);
+
+          const primary = contacts.find((c) => c.primary);
+
+          if (primary) {
+            this.selectedContactPersonId.set(primary.id);
+            this.applyContactPersonToForm(primary);
+          }
+        });
+    }
+  }
+
+  protected onContactPersonSelected(event: MatSelectChange): void {
+    const contactId = event.value as string;
+
+    this.selectedContactPersonId.set(contactId);
+
+    const contact = this.clientContacts().find((c) => c.id === contactId);
+
+    if (contact) {
+      this.applyContactPersonToForm(contact);
+    }
+  }
+
+  private applyContactPersonToForm(contact: ContactResponseDto): void {
+    this.form.patchValue(
+      {
+        contactPhone: contact.phone ?? '',
+        contactEmail: contact.email ?? '',
+        contactTelegram: contact.telegramHandle ?? '',
+      },
+      { emitEvent: false },
+    );
   }
 
   private pickClientPhone(client: ClientResponseDto): string {

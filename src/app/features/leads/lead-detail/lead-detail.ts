@@ -19,6 +19,7 @@ import { EMPTY, forkJoin, of } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
+import { ClientsService } from '@app/services/clients.service';
 import { AssignDialogComponent } from '@app/features/leads/assign-dialog/assign-dialog';
 import {
   DeleteLeadDialogComponent,
@@ -47,6 +48,7 @@ import { atLeastOneContactValidator } from '../leads.validators';
 import type {
   ActivityListResponseDto,
   ActivityResponseDto,
+  ContactResponseDto,
   CustomFieldValueDto,
   LeadResponseDto,
   OfferResponseDto,
@@ -107,6 +109,7 @@ export class LeadDetailComponent {
   private readonly offersService = inject(OffersService);
   private readonly membersService = inject(OrganizationMembersService);
   private readonly customFieldsService = inject(CustomFieldsService);
+  private readonly clientsService = inject(ClientsService);
   private readonly snackBar = inject(MatSnackBar);
 
   protected readonly permissions = inject(PermissionService);
@@ -157,9 +160,32 @@ export class LeadDetailComponent {
 
   protected readonly customFieldsSection = viewChild(CustomFieldsSectionComponent);
 
+  private readonly clientContactsData = rxResource<ContactResponseDto[], string | null>({
+    params: (): string | null => this.lead()?.clientId ?? null,
+    stream: ({ params }) => {
+      if (!params) {
+        return of([]);
+      }
+
+      return this.clientsService.listContacts(params);
+    },
+    defaultValue: [],
+  });
+
   protected readonly lead = computed(
     () => this.travelDetailsData() ?? this.data.value()?.lead ?? null,
   );
+  protected readonly clientContacts = computed(() => this.clientContactsData.value() ?? []);
+  protected readonly contactPerson = computed(() => {
+    const cpId = this.lead()?.contactPersonId;
+
+    if (!cpId) {
+      return null;
+    }
+
+    return this.clientContacts().find((c) => c.id === cpId) ?? null;
+  });
+
   protected readonly offers = computed(() => this.data.value()?.offers ?? []);
   protected readonly customFields = computed(() => {
     return (this.customFieldsData.value() ?? []).map((field, index) => ({
@@ -515,6 +541,28 @@ export class LeadDetailComponent {
     });
   }
 
+  protected changeContactPerson(contact: ContactResponseDto): void {
+    const lead = this.lead();
+
+    if (!lead) {
+      return;
+    }
+
+    this.leadsService.updateContactPerson(lead.id, { contactPersonId: contact.id }).subscribe({
+      next: (updated) => {
+        this.travelDetailsData.set(updated);
+        this.snackBar.open('Контактное лицо изменено', 'Close', { duration: 4000 });
+      },
+      error: (err: unknown) => {
+        this.snackBar.open(
+          this.getErrorMessage(err, 'Не удалось изменить контактное лицо'),
+          'Close',
+          { duration: 5000 },
+        );
+      },
+    });
+  }
+
   protected showTravelContactGroupError(): boolean {
     return (
       this.travelForm.hasError('atLeastOneContactRequired') &&
@@ -768,10 +816,18 @@ export class LeadDetailComponent {
       return 'description';
     }
 
+    if (normalized.includes('contact')) {
+      return 'person';
+    }
+
     return 'history';
   }
 
   protected getActivityLabel(type: string): string {
+    if (type === 'contact_person_selected') {
+      return 'Контактное лицо изменено';
+    }
+
     return type
       .replaceAll('_', ' ')
       .toLowerCase()

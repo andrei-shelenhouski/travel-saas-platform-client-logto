@@ -17,6 +17,7 @@ import { EMPTY, forkJoin, of } from 'rxjs';
 import { finalize, map, switchMap } from 'rxjs/operators';
 
 import { BookingsService } from '@app/services/bookings.service';
+import { ClientsService } from '@app/services/clients.service';
 import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PersonsService } from '@app/services/persons.service';
@@ -24,7 +25,7 @@ import { LoadingStateComponent, PageContentComponent } from '@app/shared/compone
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
+import { MAT_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { BookingStatus, ClientType } from '@app/shared/models';
 
 import { AccommodationTableComponent } from './accommodation-table/accommodation-table';
@@ -48,6 +49,7 @@ import type {
   BookingResponseDto,
   BookingServiceInputEntryDto,
   BookingTravelerResponseDto,
+  ContactResponseDto,
   CustomFieldValueDto,
   InvoiceResponseDto,
   PersonResponseDto,
@@ -73,6 +75,7 @@ import type {
     BookingTravelersSectionComponent,
     CustomFieldsSectionComponent,
     ...MAT_BUTTONS,
+    ...MAT_MENU,
   ],
   templateUrl: './booking-detail.html',
   styleUrl: './booking-detail.scss',
@@ -81,6 +84,7 @@ export class BookingDetailComponent {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly bookingsService = inject(BookingsService);
+  private readonly clientsService = inject(ClientsService);
   private readonly customFieldsService = inject(CustomFieldsService);
   private readonly permissions = inject(PermissionService);
   private readonly personsService = inject(PersonsService);
@@ -133,6 +137,20 @@ export class BookingDetailComponent {
   readonly travelers = computed(() => this.allData.value()?.travelers ?? []);
   readonly canViewInvoices = computed(() => this.permissions.canViewInvoices());
   readonly canManageTravelers = computed(() => this.permissions.canUpdateBookings());
+  readonly canUpdateContactPerson = computed(() => {
+    const b = this.booking();
+
+    if (!b) {
+      return false;
+    }
+
+    const clientType = b.clientSnapshot?.['type'] as string | undefined;
+
+    return (
+      this.permissions.canUpdateBookings() &&
+      (clientType === 'COMPANY' || clientType === 'B2B_AGENT')
+    );
+  });
   readonly showLegacyTravelers = computed(() => {
     const legacyTravelers = this.booking()?.travelers;
 
@@ -511,6 +529,51 @@ export class BookingDetailComponent {
     const source = booking.source?.trim().toUpperCase();
 
     return source === 'DIRECT_ENTRY' || source === 'DIRECT';
+  }
+
+  readonly clientContactsForBooking = signal<ContactResponseDto[]>([]);
+
+  onContactPersonChangeRequested(): void {
+    const booking = this.booking();
+
+    if (!booking) {
+      return;
+    }
+
+    if (this.clientContactsForBooking().length > 0) {
+      return;
+    }
+
+    this.clientsService.listContacts(booking.clientId).subscribe({
+      next: (contacts) => {
+        this.clientContactsForBooking.set(contacts);
+
+        if (contacts.length === 0) {
+          this.snackBar.open('У клиента нет контактных лиц', 'Close', { duration: 4000 });
+        }
+      },
+      error: () =>
+        this.snackBar.open('Не удалось загрузить контакты клиента', 'Close', { duration: 5000 }),
+    });
+  }
+
+  onChangeContactPerson(contact: ContactResponseDto): void {
+    const booking = this.booking();
+
+    if (!booking) {
+      return;
+    }
+
+    this.bookingsService.update(booking.id, { contactPersonId: contact.id }).subscribe({
+      next: (updated) => {
+        this.patchBooking(updated);
+        this.snackBar.open('Контактное лицо обновлено', 'Close', { duration: 4000 });
+      },
+      error: (err) =>
+        this.snackBar.open(err?.error?.message ?? 'Не удалось обновить контактное лицо', 'Close', {
+          duration: 5000,
+        }),
+    });
   }
 
   private openAddTravelersDialog(

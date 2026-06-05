@@ -92,6 +92,44 @@
                   >
                 </dd>
               </div>
+
+              @if (l.clientType === 'COMPANY' || l.clientType === 'B2B_AGENT') {
+                <div class="lead-data-row">
+                  <dt>Контактное лицо</dt>
+                  <dd>
+                    @if (contactPerson(); as cp) {
+                      <div class="contact-person-info">
+                        <strong>{{ cp.fullName }}</strong>
+                        @if (cp.role) {<span> — {{ cp.role }}</span>}
+                        @if (cp.phone) {<div>📞 {{ cp.phone }}</div>}
+                        @if (cp.email) {<div>✉ {{ cp.email }}</div>}
+                        @if (cp.telegramHandle) {<div>✈ {{ cp.telegramHandle }}</div>}
+                      </div>
+                    } @else {
+                      <span>Не выбрано</span>
+                    }
+
+                    @if (canManageLeadClient() && clientContacts().length > 0) {
+                      <button
+                        class="contact-person-change-btn"
+                        mat-stroked-button
+                        type="button"
+                        [matMenuTriggerFor]="contactPersonMenu"
+                      >
+                        {{ contactPerson() ? 'Изменить контакт' : 'Выбрать контактное лицо' }}
+                      </button>
+                      <mat-menu #contactPersonMenu="matMenu">
+                        @for (contact of clientContacts(); track contact.id) {
+                          <button mat-menu-item type="button" (click)="changeContactPerson(contact)">
+                            {{ contact.fullName }}{{ contact.role ? ' — ' + contact.role : '' }}
+                            @if (contact.primary) {<span> (Основной)</span>}
+                          </button>
+                        }
+                      </mat-menu>
+                    }
+                  </dd>
+                </div>
+              }
             </dl>
           } @else {
             <div class="client-placeholder-card">
