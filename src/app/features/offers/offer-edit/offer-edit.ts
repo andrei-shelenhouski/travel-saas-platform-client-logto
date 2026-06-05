@@ -43,7 +43,7 @@ import {
   MAT_FORM_BUTTONS,
   MAT_ICONS,
 } from '@app/shared/material-imports';
-import { OfferStatus } from '@app/shared/models';
+import { MEAL_PLAN_OPTIONS, OfferStatus, SERVICE_TYPE_OPTIONS } from '@app/shared/models';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type { OfferResponseDto, UpdateOfferDto } from '@app/shared/models';
@@ -82,15 +82,6 @@ type OfferBuilderFormGroup = FormGroup<{
 
 const CURRENCY_OPTIONS = ['BYN', 'USD', 'EUR'] as const;
 const LANGUAGE_OPTIONS = ['ru', 'en'] as const;
-const MEAL_PLAN_OPTIONS = ['ALL_INCLUSIVE', 'BB', 'HB', 'FB', 'RO', 'OTHER'] as const;
-const SERVICE_TYPE_OPTIONS = [
-  'TRANSFER',
-  'EXCURSION',
-  'VISA',
-  'INSURANCE',
-  'FLIGHT',
-  'OTHER',
-] as const;
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

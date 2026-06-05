@@ -44,11 +44,6 @@
         </mat-form-field>
 
         <mat-form-field subscriptSizing="dynamic">
-          <mat-label>Общая стоимость</mat-label>
-          <input formControlName="totalPrice" matInput min="0" type="number" />
-        </mat-form-field>
-
-        <mat-form-field subscriptSizing="dynamic">
           <mat-label>Направление</mat-label>
           <input formControlName="destination" matInput />
         </mat-form-field>
@@ -147,110 +142,23 @@
           </div>
         }
 
-        @for (traveler of inlineTravelers(); track traveler.localId) {
-          <div class="traveler-row">
-            <div>
-              <p class="create-booking-traveler-name">{{ traveler.person.lastName }} {{ traveler.person.firstName }}</p>
-              <p class="create-booking-traveler-doc">
-                @if (traveler.person.document) {
-                  {{ traveler.person.document.type }} {{ traveler.person.document.series || '' }}
-                } @else {
-                  Документ не указан
-                }
-              </p>
-            </div>
-
-            <div class="traveler-actions">
-              <mat-form-field subscriptSizing="dynamic">
-                <mat-label>Роль</mat-label>
-                <mat-select [value]="traveler.role" (valueChange)="setInlineTravelerRole(traveler.localId, $event)">
-                  @for (option of travelerRoleOptions; track option.value) {
-                    <mat-option [value]="option.value">{{ option.label }}</mat-option>
-                  }
-                </mat-select>
-              </mat-form-field>
-
-              <button mat-stroked-button type="button" (click)="removeInlineTraveler(traveler.localId)">
-                Удалить
-              </button>
-            </div>
-          </div>
-        }
-
         @if (attachedTravelersCount() === 0) {
           <p class="create-booking-empty-note">Туристы пока не добавлены.</p>
         }
       </div>
     </app-form-section>
 
-    <app-form-section title="Новый турист (inline)">
-      <div class="create-booking-main-grid" [formGroup]="inlineTravelerForm">
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>Фамилия</mat-label>
-          <input formControlName="lastName" matInput />
-        </mat-form-field>
+    <app-accommodation-table
+      [editable]="true"
+      [hideActions]="true"
+      (save)="onAccommodationSave($event)"
+    />
 
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>Имя</mat-label>
-          <input formControlName="firstName" matInput />
-        </mat-form-field>
-
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>Отчество</mat-label>
-          <input formControlName="patronymic" matInput />
-        </mat-form-field>
-
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>Роль</mat-label>
-          <mat-select formControlName="role">
-            @for (option of travelerRoleOptions; track option.value) {
-              <mat-option [value]="option.value">{{ option.label }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>Дата рождения</mat-label>
-          <input formControlName="dateOfBirth" matInput type="date" />
-        </mat-form-field>
-
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>Гражданство</mat-label>
-          <input formControlName="citizenship" matInput />
-        </mat-form-field>
-
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>Тип документа</mat-label>
-          <mat-select formControlName="documentType">
-            <mat-option value="">Не указывать</mat-option>
-            @for (type of documentTypeOptions; track type) {
-              <mat-option [value]="type">{{ type }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
-
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>Серия</mat-label>
-          <input formControlName="documentSeries" matInput />
-        </mat-form-field>
-
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>Номер</mat-label>
-          <input formControlName="documentNumber" matInput />
-        </mat-form-field>
-
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>Срок действия</mat-label>
-          <input formControlName="documentExpiryDate" matInput type="date" />
-        </mat-form-field>
-      </div>
-
-      <div class="create-booking-add-inline-wrap">
-        <button color="primary" mat-stroked-button type="button" (click)="addInlineTraveler()">
-          Добавить inline туриста
-        </button>
-      </div>
-    </app-form-section>
+    <app-additional-services-table
+      [editable]="true"
+      [hideActions]="true"
+      (save)="onServicesSave($event)"
+    />
 
     <div class="create-booking-submit-row">
       <a mat-button routerLink="/app/bookings">Отмена</a>

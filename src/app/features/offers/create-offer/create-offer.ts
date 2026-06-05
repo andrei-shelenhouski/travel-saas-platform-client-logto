@@ -49,6 +49,8 @@ import {
 } from '@app/shared/material-imports';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
+import { MEAL_PLAN_OPTIONS, SERVICE_TYPE_OPTIONS } from '@app/shared/models';
+
 import type { CreateOfferDto, LeadResponseDto, UpdateOfferDto } from '@app/shared/models';
 type AccommodationFormGroup = FormGroup<{
   hotelName: FormControl<string>;
@@ -85,15 +87,6 @@ type OfferBuilderFormGroup = FormGroup<{
 
 const CURRENCY_OPTIONS = ['BYN', 'USD', 'EUR'] as const;
 const LANGUAGE_OPTIONS = ['ru', 'en'] as const;
-const MEAL_PLAN_OPTIONS = ['ALL_INCLUSIVE', 'BB', 'HB', 'FB', 'RO', 'OTHER'] as const;
-const SERVICE_TYPE_OPTIONS = [
-  'TRANSFER',
-  'EXCURSION',
-  'VISA',
-  'INSURANCE',
-  'FLIGHT',
-  'OTHER',
-] as const;
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -85,6 +85,7 @@ export type BookingDocumentResponseDto = {
   filename?: string;
   uploadedAt?: string;
   uploadedByName?: string;
+  downloadUrl?: string;
 };
 
 /** OpenAPI: ExpiryWarning. Document expiry hint on a traveler. */

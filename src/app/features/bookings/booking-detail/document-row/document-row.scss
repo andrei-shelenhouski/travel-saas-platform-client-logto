@@ -39,3 +39,9 @@
   font-size: 0.75rem;
   color: #6b7280;
 }
+
+.document-row-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
