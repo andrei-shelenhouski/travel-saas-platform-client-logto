@@ -18,15 +18,15 @@
 
   <div class="document-row-actions">
     @if (document().downloadUrl) {
-      <a
-        [href]="document().downloadUrl"
+      <button
         aria-label="Скачать документ"
         mat-icon-button
-        rel="noopener noreferrer"
-        target="_blank"
+        type="button"
+        [disabled]="downloading()"
+        (click)="onDownload()"
       >
         <mat-icon>download</mat-icon>
-      </a>
+      </button>
     }
 
     <button
