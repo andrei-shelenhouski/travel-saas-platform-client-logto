@@ -32,7 +32,6 @@ import {
   LoadingStateComponent,
   OfferStatusChipComponent,
   PageContentComponent,
-  RequestStatusChipComponent,
 } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
@@ -58,7 +57,6 @@ import type {
   InvoiceResponseDto,
   LeadResponseDto,
   OfferSummaryDto,
-  TravelRequestSummaryDto,
 } from '@app/shared/models';
 
 const TYPE_LABEL: Record<string, string> = {
@@ -80,7 +78,7 @@ const SIGNATURE_METHOD_LABEL: Record<string, string> = {
   [SignatureMethod.OTHER]: 'Другое',
 };
 
-type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices' | 'contracts';
+type ClientHistoryTab = 'leads' | 'offers' | 'bookings' | 'invoices' | 'contracts';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -88,7 +86,6 @@ type ClientHistoryTab = 'leads' | 'requests' | 'offers' | 'bookings' | 'invoices
   imports: [
     RouterLink,
     LeadStatusChipComponent,
-    RequestStatusChipComponent,
     OfferStatusChipComponent,
     BookingStatusChipComponent,
     InvoiceStatusChipComponent,
@@ -172,22 +169,6 @@ export class ClientDetailComponent {
 
       return this.clientsService
         .getLeads(clientId, { page: 1, limit: 20 })
-        .pipe(map((r) => r.items));
-    },
-  });
-
-  private readonly requestsLoadTrigger = signal(0);
-  private readonly requestsData = rxResource<TravelRequestSummaryDto[], [string | null, number]>({
-    params: () => [this.routeId() ?? null, this.requestsLoadTrigger()] as [string | null, number],
-    stream: ({ params }) => {
-      const [clientId, trigger] = params;
-
-      if (clientId === null || trigger === 0) {
-        return of([]);
-      }
-
-      return this.clientsService
-        .getRequests(clientId, { page: 1, limit: 20 })
         .pipe(map((r) => r.items));
     },
   });
@@ -284,13 +265,6 @@ export class ClientDetailComponent {
   });
 
   readonly leadsColumns = ['number', 'status', 'createdAt'] as const;
-  readonly requestsColumns = [
-    'destination',
-    'dates',
-    'travelers',
-    'status',
-    'offersCount',
-  ] as const;
   readonly offersColumns = ['offerNumber', 'destination', 'total', 'status', 'createdAt'] as const;
   readonly bookingsColumns = ['bookingNumber', 'destination', 'dates', 'status', 'total'] as const;
   readonly invoicesColumns = ['number', 'invoiceDate', 'dueDate', 'status', 'total'] as const;
@@ -313,9 +287,6 @@ export class ClientDetailComponent {
 
   readonly leads = computed(() => this.leadsData.value() ?? []);
   readonly leadsLoading = computed(() => this.leadsData.isLoading());
-
-  readonly requests = computed(() => this.requestsData.value() ?? []);
-  readonly requestsLoading = computed(() => this.requestsData.isLoading());
 
   readonly offers = computed(() => this.offersData.value() ?? []);
   readonly offersLoading = computed(() => this.offersData.isLoading());
@@ -378,7 +349,7 @@ export class ClientDetailComponent {
   }
 
   onSelectedTabChange(index: number): void {
-    const tabs: ClientHistoryTab[] = ['leads', 'requests', 'offers', 'bookings', 'invoices'];
+    const tabs: ClientHistoryTab[] = ['leads', 'offers', 'bookings', 'invoices'];
 
     if (this.isB2BAgent() && this.canViewContracts()) {
       tabs.push('contracts');
@@ -395,8 +366,6 @@ export class ClientDetailComponent {
     // Lazy-load tab data on first activation
     if (tab === 'leads' && this.leadsLoadTrigger() === 0) {
       this.leadsLoadTrigger.set(1);
-    } else if (tab === 'requests' && this.requestsLoadTrigger() === 0) {
-      this.requestsLoadTrigger.set(1);
     } else if (tab === 'offers' && this.offersLoadTrigger() === 0) {
       this.offersLoadTrigger.set(1);
     } else if (tab === 'bookings' && this.bookingsLoadTrigger() === 0) {
@@ -518,10 +487,6 @@ export class ClientDetailComponent {
 
   goToLead(lead: LeadResponseDto): void {
     this.router.navigate(['/app/leads', lead.id]);
-  }
-
-  goToRequest(req: TravelRequestSummaryDto): void {
-    this.router.navigate(['/app/requests', req.id]);
   }
 
   goToOffer(offer: OfferSummaryDto): void {

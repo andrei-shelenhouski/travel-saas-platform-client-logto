@@ -95,60 +95,6 @@
                 }
               </mat-tab>
 
-              <!-- Requests tab -->
-              <mat-tab>
-                <ng-template mat-tab-label>
-                  <span>Запросы</span>
-                </ng-template>
-                @if (requestsLoading()) {
-                  <div class="client-tab-loading">
-                    <mat-spinner aria-label="Загрузка запросов..." diameter="36" />
-                  </div>
-                } @else if (requests().length === 0) {
-                  <div class="client-history-empty">
-                    <p>Нет запросов</p>
-                  </div>
-                } @else {
-                  <div class="table-wrap">
-                    <table mat-table [dataSource]="requests()">
-                      <ng-container matColumnDef="destination">
-                        <th *matHeaderCellDef mat-header-cell>Направление</th>
-                        <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.destination ?? '—' }}</td>
-                      </ng-container>
-                      <ng-container matColumnDef="dates">
-                        <th *matHeaderCellDef mat-header-cell>Даты</th>
-                        <td *matCellDef="let row" mat-cell>
-                          {{ formatDateShort(row.departDate) }} – {{ formatDateShort(row.returnDate) }}
-                        </td>
-                      </ng-container>
-                      <ng-container matColumnDef="travelers">
-                        <th *matHeaderCellDef mat-header-cell>Путешественники</th>
-                        <td *matCellDef="let row" mat-cell>{{ (row.adults ?? 0) }} + {{ (row.children ?? 0) }}</td>
-                      </ng-container>
-                      <ng-container matColumnDef="status">
-                        <th *matHeaderCellDef mat-header-cell>Статус</th>
-                        <td *matCellDef="let row" mat-cell>
-                          <app-request-status-chip [status]="row.status" />
-                        </td>
-                      </ng-container>
-                      <ng-container matColumnDef="offersCount">
-                        <th *matHeaderCellDef mat-header-cell>Предложения</th>
-                        <td *matCellDef="let row" mat-cell>{{ row.offersCount ?? 0 }}</td>
-                      </ng-container>
-                      <tr *matHeaderRowDef="requestsColumns" class="table-header-row" mat-header-row></tr>
-                      <tr
-                        *matRowDef="let row; columns: requestsColumns"
-                        class="table-row"
-                        mat-row
-                        tabindex="0"
-                        (click)="goToRequest(row)"
-                        (keydown.enter)="goToRequest(row)"
-                      ></tr>
-                    </table>
-                  </div>
-                }
-              </mat-tab>
-
               <!-- Offers tab -->
               <mat-tab>
                 <ng-template mat-tab-label>

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
 
-import { of, throwError } from 'rxjs';
+import { of } from 'rxjs';
 import { vi } from 'vitest';
 
 import { CustomFieldsService } from '@app/services/custom-fields.service';
@@ -9,11 +9,9 @@ import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { RequestsService } from '@app/services/requests.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { LeadDetailComponent } from './lead-detail';
-import { LeadDetailRequestsSectionComponent } from './lead-detail-requests-section/lead-detail-requests-section';
 
 import type { ActivityListResponseDto, LeadResponseDto } from '@app/shared/models';
 
@@ -47,13 +45,6 @@ describe('LeadDetailComponent', () => {
     getActivity: vi.fn(() => of(createActivityResponse())),
   };
 
-  const requestsServiceMock = {
-    getList: vi.fn(() => of({ items: [createRequest()], total: 1, page: 1, limit: 100 })),
-    create: vi.fn(() => of(createRequest({ id: 'request-new', status: 'OPEN', offersCount: 0 }))),
-    update: vi.fn((id: string) => of(createRequest({ id, destination: 'Updated request' }))),
-    delete: vi.fn(() => of(undefined)),
-  };
-
   beforeEach(async () => {
     vi.clearAllMocks();
 
@@ -68,7 +59,6 @@ describe('LeadDetailComponent', () => {
           },
         },
         { provide: LeadsService, useValue: leadsServiceMock },
-        { provide: RequestsService, useValue: requestsServiceMock },
         {
           provide: OffersService,
           useValue: { getList: () => of({ items: [], total: 0, page: 1, limit: 100 }) },
@@ -191,102 +181,17 @@ describe('LeadDetailComponent', () => {
     expect(api.canManageLeadClient()).toBe(false);
   });
 
-  it('creates travel request via parent handler', async () => {
-    const parentApi = component as unknown as {
-      handleRequestCreated: (payload: {
-        destination: string;
-        departDate: string;
-        returnDate: string;
-        adults: number;
-        children: number;
-      }) => void;
-      requests: () => { id: string }[];
-    };
-
-    parentApi.handleRequestCreated({
-      destination: 'Rome',
-      departDate: '2026-09-01',
-      returnDate: '2026-09-07',
-      adults: 2,
-      children: 1,
-    });
-    await fixture.whenStable();
-
-    expect(requestsServiceMock.create).toHaveBeenCalledTimes(1);
-    expect(parentApi.requests().some((r) => r.id === 'request-new')).toBe(true);
-  });
-
-  it('updates travel request via parent handler', () => {
-    const parentApi = component as unknown as {
-      handleRequestUpdated: (payload: { requestId: string; destination: string }) => void;
-    };
-
-    parentApi.handleRequestUpdated({ requestId: 'request-1', destination: 'Updated request' });
-
-    expect(requestsServiceMock.update).toHaveBeenCalledWith(
-      'request-1',
-      expect.objectContaining({ destination: 'Updated request' }),
-    );
-  });
-
-  it('navigates to offer create route with request query parameter', () => {
+  it('navigates to offer create route with leadId query parameter', () => {
     const navigateSpy = vi.spyOn(router, 'navigate').mockResolvedValue(true);
     const api = component as unknown as {
-      openNewOffer: (requestId: string) => void;
+      openNewOffer: () => void;
     };
 
-    api.openNewOffer('request-1');
+    api.openNewOffer();
 
     expect(navigateSpy).toHaveBeenCalledWith(['/app/offers/new'], {
-      queryParams: { requestId: 'request-1' },
+      queryParams: { leadId: 'lead-1' },
     });
-  });
-
-  it('hides new offer action for closed request status', () => {
-    const section = getRequestsSection() as unknown as {
-      canCreateOfferForRequest: (status: string | null | undefined) => boolean;
-    };
-
-    expect(section.canCreateOfferForRequest('CLOSED')).toBe(false);
-    expect(section.canCreateOfferForRequest('OPEN')).toBe(true);
-  });
-
-  it('resets savingRequest after create error so user can retry', () => {
-    requestsServiceMock.create.mockImplementationOnce(() => {
-      return throwError(() => new Error('create failed'));
-    });
-
-    const parentApi = component as unknown as {
-      handleRequestCreated: (payload: Record<string, unknown>) => void;
-      savingRequest: () => boolean;
-    };
-
-    parentApi.handleRequestCreated({ destination: 'Paris' });
-
-    expect(parentApi.savingRequest()).toBe(false);
-
-    parentApi.handleRequestCreated({ destination: 'Paris' });
-
-    expect(requestsServiceMock.create).toHaveBeenCalledTimes(2);
-  });
-
-  it('resets updatingRequest after update error so user can retry', () => {
-    requestsServiceMock.update.mockImplementationOnce(() => {
-      return throwError(() => new Error('update failed'));
-    });
-
-    const parentApi = component as unknown as {
-      handleRequestUpdated: (payload: Record<string, unknown>) => void;
-      updatingRequest: () => boolean;
-    };
-
-    parentApi.handleRequestUpdated({ requestId: 'request-1', destination: 'Retry' });
-
-    expect(parentApi.updatingRequest()).toBe(false);
-
-    parentApi.handleRequestUpdated({ requestId: 'request-1', destination: 'Retry' });
-
-    expect(requestsServiceMock.update).toHaveBeenCalledTimes(2);
   });
 
   it('shows resolved actor full name for user-triggered activity', () => {
@@ -414,43 +319,7 @@ describe('LeadDetailComponent', () => {
 
     expect(api.travelForm.hasError('atLeastOneContactRequired')).toBe(false);
   });
-
-  function getRequestsSection(): LeadDetailRequestsSectionComponent {
-    const parentApi = component as unknown as {
-      requestsSection: () => LeadDetailRequestsSectionComponent | undefined;
-    };
-    const section = parentApi.requestsSection();
-
-    if (!section) {
-      throw new Error('LeadDetailRequestsSectionComponent not found in view');
-    }
-
-    return section;
-  }
 });
-
-function createRequest(
-  overrides: Partial<{ id: string; destination: string; status: string; offersCount: number }> = {},
-) {
-  return {
-    id: 'request-1',
-    leadId: 'lead-1',
-    managerId: 'agent-1',
-    managerName: 'Jane Agent',
-    destination: 'Turkey',
-    departDate: '2026-08-01',
-    returnDate: '2026-08-10',
-    adults: 2,
-    children: 1,
-    notes: 'Summer plan',
-    status: 'OPEN',
-    offersCount: 1,
-    createdById: 'user-1',
-    createdAt: '2026-01-01T10:00:00.000Z',
-    updatedAt: '2026-01-02T10:00:00.000Z',
-    ...overrides,
-  };
-}
 
 function createActivityResponse(): ActivityListResponseDto {
   return {

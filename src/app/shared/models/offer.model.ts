@@ -4,7 +4,6 @@
 
 import type { PaginatedDto } from './common.model';
 import type { BookingStatus } from './booking.model';
-import type { RequestStatus } from './organization.model';
 
 /** OpenAPI: AccommodationRequest. Accommodation line item in CreateOfferRequest / UpdateOfferRequest. */
 export type AccommodationRequest = {
@@ -63,7 +62,7 @@ export type OfferStatus = (typeof OfferStatus)[keyof typeof OfferStatus];
 
 /** OpenAPI: CreateOfferRequest. POST /api/offers. */
 export type CreateOfferDto = {
-  requestId: string;
+  leadId: string;
   language: string;
   validityDate?: string;
   destination?: string;
@@ -137,30 +136,12 @@ export type OfferResponseDto = {
 
 export type PaginatedOfferResponseDto = PaginatedDto<OfferResponseDto>;
 
-/** OpenAPI: TravelRequestSummary. Item in GET /api/clients/{id}/requests. */
-export type TravelRequestSummaryDto = {
-  id: string;
-  leadId?: string;
-  leadNumber?: string;
-  destination?: string;
-  departDate?: string;
-  returnDate?: string;
-  adults?: number;
-  children?: number;
-  status?: RequestStatus;
-  offersCount?: number;
-  createdAt?: string;
-};
-
-export type PaginatedTravelRequestSummaryDto = PaginatedDto<TravelRequestSummaryDto>;
-
 /** OpenAPI: OfferSummary. Item in GET /api/clients/{id}/offers. */
 export type OfferSummaryDto = {
   id: string;
   offerNumber?: string;
   leadId?: string;
   leadNumber?: string;
-  travelRequestId?: string;
   destination?: string;
   totalPrice?: number;
   currency?: string;

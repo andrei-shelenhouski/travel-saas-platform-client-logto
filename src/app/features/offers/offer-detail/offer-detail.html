@@ -24,7 +24,7 @@
       </app-page-heading>
 
       <app-page-content>
-        @if (hasVersionHistory() || request.value()) {
+        @if (hasVersionHistory() || o.leadId) {
           <section class="offer-header-card">
             @if (hasVersionHistory()) {
               <div class="offer-version-history">
@@ -38,17 +38,15 @@
               </div>
             }
 
-            @if (request.value(); as requestData) {
+            @if (o.leadId; as leadId) {
               <nav aria-label="Breadcrumb" class="offer-breadcrumb">
                 <ol class="offer-breadcrumb-list">
-                  @if (requestData.leadId; as leadId) {
-                    <li>
-                      <a class="offer-link" [routerLink]="['/app/leads', leadId]">Лид</a>
-                    </li>
-                    <li>/</li>
-                  }
+                  <li>
+                    <a class="offer-link" [routerLink]="['/app/leads', leadId]">Лид</a>
+                  </li>
+                  <li>/</li>
                   <li class="offer-breadcrumb-destination">
-                    Запрос: {{ requestData.destination || 'Запрос на тур' }}
+                    {{ o.destination || 'Предложение' }}
                   </li>
                 </ol>
               </nav>

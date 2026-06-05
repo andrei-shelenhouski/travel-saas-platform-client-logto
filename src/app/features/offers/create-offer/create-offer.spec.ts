@@ -6,21 +6,20 @@ import { ActivatedRoute, convertToParamMap, provideRouter } from '@angular/route
 import { of, throwError } from 'rxjs';
 import { vi } from 'vitest';
 
+import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
-import { RequestsService } from '@app/services/requests.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { CreateOfferComponent } from './create-offer';
 
-import type { RequestResponseDto } from '@app/shared/models';
+import type { LeadResponseDto } from '@app/shared/models';
 
 describe('CreateOfferComponent', () => {
   let fixture: ComponentFixture<CreateOfferComponent>;
 
-  const requestsServiceMock = {
-    getById: vi.fn(() => of(createRequest())),
-    update: vi.fn(),
+  const leadsServiceMock = {
+    getById: vi.fn(() => of(createLead())),
   };
 
   const organizationSettingsServiceMock = {
@@ -50,60 +49,49 @@ describe('CreateOfferComponent', () => {
     vi.clearAllMocks();
   });
 
-  it('pre-fills travel details and renders request banner when requestId exists', async () => {
-    await setup('request-1');
+  it('pre-fills travel details and renders lead banner when leadId exists', async () => {
+    await setup('lead-1');
 
-    expect(requestsServiceMock.getById).toHaveBeenCalledWith('request-1');
+    expect(leadsServiceMock.getById).toHaveBeenCalledWith('lead-1');
     expect(fixture.componentInstance.form.controls.destination.value).toBe('Turkey');
     expect(fixture.componentInstance.form.controls.departDate.value).toBe('2026-08-10');
     expect(fixture.componentInstance.form.controls.returnDate.value).toBe('2026-08-17');
     expect(fixture.componentInstance.form.controls.adults.value).toBe(2);
     expect(fixture.componentInstance.form.controls.children.value).toBe(1);
     expect(fixture.componentInstance.form.controls.departureCity.value).toBe('');
-
-    const text = fixture.nativeElement.textContent as string;
-    const requestLink = fixture.nativeElement.querySelector('a[href="/app/requests/request-1"]');
-
-    expect(text).toContain('Предзаполнено из запроса на поездку TR-1');
-    expect(requestLink?.textContent).toContain('Открыть запрос');
   });
 
-  it('shows empty travel details and does not fetch request when requestId is absent', async () => {
+  it('shows empty travel details and does not fetch lead when leadId is absent', async () => {
     await setup(null);
 
-    expect(requestsServiceMock.getById).not.toHaveBeenCalled();
-    expect(fixture.componentInstance.requestLoading()).toBe(false);
+    expect(leadsServiceMock.getById).not.toHaveBeenCalled();
+    expect(fixture.componentInstance.leadLoading()).toBe(false);
 
-    const text = fixture.nativeElement.textContent as string;
-
-    expect(text).not.toContain('Pre-filled from trip request');
     expect(fixture.componentInstance.form.controls.destination.value).toBe('');
     expect(fixture.componentInstance.form.controls.departDate.value).toBe('');
     expect(fixture.componentInstance.form.controls.returnDate.value).toBe('');
   });
 
-  it('shows inline warning and allows manual entry when request does not exist', async () => {
-    requestsServiceMock.getById.mockReturnValueOnce(
+  it('shows inline warning and allows manual entry when lead does not exist', async () => {
+    leadsServiceMock.getById.mockReturnValueOnce(
       throwError(() => new HttpErrorResponse({ status: 404, statusText: 'Not Found' })),
     );
 
-    await setup('request-missing');
+    await setup('lead-missing');
 
-    expect(fixture.componentInstance.requestLoading()).toBe(false);
-    expect(fixture.componentInstance.requestPrefillWarning()).toContain(
-      'Запрос на поездку не найден',
-    );
+    expect(fixture.componentInstance.leadLoading()).toBe(false);
+    expect(fixture.componentInstance.leadPrefillWarning()).toContain('Лид не найден');
     expect(fixture.componentInstance.error()).toBe('');
 
     const text = fixture.nativeElement.textContent as string;
 
-    expect(text).toContain('Запрос на поездку не найден');
+    expect(text).toContain('Лид не найден');
     expect(fixture.componentInstance.form.controls.destination.value).toBe('');
     expect(fixture.componentInstance.form.controls.departureCity.value).toBe('');
   });
 
   it('keeps Save as Draft enabled and shows required date errors after submit', async () => {
-    await setup('request-1');
+    await setup('lead-1');
 
     const firstAccommodation = fixture.componentInstance.accommodationsArray.at(0);
 
@@ -156,7 +144,7 @@ describe('CreateOfferComponent', () => {
     );
   });
 
-  async function setup(requestId: string | null): Promise<void> {
+  async function setup(leadId: string | null): Promise<void> {
     await TestBed.configureTestingModule({
       imports: [CreateOfferComponent],
       providers: [
@@ -165,11 +153,11 @@ describe('CreateOfferComponent', () => {
           provide: ActivatedRoute,
           useValue: {
             snapshot: {
-              queryParamMap: convertToParamMap(requestId ? { requestId } : {}),
+              queryParamMap: convertToParamMap(leadId ? { leadId } : {}),
             },
           },
         },
-        { provide: RequestsService, useValue: requestsServiceMock },
+        { provide: LeadsService, useValue: leadsServiceMock },
         { provide: OrganizationSettingsService, useValue: organizationSettingsServiceMock },
         { provide: OffersService, useValue: offersServiceMock },
         { provide: MatSnackBar, useValue: snackBarMock },
@@ -184,21 +172,32 @@ describe('CreateOfferComponent', () => {
   }
 });
 
-function createRequest(overrides: Partial<RequestResponseDto> = {}): RequestResponseDto {
+function createLead(overrides: Partial<LeadResponseDto> = {}): LeadResponseDto {
   return {
-    id: 'request-1',
-    leadId: 'lead-1',
-    managerId: null,
-    managerName: null,
+    id: 'lead-1',
+    number: 'L-1',
+    source: 'MANUAL',
+    clientId: 'client-1',
+    clientName: 'Alex Doe',
+    clientType: 'INDIVIDUAL',
+    contactPhone: null,
+    contactEmail: null,
+    contactTelegram: null,
+    companyName: null,
     destination: 'Turkey',
-    departDate: '2026-08-10',
-    returnDate: '2026-08-17',
+    departDateFrom: '2026-08-10',
+    departDateTo: '2026-08-12',
+    returnDateFrom: '2026-08-17',
+    returnDateTo: '2026-08-20',
     adults: 2,
     children: 1,
     notes: null,
-    status: 'OPEN',
-    offersCount: 0,
+    assignedAgentId: null,
+    assignedAgentName: null,
+    status: 'NEW',
+    expiresAt: null,
     createdById: 'user-1',
+    convertedToClientId: null,
     createdAt: '2026-04-01T00:00:00.000Z',
     updatedAt: '2026-04-01T00:00:00.000Z',
     ...overrides,

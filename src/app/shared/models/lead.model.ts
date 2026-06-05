@@ -4,7 +4,7 @@
 
 import type { PaginatedDto } from './common.model';
 import type { ClientResponseDto, CreateClientDto } from './client.model';
-import type { RequestResponseDto } from './organization.model';
+import type { OfferResponseDto } from './offer.model';
 
 export const LeadSource = {
   MANUAL: 'MANUAL',
@@ -17,6 +17,7 @@ export const LeadSource = {
   AGENT: 'AGENT',
   OTHER: 'OTHER',
   TOURVISOR: 'TOURVISOR',
+  DIRECT_ENTRY: 'DIRECT_ENTRY',
 } as const;
 export type LeadSource = (typeof LeadSource)[keyof typeof LeadSource];
 
@@ -28,6 +29,7 @@ export const LeadStatus = {
   WON: 'WON',
   LOST: 'LOST',
   EXPIRED: 'EXPIRED',
+  CONVERTED: 'CONVERTED',
 } as const;
 export type LeadStatus = (typeof LeadStatus)[keyof typeof LeadStatus];
 
@@ -88,7 +90,7 @@ export type LeadResponseDto = {
   updatedAt: string;
   deletedAt?: string | null;
   deletedBy?: DeletedByDto | null;
-  travelRequests?: RequestResponseDto[];
+  offers?: OfferResponseDto[];
 };
 
 export type PaginatedLeadResponseDto = PaginatedDto<LeadResponseDto>;

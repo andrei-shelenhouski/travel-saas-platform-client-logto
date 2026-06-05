@@ -43,9 +43,15 @@ import type { ActivityTimelineItem } from '@app/shared/models/activity.model';
       background: #9ca3af;
     }
 
-    .timeline-dot--created { background: #22c55e; }
-    .timeline-dot--updated { background: #3b82f6; }
-    .timeline-dot--status  { background: #f59e0b; }
+    .timeline-dot--created {
+      background: #22c55e;
+    }
+    .timeline-dot--updated {
+      background: #3b82f6;
+    }
+    .timeline-dot--status {
+      background: #f59e0b;
+    }
 
     .timeline-content {
       min-width: 0;

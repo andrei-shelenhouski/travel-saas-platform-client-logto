@@ -3,7 +3,7 @@
 </app-page-heading>
 
 <app-page-content>
-  @if (requestLoading()) {
+  @if (leadLoading()) {
     <div class="create-offer-loading">
       <div aria-hidden="true" class="create-offer-spinner"></div>
     </div>
@@ -14,29 +14,29 @@
 
     <form class="create-offer-form" [formGroup]="form" (ngSubmit)="onSubmit()">
       <app-form-section title="Детали поездки">
-        @if (request(); as req) {
+        @if (lead(); as l) {
           <div class="create-offer-request-banner">
             <mat-icon aria-hidden="true" class="create-offer-request-banner-icon">info</mat-icon>
             <span>
-              Предзаполнено из запроса на поездку {{ prefilledRequestCode() }} ·
-              {{ req.destination || destinationNotSetLabel }}
+              Предзаполнено из лида {{ prefilledLeadNumber() }} ·
+              {{ l.destination || destinationNotSetLabel }}
             </span>
-            <a class="create-offer-request-banner-link" [routerLink]="['/app/requests', req.id]"
-              >Открыть запрос</a
+            <a class="create-offer-request-banner-link" [routerLink]="['/app/leads', l.id]"
+              >Открыть лид</a
             >
           </div>
         }
 
-        @if (requestPrefillWarning()) {
+        @if (leadPrefillWarning()) {
           <div aria-live="polite" class="create-offer-warning-banner" role="alert">
-            {{ requestPrefillWarning() }}
+            {{ leadPrefillWarning() }}
           </div>
         }
 
-        @if (request(); as req) {
+        @if (lead(); as l) {
           <p class="create-offer-request-summary">
-            Запрос: {{ req.destination || destinationNotSetLabel }} | {{ req.departDate || '-' }} -
-            {{ req.returnDate || '-' }} | {{ req.adults || 0 }} взр., {{ req.children || 0 }} дет.
+            Лид: {{ l.destination || destinationNotSetLabel }} | {{ l.departDateFrom || '-' }} -
+            {{ l.returnDateFrom || '-' }} | {{ l.adults || 0 }} взр., {{ l.children || 0 }} дет.
           </p>
         }
 

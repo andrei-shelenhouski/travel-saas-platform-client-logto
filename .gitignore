@@ -46,3 +46,7 @@ Thumbs.db
 .firebase
 *-debug.log
 .runtimeconfig.json
+
+# Contract files
+openapi.json
+openapi.yaml

@@ -314,7 +314,7 @@ export class LeadsListComponent {
   protected openDeleteDialog(event: Event, lead: LeadResponseDto): void {
     event.stopPropagation();
 
-    const hasOffers = (lead.travelRequests ?? []).some((req) => (req.offersCount ?? 0) > 0);
+    const hasOffers = (lead.offers ?? []).length > 0;
 
     const dialogRef = this.dialog.open(DeleteLeadDialogComponent, {
       width: '480px',

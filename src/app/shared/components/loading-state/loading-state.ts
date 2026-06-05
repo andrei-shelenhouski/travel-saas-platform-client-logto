@@ -23,7 +23,9 @@ import { RouterModule } from '@angular/router';
     }
 
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     .error-section {
