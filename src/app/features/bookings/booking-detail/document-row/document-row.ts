@@ -38,7 +38,7 @@ export class DocumentRowComponent {
     this.http.get(url, { responseType: 'blob' }).subscribe({
       next: (blob) => {
         const objectUrl = URL.createObjectURL(blob);
-        const a = window.document.createElement('a');
+        const a = globalThis.document.createElement('a');
         a.href = objectUrl;
         a.download = doc.filename ?? 'document';
         a.click();
