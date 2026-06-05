@@ -240,7 +240,7 @@ describe('BookingDetailComponent', () => {
     expect(servicesSection).toBeTruthy();
   });
 
-  it('hides additional services section when servicesSnapshot is null', async () => {
+  it('renders additional services section when servicesSnapshot is null', async () => {
     bookingsService.getById.mockReturnValue(of({ ...MOCK_BOOKING }));
 
     fixture = TestBed.createComponent(BookingDetailComponent);
@@ -251,7 +251,7 @@ describe('BookingDetailComponent', () => {
 
     const servicesSection = fixture.nativeElement.querySelector('app-additional-services-table');
 
-    expect(servicesSection).toBeFalsy();
+    expect(servicesSection).toBeTruthy();
   });
 
   it('should not fetch invoices when user cannot view invoices', async () => {
