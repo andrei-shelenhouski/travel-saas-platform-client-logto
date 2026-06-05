@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
-import { Subject, of } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, finalize, switchMap } from 'rxjs/operators';
 
 import { PersonsService } from '@app/services/persons.service';
@@ -20,6 +20,7 @@ type AddTravelersDialogData = {
 
 type AddTravelersDialogResult = {
   items: { personId: string; documentId?: string }[];
+  persons: PersonResponseDto[];
 };
 
 @Component({
@@ -133,7 +134,7 @@ export class AddTravelersDialogComponent {
   }
 
   protected docs(member: PersonResponseDto): PersonDocumentResponseDto[] {
-    return (member.documents as PersonDocumentResponseDto[] | null) ?? [];
+    return (member.documents as PersonDocumentResponseDto[] | undefined) ?? [];
   }
 
   protected primaryDocument(member: PersonResponseDto): PersonDocumentResponseDto | undefined {
@@ -182,6 +183,7 @@ export class AddTravelersDialogComponent {
 
   protected save(): void {
     const items: { personId: string; documentId?: string }[] = [];
+    const persons: PersonResponseDto[] = [];
     const known = this.allKnownPersons();
     const selectedMap = this.selected();
 
@@ -199,12 +201,13 @@ export class AddTravelersDialogComponent {
       const documentId = this.selectedDocumentId(member);
 
       items.push({ personId, documentId: documentId || undefined });
+      persons.push(member);
     }
 
-    this.dialogRef.close({ items });
+    this.dialogRef.close({ items, persons });
   }
 
   protected close(): void {
-    this.dialogRef.close({ items: [] });
+    this.dialogRef.close({ items: [], persons: [] });
   }
 }
