@@ -3,7 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
-import { of, Subject } from 'rxjs';
+import { forkJoin, of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, finalize, switchMap } from 'rxjs/operators';
 
 import { PersonsService } from '@app/services/persons.service';
@@ -46,6 +46,10 @@ export class AddTravelersDialogComponent {
   protected readonly searchResults = signal<PersonResponseDto[]>([]);
   protected readonly searching = signal(false);
   protected readonly searchQuery = signal('');
+
+  protected readonly leadPersonId = signal<string | null>(null);
+  protected readonly loadedFamily = signal<PersonResponseDto[]>([]);
+  protected readonly loadingFamily = signal(false);
 
   private readonly allKnownPersons = signal<Record<string, PersonResponseDto>>({});
   private readonly searchSubject = new Subject<string>();
@@ -105,6 +109,80 @@ export class AddTravelersDialogComponent {
     this.searchSubject.next(value);
   }
 
+  protected loadFamilyForLead(person: PersonResponseDto): void {
+    this.loadingFamily.set(true);
+    this.leadPersonId.set(person.id);
+    this.loadedFamily.set([]);
+
+    forkJoin({
+      family: this.personsService.getFamily(person.id),
+      relationships: this.personsService.getRelationships(person.id),
+    })
+      .pipe(finalize(() => this.loadingFamily.set(false)))
+      .subscribe({
+        next: ({ family, relationships }) => {
+          const activeIds = new Set(
+            relationships.filter((r) => r.status === 'ACTIVE').map((r) => r.relatedPersonId),
+          );
+          activeIds.add(person.id);
+
+          const members = family.filter((m) => m.id !== person.id);
+
+          this.loadedFamily.set(members);
+          this.allKnownPersons.update((current) => {
+            const next = { ...current };
+
+            for (const m of members) {
+              next[m.id] = m;
+            }
+
+            return next;
+          });
+
+          // Pre-select lead + active family members
+          this.selected.update((current) => {
+            const next = { ...current, [person.id]: true };
+
+            for (const m of members) {
+              next[m.id] = activeIds.has(m.id);
+            }
+
+            return next;
+          });
+        },
+      });
+  }
+
+  protected addWholeFamily(): void {
+    if (this.isSearchMode()) {
+      const leadId = this.leadPersonId();
+
+      this.selected.update((current) => {
+        const next = { ...current };
+
+        if (leadId) {
+          next[leadId] = true;
+        }
+
+        for (const member of this.loadedFamily()) {
+          next[member.id] = member.active !== false;
+        }
+
+        return next;
+      });
+    } else {
+      const nextSelected: Record<string, boolean> = {};
+      const activeIds = new Set(this.data.activeRelationshipPersonIds ?? []);
+
+      for (const member of this.familyMembers()) {
+        nextSelected[member.id] =
+          activeIds.size > 0 ? activeIds.has(member.id) : member.active !== false;
+      }
+
+      this.selected.set(nextSelected);
+    }
+  }
+
   protected toggleMember(personId: string, checked: boolean): void {
     this.selected.update((current) => ({ ...current, [personId]: checked }));
   }
@@ -113,20 +191,12 @@ export class AddTravelersDialogComponent {
     this.selectedDocByPerson.update((current) => ({ ...current, [personId]: documentId }));
   }
 
-  protected addWholeFamily(): void {
-    const nextSelected: Record<string, boolean> = {};
-    const activeIds = new Set(this.data.activeRelationshipPersonIds ?? []);
-
-    for (const member of this.familyMembers()) {
-      nextSelected[member.id] =
-        activeIds.size > 0 ? activeIds.has(member.id) : member.active !== false;
-    }
-
-    this.selected.set(nextSelected);
-  }
-
   protected isSelected(personId: string): boolean {
     return Boolean(this.selected()[personId]);
+  }
+
+  protected isLead(personId: string): boolean {
+    return this.isSearchMode() && this.leadPersonId() === personId;
   }
 
   protected fullName(member: PersonResponseDto): string {
@@ -187,8 +257,18 @@ export class AddTravelersDialogComponent {
     const known = this.allKnownPersons();
     const selectedMap = this.selected();
 
-    for (const [personId, isSelected] of Object.entries(selectedMap)) {
-      if (!isSelected) {
+    // In search mode, LEAD person goes first
+    const leadId = this.isSearchMode() ? this.leadPersonId() : null;
+
+    const sortedIds = Object.keys(selectedMap).sort((a, b) => {
+      if (a === leadId) return -1;
+      if (b === leadId) return 1;
+
+      return 0;
+    });
+
+    for (const personId of sortedIds) {
+      if (!selectedMap[personId]) {
         continue;
       }
 
