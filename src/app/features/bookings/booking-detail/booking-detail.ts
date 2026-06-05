@@ -444,6 +444,15 @@ export class BookingDetailComponent {
       return;
     }
 
+    const clientType = booking.clientSnapshot?.['type'] as string | undefined;
+    const isB2b = clientType === 'COMPANY' || clientType === 'B2B_AGENT';
+
+    if (isB2b) {
+      this.openAddTravelersDialog([], [], 'search');
+
+      return;
+    }
+
     this.personsService
       .getByClientId(booking.clientId)
       .pipe(
@@ -464,7 +473,7 @@ export class BookingDetailComponent {
       )
       .subscribe({
         next: ({ members, activeRelationshipPersonIds }) =>
-          this.openAddTravelersDialog(members, activeRelationshipPersonIds),
+          this.openAddTravelersDialog(members, activeRelationshipPersonIds, 'family'),
         error: () =>
           this.snackBar.open('Не удалось загрузить список семьи', 'Close', { duration: 5000 }),
       });
@@ -503,6 +512,7 @@ export class BookingDetailComponent {
   private openAddTravelersDialog(
     familyMembers: PersonResponseDto[],
     activeRelationshipPersonIds: string[],
+    mode: 'family' | 'search' = 'family',
   ): void {
     const booking = this.booking();
 
@@ -516,6 +526,7 @@ export class BookingDetailComponent {
         familyMembers: PersonResponseDto[];
         returnDate?: string;
         activeRelationshipPersonIds: string[];
+        mode: 'family' | 'search';
       },
       { items: { personId: string; documentId?: string }[] }
     >(AddTravelersDialogComponent, {
@@ -524,6 +535,7 @@ export class BookingDetailComponent {
         familyMembers,
         returnDate: booking.returnDate,
         activeRelationshipPersonIds,
+        mode,
       },
     });
 

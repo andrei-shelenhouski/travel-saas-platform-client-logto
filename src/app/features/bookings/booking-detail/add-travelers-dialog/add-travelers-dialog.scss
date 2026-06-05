@@ -2,6 +2,22 @@
   display: block;
 }
 
+.search-bar {
+  margin-bottom: 8px;
+}
+
+.search-field {
+  width: 100%;
+}
+
+.empty-state {
+  color: #6b7280;
+  font-size: 14px;
+  text-align: center;
+  padding: 24px 0;
+  margin: 0;
+}
+
 .dialog-toolbar {
   display: flex;
   justify-content: flex-end;

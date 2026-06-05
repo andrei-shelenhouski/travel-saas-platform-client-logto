@@ -1,7 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
-import { MAT_BUTTONS } from '@app/shared/material-imports';
+import { Subject, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, switchMap } from 'rxjs/operators';
+
+import { PersonsService } from '@app/services/persons.service';
+import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
 import type { PersonDocumentResponseDto, PersonResponseDto } from '@app/shared/models';
 
@@ -9,6 +15,7 @@ type AddTravelersDialogData = {
   familyMembers: PersonResponseDto[];
   returnDate?: string;
   activeRelationshipPersonIds: string[];
+  mode: 'family' | 'search';
 };
 
 type AddTravelersDialogResult = {
@@ -18,7 +25,7 @@ type AddTravelersDialogResult = {
 @Component({
   selector: 'app-add-travelers-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatDialogModule, ...MAT_BUTTONS],
+  imports: [MatDialogModule, ReactiveFormsModule, ...MAT_BUTTONS, ...MAT_FORM_BUTTONS],
   templateUrl: './add-travelers-dialog.html',
   styleUrl: './add-travelers-dialog.scss',
 })
@@ -27,11 +34,75 @@ export class AddTravelersDialogComponent {
   protected readonly dialogRef = inject(
     MatDialogRef<AddTravelersDialogComponent, AddTravelersDialogResult>,
   );
+  private readonly personsService = inject(PersonsService);
 
   protected readonly selected = signal<Record<string, boolean>>({});
   protected readonly selectedDocByPerson = signal<Record<string, string>>({});
 
   protected readonly familyMembers = computed(() => this.data.familyMembers ?? []);
+  protected readonly isSearchMode = computed(() => this.data.mode === 'search');
+
+  protected readonly searchResults = signal<PersonResponseDto[]>([]);
+  protected readonly searching = signal(false);
+  protected readonly searchQuery = signal('');
+
+  private readonly allKnownPersons = signal<Record<string, PersonResponseDto>>({});
+  private readonly searchSubject = new Subject<string>();
+
+  protected readonly displayedMembers = computed(() =>
+    this.isSearchMode() ? this.searchResults() : this.familyMembers(),
+  );
+
+  constructor() {
+    const initial: Record<string, PersonResponseDto> = {};
+
+    for (const m of this.data.familyMembers ?? []) {
+      initial[m.id] = m;
+    }
+
+    this.allKnownPersons.set(initial);
+
+    if (this.data.mode === 'search') {
+      this.searchSubject
+        .pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          switchMap((query) => {
+            if (query.trim().length < 2) {
+              this.searching.set(false);
+
+              return of<PersonResponseDto[]>([]);
+            }
+
+            this.searching.set(true);
+
+            return this.personsService
+              .searchFull(query)
+              .pipe(finalize(() => this.searching.set(false)));
+          }),
+          takeUntilDestroyed(),
+        )
+        .subscribe((results) => {
+          this.searchResults.set(results);
+          this.allKnownPersons.update((current) => {
+            const next = { ...current };
+
+            for (const p of results) {
+              next[p.id] = p;
+            }
+
+            return next;
+          });
+        });
+    }
+  }
+
+  protected onSearchInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+
+    this.searchQuery.set(value);
+    this.searchSubject.next(value);
+  }
 
   protected toggleMember(personId: string, checked: boolean): void {
     this.selected.update((current) => ({ ...current, [personId]: checked }));
@@ -111,14 +182,23 @@ export class AddTravelersDialogComponent {
 
   protected save(): void {
     const items: { personId: string; documentId?: string }[] = [];
+    const known = this.allKnownPersons();
+    const selectedMap = this.selected();
 
-    for (const member of this.familyMembers()) {
-      if (!this.isSelected(member.id)) {
+    for (const [personId, isSelected] of Object.entries(selectedMap)) {
+      if (!isSelected) {
+        continue;
+      }
+
+      const member = known[personId];
+
+      if (!member) {
         continue;
       }
 
       const documentId = this.selectedDocumentId(member);
-      items.push({ personId: member.id, documentId: documentId || undefined });
+
+      items.push({ personId, documentId: documentId || undefined });
     }
 
     this.dialogRef.close({ items });
