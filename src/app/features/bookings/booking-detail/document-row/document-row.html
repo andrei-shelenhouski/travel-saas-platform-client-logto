@@ -16,13 +16,27 @@
     </div>
   </div>
 
-  <button
-    aria-label="Удалить документ"
-    color="warn"
-    mat-icon-button
-    type="button"
-    (click)="delete.emit(document())"
-  >
-    <mat-icon>delete</mat-icon>
-  </button>
+  <div class="document-row-actions">
+    @if (document().downloadUrl) {
+      <a
+        [href]="document().downloadUrl"
+        aria-label="Скачать документ"
+        mat-icon-button
+        rel="noopener noreferrer"
+        target="_blank"
+      >
+        <mat-icon>download</mat-icon>
+      </a>
+    }
+
+    <button
+      aria-label="Удалить документ"
+      color="warn"
+      mat-icon-button
+      type="button"
+      (click)="delete.emit(document())"
+    >
+      <mat-icon>delete</mat-icon>
+    </button>
+  </div>
 </div>
