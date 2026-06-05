@@ -12,6 +12,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
 
 import {
@@ -24,14 +25,11 @@ import {
   switchMap,
 } from 'rxjs';
 
-import { AccommodationTableComponent } from '../booking-detail/accommodation-table/accommodation-table';
-import { AdditionalServicesTableComponent } from '../booking-detail/additional-services-table/additional-services-table';
-import { AddTravelersDialogComponent } from '../booking-detail/add-travelers-dialog/add-travelers-dialog';
 import { BookingsService } from '@app/services/bookings.service';
 import { ClientsService } from '@app/services/clients.service';
 import { PersonsService } from '@app/services/persons.service';
-import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { FormSectionComponent, PageContentComponent } from '@app/shared/components';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import {
   MAT_AUTOCOMPLETE,
   MAT_BUTTONS,
@@ -39,7 +37,10 @@ import {
   MAT_FORM_BUTTONS,
 } from '@app/shared/material-imports';
 import { BOOKING_STATUS_OPTIONS, BookingStatus } from '@app/shared/models';
-import { MatSnackBar } from '@angular/material/snack-bar';
+
+import { AccommodationTableComponent } from '../booking-detail/accommodation-table/accommodation-table';
+import { AddTravelersDialogComponent } from '../booking-detail/add-travelers-dialog/add-travelers-dialog';
+import { AdditionalServicesTableComponent } from '../booking-detail/additional-services-table/additional-services-table';
 
 import type {
   BookingAccommodationDto,
@@ -297,10 +298,12 @@ export class CreateBookingComponent {
           }
 
           if (result?.persons?.length) {
+            const persons = result.persons;
+
             this.allPersonsById.update((current) => {
               const next = { ...current };
 
-              for (const p of result.persons!) {
+              for (const p of persons) {
                 next[p.id] = p;
               }
 
@@ -447,8 +450,7 @@ export class CreateBookingComponent {
 
   protected personNameById(personId: string): string {
     const person =
-      this.allPersonsById()[personId] ??
-      this.familyMembers().find((item) => item.id === personId);
+      this.allPersonsById()[personId] ?? this.familyMembers().find((item) => item.id === personId);
 
     if (!person) {
       return personId;

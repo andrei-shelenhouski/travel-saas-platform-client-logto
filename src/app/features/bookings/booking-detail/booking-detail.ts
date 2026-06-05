@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { EMPTY, forkJoin, of } from 'rxjs';
@@ -19,16 +20,19 @@ import { BookingsService } from '@app/services/bookings.service';
 import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PersonsService } from '@app/services/persons.service';
+import { LoadingStateComponent, PageContentComponent } from '@app/shared/components';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { LoadingStateComponent, PageContentComponent } from '@app/shared/components';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
-import { BookingStatus } from '@app/shared/models';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { BookingStatus, ClientType } from '@app/shared/models';
 
 import { AccommodationTableComponent } from './accommodation-table/accommodation-table';
-import { AddTravelersDialogComponent } from './add-travelers-dialog/add-travelers-dialog';
+import {
+  AddTravelersDialogComponent,
+  AddTravelersDialogData,
+  AddTravelersDialogResult,
+} from './add-travelers-dialog/add-travelers-dialog';
 import { AdditionalServicesTableComponent } from './additional-services-table/additional-services-table';
 import { BookingTravelersSectionComponent } from './booking-travelers-section/booking-travelers-section';
 import { CancellationDialogComponent } from './cancellation-dialog/cancellation-dialog';
@@ -444,8 +448,8 @@ export class BookingDetailComponent {
       return;
     }
 
-    const clientType = booking.clientSnapshot?.['type'] as string | undefined;
-    const isB2b = clientType === 'COMPANY' || clientType === 'B2B_AGENT';
+    const clientType = booking.clientSnapshot?.['type'];
+    const isB2b = clientType === ClientType.COMPANY || clientType === ClientType.B2B_AGENT;
 
     if (isB2b) {
       this.openAddTravelersDialog([], [], 'search');
@@ -522,13 +526,8 @@ export class BookingDetailComponent {
 
     const dialogRef = this.dialog.open<
       AddTravelersDialogComponent,
-      {
-        familyMembers: PersonResponseDto[];
-        returnDate?: string;
-        activeRelationshipPersonIds: string[];
-        mode: 'family' | 'search';
-      },
-      { items: { personId: string; documentId?: string }[] }
+      AddTravelersDialogData,
+      AddTravelersDialogResult
     >(AddTravelersDialogComponent, {
       width: '760px',
       data: {
@@ -559,7 +558,7 @@ export class BookingDetailComponent {
             const leadIndex = clientPersonId
               ? raw.findIndex((item) => item.personId === clientPersonId)
               : -1;
-            leadIdx = leadIndex >= 0 ? leadIndex : 0;
+            leadIdx = Math.max(leadIndex, 0);
           }
 
           const travelers = raw.map((item, i) => ({

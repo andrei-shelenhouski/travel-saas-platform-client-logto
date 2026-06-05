@@ -94,9 +94,10 @@ export class PersonsService {
 
     const params = new HttpParams().set('q', query.trim());
 
-    return this.http
-      .get<{ items: PersonResponseDto[] }>(`${PERSONS_URL}/search`, { params })
-      .pipe(this.errorHandler.catch(), map((response) => response.items));
+    return this.http.get<{ items: PersonResponseDto[] }>(`${PERSONS_URL}/search`, { params }).pipe(
+      this.errorHandler.catch(),
+      map((response) => response.items),
+    );
   }
 
   getRelationships(personId: string): Observable<PersonRelationshipResponseDto[]> {

@@ -9,9 +9,13 @@
       </mat-form-field>
     </div>
 
-    @if (searchQuery().length < 2 && searchResults().length === 0) {
+    @if (searching()) {
+      <div class="search-spinner">
+        <mat-spinner aria-label="Поиск..." diameter="28" />
+      </div>
+    } @else if (searchQuery().length < 2 && searchResults().length === 0) {
       <p class="empty-state">Введите имя или телефон туриста</p>
-    } @else if (!searching() && searchQuery().length >= 2 && searchResults().length === 0) {
+    } @else if (searchQuery().length >= 2 && searchResults().length === 0) {
       <p class="empty-state">Туристы не найдены</p>
     } @else if (searchResults().length > 0) {
       <div class="members-list">
@@ -30,13 +34,19 @@
             </label>
 
             <button
+              class="load-family-btn"
               mat-stroked-button
               type="button"
-              class="load-family-btn"
-              [disabled]="loadingFamily() && leadPersonId() === member.id"
+              [disabled]="loadingForPersonId() === member.id"
               (click)="loadFamilyForLead(member)"
             >
-              {{ leadPersonId() === member.id ? 'Семья загружена' : 'Загрузить семью' }}
+              @if (loadingForPersonId() === member.id) {
+                Загружается...
+              } @else if (leadPersonId() === member.id) {
+                Семья загружена
+              } @else {
+                Загрузить семью
+              }
             </button>
 
             @if (isSelected(member.id) && docs(member).length > 0) {

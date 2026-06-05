@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { forkJoin, of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, finalize, switchMap } from 'rxjs/operators';
@@ -11,14 +13,14 @@ import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
 import type { PersonDocumentResponseDto, PersonResponseDto } from '@app/shared/models';
 
-type AddTravelersDialogData = {
+export type AddTravelersDialogData = {
   familyMembers: PersonResponseDto[];
   returnDate?: string;
   activeRelationshipPersonIds: string[];
   mode: 'family' | 'search';
 };
 
-type AddTravelersDialogResult = {
+export type AddTravelersDialogResult = {
   items: { personId: string; documentId?: string }[];
   persons: PersonResponseDto[];
 };
@@ -26,7 +28,13 @@ type AddTravelersDialogResult = {
 @Component({
   selector: 'app-add-travelers-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatDialogModule, ReactiveFormsModule, ...MAT_BUTTONS, ...MAT_FORM_BUTTONS],
+  imports: [
+    MatDialogModule,
+    ReactiveFormsModule,
+    MatProgressSpinnerModule,
+    ...MAT_BUTTONS,
+    ...MAT_FORM_BUTTONS,
+  ],
   templateUrl: './add-travelers-dialog.html',
   styleUrl: './add-travelers-dialog.scss',
 })
@@ -36,6 +44,7 @@ export class AddTravelersDialogComponent {
     MatDialogRef<AddTravelersDialogComponent, AddTravelersDialogResult>,
   );
   private readonly personsService = inject(PersonsService);
+  private readonly snackBar = inject(MatSnackBar);
 
   protected readonly selected = signal<Record<string, boolean>>({});
   protected readonly selectedDocByPerson = signal<Record<string, string>>({});
@@ -49,14 +58,10 @@ export class AddTravelersDialogComponent {
 
   protected readonly leadPersonId = signal<string | null>(null);
   protected readonly loadedFamily = signal<PersonResponseDto[]>([]);
-  protected readonly loadingFamily = signal(false);
+  protected readonly loadingForPersonId = signal<string | null>(null);
 
   private readonly allKnownPersons = signal<Record<string, PersonResponseDto>>({});
   private readonly searchSubject = new Subject<string>();
-
-  protected readonly displayedMembers = computed(() =>
-    this.isSearchMode() ? this.searchResults() : this.familyMembers(),
-  );
 
   constructor() {
     const initial: Record<string, PersonResponseDto> = {};
@@ -110,15 +115,14 @@ export class AddTravelersDialogComponent {
   }
 
   protected loadFamilyForLead(person: PersonResponseDto): void {
-    this.loadingFamily.set(true);
-    this.leadPersonId.set(person.id);
+    this.loadingForPersonId.set(person.id);
     this.loadedFamily.set([]);
 
     forkJoin({
       family: this.personsService.getFamily(person.id),
       relationships: this.personsService.getRelationships(person.id),
     })
-      .pipe(finalize(() => this.loadingFamily.set(false)))
+      .pipe(finalize(() => this.loadingForPersonId.set(null)))
       .subscribe({
         next: ({ family, relationships }) => {
           const activeIds = new Set(
@@ -128,6 +132,7 @@ export class AddTravelersDialogComponent {
 
           const members = family.filter((m) => m.id !== person.id);
 
+          this.leadPersonId.set(person.id);
           this.loadedFamily.set(members);
           this.allKnownPersons.update((current) => {
             const next = { ...current };
@@ -149,6 +154,9 @@ export class AddTravelersDialogComponent {
 
             return next;
           });
+        },
+        error: () => {
+          this.snackBar.open('Не удалось загрузить семью', 'Close', { duration: 5000 });
         },
       });
   }
@@ -204,7 +212,7 @@ export class AddTravelersDialogComponent {
   }
 
   protected docs(member: PersonResponseDto): PersonDocumentResponseDto[] {
-    return (member.documents as PersonDocumentResponseDto[] | undefined) ?? [];
+    return member.documents ?? [];
   }
 
   protected primaryDocument(member: PersonResponseDto): PersonDocumentResponseDto | undefined {
@@ -261,8 +269,13 @@ export class AddTravelersDialogComponent {
     const leadId = this.isSearchMode() ? this.leadPersonId() : null;
 
     const sortedIds = Object.keys(selectedMap).sort((a, b) => {
-      if (a === leadId) return -1;
-      if (b === leadId) return 1;
+      if (a === leadId) {
+        return -1;
+      }
+
+      if (b === leadId) {
+        return 1;
+      }
 
       return 0;
     });
