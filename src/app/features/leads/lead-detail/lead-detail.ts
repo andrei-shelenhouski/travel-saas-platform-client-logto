@@ -168,8 +168,8 @@ export class LeadDetailComponent {
       fieldType: field.fieldType,
       options: field.options ?? [],
       value: field.value ?? '',
-      required: field.required ?? false,
-      sortOrder: field.sortOrder ?? index + 1,
+      required: false,
+      sortOrder: index + 1,
     }));
   });
   protected readonly loading = computed(() => this.data.isLoading());

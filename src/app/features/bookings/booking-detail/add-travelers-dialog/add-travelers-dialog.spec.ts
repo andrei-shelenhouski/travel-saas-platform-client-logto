@@ -1,7 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
+import { of } from 'rxjs';
+
+import { PersonsService } from '@app/services/persons.service';
+
 import { AddTravelersDialogComponent } from './add-travelers-dialog';
+
+const personsServiceMock = {
+  searchFull: () => of([]),
+};
 
 describe('AddTravelersDialogComponent', () => {
   let component: AddTravelersDialogComponent;
@@ -15,6 +23,8 @@ describe('AddTravelersDialogComponent', () => {
           provide: MAT_DIALOG_DATA,
           useValue: {
             familyMembers: [],
+            activeRelationshipPersonIds: [],
+            mode: 'family',
           },
         },
         {
@@ -22,6 +32,10 @@ describe('AddTravelersDialogComponent', () => {
           useValue: {
             close: () => undefined,
           },
+        },
+        {
+          provide: PersonsService,
+          useValue: personsServiceMock,
         },
       ],
     }).compileComponents();

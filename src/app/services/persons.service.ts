@@ -87,6 +87,19 @@ export class PersonsService {
     );
   }
 
+  searchFull(query: string): Observable<PersonResponseDto[]> {
+    if (query.trim().length < 2) {
+      return of([]);
+    }
+
+    const params = new HttpParams().set('q', query.trim());
+
+    return this.http.get<{ items: PersonResponseDto[] }>(`${PERSONS_URL}/search`, { params }).pipe(
+      this.errorHandler.catch(),
+      map((response) => response.items),
+    );
+  }
+
   getRelationships(personId: string): Observable<PersonRelationshipResponseDto[]> {
     return this.http
       .get<PersonRelationshipResponseDto[]>(`${PERSONS_URL}/${personId}/relationships`)

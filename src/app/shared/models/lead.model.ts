@@ -2,7 +2,7 @@
  * Lead domain types aligned with OpenAPI spec.
  */
 
-import type { PaginatedDto } from './common.model';
+import type { CustomFieldValueDto, PaginatedDto } from './common.model';
 import type { ClientResponseDto, CreateClientDto } from './client.model';
 import type { OfferResponseDto } from './offer.model';
 
@@ -91,6 +91,7 @@ export type LeadResponseDto = {
   deletedAt?: string | null;
   deletedBy?: DeletedByDto | null;
   offers?: OfferResponseDto[];
+  customFields?: CustomFieldValueDto[];
 };
 
 export type PaginatedLeadResponseDto = PaginatedDto<LeadResponseDto>;

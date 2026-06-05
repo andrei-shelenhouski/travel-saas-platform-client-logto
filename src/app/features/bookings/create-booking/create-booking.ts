@@ -12,6 +12,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
 
 import {
@@ -24,14 +25,11 @@ import {
   switchMap,
 } from 'rxjs';
 
-import { AccommodationTableComponent } from '../booking-detail/accommodation-table/accommodation-table';
-import { AdditionalServicesTableComponent } from '../booking-detail/additional-services-table/additional-services-table';
-import { AddTravelersDialogComponent } from '../booking-detail/add-travelers-dialog/add-travelers-dialog';
 import { BookingsService } from '@app/services/bookings.service';
 import { ClientsService } from '@app/services/clients.service';
 import { PersonsService } from '@app/services/persons.service';
-import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { FormSectionComponent, PageContentComponent } from '@app/shared/components';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import {
   MAT_AUTOCOMPLETE,
   MAT_BUTTONS,
@@ -39,7 +37,10 @@ import {
   MAT_FORM_BUTTONS,
 } from '@app/shared/material-imports';
 import { BOOKING_STATUS_OPTIONS, BookingStatus } from '@app/shared/models';
-import { MatSnackBar } from '@angular/material/snack-bar';
+
+import { AccommodationTableComponent } from '../booking-detail/accommodation-table/accommodation-table';
+import { AddTravelersDialogComponent } from '../booking-detail/add-travelers-dialog/add-travelers-dialog';
+import { AdditionalServicesTableComponent } from '../booking-detail/additional-services-table/additional-services-table';
 
 import type {
   BookingAccommodationDto,
@@ -99,6 +100,7 @@ export class CreateBookingComponent {
   protected readonly clientPerson = signal<PersonResponseDto | null>(null);
   protected readonly familyMembers = signal<PersonResponseDto[]>([]);
   protected readonly activeRelationshipPersonIds = signal<string[]>([]);
+  private readonly allPersonsById = signal<Record<string, PersonResponseDto>>({});
 
   protected readonly existingTravelers = signal<ExistingTraveler[]>([]);
   protected readonly accommodationRows = signal<BookingAccommodationDto[]>([]);
@@ -154,7 +156,10 @@ export class CreateBookingComponent {
   protected readonly documentExpiryWarnings = computed(() => {
     const warnings: string[] = [];
     const returnDate = this.formValue().returnDate ?? '';
-    const personsById = new Map(this.familyMembers().map((member) => [member.id, member] as const));
+    const personsById = new Map([
+      ...this.familyMembers().map((member) => [member.id, member] as const),
+      ...Object.entries(this.allPersonsById()),
+    ]);
 
     for (const traveler of this.existingTravelers()) {
       const person = personsById.get(traveler.personId);
@@ -242,17 +247,30 @@ export class CreateBookingComponent {
       { emitEvent: false },
     );
 
-    this.loadTravelerContext(client.id);
+    const isB2b = client.type === 'COMPANY' || client.type === 'B2B_AGENT';
+
+    if (isB2b) {
+      this.clientPerson.set(null);
+      this.familyMembers.set([]);
+      this.activeRelationshipPersonIds.set([]);
+      this.existingTravelers.set([]);
+      this.allPersonsById.set({});
+    } else {
+      this.loadTravelerContext(client.id);
+    }
   }
 
   protected openTravelerPicker(): void {
-    const clientPerson = this.clientPerson();
+    const client = this.selectedClient();
 
-    if (!clientPerson) {
+    if (!client) {
       this.snackBar.open('Сначала выберите клиента', 'Close', { duration: 5000 });
 
       return;
     }
+
+    const isB2b = client.type === 'COMPANY' || client.type === 'B2B_AGENT';
+    const clientPerson = this.clientPerson();
 
     const dialogRef = this.dialog.open(AddTravelersDialogComponent, {
       width: '760px',
@@ -260,36 +278,67 @@ export class CreateBookingComponent {
         familyMembers: this.familyMembers(),
         returnDate: this.form.controls.returnDate.value || undefined,
         activeRelationshipPersonIds: this.activeRelationshipPersonIds(),
+        mode: isB2b ? 'search' : 'family',
       },
     });
 
     dialogRef
       .afterClosed()
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((result: { items?: { personId: string; documentId?: string }[] } | undefined) => {
-        const items = result?.items ?? [];
+      .subscribe(
+        (
+          result:
+            | { items?: { personId: string; documentId?: string }[]; persons?: PersonResponseDto[] }
+            | undefined,
+        ) => {
+          const items = result?.items ?? [];
 
-        if (items.length === 0) {
-          return;
-        }
+          if (items.length === 0) {
+            return;
+          }
 
-        const next = new Map<string, ExistingTraveler>();
+          if (result?.persons?.length) {
+            const persons = result.persons;
 
-        for (const traveler of this.existingTravelers()) {
-          next.set(traveler.personId, traveler);
-        }
+            this.allPersonsById.update((current) => {
+              const next = { ...current };
 
-        for (const item of items) {
-          const role = item.personId === clientPerson.id ? 'LEAD' : 'COMPANION';
-          next.set(item.personId, {
-            personId: item.personId,
-            documentId: item.documentId,
-            role,
-          });
-        }
+              for (const p of persons) {
+                next[p.id] = p;
+              }
 
-        this.existingTravelers.set(Array.from(next.values()));
-      });
+              return next;
+            });
+          }
+
+          const next = new Map<string, ExistingTraveler>();
+
+          for (const traveler of this.existingTravelers()) {
+            next.set(traveler.personId, traveler);
+          }
+
+          const hasExistingLead = Array.from(next.values()).some((t) => t.role === 'LEAD');
+
+          for (let i = 0; i < items.length; i++) {
+            const item = items[i];
+            let role: 'LEAD' | 'COMPANION';
+
+            if (isB2b) {
+              role = !hasExistingLead && i === 0 ? 'LEAD' : 'COMPANION';
+            } else {
+              role = item.personId === clientPerson?.id ? 'LEAD' : 'COMPANION';
+            }
+
+            next.set(item.personId, {
+              personId: item.personId,
+              documentId: item.documentId,
+              role,
+            });
+          }
+
+          this.existingTravelers.set(Array.from(next.values()));
+        },
+      );
   }
 
   protected removeExistingTraveler(personId: string): void {
@@ -400,7 +449,8 @@ export class CreateBookingComponent {
   }
 
   protected personNameById(personId: string): string {
-    const person = this.familyMembers().find((item) => item.id === personId);
+    const person =
+      this.allPersonsById()[personId] ?? this.familyMembers().find((item) => item.id === personId);
 
     if (!person) {
       return personId;
@@ -410,7 +460,9 @@ export class CreateBookingComponent {
   }
 
   protected existingTravelerDocumentLabel(traveler: ExistingTraveler): string {
-    const person = this.familyMembers().find((item) => item.id === traveler.personId);
+    const person =
+      this.allPersonsById()[traveler.personId] ??
+      this.familyMembers().find((item) => item.id === traveler.personId);
 
     if (!person) {
       return '—';
@@ -451,6 +503,7 @@ export class CreateBookingComponent {
           this.clientPerson.set(person);
           this.familyMembers.set(members);
           this.activeRelationshipPersonIds.set(activeIds);
+          this.allPersonsById.set(Object.fromEntries(members.map((m) => [m.id, m])));
           this.existingTravelers.set([
             {
               personId: person.id,
@@ -512,7 +565,7 @@ export class CreateBookingComponent {
       return false;
     }
 
-    if (type !== 'INTL_PASSPORT' && type !== 'NATIONAL_ID') {
+    if (type !== 'INTL_PASSPORT' && type !== 'NATIONAL_ID' && type !== 'NATIONAL_PASSPORT') {
       return false;
     }
 
