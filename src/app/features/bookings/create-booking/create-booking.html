@@ -87,7 +87,7 @@
         <button
           mat-stroked-button
           type="button"
-          [disabled]="loadingTravelerContext() || !clientPerson()"
+          [disabled]="loadingTravelerContext() || !selectedClient()"
           (click)="openTravelerPicker()"
         >
           Выбрать из существующих
