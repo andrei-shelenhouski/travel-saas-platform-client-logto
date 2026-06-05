@@ -2,6 +2,8 @@ import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
 
+import { environment } from '@environments/environment';
+
 import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 
 import type { BookingDocumentResponseDto } from '@app/shared/models';
@@ -28,8 +30,12 @@ export class DocumentRowComponent {
       return;
     }
 
+    const url = doc.downloadUrl.startsWith('http')
+      ? doc.downloadUrl
+      : `${environment.baseUrl}${doc.downloadUrl}`;
+
     this.downloading.set(true);
-    this.http.get(doc.downloadUrl, { responseType: 'blob' }).subscribe({
+    this.http.get(url, { responseType: 'blob' }).subscribe({
       next: (blob) => {
         const objectUrl = URL.createObjectURL(blob);
         const a = window.document.createElement('a');
