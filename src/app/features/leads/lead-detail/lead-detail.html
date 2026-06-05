@@ -311,8 +311,7 @@
         </section>
 
         <app-lead-detail-offers-section
-          [canCreateOffer]="permissions.canCreateOffer()"
-          [leadId]="l.id"
+          [canCreateOffer]="permissions.canCreateOffer() && !isTerminalLead()"
           [offers]="offers()"
           (createOfferClicked)="openNewOffer()"
         />

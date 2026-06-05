@@ -216,6 +216,9 @@ export class CreateOfferComponent implements OnInit {
 
     if (!leadId) {
       this.leadLoading.set(false);
+      this.leadPrefillWarning.set(
+        'Это предложение не привязано к лиду. Перейдите к лиду и используйте кнопку «Создать предложение».',
+      );
 
       return;
     }
