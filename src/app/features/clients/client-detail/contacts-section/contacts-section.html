@@ -1,7 +1,10 @@
 <section class="client-card">
   <div class="client-card-header">
     <h2 class="client-card-title">Контакты</h2>
-    <button mat-stroked-button type="button" (click)="openAddDialog()">+ Добавить контакт</button>
+    <button mat-stroked-button type="button" (click)="openAddDialog()">
+      <mat-icon>add</mat-icon>
+      Добавить контакт
+    </button>
   </div>
 
   @if (loading()) {
@@ -48,11 +51,7 @@
 
           <div class="contact-actions">
             @if (!contact.primary) {
-              <button
-                mat-stroked-button
-                type="button"
-                (click)="makePrimary(contact)"
-              >
+              <button mat-stroked-button type="button" (click)="makePrimary(contact)">
                 Сделать основным
               </button>
             }

@@ -213,7 +213,6 @@ export class LeadsListComponent {
       'status',
       'source',
       'name',
-      'isClient',
       'clientType',
       'contactPhone',
       'contactEmail',

@@ -4,6 +4,7 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
   inject,
   signal,
 } from '@angular/core';
@@ -21,9 +22,9 @@ import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
-import { MatSelectChange } from '@angular/material/select';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
 
@@ -182,6 +183,14 @@ export class CreateLeadComponent {
     this.loadMeIfNeeded();
     this.syncClientSearch();
     this.loadAssignableAgents();
+
+    effect(() => {
+      const userId = this.selfUserId();
+
+      if (!this.form.controls.assignedAgentId.value && userId) {
+        this.form.controls.assignedAgentId.setValue(userId, { emitEvent: false });
+      }
+    });
   }
 
   protected clientDisplayFn(client: ClientResponseDto | string | null): string {

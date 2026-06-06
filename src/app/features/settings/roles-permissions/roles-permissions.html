@@ -12,16 +12,11 @@
   } @else if (loadError(); as loadErrorMessage) {
     <section aria-live="assertive" class="state-card state-card--error">
       <p>{{ loadErrorMessage }}</p>
-      <button mat-stroked-button type="button" (click)="reload()">
-        Повторить
-      </button>
+      <button mat-stroked-button type="button" (click)="reload()">Повторить</button>
     </section>
   } @else {
     <div class="content-grid">
-      <aside
-        aria-label="Список ролей"
-        class="roles-panel"
-      >
+      <aside aria-label="Список ролей" class="roles-panel">
         <header class="panel-header">
           <h2>Роли</h2>
           <p>Выберите роль, чтобы изменить права.</p>
@@ -43,9 +38,7 @@
                       <span>Системная</span>
                     </span>
                   } @else {
-                    <span class="role-chip role-chip--custom"
-                      >Пользовательская</span
-                    >
+                    <span class="role-chip role-chip--custom">Пользовательская</span>
                   }
 
                   <span class="member-count">{{ roleMemberCountLabel(role) }}</span>
@@ -87,7 +80,8 @@
           type="button"
           (click)="startCreateRole()"
         >
-          + Новая роль
+          <mat-icon>add</mat-icon>
+          Новая роль
         </button>
       </aside>
 
@@ -109,19 +103,13 @@
                   (input)="clearDuplicateNameError()"
                 />
                 @if (roleForm.controls.name.hasError('required')) {
-                  <mat-error
-                    >Название роли обязательно.</mat-error
-                  >
+                  <mat-error>Название роли обязательно.</mat-error>
                 }
                 @if (roleForm.controls.name.hasError('maxlength')) {
-                  <mat-error
-                    >Название роли должно быть не длиннее 120 символов.</mat-error
-                  >
+                  <mat-error>Название роли должно быть не длиннее 120 символов.</mat-error>
                 }
                 @if (roleForm.controls.name.hasError('duplicate')) {
-                  <mat-error
-                    >Роль с таким названием уже существует.</mat-error
-                  >
+                  <mat-error>Роль с таким названием уже существует.</mat-error>
                 }
               </mat-form-field>
 
@@ -134,9 +122,7 @@
                   [readonly]="selectedRoleIsSystem() && !creatingRole()"
                 ></textarea>
                 @if (roleForm.controls.description.hasError('maxlength')) {
-                  <mat-error
-                    >Описание должно быть не длиннее 240 символов.</mat-error
-                  >
+                  <mat-error>Описание должно быть не длиннее 240 символов.</mat-error>
                 }
               </mat-form-field>
             </header>

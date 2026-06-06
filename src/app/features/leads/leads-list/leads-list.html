@@ -5,6 +5,21 @@
       <span>Новый лид</span>
     </a>
   }
+
+  @if (canDeleteLead()) {
+    <div class="leads-list-toolbar">
+      <button
+        mat-stroked-button
+        type="button"
+        [class.leads-list-deleted-active]="includeDeleted()"
+        (click)="toggleIncludeDeleted()"
+      >
+        <mat-icon>{{ includeDeleted() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        Показать удалённые
+      </button>
+    </div>
+  }
+
   <mat-button-toggle-group appearance="standard" hideSingleSelectionIndicator value="table">
     <mat-button-toggle
       routerLink="/app/leads"
@@ -47,31 +62,6 @@
     (statusFilterChange)="onStatusFilterChange($event)"
   />
 
-  @if (canDeleteLead()) {
-    <div class="leads-list-toolbar">
-      <button
-        mat-stroked-button
-        type="button"
-        [class.leads-list-deleted-active]="includeDeleted()"
-        (click)="toggleIncludeDeleted()"
-      >
-        <mat-icon>{{ includeDeleted() ? 'visibility_off' : 'visibility' }}</mat-icon>
-        Показать удалённые
-      </button>
-
-      @if (includeDeleted()) {
-        <mat-chip-set>
-          <mat-chip (removed)="toggleIncludeDeleted()">
-            Включая удалённые
-            <button aria-label="Убрать фильтр удалённых" matChipRemove type="button">
-              <mat-icon>cancel</mat-icon>
-            </button>
-          </mat-chip>
-        </mat-chip-set>
-      }
-    </div>
-  }
-
   @if (error()) {
     <p class="leads-list-error">{{ error() }}</p>
   }
@@ -81,12 +71,25 @@
       <ng-container matColumnDef="name">
         <th *matHeaderCellDef mat-header-cell>Клиент</th>
         <td *matCellDef="let element" mat-cell [class.cell-deleted]="isDeletedLead(element)">
-          @if (element.companyName) {
-            <span class="cell-primary">{{ element.companyName }}</span>
-            <span class="cell-secondary">{{ element.clientName }}</span>
-          } @else {
-            <span class="cell-primary">{{ element.clientName }}</span>
-          }
+          <div class="name-cell-content">
+            @if (element.clientId) {
+              <mat-icon aria-label="Клиент" class="check-icon">
+                {{ element.clientType === 'INDIVIDUAL' ? 'person_check' : 'corporate_fare' }}
+              </mat-icon>
+            } @else {
+              <mat-icon aria-label="Не клиент" class="off-icon">person_off</mat-icon>
+            }
+            @if (element.companyName) {
+              <div>
+                <span class="cell-primary">{{ element.companyName }}</span>
+                <span class="cell-secondary">{{
+                  element.contactPersonName || element.clientName
+                }}</span>
+              </div>
+            } @else {
+              <span class="cell-primary">{{ element.clientName }}</span>
+            }
+          </div>
         </td>
       </ng-container>
 
@@ -94,17 +97,6 @@
         <th *matHeaderCellDef mat-header-cell>Лид #</th>
         <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
           <span class="cell-primary">{{ element.number }}</span>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="isClient">
-        <th *matHeaderCellDef mat-header-cell>Клиент</th>
-        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
-          @if (element.clientId) {
-            <mat-icon aria-label="Клиент" class="check-icon">person_check</mat-icon>
-          } @else {
-            <mat-icon aria-label="Не клиент" class="off-icon">person_off</mat-icon>
-          }
         </td>
       </ng-container>
 
@@ -231,7 +223,16 @@
               <p class="table-empty-loading-text">Загрузка лидов...</p>
               <mat-spinner aria-label="Загрузка лидов" class="table-spinner" diameter="36" />
             } @else {
-              <p>Нет лидов по текущим фильтрам</p>
+              <p>Упс, лиды не найдены. Попробуйте изменить фильтры.</p>
+
+              <span class="or-divider">или</span>
+
+              <div>
+                <a matButton="filled" routerLink="/app/leads/new">
+                  <mat-icon>add</mat-icon>
+                  <span>Добавьте нового лида</span>
+                </a>
+              </div>
             }
           </div>
         </td>

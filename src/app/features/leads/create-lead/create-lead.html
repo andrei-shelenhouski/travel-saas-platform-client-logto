@@ -267,7 +267,7 @@
 
       @if (showAssignAgent()) {
         <mat-form-field appearance="outline" class="create-lead-full-row">
-          <mat-label>Назначить</mat-label>
+          <mat-label>Ответственный</mat-label>
           <mat-select formControlName="assignedAgentId" id="assignedAgentId">
             <mat-option value="">Не назначено</mat-option>
             @for (agent of agentOptions(); track agent.id) {
