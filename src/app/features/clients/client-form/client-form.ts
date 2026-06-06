@@ -15,6 +15,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientType, CreateClientDto, UpdateClientDto } from '@app/shared/models';
 
@@ -57,6 +58,7 @@ const TYPE_OPTIONS: TypeOption[] = [
     ReactiveFormsModule,
     ...MAT_FORM_BUTTONS,
     PageHeading,
+    PageHeadingAction,
   ],
   templateUrl: './client-form.html',
   styleUrl: './client-form.scss',

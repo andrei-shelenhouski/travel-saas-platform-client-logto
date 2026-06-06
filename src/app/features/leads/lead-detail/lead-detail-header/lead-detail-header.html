@@ -1,6 +1,6 @@
 <app-page-heading subtitle="Детали лида" [showBackButton]="true" [title]="lead().number">
   @if (!isTerminalLead() && !isDeletedLead()) {
-    <button mat-stroked-button type="button" (click)="editDetailsClicked.emit()">
+    <button appPageAction icon="edit" label="Редактировать детали тура" mat-stroked-button type="button" (click)="editDetailsClicked.emit()">
       <mat-icon>edit</mat-icon>
       Редактировать детали тура
     </button>
@@ -8,10 +8,13 @@
 
   @for (action of visibleActions(); track action) {
     <button
+      appPageAction
       color="primary"
       mat-flat-button
       type="button"
       [disabled]="isActionBusy(action)"
+      [icon]="getActionIcon(action)"
+      [label]="getActionLabel(action)"
       (click)="actionClicked.emit(action)"
     >
       {{ getActionLabel(action) }}
@@ -19,7 +22,7 @@
   }
 
   @if (canDeleteLead() && !isDeletedLead()) {
-    <button color="warn" mat-stroked-button type="button" (click)="deleteClicked.emit()">
+    <button appPageAction color="warn" icon="delete" label="Удалить заявку" mat-stroked-button type="button" (click)="deleteClicked.emit()">
       <mat-icon>delete</mat-icon>
       Удалить заявку
     </button>

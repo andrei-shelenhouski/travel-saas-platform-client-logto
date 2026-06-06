@@ -4,7 +4,10 @@
 >
   @if (canInviteMembers()) {
     <button
+      appPageAction
       color="primary"
+      icon="person_add"
+      label="Пригласить пользователя"
       matButton="filled"
       type="button"
       [disabled]="!canInviteUsers()"

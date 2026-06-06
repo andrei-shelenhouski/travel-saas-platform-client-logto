@@ -13,6 +13,7 @@ import { PermissionService } from '@app/services/permission.service';
 import { RolesApiService } from '@app/services/roles-api.service';
 import { UsersService } from '@app/services/users.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { OrgRole } from '@app/shared/models';
@@ -48,6 +49,7 @@ const SYSTEM_ROLE_ORDER: Record<OrgRole, number> = {
     MatProgressSpinnerModule,
     MatTableModule,
     PageHeading,
+    PageHeadingAction,
     ...MAT_FORM_BUTTONS,
     ...MAT_MENU,
   ],

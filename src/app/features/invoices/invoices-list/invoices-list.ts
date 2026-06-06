@@ -22,6 +22,7 @@ import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badg
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 import { ClientType, InvoiceStatus } from '@app/shared/models';
@@ -50,6 +51,7 @@ const CLIENT_TYPES = new Set<ClientType>(Object.values(ClientType));
     MatProgressSpinnerModule,
     MatTableModule,
     PageHeading,
+    PageHeadingAction,
     ReactiveFormsModule,
     RouterLink,
   ],

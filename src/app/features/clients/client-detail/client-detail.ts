@@ -25,6 +25,7 @@ import {
   PageContentComponent,
 } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ClientType, EntityType, PermissionKey } from '@app/shared/models';
 
@@ -54,6 +55,7 @@ const TYPE_LABEL: Record<string, string> = {
     CustomFieldsSectionComponent,
     ...MAT_BUTTONS,
     PageHeading,
+    PageHeadingAction,
     LoadingStateComponent,
     PageContentComponent,
     ClientProfileCardComponent,

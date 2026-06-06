@@ -3,6 +3,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 import { LeadSourceBadgeComponent } from '@app/features/leads/lead-source-badge/lead-source-badge';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 
@@ -17,6 +18,13 @@ const ACTION_LABELS: Record<LeadAction, string> = {
   mark_lost: 'Проигран',
 };
 
+const ACTION_ICONS: Record<LeadAction, string> = {
+  assign: 'person_add',
+  to_in_progress: 'play_arrow',
+  to_offer_sent: 'description',
+  mark_lost: 'cancel',
+};
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-lead-detail-header',
@@ -25,6 +33,7 @@ const ACTION_LABELS: Record<LeadAction, string> = {
     MatIconModule,
     ...MAT_BUTTONS,
     PageHeading,
+    PageHeadingAction,
     StatusBadgeComponent,
     LeadSourceBadgeComponent,
   ],
@@ -63,6 +72,10 @@ export class LeadDetailHeaderComponent {
 
   protected getActionLabel(action: LeadAction): string {
     return ACTION_LABELS[action];
+  }
+
+  protected getActionIcon(action: LeadAction): string {
+    return ACTION_ICONS[action];
   }
 
   protected isActionBusy(action: LeadAction): boolean {

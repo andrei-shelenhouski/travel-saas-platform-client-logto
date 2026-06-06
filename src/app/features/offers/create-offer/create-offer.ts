@@ -39,6 +39,7 @@ import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { FormSectionComponent, PageContentComponent } from '@app/shared/components';
 import {
   MAT_BUTTON_TOGGLES,
@@ -97,6 +98,7 @@ const LANGUAGE_OPTIONS = ['ru', 'en'] as const;
     ReactiveFormsModule,
     DragDropModule,
     PageHeading,
+    PageHeadingAction,
     PageContentComponent,
     FormSectionComponent,
     ...MAT_FORM_BUTTONS,

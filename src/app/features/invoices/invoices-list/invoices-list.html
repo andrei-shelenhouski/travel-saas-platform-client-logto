@@ -3,7 +3,7 @@
   title="Счета"
 >
   @if (canCreateInvoice()) {
-    <button color="primary" mat-flat-button type="button" (click)="navigateToCreateInvoice()">
+    <button appPageAction color="primary" icon="add" label="Создать счёт" mat-flat-button type="button" (click)="navigateToCreateInvoice()">
       <mat-icon>add</mat-icon>
       <span>Новый счет</span>
     </button>

@@ -20,6 +20,7 @@ import { OrganizationMembersService } from '@app/services/organization-members.s
 import { PermissionService } from '@app/services/permission.service';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 import { BookingStatus } from '@app/shared/models';
@@ -49,6 +50,7 @@ const BOOKING_STATUSES = new Set<BookingStatus>([
     MatProgressSpinnerModule,
     MatTableModule,
     PageHeading,
+    PageHeadingAction,
     RouterLink,
   ],
   templateUrl: './bookings-list.html',

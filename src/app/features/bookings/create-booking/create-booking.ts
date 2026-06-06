@@ -30,6 +30,7 @@ import { ClientsService } from '@app/services/clients.service';
 import { PersonsService } from '@app/services/persons.service';
 import { FormSectionComponent, PageContentComponent } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import {
   MAT_AUTOCOMPLETE,
   MAT_BUTTONS,
@@ -66,6 +67,7 @@ type ExistingTraveler = {
     ReactiveFormsModule,
     RouterLink,
     PageHeading,
+    PageHeadingAction,
     PageContentComponent,
     FormSectionComponent,
     AccommodationTableComponent,

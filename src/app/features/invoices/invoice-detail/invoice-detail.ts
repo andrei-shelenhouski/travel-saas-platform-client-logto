@@ -25,6 +25,7 @@ import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { ActivityTimelineComponent } from '@app/shared/components/activity-timeline.component';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import {
   DetailSectionComponent,
   LoadingStateComponent,
@@ -83,6 +84,7 @@ const STATUS_LABELS: Record<string, string> = {
     DecimalPipe,
     ActivityTimelineComponent,
     PageHeading,
+    PageHeadingAction,
     LoadingStateComponent,
     PageContentComponent,
     DetailSectionComponent,

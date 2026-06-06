@@ -1,5 +1,5 @@
 <app-page-heading subtitle="Всего: {{ totalElements() }} клиентов" title="Клиенты">
-  <button color="primary" mat-flat-button type="button" (click)="navigateToCreateClient()">
+  <button appPageAction color="primary" icon="add" label="Создать клиента" mat-flat-button type="button" (click)="navigateToCreateClient()">
     <mat-icon>add</mat-icon>
     <span>Новый клиент</span>
   </button>

@@ -7,8 +7,9 @@
 
 .snapshot-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
+  margin-bottom: 0.75rem;
 }
 
 .snapshot-title {
@@ -18,11 +19,13 @@
   color: #111827;
 }
 
-.snapshot-profile-link {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+.snapshot-subtitle {
+  margin: 0.125rem 0 0;
   font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.snapshot-link {
   color: var(--color-primary);
   text-decoration: none;
 
@@ -31,38 +34,155 @@
   }
 }
 
-.snapshot-profile-icon {
-  font-size: 0.875rem !important;
-  width: 0.875rem !important;
-  height: 0.875rem !important;
+// Client hero
+
+.client-hero {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  background: #f8fafc;
 }
 
-.snapshot-data-grid {
-  margin-top: 0.75rem;
-  display: grid;
-  gap: 0.5rem;
-  font-size: 0.875rem;
+.client-hero-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 9999px;
+  background: #dbeafe;
+  color: #1e3a8a;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
 
-  @media (min-width: 640px) {
-    grid-template-columns: 1fr 1fr;
+.client-hero-content {
+  min-width: 0;
+}
+
+.client-hero-title,
+.client-hero-meta {
+  margin: 0;
+}
+
+.client-hero-title {
+  color: #111827;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.client-hero-meta {
+  color: #6b7280;
+  margin-top: 0.125rem;
+  font-size: 0.8125rem;
+}
+
+.client-hero-link {
+  grid-column: 1 / -1;
+  justify-self: start;
+  font-size: 0.8125rem;
+}
+
+@media (min-width: 900px) {
+  .client-hero {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  .client-hero-link {
+    grid-column: auto;
+    justify-self: end;
   }
 }
 
-.snapshot-label {
+// Data list
+
+.snapshot-data-list {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.75rem;
+}
+
+.snapshot-data-row {
+  display: grid;
+  grid-template-columns: 11rem 1fr;
+  gap: 0.75rem;
+  align-items: start;
+
+  dt {
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+
+  dd {
+    margin: 0;
+    color: #111827;
+    font-size: 0.875rem;
+    word-break: break-word;
+  }
+}
+
+// Telegram icon label
+
+.dt-icon-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.dt-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
+  line-height: 1;
+}
+
+// Contact person card
+
+.contact-person-info {
+  display: grid;
+  gap: 0.25rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.625rem;
+  padding: 0.625rem;
+}
+
+.contact-person-name,
+.contact-person-role,
+.contact-person-meta-row {
+  margin: 0;
+}
+
+.contact-person-name {
+  color: #111827;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.contact-person-role {
+  color: #4b5563;
+  font-size: 0.8125rem;
+}
+
+.contact-person-meta-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: #374151;
+  font-size: 0.8125rem;
+}
+
+.contact-person-meta-icon {
+  width: 0.9rem;
+  height: 0.9rem;
+  font-size: 0.9rem;
   color: #6b7280;
 }
 
-.snapshot-value {
-  margin: 0;
-  font-weight: 500;
-  color: #111827;
-}
-
-.snapshot-contact-link {
-  color: inherit;
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
+.contact-person-change-btn {
+  margin-top: 0.625rem;
 }

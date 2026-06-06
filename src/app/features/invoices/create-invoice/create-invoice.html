@@ -1,10 +1,10 @@
 @if (isEditMode) {
   <app-page-heading title="Редактировать счёт">
-    <a mat-button routerLink="/app/invoices">Назад к счетам</a>
+    <a appPageAction icon="arrow_back" label="Назад к счетам" mat-button routerLink="/app/invoices">Назад к счетам</a>
   </app-page-heading>
 } @else {
   <app-page-heading title="Создать счёт">
-    <a mat-button routerLink="/app/invoices">Назад к счетам</a>
+    <a appPageAction icon="arrow_back" label="Назад к счетам" mat-button routerLink="/app/invoices">Назад к счетам</a>
   </app-page-heading>
 }
 

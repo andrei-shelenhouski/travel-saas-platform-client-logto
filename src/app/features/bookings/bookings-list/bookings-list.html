@@ -1,6 +1,6 @@
 <app-page-heading subtitle="Всего: {{ totalElements() }} бронирований" title="Бронирования">
   @if (showCreateBookingButton()) {
-    <button color="primary" mat-flat-button type="button" (click)="navigateToCreateBooking()">
+    <button appPageAction color="primary" icon="add" label="Создать бронирование" mat-flat-button type="button" (click)="navigateToCreateBooking()">
       <mat-icon>add</mat-icon>
       <span>Новое бронирование</span>
     </button>

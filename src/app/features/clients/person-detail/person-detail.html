@@ -8,7 +8,10 @@
     >
       @if (canPromote()) {
         <button
+          appPageAction
           color="primary"
+          icon="person_add"
+          label="Создать профиль клиента"
           mat-flat-button
           type="button"
           [disabled]="promoting()"

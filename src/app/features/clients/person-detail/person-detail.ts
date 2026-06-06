@@ -9,6 +9,7 @@ import { BookingsService } from '@app/services/bookings.service';
 import { ClientsService } from '@app/services/clients.service';
 import { PersonsService } from '@app/services/persons.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import {
   DetailSectionComponent,
   LoadingStateComponent,
@@ -29,6 +30,7 @@ import type {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     PageHeading,
+    PageHeadingAction,
     LoadingStateComponent,
     PageContentComponent,
     DetailSectionComponent,

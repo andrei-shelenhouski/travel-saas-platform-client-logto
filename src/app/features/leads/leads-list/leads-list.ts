@@ -32,6 +32,7 @@ import { LeadsService } from '@app/services/leads.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import {
   MAT_BUTTON_TOGGLES,
@@ -86,6 +87,7 @@ const LEAD_STATUSES = new Set<LeadStatus>([
     MatTableModule,
     MatTooltipModule,
     PageHeading,
+    PageHeadingAction,
     ReactiveFormsModule,
     RouterLink,
     ClientTypeBadgeComponent,

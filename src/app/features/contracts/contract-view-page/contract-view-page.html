@@ -4,11 +4,14 @@
   [showBackButton]="true"
 >
   @if (contract(); as current) {
-    <a mat-stroked-button [routerLink]="['/app/clients', current.clientId]"> Открыть клиента </a>
+    <a appPageAction icon="person" label="Открыть клиента" mat-stroked-button [routerLink]="['/app/clients', current.clientId]"> Открыть клиента </a>
 
     @if (canUpdateContracts()) {
       <button
+        appPageAction
         color="primary"
+        icon="edit"
+        label="Редактировать"
         mat-flat-button
         type="button"
         [disabled]="!canManageContract()"
@@ -17,7 +20,10 @@
         Редактировать
       </button>
       <button
+        appPageAction
         color="warn"
+        icon="cancel"
+        label="Расторгнуть договор"
         mat-stroked-button
         type="button"
         [disabled]="!canManageContract()"

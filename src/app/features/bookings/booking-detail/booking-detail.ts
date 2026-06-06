@@ -25,6 +25,7 @@ import { LoadingStateComponent, PageContentComponent } from '@app/shared/compone
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { MAT_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { BookingStatus, ClientType } from '@app/shared/models';
 
@@ -69,6 +70,7 @@ import type {
     InvoiceListMiniComponent,
     OperationsSectionComponent,
     PageHeading,
+    PageHeadingAction,
     LoadingStateComponent,
     PageContentComponent,
     TravelDetailsSectionComponent,
