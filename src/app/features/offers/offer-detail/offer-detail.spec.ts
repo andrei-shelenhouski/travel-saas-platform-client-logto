@@ -137,7 +137,6 @@ describe('OfferDetailComponent', () => {
 function createOffer(overrides: Partial<OfferResponseDto> = {}): OfferResponseDto {
   return {
     id: 'offer-1',
-    requestId: 'request-1',
     number: 'OF-100',
     version: 1,
     status: 'SENT',

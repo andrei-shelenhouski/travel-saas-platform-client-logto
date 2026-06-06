@@ -12,6 +12,8 @@ import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -19,47 +21,44 @@ import { EMPTY, forkJoin, of } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
-import { ClientsService } from '@app/services/clients.service';
+import { InvoiceStatusChipComponent } from '@app/features/invoices/invoice-status-chip/invoice-status-chip';
 import { AssignDialogComponent } from '@app/features/leads/assign-dialog/assign-dialog';
 import {
   DeleteLeadDialogComponent,
   DeleteLeadDialogResult,
 } from '@app/features/leads/delete-lead-dialog/delete-lead-dialog';
 import { LeadDetailHeaderComponent } from '@app/features/leads/lead-detail/lead-detail-header/lead-detail-header';
-
 import { LeadDetailOffersSectionComponent } from '@app/features/leads/lead-detail/lead-detail-offers-section/lead-detail-offers-section';
 import { LinkLeadClientDialogComponent } from '@app/features/leads/link-lead-client-dialog/link-lead-client-dialog';
-
 import { PromoteLeadClientDialogComponent } from '@app/features/leads/promote-lead-client-dialog/promote-lead-client-dialog';
+import { BookingsService } from '@app/services/bookings.service';
+import { ClientsService } from '@app/services/clients.service';
 import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { LeadsService } from '@app/services/leads.service';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
 import { LoadingStateComponent, PageContentComponent } from '@app/shared/components';
+import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
+import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { LeadStatus } from '@app/shared/models';
 import { MarkdownPipe } from '@app/shared/pipes/markdown-pipe';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { atLeastOneContactValidator } from '../leads.validators';
 
 import type {
   ActivityListResponseDto,
   ActivityResponseDto,
+  BookingResponseDto,
   ContactResponseDto,
   CustomFieldValueDto,
+  LeadBookingDto,
   LeadResponseDto,
   OfferResponseDto,
+  PaginatedInvoiceResponseDto,
 } from '@app/shared/models';
 import type { LeadAction } from './lead-detail-header/lead-detail-header';
-
-type LeadWithBooking = LeadResponseDto & {
-  bookingId?: string | null;
-  bookingNumber?: string | null;
-  booking?: { id?: string | null; number?: string | null } | null;
-};
 
 type LeadDetailLoadData = {
   lead: LeadResponseDto;
@@ -70,6 +69,85 @@ type LeadDetailLoadData = {
 const SALES_ROLES = new Set(['AGENT', 'SALES_AGENT', 'ADMIN', 'MANAGER']);
 const TERMINAL_STATUSES = new Set<string>([LeadStatus.WON, LeadStatus.LOST, LeadStatus.EXPIRED]);
 const ACTIVITY_PAGE_SIZE = 20;
+
+function formatDateShort(iso: string | null): string {
+  if (!iso) {
+    return '—';
+  }
+  try {
+    return new Date(iso).toLocaleDateString(undefined, { dateStyle: 'medium' });
+  } catch {
+    return iso;
+  }
+}
+
+function formatDateTime(iso: string | null): string {
+  if (!iso) {
+    return '—';
+  }
+  try {
+    return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+  } catch {
+    return iso;
+  }
+}
+
+function formatDateRange(from: string | null | undefined, to: string | null | undefined): string {
+  const fromText = formatDateShort(from ?? null);
+  const toText = formatDateShort(to ?? null);
+
+  if (fromText === '—' && toText === '—') {
+    return '—';
+  }
+
+  if (fromText !== '—' && toText !== '—') {
+    return `${fromText} - ${toText}`;
+  }
+
+  return fromText === '—' ? toText : fromText;
+}
+
+function getAgentInitials(name: string | null): string {
+  if (!name) {
+    return 'NA';
+  }
+  const parts = name
+    .trim()
+    .split(/\s+/)
+    .filter((p) => p.length > 0)
+    .slice(0, 2);
+
+  if (parts.length === 0) {
+    return 'NA';
+  }
+
+  return parts.map((p) => p[0]?.toUpperCase() ?? '').join('');
+}
+
+function formatCurrency(amount: number | undefined, currency: string | undefined): string {
+  if (amount === undefined || currency === undefined) {
+    return '—';
+  }
+  try {
+    return new Intl.NumberFormat('ru-RU', { style: 'currency', currency }).format(amount);
+  } catch {
+    return `${amount} ${currency}`;
+  }
+}
+
+const ACTIVITY_ICON_MAP: [string, string][] = [
+  ['create', 'add_circle'],
+  ['status', 'flag'],
+  ['assign', 'person_add'],
+  ['offer', 'description'],
+  ['contact', 'person'],
+];
+
+function getActivityIcon(type: string): string {
+  const n = type.toLowerCase();
+
+  return ACTIVITY_ICON_MAP.find(([k]) => n.includes(k))?.[1] ?? 'history';
+}
 
 const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
   to_in_progress: LeadStatus.IN_PROGRESS,
@@ -85,12 +163,15 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     ReactiveFormsModule,
     MatDialogModule,
     MatIconModule,
+    MatTableModule,
     MatTooltipModule,
     ...MAT_BUTTONS,
     ...MAT_FORM_BUTTONS,
     ...MAT_MENU,
     CustomFieldsSectionComponent,
     ClientTypeBadgeComponent,
+    BookingStatusChipComponent,
+    InvoiceStatusChipComponent,
     LeadDetailHeaderComponent,
     LeadDetailOffersSectionComponent,
     MarkdownPipe,
@@ -110,6 +191,7 @@ export class LeadDetailComponent {
   private readonly membersService = inject(OrganizationMembersService);
   private readonly customFieldsService = inject(CustomFieldsService);
   private readonly clientsService = inject(ClientsService);
+  private readonly bookingsService = inject(BookingsService);
   private readonly snackBar = inject(MatSnackBar);
 
   protected readonly permissions = inject(PermissionService);
@@ -170,6 +252,33 @@ export class LeadDetailComponent {
       return this.clientsService.listContacts(params);
     },
     defaultValue: [],
+  });
+
+  private readonly bookingDetailData = rxResource<BookingResponseDto | null, string | null>({
+    params: () => this.lead()?.booking?.id ?? null,
+    stream: ({ params }) => {
+      if (!params) {
+        return of(null);
+      }
+
+      return this.bookingsService.getById(params);
+    },
+    defaultValue: null,
+  });
+
+  private readonly bookingInvoicesData = rxResource<
+    PaginatedInvoiceResponseDto | null,
+    string | null
+  >({
+    params: () => this.lead()?.booking?.id ?? null,
+    stream: ({ params }) => {
+      if (!params) {
+        return of(null);
+      }
+
+      return this.bookingsService.listInvoices(params, { limit: 50 });
+    },
+    defaultValue: null,
   });
 
   protected readonly lead = computed(
@@ -245,29 +354,25 @@ export class LeadDetailComponent {
     return l ? this.isTerminalStatus(l.status) : true;
   });
 
-  protected readonly bookingInfo = computed(() => {
-    const lead = this.lead() as LeadWithBooking | null; // NOSONAR — narrowing to extended type
-
-    if (!lead || lead.status !== LeadStatus.WON) {
-      return null;
-    }
-
-    if (lead.bookingId) {
-      return {
-        id: lead.bookingId,
-        number: lead.bookingNumber ?? 'Бронирование',
-      };
-    }
-
-    if (lead.booking?.id) {
-      return {
-        id: lead.booking.id,
-        number: lead.booking.number ?? 'Бронирование',
-      };
-    }
-
-    return null;
+  protected readonly linkedBooking = computed((): LeadBookingDto | null => {
+    return this.lead()?.booking ?? null;
   });
+
+  protected readonly bookingDetail = computed(() => this.bookingDetailData.value() ?? null);
+  protected readonly bookingInvoices = computed(
+    () => this.bookingInvoicesData.value()?.items ?? [],
+  );
+  protected readonly bookingDetailLoading = computed(() => this.bookingDetailData.isLoading());
+  protected readonly bookingInvoicesLoading = computed(() => this.bookingInvoicesData.isLoading());
+
+  protected readonly invoiceColumns = [
+    'number',
+    'invoiceDate',
+    'dueDate',
+    'status',
+    'total',
+    'paidAmount',
+  ] as const;
 
   protected readonly activityItems = signal<ActivityResponseDto[]>([]);
   protected readonly activityTotal = signal(0);
@@ -722,6 +827,10 @@ export class LeadDetailComponent {
     void this.router.navigate(['/app/leads']);
   }
 
+  protected navigateToInvoice(id: string): void {
+    void this.router.navigate(['/app/invoices', id]);
+  }
+
   protected getErrorStatus(): number | null {
     const err = this.error();
 
@@ -732,96 +841,13 @@ export class LeadDetailComponent {
     return null;
   }
 
-  protected getAgentInitials(name: string | null): string {
-    if (!name) {
-      return 'NA';
-    }
+  protected readonly getAgentInitials = getAgentInitials;
+  protected readonly formatCurrency = formatCurrency;
+  protected readonly formatDateShort = formatDateShort;
+  protected readonly formatDateTime = formatDateTime;
+  protected readonly formatDateRange = formatDateRange;
 
-    const parts = name
-      .trim()
-      .split(/\s+/)
-      .filter((part) => part.length > 0)
-      .slice(0, 2);
-
-    if (parts.length === 0) {
-      return 'NA';
-    }
-
-    return parts.map((part) => part[0]?.toUpperCase() ?? '').join('');
-  }
-
-  protected formatDateRange(
-    from: string | null | undefined,
-    to: string | null | undefined,
-  ): string {
-    const fromText = this.formatDateShort(from ?? null);
-    const toText = this.formatDateShort(to ?? null);
-
-    if (fromText === '—' && toText === '—') {
-      return '—';
-    }
-
-    if (fromText !== '—' && toText !== '—') {
-      return `${fromText} - ${toText}`;
-    }
-
-    return fromText === '—' ? toText : fromText;
-  }
-
-  protected formatDateShort(iso: string | null): string {
-    if (!iso) {
-      return '—';
-    }
-
-    try {
-      return new Date(iso).toLocaleDateString(undefined, {
-        dateStyle: 'medium',
-      });
-    } catch {
-      return iso;
-    }
-  }
-
-  protected formatDateTime(iso: string | null): string {
-    if (!iso) {
-      return '—';
-    }
-
-    try {
-      return new Date(iso).toLocaleString(undefined, {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      });
-    } catch {
-      return iso;
-    }
-  }
-
-  protected getActivityIcon(type: string): string {
-    const normalized = type.toLowerCase();
-
-    if (normalized.includes('create')) {
-      return 'add_circle';
-    }
-
-    if (normalized.includes('status')) {
-      return 'flag';
-    }
-
-    if (normalized.includes('assign')) {
-      return 'person_add';
-    }
-
-    if (normalized.includes('offer')) {
-      return 'description';
-    }
-
-    if (normalized.includes('contact')) {
-      return 'person';
-    }
-
-    return 'history';
-  }
+  protected readonly getActivityIcon = getActivityIcon;
 
   protected getActivityLabel(type: string): string {
     if (type === 'contact_person_selected') {
@@ -894,11 +920,7 @@ export class LeadDetailComponent {
   }
 
   private asDateInputValue(value: string | null): string {
-    if (!value) {
-      return '';
-    }
-
-    return value.slice(0, 10);
+    return value ? value.slice(0, 10) : '';
   }
 
   private normalizeText(value: string | null | undefined): string | undefined {

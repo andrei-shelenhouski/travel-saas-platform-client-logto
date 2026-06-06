@@ -72,8 +72,15 @@
   text-decoration: underline;
 }
 
-.offer-table-card {
-  overflow-x: auto;
+.table-empty-state {
+  padding: 1.5rem 0.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+
+  p {
+    margin: 0;
+  }
 }
 
 .offer-pricing-total {
@@ -122,36 +129,9 @@
   white-space: nowrap;
 }
 
-.offer-detail-table {
-  width: 100%;
-}
-
-.offer-col-header {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: #6b7280;
-
-  &--right {
-    justify-content: flex-end;
-    text-align: right;
-  }
-}
-
-.offer-col-cell {
-  font-size: 0.875rem;
-  color: #111827;
-
-  &--right {
-    justify-content: flex-end;
-    text-align: right;
-  }
-}
-
-.offer-table-no-data {
-  padding: 1.5rem 0.5rem;
-  text-align: center;
-  font-size: 0.875rem;
-  color: #6b7280;
+.offer-col--right {
+  justify-content: flex-end;
+  text-align: right;
 }
 
 .offer-pricing-total-label {

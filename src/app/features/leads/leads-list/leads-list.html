@@ -71,25 +71,16 @@
       <ng-container matColumnDef="name">
         <th *matHeaderCellDef mat-header-cell>Клиент</th>
         <td *matCellDef="let element" mat-cell [class.cell-deleted]="isDeletedLead(element)">
-          <div class="name-cell-content">
-            @if (element.clientId) {
-              <mat-icon aria-label="Клиент" class="check-icon">
-                {{ element.clientType === 'INDIVIDUAL' ? 'person_check' : 'corporate_fare' }}
-              </mat-icon>
-            } @else {
-              <mat-icon aria-label="Не клиент" class="off-icon">person_off</mat-icon>
-            }
-            @if (element.companyName) {
-              <div>
-                <span class="cell-primary">{{ element.companyName }}</span>
-                <span class="cell-secondary">{{
-                  element.contactPersonName || element.clientName
-                }}</span>
-              </div>
-            } @else {
-              <span class="cell-primary">{{ element.clientName }}</span>
-            }
-          </div>
+          @if (element.companyName) {
+            <div>
+              <span class="cell-primary">{{ element.companyName }}</span>
+              <span class="cell-secondary">{{
+                element.contactPersonName || element.clientName
+              }}</span>
+            </div>
+          } @else {
+            <span class="cell-primary">{{ element.clientName }}</span>
+          }
         </td>
       </ng-container>
 
@@ -103,7 +94,16 @@
       <ng-container matColumnDef="clientType">
         <th *matHeaderCellDef mat-header-cell>Тип</th>
         <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
-          <app-client-type-badge [type]="element.clientType" />
+          <div class="type-cell-content">
+            @if (element.clientId) {
+              <mat-icon aria-label="Клиент" class="check-icon">
+                {{ element.clientType === 'INDIVIDUAL' ? 'person_check' : 'corporate_fare' }}
+              </mat-icon>
+            } @else {
+              <mat-icon aria-label="Не клиент" class="off-icon">person_off</mat-icon>
+            }
+            <app-client-type-badge [type]="element.clientType" />
+          </div>
         </td>
       </ng-container>
 

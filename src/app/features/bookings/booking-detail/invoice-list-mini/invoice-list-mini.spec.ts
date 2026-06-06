@@ -102,8 +102,11 @@ describe('InvoiceListMiniComponent', () => {
 
   it('shows manual invoice creation link', () => {
     const nativeElement = fixture.nativeElement as HTMLElement;
-    const manualLink = nativeElement.querySelector('a[mat-button][href*="/app/invoices/new"]');
+    const trigger = nativeElement.querySelector<HTMLElement>('button[mat-icon-button]');
+    trigger?.click();
+    fixture.detectChanges();
 
+    const manualLink = document.body.querySelector('a[mat-menu-item]');
     expect(manualLink?.textContent).toContain('Создать вручную');
   });
 

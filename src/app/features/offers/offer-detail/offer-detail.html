@@ -92,134 +92,95 @@
           </app-detail-section>
 
           <app-detail-section title="Размещение">
-            <div class="offer-table-card">
-              <mat-table class="offer-detail-table" [dataSource]="o.accommodations ?? []">
+            <div class="table-wrap">
+              <table mat-table [dataSource]="o.accommodations ?? []">
                 <ng-container matColumnDef="hotel">
-                  <mat-header-cell *matHeaderCellDef class="offer-col-header"
-                    >Отель</mat-header-cell
-                  >
-                  <mat-cell *matCellDef="let row" class="offer-col-cell">{{
-                    row.hotelName || '—'
-                  }}</mat-cell>
+                  <th *matHeaderCellDef mat-header-cell>Отель</th>
+                  <td *matCellDef="let row" mat-cell>{{ row.hotelName || '—' }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="roomType">
-                  <mat-header-cell *matHeaderCellDef class="offer-col-header"
-                    >Тип номера</mat-header-cell
-                  >
-                  <mat-cell *matCellDef="let row" class="offer-col-cell">{{
-                    row.roomType || '—'
-                  }}</mat-cell>
+                  <th *matHeaderCellDef mat-header-cell>Тип номера</th>
+                  <td *matCellDef="let row" mat-cell>{{ row.roomType || '—' }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="mealPlan">
-                  <mat-header-cell *matHeaderCellDef class="offer-col-header"
-                    >Питание</mat-header-cell
-                  >
-                  <mat-cell *matCellDef="let row" class="offer-col-cell">{{
-                    row.mealPlan || '—'
-                  }}</mat-cell>
+                  <th *matHeaderCellDef mat-header-cell>Питание</th>
+                  <td *matCellDef="let row" mat-cell>{{ row.mealPlan || '—' }}</td>
                 </ng-container>
 
                 <ng-container matColumnDef="dates">
-                  <mat-header-cell *matHeaderCellDef class="offer-col-header">Даты</mat-header-cell>
-                  <mat-cell *matCellDef="let row" class="offer-col-cell">
+                  <th *matHeaderCellDef mat-header-cell>Даты</th>
+                  <td *matCellDef="let row" mat-cell>
                     {{ row.checkinDate ? (row.checkinDate | date: 'mediumDate') : '—' }} –
                     {{ row.checkoutDate ? (row.checkoutDate | date: 'mediumDate') : '—' }}
-                  </mat-cell>
+                  </td>
                 </ng-container>
 
                 <ng-container matColumnDef="nights">
-                  <mat-header-cell *matHeaderCellDef class="offer-col-header"
-                    >Ночей</mat-header-cell
-                  >
-                  <mat-cell *matCellDef="let row" class="offer-col-cell">{{
-                    getAccommodationNights(row.checkinDate, row.checkoutDate)
-                  }}</mat-cell>
+                  <th *matHeaderCellDef mat-header-cell>Ночей</th>
+                  <td *matCellDef="let row" mat-cell>
+                    {{ getAccommodationNights(row.checkinDate, row.checkoutDate) }}
+                  </td>
                 </ng-container>
 
                 <ng-container matColumnDef="price">
-                  <mat-header-cell
-                    *matHeaderCellDef
-                    class="offer-col-header offer-col-header--right"
-                    >Цена</mat-header-cell
-                  >
-                  <mat-cell *matCellDef="let row" class="offer-col-cell offer-col-cell--right"
-                    >{{ row.unitPrice ?? 0 | number: '1.0-2' }} {{ o.currency }}</mat-cell
-                  >
+                  <th *matHeaderCellDef class="offer-col--right" mat-header-cell>Цена</th>
+                  <td *matCellDef="let row" class="offer-col--right" mat-cell>
+                    {{ row.unitPrice ?? 0 | number: '1.0-2' }} {{ o.currency }}
+                  </td>
                 </ng-container>
 
-                <mat-header-row *matHeaderRowDef="accommodationColumns" />
-                <mat-row *matRowDef="let row; columns: accommodationColumns" />
-
-                <ng-container>
-                  <tr mat-no-data-row>
-                    <td class="offer-table-no-data" [attr.colspan]="accommodationColumns.length">
-                      Нет размещений
-                    </td>
-                  </tr>
-                </ng-container>
-              </mat-table>
+                <tr *matHeaderRowDef="accommodationColumns" class="table-header-row" mat-header-row></tr>
+                <tr *matRowDef="let row; columns: accommodationColumns" class="table-row" mat-row></tr>
+                <tr *matNoDataRow>
+                  <td [attr.colspan]="accommodationColumns.length">
+                    <div class="table-empty-state">
+                      <p>Нет размещений.</p>
+                    </div>
+                  </td>
+                </tr>
+              </table>
             </div>
           </app-detail-section>
 
           @if ((o.services?.length ?? 0) > 0) {
             <app-detail-section title="Услуги">
-              <div class="offer-table-card">
-                <mat-table class="offer-detail-table" [dataSource]="o.services ?? []">
+              <div class="table-wrap">
+                <table mat-table [dataSource]="o.services ?? []">
                   <ng-container matColumnDef="serviceType">
-                    <mat-header-cell *matHeaderCellDef class="offer-col-header"
-                      >Тип</mat-header-cell
-                    >
-                    <mat-cell *matCellDef="let row" class="offer-col-cell">{{
-                      row.serviceType || '—'
-                    }}</mat-cell>
+                    <th *matHeaderCellDef mat-header-cell>Тип</th>
+                    <td *matCellDef="let row" mat-cell>{{ row.serviceType || '—' }}</td>
                   </ng-container>
 
                   <ng-container matColumnDef="description">
-                    <mat-header-cell *matHeaderCellDef class="offer-col-header"
-                      >Описание</mat-header-cell
-                    >
-                    <mat-cell *matCellDef="let row" class="offer-col-cell">{{
-                      row.description || '—'
-                    }}</mat-cell>
+                    <th *matHeaderCellDef mat-header-cell>Описание</th>
+                    <td *matCellDef="let row" mat-cell>{{ row.description || '—' }}</td>
                   </ng-container>
 
                   <ng-container matColumnDef="quantity">
-                    <mat-header-cell *matHeaderCellDef class="offer-col-header"
-                      >Количество</mat-header-cell
-                    >
-                    <mat-cell *matCellDef="let row" class="offer-col-cell">{{
-                      row.quantity ?? 0
-                    }}</mat-cell>
+                    <th *matHeaderCellDef mat-header-cell>Количество</th>
+                    <td *matCellDef="let row" mat-cell>{{ row.quantity ?? 0 }}</td>
                   </ng-container>
 
                   <ng-container matColumnDef="unitPrice">
-                    <mat-header-cell
-                      *matHeaderCellDef
-                      class="offer-col-header offer-col-header--right"
-                      >Цена за ед.</mat-header-cell
-                    >
-                    <mat-cell *matCellDef="let row" class="offer-col-cell offer-col-cell--right"
-                      >{{ row.unitPrice ?? 0 | number: '1.0-2' }} {{ o.currency }}</mat-cell
-                    >
+                    <th *matHeaderCellDef class="offer-col--right" mat-header-cell>Цена за ед.</th>
+                    <td *matCellDef="let row" class="offer-col--right" mat-cell>
+                      {{ row.unitPrice ?? 0 | number: '1.0-2' }} {{ o.currency }}
+                    </td>
                   </ng-container>
 
                   <ng-container matColumnDef="total">
-                    <mat-header-cell
-                      *matHeaderCellDef
-                      class="offer-col-header offer-col-header--right"
-                      >Итого</mat-header-cell
-                    >
-                    <mat-cell *matCellDef="let row" class="offer-col-cell offer-col-cell--right"
-                      >{{ (row.quantity ?? 0) * (row.unitPrice ?? 0) | number: '1.0-2' }}
-                      {{ o.currency }}</mat-cell
-                    >
+                    <th *matHeaderCellDef class="offer-col--right" mat-header-cell>Итого</th>
+                    <td *matCellDef="let row" class="offer-col--right" mat-cell>
+                      {{ (row.quantity ?? 0) * (row.unitPrice ?? 0) | number: '1.0-2' }}
+                      {{ o.currency }}
+                    </td>
                   </ng-container>
 
-                  <mat-header-row *matHeaderRowDef="serviceColumns" />
-                  <mat-row *matRowDef="let row; columns: serviceColumns" />
-                </mat-table>
+                  <tr *matHeaderRowDef="serviceColumns" class="table-header-row" mat-header-row></tr>
+                  <tr *matRowDef="let row; columns: serviceColumns" class="table-row" mat-row></tr>
+                </table>
               </div>
             </app-detail-section>
           }

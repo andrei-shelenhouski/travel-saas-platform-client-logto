@@ -52,9 +52,7 @@
             </div>
             <div class="booking-status-row">
               @if (isDirectEntrySource(b)) {
-                <span class="booking-direct-entry-badge">
-                  Direct Entry
-                </span>
+                <span class="booking-direct-entry-badge"> Direct Entry </span>
               }
               <app-booking-status-chip [status]="b.status" />
             </div>
@@ -71,18 +69,16 @@
             />
             @if (canUpdateContactPerson() && clientContactsForBooking().length > 0) {
               <div class="contact-person-menu-wrap">
-                <button
-                  mat-stroked-button
-                  type="button"
-                  [matMenuTriggerFor]="bookingContactMenu"
-                >
+                <button mat-stroked-button type="button" [matMenuTriggerFor]="bookingContactMenu">
                   Выбрать контактное лицо
                 </button>
                 <mat-menu #bookingContactMenu="matMenu">
                   @for (contact of clientContactsForBooking(); track contact.id) {
                     <button mat-menu-item type="button" (click)="onChangeContactPerson(contact)">
                       {{ contact.fullName }}{{ contact.role ? ' — ' + contact.role : '' }}
-                      @if (contact.primary) { (Основной) }
+                      @if (contact.primary) {
+                        (Основной)
+                      }
                     </button>
                   }
                 </mat-menu>
@@ -125,15 +121,15 @@
               [services]="b.servicesSnapshot"
               (save)="onSaveServices($event)"
             />
+          </div>
 
+          <div class="booking-grid-right">
             <app-operations-section
               [booking]="b"
               [saving]="savingOps()"
               (save)="onSaveOperations($event)"
             />
-          </div>
 
-          <div class="booking-grid-right">
             @if (canViewInvoices()) {
               <app-invoice-list-mini [booking]="b" [invoices]="invoices()" />
             }

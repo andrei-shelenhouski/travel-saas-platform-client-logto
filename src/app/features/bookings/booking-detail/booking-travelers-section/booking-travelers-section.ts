@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
 
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 
@@ -7,7 +8,7 @@ import type { BookingTravelerResponseDto } from '@app/shared/models';
 @Component({
   selector: 'app-booking-travelers-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [...MAT_BUTTONS, MatIcon],
+  imports: [...MAT_BUTTONS, MatIcon, MatTableModule],
   templateUrl: './booking-travelers-section.html',
   styleUrl: './booking-travelers-section.scss',
 })
@@ -16,6 +17,8 @@ export class BookingTravelersSectionComponent {
   readonly bookingStatus = input<string>('PENDING_CONFIRMATION');
   readonly returnDate = input<string | undefined>(undefined);
   readonly canEdit = input<boolean>(false);
+
+  readonly columns = ['role', 'name', 'document', 'actions'];
 
   readonly addTravelers = output<void>();
   readonly removeTraveler = output<BookingTravelerResponseDto>();

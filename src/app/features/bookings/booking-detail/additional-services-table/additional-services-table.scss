@@ -63,51 +63,24 @@
   gap: 0.5rem;
 }
 
-.services-table-wrap {
+.table-wrap {
   margin-top: 0.75rem;
-  overflow-x: auto;
 }
 
-.services-table {
-  width: 100%;
+.table-empty-state {
+  padding: 1.5rem 0.5rem;
+  text-align: center;
   font-size: 0.875rem;
-  border-collapse: collapse;
-}
-
-.services-thead-row {
-  border-bottom: 1px solid #e5e7eb;
-  text-align: left;
   color: #6b7280;
-}
 
-.services-th {
-  padding: 0.5rem;
-  font-weight: 500;
-
-  &--right {
-    text-align: right;
+  p {
+    margin: 0;
   }
 }
 
-.services-tbody-row {
-  border-bottom: 1px solid #f3f4f6;
-
-  &:last-child {
-    border-bottom: none;
-  }
-}
-
-.services-td {
-  padding: 0.5rem;
-
-  &--right {
-    text-align: right;
-  }
-
-  &--empty {
-    padding-block: 0.75rem;
-    color: #6b7280;
-  }
+.col--right {
+  text-align: right;
+  justify-content: flex-end;
 }
 
 .services-type-chip {

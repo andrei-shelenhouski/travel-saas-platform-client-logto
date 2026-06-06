@@ -32,6 +32,7 @@ describe('ClientDetailComponent', () => {
     getOffers: ReturnType<typeof vi.fn>;
     getBookings: ReturnType<typeof vi.fn>;
     getInvoices: ReturnType<typeof vi.fn>;
+    listContacts: ReturnType<typeof vi.fn>;
   };
   let mockTagsService: {
     findAll: ReturnType<typeof vi.fn>;
@@ -92,6 +93,7 @@ describe('ClientDetailComponent', () => {
       getOffers: vi.fn(() => of({ items: [], totalItems: 0, totalPages: 0 })),
       getBookings: vi.fn(() => of({ items: [], totalItems: 0, totalPages: 0 })),
       getInvoices: vi.fn(() => of({ items: [], totalItems: 0, totalPages: 0 })),
+      listContacts: vi.fn(() => of([])),
     };
 
     mockTagsService = {

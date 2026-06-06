@@ -9,7 +9,7 @@ import { ClientsService } from '@app/services/clients.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { PermissionService } from '@app/services/permission.service';
-import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
+import { MAT_BUTTONS, MAT_ICONS, MAT_MENU } from '@app/shared/material-imports';
 import { BookingStatus, ClientType } from '@app/shared/models';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import {
@@ -48,7 +48,7 @@ const INVOICE_STATUS_LABELS: Record<string, string> = {
 @Component({
   selector: 'app-invoice-list-mini',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, DatePipe, DecimalPipe, ...MAT_BUTTONS, ...MAT_ICONS],
+  imports: [RouterLink, DatePipe, DecimalPipe, ...MAT_BUTTONS, ...MAT_ICONS, ...MAT_MENU],
   templateUrl: './invoice-list-mini.html',
   styleUrl: './invoice-list-mini.scss',
 })

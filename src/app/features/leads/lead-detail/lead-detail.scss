@@ -1,6 +1,5 @@
 .lead-card,
-.lead-custom-fields-card,
-.lead-booking-card {
+.lead-custom-fields-card {
   border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
   background: #ffffff;
@@ -58,7 +57,7 @@
 }
 
 .lead-link {
-  color: #1d4ed8;
+  color: var(--color-primary);
   text-decoration: none;
 }
 
@@ -213,8 +212,16 @@
   gap: 0.5rem;
 }
 
-.lead-booking-card {
-  margin-top: 1rem;
+.lead-section-empty,
+.lead-section-loading {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.invoices-table-wrap {
+  margin-top: 0.5rem;
+  border-radius: 0.5rem;
 }
 
 .lead-notes-cell {
@@ -261,7 +268,8 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .lead-activity-card {
+  .lead-activity-card,
+  .lead-full-width-card {
     grid-column: 1 / -1;
   }
 

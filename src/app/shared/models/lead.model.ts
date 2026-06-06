@@ -62,6 +62,19 @@ export type DeleteLeadResponseDto = {
   deletedAt: string;
 };
 
+/** OpenAPI: LeadBookingDto. Booking summary embedded in GET /api/leads/{id} response. */
+export type LeadBookingDto = {
+  id: string;
+  number: string;
+  status: string;
+  destination?: string | null;
+  departDate?: string | null;
+  returnDate?: string | null;
+  assignedBackofficeName?: string | null;
+  supplierConfirmationNumber?: string | null;
+  invoicesCount: number;
+};
+
 export type LeadResponseDto = {
   id: string;
   number: string;
@@ -94,6 +107,7 @@ export type LeadResponseDto = {
   deletedBy?: DeletedByDto | null;
   offers?: OfferResponseDto[];
   customFields?: CustomFieldValueDto[];
+  booking?: LeadBookingDto | null;
 };
 
 export type PaginatedLeadResponseDto = PaginatedDto<LeadResponseDto>;
