@@ -1,6 +1,6 @@
 <app-page-heading subtitle="Всего: {{ totalElements() }}" title="Договоры">
   @if (canCreateContracts()) {
-    <button matButton="filled" type="button" (click)="goToCreateContract()">
+    <button appPageAction icon="add" label="Создать договор" matButton="filled" type="button" (click)="goToCreateContract()">
       <span>Создать договор</span>
     </button>
   }

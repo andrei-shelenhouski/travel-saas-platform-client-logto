@@ -24,3 +24,21 @@
 <div class="actions">
   <ng-content></ng-content>
 </div>
+
+@if (isMobile() && actions().length) {
+  <div class="bottom-toolbar">
+    @for (action of actions(); track action) {
+      <button
+        class="bottom-toolbar__btn"
+        matIconButton
+        type="button"
+        [attr.aria-label]="action.label()"
+        [disabled]="action.disabled()"
+        [matTooltip]="action.label()"
+        (click)="action.el.nativeElement.click()"
+      >
+        <mat-icon>{{ action.icon() }}</mat-icon>
+      </button>
+    }
+  </div>
+}

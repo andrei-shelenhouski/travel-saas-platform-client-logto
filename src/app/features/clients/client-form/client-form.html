@@ -1,5 +1,5 @@
 <app-page-heading [showBackButton]="true" [title]="isEditMode() ? 'Редактировать клиента' : 'Создать клиента'">
-  <button mat-button type="button" (click)="cancel()">
+  <button appPageAction icon="close" label="Отмена" mat-button type="button" (click)="cancel()">
     <span aria-hidden="true" class="material-icons client-form-back-icon">chevron_left</span>
     <span>Назад к клиентам</span>
   </button>

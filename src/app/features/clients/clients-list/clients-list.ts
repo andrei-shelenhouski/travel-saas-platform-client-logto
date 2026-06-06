@@ -17,6 +17,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ClientsService } from '@app/services/clients.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
 
@@ -42,6 +43,7 @@ export const PAGE_SIZE = 20;
     MatProgressSpinnerModule,
     MatTableModule,
     PageHeading,
+    PageHeadingAction,
   ],
   templateUrl: './clients-list.html',
   styleUrl: './clients-list.scss',

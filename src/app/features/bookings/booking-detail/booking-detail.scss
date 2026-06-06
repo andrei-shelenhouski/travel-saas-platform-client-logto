@@ -51,7 +51,9 @@
 .booking-status-row {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
+  justify-content: flex-end;
 }
 
 .booking-direct-entry-badge {

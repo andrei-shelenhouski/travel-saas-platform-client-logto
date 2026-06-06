@@ -37,6 +37,7 @@ import { OrganizationMembersService } from '@app/services/organization-members.s
 import { PermissionService } from '@app/services/permission.service';
 import { PageContentComponent } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import {
   ClientResponseDto,
@@ -113,6 +114,7 @@ function isFieldErrorMap(value: unknown): value is FieldErrorMap {
     MatProgressSpinnerModule,
     ...MAT_FORM_BUTTONS,
     PageHeading,
+    PageHeadingAction,
     PageContentComponent,
   ],
   templateUrl: './create-lead.html',

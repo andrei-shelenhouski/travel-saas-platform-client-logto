@@ -12,6 +12,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '@app/auth/auth.service';
 import { ContractsService } from '@app/services/contracts.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ContractStatus, PermissionKey } from '@app/shared/models';
@@ -31,7 +32,7 @@ const SIGNATURE_METHOD_LABEL: Record<string, string> = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-contract-view-page',
-  imports: [DatePipe, RouterLink, ...MAT_BUTTONS, PageHeading],
+  imports: [DatePipe, RouterLink, ...MAT_BUTTONS, PageHeading, PageHeadingAction],
   templateUrl: './contract-view-page.html',
   styleUrl: './contract-view-page.scss',
 })

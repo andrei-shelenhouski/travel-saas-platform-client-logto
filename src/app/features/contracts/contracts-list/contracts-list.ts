@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '@app/auth/auth.service';
 import { ContractsService } from '@app/services/contracts.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
@@ -37,6 +38,7 @@ import type { ContractResponseDto } from '@app/shared/models';
     MatTableModule,
     MatMenuModule,
     PageHeading,
+    PageHeadingAction,
   ],
   templateUrl: './contracts-list.html',
   styleUrl: './contracts-list.scss',

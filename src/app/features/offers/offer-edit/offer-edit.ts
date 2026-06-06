@@ -35,6 +35,7 @@ import {
 import { OfferPdfPreviewModalComponent } from '@app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal';
 import { OffersService } from '@app/services/offers.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { FormSectionComponent, PageContentComponent } from '@app/shared/components';
 import {
   MAT_BUTTON_TOGGLES,
@@ -97,6 +98,7 @@ const LANGUAGE_OPTIONS = ['ru', 'en'] as const;
     ...MAT_DIALOG,
     ...MAT_ICONS,
     PageHeading,
+    PageHeadingAction,
     PageContentComponent,
     FormSectionComponent,
   ],

@@ -1,8 +1,8 @@
 <app-page-heading backLink="/app/leads" title="Новый лид" [showBackButton]="true">
-  <button mat-stroked-button routerLink="/app/leads" type="button" [disabled]="loading()">
+  <button appPageAction icon="close" label="Отмена" mat-stroked-button routerLink="/app/leads" type="button" [disabled]="loading()">
     <span>Отмена</span>
   </button>
-  <button color="primary" mat-flat-button type="submit" [disabled]="loading()">
+  <button appPageAction color="primary" icon="check" label="Сохранить лид" mat-flat-button type="submit" [disabled]="loading()">
     @if (loading()) {
       <span class="create-lead-submit-loading">
         <mat-spinner diameter="16"></mat-spinner>

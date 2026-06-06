@@ -13,13 +13,16 @@
         [subtitle]="getStatusLabel(inv.status)"
         [title]="'Счёт ' + inv.number"
       >
-        <button mat-stroked-button type="button" (click)="openPdfPreview()">
+        <button appPageAction icon="preview" label="Предпросмотр" mat-stroked-button type="button" (click)="openPdfPreview()">
           <mat-icon>preview</mat-icon>
           Предпросмотр
         </button>
         @if (!cancelDialogOpen()) {
           @if (hasAction('edit')) {
             <button
+              appPageAction
+              icon="edit"
+              label="Редактировать"
               mat-stroked-button
               type="button"
               [disabled]="actionLoading()"
@@ -31,7 +34,10 @@
           }
           @if (hasAction('publish') && canPublishInvoice()) {
             <button
+              appPageAction
               color="primary"
+              icon="publish"
+              label="Опубликовать"
               mat-flat-button
               type="button"
               [disabled]="actionLoading()"
@@ -43,7 +49,10 @@
           }
           @if (hasAction('record_payment') && canRecordInvoicePayment()) {
             <button
+              appPageAction
               color="primary"
+              icon="payments"
+              label="Записать платёж"
               mat-flat-button
               type="button"
               [disabled]="actionLoading()"
@@ -55,6 +64,9 @@
           }
           @if (hasAction('download_pdf')) {
             <button
+              appPageAction
+              icon="picture_as_pdf"
+              label="Скачать PDF"
               mat-stroked-button
               type="button"
               [disabled]="actionLoading()"
@@ -66,7 +78,10 @@
           }
           @if (hasAction('cancel') && canCancelInvoice()) {
             <button
+              appPageAction
               color="warn"
+              icon="cancel"
+              label="Отменить счёт"
               mat-stroked-button
               type="button"
               [disabled]="actionLoading()"

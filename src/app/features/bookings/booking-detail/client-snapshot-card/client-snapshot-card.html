@@ -1,75 +1,136 @@
 <section class="snapshot-card">
   <div class="snapshot-header">
-    <h2 class="snapshot-title">Клиент</h2>
+    <div>
+      <h2 class="snapshot-title">Клиент</h2>
+      <p class="snapshot-subtitle">Профиль, контакты и связанный представитель</p>
+    </div>
+  </div>
+
+  <div class="client-hero">
+    <span class="client-hero-avatar" [attr.aria-label]="displayName()">
+      {{ getInitials(displayName()) }}
+    </span>
+
+    <div class="client-hero-content">
+      @if (isB2bClient()) {
+        <p class="client-hero-title">{{ companyName() ?? 'Без названия компании' }}</p>
+        <p class="client-hero-meta">{{ representativeName() ?? 'Представитель не указан' }}</p>
+      } @else {
+        <p class="client-hero-title">{{ representativeName() ?? 'Имя не указано' }}</p>
+        <p class="client-hero-meta">Частный клиент</p>
+      }
+    </div>
+
     @if (clientId()) {
-      <a
-        class="snapshot-profile-link"
-        [routerLink]="['/app/clients', clientId()]"
-      >
-        <mat-icon class="snapshot-profile-icon">open_in_new</mat-icon>
-        <span>Открыть профиль</span>
+      <a class="snapshot-link client-hero-link" [routerLink]="['/app/clients', clientId()]">
+        Открыть клиента
       </a>
     }
   </div>
 
-  <dl class="snapshot-data-grid">
-    <div>
-      <dt class="snapshot-label">Имя</dt>
-      <dd class="snapshot-value">{{ name() }}</dd>
-    </div>
-    @if (clientType()) {
-      <div>
-        <dt class="snapshot-label">Тип клиента</dt>
-        <dd class="snapshot-value">{{ clientType() }}</dd>
+  <dl class="snapshot-data-list">
+    @if (isB2bClient()) {
+      <div class="snapshot-data-row">
+        <dt>Компания</dt>
+        <dd>{{ companyName() ?? '—' }}</dd>
       </div>
-    }
-    @if (phone()) {
-      <div>
-        <dt class="snapshot-label">Телефон</dt>
-        <dd class="snapshot-value">
-          <a class="snapshot-contact-link" [href]="'tel:' + phone()">{{ phone() }}</a>
-        </dd>
+      <div class="snapshot-data-row">
+        <dt>Представитель</dt>
+        <dd>{{ representativeName() ?? '—' }}</dd>
       </div>
-    }
-    @if (email()) {
-      <div>
-        <dt class="snapshot-label">Email</dt>
-        <dd class="snapshot-value">
-          <a class="snapshot-contact-link" [href]="'mailto:' + email()">{{ email() }}</a>
-        </dd>
+    } @else {
+      <div class="snapshot-data-row">
+        <dt>Имя</dt>
+        <dd>{{ representativeName() ?? '—' }}</dd>
       </div>
     }
 
+    @if (clientType()) {
+      <div class="snapshot-data-row">
+        <dt>Тип</dt>
+        <dd><app-client-type-badge [type]="clientType()!" /></dd>
+      </div>
+    }
+
+    <div class="snapshot-data-row">
+      <dt>Телефон</dt>
+      <dd>
+        @if (phone()) {
+          <a class="snapshot-link" [href]="'tel:' + phone()">{{ phone() }}</a>
+        } @else {
+          —
+        }
+      </dd>
+    </div>
+
+    <div class="snapshot-data-row">
+      <dt>Email</dt>
+      <dd>
+        @if (email()) {
+          <a class="snapshot-link" [href]="'mailto:' + email()">{{ email() }}</a>
+        } @else {
+          —
+        }
+      </dd>
+    </div>
+
+    <div class="snapshot-data-row">
+      <dt>
+        <span class="dt-icon-label">
+          <mat-icon class="dt-icon">send</mat-icon>
+          <span>Telegram</span>
+        </span>
+      </dt>
+      <dd>{{ telegram() ?? '—' }}</dd>
+    </div>
+
     @if (isB2bClient()) {
-      @if (contactPerson(); as cp) {
-        <div>
-          <dt class="snapshot-label">Контактное лицо</dt>
-          <dd class="snapshot-value">
-            <div>
-              <strong>{{ cp.fullName ?? '—' }}</strong>
-              @if (cp.role) {<span> — {{ cp.role }}</span>}
-              @if (cp.phone) {<div>📞 {{ cp.phone }}</div>}
-              @if (cp.email) {<div>✉ {{ cp.email }}</div>}
-              @if (cp.telegramHandle) {<div>✈ {{ cp.telegramHandle }}</div>}
+      <div class="snapshot-data-row">
+        <dt>Контактное лицо</dt>
+        <dd>
+          @if (contactPerson(); as cp) {
+            <div class="contact-person-info">
+              <p class="contact-person-name">{{ cp.fullName }}</p>
+              @if (cp.role) {
+                <p class="contact-person-role">{{ cp.role }}</p>
+              }
+              @if (cp.phone) {
+                <p class="contact-person-meta-row">
+                  <mat-icon aria-hidden="true" class="contact-person-meta-icon">phone</mat-icon>
+                  <a class="snapshot-link" [href]="'tel:' + cp.phone">{{ cp.phone }}</a>
+                </p>
+              }
+              @if (cp.email) {
+                <p class="contact-person-meta-row">
+                  <mat-icon aria-hidden="true" class="contact-person-meta-icon"
+                    >alternate_email</mat-icon
+                  >
+                  <a class="snapshot-link" [href]="'mailto:' + cp.email">{{ cp.email }}</a>
+                </p>
+              }
+              @if (cp.telegramHandle) {
+                <p class="contact-person-meta-row">
+                  <mat-icon aria-hidden="true" class="contact-person-meta-icon">send</mat-icon>
+                  <span>{{ cp.telegramHandle }}</span>
+                </p>
+              }
             </div>
-            @if (canUpdate()) {
-              <button mat-stroked-button type="button" (click)="changeRequested.emit()">
-                Изменить контакт
-              </button>
-            }
-          </dd>
-        </div>
-      } @else if (canUpdate()) {
-        <div>
-          <dt class="snapshot-label">Контактное лицо</dt>
-          <dd class="snapshot-value">
-            <span>Контактное лицо не указано</span>
-            <button mat-stroked-button type="button" (click)="changeRequested.emit()">
-              Выбрать контакт
+          } @else {
+            <div>Не выбрано</div>
+          }
+
+          @if (canUpdate()) {
+            <button
+              class="contact-person-change-btn"
+              mat-stroked-button
+              type="button"
+              (click)="changeRequested.emit()"
+            >
+              {{ contactPerson() ? 'Изменить контакт' : 'Выбрать контактное лицо' }}
             </button>
-          </dd>
-        </div>
-      }
+          }
+        </dd>
+      </div>
     }
   </dl>
 </section>

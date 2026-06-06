@@ -1,12 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
+import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
 import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 
 @Component({
   selector: 'app-client-snapshot-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, ...MAT_ICONS, ...MAT_BUTTONS],
+  imports: [RouterLink, ClientTypeBadgeComponent, ...MAT_ICONS, ...MAT_BUTTONS],
   templateUrl: './client-snapshot-card.html',
   styleUrl: './client-snapshot-card.scss',
 })
@@ -16,26 +17,46 @@ export class ClientSnapshotCardComponent {
   readonly canUpdate = input<boolean>(false);
   readonly changeRequested = output<void>();
 
-  readonly name = computed(() => {
+  readonly clientType = computed(() => {
+    const s = this.snapshot();
+
+    return s ? ((s['type'] as string | null) ?? null) : null;
+  });
+
+  readonly isB2bClient = computed(() => {
+    const t = this.clientType();
+
+    return t === 'COMPANY' || t === 'B2B_AGENT';
+  });
+
+  readonly companyName = computed(() => {
+    const s = this.snapshot();
+
+    return s ? ((s['companyName'] as string | null) ?? null) : null;
+  });
+
+  readonly representativeName = computed(() => {
     const s = this.snapshot();
 
     if (!s) {
-      return '—';
+      return null;
     }
 
-    for (const key of ['fullName', 'companyName', 'name', 'clientName']) {
+    for (const key of ['fullName', 'name', 'clientName']) {
       if (typeof s[key] === 'string' && (s[key] as string).trim()) {
         return s[key] as string;
       }
     }
 
-    return '—';
+    return null;
   });
 
-  readonly clientType = computed(() => {
-    const s = this.snapshot();
+  readonly displayName = computed(() => {
+    if (this.isB2bClient()) {
+      return this.companyName() ?? this.representativeName() ?? '—';
+    }
 
-    return s ? ((s['type'] as string | null) ?? null) : null;
+    return this.representativeName() ?? this.companyName() ?? '—';
   });
 
   readonly phone = computed(() => {
@@ -48,6 +69,14 @@ export class ClientSnapshotCardComponent {
     const s = this.snapshot();
 
     return s ? ((s['email'] as string | null) ?? null) : null;
+  });
+
+  readonly telegram = computed(() => {
+    const s = this.snapshot();
+
+    return s
+      ? ((s['telegramHandle'] as string | null) ?? (s['contactTelegram'] as string | null) ?? null)
+      : null;
   });
 
   readonly contactPerson = computed(() => {
@@ -72,9 +101,16 @@ export class ClientSnapshotCardComponent {
     };
   });
 
-  readonly isB2bClient = computed(() => {
-    const t = this.clientType();
+  getInitials(name: string | null): string {
+    if (!name) {
+      return '?';
+    }
 
-    return t === 'COMPANY' || t === 'B2B_AGENT';
-  });
+    return name
+      .split(' ')
+      .slice(0, 2)
+      .map((w) => w[0])
+      .join('')
+      .toUpperCase();
+  }
 }

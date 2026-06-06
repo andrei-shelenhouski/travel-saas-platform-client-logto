@@ -23,6 +23,7 @@ import { BookingsService } from '@app/services/bookings.service';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import {
   DetailSectionComponent,
   LoadingStateComponent,
@@ -64,6 +65,16 @@ const ACTION_LABELS: Record<OfferAction, string> = {
   DELETE: 'Удалить',
 };
 
+const ACTION_ICONS: Record<OfferAction, string> = {
+  EDIT: 'edit',
+  SEND: 'send',
+  ACCEPT: 'check_circle',
+  REJECT: 'cancel',
+  REVISE: 'edit_note',
+  VIEW_BOOKING: 'open_in_new',
+  DELETE: 'delete',
+};
+
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-offer-detail',
@@ -73,6 +84,7 @@ const ACTION_LABELS: Record<OfferAction, string> = {
     RouterLink,
     OfferTimelineComponent,
     PageHeading,
+    PageHeadingAction,
     LoadingStateComponent,
     PageContentComponent,
     DetailSectionComponent,
@@ -216,6 +228,7 @@ export class OfferDetailComponent {
   });
 
   protected readonly ACTION_LABELS = ACTION_LABELS;
+  protected readonly ACTION_ICONS = ACTION_ICONS;
 
   readonly accommodationColumns = ['hotel', 'roomType', 'mealPlan', 'dates', 'nights', 'price'];
   readonly serviceColumns = ['serviceType', 'description', 'quantity', 'unitPrice', 'total'];

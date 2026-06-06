@@ -9,13 +9,16 @@
     @let o = offer();
     @if (o) {
       <app-page-heading [showBackButton]="true" [subtitle]="pageSubtitle" [title]="pageTitle()">
-        <button mat-stroked-button type="button" (click)="openPdfPreview()">Предпросмотр</button>
+        <button appPageAction icon="preview" label="Предпросмотр" mat-stroked-button type="button" (click)="openPdfPreview()">Предпросмотр</button>
         @for (action of allowedActions(); track action) {
           <button
+            appPageAction
             mat-flat-button
             type="button"
             [color]="isDestructiveAction(action) ? 'warn' : 'primary'"
             [disabled]="actionLoading()"
+            [icon]="ACTION_ICONS[action]"
+            [label]="ACTION_LABELS[action]"
             (click)="onActionClick(action)"
           >
             {{ ACTION_LABELS[action] }}

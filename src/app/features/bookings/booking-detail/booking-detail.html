@@ -11,7 +11,10 @@
       <app-page-heading subtitle="Детали бронирования" [showBackButton]="true" [title]="b.number">
         @if (b.status === BookingStatus.PENDING_CONFIRMATION) {
           <button
+            appPageAction
             color="primary"
+            icon="check_circle"
+            label="Подтвердить бронирование"
             mat-flat-button
             type="button"
             [disabled]="actionLoading()"
@@ -20,7 +23,10 @@
             <span>Подтвердить бронирование</span>
           </button>
           <button
+            appPageAction
             color="warn"
+            icon="cancel"
+            label="Отменить бронирование"
             mat-stroked-button
             type="button"
             [disabled]="actionLoading()"
@@ -31,7 +37,10 @@
         }
         @if (b.status === BookingStatus.CONFIRMED) {
           <button
+            appPageAction
             color="warn"
+            icon="cancel"
+            label="Отменить бронирование"
             mat-stroked-button
             type="button"
             [disabled]="actionLoading()"
