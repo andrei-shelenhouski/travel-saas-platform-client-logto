@@ -14,56 +14,84 @@
   } @else if (contacts().length === 0) {
     <p class="contacts-empty">Контакты пока не добавлены</p>
   } @else {
-    <ul class="contacts-list">
-      @for (contact of contacts(); track contact.id) {
-        <li class="contact-item">
-          <div class="contact-main">
-            <div class="contact-name-row">
-              <span class="contact-name">{{ contact.fullName ?? '—' }}</span>
-              @if (contact.primary) {
-                <span class="contact-primary-badge">Основной</span>
-              }
-            </div>
-            @if (contact.role) {
-              <p class="contact-role">{{ contact.role }}</p>
-            }
-            <div class="contact-details">
-              @if (contact.phone) {
-                <span class="contact-detail">
-                  <mat-icon class="contact-detail-icon">phone</mat-icon>
-                  {{ contact.phone }}
-                </span>
-              }
-              @if (contact.email) {
-                <span class="contact-detail">
-                  <mat-icon class="contact-detail-icon">email</mat-icon>
-                  {{ contact.email }}
-                </span>
-              }
-              @if (contact.telegramHandle) {
-                <span class="contact-detail">
-                  <mat-icon class="contact-detail-icon">send</mat-icon>
-                  {{ contact.telegramHandle }}
-                </span>
-              }
-            </div>
-          </div>
+    <div class="table-wrap">
+      <table mat-table [dataSource]="contacts()">
+        <ng-container matColumnDef="name">
+          <th *matHeaderCellDef mat-header-cell>Имя</th>
+          <td *matCellDef="let contact" class="cell-primary" mat-cell>
+            {{ contact.fullName ?? '—' }}
+          </td>
+        </ng-container>
 
-          <div class="contact-actions">
-            @if (!contact.primary) {
-              <button mat-stroked-button type="button" (click)="makePrimary(contact)">
-                Сделать основным
-              </button>
+        <ng-container matColumnDef="role">
+          <th *matHeaderCellDef mat-header-cell>Роль</th>
+          <td *matCellDef="let contact" mat-cell>{{ contact.role ?? '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="phone">
+          <th *matHeaderCellDef mat-header-cell>Телефон</th>
+          <td *matCellDef="let contact" mat-cell>{{ contact.phone ?? '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th *matHeaderCellDef mat-header-cell>Email</th>
+          <td *matCellDef="let contact" mat-cell>{{ contact.email ?? '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="telegram">
+          <th *matHeaderCellDef mat-header-cell>Telegram</th>
+          <td *matCellDef="let contact" mat-cell>{{ contact.telegramHandle ?? '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="primary">
+          <th *matHeaderCellDef mat-header-cell>Основной</th>
+          <td *matCellDef="let contact" mat-cell>
+            @if (contact.primary) {
+              <span class="contact-primary-badge">Да</span>
+            } @else {
+              —
             }
-            <button mat-stroked-button type="button" (click)="openEditDialog(contact)">
-              Редактировать
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th *matHeaderCellDef mat-header-cell>Действия</th>
+          <td *matCellDef="let contact" mat-cell>
+            <button
+              aria-label="Действия с контактом"
+              mat-icon-button
+              type="button"
+              [matMenuTriggerFor]="contactActionsMenu"
+            >
+              <mat-icon>more_vert</mat-icon>
             </button>
-            <button color="warn" mat-stroked-button type="button" (click)="deleteContact(contact)">
-              Удалить
-            </button>
-          </div>
-        </li>
-      }
-    </ul>
+            <mat-menu #contactActionsMenu="matMenu">
+              @if (!contact.primary) {
+                <button mat-menu-item type="button" (click)="makePrimary(contact)">
+                  <mat-icon>star</mat-icon>
+                  <span>Сделать основным</span>
+                </button>
+              }
+              <button mat-menu-item type="button" (click)="openEditDialog(contact)">
+                <mat-icon>edit</mat-icon>
+                <span>Редактировать</span>
+              </button>
+              <button
+                class="menu-item-warn"
+                mat-menu-item
+                type="button"
+                (click)="deleteContact(contact)"
+              >
+                <mat-icon>delete</mat-icon>
+                <span>Удалить</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr *matHeaderRowDef="columns" class="table-header-row" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: columns" class="table-row" mat-row></tr>
+      </table>
+    </div>
   }
 </section>

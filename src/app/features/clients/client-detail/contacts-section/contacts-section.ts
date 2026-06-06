@@ -3,6 +3,7 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
 
 import { ClientsService } from '@app/services/clients.service';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
@@ -19,7 +20,7 @@ import type { ContactResponseDto } from '@app/shared/models';
 @Component({
   selector: 'app-contacts-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatProgressSpinnerModule, ...MAT_BUTTONS, ...MAT_ICONS, ...MAT_MENU],
+  imports: [MatProgressSpinnerModule, MatTableModule, ...MAT_BUTTONS, ...MAT_ICONS, ...MAT_MENU],
   templateUrl: './contacts-section.html',
   styleUrl: './contacts-section.scss',
 })
@@ -53,6 +54,16 @@ export class ContactsSectionComponent {
       return 0;
     });
   });
+
+  protected readonly columns = [
+    'name',
+    'role',
+    'phone',
+    'email',
+    'telegram',
+    'primary',
+    'actions',
+  ] as const;
 
   protected openAddDialog(): void {
     const dialogRef = this.dialog.open<

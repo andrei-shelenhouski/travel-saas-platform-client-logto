@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { of, Subject } from 'rxjs';
 
@@ -11,17 +12,10 @@ import { ContractsService } from '@app/services/contracts.service';
 import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { TagsService } from '@app/services/tags.service';
 import { ClientType } from '@app/shared/models';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ClientDetailComponent } from './client-detail';
 
-import type {
-  BookingSummaryDto,
-  ClientResponseDto,
-  InvoiceResponseDto,
-  LeadResponseDto,
-  OfferSummaryDto,
-} from '@app/shared/models';
+import type { ClientResponseDto } from '@app/shared/models';
 
 describe('ClientDetailComponent', () => {
   let component: ClientDetailComponent;
@@ -83,6 +77,28 @@ describe('ClientDetailComponent', () => {
     updatedAt: '2026-01-01T00:00:00Z',
     contacts: [],
   };
+
+  beforeAll(() => {
+    class MockIntersectionObserver {
+      observe(): void {
+        return;
+      }
+
+      unobserve(): void {
+        return;
+      }
+
+      disconnect(): void {
+        return;
+      }
+    }
+
+    Object.defineProperty(globalThis, 'IntersectionObserver', {
+      writable: true,
+      configurable: true,
+      value: MockIntersectionObserver,
+    });
+  });
 
   beforeEach(async () => {
     paramMapSubject = new Subject();
@@ -172,53 +188,41 @@ describe('ClientDetailComponent', () => {
     expect(mockClientsService.getById).toHaveBeenCalledWith('client-1');
   });
 
-  it('should lazy-load leads tab on first activation', () => {
-    const paramMap = convertToParamMap({ id: 'client-1' });
-
-    paramMapSubject.next(paramMap);
+  it('should navigate to clients list when route id is missing', () => {
+    paramMapSubject.next(convertToParamMap({}));
     fixture.detectChanges();
 
-    expect(mockClientsService.getLeads).toHaveBeenCalledWith('client-1', { page: 1, limit: 20 });
+    expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/clients']);
   });
 
-  it('should navigate to lead detail when row is clicked', () => {
-    const lead: Partial<LeadResponseDto> = {
-      id: 'lead-1',
-      number: 'L-1',
-      status: 'NEW',
-      createdAt: '2026-01-01T00:00:00Z',
-    };
+  it('should render traveler section for individual client', async () => {
+    paramMapSubject.next(convertToParamMap({ id: 'client-1' }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
 
-    component.goToLead(lead as LeadResponseDto);
-
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/leads', 'lead-1']);
+    expect(fixture.nativeElement.querySelector('app-traveler-profile-section')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('app-contacts-section')).toBeFalsy();
   });
 
-  it('should navigate to offer detail when row is clicked', () => {
-    const offer: Partial<OfferSummaryDto> = { id: 'offer-1' };
+  it('should render contacts section for company client', async () => {
+    mockClientsService.getById.mockReturnValue(
+      of({
+        ...mockClient,
+        type: ClientType.COMPANY,
+      }),
+    );
 
-    component.goToOffer(offer as OfferSummaryDto);
+    paramMapSubject.next(convertToParamMap({ id: 'client-1' }));
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
 
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/offers', 'offer-1']);
+    expect(fixture.nativeElement.querySelector('app-contacts-section')).toBeTruthy();
+    expect(fixture.nativeElement.querySelector('app-traveler-profile-section')).toBeFalsy();
   });
 
-  it('should navigate to booking detail when row is clicked', () => {
-    const booking: Partial<BookingSummaryDto> = { id: 'booking-1' };
-
-    component.goToBooking(booking as BookingSummaryDto);
-
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/bookings', 'booking-1']);
-  });
-
-  it('should navigate to invoice detail when row is clicked', () => {
-    const invoice: Partial<InvoiceResponseDto> = { id: 'invoice-1' };
-
-    component.goToInvoice(invoice as InvoiceResponseDto);
-
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/app/invoices', 'invoice-1']);
-  });
-
-  it('loads contracts when B2B contracts tab is selected', async () => {
+  it('should mark B2B agent correctly', async () => {
     const paramMap = convertToParamMap({ id: 'client-1' });
 
     mockClientsService.getById.mockReturnValue(
@@ -233,21 +237,20 @@ describe('ClientDetailComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    component.onSelectedTabChange(4);
+    expect(component.isB2BAgent()).toBe(true);
+  });
+
+  it('should save custom fields', async () => {
+    paramMapSubject.next(convertToParamMap({ id: 'client-1' }));
+    fixture.detectChanges();
+    await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(mockContractsService.getByClient).toHaveBeenCalledWith('client-1', {
-      page: 1,
-      limit: 20,
+    component.onSaveCustomFields({ key1: 'value1' });
+
+    const customFieldsService = TestBed.inject(CustomFieldsService);
+    expect(customFieldsService.upsertClientValues).toHaveBeenCalledWith('client-1', {
+      values: { key1: 'value1' },
     });
-  });
-
-  it('should format date correctly', () => {
-    expect(component.formatDateShort('2026-01-01T12:00:00Z')).toContain('Jan');
-  });
-
-  it('should handle null date gracefully', () => {
-    expect(component.formatDateShort(null)).toBe('—');
-    expect(component.formatDateShort(undefined)).toBe('—');
   });
 });

@@ -1,0 +1,43 @@
+<section class="client-card">
+  <div class="client-card-header">
+    <h2 class="client-card-title">Лиды</h2>
+  </div>
+
+  @if (loading()) {
+    <div class="history-section-loading">
+      <mat-spinner aria-label="Загрузка лидов..." diameter="36" />
+    </div>
+  } @else if (leads().length === 0) {
+    <div class="history-section-empty">
+      <p>Нет лидов</p>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table mat-table [dataSource]="leads()">
+        <ng-container matColumnDef="number">
+          <th *matHeaderCellDef mat-header-cell>Лид №</th>
+          <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.number }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th *matHeaderCellDef mat-header-cell>Статус</th>
+          <td *matCellDef="let row" mat-cell>
+            <app-lead-status-chip [status]="row.status" />
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="createdAt">
+          <th *matHeaderCellDef mat-header-cell>Создано</th>
+          <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.createdAt) }}</td>
+        </ng-container>
+        <tr *matHeaderRowDef="columns" class="table-header-row" mat-header-row></tr>
+        <tr
+          *matRowDef="let row; columns: columns"
+          class="table-row"
+          mat-row
+          tabindex="0"
+          (click)="goToLead(row)"
+          (keydown.enter)="goToLead(row)"
+        ></tr>
+      </table>
+    </div>
+  }
+</section>

@@ -1,0 +1,57 @@
+<section class="client-card">
+  <div class="client-card-header">
+    <h2 class="client-card-title">Счета</h2>
+  </div>
+
+  @if (loading()) {
+    <div class="history-section-loading">
+      <mat-spinner aria-label="Загрузка счетов..." diameter="36" />
+    </div>
+  } @else if (invoices().length === 0) {
+    <div class="history-section-empty">
+      <p>Нет счетов</p>
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table mat-table [dataSource]="invoices()">
+        <ng-container matColumnDef="number">
+          <th *matHeaderCellDef mat-header-cell>Счёт №</th>
+          <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.number }}</td>
+        </ng-container>
+        <ng-container matColumnDef="invoiceDate">
+          <th *matHeaderCellDef mat-header-cell>Дата счёта</th>
+          <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.invoiceDate) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="dueDate">
+          <th *matHeaderCellDef mat-header-cell>Срок оплаты</th>
+          <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.dueDate) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th *matHeaderCellDef mat-header-cell>Статус</th>
+          <td *matCellDef="let row" mat-cell>
+            <app-invoice-status-chip [status]="row.status" />
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="total">
+          <th *matHeaderCellDef mat-header-cell>Итого</th>
+          <td *matCellDef="let row" mat-cell>
+            @if (row.total !== null && row.total !== undefined) {
+              {{ row.total }} {{ row.currency }}
+            } @else {
+              —
+            }
+          </td>
+        </ng-container>
+        <tr *matHeaderRowDef="columns" class="table-header-row" mat-header-row></tr>
+        <tr
+          *matRowDef="let row; columns: columns"
+          class="table-row"
+          mat-row
+          tabindex="0"
+          (click)="goToInvoice(row)"
+          (keydown.enter)="goToInvoice(row)"
+        ></tr>
+      </table>
+    </div>
+  }
+</section>

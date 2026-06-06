@@ -1,3 +1,5 @@
+@use '../../../../shared/styles/contract-status' as *;
+
 :host {
   display: block;
 }
@@ -24,37 +26,31 @@
   color: var(--mat-sys-on-surface);
 }
 
-.contacts-loading {
+.history-section-loading {
   display: flex;
   justify-content: center;
-  padding: 2rem 0;
+  padding: 3rem 0;
 }
 
-.contacts-empty {
+.history-section-empty {
   padding: 2rem;
   text-align: center;
   color: var(--mat-sys-on-surface-variant);
   font-size: 0.875rem;
 }
 
-.contact-primary-badge {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 12px;
-  background: var(--mat-sys-primary-container);
-  color: var(--mat-sys-on-primary-container);
-  font-size: 11px;
-  font-weight: 500;
-}
-
 .cell-primary {
   font-weight: 500;
 }
 
-.menu-item-warn {
-  color: var(--mat-sys-error);
+.contracts-table .table-row {
+  cursor: default;
 
-  mat-icon {
-    color: var(--mat-sys-error);
+  &:hover {
+    background-color: transparent;
   }
+}
+
+.contracts-paginator {
+  padding-top: 0.5rem;
 }
