@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
@@ -67,8 +68,16 @@ export class PromoteLeadClientDialogComponent {
     dataConsentDate: ['', Validators.required],
   });
 
+  private readonly typeValue = toSignal(this.form.controls.type.valueChanges, {
+    initialValue: this.normalizeClientType(this.data.lead.clientType),
+  });
+
+  protected readonly consentGiven = toSignal(this.form.controls.dataConsentGiven.valueChanges, {
+    initialValue: false,
+  });
+
   protected readonly isCompanyType = computed(() => {
-    const type = this.form.controls.type.value;
+    const type = this.typeValue();
 
     return type === ClientType.COMPANY || type === ClientType.B2B_AGENT;
   });

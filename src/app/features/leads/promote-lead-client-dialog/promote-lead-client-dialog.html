@@ -147,7 +147,7 @@
         <p class="promote-error">Требуется согласие на обработку данных</p>
       }
 
-      @if (form.controls.dataConsentGiven.value) {
+      @if (consentGiven()) {
         <mat-form-field appearance="outline" class="promote-consent-date-field" subscriptSizing="dynamic">
           <mat-label>Дата согласия</mat-label>
           <input formControlName="dataConsentDate" matInput type="date" />
