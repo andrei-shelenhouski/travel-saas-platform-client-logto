@@ -42,6 +42,20 @@
             }
           </td>
         </ng-container>
+        <ng-container matColumnDef="paidAmount">
+          <th *matHeaderCellDef mat-header-cell>Оплачено</th>
+          <td *matCellDef="let row" mat-cell>
+            @if (row.paidAmount !== null && row.paidAmount !== undefined) {
+              {{ row.paidAmount }} {{ row.currency }}
+            } @else {
+              —
+            }
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="createdAt">
+          <th *matHeaderCellDef mat-header-cell>Создано</th>
+          <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.createdAt) }}</td>
+        </ng-container>
         <tr *matHeaderRowDef="columns" class="table-header-row" mat-header-row></tr>
         <tr
           *matRowDef="let row; columns: columns"

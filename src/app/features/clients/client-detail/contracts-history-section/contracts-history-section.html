@@ -36,6 +36,10 @@
           <th *matHeaderCellDef mat-header-cell>Действует до</th>
           <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.expiresAt) }}</td>
         </ng-container>
+        <ng-container matColumnDef="createdAt">
+          <th *matHeaderCellDef mat-header-cell>Создано</th>
+          <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.createdAt) }}</td>
+        </ng-container>
         <ng-container matColumnDef="signatureMethod">
           <th *matHeaderCellDef mat-header-cell>Способ подписания</th>
           <td *matCellDef="let row" mat-cell>{{ contractSignatureLabel(row.signatureMethod) }}</td>

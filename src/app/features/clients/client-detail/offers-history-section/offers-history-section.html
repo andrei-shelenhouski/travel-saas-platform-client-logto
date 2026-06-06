@@ -18,6 +18,10 @@
           <th *matHeaderCellDef mat-header-cell>Предложение №</th>
           <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.offerNumber ?? '—' }}</td>
         </ng-container>
+        <ng-container matColumnDef="leadNumber">
+          <th *matHeaderCellDef mat-header-cell>Лид №</th>
+          <td *matCellDef="let row" mat-cell>{{ row.leadNumber ?? '—' }}</td>
+        </ng-container>
         <ng-container matColumnDef="destination">
           <th *matHeaderCellDef mat-header-cell>Направление</th>
           <td *matCellDef="let row" mat-cell>{{ row.destination ?? '—' }}</td>

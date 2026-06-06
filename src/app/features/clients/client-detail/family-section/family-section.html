@@ -1,7 +1,10 @@
 <section class="client-card">
   <div class="client-card-header">
     <h2 class="client-card-title">Члены семьи</h2>
-    <button mat-stroked-button type="button" (click)="openAddDialog()">+ Добавить</button>
+    <button mat-stroked-button type="button" (click)="openAddDialog()">
+      <mat-icon>add</mat-icon>
+      Добавить
+    </button>
   </div>
 
   @if (loading()) {

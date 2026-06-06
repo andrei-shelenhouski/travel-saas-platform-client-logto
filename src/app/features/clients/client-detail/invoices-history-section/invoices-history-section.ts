@@ -34,7 +34,15 @@ export class InvoicesHistorySectionComponent {
   readonly invoices = computed(() => this.invoicesData.value() ?? []);
   readonly loading = computed(() => this.invoicesData.isLoading());
 
-  readonly columns = ['number', 'invoiceDate', 'dueDate', 'status', 'total'] as const;
+  readonly columns = [
+    'number',
+    'invoiceDate',
+    'dueDate',
+    'status',
+    'total',
+    'paidAmount',
+    'createdAt',
+  ] as const;
 
   formatDateShort(iso: string | null | undefined): string {
     if (!iso) {

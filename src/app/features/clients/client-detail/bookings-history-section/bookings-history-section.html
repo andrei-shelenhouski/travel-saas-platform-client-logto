@@ -18,6 +18,14 @@
           <th *matHeaderCellDef mat-header-cell>Бронирование №</th>
           <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.bookingNumber ?? '—' }}</td>
         </ng-container>
+        <ng-container matColumnDef="leadNumber">
+          <th *matHeaderCellDef mat-header-cell>Лид №</th>
+          <td *matCellDef="let row" mat-cell>{{ row.leadNumber ?? '—' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="offerNumber">
+          <th *matHeaderCellDef mat-header-cell>Предложение №</th>
+          <td *matCellDef="let row" mat-cell>{{ row.offerNumber ?? '—' }}</td>
+        </ng-container>
         <ng-container matColumnDef="destination">
           <th *matHeaderCellDef mat-header-cell>Направление</th>
           <td *matCellDef="let row" mat-cell>{{ row.destination ?? '—' }}</td>
@@ -43,6 +51,10 @@
               —
             }
           </td>
+        </ng-container>
+        <ng-container matColumnDef="createdAt">
+          <th *matHeaderCellDef mat-header-cell>Создано</th>
+          <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.createdAt) }}</td>
         </ng-container>
         <tr *matHeaderRowDef="columns" class="table-header-row" mat-header-row></tr>
         <tr

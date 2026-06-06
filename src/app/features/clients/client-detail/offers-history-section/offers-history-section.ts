@@ -34,7 +34,14 @@ export class OffersHistorySectionComponent {
   readonly offers = computed(() => this.offersData.value() ?? []);
   readonly loading = computed(() => this.offersData.isLoading());
 
-  readonly columns = ['offerNumber', 'destination', 'total', 'status', 'createdAt'] as const;
+  readonly columns = [
+    'offerNumber',
+    'leadNumber',
+    'destination',
+    'total',
+    'status',
+    'createdAt',
+  ] as const;
 
   formatDateShort(iso: string | null | undefined): string {
     if (!iso) {

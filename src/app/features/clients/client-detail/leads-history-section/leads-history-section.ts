@@ -34,7 +34,7 @@ export class LeadsHistorySectionComponent {
   readonly leads = computed(() => this.leadsData.value() ?? []);
   readonly loading = computed(() => this.leadsData.isLoading());
 
-  readonly columns = ['number', 'status', 'createdAt'] as const;
+  readonly columns = ['number', 'destination', 'source', 'assignedAgent', 'status', 'createdAt'] as const;
 
   formatDateShort(iso: string | null | undefined): string {
     if (!iso) {

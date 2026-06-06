@@ -34,7 +34,16 @@ export class BookingsHistorySectionComponent {
   readonly bookings = computed(() => this.bookingsData.value() ?? []);
   readonly loading = computed(() => this.bookingsData.isLoading());
 
-  readonly columns = ['bookingNumber', 'destination', 'dates', 'status', 'total'] as const;
+  readonly columns = [
+    'bookingNumber',
+    'leadNumber',
+    'offerNumber',
+    'destination',
+    'dates',
+    'status',
+    'total',
+    'createdAt',
+  ] as const;
 
   formatDateShort(iso: string | null | undefined): string {
     if (!iso) {

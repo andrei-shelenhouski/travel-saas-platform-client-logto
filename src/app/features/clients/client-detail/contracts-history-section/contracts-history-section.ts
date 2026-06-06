@@ -85,6 +85,7 @@ export class ContractsHistorySectionComponent {
     'contractNumber',
     'signedAt',
     'expiresAt',
+    'createdAt',
     'signatureMethod',
     'status',
     'actions',

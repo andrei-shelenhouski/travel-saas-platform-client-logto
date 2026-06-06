@@ -18,6 +18,18 @@
           <th *matHeaderCellDef mat-header-cell>Лид №</th>
           <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.number }}</td>
         </ng-container>
+        <ng-container matColumnDef="destination">
+          <th *matHeaderCellDef mat-header-cell>Направление</th>
+          <td *matCellDef="let row" mat-cell>{{ row.destination ?? '—' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="source">
+          <th *matHeaderCellDef mat-header-cell>Источник</th>
+          <td *matCellDef="let row" mat-cell>{{ row.source ?? '—' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="assignedAgent">
+          <th *matHeaderCellDef mat-header-cell>Менеджер</th>
+          <td *matCellDef="let row" mat-cell>{{ row.assignedAgentName ?? '—' }}</td>
+        </ng-container>
         <ng-container matColumnDef="status">
           <th *matHeaderCellDef mat-header-cell>Статус</th>
           <td *matCellDef="let row" mat-cell>
