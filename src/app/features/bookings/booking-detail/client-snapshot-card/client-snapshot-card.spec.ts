@@ -28,6 +28,6 @@ describe('ClientSnapshotCardComponent', () => {
   });
 
   it('should resolve a display name from snapshot', () => {
-    expect(component.name()).toBe('John Doe');
+    expect(component.displayName()).toBe('John Doe');
   });
 });

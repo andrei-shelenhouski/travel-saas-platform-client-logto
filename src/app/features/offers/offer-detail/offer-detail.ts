@@ -230,10 +230,6 @@ export class OfferDetailComponent {
   protected readonly ACTION_LABELS = ACTION_LABELS;
   protected readonly ACTION_ICONS = ACTION_ICONS;
 
-  protected getActionIcon(action: OfferAction): string {
-    return ACTION_ICONS[action];
-  }
-
   readonly accommodationColumns = ['hotel', 'roomType', 'mealPlan', 'dates', 'nights', 'price'];
   readonly serviceColumns = ['serviceType', 'description', 'quantity', 'unitPrice', 'total'];
 

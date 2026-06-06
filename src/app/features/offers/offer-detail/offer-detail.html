@@ -17,7 +17,7 @@
             type="button"
             [color]="isDestructiveAction(action) ? 'warn' : 'primary'"
             [disabled]="actionLoading()"
-            [icon]="getActionIcon(action)"
+            [icon]="ACTION_ICONS[action]"
             [label]="ACTION_LABELS[action]"
             (click)="onActionClick(action)"
           >

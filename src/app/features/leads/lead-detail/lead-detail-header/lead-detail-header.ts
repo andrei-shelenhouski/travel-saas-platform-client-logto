@@ -51,6 +51,9 @@ export class LeadDetailHeaderComponent {
   readonly actionClicked = output<LeadAction>();
   readonly deleteClicked = output<void>();
 
+  protected readonly ACTION_LABELS = ACTION_LABELS;
+  protected readonly ACTION_ICONS = ACTION_ICONS;
+
   protected readonly tourvisorExternalLeadId = computed(() => {
     const lead = this.lead();
 
@@ -69,14 +72,6 @@ export class LeadDetailHeaderComponent {
 
     return null;
   });
-
-  protected getActionLabel(action: LeadAction): string {
-    return ACTION_LABELS[action];
-  }
-
-  protected getActionIcon(action: LeadAction): string {
-    return ACTION_ICONS[action];
-  }
 
   protected isActionBusy(action: LeadAction): boolean {
     return this.statusActionLoading() === action;

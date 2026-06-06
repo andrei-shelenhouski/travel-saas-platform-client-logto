@@ -7,5 +7,5 @@ export class PageHeadingAction {
   readonly el = inject<ElementRef<HTMLElement>>(ElementRef);
   readonly icon = input.required<string>();
   readonly label = input('');
-  readonly color = input('');
+  readonly disabled = input(false);
 }

@@ -13,11 +13,11 @@
       mat-flat-button
       type="button"
       [disabled]="isActionBusy(action)"
-      [icon]="getActionIcon(action)"
-      [label]="getActionLabel(action)"
+      [icon]="ACTION_ICONS[action]"
+      [label]="ACTION_LABELS[action]"
       (click)="actionClicked.emit(action)"
     >
-      {{ getActionLabel(action) }}
+      {{ ACTION_LABELS[action] }}
     </button>
   }
 
