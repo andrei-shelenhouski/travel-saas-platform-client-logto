@@ -31,7 +31,10 @@
       <div class="lead-grid">
         <section class="lead-card">
           <div class="lead-card-header">
-            <h2 class="lead-card-title">Клиент</h2>
+            <div>
+              <h2 class="lead-card-title">Клиент</h2>
+              <p class="lead-card-subtitle">Профиль, контакты и связанный представитель</p>
+            </div>
 
             @if (l.clientId && canManageLeadClient()) {
               <button
@@ -52,6 +55,29 @@
           </div>
 
           @if (l.clientId) {
+            <div class="client-hero">
+              <span
+                class="client-hero-avatar"
+                [attr.aria-label]="l.clientName ?? l.companyName ?? 'Клиент'"
+              >
+                {{ getAgentInitials(l.clientName ?? l.companyName ?? 'Клиент') }}
+              </span>
+
+              <div class="client-hero-content">
+                @if (l.clientType === 'COMPANY' || l.clientType === 'B2B_AGENT') {
+                  <p class="client-hero-title">{{ l.companyName ?? 'Без названия компании' }}</p>
+                  <p class="client-hero-meta">{{ l.clientName ?? 'Представитель не указан' }}</p>
+                } @else {
+                  <p class="client-hero-title">{{ l.clientName ?? 'Имя не указано' }}</p>
+                  <p class="client-hero-meta">Частный клиент</p>
+                }
+              </div>
+
+              <a class="lead-link client-hero-link" [routerLink]="['/app/clients', l.clientId]">
+                Открыть клиента
+              </a>
+            </div>
+
             <dl class="lead-data-list">
               @if (l.clientType === 'COMPANY' || l.clientType === 'B2B_AGENT') {
                 <div class="lead-data-row">
@@ -80,11 +106,25 @@
               </div>
               <div class="lead-data-row">
                 <dt>Телефон</dt>
-                <dd>{{ l.contactPhone ?? '—' }}</dd>
+                <dd>
+                  @if (l.contactPhone) {
+                    <a class="lead-link" [href]="'tel:' + l.contactPhone">{{ l.contactPhone }}</a>
+                  } @else {
+                    —
+                  }
+                </dd>
               </div>
               <div class="lead-data-row">
                 <dt>Email</dt>
-                <dd>{{ l.contactEmail ?? '—' }}</dd>
+                <dd>
+                  @if (l.contactEmail) {
+                    <a class="lead-link" [href]="'mailto:' + l.contactEmail">{{
+                      l.contactEmail
+                    }}</a>
+                  } @else {
+                    —
+                  }
+                </dd>
               </div>
               <div class="lead-data-row">
                 <dt>
@@ -95,14 +135,6 @@
                 </dt>
                 <dd>{{ l.contactTelegram ?? '—' }}</dd>
               </div>
-              <div class="lead-data-row">
-                <dt>Профиль</dt>
-                <dd>
-                  <a class="lead-link" [routerLink]="['/app/clients', l.clientId]"
-                    >Открыть клиента</a
-                  >
-                </dd>
-              </div>
 
               @if (l.clientType === 'COMPANY' || l.clientType === 'B2B_AGENT') {
                 <div class="lead-data-row">
@@ -110,11 +142,37 @@
                   <dd>
                     @if (contactPerson(); as cp) {
                       <div class="contact-person-info">
-                        <strong>{{ cp.fullName }}</strong>
-                        @if (cp.role) {<span> — {{ cp.role }}</span>}
-                        @if (cp.phone) {<div>📞 {{ cp.phone }}</div>}
-                        @if (cp.email) {<div>✉ {{ cp.email }}</div>}
-                        @if (cp.telegramHandle) {<div>✈ {{ cp.telegramHandle }}</div>}
+                        <p class="contact-person-name">{{ cp.fullName }}</p>
+                        @if (cp.role) {
+                          <p class="contact-person-role">{{ cp.role }}</p>
+                        }
+
+                        @if (cp.phone) {
+                          <p class="contact-person-meta-row">
+                            <mat-icon aria-hidden="true" class="contact-person-meta-icon"
+                              >phone</mat-icon
+                            >
+                            <a class="lead-link" [href]="'tel:' + cp.phone">{{ cp.phone }}</a>
+                          </p>
+                        }
+
+                        @if (cp.email) {
+                          <p class="contact-person-meta-row">
+                            <mat-icon aria-hidden="true" class="contact-person-meta-icon"
+                              >alternate_email</mat-icon
+                            >
+                            <a class="lead-link" [href]="'mailto:' + cp.email">{{ cp.email }}</a>
+                          </p>
+                        }
+
+                        @if (cp.telegramHandle) {
+                          <p class="contact-person-meta-row">
+                            <mat-icon aria-hidden="true" class="contact-person-meta-icon"
+                              >send</mat-icon
+                            >
+                            <span>{{ cp.telegramHandle }}</span>
+                          </p>
+                        }
                       </div>
                     } @else {
                       <span>Не выбрано</span>
@@ -131,9 +189,15 @@
                       </button>
                       <mat-menu #contactPersonMenu="matMenu">
                         @for (contact of clientContacts(); track contact.id) {
-                          <button mat-menu-item type="button" (click)="changeContactPerson(contact)">
+                          <button
+                            mat-menu-item
+                            type="button"
+                            (click)="changeContactPerson(contact)"
+                          >
                             {{ contact.fullName }}{{ contact.role ? ' — ' + contact.role : '' }}
-                            @if (contact.primary) {<span> (Основной)</span>}
+                            @if (contact.primary) {
+                              <span> (Основной)</span>
+                            }
                           </button>
                         }
                       </mat-menu>
@@ -144,7 +208,10 @@
             </dl>
           } @else {
             <div class="client-placeholder-card">
-              <p class="client-placeholder-title">Клиент не привязан</p>
+              <div class="client-placeholder-header">
+                <mat-icon aria-hidden="true" class="client-placeholder-icon">person_off</mat-icon>
+                <p class="client-placeholder-title">Клиент не привязан</p>
+              </div>
               <p class="client-placeholder-text">
                 Этот лид ещё не привязан к клиенту. Привяжите существующего клиента или сохраните
                 лид как новый профиль клиента.
@@ -381,7 +448,9 @@
             <h2 class="lead-card-title">Бронирование</h2>
             @if (bookingDetail(); as bd) {
               <a class="lead-link" [routerLink]="['/app/bookings', bd.id]">
-                <mat-icon style="vertical-align: middle; font-size: 1rem; width: 1rem; height: 1rem;">open_in_new</mat-icon>
+                <mat-icon style="vertical-align: middle; font-size: 1rem; width: 1rem; height: 1rem"
+                  >open_in_new</mat-icon
+                >
                 Открыть
               </a>
             }
@@ -542,7 +611,6 @@
           />
         </section>
       }
-
     </app-page-content>
   } @else {
     <p class="lead-not-found">Лид не найден.</p>

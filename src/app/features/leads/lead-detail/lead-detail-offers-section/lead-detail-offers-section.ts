@@ -12,7 +12,14 @@ import type { OfferResponseDto } from '@app/shared/models';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-lead-detail-offers-section',
-  imports: [RouterLink, MatTableModule, MatIconModule, DecimalPipe, OfferStatusChipComponent, ...MAT_BUTTONS],
+  imports: [
+    RouterLink,
+    MatTableModule,
+    MatIconModule,
+    DecimalPipe,
+    OfferStatusChipComponent,
+    ...MAT_BUTTONS,
+  ],
   templateUrl: './lead-detail-offers-section.html',
   styleUrl: './lead-detail-offers-section.scss',
 })

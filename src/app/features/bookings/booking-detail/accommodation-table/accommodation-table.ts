@@ -20,7 +20,14 @@ import type { BookingAccommodationDto } from '@app/shared/models';
 @Component({
   selector: 'app-accommodation-table',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, ReactiveFormsModule, MatTableModule, ...MAT_FORM_BUTTONS, ...MAT_BUTTONS, ...MAT_ICONS],
+  imports: [
+    DatePipe,
+    ReactiveFormsModule,
+    MatTableModule,
+    ...MAT_FORM_BUTTONS,
+    ...MAT_BUTTONS,
+    ...MAT_ICONS,
+  ],
   templateUrl: './accommodation-table.html',
   styleUrl: './accommodation-table.scss',
 })
@@ -59,7 +66,15 @@ export class AccommodationTableComponent {
   readonly editing = signal(false);
   readonly editRows = signal<BookingAccommodationDto[]>([]);
 
-  readonly columns = ['hotel', 'roomType', 'mealPlan', 'checkinDate', 'checkoutDate', 'nights', 'total'];
+  readonly columns = [
+    'hotel',
+    'roomType',
+    'mealPlan',
+    'checkinDate',
+    'checkoutDate',
+    'nights',
+    'total',
+  ];
   readonly mealPlanOptions = MEAL_PLAN_OPTIONS;
 
   readonly rowForm = this.fb.nonNullable.group({

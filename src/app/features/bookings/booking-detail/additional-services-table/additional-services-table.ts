@@ -22,7 +22,14 @@ import type {
 @Component({
   selector: 'app-additional-services-table',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DecimalPipe, ReactiveFormsModule, MatTableModule, ...MAT_FORM_BUTTONS, ...MAT_BUTTONS, ...MAT_ICONS],
+  imports: [
+    DecimalPipe,
+    ReactiveFormsModule,
+    MatTableModule,
+    ...MAT_FORM_BUTTONS,
+    ...MAT_BUTTONS,
+    ...MAT_ICONS,
+  ],
   templateUrl: './additional-services-table.html',
   styleUrl: './additional-services-table.scss',
 })
