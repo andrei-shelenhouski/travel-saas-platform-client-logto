@@ -3,68 +3,194 @@
     <h2 class="client-card-title">Детали клиента</h2>
   </div>
 
-  <dl class="client-data-list">
-    <div class="client-data-row">
-      <dt>Тип клиента</dt>
-      <dd>{{ typeLabel[client().type] }}</dd>
-    </div>
-    @if (client().email) {
-      <div class="client-data-row">
-        <dt>Электронная почта</dt>
-        <dd>{{ client().email }}</dd>
-      </div>
+  <div class="client-sections">
+    <section class="client-info-section">
+      <h3 class="client-info-section-title">Основное</h3>
+      <dl class="client-data-list">
+        <div class="client-data-row">
+          <dt>Тип клиента</dt>
+          <dd>{{ typeLabel[client().type] }}</dd>
+        </div>
+        @if (isNonIndividual()) {
+          @if (client().companyName) {
+            <div class="client-data-row">
+              <dt>Название компании</dt>
+              <dd>{{ client().companyName }}</dd>
+            </div>
+          }
+          @if (client().fullName) {
+            <div class="client-data-row">
+              <dt>Контактное лицо</dt>
+              <dd>{{ client().fullName }}</dd>
+            </div>
+          }
+        } @else if (client().fullName) {
+          <div class="client-data-row">
+            <dt>Полное имя</dt>
+            <dd>{{ client().fullName }}</dd>
+          </div>
+        }
+      </dl>
+    </section>
+
+    <section class="client-info-section">
+      <h3 class="client-info-section-title">Контакты</h3>
+      <dl class="client-data-list">
+        @if (client().phone) {
+          <div class="client-data-row">
+            <dt>Телефон</dt>
+            <dd>{{ client().phone }}</dd>
+          </div>
+        }
+        @if (client().email) {
+          <div class="client-data-row">
+            <dt>Электронная почта</dt>
+            <dd>{{ client().email }}</dd>
+          </div>
+        }
+        @if (client().telegramHandle) {
+          <div class="client-data-row">
+            <dt>Telegram</dt>
+            <dd>{{ client().telegramHandle }}</dd>
+          </div>
+        }
+        @if (!client().phone && !client().email && !client().telegramHandle) {
+          <div class="client-data-empty">Контакты не указаны</div>
+        }
+      </dl>
+    </section>
+
+    @if (isNonIndividual() && hasLegalInfo()) {
+      <section class="client-info-section">
+        <h3 class="client-info-section-title">Юридические реквизиты</h3>
+        <dl class="client-data-list">
+          @if (client().legalAddress) {
+            <div class="client-data-row">
+              <dt>Юридический адрес</dt>
+              <dd>{{ client().legalAddress }}</dd>
+            </div>
+          }
+          @if (client().unp) {
+            <div class="client-data-row">
+              <dt>УНП</dt>
+              <dd>{{ client().unp }}</dd>
+            </div>
+          }
+          @if (client().okpo) {
+            <div class="client-data-row">
+              <dt>ОКПО</dt>
+              <dd>{{ client().okpo }}</dd>
+            </div>
+          }
+        </dl>
+      </section>
     }
-    @if (client().phone) {
-      <div class="client-data-row">
-        <dt>Телефон</dt>
-        <dd>{{ client().phone }}</dd>
-      </div>
+
+    @if (isNonIndividual() && hasBankInfo()) {
+      <section class="client-info-section">
+        <h3 class="client-info-section-title">Банковские реквизиты</h3>
+        <dl class="client-data-list">
+          @if (client().iban) {
+            <div class="client-data-row">
+              <dt>IBAN</dt>
+              <dd>{{ client().iban }}</dd>
+            </div>
+          }
+          @if (client().bankName) {
+            <div class="client-data-row">
+              <dt>Название банка</dt>
+              <dd>{{ client().bankName }}</dd>
+            </div>
+          }
+          @if (client().bik) {
+            <div class="client-data-row">
+              <dt>БИК</dt>
+              <dd>{{ client().bik }}</dd>
+            </div>
+          }
+        </dl>
+      </section>
     }
+
+    @if (hasB2BAgentInfo()) {
+      <section class="client-info-section">
+        <h3 class="client-info-section-title">Данные B2B агента</h3>
+        <dl class="client-data-list">
+          @if (client().trademark) {
+            <div class="client-data-row">
+              <dt>Торговая марка</dt>
+              <dd>{{ client().trademark }}</dd>
+            </div>
+          }
+          @if (client().registrationCert) {
+            <div class="client-data-row">
+              <dt>Свидетельство о регистрации</dt>
+              <dd>{{ client().registrationCert }}</dd>
+            </div>
+          }
+          @if (client().taxationType) {
+            <div class="client-data-row">
+              <dt>Система налогообложения</dt>
+              <dd>{{ client().taxationType }}</dd>
+            </div>
+          }
+          @if (client().directorName) {
+            <div class="client-data-row">
+              <dt>ФИО директора</dt>
+              <dd>{{ client().directorName }}</dd>
+            </div>
+          }
+          @if (client().commissionPct !== null) {
+            <div class="client-data-row">
+              <dt>Комиссия агента</dt>
+              <dd>{{ client().commissionPct }}%</dd>
+            </div>
+          }
+          @if (client().rataMember !== null) {
+            <div class="client-data-row">
+              <dt>Действительный член РАТА</dt>
+              <dd>{{ client().rataMember ? 'Да' : 'Нет' }}</dd>
+            </div>
+          }
+        </dl>
+      </section>
+    }
+
     @if (client().notes) {
-      <div class="client-data-row">
-        <dt>Заметки</dt>
-        <dd class="client-notes-cell">{{ client().notes }}</dd>
-      </div>
+      <section class="client-info-section">
+        <h3 class="client-info-section-title">Заметки</h3>
+        <p class="client-notes-cell">{{ client().notes }}</p>
+      </section>
     }
-    @if (isB2BAgent()) {
-      @if (client().trademark) {
+
+    <section class="client-info-section">
+      <h3 class="client-info-section-title">Служебная информация</h3>
+      <dl class="client-data-list">
         <div class="client-data-row">
-          <dt>Торговая марка</dt>
-          <dd>{{ client().trademark }}</dd>
+          <dt>Создан</dt>
+          <dd>{{ formatDate(client().createdAt) }}</dd>
         </div>
-      }
-      @if (client().registrationCert) {
         <div class="client-data-row">
-          <dt>Свидетельство о регистрации</dt>
-          <dd>{{ client().registrationCert }}</dd>
+          <dt>Обновлен</dt>
+          <dd>{{ formatDate(client().updatedAt) }}</dd>
         </div>
-      }
-      @if (client().taxationType) {
         <div class="client-data-row">
-          <dt>Система налогообложения</dt>
-          <dd>{{ client().taxationType }}</dd>
+          <dt>Согласие на обработку данных</dt>
+          <dd>{{ client().dataConsentGiven ? 'Получено' : 'Не получено' }}</dd>
         </div>
-      }
-      @if (client().directorName) {
+        @if (client().dataConsentDate) {
+          <div class="client-data-row">
+            <dt>Дата согласия</dt>
+            <dd>{{ formatDate(client().dataConsentDate) }}</dd>
+          </div>
+        }
         <div class="client-data-row">
-          <dt>ФИО директора</dt>
-          <dd>{{ client().directorName }}</dd>
+          <dt>ID</dt>
+          <dd class="client-id-cell">{{ client().id }}</dd>
         </div>
-      }
-      <div class="client-data-row">
-        <dt>Действительный член РАТА</dt>
-        <dd>{{ client().rataMember ? 'Да' : 'Нет' }}</dd>
-      </div>
-    }
-    <div class="client-data-row">
-      <dt>Создан</dt>
-      <dd>{{ formatDate(client().createdAt) }}</dd>
-    </div>
-    <div class="client-data-row">
-      <dt>ID</dt>
-      <dd class="client-id-cell">{{ client().id }}</dd>
-    </div>
-  </dl>
+      </dl>
+    </section>
+  </div>
 
   <div class="client-tags-section">
     @if (tagsLoading()) {

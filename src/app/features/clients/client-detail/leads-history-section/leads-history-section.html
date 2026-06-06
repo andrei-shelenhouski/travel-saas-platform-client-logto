@@ -24,7 +24,9 @@
         </ng-container>
         <ng-container matColumnDef="source">
           <th *matHeaderCellDef mat-header-cell>Источник</th>
-          <td *matCellDef="let row" mat-cell>{{ row.source ?? '—' }}</td>
+          <td *matCellDef="let row" mat-cell>
+            <app-lead-source-badge [source]="row.source" size="compact"></app-lead-source-badge>
+          </td>
         </ng-container>
         <ng-container matColumnDef="assignedAgent">
           <th *matHeaderCellDef mat-header-cell>Менеджер</th>

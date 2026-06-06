@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 
 import { map } from 'rxjs/operators';
 
+import { LeadSourceBadgeComponent } from '@app/features/leads/lead-source-badge/lead-source-badge';
 import { ClientsService } from '@app/services/clients.service';
 import { LeadStatusChipComponent } from '@app/shared/components';
 import { MAT_BUTTONS } from '@app/shared/material-imports';
@@ -15,7 +16,13 @@ import type { LeadResponseDto } from '@app/shared/models';
 @Component({
   selector: 'app-leads-history-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatProgressSpinnerModule, MatTableModule, LeadStatusChipComponent, ...MAT_BUTTONS],
+  imports: [
+    MatProgressSpinnerModule,
+    MatTableModule,
+    LeadSourceBadgeComponent,
+    LeadStatusChipComponent,
+    ...MAT_BUTTONS,
+  ],
   templateUrl: './leads-history-section.html',
   styleUrl: './leads-history-section.scss',
 })

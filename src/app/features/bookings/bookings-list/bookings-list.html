@@ -81,9 +81,7 @@
         <th *matHeaderCellDef mat-header-cell>Источник</th>
         <td *matCellDef="let element" mat-cell>
           @if (isDirectEntrySource(element)) {
-            <span class="status-badge status-badge--direct-entry">
-              Direct Entry
-            </span>
+            <span class="status-badge status-badge--direct-entry"> Прямое бронирование </span>
           } @else {
             —
           }

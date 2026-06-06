@@ -30,6 +30,33 @@ export class ClientProfileCardComponent {
   protected readonly typeLabel = TYPE_LABEL;
 
   protected readonly isB2BAgent = computed(() => this.client().type === ClientType.B2B_AGENT);
+  protected readonly isNonIndividual = computed(() => this.client().type !== ClientType.INDIVIDUAL);
+  protected readonly hasLegalInfo = computed(() => {
+    const client = this.client();
+
+    return Boolean(client.legalAddress || client.unp || client.okpo);
+  });
+  protected readonly hasBankInfo = computed(() => {
+    const client = this.client();
+
+    return Boolean(client.iban || client.bankName || client.bik);
+  });
+  protected readonly hasB2BAgentInfo = computed(() => {
+    if (!this.isB2BAgent()) {
+      return false;
+    }
+
+    const client = this.client();
+
+    return Boolean(
+      client.trademark ||
+      client.registrationCert ||
+      client.taxationType ||
+      client.directorName ||
+      client.rataMember !== null ||
+      client.commissionPct !== null,
+    );
+  });
 
   formatDate(iso: string | null | undefined): string {
     if (!iso) {
