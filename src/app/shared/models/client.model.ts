@@ -22,7 +22,9 @@ export type ContactResponseDto = {
   role: string | null;
   email: string | null;
   phone: string | null;
+  telegramHandle: string | null;
   createdAt: string;
+  updatedAt: string;
   primary: boolean;
 };
 
@@ -32,6 +34,7 @@ export type CreateContactDto = {
   role?: string;
   email?: string;
   phone?: string;
+  telegramHandle?: string;
   isPrimary?: boolean;
 };
 
@@ -41,6 +44,7 @@ export type UpdateContactDto = {
   role?: string;
   email?: string;
   phone?: string;
+  telegramHandle?: string;
   isPrimary?: boolean;
 };
 

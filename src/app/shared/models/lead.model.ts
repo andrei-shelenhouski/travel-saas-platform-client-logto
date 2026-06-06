@@ -49,6 +49,7 @@ export type CreateLeadDto = {
   children?: number;
   notes?: string;
   assignedAgentId?: string;
+  contactPersonId?: string;
 };
 
 export type DeletedByDto = {
@@ -59,6 +60,19 @@ export type DeletedByDto = {
 export type DeleteLeadResponseDto = {
   id: string;
   deletedAt: string;
+};
+
+/** OpenAPI: LeadBookingDto. Booking summary embedded in GET /api/leads/{id} response. */
+export type LeadBookingDto = {
+  id: string;
+  number: string;
+  status: string;
+  destination?: string | null;
+  departDate?: string | null;
+  returnDate?: string | null;
+  assignedBackofficeName?: string | null;
+  supplierConfirmationNumber?: string | null;
+  invoicesCount: number;
 };
 
 export type LeadResponseDto = {
@@ -72,6 +86,7 @@ export type LeadResponseDto = {
   contactEmail: string | null;
   contactTelegram: string | null;
   companyName: string | null;
+  contactPersonId?: string | null;
   destination: string | null;
   departDateFrom: string | null;
   departDateTo: string | null;
@@ -92,6 +107,7 @@ export type LeadResponseDto = {
   deletedBy?: DeletedByDto | null;
   offers?: OfferResponseDto[];
   customFields?: CustomFieldValueDto[];
+  booking?: LeadBookingDto | null;
 };
 
 export type PaginatedLeadResponseDto = PaginatedDto<LeadResponseDto>;
@@ -132,6 +148,11 @@ export type PromoteLeadToClientResponseDto = {
 /** OpenAPI: AssignLeadRequest. PATCH /api/leads/{id}/assign body. */
 export type AssignLeadDto = {
   agentId: string;
+};
+
+/** OpenAPI: UpdateLeadContactPersonRequest. PATCH /api/leads/{id}/contact-person body. */
+export type UpdateLeadContactPersonDto = {
+  contactPersonId: string;
 };
 
 // ----- Status option constants -----

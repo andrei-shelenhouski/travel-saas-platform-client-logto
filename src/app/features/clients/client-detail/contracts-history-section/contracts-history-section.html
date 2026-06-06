@@ -1,0 +1,101 @@
+<section class="client-card">
+  <div class="client-card-header">
+    <h2 class="client-card-title">Договоры</h2>
+    @if (canCreateContracts()) {
+      <button matButton="filled" type="button" (click)="openCreateContractDialog()">
+        <span>Добавить договор</span>
+      </button>
+    }
+  </div>
+
+  @if (loading()) {
+    <div class="history-section-loading">
+      <mat-spinner aria-label="Загрузка договоров..." diameter="36" />
+    </div>
+  } @else if (contracts().length === 0) {
+    <div class="history-section-empty">
+      <p>Договоры ещё не добавлены</p>
+      @if (canCreateContracts()) {
+        <button mat-stroked-button type="button" (click)="openCreateContractDialog()">
+          <span>Добавить договор</span>
+        </button>
+      }
+    </div>
+  } @else {
+    <div class="table-wrap">
+      <table class="contracts-table" mat-table [dataSource]="contracts()">
+        <ng-container matColumnDef="contractNumber">
+          <th *matHeaderCellDef mat-header-cell>Номер</th>
+          <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.contractNumber }}</td>
+        </ng-container>
+        <ng-container matColumnDef="signedAt">
+          <th *matHeaderCellDef mat-header-cell>Дата подписания</th>
+          <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.signedAt) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="expiresAt">
+          <th *matHeaderCellDef mat-header-cell>Действует до</th>
+          <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.expiresAt) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="createdAt">
+          <th *matHeaderCellDef mat-header-cell>Создано</th>
+          <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.createdAt) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="signatureMethod">
+          <th *matHeaderCellDef mat-header-cell>Способ подписания</th>
+          <td *matCellDef="let row" mat-cell>{{ contractSignatureLabel(row.signatureMethod) }}</td>
+        </ng-container>
+        <ng-container matColumnDef="status">
+          <th *matHeaderCellDef mat-header-cell>Статус</th>
+          <td *matCellDef="let row" mat-cell>
+            <span [class]="contractStatusClass(row.status)">{{ row.status }}</span>
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <th *matHeaderCellDef mat-header-cell>Действия</th>
+          <td *matCellDef="let row" mat-cell>
+            <button
+              aria-label="Действия с договором"
+              mat-icon-button
+              type="button"
+              [disabled]="!canManageContract(row)"
+              [matMenuTriggerFor]="contractActionsMenu"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #contractActionsMenu="matMenu">
+              <button
+                mat-menu-item
+                type="button"
+                [disabled]="!canManageContract(row)"
+                (click)="openEditContractDialog(row)"
+              >
+                <span>Редактировать</span>
+              </button>
+              <button
+                mat-menu-item
+                type="button"
+                [disabled]="!canManageContract(row)"
+                (click)="terminateContract(row)"
+              >
+                <span>Расторгнуть</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+        <tr *matHeaderRowDef="columns" class="table-header-row" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: columns" class="table-row" mat-row></tr>
+      </table>
+    </div>
+
+    @if (contractsTotal() > contractsPageSize) {
+      <mat-paginator
+        class="contracts-paginator"
+        [length]="contractsTotal()"
+        [pageIndex]="contractsPageIndex()"
+        [pageSize]="contractsPageSize"
+        [showFirstLastButtons]="true"
+        (page)="onContractsPageChange($event)"
+      />
+    }
+  }
+</section>

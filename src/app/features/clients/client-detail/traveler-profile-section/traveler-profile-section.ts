@@ -12,13 +12,14 @@ import { rxResource } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { catchError, of } from 'rxjs';
 
 import { PersonsService } from '@app/services/persons.service';
-import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 
 import type {
   CreatePersonRequestDto,
@@ -64,9 +65,11 @@ const GENDER_LABEL: Record<string, string | undefined> = {
     ReactiveFormsModule,
     MatExpansionModule,
     MatIconModule,
+    MatMenuModule,
     MatProgressSpinnerModule,
     ...MAT_BUTTONS,
     ...MAT_FORM_BUTTONS,
+    ...MAT_MENU,
   ],
   templateUrl: './traveler-profile-section.html',
   styleUrl: './traveler-profile-section.scss',
@@ -354,7 +357,7 @@ export class TravelerProfileSectionComponent {
   protected openEditDocForm(doc: PersonDocumentResponseDto): void {
     this.editingDocId.set(doc.id);
     this.addDocForm.reset({
-      type: doc.type as string,
+      type: doc.type,
       number: '',
       series: doc.series ?? '',
       issueDate: doc.issueDate ?? '',
@@ -458,7 +461,7 @@ export class TravelerProfileSectionComponent {
   protected openEditAddrForm(addr: PersonAddressResponseDto): void {
     this.editingAddrId.set(addr.id);
     this.addAddrForm.reset({
-      type: addr.type as string,
+      type: addr.type,
       street: addr.street ?? '',
       city: addr.city ?? '',
       region: addr.region ?? '',
@@ -534,7 +537,7 @@ export class TravelerProfileSectionComponent {
   protected openEditContactForm(contact: PersonContactResponseDto): void {
     this.editingContactId.set(contact.id);
     this.addContactForm.reset({
-      medium: contact.medium as string,
+      medium: contact.medium,
       value: contact.value,
       primary: contact.primary,
     });

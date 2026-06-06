@@ -362,33 +362,35 @@
                     }
                   </div>
                   <div class="doc-item-actions">
-                    @if (!contact.primary) {
-                      <button
-                        class="action-btn-sm"
-                        mat-stroked-button
-                        type="button"
-                        (click)="setContactPrimary(contact.id)"
-                      >
-                        Основной
+                    <button
+                      aria-label="Действия с контактом"
+                      mat-icon-button
+                      type="button"
+                      [matMenuTriggerFor]="contactActionsMenu"
+                    >
+                      <mat-icon>more_vert</mat-icon>
+                    </button>
+                    <mat-menu #contactActionsMenu="matMenu">
+                      @if (!contact.primary) {
+                        <button mat-menu-item type="button" (click)="setContactPrimary(contact.id)">
+                          <mat-icon>star</mat-icon>
+                          <span>Сделать основным</span>
+                        </button>
+                      }
+                      <button mat-menu-item type="button" (click)="openEditContactForm(contact)">
+                        <mat-icon>edit</mat-icon>
+                        <span>Редактировать</span>
                       </button>
-                    }
-                    <button
-                      aria-label="Редактировать"
-                      mat-icon-button
-                      type="button"
-                      (click)="openEditContactForm(contact)"
-                    >
-                      <mat-icon>edit</mat-icon>
-                    </button>
-                    <button
-                      aria-label="Удалить"
-                      color="warn"
-                      mat-icon-button
-                      type="button"
-                      (click)="deleteContact(contact.id)"
-                    >
-                      <mat-icon>delete</mat-icon>
-                    </button>
+                      <button
+                        class="menu-item-warn"
+                        mat-menu-item
+                        type="button"
+                        (click)="deleteContact(contact.id)"
+                      >
+                        <mat-icon>delete</mat-icon>
+                        <span>Удалить</span>
+                      </button>
+                    </mat-menu>
                   </div>
                 </div>
               }

@@ -108,6 +108,22 @@
         }
       </mat-form-field>
 
+      @if (showContactPersonPicker()) {
+        <mat-form-field appearance="outline">
+          <mat-label>Контактное лицо</mat-label>
+          <mat-select
+            [value]="selectedContactPersonId()"
+            (selectionChange)="onContactPersonSelected($event)"
+          >
+            @for (contact of clientContacts(); track contact.id) {
+              <mat-option [value]="contact.id">
+                {{ contact.fullName }}{{ contact.role ? ' — ' + contact.role : '' }}
+              </mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      }
+
       <mat-form-field appearance="outline">
         <mat-label>Телефон</mat-label>
         <input
@@ -251,7 +267,7 @@
 
       @if (showAssignAgent()) {
         <mat-form-field appearance="outline" class="create-lead-full-row">
-          <mat-label>Назначить</mat-label>
+          <mat-label>Ответственный</mat-label>
           <mat-select formControlName="assignedAgentId" id="assignedAgentId">
             <mat-option value="">Не назначено</mat-option>
             @for (agent of agentOptions(); track agent.id) {

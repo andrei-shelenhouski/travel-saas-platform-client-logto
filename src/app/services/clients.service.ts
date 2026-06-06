@@ -87,6 +87,12 @@ export class ClientsService {
       .pipe(this.errorHandler.catch());
   }
 
+  listContacts(clientId: string): Observable<ContactResponseDto[]> {
+    return this.http
+      .get<ContactResponseDto[]>(`${CLIENTS_URL}/${clientId}/contacts`)
+      .pipe(this.errorHandler.catch());
+  }
+
   getLeads(
     clientId: string,
     params?: { page?: number; limit?: number },

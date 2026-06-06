@@ -9,6 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
 
 import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { SERVICE_TYPE_OPTIONS, serviceTypeLabel } from '@app/shared/models';
@@ -21,7 +22,7 @@ import type {
 @Component({
   selector: 'app-additional-services-table',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DecimalPipe, ReactiveFormsModule, ...MAT_FORM_BUTTONS, ...MAT_BUTTONS, ...MAT_ICONS],
+  imports: [DecimalPipe, ReactiveFormsModule, MatTableModule, ...MAT_FORM_BUTTONS, ...MAT_BUTTONS, ...MAT_ICONS],
   templateUrl: './additional-services-table.html',
   styleUrl: './additional-services-table.scss',
 })
@@ -37,6 +38,7 @@ export class AdditionalServicesTableComponent {
 
   readonly rows = computed<BookingServiceSnapshotEntryDto[]>(() => this.services() ?? []);
 
+  readonly columns = ['type', 'description', 'qty', 'unitPrice', 'total'];
   readonly serviceTypeOptions = SERVICE_TYPE_OPTIONS;
   readonly serviceTypeLabel = serviceTypeLabel;
 

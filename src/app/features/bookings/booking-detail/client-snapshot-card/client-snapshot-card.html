@@ -39,5 +39,37 @@
         </dd>
       </div>
     }
+
+    @if (isB2bClient()) {
+      @if (contactPerson(); as cp) {
+        <div>
+          <dt class="snapshot-label">Контактное лицо</dt>
+          <dd class="snapshot-value">
+            <div>
+              <strong>{{ cp.fullName ?? '—' }}</strong>
+              @if (cp.role) {<span> — {{ cp.role }}</span>}
+              @if (cp.phone) {<div>📞 {{ cp.phone }}</div>}
+              @if (cp.email) {<div>✉ {{ cp.email }}</div>}
+              @if (cp.telegramHandle) {<div>✈ {{ cp.telegramHandle }}</div>}
+            </div>
+            @if (canUpdate()) {
+              <button mat-stroked-button type="button" (click)="changeRequested.emit()">
+                Изменить контакт
+              </button>
+            }
+          </dd>
+        </div>
+      } @else if (canUpdate()) {
+        <div>
+          <dt class="snapshot-label">Контактное лицо</dt>
+          <dd class="snapshot-value">
+            <span>Контактное лицо не указано</span>
+            <button mat-stroked-button type="button" (click)="changeRequested.emit()">
+              Выбрать контакт
+            </button>
+          </dd>
+        </div>
+      }
+    }
   </dl>
 </section>

@@ -1,0 +1,97 @@
+<section class="client-card">
+  <div class="client-card-header">
+    <h2 class="client-card-title">Контакты</h2>
+    <button mat-stroked-button type="button" (click)="openAddDialog()">
+      <mat-icon>add</mat-icon>
+      Добавить контакт
+    </button>
+  </div>
+
+  @if (loading()) {
+    <div class="contacts-loading">
+      <mat-spinner aria-label="Загрузка контактов..." diameter="36" />
+    </div>
+  } @else if (contacts().length === 0) {
+    <p class="contacts-empty">Контакты пока не добавлены</p>
+  } @else {
+    <div class="table-wrap">
+      <table mat-table [dataSource]="contacts()">
+        <ng-container matColumnDef="name">
+          <th *matHeaderCellDef mat-header-cell>Имя</th>
+          <td *matCellDef="let contact" class="cell-primary" mat-cell>
+            {{ contact.fullName ?? '—' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="role">
+          <th *matHeaderCellDef mat-header-cell>Роль</th>
+          <td *matCellDef="let contact" mat-cell>{{ contact.role ?? '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="phone">
+          <th *matHeaderCellDef mat-header-cell>Телефон</th>
+          <td *matCellDef="let contact" mat-cell>{{ contact.phone ?? '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th *matHeaderCellDef mat-header-cell>Email</th>
+          <td *matCellDef="let contact" mat-cell>{{ contact.email ?? '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="telegram">
+          <th *matHeaderCellDef mat-header-cell>Telegram</th>
+          <td *matCellDef="let contact" mat-cell>{{ contact.telegramHandle ?? '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="primary">
+          <th *matHeaderCellDef mat-header-cell>Основной</th>
+          <td *matCellDef="let contact" mat-cell>
+            @if (contact.primary) {
+              <span class="contact-primary-badge">Да</span>
+            } @else {
+              —
+            }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="actions">
+          <th *matHeaderCellDef mat-header-cell>Действия</th>
+          <td *matCellDef="let contact" mat-cell>
+            <button
+              aria-label="Действия с контактом"
+              mat-icon-button
+              type="button"
+              [matMenuTriggerFor]="contactActionsMenu"
+            >
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #contactActionsMenu="matMenu">
+              @if (!contact.primary) {
+                <button mat-menu-item type="button" (click)="makePrimary(contact)">
+                  <mat-icon>star</mat-icon>
+                  <span>Сделать основным</span>
+                </button>
+              }
+              <button mat-menu-item type="button" (click)="openEditDialog(contact)">
+                <mat-icon>edit</mat-icon>
+                <span>Редактировать</span>
+              </button>
+              <button
+                class="menu-item-warn"
+                mat-menu-item
+                type="button"
+                (click)="deleteContact(contact)"
+              >
+                <mat-icon>delete</mat-icon>
+                <span>Удалить</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr *matHeaderRowDef="columns" class="table-header-row" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: columns" class="table-row" mat-row></tr>
+      </table>
+    </div>
+  }
+</section>

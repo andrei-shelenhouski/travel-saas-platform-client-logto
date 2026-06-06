@@ -47,7 +47,6 @@
 }
 
 .cell-deleted {
-  text-decoration: line-through;
   opacity: 0.4;
 }
 
@@ -82,4 +81,11 @@
 
 .table-spinner {
   margin-inline: auto;
+}
+
+.type-cell-content {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: auto 1fr;
+  align-items: center;
 }

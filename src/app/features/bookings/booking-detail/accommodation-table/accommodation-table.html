@@ -80,40 +80,56 @@
       }
     </div>
   } @else {
-    <div class="accommodation-table-wrap">
-      <table class="accommodation-table">
-        <thead>
-          <tr class="accommodation-thead-row">
-            <th class="accommodation-th">Отель</th>
-            <th class="accommodation-th">Номер</th>
-            <th class="accommodation-th">Питание</th>
-            <th class="accommodation-th">Заезд</th>
-            <th class="accommodation-th">Выезд</th>
-            <th class="accommodation-th accommodation-th--right">Ночей</th>
-            <th class="accommodation-th accommodation-th--right">Стоимость</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of rows(); track $index) {
-            <tr class="accommodation-tbody-row">
-              <td class="accommodation-td">{{ row.hotelName || '—' }}</td>
-              <td class="accommodation-td">{{ row.roomType || '—' }}</td>
-              <td class="accommodation-td">{{ row.mealPlan || '—' }}</td>
-              <td class="accommodation-td">
-                {{ row.checkinDate ? (row.checkinDate | date: 'mediumDate') : '—' }}
-              </td>
-              <td class="accommodation-td">
-                {{ row.checkoutDate ? (row.checkoutDate | date: 'mediumDate') : '—' }}
-              </td>
-              <td class="accommodation-td accommodation-td--right">{{ row.nights ?? '—' }}</td>
-              <td class="accommodation-td accommodation-td--right">{{ row.total ?? '—' }}</td>
-            </tr>
-          } @empty {
-            <tr>
-              <td class="accommodation-td accommodation-td--empty" colspan="7">Нет данных о проживании</td>
-            </tr>
-          }
-        </tbody>
+    <div class="table-wrap">
+      <table mat-table [dataSource]="rows()">
+        <ng-container matColumnDef="hotel">
+          <th *matHeaderCellDef mat-header-cell>Отель</th>
+          <td *matCellDef="let row" mat-cell>{{ row.hotelName || '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="roomType">
+          <th *matHeaderCellDef mat-header-cell>Номер</th>
+          <td *matCellDef="let row" mat-cell>{{ row.roomType || '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="mealPlan">
+          <th *matHeaderCellDef mat-header-cell>Питание</th>
+          <td *matCellDef="let row" mat-cell>{{ row.mealPlan || '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="checkinDate">
+          <th *matHeaderCellDef mat-header-cell>Заезд</th>
+          <td *matCellDef="let row" mat-cell>
+            {{ row.checkinDate ? (row.checkinDate | date: 'mediumDate') : '—' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="checkoutDate">
+          <th *matHeaderCellDef mat-header-cell>Выезд</th>
+          <td *matCellDef="let row" mat-cell>
+            {{ row.checkoutDate ? (row.checkoutDate | date: 'mediumDate') : '—' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="nights">
+          <th *matHeaderCellDef class="col--right" mat-header-cell>Ночей</th>
+          <td *matCellDef="let row" class="col--right" mat-cell>{{ row.nights ?? '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="total">
+          <th *matHeaderCellDef class="col--right" mat-header-cell>Стоимость</th>
+          <td *matCellDef="let row" class="col--right" mat-cell>{{ row.total ?? '—' }}</td>
+        </ng-container>
+
+        <tr *matHeaderRowDef="columns" class="table-header-row" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: columns" mat-row></tr>
+        <tr *matNoDataRow>
+          <td [attr.colspan]="columns.length">
+            <div class="table-empty-state">
+              <p>Нет данных о проживании</p>
+            </div>
+          </td>
+        </tr>
       </table>
     </div>
   }

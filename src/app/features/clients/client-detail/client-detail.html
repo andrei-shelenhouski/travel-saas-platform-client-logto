@@ -41,348 +41,47 @@
             }
           }
 
-          <section class="client-card client-history-card">
-            <div class="client-card-header">
-              <h2 class="client-card-title">История</h2>
-            </div>
+          @if (client()?.type === 'COMPANY' || client()?.type === 'B2B_AGENT') {
+            <app-contacts-section [clientId]="client()!.id" />
+          }
 
-            <mat-tab-group
-              animationDuration="0ms"
-              [selectedIndex]="selectedTabIndex()"
-              (selectedIndexChange)="onSelectedTabChange($event)"
-            >
-              <!-- Leads tab -->
-              <mat-tab>
-                <ng-template mat-tab-label>
-                  <span>Лиды</span>
-                </ng-template>
-                @if (leadsLoading()) {
-                  <div class="client-tab-loading">
-                    <mat-spinner aria-label="Загрузка лидов..." diameter="36" />
-                  </div>
-                } @else if (leads().length === 0) {
-                  <div class="client-history-empty">
-                    <p>Нет лидов</p>
-                  </div>
-                } @else {
-                  <div class="table-wrap">
-                    <table mat-table [dataSource]="leads()">
-                      <ng-container matColumnDef="number">
-                        <th *matHeaderCellDef mat-header-cell>Лид №</th>
-                        <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.number }}</td>
-                      </ng-container>
-                      <ng-container matColumnDef="status">
-                        <th *matHeaderCellDef mat-header-cell>Статус</th>
-                        <td *matCellDef="let row" mat-cell>
-                          <app-lead-status-chip [status]="row.status" />
-                        </td>
-                      </ng-container>
-                      <ng-container matColumnDef="createdAt">
-                        <th *matHeaderCellDef mat-header-cell>Создано</th>
-                        <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.createdAt) }}</td>
-                      </ng-container>
-                      <tr *matHeaderRowDef="leadsColumns" class="table-header-row" mat-header-row></tr>
-                      <tr
-                        *matRowDef="let row; columns: leadsColumns"
-                        class="table-row"
-                        mat-row
-                        tabindex="0"
-                        (click)="goToLead(row)"
-                        (keydown.enter)="goToLead(row)"
-                      ></tr>
-                    </table>
-                  </div>
-                }
-              </mat-tab>
+          @defer (on viewport) {
+            <app-leads-history-section [clientId]="client()!.id" />
+          } @placeholder {
+            <div class="history-section-placeholder"></div>
+          }
 
-              <!-- Offers tab -->
-              <mat-tab>
-                <ng-template mat-tab-label>
-                  <span>Предложения</span>
-                </ng-template>
-                @if (offersLoading()) {
-                  <div class="client-tab-loading">
-                    <mat-spinner aria-label="Загрузка предложений..." diameter="36" />
-                  </div>
-                } @else if (offers().length === 0) {
-                  <div class="client-history-empty">
-                    <p>Нет предложений</p>
-                  </div>
-                } @else {
-                  <div class="table-wrap">
-                    <table mat-table [dataSource]="offers()">
-                      <ng-container matColumnDef="offerNumber">
-                        <th *matHeaderCellDef mat-header-cell>Предложение №</th>
-                        <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.offerNumber ?? '—' }}</td>
-                      </ng-container>
-                      <ng-container matColumnDef="destination">
-                        <th *matHeaderCellDef mat-header-cell>Направление</th>
-                        <td *matCellDef="let row" mat-cell>{{ row.destination ?? '—' }}</td>
-                      </ng-container>
-                      <ng-container matColumnDef="total">
-                        <th *matHeaderCellDef mat-header-cell>Итого</th>
-                        <td *matCellDef="let row" mat-cell>
-                          @if (row.totalPrice !== null && row.totalPrice !== undefined) {
-                            {{ row.totalPrice }} {{ row.currency ?? '' }}
-                          } @else {
-                            —
-                          }
-                        </td>
-                      </ng-container>
-                      <ng-container matColumnDef="status">
-                        <th *matHeaderCellDef mat-header-cell>Статус</th>
-                        <td *matCellDef="let row" mat-cell>
-                          <app-offer-status-chip [status]="row.status" />
-                        </td>
-                      </ng-container>
-                      <ng-container matColumnDef="createdAt">
-                        <th *matHeaderCellDef mat-header-cell>Создано</th>
-                        <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.createdAt) }}</td>
-                      </ng-container>
-                      <tr *matHeaderRowDef="offersColumns" class="table-header-row" mat-header-row></tr>
-                      <tr
-                        *matRowDef="let row; columns: offersColumns"
-                        class="table-row"
-                        mat-row
-                        tabindex="0"
-                        (click)="goToOffer(row)"
-                        (keydown.enter)="goToOffer(row)"
-                      ></tr>
-                    </table>
-                  </div>
-                }
-              </mat-tab>
+          @defer (on viewport) {
+            <app-offers-history-section [clientId]="client()!.id" />
+          } @placeholder {
+            <div class="history-section-placeholder"></div>
+          }
 
-              <!-- Bookings tab -->
-              <mat-tab>
-                <ng-template mat-tab-label>
-                  <span>Бронирования</span>
-                </ng-template>
-                @if (bookingsLoading()) {
-                  <div class="client-tab-loading">
-                    <mat-spinner aria-label="Загрузка бронирований..." diameter="36" />
-                  </div>
-                } @else if (bookings().length === 0) {
-                  <div class="client-history-empty">
-                    <p>Нет бронирований</p>
-                  </div>
-                } @else {
-                  <div class="table-wrap">
-                    <table mat-table [dataSource]="bookings()">
-                      <ng-container matColumnDef="bookingNumber">
-                        <th *matHeaderCellDef mat-header-cell>Бронирование №</th>
-                        <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.bookingNumber ?? '—' }}</td>
-                      </ng-container>
-                      <ng-container matColumnDef="destination">
-                        <th *matHeaderCellDef mat-header-cell>Направление</th>
-                        <td *matCellDef="let row" mat-cell>{{ row.destination ?? '—' }}</td>
-                      </ng-container>
-                      <ng-container matColumnDef="dates">
-                        <th *matHeaderCellDef mat-header-cell>Даты</th>
-                        <td *matCellDef="let row" mat-cell>
-                          {{ formatDateShort(row.departDate) }} – {{ formatDateShort(row.returnDate) }}
-                        </td>
-                      </ng-container>
-                      <ng-container matColumnDef="status">
-                        <th *matHeaderCellDef mat-header-cell>Статус</th>
-                        <td *matCellDef="let row" mat-cell>
-                          <app-booking-status-chip [status]="row.status" />
-                        </td>
-                      </ng-container>
-                      <ng-container matColumnDef="total">
-                        <th *matHeaderCellDef mat-header-cell>Итого</th>
-                        <td *matCellDef="let row" mat-cell>
-                          @if (row.totalPrice !== null && row.totalPrice !== undefined) {
-                            {{ row.totalPrice }} {{ row.currency ?? '' }}
-                          } @else {
-                            —
-                          }
-                        </td>
-                      </ng-container>
-                      <tr *matHeaderRowDef="bookingsColumns" class="table-header-row" mat-header-row></tr>
-                      <tr
-                        *matRowDef="let row; columns: bookingsColumns"
-                        class="table-row"
-                        mat-row
-                        tabindex="0"
-                        (click)="goToBooking(row)"
-                        (keydown.enter)="goToBooking(row)"
-                      ></tr>
-                    </table>
-                  </div>
-                }
-              </mat-tab>
+          @defer (on viewport) {
+            <app-bookings-history-section [clientId]="client()!.id" />
+          } @placeholder {
+            <div class="history-section-placeholder"></div>
+          }
 
-              <!-- Invoices tab -->
-              <mat-tab>
-                <ng-template mat-tab-label>
-                  <span>Счета</span>
-                </ng-template>
-                @if (invoicesLoading()) {
-                  <div class="client-tab-loading">
-                    <mat-spinner aria-label="Загрузка счетов..." diameter="36" />
-                  </div>
-                } @else if (invoices().length === 0) {
-                  <div class="client-history-empty">
-                    <p>Нет счетов</p>
-                  </div>
-                } @else {
-                  <div class="table-wrap">
-                    <table mat-table [dataSource]="invoices()">
-                      <ng-container matColumnDef="number">
-                        <th *matHeaderCellDef mat-header-cell>Счёт №</th>
-                        <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.number }}</td>
-                      </ng-container>
-                      <ng-container matColumnDef="invoiceDate">
-                        <th *matHeaderCellDef mat-header-cell>Дата счёта</th>
-                        <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.invoiceDate) }}</td>
-                      </ng-container>
-                      <ng-container matColumnDef="dueDate">
-                        <th *matHeaderCellDef mat-header-cell>Срок оплаты</th>
-                        <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.dueDate) }}</td>
-                      </ng-container>
-                      <ng-container matColumnDef="status">
-                        <th *matHeaderCellDef mat-header-cell>Статус</th>
-                        <td *matCellDef="let row" mat-cell>
-                          <app-invoice-status-chip [status]="row.status" />
-                        </td>
-                      </ng-container>
-                      <ng-container matColumnDef="total">
-                        <th *matHeaderCellDef mat-header-cell>Итого</th>
-                        <td *matCellDef="let row" mat-cell>
-                          @if (row.total !== null && row.total !== undefined) {
-                            {{ row.total }} {{ row.currency }}
-                          } @else {
-                            —
-                          }
-                        </td>
-                      </ng-container>
-                      <tr *matHeaderRowDef="invoicesColumns" class="table-header-row" mat-header-row></tr>
-                      <tr
-                        *matRowDef="let row; columns: invoicesColumns"
-                        class="table-row"
-                        mat-row
-                        tabindex="0"
-                        (click)="goToInvoice(row)"
-                        (keydown.enter)="goToInvoice(row)"
-                      ></tr>
-                    </table>
-                  </div>
-                }
-              </mat-tab>
+          @defer (on viewport) {
+            <app-invoices-history-section [clientId]="client()!.id" />
+          } @placeholder {
+            <div class="history-section-placeholder"></div>
+          }
 
-              @if (isB2BAgent() && canViewContracts()) {
-                <mat-tab>
-                  <ng-template mat-tab-label>
-                    <span>Договоры</span>
-                  </ng-template>
-
-                  <div class="contracts-tab-header">
-                    @if (canCreateContracts()) {
-                      <button matButton="filled" type="button" (click)="openCreateContractDialog()">
-                        <span>Добавить договор</span>
-                      </button>
-                    }
-                  </div>
-
-                  @if (contractsLoading()) {
-                    <div class="client-tab-loading">
-                      <mat-spinner aria-label="Загрузка договоров..." diameter="36" />
-                    </div>
-                  } @else if (contracts().length === 0) {
-                    <div class="client-history-empty">
-                      <p>Договоры ещё не добавлены</p>
-                      @if (canCreateContracts()) {
-                        <button
-                          mat-stroked-button
-                          type="button"
-                          (click)="openCreateContractDialog()"
-                        >
-                          <span>Добавить договор</span>
-                        </button>
-                      }
-                    </div>
-                  } @else {
-                    <div class="table-wrap">
-                      <table class="contracts-table" mat-table [dataSource]="contracts()">
-                        <ng-container matColumnDef="contractNumber">
-                          <th *matHeaderCellDef mat-header-cell>Номер</th>
-                          <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.contractNumber }}</td>
-                        </ng-container>
-                        <ng-container matColumnDef="signedAt">
-                          <th *matHeaderCellDef mat-header-cell>Дата подписания</th>
-                          <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.signedAt) }}</td>
-                        </ng-container>
-                        <ng-container matColumnDef="expiresAt">
-                          <th *matHeaderCellDef mat-header-cell>Действует до</th>
-                          <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.expiresAt) }}</td>
-                        </ng-container>
-                        <ng-container matColumnDef="signatureMethod">
-                          <th *matHeaderCellDef mat-header-cell>Способ подписания</th>
-                          <td *matCellDef="let row" mat-cell>{{ contractSignatureLabel(row.signatureMethod) }}</td>
-                        </ng-container>
-                        <ng-container matColumnDef="status">
-                          <th *matHeaderCellDef mat-header-cell>Статус</th>
-                          <td *matCellDef="let row" mat-cell>
-                            <span [class]="contractStatusClass(row.status)">{{ row.status }}</span>
-                          </td>
-                        </ng-container>
-                        <ng-container matColumnDef="actions">
-                          <th *matHeaderCellDef mat-header-cell>Действия</th>
-                          <td *matCellDef="let row" mat-cell>
-                            <button
-                              aria-label="Действия с договором"
-                              mat-icon-button
-                              type="button"
-                              [disabled]="!canManageContract(row)"
-                              [matMenuTriggerFor]="contractActionsMenu"
-                            >
-                              <span aria-hidden="true" class="material-icons">more_vert</span>
-                            </button>
-                            <mat-menu #contractActionsMenu="matMenu">
-                              <button
-                                mat-menu-item
-                                type="button"
-                                [disabled]="!canManageContract(row)"
-                                (click)="openEditContractDialog(row)"
-                              >
-                                <span>Редактировать</span>
-                              </button>
-                              <button
-                                mat-menu-item
-                                type="button"
-                                [disabled]="!canManageContract(row)"
-                                (click)="terminateContract(row)"
-                              >
-                                <span>Расторгнуть</span>
-                              </button>
-                            </mat-menu>
-                          </td>
-                        </ng-container>
-                        <tr *matHeaderRowDef="contractsColumns" class="table-header-row" mat-header-row></tr>
-                        <tr
-                          *matRowDef="let row; columns: contractsColumns"
-                          class="table-row"
-                          mat-row
-                        ></tr>
-                      </table>
-                    </div>
-
-                    @if (contractsTotal() > contractsPageSize) {
-                      <mat-paginator
-                        class="contracts-paginator"
-                        [length]="contractsTotal()"
-                        [pageIndex]="contractsPageIndex()"
-                        [pageSize]="contractsPageSize"
-                        [showFirstLastButtons]="true"
-                        (page)="onContractsPageChange($event)"
-                      />
-                    }
-                  }
-                </mat-tab>
-              }
-            </mat-tab-group>
-          </section>
+          @if (client()?.type === 'B2B_AGENT') {
+            @defer (on viewport) {
+              <app-contracts-history-section
+                [canCreateContracts]="canCreateContracts()"
+                [canUpdateContracts]="canUpdateContracts()"
+                [canViewContracts]="canViewContracts()"
+                [clientId]="client()!.id"
+                [isB2BAgent]="isB2BAgent()"
+              />
+            } @placeholder {
+              <div class="history-section-placeholder"></div>
+            }
+          }
         </div>
 
         @if (customFields().length > 0) {

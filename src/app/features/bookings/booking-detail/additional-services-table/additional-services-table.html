@@ -75,46 +75,50 @@
       }
     </div>
   } @else {
-    <div class="services-table-wrap">
-      <table class="services-table">
-        <thead>
-          <tr class="services-thead-row">
-            <th class="services-th">Тип</th>
-            <th class="services-th">Описание</th>
-            <th class="services-th services-th--right">Кол-во</th>
-            <th class="services-th services-th--right">Цена за ед.</th>
-            <th class="services-th services-th--right">Итого</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (row of rows(); track $index) {
-            <tr class="services-tbody-row">
-              <td class="services-td">
-                <span class="services-type-chip">
-                  {{ serviceTypeLabel(row.serviceType) }}
-                </span>
-              </td>
-              <td class="services-td">{{ row.description || '—' }}</td>
-              <td class="services-td services-td--right">{{ row.quantity ?? 0 }}</td>
-              <td class="services-td services-td--right">
-                <span>{{ row.unitPrice ?? 0 | number: '1.0-2' }}</span>
-                @if (currency()) {
-                  <span>&nbsp;{{ currency() }}</span>
-                }
-              </td>
-              <td class="services-td services-td--right">
-                <span>{{ row.total ?? 0 | number: '1.0-2' }}</span>
-                @if (currency()) {
-                  <span>&nbsp;{{ currency() }}</span>
-                }
-              </td>
-            </tr>
-          } @empty {
-            <tr>
-              <td class="services-td services-td--empty" colspan="5">Нет доп. услуг</td>
-            </tr>
-          }
-        </tbody>
+    <div class="table-wrap">
+      <table mat-table [dataSource]="rows()">
+        <ng-container matColumnDef="type">
+          <th *matHeaderCellDef mat-header-cell>Тип</th>
+          <td *matCellDef="let row" mat-cell>
+            <span class="services-type-chip">{{ serviceTypeLabel(row.serviceType) }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+          <th *matHeaderCellDef mat-header-cell>Описание</th>
+          <td *matCellDef="let row" mat-cell>{{ row.description || '—' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="qty">
+          <th *matHeaderCellDef class="col--right" mat-header-cell>Кол-во</th>
+          <td *matCellDef="let row" class="col--right" mat-cell>{{ row.quantity ?? 0 }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="unitPrice">
+          <th *matHeaderCellDef class="col--right" mat-header-cell>Цена за ед.</th>
+          <td *matCellDef="let row" class="col--right" mat-cell>
+            {{ row.unitPrice ?? 0 | number: '1.0-2' }}
+            @if (currency()) { {{ currency() }} }
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="total">
+          <th *matHeaderCellDef class="col--right" mat-header-cell>Итого</th>
+          <td *matCellDef="let row" class="col--right" mat-cell>
+            {{ row.total ?? 0 | number: '1.0-2' }}
+            @if (currency()) { {{ currency() }} }
+          </td>
+        </ng-container>
+
+        <tr *matHeaderRowDef="columns" class="table-header-row" mat-header-row></tr>
+        <tr *matRowDef="let row; columns: columns" mat-row></tr>
+        <tr *matNoDataRow>
+          <td [attr.colspan]="columns.length">
+            <div class="table-empty-state">
+              <p>Нет доп. услуг</p>
+            </div>
+          </td>
+        </tr>
       </table>
     </div>
   }

@@ -73,6 +73,7 @@ export type UpdateBookingDto = {
   destination?: string;
   departDate?: string;
   returnDate?: string;
+  contactPersonId?: string;
 };
 
 /** OpenAPI: UpdateBookingStatusRequest. PUT /api/bookings/{id}/status. */
@@ -127,7 +128,13 @@ export type UpdateBookingTravelerRequestDto = {
 
 /** OpenAPI: InlineDocument (used by direct booking traveler inline person). */
 export type InlineDocumentDto = {
-  type?: 'INTL_PASSPORT' | 'NATIONAL_PASSPORT' | 'NATIONAL_ID' | 'BIRTH_CERTIFICATE' | 'DRIVER_LICENSE' | 'OTHER';
+  type?:
+    | 'INTL_PASSPORT'
+    | 'NATIONAL_PASSPORT'
+    | 'NATIONAL_ID'
+    | 'BIRTH_CERTIFICATE'
+    | 'DRIVER_LICENSE'
+    | 'OTHER';
   series?: string;
   number?: string;
   expiryDate?: string;
@@ -212,6 +219,7 @@ export type BookingResponseDto = {
   travelers?: BookingTravelerResponseDto[] | string;
   customFields?: CustomFieldValueDto[];
   clientPersonId?: string;
+  contactPersonId?: string | null;
   createdById?: string;
   createdAt: string;
   updatedAt: string;

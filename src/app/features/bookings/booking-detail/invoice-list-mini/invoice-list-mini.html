@@ -3,30 +3,30 @@
     <h2 class="invoice-mini-title">Счета</h2>
     @if (canCreateInvoice()) {
       <div class="invoice-mini-actions">
-        <button
-          mat-stroked-button
-          type="button"
-          [disabled]="creatingInvoice()"
-          (click)="onCreateInvoice()"
-        >
-          @if (!creatingInvoice()) {
-            <mat-icon>add</mat-icon>
-          }
-
-          @if (creatingInvoice()) {
-            <div aria-hidden="true" class="invoice-mini-spinner"></div>
-            <span>Создание...</span>
-          } @else {
-            <span>Создать счет</span>
-          }
+        <button mat-icon-button type="button" [matMenuTriggerFor]="invoiceMenu">
+          <mat-icon>more_vert</mat-icon>
         </button>
 
-        <a
-          mat-button
-          [queryParams]="{ bookingId: booking().id }"
-          [routerLink]="['/app/invoices/new']"
-          >Создать вручную</a
-        >
+        <mat-menu #invoiceMenu="matMenu">
+          <button
+            mat-menu-item
+            type="button"
+            [disabled]="creatingInvoice()"
+            (click)="onCreateInvoice()"
+          >
+            <mat-icon>add</mat-icon>
+            <span>Создать счет</span>
+          </button>
+
+          <a
+            mat-menu-item
+            [queryParams]="{ bookingId: booking().id }"
+            [routerLink]="['/app/invoices/new']"
+          >
+            <mat-icon>edit</mat-icon>
+            <span>Создать вручную</span>
+          </a>
+        </mat-menu>
       </div>
     }
   </div>
@@ -37,10 +37,7 @@
 
   <div class="invoice-mini-list">
     @for (invoice of invoices(); track invoice.id) {
-      <a
-        class="invoice-mini-item"
-        [routerLink]="['/app/invoices', invoice.id]"
-      >
+      <a class="invoice-mini-item" [routerLink]="['/app/invoices', invoice.id]">
         <div class="invoice-mini-item-info">
           <p class="invoice-mini-item-number">Счёт #{{ invoice.number }}</p>
           <p class="invoice-mini-item-meta">
@@ -51,10 +48,7 @@
           <span class="invoice-mini-item-total">
             {{ invoice.total ?? 0 | number: '1.0-2' }} {{ invoice.currency }}
           </span>
-          <span
-            class="invoice-mini-status-badge"
-            [class]="invoiceStatusClass(invoice.status)"
-          >
+          <span class="invoice-mini-status-badge" [class]="invoiceStatusClass(invoice.status)">
             {{ invoiceStatusLabel(invoice.status) }}
           </span>
         </div>

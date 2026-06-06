@@ -1,8 +1,15 @@
 <section class="traveler-card">
   <div class="traveler-header">
-    <h2>Туристы</h2>
-    <button color="primary" mat-stroked-button type="button" [disabled]="!canEdit()" (click)="addTravelers.emit()">
-      + Добавить туриста
+    <h2 class="traveler-header-title">Туристы</h2>
+    <button
+      color="primary"
+      mat-stroked-button
+      type="button"
+      [disabled]="!canEdit()"
+      (click)="addTravelers.emit()"
+    >
+      <mat-icon>person_add</mat-icon>
+      Добавить туриста
     </button>
   </div>
 
@@ -10,45 +17,52 @@
     <p class="traveler-warning">Есть туристы с документами, срок действия которых скоро истекает</p>
   }
 
-  @if (travelers().length === 0) {
-    <p class="traveler-empty">Туристы не добавлены</p>
-  } @else {
-    <div class="traveler-table-wrap">
-      <table class="traveler-table">
-        <thead>
-          <tr>
-            <th>Роль</th>
-            <th>Имя</th>
-            <th>Документ</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (traveler of travelers(); track traveler.id) {
-            <tr>
-              <td>
-                @if (isLeadRow(traveler)) {
-                  <span class="lead-badge">LEAD</span>
-                } @else {
-                  —
-                }
-              </td>
-              <td>{{ personName(traveler) }}</td>
-              <td>{{ documentLabel(traveler) }}</td>
-              <td class="traveler-actions-cell">
-                <button
-                  mat-button
-                  type="button"
-                  [disabled]="!canRemove()"
-                  (click)="removeTraveler.emit(traveler)"
-                >
-                  ×
-                </button>
-              </td>
-            </tr>
+  <div class="table-wrap">
+    <table mat-table [dataSource]="travelers()">
+      <ng-container matColumnDef="role">
+        <th *matHeaderCellDef mat-header-cell>Роль</th>
+        <td *matCellDef="let traveler" mat-cell>
+          @if (isLeadRow(traveler)) {
+            <span class="lead-badge">LEAD</span>
+          } @else {
+            —
           }
-        </tbody>
-      </table>
-    </div>
-  }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="name">
+        <th *matHeaderCellDef mat-header-cell>Имя</th>
+        <td *matCellDef="let traveler" mat-cell>{{ personName(traveler) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="document">
+        <th *matHeaderCellDef mat-header-cell>Документ</th>
+        <td *matCellDef="let traveler" mat-cell>{{ documentLabel(traveler) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th *matHeaderCellDef mat-header-cell></th>
+        <td *matCellDef="let traveler" class="traveler-actions-cell" mat-cell>
+          <button
+            mat-icon-button
+            type="button"
+            [disabled]="!canRemove()"
+            (click)="removeTraveler.emit(traveler)"
+          >
+            <mat-icon>person_remove</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="columns" class="table-header-row" mat-header-row></tr>
+      <tr *matRowDef="let row; columns: columns" mat-row></tr>
+      <tr *matNoDataRow>
+        <td [attr.colspan]="columns.length">
+          <div class="table-empty-state">
+            <p>Туристы не добавлены</p>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
 </section>

@@ -9,26 +9,54 @@
     }
   </div>
 
-  @if (offers().length === 0) {
-    <p class="offers-empty">Предложений пока нет.</p>
-  } @else {
-    <ul class="offers-list">
-      @for (offer of offers(); track offer.id) {
-        <li class="offer-row">
-          <a class="offer-row-link" [routerLink]="['/app/offers', offer.id]">
-            <span class="offer-number">{{ offer.number ?? '—' }}</span>
-            <span class="offer-destination">{{
-              offer.destination ?? 'Направление не указано'
-            }}</span>
-            <app-offer-status-chip [status]="offer.status" />
-            @if (offer.total) {
-              <span class="offer-total"
-                >{{ offer.total | number: '1.2-2' }} {{ offer.currency }}</span
-              >
-            }
-          </a>
-        </li>
-      }
-    </ul>
-  }
+  <div class="table-wrap">
+    <table mat-table [dataSource]="offers()">
+      <ng-container matColumnDef="number">
+        <th *matHeaderCellDef mat-header-cell>Номер</th>
+        <td *matCellDef="let row" mat-cell>
+          <span class="cell-primary">{{ row.number ?? '—' }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="destination">
+        <th *matHeaderCellDef mat-header-cell>Направление</th>
+        <td *matCellDef="let row" mat-cell>
+          {{ row.destination ?? '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th *matHeaderCellDef mat-header-cell>Статус</th>
+        <td *matCellDef="let row" mat-cell>
+          <app-offer-status-chip [status]="row.status" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="total">
+        <th *matHeaderCellDef mat-header-cell>Сумма</th>
+        <td *matCellDef="let row" mat-cell>
+          @if (row.total) {
+            {{ row.total | number: '1.2-2' }} {{ row.currency }}
+          } @else {
+            —
+          }
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="columns" class="table-header-row" mat-header-row></tr>
+      <tr
+        *matRowDef="let row; columns: columns"
+        class="table-row"
+        mat-row
+        [routerLink]="['/app/offers', row.id]"
+      ></tr>
+      <tr *matNoDataRow>
+        <td [attr.colspan]="columns.length">
+          <div class="table-empty-state">
+            <p>Предложений пока нет.</p>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
 </section>
