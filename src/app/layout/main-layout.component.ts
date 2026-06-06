@@ -2,16 +2,19 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  DestroyRef,
   inject,
   OnInit,
   signal,
   viewChild,
 } from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
-import { take } from 'rxjs';
+import { filter, map, take } from 'rxjs';
 
 import { AuthService } from '@app/auth/auth.service';
 import { MeService } from '@app/services/me.service';
@@ -102,7 +105,20 @@ export class MainLayoutComponent implements OnInit {
   private readonly orgState = inject(OrganizationStateService);
   private readonly meService = inject(MeService);
   private readonly router = inject(Router);
+  private readonly breakpointObserver = inject(BreakpointObserver);
+  private readonly destroyRef = inject(DestroyRef);
   readonly permissions = inject(PermissionService);
+
+  readonly isMobile = toSignal(
+    this.breakpointObserver.observe('(max-width: 767px)').pipe(map((result) => result.matches)),
+    { initialValue: false },
+  );
+
+  readonly mobileDrawerOpen = signal(false);
+
+  toggleDrawer(): void {
+    this.mobileDrawerOpen.update((open) => !open);
+  }
 
   readonly orgMenuTrigger = viewChild.required<MatMenuTrigger>('orgMenuTrigger');
 
@@ -172,6 +188,17 @@ export class MainLayoutComponent implements OnInit {
           },
         });
     }
+
+    this.router.events
+      .pipe(
+        filter((e) => e instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        if (this.isMobile()) {
+          this.mobileDrawerOpen.set(false);
+        }
+      });
   }
 
   get activeOrgName(): string {

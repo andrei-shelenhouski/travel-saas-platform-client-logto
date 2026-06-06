@@ -20,6 +20,10 @@
       hover-state-layer-opacity: 0.4,
     )
   );
+
+  @media (max-width: 767px) {
+    padding: 0.75rem 3rem 0.75rem 1rem;
+  }
 }
 
 .page-heading-title {
