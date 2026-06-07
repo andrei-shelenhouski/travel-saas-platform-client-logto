@@ -128,34 +128,60 @@
   margin: 0;
 }
 
-// Doc list
-.doc-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.person-table-wrap {
+  margin-top: 8px;
+
+  table {
+    min-width: 760px;
+  }
+
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    font-size: 0.875rem;
+  }
 }
 
-.doc-item {
+.person-table-wrap .table-row {
+  cursor: default;
+
+  &:hover {
+    background-color: transparent;
+  }
+}
+
+.bookings-section .table-row {
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--mat-sys-surface-container-high);
+  }
+}
+
+.table-cell-actions {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  min-width: 120px;
+}
+
+.mat-column-actions {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.mat-column-status {
+  white-space: nowrap;
+}
+
+.cell-primary {
+  font-weight: 500;
+}
+
+.cell-inline {
+  display: inline-flex;
+  align-items: center;
   gap: 8px;
-  padding: 6px 8px;
-  border-radius: 6px;
-  border: 1px solid #e5e7eb;
-  font-size: 14px;
-
-  &.doc-expiring {
-    border-color: #fcd34d;
-    background: #fffbeb;
-  }
-
-  &.doc-expired {
-    border-color: #fca5a5;
-    background: #fef2f2;
-  }
 }
 
 .doc-primary-icon {
@@ -165,42 +191,40 @@
   color: #f59e0b;
 }
 
-.doc-expiry {
-  margin-left: auto;
-  font-size: 12px;
+.doc-status {
   color: #6b7280;
-}
-
-.addr-list,
-.contact-list,
-.rel-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 14px;
-}
-
-// Booking history
-.booking-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.booking-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.booking-number {
+  font-size: 12px;
   font-weight: 500;
+
+  &--expiring {
+    color: #92400e;
+  }
+
+  &--expired {
+    color: #b91c1c;
+  }
+}
+
+.primary-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.doc-expiring {
+  > .mat-mdc-cell {
+    background: #fffbeb;
+  }
+}
+
+.doc-expired {
+  > .mat-mdc-cell {
+    background: #fef2f2;
+  }
 }
 
 // Consent dialog backdrop

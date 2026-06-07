@@ -5,7 +5,12 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrl: 'detail-section.scss',
   template: `
-    <h2 class="detail-section-title">{{ title() }}</h2>
+    <div class="detail-section-header">
+      <h2 class="detail-section-title">{{ title() }}</h2>
+      <div class="detail-section-actions">
+        <ng-content select="[section-actions]" />
+      </div>
+    </div>
     <ng-content />
   `,
 })

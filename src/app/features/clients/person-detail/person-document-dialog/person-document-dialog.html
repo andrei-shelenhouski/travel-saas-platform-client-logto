@@ -1,0 +1,65 @@
+<h2 mat-dialog-title>
+  {{ data.mode === 'create' ? 'Добавить документ' : 'Редактировать документ' }}
+</h2>
+
+<mat-dialog-content>
+  <form class="flex flex-col gap-4 pt-2" [formGroup]="form">
+    <mat-form-field class="w-full">
+      <mat-label>Тип документа</mat-label>
+      <mat-select formControlName="type">
+        @for (opt of typeOptions; track opt.value) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+      @if (form.controls.type.hasError('required') && form.controls.type.touched) {
+        <mat-error>Обязательное поле</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Номер</mat-label>
+      <input autocomplete="off" formControlName="number" matInput />
+      @if (data.mode === 'edit') {
+        <mat-hint>Введите полный номер заново (хранится в зашифрованном виде)</mat-hint>
+      }
+      @if (form.controls.number.hasError('required') && form.controls.number.touched) {
+        <mat-error>Обязательное поле</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Серия</mat-label>
+      <input autocomplete="off" formControlName="series" matInput />
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Дата выдачи</mat-label>
+      <input formControlName="issueDate" matInput type="date" />
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Срок действия</mat-label>
+      <input formControlName="expiryDate" matInput type="date" />
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Кем выдан</mat-label>
+      <input autocomplete="off" formControlName="issuedBy" matInput />
+    </mat-form-field>
+
+    <mat-checkbox formControlName="primary">Основной</mat-checkbox>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" [disabled]="submitting()" (click)="cancel()">Отмена</button>
+  <button
+    color="primary"
+    mat-flat-button
+    type="button"
+    [disabled]="submitting()"
+    (click)="submit()"
+  >
+    {{ submitting() ? 'Сохранение...' : data.mode === 'create' ? 'Добавить' : 'Сохранить' }}
+  </button>
+</mat-dialog-actions>

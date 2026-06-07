@@ -1,0 +1,59 @@
+<h2 mat-dialog-title>
+  {{ data.mode === 'create' ? 'Добавить адрес' : 'Редактировать адрес' }}
+</h2>
+
+<mat-dialog-content>
+  <form class="flex flex-col gap-4 pt-2" [formGroup]="form">
+    <mat-form-field class="w-full">
+      <mat-label>Тип адреса</mat-label>
+      <mat-select formControlName="type">
+        @for (opt of typeOptions; track opt.value) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+      @if (form.controls.type.hasError('required') && form.controls.type.touched) {
+        <mat-error>Обязательное поле</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Улица</mat-label>
+      <input autocomplete="off" formControlName="street" matInput />
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Город</mat-label>
+      <input autocomplete="off" formControlName="city" matInput />
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Регион</mat-label>
+      <input autocomplete="off" formControlName="region" matInput />
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Страна</mat-label>
+      <input autocomplete="off" formControlName="country" matInput />
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Индекс</mat-label>
+      <input autocomplete="off" formControlName="postalCode" matInput />
+    </mat-form-field>
+
+    <mat-checkbox formControlName="primary">Основной</mat-checkbox>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" [disabled]="submitting()" (click)="cancel()">Отмена</button>
+  <button
+    color="primary"
+    mat-flat-button
+    type="button"
+    [disabled]="submitting()"
+    (click)="submit()"
+  >
+    {{ submitting() ? 'Сохранение...' : data.mode === 'create' ? 'Добавить' : 'Сохранить' }}
+  </button>
+</mat-dialog-actions>

@@ -3,12 +3,14 @@ import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router } from '@angular/router';
 
@@ -17,18 +19,21 @@ import { finalize, map, switchMap } from 'rxjs/operators';
 
 import { ClientsService } from '@app/services/clients.service';
 import { PersonsService } from '@app/services/persons.service';
-import {
-  DetailSectionComponent,
-  LoadingStateComponent,
-  PageContentComponent,
-} from '@app/shared/components';
+import { DetailSectionComponent, LoadingStateComponent, PageContentComponent } from '@app/shared/components';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { ClientType } from '@app/shared/models';
+import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
+
+import { PersonAddressDialogComponent, PersonAddressDialogData, PersonAddressDialogResult } from './person-address-dialog/person-address-dialog';
+import { PersonContactDialogComponent, PersonContactDialogData, PersonContactDialogResult } from './person-contact-dialog/person-contact-dialog';
+import { PersonDocumentDialogComponent, PersonDocumentDialogData, PersonDocumentDialogResult } from './person-document-dialog/person-document-dialog';
 
 import type {
+  PersonAddressResponseDto,
   PersonBookingItemDto,
+  PersonContactResponseDto,
   PersonDocumentResponseDto,
   PersonRelationshipResponseDto,
   PersonResponseDto,
@@ -49,6 +54,26 @@ const GENDER_LABEL: Record<string, string> = {
   OTHER: 'Другой',
 };
 
+const ADDRESS_TYPE_LABEL: Record<string, string> = {
+  REGISTRATION: 'Прописка',
+  RESIDENTIAL: 'Фактический',
+  OTHER: 'Другой',
+};
+
+const CONTACT_MEDIUM_LABEL: Record<string, string> = {
+  PHONE: 'Телефон',
+  EMAIL: 'Email',
+  TELEGRAM: 'Telegram',
+};
+
+const RELATIONSHIP_TYPE_LABEL: Record<string, string> = {
+  SPOUSE_OF: 'Супруг/супруга',
+  PARENT_OF: 'Родитель/ребенок',
+  SIBLING_OF: 'Брат/сестра',
+  GRANDPARENT_OF: 'Бабушка/дедушка',
+  OTHER: 'Другое',
+};
+
 @Component({
   selector: 'app-person-detail',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -62,11 +87,13 @@ const GENDER_LABEL: Record<string, string> = {
     BookingStatusChipComponent,
     MatButtonModule,
     MatCheckboxModule,
+    MatDialogModule,
     MatFormFieldModule,
     MatIconModule,
     MatInputModule,
     MatSelectModule,
     MatSidenavModule,
+    MatTableModule,
     MatTooltipModule,
   ],
   templateUrl: './person-detail.html',
@@ -77,6 +104,8 @@ export class PersonDetailComponent {
   private readonly router = inject(Router);
   private readonly personsService = inject(PersonsService);
   private readonly clientsService = inject(ClientsService);
+  private readonly dialog = inject(MatDialog);
+  private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly fb = inject(FormBuilder);
 
@@ -177,6 +206,26 @@ export class PersonDetailComponent {
   }));
 
   protected readonly docTypeLabel = DOC_TYPE_LABEL;
+  protected readonly addressTypeLabel = ADDRESS_TYPE_LABEL;
+  protected readonly contactMediumLabel = CONTACT_MEDIUM_LABEL;
+  protected readonly documentColumns = ['document', 'issueDate', 'expiryDate', 'status', 'actions'];
+  protected readonly addressColumns = [
+    'type',
+    'country',
+    'city',
+    'street',
+    'postalCode',
+    'actions',
+  ];
+  protected readonly contactColumns = ['medium', 'value', 'primary', 'actions'];
+  protected readonly relationshipColumns = ['type', 'status', 'sinceDate', 'actions'];
+  protected readonly bookingColumns = [
+    'number',
+    'destination',
+    'travelPeriod',
+    'travelerRole',
+    'status',
+  ];
 
   // ---- Consent gate ----
   protected readonly consentDialogOpen = signal(false);
@@ -200,6 +249,246 @@ export class PersonDetailComponent {
 
   protected relationshipStatusLabel(status: string): string {
     return status === 'INACTIVE' ? 'Неактивная' : 'Активная';
+  }
+
+  protected relationshipTypeLabel(type: string): string {
+    return RELATIONSHIP_TYPE_LABEL[type] ?? type;
+  }
+
+  protected addressLabel(type: string): string {
+    return this.addressTypeLabel[type] || type;
+  }
+
+  protected contactMediumLabelFor(medium: string): string {
+    return this.contactMediumLabel[medium] || medium;
+  }
+
+  protected openCreateDocumentDialog(): void {
+    const personId = this.person()?.id;
+
+    if (!personId) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open<
+      PersonDocumentDialogComponent,
+      PersonDocumentDialogData,
+      PersonDocumentDialogResult
+    >(PersonDocumentDialogComponent, {
+      width: '560px',
+      data: { personId, mode: 'create' },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.saved) {
+        this.reloadPerson();
+      }
+    });
+  }
+
+  protected openEditDocumentDialog(document: PersonDocumentResponseDto): void {
+    const personId = this.person()?.id;
+
+    if (!personId) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open<
+      PersonDocumentDialogComponent,
+      PersonDocumentDialogData,
+      PersonDocumentDialogResult
+    >(PersonDocumentDialogComponent, {
+      width: '560px',
+      data: { personId, mode: 'edit', document },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.saved) {
+        this.reloadPerson();
+      }
+    });
+  }
+
+  protected deleteDocument(document: PersonDocumentResponseDto): void {
+    const personId = this.person()?.id;
+
+    if (!personId) {
+      return;
+    }
+
+    this.confirmDialog
+      .open({
+        title: 'Удалить документ',
+        message: 'Удалить документ?',
+        confirmLabel: 'Удалить',
+        cancelLabel: 'Отмена',
+        confirmColor: 'warn',
+      })
+      .subscribe((confirmed) => {
+        if (!confirmed) {
+          return;
+        }
+
+        this.personsService.deleteDocument(personId, document.id).subscribe({
+          next: () => this.reloadPerson(),
+          error: (err) =>
+            this.snackBar.open(err?.error?.message ?? 'Не удалось удалить документ', 'Close', {
+              duration: 5000,
+            }),
+        });
+      });
+  }
+
+  protected openCreateAddressDialog(): void {
+    const personId = this.person()?.id;
+
+    if (!personId) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open<
+      PersonAddressDialogComponent,
+      PersonAddressDialogData,
+      PersonAddressDialogResult
+    >(PersonAddressDialogComponent, {
+      width: '560px',
+      data: { personId, mode: 'create' },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.saved) {
+        this.reloadPerson();
+      }
+    });
+  }
+
+  protected openEditAddressDialog(address: PersonAddressResponseDto): void {
+    const personId = this.person()?.id;
+
+    if (!personId) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open<
+      PersonAddressDialogComponent,
+      PersonAddressDialogData,
+      PersonAddressDialogResult
+    >(PersonAddressDialogComponent, {
+      width: '560px',
+      data: { personId, mode: 'edit', address },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.saved) {
+        this.reloadPerson();
+      }
+    });
+  }
+
+  protected deleteAddress(address: PersonAddressResponseDto): void {
+    const personId = this.person()?.id;
+
+    if (!personId) {
+      return;
+    }
+
+    this.confirmDialog
+      .open({
+        title: 'Удалить адрес',
+        message: 'Удалить адрес?',
+        confirmLabel: 'Удалить',
+        cancelLabel: 'Отмена',
+        confirmColor: 'warn',
+      })
+      .subscribe((confirmed) => {
+        if (!confirmed) {
+          return;
+        }
+
+        this.personsService.deleteAddress(personId, address.id).subscribe({
+          next: () => this.reloadPerson(),
+          error: (err) =>
+            this.snackBar.open(err?.error?.message ?? 'Не удалось удалить адрес', 'Close', {
+              duration: 5000,
+            }),
+        });
+      });
+  }
+
+  protected openCreateContactDialog(): void {
+    const personId = this.person()?.id;
+
+    if (!personId) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open<
+      PersonContactDialogComponent,
+      PersonContactDialogData,
+      PersonContactDialogResult
+    >(PersonContactDialogComponent, {
+      width: '560px',
+      data: { personId, mode: 'create' },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.saved) {
+        this.reloadPerson();
+      }
+    });
+  }
+
+  protected openEditContactDialog(contact: PersonContactResponseDto): void {
+    const personId = this.person()?.id;
+
+    if (!personId) {
+      return;
+    }
+
+    const dialogRef = this.dialog.open<
+      PersonContactDialogComponent,
+      PersonContactDialogData,
+      PersonContactDialogResult
+    >(PersonContactDialogComponent, {
+      width: '560px',
+      data: { personId, mode: 'edit', contact },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.saved) {
+        this.reloadPerson();
+      }
+    });
+  }
+
+  protected deleteContact(contact: PersonContactResponseDto): void {
+    const personId = this.person()?.id;
+
+    if (!personId) {
+      return;
+    }
+
+    this.confirmDialog
+      .open({
+        title: 'Удалить контакт',
+        message: 'Удалить контакт?',
+        confirmLabel: 'Удалить',
+        cancelLabel: 'Отмена',
+        confirmColor: 'warn',
+      })
+      .subscribe((confirmed) => {
+        if (!confirmed) {
+          return;
+        }
+
+        this.personsService.deleteContact(personId, contact.id).subscribe({
+          next: () => this.reloadPerson(),
+          error: (err) =>
+            this.snackBar.open(err?.error?.message ?? 'Не удалось удалить контакт', 'Close', {
+              duration: 5000,
+            }),
+        });
+      });
   }
 
   protected openBooking(bookingId: string): void {
@@ -358,7 +647,7 @@ export class PersonDetailComponent {
         next: () => {
           this.snackBar.open('Согласие зафиксировано', 'Close', { duration: 3000 });
           this.consentDialogOpen.set(false);
-          this.personVersion.update((v) => v + 1);
+          this.reloadPerson();
         },
         error: (err) =>
           this.snackBar.open(err?.error?.message ?? 'Не удалось сохранить согласие', 'Close', {
@@ -408,5 +697,9 @@ export class PersonDetailComponent {
         error: () =>
           this.snackBar.open('Не удалось создать профиль клиента', 'Close', { duration: 5000 }),
       });
+  }
+
+  private reloadPerson(): void {
+    this.personVersion.update((value) => value + 1);
   }
 }
