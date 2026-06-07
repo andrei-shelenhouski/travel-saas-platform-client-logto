@@ -9,9 +9,14 @@ import {
   signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { finalize } from 'rxjs';
@@ -20,10 +25,8 @@ import { OrganizationMembersService } from '@app/services/organization-members.s
 import { PermissionService } from '@app/services/permission.service';
 import { TourvisorIntegrationService } from '@app/services/tourvisor-integration.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { OrgRole } from '@app/shared/models';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type {
   TourvisorIntegrationSettingsResponseDto,
@@ -47,7 +50,10 @@ const SALES_ROLES = new Set<string>([OrgRole.ADMIN, OrgRole.AGENT, OrgRole.SALES
     MatIconModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    ...MAT_FORM_BUTTONS,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
     PageHeading,
   ],
   templateUrl: './tourvisor-integration-card.html',

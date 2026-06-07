@@ -2,6 +2,11 @@ import { DatePipe, DecimalPipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { catchError, finalize, forkJoin, map, of, switchMap } from 'rxjs';
 
@@ -9,9 +14,7 @@ import { ClientsService } from '@app/services/clients.service';
 import { InvoicesService } from '@app/services/invoices.service';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { PermissionService } from '@app/services/permission.service';
-import { MAT_BUTTONS, MAT_ICONS, MAT_MENU } from '@app/shared/material-imports';
 import { BookingStatus, ClientType } from '@app/shared/models';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   addDaysToIsoDate,
   normalizeInvoiceCurrency,
@@ -48,7 +51,15 @@ const INVOICE_STATUS_LABELS: Record<string, string> = {
 @Component({
   selector: 'app-invoice-list-mini',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, DatePipe, DecimalPipe, ...MAT_BUTTONS, ...MAT_ICONS, ...MAT_MENU],
+  imports: [
+    RouterLink,
+    DatePipe,
+    DecimalPipe,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDividerModule,
+  ],
   templateUrl: './invoice-list-mini.html',
   styleUrl: './invoice-list-mini.scss',
 })

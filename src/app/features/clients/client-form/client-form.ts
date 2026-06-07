@@ -11,12 +11,15 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientType, CreateClientDto, UpdateClientDto } from '@app/shared/models';
 
 import type { ClientResponseDto } from '@app/shared/models';
@@ -56,7 +59,10 @@ const TYPE_OPTIONS: TypeOption[] = [
     MatCheckboxModule,
     MatIconModule,
     ReactiveFormsModule,
-    ...MAT_FORM_BUTTONS,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
     PageHeading,
     PageHeadingAction,
   ],

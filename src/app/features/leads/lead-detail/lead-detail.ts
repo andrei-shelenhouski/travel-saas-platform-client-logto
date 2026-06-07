@@ -10,12 +10,18 @@ import {
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EMPTY, forkJoin, of } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
@@ -41,7 +47,6 @@ import { PermissionService } from '@app/services/permission.service';
 import { LoadingStateComponent, PageContentComponent } from '@app/shared/components';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
-import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { LeadStatus } from '@app/shared/models';
 import { MarkdownPipe } from '@app/shared/pipes/markdown-pipe';
 
@@ -165,9 +170,12 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     MatIconModule,
     MatTableModule,
     MatTooltipModule,
-    ...MAT_BUTTONS,
-    ...MAT_FORM_BUTTONS,
-    ...MAT_MENU,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatMenuModule,
+    MatDividerModule,
     CustomFieldsSectionComponent,
     ClientTypeBadgeComponent,
     BookingStatusChipComponent,

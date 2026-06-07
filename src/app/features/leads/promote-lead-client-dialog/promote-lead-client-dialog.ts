@@ -2,11 +2,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 import { LeadsService } from '@app/services/leads.service';
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientType, LeadResponseDto, PromoteLeadToClientDto } from '@app/shared/models';
 
 type PromoteLeadClientDialogData = {
@@ -33,7 +36,15 @@ type FormControlKey =
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-promote-lead-client-dialog',
-  imports: [ReactiveFormsModule, MatDialogModule, MatCheckboxModule, ...MAT_FORM_BUTTONS],
+  imports: [
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatCheckboxModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+  ],
   templateUrl: './promote-lead-client-dialog.html',
   styleUrl: './promote-lead-client-dialog.scss',
 })

@@ -12,9 +12,14 @@ import {
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -28,14 +33,12 @@ import { LeadsService } from '@app/services/leads.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { MAT_BUTTON_TOGGLES, MAT_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import {
   CLIENT_TYPE_OPTIONS,
   LEAD_STATUS_OPTIONS,
   LeadSource,
   LeadStatus,
 } from '@app/shared/models';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type { LeadResponseDto, LeadStatus as LeadStatusType } from '@app/shared/models';
 import type { OrganizationMemberResponseDto } from '@app/shared/models';
@@ -107,9 +110,10 @@ const TERMINAL_STATUSES = new Set<LeadStatusType>([
     LeadsListFilterBarComponent,
     LeadSourceBadgeComponent,
     MatIconModule,
-    ...MAT_BUTTONS,
-    ...MAT_BUTTON_TOGGLES,
-    ...MAT_MENU,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatMenuModule,
+    MatDividerModule,
     PageHeading,
   ],
   templateUrl: './leads-kanban.html',

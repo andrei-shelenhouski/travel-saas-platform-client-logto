@@ -1,21 +1,21 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { Router } from '@angular/router';
 
 import { map } from 'rxjs/operators';
 
 import { InvoiceStatusChipComponent } from '@app/features/invoices/invoice-status-chip/invoice-status-chip';
 import { ClientsService } from '@app/services/clients.service';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 import type { InvoiceResponseDto } from '@app/shared/models';
 
 @Component({
   selector: 'app-invoices-history-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatProgressSpinnerModule, MatTableModule, InvoiceStatusChipComponent, ...MAT_BUTTONS],
+  imports: [MatProgressSpinnerModule, MatTableModule, InvoiceStatusChipComponent, MatButtonModule],
   templateUrl: './invoices-history-section.html',
   styleUrl: './invoices-history-section.scss',
 })

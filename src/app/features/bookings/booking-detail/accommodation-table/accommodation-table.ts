@@ -9,10 +9,14 @@ import {
   signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 
 import { calculateNights } from '@app/features/offers/offer-builder.utils';
-import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { MEAL_PLAN_OPTIONS } from '@app/shared/models';
 
 import type { BookingAccommodationDto } from '@app/shared/models';
@@ -24,9 +28,11 @@ import type { BookingAccommodationDto } from '@app/shared/models';
     DatePipe,
     ReactiveFormsModule,
     MatTableModule,
-    ...MAT_FORM_BUTTONS,
-    ...MAT_BUTTONS,
-    ...MAT_ICONS,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
   ],
   templateUrl: './accommodation-table.html',
   styleUrl: './accommodation-table.scss',

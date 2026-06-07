@@ -9,16 +9,16 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, Router } from '@angular/router';
 
 import { ClientsService } from '@app/services/clients.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
 
 import {
@@ -34,7 +34,7 @@ export const PAGE_SIZE = 20;
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-clients-list',
   imports: [
-    ...MAT_BUTTONS,
+    MatButtonModule,
     ClientFilterBarComponent,
     ClientTypeBadgeComponent,
     DatePipe,

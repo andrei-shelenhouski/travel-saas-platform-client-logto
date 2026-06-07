@@ -10,10 +10,17 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterLink } from '@angular/router';
+import {
+  MatAutocompleteModule,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import {
   debounceTime,
@@ -31,12 +38,6 @@ import { PersonsService } from '@app/services/persons.service';
 import { FormSectionComponent, PageContentComponent } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
-import {
-  MAT_AUTOCOMPLETE,
-  MAT_BUTTONS,
-  MAT_DIALOG,
-  MAT_FORM_BUTTONS,
-} from '@app/shared/material-imports';
 import { BOOKING_STATUS_OPTIONS, BookingStatus } from '@app/shared/models';
 
 import { AccommodationTableComponent } from '../booking-detail/accommodation-table/accommodation-table';
@@ -72,10 +73,12 @@ type ExistingTraveler = {
     FormSectionComponent,
     AccommodationTableComponent,
     AdditionalServicesTableComponent,
-    ...MAT_FORM_BUTTONS,
-    ...MAT_BUTTONS,
-    ...MAT_AUTOCOMPLETE,
-    ...MAT_DIALOG,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatAutocompleteModule,
+    MatDialogModule,
   ],
   templateUrl: './create-booking.html',
   styleUrl: './create-booking.scss',

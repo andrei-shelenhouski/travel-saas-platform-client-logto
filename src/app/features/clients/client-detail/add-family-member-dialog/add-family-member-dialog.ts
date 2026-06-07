@@ -1,18 +1,21 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { debounceTime, distinctUntilChanged, finalize, of, switchMap } from 'rxjs';
 
 import { PersonsService } from '@app/services/persons.service';
-import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import {
   CreateDetachedPersonRequestDto,
   PersonRelationshipType,
   PersonSearchResultDto,
 } from '@app/shared/models';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 type AddFamilyMemberDialogData = {
   personId: string;
@@ -36,7 +39,14 @@ const RELATION_LABEL: Record<string, string> = {
 @Component({
   selector: 'app-add-family-member-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, MatDialogModule, ...MAT_FORM_BUTTONS, ...MAT_BUTTONS],
+  imports: [
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+  ],
   templateUrl: './add-family-member-dialog.html',
   styleUrl: './add-family-member-dialog.scss',
 })

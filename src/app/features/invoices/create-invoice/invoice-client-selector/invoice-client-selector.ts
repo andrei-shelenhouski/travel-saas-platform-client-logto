@@ -1,15 +1,27 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-
-import { MAT_AUTOCOMPLETE, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+import {
+  MatAutocompleteModule,
+  MatAutocompleteSelectedEvent,
+} from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 import type { ClientResponseDto } from '@app/shared/models';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-invoice-client-selector',
-  imports: [ReactiveFormsModule, ...MAT_FORM_BUTTONS, ...MAT_AUTOCOMPLETE],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatAutocompleteModule,
+  ],
   templateUrl: './invoice-client-selector.html',
   styleUrl: './invoice-client-selector.scss',
 })

@@ -8,8 +8,11 @@ import {
   output,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { SignatureMethod } from '@app/shared/models';
 
 import type {
@@ -40,7 +43,13 @@ const SIGNATURE_METHOD_OPTIONS: SignatureMethodOption[] = [
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-contract-form',
-  imports: [ReactiveFormsModule, ...MAT_FORM_BUTTONS],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+  ],
   templateUrl: './contract-form.html',
   styleUrl: './contract-form.scss',
 })

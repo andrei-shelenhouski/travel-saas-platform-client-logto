@@ -18,15 +18,18 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
 import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectChange } from '@angular/material/select';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router, RouterLink } from '@angular/router';
 
 import { catchError, debounceTime, distinctUntilChanged, finalize, of, switchMap } from 'rxjs';
 
@@ -38,7 +41,6 @@ import { PermissionService } from '@app/services/permission.service';
 import { PageContentComponent } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import {
   ClientResponseDto,
   ContactResponseDto,
@@ -112,7 +114,10 @@ function isFieldErrorMap(value: unknown): value is FieldErrorMap {
     MatAutocompleteModule,
     MatIconModule,
     MatProgressSpinnerModule,
-    ...MAT_FORM_BUTTONS,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
     PageHeading,
     PageHeadingAction,
     PageContentComponent,

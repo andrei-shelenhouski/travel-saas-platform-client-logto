@@ -1,14 +1,23 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatChipEvent, MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-tag-selector',
-  imports: [MatChipsModule, MatIconModule, ...MAT_FORM_BUTTONS],
+  imports: [
+    MatChipsModule,
+    MatIconModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+  ],
   template: `
     <div class="space-y-2">
       @if (allowAdd()) {

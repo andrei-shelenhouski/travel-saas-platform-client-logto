@@ -1,21 +1,21 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { Router } from '@angular/router';
 
 import { map } from 'rxjs/operators';
 
 import { ClientsService } from '@app/services/clients.service';
 import { OfferStatusChipComponent } from '@app/shared/components';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 import type { OfferSummaryDto } from '@app/shared/models';
 
 @Component({
   selector: 'app-offers-history-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatProgressSpinnerModule, MatTableModule, OfferStatusChipComponent, ...MAT_BUTTONS],
+  imports: [MatProgressSpinnerModule, MatTableModule, OfferStatusChipComponent, MatButtonModule],
   templateUrl: './offers-history-section.html',
   styleUrl: './offers-history-section.scss',
 })

@@ -1,11 +1,17 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogModule,
+  MatDialogRef,
+} from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { InvoicePdfPreviewModalComponent } from '@app/features/invoices/invoice-pdf-preview-modal';
 import { InvoicesService } from '@app/services/invoices.service';
-import { MAT_BUTTONS, MAT_DIALOG, MAT_ICONS } from '@app/shared/material-imports';
 
 import type { InvoiceResponseDto } from '@app/shared/models';
 
@@ -22,7 +28,7 @@ export type PublishInvoiceDialogResult = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-publish-invoice-dialog',
-  imports: [...MAT_DIALOG, ...MAT_BUTTONS, ...MAT_ICONS, MatProgressSpinnerModule],
+  imports: [MatDialogModule, MatButtonModule, MatIconModule, MatProgressSpinnerModule],
   templateUrl: './publish-invoice-dialog.html',
   styleUrl: './publish-invoice-dialog.scss',
 })

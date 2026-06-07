@@ -1,5 +1,13 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   AbstractControl,
   FormBuilder,
@@ -7,13 +15,8 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { InvoicesService } from '@app/services/invoices.service';
-import { MAT_BUTTONS, MAT_DIALOG, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { PaymentMethod, RecordPaymentRequestDto } from '@app/shared/models';
 
 type RecordPaymentModalFieldErrorMap = Record<string, string | string[]>;
@@ -38,9 +41,11 @@ const PAYMENT_METHOD_OPTIONS: readonly PaymentMethod[] = ['BANK_TRANSFER', 'CASH
     ReactiveFormsModule,
     MatDatepickerModule,
     MatNativeDateModule,
-    ...MAT_DIALOG,
-    ...MAT_FORM_BUTTONS,
-    ...MAT_BUTTONS,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
   ],
   templateUrl: './record-payment-modal.html',
   styleUrl: './record-payment-modal.scss',

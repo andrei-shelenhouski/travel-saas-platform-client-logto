@@ -1,11 +1,11 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { LeadsService } from '@app/services/leads.service';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 export type DeleteLeadDialogData = {
   leadId: string;
@@ -18,7 +18,7 @@ export type DeleteLeadDialogResult = { deleted: true; leadId: string } | { delet
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-delete-lead-dialog',
-  imports: [MatDialogModule, MatIconModule, MatProgressSpinnerModule, ...MAT_BUTTONS],
+  imports: [MatDialogModule, MatIconModule, MatProgressSpinnerModule, MatButtonModule],
   templateUrl: './delete-lead-dialog.html',
   styleUrl: './delete-lead-dialog.scss',
 })

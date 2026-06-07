@@ -2,21 +2,21 @@ import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
-import { Router } from '@angular/router';
 
 import { AuthService } from '@app/auth/auth.service';
 import { ContractsService } from '@app/services/contracts.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 import { ContractStatus, PermissionKey } from '@app/shared/models';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import {
   ContractsFilterBarComponent,
@@ -30,7 +30,7 @@ import type { ContractResponseDto } from '@app/shared/models';
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-contracts-list',
   imports: [
-    ...MAT_BUTTONS,
+    MatButtonModule,
     ContractsFilterBarComponent,
     DatePipe,
     MatPaginatorModule,

@@ -1,15 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { Router } from '@angular/router';
 
 import { map } from 'rxjs/operators';
 
 import { LeadSourceBadgeComponent } from '@app/features/leads/lead-source-badge/lead-source-badge';
 import { ClientsService } from '@app/services/clients.service';
 import { LeadStatusChipComponent } from '@app/shared/components';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 import type { LeadResponseDto } from '@app/shared/models';
 
@@ -21,7 +21,7 @@ import type { LeadResponseDto } from '@app/shared/models';
     MatTableModule,
     LeadSourceBadgeComponent,
     LeadStatusChipComponent,
-    ...MAT_BUTTONS,
+    MatButtonModule,
   ],
   templateUrl: './leads-history-section.html',
   styleUrl: './leads-history-section.scss',

@@ -1,3 +1,5 @@
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,7 +10,6 @@ import {
   viewChild,
 } from '@angular/core';
 import { DocumentRowComponent } from '@app/features/bookings/booking-detail/document-row/document-row';
-import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 
 import type { BookingDocumentResponseDto } from '@app/shared/models';
@@ -16,7 +17,7 @@ import type { BookingDocumentResponseDto } from '@app/shared/models';
 @Component({
   selector: 'app-document-list',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DocumentRowComponent, ...MAT_BUTTONS, ...MAT_ICONS],
+  imports: [DocumentRowComponent, MatButtonModule, MatIconModule],
   templateUrl: './document-list.html',
   styleUrl: './document-list.scss',
 })

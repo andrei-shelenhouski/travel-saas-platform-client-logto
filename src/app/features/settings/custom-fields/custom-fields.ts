@@ -1,16 +1,18 @@
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTabsModule } from '@angular/material/tabs';
 
 import { finalize } from 'rxjs';
 
 import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { MAT_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { CustomFieldEntityType } from '@app/shared/models';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { CustomFieldDefinitionDialogComponent } from './custom-field-definition-dialog/custom-field-definition-dialog';
 
@@ -37,7 +39,15 @@ type BooleanByEntity = Record<(typeof ENTITY_TABS)[number]['entityType'], boolea
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-custom-fields-settings',
-  imports: [DragDropModule, MatTabsModule, MatIconModule, ...MAT_BUTTONS, ...MAT_MENU, PageHeading],
+  imports: [
+    DragDropModule,
+    MatTabsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatDividerModule,
+    PageHeading,
+  ],
   templateUrl: './custom-fields.html',
   styleUrl: './custom-fields.scss',
 })

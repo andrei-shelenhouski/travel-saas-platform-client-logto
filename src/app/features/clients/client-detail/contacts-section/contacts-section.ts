@@ -1,13 +1,16 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 
 import { ClientsService } from '@app/services/clients.service';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
-import { MAT_BUTTONS, MAT_ICONS, MAT_MENU } from '@app/shared/material-imports';
 
 import {
   ContactFormDialogComponent,
@@ -20,7 +23,14 @@ import type { ContactResponseDto } from '@app/shared/models';
 @Component({
   selector: 'app-contacts-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatProgressSpinnerModule, MatTableModule, ...MAT_BUTTONS, ...MAT_ICONS, ...MAT_MENU],
+  imports: [
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDividerModule,
+  ],
   templateUrl: './contacts-section.html',
   styleUrl: './contacts-section.scss',
 })

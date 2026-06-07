@@ -1,8 +1,11 @@
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { ChangeDetectionStrategy, Component, inject, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-
-import { MAT_BUTTONS, MAT_DIALOG, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 export type CancellationResult = { reason: string };
 
@@ -12,9 +15,11 @@ export type CancellationResult = { reason: string };
   imports: [
     ReactiveFormsModule,
     TextFieldModule,
-    ...MAT_FORM_BUTTONS,
-    ...MAT_BUTTONS,
-    ...MAT_DIALOG,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatDialogModule,
   ],
   templateUrl: './cancellation-dialog.html',
   styleUrl: './cancellation-dialog.scss',

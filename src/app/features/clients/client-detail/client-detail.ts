@@ -7,8 +7,9 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { EMPTY } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -26,7 +27,6 @@ import {
 } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ClientType, EntityType, PermissionKey } from '@app/shared/models';
 
 import { BookingsHistorySectionComponent } from './bookings-history-section/bookings-history-section';
@@ -53,7 +53,7 @@ const TYPE_LABEL: Record<string, string> = {
   imports: [
     RouterLink,
     CustomFieldsSectionComponent,
-    ...MAT_BUTTONS,
+    MatButtonModule,
     PageHeading,
     PageHeadingAction,
     LoadingStateComponent,

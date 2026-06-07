@@ -1,3 +1,9 @@
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -6,12 +12,6 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-
-import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
 import type { OrganizationMemberResponseDto } from '@app/shared/models';
 
@@ -28,8 +28,10 @@ export type AssignDialogData = {
     MatFormFieldModule,
     MatInputModule,
     MatIconModule,
-    ...MAT_BUTTONS,
-    ...MAT_FORM_BUTTONS,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
   ],
   templateUrl: './assign-dialog.html',
   styleUrl: './assign-dialog.scss',

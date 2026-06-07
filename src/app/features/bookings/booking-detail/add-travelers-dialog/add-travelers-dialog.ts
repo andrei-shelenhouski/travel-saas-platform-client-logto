@@ -1,15 +1,18 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { forkJoin, of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, finalize, switchMap } from 'rxjs/operators';
 
 import { PersonsService } from '@app/services/persons.service';
-import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
 import type { PersonDocumentResponseDto, PersonResponseDto } from '@app/shared/models';
 
@@ -32,8 +35,10 @@ export type AddTravelersDialogResult = {
     MatDialogModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
-    ...MAT_BUTTONS,
-    ...MAT_FORM_BUTTONS,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
   ],
   templateUrl: './add-travelers-dialog.html',
   styleUrl: './add-travelers-dialog.scss',

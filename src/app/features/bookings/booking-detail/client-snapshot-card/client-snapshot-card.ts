@@ -1,13 +1,14 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
-import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 
 @Component({
   selector: 'app-client-snapshot-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, ClientTypeBadgeComponent, ...MAT_ICONS, ...MAT_BUTTONS],
+  imports: [RouterLink, ClientTypeBadgeComponent, MatIconModule, MatButtonModule],
   templateUrl: './client-snapshot-card.html',
   styleUrl: './client-snapshot-card.scss',
 })

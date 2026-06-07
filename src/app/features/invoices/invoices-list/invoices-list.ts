@@ -10,11 +10,12 @@ import {
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatIcon } from '@angular/material/icon';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -23,7 +24,6 @@ import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
-import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 import { ClientType, InvoiceStatus } from '@app/shared/models';
 
@@ -40,8 +40,8 @@ const CLIENT_TYPES = new Set<ClientType>(Object.values(ClientType));
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-invoices-list',
   imports: [
-    ...MAT_BUTTONS,
-    ...MAT_ICONS,
+    MatButtonModule,
+    MatIconModule,
     ClientTypeBadgeComponent,
     InvoiceFilterBarComponent,
     InvoiceStatusChipComponent,

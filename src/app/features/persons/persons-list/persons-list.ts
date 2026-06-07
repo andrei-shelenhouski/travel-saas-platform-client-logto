@@ -10,16 +10,20 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { rxResource } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router, RouterLink } from '@angular/router';
-import { rxResource } from '@angular/core/rxjs-interop';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -27,7 +31,6 @@ import { PersonsService } from '@app/services/persons.service';
 import { AuthService } from '@app/auth/auth.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
-import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { PermissionKey } from '@app/shared/models';
 
 import type { PersonListItemDto } from '@app/shared/models';
@@ -48,8 +51,10 @@ type ActiveChip = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-persons-list',
   imports: [
-    ...MAT_BUTTONS,
-    ...MAT_FORM_BUTTONS,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
     DatePipe,
     MatChipsModule,
     MatIcon,

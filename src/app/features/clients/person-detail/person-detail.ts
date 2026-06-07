@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { EMPTY, forkJoin } from 'rxjs';
 import { finalize, map, switchMap } from 'rxjs/operators';
@@ -15,9 +17,7 @@ import {
   LoadingStateComponent,
   PageContentComponent,
 } from '@app/shared/components';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type {
   BookingResponseDto,
@@ -34,7 +34,7 @@ import type {
     LoadingStateComponent,
     PageContentComponent,
     DetailSectionComponent,
-    ...MAT_BUTTONS,
+    MatButtonModule,
   ],
   templateUrl: './person-detail.html',
   styleUrl: './person-detail.scss',

@@ -10,16 +10,20 @@ import {
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { catchError, of } from 'rxjs';
 
 import { PersonsService } from '@app/services/persons.service';
-import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 
 import type {
   CreatePersonRequestDto,
@@ -67,9 +71,12 @@ const GENDER_LABEL: Record<string, string | undefined> = {
     MatIconModule,
     MatMenuModule,
     MatProgressSpinnerModule,
-    ...MAT_BUTTONS,
-    ...MAT_FORM_BUTTONS,
-    ...MAT_MENU,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatMenuModule,
+    MatDividerModule,
   ],
   templateUrl: './traveler-profile-section.html',
   styleUrl: './traveler-profile-section.scss',

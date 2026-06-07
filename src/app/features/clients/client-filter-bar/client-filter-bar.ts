@@ -1,11 +1,14 @@
 import { ChangeDetectionStrategy, Component, effect, inject, output } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
 
 export type ClientFilterValue = {
@@ -23,7 +26,14 @@ const TYPE_OPTIONS: { value: ClientType | 'ALL'; label: string }[] = [
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-client-filter-bar',
-  imports: [ReactiveFormsModule, ...MAT_FORM_BUTTONS, MatIconModule],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   styleUrl: './client-filter-bar.scss',
   templateUrl: './client-filter-bar.html',
 })

@@ -1,3 +1,8 @@
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -15,9 +20,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
 
-import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { CustomFieldType } from '@app/shared/models';
 
 import type { CustomFieldType as CustomFieldTypeValue } from '@app/shared/models';
@@ -35,7 +38,14 @@ export type CustomFieldSectionField = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-custom-fields-section',
-  imports: [ReactiveFormsModule, MatIconModule, ...MAT_BUTTONS, ...MAT_FORM_BUTTONS],
+  imports: [
+    ReactiveFormsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+  ],
   templateUrl: './custom-fields-section.html',
   styleUrl: './custom-fields-section.scss',
 })

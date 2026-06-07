@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 
 import { TagSelectorComponent } from '@app/shared/components';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { ClientType } from '@app/shared/models';
 
 import type { ClientResponseDto } from '@app/shared/models';
@@ -15,7 +15,7 @@ const TYPE_LABEL: Record<string, string> = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-client-profile-card',
-  imports: [TagSelectorComponent, ...MAT_BUTTONS],
+  imports: [TagSelectorComponent, MatButtonModule],
   templateUrl: './client-profile-card.html',
   styleUrl: './client-profile-card.scss',
 })

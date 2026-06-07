@@ -1,12 +1,15 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 import { finalize } from 'rxjs';
 
 import { PersonsService } from '@app/services/persons.service';
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
 import type { PersonResponseDto } from '@app/shared/models';
 
@@ -18,7 +21,14 @@ export type CreatePersonDialogResult = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-person-dialog',
-  imports: [ReactiveFormsModule, MatDialogModule, ...MAT_FORM_BUTTONS],
+  imports: [
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+  ],
   templateUrl: './create-person-dialog.html',
   styleUrl: './create-person-dialog.scss',
 })

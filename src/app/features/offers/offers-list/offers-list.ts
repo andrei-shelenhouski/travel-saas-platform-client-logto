@@ -11,11 +11,16 @@ import {
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -24,7 +29,6 @@ import { OrganizationMembersService } from '@app/services/organization-members.s
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
-import { MAT_BUTTON_TOGGLES, MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { computeAgentOptions } from '@app/shared/utils/agent-options.util';
 import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 
@@ -49,9 +53,11 @@ const OFFER_STATUSES = new Set<OfferStatus>([
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-offers-list',
   imports: [
-    ...MAT_BUTTON_TOGGLES,
-    ...MAT_BUTTONS,
-    ...MAT_FORM_BUTTONS,
+    MatButtonToggleModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
     DatePipe,
     MatIcon,
     MatPaginatorModule,
