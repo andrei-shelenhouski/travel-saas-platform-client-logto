@@ -12,6 +12,7 @@ import type {
   AddPersonRelationshipRequestDto,
   CreateDetachedPersonRequestDto,
   CreatePersonRequestDto,
+  FamilyContextResponseDto,
   LinkPersonRequestDto,
   ListPersonsQueryDto,
   PaginatedPersonBookingItemDto,
@@ -26,6 +27,7 @@ import type {
   PersonResponseDto,
   PersonSearchResultDto,
   UpdatePersonRequestDto,
+  UpdateRelationshipRequestDto,
 } from '@app/shared/models';
 
 const CLIENTS_URL = `${environment.baseUrl}/api/clients`;
@@ -99,7 +101,7 @@ export class PersonsService {
             .join(' '),
           dateOfBirth: person.dateOfBirth,
           citizenship: person.citizenship,
-          clientId: person.clientId,
+          clientId: person.linked_client?.id,
         })),
       ),
     );
@@ -118,15 +120,9 @@ export class PersonsService {
     );
   }
 
-  getRelationships(personId: string): Observable<PersonRelationshipResponseDto[]> {
+  getFamilyContext(personId: string): Observable<FamilyContextResponseDto> {
     return this.http
-      .get<PersonRelationshipResponseDto[]>(`${PERSONS_URL}/${personId}/relationships`)
-      .pipe(this.errorHandler.catch());
-  }
-
-  getFamily(personId: string): Observable<PersonResponseDto[]> {
-    return this.http
-      .get<PersonResponseDto[]>(`${PERSONS_URL}/${personId}/family`)
+      .get<FamilyContextResponseDto>(`${PERSONS_URL}/${personId}/family-context`)
       .pipe(this.errorHandler.catch());
   }
 
@@ -153,6 +149,25 @@ export class PersonsService {
   ): Observable<PersonRelationshipResponseDto> {
     return this.http
       .post<PersonRelationshipResponseDto>(`${PERSONS_URL}/${personId}/relationships`, dto)
+      .pipe(this.errorHandler.catch());
+  }
+
+  deleteRelationship(personId: string, relId: string): Observable<void> {
+    return this.http
+      .delete<void>(`${PERSONS_URL}/${personId}/relationships/${relId}`)
+      .pipe(this.errorHandler.catch());
+  }
+
+  updateRelationship(
+    personId: string,
+    relId: string,
+    dto: UpdateRelationshipRequestDto,
+  ): Observable<PersonRelationshipResponseDto> {
+    return this.http
+      .patch<PersonRelationshipResponseDto>(
+        `${PERSONS_URL}/${personId}/relationships/${relId}`,
+        dto,
+      )
       .pipe(this.errorHandler.catch());
   }
 

@@ -3,8 +3,8 @@
 </h2>
 
 <mat-dialog-content>
-  <form class="flex flex-col gap-4 pt-2" [formGroup]="form">
-    <mat-form-field class="w-full">
+  <form class="dialog-form" [formGroup]="form">
+    <mat-form-field >
       <mat-label>Тип</mat-label>
       <mat-select formControlName="medium">
         @for (opt of mediumOptions; track opt.value) {
@@ -16,7 +16,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field class="w-full">
+    <mat-form-field >
       <mat-label>Значение</mat-label>
       <input autocomplete="off" formControlName="value" matInput />
       @if (form.controls.value.hasError('required') && form.controls.value.touched) {

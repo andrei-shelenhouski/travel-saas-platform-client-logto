@@ -34,6 +34,19 @@ export type PersonDocumentDialogResult = { saved: true } | undefined;
     MatSelectModule,
   ],
   templateUrl: './person-document-dialog.html',
+  styles: [
+    `
+      .dialog-form {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding-top: 8px;
+      }
+      mat-form-field {
+        width: 100%;
+      }
+    `,
+  ],
 })
 export class PersonDocumentDialogComponent {
   private readonly fb = inject(FormBuilder);

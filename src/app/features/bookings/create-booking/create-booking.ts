@@ -22,15 +22,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-import {
-  debounceTime,
-  distinctUntilChanged,
-  finalize,
-  forkJoin,
-  of,
-  startWith,
-  switchMap,
-} from 'rxjs';
+import { debounceTime, distinctUntilChanged, finalize, map, of, startWith, switchMap } from 'rxjs';
 
 import { BookingsService } from '@app/services/bookings.service';
 import { ClientsService } from '@app/services/clients.service';
@@ -488,22 +480,18 @@ export class CreateBookingComponent {
     this.personsService
       .getByClientId(clientId)
       .pipe(
-        switchMap((person) => {
-          return forkJoin({
-            person: of(person),
-            family: this.personsService.getFamily(person.id),
-            relationships: this.personsService.getRelationships(person.id),
-          });
-        }),
+        switchMap((person) =>
+          this.personsService.getFamilyContext(person.id).pipe(map((ctx) => ({ person, ctx }))),
+        ),
         finalize(() => {
           this.loadingTravelerContext.set(false);
         }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: ({ person, family, relationships }) => {
-          const members = [person, ...family.filter((item) => item.id !== person.id)];
-          const activeIds = this.buildActiveRelationshipIds(relationships, person.id);
+        next: ({ person, ctx }) => {
+          const members = [person, ...ctx.familyMembers.filter((item) => item.id !== person.id)];
+          const activeIds = this.buildActiveRelationshipIds(ctx.relationships, person.id);
 
           this.clientPerson.set(person);
           this.familyMembers.set(members);

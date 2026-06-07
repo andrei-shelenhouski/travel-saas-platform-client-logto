@@ -484,15 +484,14 @@ export class BookingDetailComponent {
       .getByClientId(booking.clientId)
       .pipe(
         switchMap((person) =>
-          forkJoin({
-            family: this.personsService.getFamily(person.id),
-            relationships: this.personsService.getRelationships(person.id),
-          }).pipe(
-            map(({ family, relationships }) => ({
-              members: [person, ...family],
+          this.personsService.getFamilyContext(person.id).pipe(
+            map((ctx) => ({
+              members: [person, ...ctx.familyMembers],
               activeRelationshipPersonIds: [
                 person.id,
-                ...relationships.filter((r) => r.status === 'ACTIVE').map((r) => r.relatedPersonId),
+                ...ctx.relationships
+                  .filter((r) => r.status === 'ACTIVE')
+                  .map((r) => r.relatedPersonId),
               ],
             })),
           ),

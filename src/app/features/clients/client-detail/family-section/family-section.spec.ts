@@ -19,31 +19,32 @@ describe('FamilySectionComponent', () => {
         {
           provide: PersonsService,
           useValue: {
-            getFamily: () =>
-              of([
-                {
-                  id: 'p-2',
-                  organizationId: 'org-1',
-                  firstName: 'Иван',
-                  lastName: 'Иванов',
-                  createdAt: new Date().toISOString(),
-                  updatedAt: new Date().toISOString(),
-                  documents: [],
-                  addresses: [],
-                  contacts: [],
-                  active: true,
-                },
-              ]),
-            getRelationships: () =>
-              of([
-                {
-                  id: 'rel-1',
-                  personId: 'p-1',
-                  relatedPersonId: 'p-2',
-                  type: 'SPOUSE_OF',
-                  status: 'ACTIVE',
-                },
-              ]),
+            getFamilyContext: () =>
+              of({
+                familyMembers: [
+                  {
+                    id: 'p-2',
+                    organizationId: 'org-1',
+                    firstName: 'Иван',
+                    lastName: 'Иванов',
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    documents: [],
+                    addresses: [],
+                    contacts: [],
+                    active: true,
+                  },
+                ],
+                relationships: [
+                  {
+                    id: 'rel-1',
+                    personId: 'p-1',
+                    relatedPersonId: 'p-2',
+                    type: 'SPOUSE_OF',
+                    status: 'ACTIVE',
+                  },
+                ],
+              }),
           },
         },
         {

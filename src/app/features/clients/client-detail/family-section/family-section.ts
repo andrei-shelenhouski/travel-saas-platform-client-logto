@@ -7,13 +7,15 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 
-import { forkJoin } from 'rxjs';
-
 import { PersonsService } from '@app/services/persons.service';
 
 import { AddFamilyMemberDialogComponent } from '../add-family-member-dialog/add-family-member-dialog';
 
-import type { PersonRelationshipResponseDto, PersonResponseDto } from '@app/shared/models';
+import type {
+  FamilyContextResponseDto,
+  PersonRelationshipResponseDto,
+  PersonResponseDto,
+} from '@app/shared/models';
 const RELATION_LABEL: Record<string, string> = {
   SPOUSE_OF: 'Супруг(а)',
   PARENT_OF: 'Родитель',
@@ -37,21 +39,14 @@ export class FamilySectionComponent {
   private readonly dialog = inject(MatDialog);
   private readonly router = inject(Router);
 
-  private readonly familyData = rxResource<
-    { members: PersonResponseDto[]; relationships: PersonRelationshipResponseDto[] },
-    string
-  >({
+  private readonly familyData = rxResource<FamilyContextResponseDto, string>({
     params: () => this.personId(),
-    stream: ({ params }) =>
-      forkJoin({
-        members: this.personsService.getFamily(params),
-        relationships: this.personsService.getRelationships(params),
-      }),
-    defaultValue: { members: [], relationships: [] },
+    stream: ({ params }) => this.personsService.getFamilyContext(params),
+    defaultValue: { familyMembers: [], relationships: [] },
   });
 
   protected readonly loading = computed(() => this.familyData.isLoading());
-  protected readonly family = computed(() => this.familyData.value()?.members ?? []);
+  protected readonly family = computed(() => this.familyData.value()?.familyMembers ?? []);
   protected readonly relationshipsByPersonId = computed(() => {
     const map = new Map<string, PersonRelationshipResponseDto>();
 

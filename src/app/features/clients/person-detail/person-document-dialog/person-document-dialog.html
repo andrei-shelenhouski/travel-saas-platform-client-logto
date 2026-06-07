@@ -3,8 +3,8 @@
 </h2>
 
 <mat-dialog-content>
-  <form class="flex flex-col gap-4 pt-2" [formGroup]="form">
-    <mat-form-field class="w-full">
+  <form class="dialog-form" [formGroup]="form">
+    <mat-form-field>
       <mat-label>Тип документа</mat-label>
       <mat-select formControlName="type">
         @for (opt of typeOptions; track opt.value) {
@@ -16,7 +16,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field class="w-full">
+    <mat-form-field>
       <mat-label>Номер</mat-label>
       <input autocomplete="off" formControlName="number" matInput />
       @if (data.mode === 'edit') {
@@ -27,22 +27,22 @@
       }
     </mat-form-field>
 
-    <mat-form-field class="w-full">
+    <mat-form-field>
       <mat-label>Серия</mat-label>
       <input autocomplete="off" formControlName="series" matInput />
     </mat-form-field>
 
-    <mat-form-field class="w-full">
+    <mat-form-field>
       <mat-label>Дата выдачи</mat-label>
       <input formControlName="issueDate" matInput type="date" />
     </mat-form-field>
 
-    <mat-form-field class="w-full">
+    <mat-form-field>
       <mat-label>Срок действия</mat-label>
       <input formControlName="expiryDate" matInput type="date" />
     </mat-form-field>
 
-    <mat-form-field class="w-full">
+    <mat-form-field>
       <mat-label>Кем выдан</mat-label>
       <input autocomplete="off" formControlName="issuedBy" matInput />
     </mat-form-field>

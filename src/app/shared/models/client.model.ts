@@ -236,7 +236,8 @@ export type PersonResponseDto = {
   documents: PersonDocumentResponseDto[];
   addresses: PersonAddressResponseDto[];
   contacts: PersonContactResponseDto[];
-  clientId?: string;
+  type?: 'CLIENT' | 'DEPENDANT';
+  linked_client?: LinkedClientSummaryDto | null;
 };
 
 /** OpenAPI: PersonSearchResult. */
@@ -261,6 +262,12 @@ export type PersonRelationshipResponseDto = {
   untilDate?: string;
   notes?: string;
   createdAt?: string;
+};
+
+/** OpenAPI: FamilyContextResponse. GET /api/persons/:id/family-context. */
+export type FamilyContextResponseDto = {
+  relationships: PersonRelationshipResponseDto[];
+  familyMembers: PersonResponseDto[];
 };
 
 /** OpenAPI: CreatePersonRequest. POST /api/clients/:id/person body. */
@@ -302,6 +309,18 @@ export type CreateDetachedPersonRequestDto = CreatePersonRequestDto;
 export type AddPersonRelationshipRequestDto = {
   toPersonId: string;
   type: PersonRelationshipType | (string & Record<never, never>);
+  status?: PersonRelationshipStatus | (string & Record<never, never>);
+  sinceDate?: string;
+  customLabel?: string;
+  notes?: string;
+};
+
+/** OpenAPI: UpdateRelationshipRequest. PATCH /api/persons/:id/relationships/:relId body. */
+export type UpdateRelationshipRequestDto = {
+  status?: PersonRelationshipStatus | (string & Record<never, never>);
+  untilDate?: string;
+  notes?: string;
+  customLabel?: string;
 };
 
 /** OpenAPI: PersonDocumentRequest. POST/PUT /api/persons/:id/documents body. */

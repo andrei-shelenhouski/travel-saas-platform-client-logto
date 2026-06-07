@@ -95,7 +95,7 @@ describe('BookingDetailComponent', () => {
           provide: PersonsService,
           useValue: {
             getByClientId: vi.fn(() => of({ id: 'person-1' })),
-            getFamily: vi.fn(() => of([])),
+            getFamilyContext: vi.fn(() => of({ familyMembers: [], relationships: [] })),
           },
         },
         {

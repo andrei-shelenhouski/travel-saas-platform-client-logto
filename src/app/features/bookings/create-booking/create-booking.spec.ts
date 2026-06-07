@@ -37,8 +37,7 @@ describe('CreateBookingComponent', () => {
             getByClientId: vi.fn(() =>
               of({ id: 'person-1', firstName: 'John', lastName: 'Doe', documents: [] }),
             ),
-            getFamily: vi.fn(() => of([])),
-            getRelationships: vi.fn(() => of([])),
+            getFamilyContext: vi.fn(() => of({ familyMembers: [], relationships: [] })),
           },
         },
         {

@@ -3,8 +3,8 @@
 </h2>
 
 <mat-dialog-content>
-  <form class="flex flex-col gap-4 pt-2" [formGroup]="form">
-    <mat-form-field class="w-full">
+  <form class="dialog-form" [formGroup]="form">
+    <mat-form-field>
       <mat-label>Тип адреса</mat-label>
       <mat-select formControlName="type">
         @for (opt of typeOptions; track opt.value) {
@@ -16,27 +16,27 @@
       }
     </mat-form-field>
 
-    <mat-form-field class="w-full">
+    <mat-form-field>
       <mat-label>Улица</mat-label>
       <input autocomplete="off" formControlName="street" matInput />
     </mat-form-field>
 
-    <mat-form-field class="w-full">
+    <mat-form-field>
       <mat-label>Город</mat-label>
       <input autocomplete="off" formControlName="city" matInput />
     </mat-form-field>
 
-    <mat-form-field class="w-full">
+    <mat-form-field>
       <mat-label>Регион</mat-label>
       <input autocomplete="off" formControlName="region" matInput />
     </mat-form-field>
 
-    <mat-form-field class="w-full">
+    <mat-form-field>
       <mat-label>Страна</mat-label>
       <input autocomplete="off" formControlName="country" matInput />
     </mat-form-field>
 
-    <mat-form-field class="w-full">
+    <mat-form-field>
       <mat-label>Индекс</mat-label>
       <input autocomplete="off" formControlName="postalCode" matInput />
     </mat-form-field>
