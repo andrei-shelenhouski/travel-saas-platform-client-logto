@@ -9,11 +9,12 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { BookingsService } from '@app/services/bookings.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
@@ -21,7 +22,6 @@ import { PermissionService } from '@app/services/permission.service';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 import { BookingStatus } from '@app/shared/models';
 
@@ -42,7 +42,7 @@ const BOOKING_STATUSES = new Set<BookingStatus>([
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-bookings-list',
   imports: [
-    ...MAT_BUTTONS,
+    MatButtonModule,
     BookingFilterBarComponent,
     BookingStatusChipComponent,
     MatIcon,

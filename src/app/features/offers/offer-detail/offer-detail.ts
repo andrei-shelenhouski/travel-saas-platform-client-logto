@@ -8,9 +8,11 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { MatDialog } from '@angular/material/dialog';
-import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
 
 import { EMPTY, of } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
@@ -30,9 +32,7 @@ import {
   PageContentComponent,
 } from '@app/shared/components';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
-import { MAT_BUTTONS, MAT_DIALOG } from '@app/shared/material-imports';
 import { OfferStatus } from '@app/shared/models';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type {
   OfferResponseDto,
@@ -89,8 +89,8 @@ const ACTION_ICONS: Record<OfferAction, string> = {
     PageContentComponent,
     DetailSectionComponent,
     MatTableModule,
-    ...MAT_BUTTONS,
-    ...MAT_DIALOG,
+    MatButtonModule,
+    MatDialogModule,
   ],
   templateUrl: './offer-detail.html',
   styleUrl: './offer-detail.scss',

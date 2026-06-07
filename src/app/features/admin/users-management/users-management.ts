@@ -1,9 +1,15 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 
@@ -15,7 +21,6 @@ import { UsersService } from '@app/services/users.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
-import { MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { OrgRole } from '@app/shared/models';
 
 import { InviteUserDialogComponent } from './invite-user-dialog/invite-user-dialog';
@@ -50,8 +55,12 @@ const SYSTEM_ROLE_ORDER: Record<OrgRole, number> = {
     MatTableModule,
     PageHeading,
     PageHeadingAction,
-    ...MAT_FORM_BUTTONS,
-    ...MAT_MENU,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatDividerModule,
   ],
   templateUrl: './users-management.html',
   styleUrl: './users-management.scss',

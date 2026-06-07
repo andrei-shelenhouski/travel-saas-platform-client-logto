@@ -10,9 +10,13 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { BreakpointObserver } from '@angular/cdk/layout';
-import { MatMenuTrigger } from '@angular/material/menu';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 import { filter, map, take } from 'rxjs';
 
@@ -21,7 +25,6 @@ import { MeService } from '@app/services/me.service';
 import { OrganizationStateService } from '@app/services/organization-state.service';
 import { PermissionService } from '@app/services/permission.service';
 import { orgRoleToLabel } from '@app/services/role.service';
-import { MAT_BUTTONS, MAT_MENU, MAT_NAV_LIST } from '@app/shared/material-imports';
 import { PermissionKey } from '@app/shared/models';
 
 import type { OrganizationWithRoleDto, Permission } from '@app/shared/models';
@@ -38,6 +41,12 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
   { path: '/app/dashboard', icon: 'dashboard', label: 'Рабочий стол' },
   { path: '/app/leads', icon: 'inbox', label: 'Лиды' },
   { path: '/app/clients', icon: 'group', label: 'Клиенты' },
+  {
+    path: '/app/persons',
+    icon: 'badge',
+    label: 'Туристы',
+    requiredPermission: PermissionKey.PERSONS_READ,
+  },
   {
     path: '/app/contracts',
     icon: 'description',
@@ -92,9 +101,11 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
     RouterLink,
     RouterLinkActive,
     RouterOutlet,
-    ...MAT_BUTTONS,
-    ...MAT_MENU,
-    ...MAT_NAV_LIST,
+    MatButtonModule,
+    MatMenuModule,
+    MatDividerModule,
+    MatListModule,
+    MatIconModule,
     MatSidenavModule,
   ],
   templateUrl: './main-layout.component.html',

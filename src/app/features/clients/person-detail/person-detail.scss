@@ -1,46 +1,263 @@
 :host {
   display: block;
+  height: 100%;
 }
 
-.person-detail-grid {
-  display: grid;
-  gap: 16px;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  padding: 16px;
+.person-sidenav-container {
+  height: 100%;
 }
 
-.person-card {
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  background: #fff;
-  padding: 16px;
+.person-edit-sidenav {
+  width: 420px;
+  padding: 0;
 }
 
-.person-card h2 {
-  margin: 0 0 8px;
-  font-size: 16px;
+.edit-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 8px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.person-card dl div {
-  margin-bottom: 6px;
-}
-
-.person-card dt {
-  color: #6b7280;
-  font-size: 12px;
-}
-
-.person-card dd {
+.edit-panel-title {
   margin: 0;
+  font-size: 18px;
+  font-weight: 600;
 }
 
-.dependent-badge {
+.edit-panel-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.edit-panel-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+.person-detail-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+  max-width: 900px;
+}
+
+// Consent banner
+.consent-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+
+  &--warning {
+    background: #fffbeb;
+    border: 1px solid #fcd34d;
+    color: #92400e;
+  }
+
+  &--ok {
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    color: #166534;
+  }
+}
+
+.consent-icon {
+  flex-shrink: 0;
+}
+
+// Type badge
+.type-badge {
   display: inline-flex;
   margin-bottom: 8px;
   border-radius: 999px;
-  background: #eff6ff;
-  color: #1d4ed8;
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 600;
+
+  &--client {
+    background: #eff6ff;
+    color: #1d4ed8;
+  }
+
+  &--dependant {
+    background: #f3f4f6;
+    color: #374151;
+  }
+}
+
+.detail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+
+  div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  dt {
+    color: #6b7280;
+    font-size: 12px;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 14px;
+  }
+}
+
+.empty-state-text {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0;
+}
+
+.person-table-wrap {
+  margin-top: 8px;
+
+  table {
+    min-width: 760px;
+  }
+
+  .mat-mdc-header-cell,
+  .mat-mdc-cell {
+    font-size: 0.875rem;
+  }
+}
+
+.person-table-wrap .table-row {
+  cursor: default;
+
+  &:hover {
+    background-color: transparent;
+  }
+}
+
+.bookings-section .table-row {
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--mat-sys-surface-container-high);
+  }
+}
+
+.table-cell-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+  min-width: 120px;
+}
+
+.mat-column-actions {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.mat-column-status {
+  white-space: nowrap;
+}
+
+.cell-primary {
+  font-weight: 500;
+}
+
+.cell-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.doc-primary-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #f59e0b;
+}
+
+.doc-status {
+  color: #6b7280;
+  font-size: 12px;
+  font-weight: 500;
+
+  &--expiring {
+    color: #92400e;
+  }
+
+  &--expired {
+    color: #b91c1c;
+  }
+}
+
+.primary-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.doc-expiring {
+  > .mat-mdc-cell {
+    background: #fffbeb;
+  }
+}
+
+.doc-expired {
+  > .mat-mdc-cell {
+    background: #fef2f2;
+  }
+}
+
+// Consent dialog backdrop
+.consent-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.consent-dialog {
+  background: #fff;
+  border-radius: 12px;
+  padding: 24px;
+  width: 400px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.consent-dialog-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.consent-dialog-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding-top: 8px;
 }

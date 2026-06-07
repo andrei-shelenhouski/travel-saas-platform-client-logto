@@ -2,15 +2,15 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
 
 import { DashboardService } from '@app/services/dashboard.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-dashboard',
-  imports: [RouterLink, ...MAT_BUTTONS, PageHeading],
+  imports: [RouterLink, MatButtonModule, PageHeading],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })

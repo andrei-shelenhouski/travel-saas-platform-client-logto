@@ -1,4 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import {
   AbstractControl,
   FormBuilder,
@@ -6,13 +13,9 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { finalize } from 'rxjs';
 
 import { ClientsService } from '@app/services/clients.service';
-import { MAT_BUTTONS, MAT_DIALOG, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
 import type { ContactResponseDto, CreateContactDto, UpdateContactDto } from '@app/shared/models';
 
@@ -44,9 +47,11 @@ function atLeastOneContactMethodValidator(control: AbstractControl): ValidationE
   imports: [
     ReactiveFormsModule,
     MatCheckboxModule,
-    ...MAT_DIALOG,
-    ...MAT_FORM_BUTTONS,
-    ...MAT_BUTTONS,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
   ],
   templateUrl: './contact-form-dialog.html',
   styleUrl: './contact-form-dialog.scss',

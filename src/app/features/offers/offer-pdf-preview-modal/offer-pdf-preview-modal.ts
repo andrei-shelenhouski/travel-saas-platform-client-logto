@@ -8,13 +8,14 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 
 import { finalize } from 'rxjs/operators';
 
 import { OffersService } from '@app/services/offers.service';
-import { MAT_BUTTONS, MAT_DIALOG, MAT_ICONS } from '@app/shared/material-imports';
 
 export type OfferPdfPreviewModalData = {
   offerId: string;
@@ -24,7 +25,7 @@ export type OfferPdfPreviewModalData = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-offer-pdf-preview-modal',
-  imports: [...MAT_DIALOG, ...MAT_BUTTONS, ...MAT_ICONS],
+  imports: [MatDialogModule, MatButtonModule, MatIconModule],
   templateUrl: './offer-pdf-preview-modal.html',
   styleUrl: './offer-pdf-preview-modal.scss',
 })

@@ -1,123 +1,656 @@
 <app-loading-state [loading]="loading()">
   @let p = person();
   @if (p) {
-    <app-page-heading
-      subtitle="Карточка человека"
-      [showBackButton]="true"
-      [title]="p.lastName + ' ' + p.firstName"
-    >
-      @if (canPromote()) {
-        <button
-          appPageAction
-          color="primary"
-          icon="person_add"
-          label="Создать профиль клиента"
-          mat-flat-button
-          type="button"
-          [disabled]="promoting()"
-          (click)="promoteToClient()"
-        >
-          Создать профиль клиента
-        </button>
-      }
-    </app-page-heading>
+    <!-- Sidenav container: edit panel slides in from the right -->
+    <mat-sidenav-container class="person-sidenav-container">
+      <mat-sidenav
+        class="person-edit-sidenav"
+        mode="over"
+        position="end"
+        [opened]="editPanelOpen()"
+        (closedStart)="closeEditPanel()"
+      >
+        <div class="edit-panel-header">
+          <h2 class="edit-panel-title">Редактировать профиль</h2>
+          <button aria-label="Закрыть" mat-icon-button type="button" (click)="closeEditPanel()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
 
-    <app-page-content>
-      <div class="person-detail-grid">
-        <app-detail-section title="Профиль">
-          <p class="dependent-badge">Зависимый</p>
-          <dl>
-            <div>
-              <dt>Дата рождения</dt>
-              <dd>
-                {{ formatDate(p.dateOfBirth) }}
-                @if (age() !== null) {
-                  ({{ age() }} лет)
+        <div class="edit-panel-body">
+          <form [formGroup]="editForm" (ngSubmit)="saveEdit()">
+            <mat-form-field class="w-full">
+              <mat-label>Фамилия</mat-label>
+              <input autocomplete="off" formControlName="lastName" matInput />
+              @if (
+                editForm.controls.lastName.hasError('required') &&
+                editForm.controls.lastName.touched
+              ) {
+                <mat-error>Обязательное поле</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field class="w-full">
+              <mat-label>Имя</mat-label>
+              <input autocomplete="off" formControlName="firstName" matInput />
+              @if (
+                editForm.controls.firstName.hasError('required') &&
+                editForm.controls.firstName.touched
+              ) {
+                <mat-error>Обязательное поле</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field class="w-full">
+              <mat-label>Отчество</mat-label>
+              <input autocomplete="off" formControlName="patronymic" matInput />
+            </mat-form-field>
+
+            <mat-form-field class="w-full">
+              <mat-label>Фамилия (транслит.)</mat-label>
+              <input
+                autocomplete="off"
+                formControlName="lastNameTranslit"
+                matInput
+                placeholder="IVANOV"
+                (blur)="uppercaseOnBlur('lastNameTranslit')"
+              />
+              @if (
+                editForm.controls.lastNameTranslit.hasError('pattern') &&
+                editForm.controls.lastNameTranslit.touched
+              ) {
+                <mat-error>Только латинские буквы A–Z</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field class="w-full">
+              <mat-label>Имя (транслит.)</mat-label>
+              <input
+                autocomplete="off"
+                formControlName="firstNameTranslit"
+                matInput
+                placeholder="IVAN"
+                (blur)="uppercaseOnBlur('firstNameTranslit')"
+              />
+              @if (
+                editForm.controls.firstNameTranslit.hasError('pattern') &&
+                editForm.controls.firstNameTranslit.touched
+              ) {
+                <mat-error>Только латинские буквы A–Z</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field class="w-full">
+              <mat-label>Дата рождения</mat-label>
+              <input formControlName="dateOfBirth" matInput type="date" />
+            </mat-form-field>
+
+            <mat-form-field class="w-full">
+              <mat-label>Пол</mat-label>
+              <mat-select formControlName="gender">
+                <mat-option value="">—</mat-option>
+                @for (opt of genderOptions; track opt.value) {
+                  <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
                 }
-              </dd>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field class="w-full">
+              <mat-label>Гражданство</mat-label>
+              <input autocomplete="off" formControlName="citizenship" matInput />
+            </mat-form-field>
+
+            <mat-form-field class="w-full">
+              <mat-label>Личный номер</mat-label>
+              <input
+                autocomplete="off"
+                formControlName="personalNumber"
+                matInput
+                (blur)="uppercaseOnBlur('personalNumber')"
+              />
+              <mat-hint>14 символов, например: 3160887P028PB5</mat-hint>
+              @if (
+                editForm.controls.personalNumber.hasError('pattern') &&
+                editForm.controls.personalNumber.touched
+              ) {
+                <mat-error>Только A–Z и 0–9</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field class="w-full">
+              <mat-label>Заметки</mat-label>
+              <textarea formControlName="notes" matInput rows="3"></textarea>
+            </mat-form-field>
+
+            <div class="edit-panel-actions">
+              <button mat-stroked-button type="button" (click)="closeEditPanel()">Отмена</button>
+              <button color="primary" mat-flat-button type="submit" [disabled]="editSaving()">
+                {{ editSaving() ? 'Сохранение...' : 'Сохранить' }}
+              </button>
             </div>
-            <div>
-              <dt>Гражданство</dt>
-              <dd>{{ p.citizenship || '—' }}</dd>
+          </form>
+        </div>
+      </mat-sidenav>
+
+      <mat-sidenav-content>
+        <app-page-heading
+          subtitle="Карточка туриста"
+          [showBackButton]="true"
+          [title]="p.lastName + ' ' + p.firstName"
+        >
+          <button
+            appPageAction
+            icon="edit"
+            label="Редактировать"
+            mat-stroked-button
+            type="button"
+            (click)="openEditPanel()"
+          >
+            Ред.
+          </button>
+
+          @if (!p.clientId) {
+            <button
+              appPageAction
+              color="primary"
+              icon="person_add"
+              label="Создать профиль клиента"
+              mat-flat-button
+              type="button"
+              [disabled]="promoting() || !consentGiven()"
+              [matTooltip]="
+                consentGiven() ? '' : 'Требуется согласие на обработку персональных данных'
+              "
+              (click)="promoteToClient()"
+            >
+              Создать профиль клиента
+            </button>
+          }
+        </app-page-heading>
+
+        <app-page-content>
+          <div class="person-detail-layout">
+            <!-- Consent banner -->
+            @if (!p.dataConsentGiven) {
+              <div class="consent-banner consent-banner--warning" role="alert">
+                <mat-icon class="consent-icon">warning_amber</mat-icon>
+                <span>Согласие на обработку данных не получено</span>
+                <button
+                  color="accent"
+                  mat-stroked-button
+                  type="button"
+                  (click)="openConsentDialog()"
+                >
+                  Дать согласие
+                </button>
+              </div>
+            } @else {
+              <div class="consent-banner consent-banner--ok">
+                <mat-icon class="consent-icon">check_circle</mat-icon>
+                <span>Согласие получено {{ formatDate(p.dataConsentDate) }}</span>
+              </div>
+            }
+
+            <!-- Profile section -->
+            <app-detail-section title="Профиль">
+              @if (!p.clientId) {
+                <span class="type-badge type-badge--dependant">ИЖДИВЕНЕЦ</span>
+              } @else {
+                <span class="type-badge type-badge--client">КЛИЕНТ</span>
+              }
+
+              <dl class="detail-list">
+                @if (p.lastNameTranslit || p.firstNameTranslit) {
+                  <div>
+                    <dt>Транслитерация</dt>
+                    <dd>{{ p.lastNameTranslit }} {{ p.firstNameTranslit }}</dd>
+                  </div>
+                }
+                <div>
+                  <dt>Дата рождения</dt>
+                  <dd>
+                    {{ formatDate(p.dateOfBirth) }}
+                    @if (age() !== null) {
+                      ({{ age() }} лет)
+                    }
+                  </dd>
+                </div>
+                <div>
+                  <dt>Пол</dt>
+                  <dd>{{ genderLabel(p.gender) }}</dd>
+                </div>
+                <div>
+                  <dt>Гражданство</dt>
+                  <dd>{{ p.citizenship || '—' }}</dd>
+                </div>
+                @if (p.personalNumber) {
+                  <div>
+                    <dt>Личный номер</dt>
+                    <dd>{{ p.personalNumber }}</dd>
+                  </div>
+                }
+                @if (p.notes) {
+                  <div>
+                    <dt>Заметки</dt>
+                    <dd>{{ p.notes }}</dd>
+                  </div>
+                }
+              </dl>
+            </app-detail-section>
+
+            <!-- Documents section -->
+            <app-detail-section title="Документы">
+              <button
+                mat-stroked-button
+                section-actions
+                type="button"
+                (click)="openCreateDocumentDialog()"
+              >
+                <mat-icon>add</mat-icon>
+                Добавить
+              </button>
+
+              @if (p.documents.length === 0) {
+                <p class="empty-state-text">Нет документов</p>
+              } @else {
+                <div class="table-wrap person-table-wrap">
+                  <table mat-table [dataSource]="p.documents">
+                    <ng-container matColumnDef="document">
+                      <th *matHeaderCellDef mat-header-cell>Документ</th>
+                      <td *matCellDef="let doc" class="cell-primary" mat-cell>
+                        <div class="cell-inline">
+                          @if (doc.primary) {
+                            <mat-icon class="doc-primary-icon" title="Основной документ"
+                              >star</mat-icon
+                            >
+                          }
+                          <span>{{ docLabel(doc) }}</span>
+                        </div>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="issueDate">
+                      <th *matHeaderCellDef mat-header-cell>Выдан</th>
+                      <td *matCellDef="let doc" mat-cell>{{ formatDate(doc.issueDate) }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="expiryDate">
+                      <th *matHeaderCellDef mat-header-cell>Действителен до</th>
+                      <td *matCellDef="let doc" mat-cell>{{ formatDate(doc.expiryDate) }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                      <th *matHeaderCellDef mat-header-cell>Статус</th>
+                      <td *matCellDef="let doc" mat-cell>
+                        @if (docExpiryClass(doc) === 'doc-expired') {
+                          <span class="doc-status doc-status--expired">Истёк</span>
+                        } @else if (docExpiryClass(doc) === 'doc-expiring') {
+                          <span class="doc-status doc-status--expiring">Истекает</span>
+                        } @else {
+                          <span class="doc-status">Актуален</span>
+                        }
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                      <th *matHeaderCellDef mat-header-cell>Действия</th>
+                      <td *matCellDef="let doc" class="table-cell-actions" mat-cell>
+                        <button
+                          aria-label="Редактировать документ"
+                          mat-icon-button
+                          type="button"
+                          (click)="openEditDocumentDialog(doc)"
+                        >
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                        <button
+                          aria-label="Удалить документ"
+                          mat-icon-button
+                          type="button"
+                          (click)="deleteDocument(doc)"
+                        >
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </td>
+                    </ng-container>
+
+                    <tr
+                      *matHeaderRowDef="documentColumns"
+                      class="table-header-row"
+                      mat-header-row
+                    ></tr>
+                    <tr
+                      *matRowDef="let row; columns: documentColumns"
+                      class="table-row"
+                      mat-row
+                      [class.doc-expired]="docExpiryClass(row) === 'doc-expired'"
+                      [class.doc-expiring]="docExpiryClass(row) === 'doc-expiring'"
+                    ></tr>
+                  </table>
+                </div>
+              }
+            </app-detail-section>
+
+            <!-- Addresses section -->
+            <app-detail-section title="Адреса">
+              <button
+                mat-stroked-button
+                section-actions
+                type="button"
+                (click)="openCreateAddressDialog()"
+              >
+                <mat-icon>add</mat-icon>
+                Добавить
+              </button>
+
+              @if (p.addresses.length === 0) {
+                <p class="empty-state-text">Нет адресов</p>
+              } @else {
+                <div class="table-wrap person-table-wrap">
+                  <table mat-table [dataSource]="p.addresses">
+                    <ng-container matColumnDef="type">
+                      <th *matHeaderCellDef mat-header-cell>Тип</th>
+                      <td *matCellDef="let addr" class="cell-primary" mat-cell>
+                        {{ addressLabel(addr.type) }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="country">
+                      <th *matHeaderCellDef mat-header-cell>Страна</th>
+                      <td *matCellDef="let addr" mat-cell>{{ addr.country || '—' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="city">
+                      <th *matHeaderCellDef mat-header-cell>Город</th>
+                      <td *matCellDef="let addr" mat-cell>{{ addr.city || '—' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="street">
+                      <th *matHeaderCellDef mat-header-cell>Адрес</th>
+                      <td *matCellDef="let addr" mat-cell>
+                        {{ addr.street || '—' }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="postalCode">
+                      <th *matHeaderCellDef mat-header-cell>Индекс</th>
+                      <td *matCellDef="let addr" mat-cell>{{ addr.postalCode || '—' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                      <th *matHeaderCellDef mat-header-cell>Действия</th>
+                      <td *matCellDef="let addr" class="table-cell-actions" mat-cell>
+                        <button
+                          aria-label="Редактировать адрес"
+                          mat-icon-button
+                          type="button"
+                          (click)="openEditAddressDialog(addr)"
+                        >
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                        <button
+                          aria-label="Удалить адрес"
+                          mat-icon-button
+                          type="button"
+                          (click)="deleteAddress(addr)"
+                        >
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </td>
+                    </ng-container>
+
+                    <tr
+                      *matHeaderRowDef="addressColumns"
+                      class="table-header-row"
+                      mat-header-row
+                    ></tr>
+                    <tr
+                      *matRowDef="let row; columns: addressColumns"
+                      class="table-row"
+                      mat-row
+                    ></tr>
+                  </table>
+                </div>
+              }
+            </app-detail-section>
+
+            <!-- Contacts section -->
+            <app-detail-section title="Контакты">
+              <button
+                mat-stroked-button
+                section-actions
+                type="button"
+                (click)="openCreateContactDialog()"
+              >
+                <mat-icon>add</mat-icon>
+                Добавить
+              </button>
+
+              @if (p.contacts.length === 0) {
+                <p class="empty-state-text">Нет контактов</p>
+              } @else {
+                <div class="table-wrap person-table-wrap">
+                  <table mat-table [dataSource]="p.contacts">
+                    <ng-container matColumnDef="medium">
+                      <th *matHeaderCellDef mat-header-cell>Канал</th>
+                      <td *matCellDef="let contact" class="cell-primary" mat-cell>
+                        {{ contactMediumLabelFor(contact.medium) }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="value">
+                      <th *matHeaderCellDef mat-header-cell>Значение</th>
+                      <td *matCellDef="let contact" mat-cell>{{ contact.value }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="primary">
+                      <th *matHeaderCellDef mat-header-cell>Основной</th>
+                      <td *matCellDef="let contact" mat-cell>
+                        @if (contact.primary) {
+                          <span class="primary-badge">Да</span>
+                        } @else {
+                          —
+                        }
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                      <th *matHeaderCellDef mat-header-cell>Действия</th>
+                      <td *matCellDef="let contact" class="table-cell-actions" mat-cell>
+                        <button
+                          aria-label="Редактировать контакт"
+                          mat-icon-button
+                          type="button"
+                          (click)="openEditContactDialog(contact)"
+                        >
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                        <button
+                          aria-label="Удалить контакт"
+                          mat-icon-button
+                          type="button"
+                          (click)="deleteContact(contact)"
+                        >
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </td>
+                    </ng-container>
+
+                    <tr
+                      *matHeaderRowDef="contactColumns"
+                      class="table-header-row"
+                      mat-header-row
+                    ></tr>
+                    <tr
+                      *matRowDef="let row; columns: contactColumns"
+                      class="table-row"
+                      mat-row
+                    ></tr>
+                  </table>
+                </div>
+              }
+            </app-detail-section>
+
+            <!-- Relationships section -->
+            <app-detail-section title="Связи">
+              @if (relationships().length === 0) {
+                <p class="empty-state-text">Нет связей</p>
+              } @else {
+                <div class="table-wrap person-table-wrap">
+                  <table mat-table [dataSource]="relationships()">
+                    <ng-container matColumnDef="type">
+                      <th *matHeaderCellDef mat-header-cell>Тип связи</th>
+                      <td *matCellDef="let item" class="cell-primary" mat-cell>
+                        {{ relationshipTypeLabel(item.type) }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                      <th *matHeaderCellDef mat-header-cell>Статус</th>
+                      <td *matCellDef="let item" mat-cell>
+                        {{ relationshipStatusLabel(item.status) }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="sinceDate">
+                      <th *matHeaderCellDef mat-header-cell>С</th>
+                      <td *matCellDef="let item" mat-cell>{{ formatDate(item.sinceDate) }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="actions">
+                      <th *matHeaderCellDef mat-header-cell>Действия</th>
+                      <td *matCellDef="let item" class="table-cell-actions" mat-cell>
+                        @if (
+                          relatedClientByPersonId().get(item.relatedPersonId);
+                          as relatedClientId
+                        ) {
+                          <button
+                            mat-stroked-button
+                            type="button"
+                            (click)="openClient(relatedClientId)"
+                          >
+                            Открыть клиента
+                          </button>
+                        } @else {
+                          —
+                        }
+                      </td>
+                    </ng-container>
+
+                    <tr
+                      *matHeaderRowDef="relationshipColumns"
+                      class="table-header-row"
+                      mat-header-row
+                    ></tr>
+                    <tr
+                      *matRowDef="let row; columns: relationshipColumns"
+                      class="table-row"
+                      mat-row
+                    ></tr>
+                  </table>
+                </div>
+              }
+            </app-detail-section>
+
+            <!-- Booking history section -->
+            <app-detail-section class="bookings-section" title="История бронирований">
+              @if (bookings().length === 0) {
+                <p class="empty-state-text">Турист ещё не участвовал в бронированиях.</p>
+              } @else {
+                <div class="table-wrap person-table-wrap">
+                  <table mat-table [dataSource]="bookings()">
+                    <ng-container matColumnDef="number">
+                      <th *matHeaderCellDef mat-header-cell>Бронирование</th>
+                      <td *matCellDef="let booking" class="cell-primary" mat-cell>
+                        {{ booking.number || booking.id }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="destination">
+                      <th *matHeaderCellDef mat-header-cell>Направление</th>
+                      <td *matCellDef="let booking" mat-cell>{{ booking.destination || '—' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="travelPeriod">
+                      <th *matHeaderCellDef mat-header-cell>Даты</th>
+                      <td *matCellDef="let booking" mat-cell>
+                        {{ formatDate(booking.departDate) }} - {{ formatDate(booking.returnDate) }}
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="travelerRole">
+                      <th *matHeaderCellDef mat-header-cell>Роль</th>
+                      <td *matCellDef="let booking" mat-cell>{{ booking.travelerRole || '—' }}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="status">
+                      <th *matHeaderCellDef mat-header-cell>Статус</th>
+                      <td *matCellDef="let booking" mat-cell>
+                        <app-booking-status-chip [status]="booking.status" />
+                      </td>
+                    </ng-container>
+
+                    <tr
+                      *matHeaderRowDef="bookingColumns"
+                      class="table-header-row"
+                      mat-header-row
+                    ></tr>
+                    <tr
+                      *matRowDef="let row; columns: bookingColumns"
+                      class="table-row"
+                      mat-row
+                      tabindex="0"
+                      (click)="openBooking(row.id)"
+                      (keydown.enter)="openBooking(row.id)"
+                    ></tr>
+                  </table>
+                </div>
+              }
+            </app-detail-section>
+          </div>
+        </app-page-content>
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+
+    <!-- Consent dialog -->
+    @if (consentDialogOpen()) {
+      <div class="consent-dialog-backdrop">
+        <dialog
+          aria-labelledby="consent-dialog-title"
+          aria-modal="true"
+          class="consent-dialog"
+          open
+        >
+          <h2 class="consent-dialog-title" id="consent-dialog-title">
+            Согласие на обработку данных
+          </h2>
+
+          <form [formGroup]="consentForm" (ngSubmit)="saveConsent()">
+            <mat-form-field class="w-full">
+              <mat-label>Дата согласия</mat-label>
+              <input formControlName="consentDate" matInput type="date" />
+            </mat-form-field>
+
+            <mat-checkbox formControlName="confirmed">
+              Подтверждаю, что письменное согласие получено
+            </mat-checkbox>
+
+            <div class="consent-dialog-actions">
+              <button mat-stroked-button type="button" (click)="closeConsentDialog()">
+                Отмена
+              </button>
+              <button
+                color="primary"
+                mat-flat-button
+                type="submit"
+                [disabled]="consentSaving() || consentForm.controls.confirmed.value === false"
+              >
+                {{ consentSaving() ? 'Сохранение...' : 'Сохранить' }}
+              </button>
             </div>
-            <div>
-              <dt>Телефон</dt>
-              <dd>{{ p.contacts[0]?.value || '—' }}</dd>
-            </div>
-          </dl>
-        </app-detail-section>
-
-        <app-detail-section title="Документы">
-          @if (p.documents.length === 0) {
-            <p>Нет документов</p>
-          } @else {
-            <ul>
-              @for (doc of p.documents; track doc.id) {
-                <li>{{ doc.type }} · {{ doc.series || '' }} ****{{ doc.numberLast4 }}</li>
-              }
-            </ul>
-          }
-        </app-detail-section>
-
-        <app-detail-section title="Адреса">
-          @if (p.addresses.length === 0) {
-            <p>Нет адресов</p>
-          } @else {
-            <ul>
-              @for (addr of p.addresses; track addr.id) {
-                <li>{{ addr.type }} · {{ addr.city || '—' }}</li>
-              }
-            </ul>
-          }
-        </app-detail-section>
-
-        <app-detail-section title="Контакты">
-          @if (p.contacts.length === 0) {
-            <p>Нет контактов</p>
-          } @else {
-            <ul>
-              @for (contact of p.contacts; track contact.id) {
-                <li>{{ contact.medium }} · {{ contact.value }}</li>
-              }
-            </ul>
-          }
-        </app-detail-section>
-
-        <app-detail-section title="Связи">
-          @if (relationships().length === 0) {
-            <p>Нет связей</p>
-          } @else {
-            <ul>
-              @for (item of relationships(); track item.id) {
-                <li>
-                  <span>{{ item.type }} · {{ relationshipStatusLabel(item.status) }}</span>
-                  @if (relatedClientByPersonId().get(item.relatedPersonId); as relatedClientId) {
-                    <button mat-button type="button" (click)="openClient(relatedClientId)">
-                      Открыть клиента
-                    </button>
-                  }
-                </li>
-              }
-            </ul>
-          }
-        </app-detail-section>
-
-        <app-detail-section title="История бронирований">
-          @if (bookings().length === 0) {
-            <p>Нет бронирований</p>
-          } @else {
-            <ul>
-              @for (booking of bookings(); track booking.id) {
-                <li>
-                  <button mat-button type="button" (click)="openBooking(booking.id)">
-                    {{ booking.number || booking.id }}
-                  </button>
-                </li>
-              }
-            </ul>
-          }
-        </app-detail-section>
+          </form>
+        </dialog>
       </div>
-    </app-page-content>
+    }
   }
 </app-loading-state>

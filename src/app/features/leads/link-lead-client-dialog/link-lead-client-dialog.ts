@@ -6,14 +6,17 @@ import {
   MatAutocompleteModule,
   MatAutocompleteSelectedEvent,
 } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 
 import { debounceTime, distinctUntilChanged, finalize, of, switchMap } from 'rxjs';
 
 import { ClientsService } from '@app/services/clients.service';
 import { LeadsService } from '@app/services/leads.service';
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { formatClientSearchLabel } from '@app/shared/utils/client-display';
 
 import type { ClientResponseDto, LeadResponseDto } from '@app/shared/models';
@@ -30,7 +33,10 @@ export type LinkLeadClientDialogData = {
     MatDialogModule,
     MatAutocompleteModule,
     MatProgressSpinnerModule,
-    ...MAT_FORM_BUTTONS,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
   ],
   templateUrl: './link-lead-client-dialog.html',
   styleUrl: './link-lead-client-dialog.scss',

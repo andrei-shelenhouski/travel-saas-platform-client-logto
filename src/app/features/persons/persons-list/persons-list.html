@@ -1,0 +1,205 @@
+<app-page-heading subtitle="Всего: {{ totalElements() }} туристов" title="Туристы">
+  @if (canCreate()) {
+    <button
+      appPageAction
+      color="primary"
+      icon="add"
+      label="Создать туриста"
+      mat-flat-button
+      type="button"
+      (click)="openCreateDialog()"
+    >
+      <mat-icon>add</mat-icon>
+      <span>Создать туриста</span>
+    </button>
+  }
+</app-page-heading>
+
+<div class="persons-list-body">
+  <mat-form-field class="search-field" subscriptSizing="dynamic">
+    <mat-label>Поиск</mat-label>
+    <input
+      matInput
+      placeholder="Поиск по имени, телефону, номеру паспорта…"
+      [formControl]="searchControl"
+    />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  <div class="filter-bar">
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>Тип</mat-label>
+      <mat-select [value]="typeFilter() ?? ''" (valueChange)="onTypeFilterChange($event)">
+        <mat-option value="">Все</mat-option>
+        <mat-option value="CLIENT">Только клиенты</mat-option>
+        <mat-option value="DEPENDANT">Только иждивенцы</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>Документы</mat-label>
+      <mat-select [value]="docStatusFilter() ?? ''" (valueChange)="onDocStatusFilterChange($event)">
+        <mat-option value="">Все</mat-option>
+        <mat-option value="EXPIRING">Истекают скоро</mat-option>
+        <mat-option value="EXPIRED">Просрочены</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  @if (activeChips().length > 0) {
+    <mat-chip-set aria-label="Активные фильтры" class="chips-row">
+      @for (chip of activeChips(); track chip.label) {
+        <mat-chip (removed)="chip.clear()">
+          {{ chip.label }}
+          <button aria-label="Убрать фильтр" matChipRemove type="button">
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip>
+      }
+    </mat-chip-set>
+  }
+
+  @if (error()) {
+    <p class="persons-list-error" role="alert">{{ error() }}</p>
+  }
+
+  <div class="table-wrap">
+    <table mat-table [dataSource]="persons()">
+      <ng-container matColumnDef="name">
+        <th *matHeaderCellDef mat-header-cell>Имя</th>
+        <td *matCellDef="let person" mat-cell>
+          <span class="cell-primary">{{ person.full_name }}</span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <th *matHeaderCellDef mat-header-cell>Тип</th>
+        <td *matCellDef="let person" mat-cell>
+          @if (person.type === 'CLIENT') {
+            <span class="type-badge type-badge--client">CLIENT</span>
+          } @else {
+            <span class="type-badge type-badge--dependant">DEPENDANT</span>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="linked_client">
+        <th *matHeaderCellDef mat-header-cell>Клиент</th>
+        <td *matCellDef="let person" mat-cell>
+          @if (person.linked_client) {
+            <button
+              matButton="text"
+              type="button"
+              (click)="navigateToClient($event, person.linked_client.id)"
+              (keydown.enter)="navigateToClient($event, person.linked_client.id)"
+            >
+              {{ person.linked_client.display_name }}
+            </button>
+          } @else {
+            —
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="date_of_birth">
+        <th *matHeaderCellDef mat-header-cell>Дата рождения</th>
+        <td *matCellDef="let person" mat-cell>
+          {{ person.date_of_birth ? (person.date_of_birth | date: 'dd.MM.yyyy') : '—' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="documents">
+        <th *matHeaderCellDef mat-header-cell>Документы</th>
+        <td *matCellDef="let person" mat-cell>
+          @if (person.document_expiry_status !== 'NONE') {
+            <mat-icon [class]="docStatusColor(person)" [matTooltip]="docStatusTooltip(person)">{{
+              docStatusIcon(person)
+            }}</mat-icon>
+          } @else {
+            —
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th *matHeaderCellDef mat-header-cell></th>
+        <td *matCellDef="let person" class="actions-cell" mat-cell>
+          <button
+            aria-label="Действия"
+            mat-icon-button
+            type="button"
+            [matMenuTriggerFor]="rowMenu"
+            (click)="$event.stopPropagation()"
+          >
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #rowMenu="matMenu">
+            <button mat-menu-item type="button" (click)="navigateToPerson(person.id)">
+              <mat-icon>person</mat-icon>
+              <span>Открыть профиль</span>
+            </button>
+            @if (person.linked_client) {
+              <button
+                mat-menu-item
+                type="button"
+                (click)="navigateToClient($event, person.linked_client.id)"
+              >
+                <mat-icon>group</mat-icon>
+                <span>Перейти к клиенту</span>
+              </button>
+            }
+            @if (person.type === 'DEPENDANT') {
+              <button disabled mat-menu-item type="button">
+                <mat-icon>person_add</mat-icon>
+                <span>Создать профиль клиента</span>
+              </button>
+            }
+          </mat-menu>
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="displayedColumns" class="table-header-row" mat-header-row></tr>
+      <tr
+        *matRowDef="let row; columns: displayedColumns"
+        class="table-row"
+        mat-row
+        tabindex="0"
+        (click)="navigateToPerson(row.id)"
+        (keydown.enter)="navigateToPerson(row.id)"
+      ></tr>
+      <tr *matNoDataRow>
+        <td [attr.colspan]="displayedColumns.length">
+          <div class="table-empty-state">
+            @if (loading()) {
+              <p class="persons-list-loading-text">Загрузка туристов...</p>
+              <mat-spinner aria-label="Загрузка туристов" diameter="36" />
+            } @else if (hasActiveFilters()) {
+              <p>Ничего не найдено по заданным фильтрам.</p>
+              <button
+                color="primary"
+                matButton="outlined"
+                type="button"
+                (click)="clearAllFilters()"
+              >
+                Сбросить фильтры
+              </button>
+            } @else {
+              <p>Туристы ещё не добавлены.</p>
+              <p class="cell-secondary">Создайте туриста или привяжите его к клиенту.</p>
+              <a color="primary" mat-button routerLink="/app/clients">Перейти к клиентам</a>
+            }
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <mat-paginator
+    aria-label="Пагинация туристов"
+    [length]="totalElements()"
+    [pageIndex]="currentPage()"
+    [pageSize]="pageSize"
+    [showFirstLastButtons]="true"
+    (page)="onPageChange($event)"
+  />
+</div>

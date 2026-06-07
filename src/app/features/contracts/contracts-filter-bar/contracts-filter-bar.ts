@@ -9,10 +9,13 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 import { distinctUntilChanged } from 'rxjs';
 
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { ContractStatus } from '@app/shared/models';
 
 import type { ContractStatus as ContractStatusType } from '@app/shared/models';
@@ -31,7 +34,13 @@ const CONTRACT_STATUS_OPTIONS: { value: ContractStatusType; label: string }[] = 
 @Component({
   selector: 'app-contracts-filter-bar',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, ...MAT_FORM_BUTTONS],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+  ],
   templateUrl: './contracts-filter-bar.html',
   styleUrl: './contracts-filter-bar.scss',
 })

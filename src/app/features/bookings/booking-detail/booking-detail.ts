@@ -9,9 +9,12 @@ import {
   viewChild,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { MatDialog } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { ActivatedRoute, Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { EMPTY, forkJoin, of } from 'rxjs';
 import { finalize, map, switchMap } from 'rxjs/operators';
@@ -26,7 +29,6 @@ import { BookingStatusChipComponent } from '@app/shared/components/booking-statu
 import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
-import { MAT_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 import { BookingStatus, ClientType } from '@app/shared/models';
 
 import { AccommodationTableComponent } from './accommodation-table/accommodation-table';
@@ -76,8 +78,9 @@ import type {
     TravelDetailsSectionComponent,
     BookingTravelersSectionComponent,
     CustomFieldsSectionComponent,
-    ...MAT_BUTTONS,
-    ...MAT_MENU,
+    MatButtonModule,
+    MatMenuModule,
+    MatDividerModule,
   ],
   templateUrl: './booking-detail.html',
   styleUrl: './booking-detail.scss',

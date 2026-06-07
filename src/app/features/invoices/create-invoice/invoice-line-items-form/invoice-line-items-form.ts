@@ -1,8 +1,11 @@
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-
-import { MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 type InvoiceLineItemFormGroup = FormGroup<{
   sortOrder: FormControl<number>;
@@ -23,7 +26,15 @@ type InvoiceLineItemFormGroup = FormGroup<{
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-invoice-line-items-form',
-  imports: [DragDropModule, ReactiveFormsModule, ...MAT_FORM_BUTTONS, ...MAT_ICONS],
+  imports: [
+    DragDropModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './invoice-line-items-form.html',
   styleUrl: './invoice-line-items-form.scss',
 })

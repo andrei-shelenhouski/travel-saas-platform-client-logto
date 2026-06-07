@@ -9,12 +9,15 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 import { distinctUntilChanged } from 'rxjs';
 
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { BOOKING_STATUS_OPTIONS, BookingStatus } from '@app/shared/models';
 import { compareDateRangeFilters, formatDate, parseDate } from '@app/shared/utils/date.utils';
 
@@ -33,7 +36,15 @@ export type BookingListFilterValue = {
 @Component({
   selector: 'app-booking-filter-bar',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, ...MAT_FORM_BUTTONS, MatDatepickerModule, MatNativeDateModule],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+  ],
   templateUrl: './booking-filter-bar.html',
   styleUrl: './booking-filter-bar.scss',
 })

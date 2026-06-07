@@ -1,18 +1,28 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 import { take } from 'rxjs';
 
 import { MeService } from '@app/services/me.service';
 import { OrganizationStateService } from '@app/services/organization-state.service';
 import { OrganizationsService } from '@app/services/organizations.service';
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-create-organization',
-  imports: [ReactiveFormsModule, RouterLink, ...MAT_FORM_BUTTONS],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+  ],
   templateUrl: './create-organization.html',
   styleUrl: './create-organization.scss',
 })

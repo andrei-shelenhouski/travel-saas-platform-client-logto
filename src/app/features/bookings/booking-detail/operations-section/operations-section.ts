@@ -9,10 +9,14 @@ import {
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { BookingStatus, OrgRole } from '@app/shared/models';
 
 import type { BookingResponseDto, UpdateBookingDto } from '@app/shared/models';
@@ -20,7 +24,14 @@ import type { BookingResponseDto, UpdateBookingDto } from '@app/shared/models';
 @Component({
   selector: 'app-operations-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, ...MAT_FORM_BUTTONS, ...MAT_BUTTONS, ...MAT_ICONS],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './operations-section.html',
   styleUrl: './operations-section.scss',
 })

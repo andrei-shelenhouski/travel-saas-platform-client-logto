@@ -1,0 +1,42 @@
+<h2 mat-dialog-title>
+  {{ data.mode === 'create' ? 'Добавить контакт' : 'Редактировать контакт' }}
+</h2>
+
+<mat-dialog-content>
+  <form class="flex flex-col gap-4 pt-2" [formGroup]="form">
+    <mat-form-field class="w-full">
+      <mat-label>Тип</mat-label>
+      <mat-select formControlName="medium">
+        @for (opt of mediumOptions; track opt.value) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+      @if (form.controls.medium.hasError('required') && form.controls.medium.touched) {
+        <mat-error>Обязательное поле</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Значение</mat-label>
+      <input autocomplete="off" formControlName="value" matInput />
+      @if (form.controls.value.hasError('required') && form.controls.value.touched) {
+        <mat-error>Обязательное поле</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-checkbox formControlName="primary">Основной</mat-checkbox>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" [disabled]="submitting()" (click)="cancel()">Отмена</button>
+  <button
+    color="primary"
+    mat-flat-button
+    type="button"
+    [disabled]="submitting()"
+    (click)="submit()"
+  >
+    {{ submitting() ? 'Сохранение...' : data.mode === 'create' ? 'Добавить' : 'Сохранить' }}
+  </button>
+</mat-dialog-actions>

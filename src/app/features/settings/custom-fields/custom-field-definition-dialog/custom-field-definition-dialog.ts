@@ -1,8 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
-import { MAT_BUTTONS, MAT_DIALOG, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { CustomFieldType } from '@app/shared/models';
 
 import type {
@@ -25,7 +28,14 @@ export type CustomFieldDefinitionDialogResult = {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-custom-field-definition-dialog',
-  imports: [ReactiveFormsModule, ...MAT_DIALOG, ...MAT_BUTTONS, ...MAT_FORM_BUTTONS],
+  imports: [
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+  ],
   templateUrl: './custom-field-definition-dialog.html',
   styleUrl: './custom-field-definition-dialog.scss',
 })

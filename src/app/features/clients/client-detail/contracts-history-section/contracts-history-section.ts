@@ -1,6 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -9,7 +13,6 @@ import { MatTableModule } from '@angular/material/table';
 import { ContractFormDialogComponent } from '@app/features/clients/contract-form-dialog/contract-form-dialog';
 import { ContractsService } from '@app/services/contracts.service';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
-import { MAT_BUTTONS, MAT_ICONS, MAT_MENU } from '@app/shared/material-imports';
 import { ContractStatus, SignatureMethod } from '@app/shared/models';
 
 import type { ContractResponseDto } from '@app/shared/models';
@@ -34,9 +37,10 @@ const SIGNATURE_METHOD_LABEL: Record<string, string> = {
     MatProgressSpinnerModule,
     MatTableModule,
     MatPaginatorModule,
-    ...MAT_BUTTONS,
-    ...MAT_ICONS,
-    ...MAT_MENU,
+    MatButtonModule,
+    MatIconModule,
+    MatMenuModule,
+    MatDividerModule,
   ],
   templateUrl: './contracts-history-section.html',
   styleUrl: './contracts-history-section.scss',

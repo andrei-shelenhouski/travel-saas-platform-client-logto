@@ -1,17 +1,27 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { forkJoin, of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, finalize, switchMap } from 'rxjs/operators';
 
 import { PersonsService } from '@app/services/persons.service';
-import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
-import type { PersonDocumentResponseDto, PersonResponseDto } from '@app/shared/models';
+import type {
+  PersonDocumentRequestDto,
+  PersonDocumentResponseDto,
+  PersonResponseDto,
+} from '@app/shared/models';
 
 export type AddTravelersDialogData = {
   familyMembers: PersonResponseDto[];
@@ -25,15 +35,28 @@ export type AddTravelersDialogResult = {
   persons: PersonResponseDto[];
 };
 
+const QUICK_DOC_TYPE_OPTIONS = [
+  { value: 'INTL_PASSPORT', label: 'Загранпаспорт' },
+  { value: 'NATIONAL_PASSPORT', label: 'Внутренний / общегражданский паспорт' },
+  { value: 'NATIONAL_ID', label: 'Национальный ID / ID-карта' },
+  { value: 'BIRTH_CERTIFICATE', label: 'Свидетельство о рождении' },
+  { value: 'OTHER', label: 'Другой документ' },
+];
+
 @Component({
   selector: 'app-add-travelers-dialog',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatDialogModule,
+    MatDividerModule,
+    MatIconModule,
+    MatTooltipModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
-    ...MAT_BUTTONS,
-    ...MAT_FORM_BUTTONS,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
   ],
   templateUrl: './add-travelers-dialog.html',
   styleUrl: './add-travelers-dialog.scss',
@@ -45,6 +68,7 @@ export class AddTravelersDialogComponent {
   );
   private readonly personsService = inject(PersonsService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly fb = inject(FormBuilder);
 
   protected readonly selected = signal<Record<string, boolean>>({});
   protected readonly selectedDocByPerson = signal<Record<string, string>>({});
@@ -59,6 +83,21 @@ export class AddTravelersDialogComponent {
   protected readonly leadPersonId = signal<string | null>(null);
   protected readonly loadedFamily = signal<PersonResponseDto[]>([]);
   protected readonly loadingForPersonId = signal<string | null>(null);
+
+  // ---- Inline create-person mini-form (B2B / search mode only) ----
+  protected readonly quickDocTypeOptions = QUICK_DOC_TYPE_OPTIONS;
+  protected readonly showCreateForm = signal(false);
+  protected readonly createSaving = signal(false);
+  protected readonly createForm = this.fb.nonNullable.group({
+    lastName: ['', Validators.required],
+    firstName: ['', Validators.required],
+    patronymic: [''],
+    dateOfBirth: [''],
+    citizenship: [''],
+    docType: [''],
+    docNumber: [''],
+    docExpiry: [''],
+  });
 
   private readonly allKnownPersons = signal<Record<string, PersonResponseDto>>({});
   private readonly searchSubject = new Subject<string>();
@@ -261,6 +300,95 @@ export class AddTravelersDialogComponent {
 
   protected documentLabel(document: PersonDocumentResponseDto): string {
     return `${document.type} ${document.series ?? ''} ****${document.numberLast4}`.trim();
+  }
+
+  // ---- Inline create-person actions ----
+  protected openCreateForm(): void {
+    this.createForm.reset({
+      lastName: '',
+      firstName: '',
+      patronymic: '',
+      dateOfBirth: '',
+      citizenship: '',
+      docType: '',
+      docNumber: '',
+      docExpiry: '',
+    });
+    this.showCreateForm.set(true);
+  }
+
+  protected cancelCreateForm(): void {
+    this.showCreateForm.set(false);
+  }
+
+  protected submitCreateForm(): void {
+    if (this.createForm.invalid) {
+      this.createForm.markAllAsTouched();
+
+      return;
+    }
+
+    const raw = this.createForm.getRawValue();
+    const hasDoc = raw.docType && raw.docNumber;
+
+    this.createSaving.set(true);
+
+    this.personsService
+      .create({
+        lastName: raw.lastName.trim(),
+        firstName: raw.firstName.trim(),
+        patronymic: raw.patronymic.trim() || undefined,
+        dateOfBirth: raw.dateOfBirth || undefined,
+        citizenship: raw.citizenship.trim() || undefined,
+      })
+      .pipe(
+        switchMap((person) => {
+          if (!hasDoc) {
+            return of(person);
+          }
+
+          const docDto: PersonDocumentRequestDto = {
+            type: raw.docType,
+            number: raw.docNumber.toUpperCase(),
+            expiryDate: raw.docExpiry || undefined,
+            primary: true,
+          };
+
+          return this.personsService
+            .addDocument(person.id, docDto)
+            .pipe(switchMap(() => this.personsService.getById(person.id)));
+        }),
+        finalize(() => this.createSaving.set(false)),
+      )
+      .subscribe({
+        next: (personOrDoc) => {
+          // If hasDoc, we reloaded person; if not, personOrDoc is the created person
+          // In both cases treat as PersonResponseDto
+          const newPerson = personOrDoc as PersonResponseDto;
+
+          this.allKnownPersons.update((current) => ({
+            ...current,
+            [newPerson.id]: newPerson,
+          }));
+
+          // Auto-select and add to traveler list
+          this.selected.update((current) => ({ ...current, [newPerson.id]: true }));
+
+          this.showCreateForm.set(false);
+          this.snackBar.open(
+            `Турист ${newPerson.lastName} ${newPerson.firstName} создан и добавлен`,
+            'Close',
+            {
+              duration: 4000,
+            },
+          );
+        },
+        error: (err) => {
+          this.snackBar.open(err?.error?.message ?? 'Не удалось создать туриста', 'Close', {
+            duration: 5000,
+          });
+        },
+      });
   }
 
   protected save(): void {

@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 
 import { LeadSourceBadgeComponent } from '@app/features/leads/lead-source-badge/lead-source-badge';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 import type { LeadResponseDto } from '@app/shared/models';
 
@@ -31,7 +31,7 @@ const ACTION_ICONS: Record<LeadAction, string> = {
   styleUrl: './lead-detail-header.scss',
   imports: [
     MatIconModule,
-    ...MAT_BUTTONS,
+    MatButtonModule,
     PageHeading,
     PageHeadingAction,
     StatusBadgeComponent,

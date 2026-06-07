@@ -1,17 +1,17 @@
 import { DatePipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, input, output, signal } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 import { environment } from '@environments/environment';
-
-import { MAT_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 
 import type { BookingDocumentResponseDto } from '@app/shared/models';
 
 @Component({
   selector: 'app-document-row',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, ...MAT_BUTTONS, ...MAT_ICONS],
+  imports: [DatePipe, MatButtonModule, MatIconModule],
   templateUrl: './document-row.html',
   styleUrl: './document-row.scss',
 })

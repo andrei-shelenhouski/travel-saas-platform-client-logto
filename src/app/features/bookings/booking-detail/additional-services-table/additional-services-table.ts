@@ -9,9 +9,13 @@ import {
   signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 
-import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { SERVICE_TYPE_OPTIONS, serviceTypeLabel } from '@app/shared/models';
 
 import type {
@@ -26,9 +30,11 @@ import type {
     DecimalPipe,
     ReactiveFormsModule,
     MatTableModule,
-    ...MAT_FORM_BUTTONS,
-    ...MAT_BUTTONS,
-    ...MAT_ICONS,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
   ],
   templateUrl: './additional-services-table.html',
   styleUrl: './additional-services-table.scss',

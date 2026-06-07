@@ -39,7 +39,7 @@ npm run refresh-openapi  # pull latest OpenAPI spec from localhost:3000
 - **Component library:** Angular Material 21 — `appearance: 'outline'` is the default for all form fields (configured globally in `app.config.ts`).
 - **Icons:** Material Icons (ligature-based `<mat-icon>`). Do not use PrimeNG icons.
 - **Styling:** Tailwind CSS 4 for layout and utility classes alongside Angular Material component styles.
-- **Shared Material imports:** Use the named re-exports from `@app/shared/material-imports` (e.g. `MAT_FORM_BUTTONS`, `MAT_BUTTONS`) instead of importing individual Material modules ad hoc.
+- **Material imports:** Import individual Material modules directly from `@angular/material/*` (e.g. `MatButtonModule`, `MatFormFieldModule`). The `@app/shared/material-imports` barrel has been removed.
 
 ## Path Aliases
 

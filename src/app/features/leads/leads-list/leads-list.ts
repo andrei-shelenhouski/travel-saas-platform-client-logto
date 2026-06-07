@@ -11,14 +11,21 @@ import {
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -34,12 +41,6 @@ import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
-import {
-  MAT_BUTTON_TOGGLES,
-  MAT_BUTTONS,
-  MAT_FORM_BUTTONS,
-  MAT_MENU,
-} from '@app/shared/material-imports';
 import { CLIENT_TYPE_OPTIONS, LEAD_STATUS_OPTIONS } from '@app/shared/models';
 import { computeAgentOptions } from '@app/shared/utils/agent-options.util';
 import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
@@ -75,10 +76,13 @@ const LEAD_STATUSES = new Set<LeadStatus>([
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-leads-list',
   imports: [
-    ...MAT_BUTTON_TOGGLES,
-    ...MAT_BUTTONS,
-    ...MAT_FORM_BUTTONS,
-    ...MAT_MENU,
+    MatButtonToggleModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatMenuModule,
+    MatDividerModule,
     DatePipe,
     MatChipsModule,
     MatIcon,

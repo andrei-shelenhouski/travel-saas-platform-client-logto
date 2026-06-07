@@ -122,6 +122,77 @@
         </div>
       </div>
     }
+
+    <!-- Create new person inline (B2B search mode only) -->
+    <mat-divider class="create-divider" />
+    @if (!showCreateForm()) {
+      <button class="create-person-btn" mat-stroked-button type="button" (click)="openCreateForm()">
+        <mat-icon>person_add</mat-icon>
+        + Создать нового туриста
+      </button>
+    } @else {
+      <div class="create-person-form-container">
+        <div class="create-person-form-header">
+          <span class="create-form-title">Новый турист</span>
+          <button aria-label="Закрыть" mat-icon-button type="button" (click)="cancelCreateForm()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <form [formGroup]="createForm" (ngSubmit)="submitCreateForm()">
+          <div class="create-form-grid">
+            <mat-form-field>
+              <mat-label>Фамилия</mat-label>
+              <input autocomplete="off" formControlName="lastName" matInput />
+              @if (createForm.controls.lastName.hasError('required') && createForm.controls.lastName.touched) {
+                <mat-error>Обязательное поле</mat-error>
+              }
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Имя</mat-label>
+              <input autocomplete="off" formControlName="firstName" matInput />
+              @if (createForm.controls.firstName.hasError('required') && createForm.controls.firstName.touched) {
+                <mat-error>Обязательное поле</mat-error>
+              }
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Отчество</mat-label>
+              <input autocomplete="off" formControlName="patronymic" matInput />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Дата рождения</mat-label>
+              <input formControlName="dateOfBirth" matInput type="date" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Гражданство</mat-label>
+              <input autocomplete="off" formControlName="citizenship" matInput />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Тип документа</mat-label>
+              <mat-select formControlName="docType">
+                <mat-option value="">—</mat-option>
+                @for (opt of quickDocTypeOptions; track opt.value) {
+                  <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Номер документа</mat-label>
+              <input autocomplete="off" formControlName="docNumber" matInput />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Срок действия документа</mat-label>
+              <input formControlName="docExpiry" matInput type="date" />
+            </mat-form-field>
+          </div>
+          <div class="create-form-actions">
+            <button mat-stroked-button type="button" (click)="cancelCreateForm()">Отмена</button>
+            <button color="primary" mat-flat-button type="submit" [disabled]="createSaving()">
+              {{ createSaving() ? 'Создание...' : 'Создать и добавить' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    }
   } @else {
     <div class="dialog-toolbar">
       <button mat-stroked-button type="button" (click)="addWholeFamily()">Добавить всю семью</button>

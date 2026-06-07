@@ -1,9 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxChange, MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
@@ -12,7 +16,6 @@ import { finalize, forkJoin } from 'rxjs';
 import { RolesApiService } from '@app/services/roles-api.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
 import type {
   Permission,
@@ -48,7 +51,10 @@ const DESCRIPTION_MAX_LENGTH = 240;
     MatSnackBarModule,
     MatTooltipModule,
     PageHeading,
-    ...MAT_FORM_BUTTONS,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
   ],
   templateUrl: './roles-permissions.html',
   styleUrl: './roles-permissions.scss',

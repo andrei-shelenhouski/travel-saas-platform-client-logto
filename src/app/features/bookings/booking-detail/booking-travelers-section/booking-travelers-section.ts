@@ -1,14 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
-
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 import type { BookingTravelerResponseDto } from '@app/shared/models';
 @Component({
   selector: 'app-booking-travelers-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [...MAT_BUTTONS, MatIcon, MatTableModule],
+  imports: [MatButtonModule, MatIcon, MatTableModule],
   templateUrl: './booking-travelers-section.html',
   styleUrl: './booking-travelers-section.scss',
 })

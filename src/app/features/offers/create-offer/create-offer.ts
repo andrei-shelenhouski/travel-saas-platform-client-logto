@@ -20,8 +20,15 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { startWith } from 'rxjs';
 import { finalize } from 'rxjs/operators';
@@ -41,14 +48,6 @@ import { OrganizationSettingsService } from '@app/services/organization-settings
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { FormSectionComponent, PageContentComponent } from '@app/shared/components';
-import {
-  MAT_BUTTON_TOGGLES,
-  MAT_BUTTONS,
-  MAT_DIALOG,
-  MAT_FORM_BUTTONS,
-  MAT_ICONS,
-} from '@app/shared/material-imports';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { MEAL_PLAN_OPTIONS, SERVICE_TYPE_OPTIONS } from '@app/shared/models';
 
@@ -101,11 +100,13 @@ const LANGUAGE_OPTIONS = ['ru', 'en'] as const;
     PageHeadingAction,
     PageContentComponent,
     FormSectionComponent,
-    ...MAT_FORM_BUTTONS,
-    ...MAT_BUTTONS,
-    ...MAT_BUTTON_TOGGLES,
-    ...MAT_DIALOG,
-    ...MAT_ICONS,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatButtonToggleModule,
+    MatDialogModule,
+    MatIconModule,
   ],
   templateUrl: './create-offer.html',
   styleUrl: './create-offer.scss',

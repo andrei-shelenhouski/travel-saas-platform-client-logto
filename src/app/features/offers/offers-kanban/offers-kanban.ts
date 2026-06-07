@@ -12,8 +12,11 @@ import {
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -22,9 +25,7 @@ import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { MAT_BUTTON_TOGGLES, MAT_BUTTONS } from '@app/shared/material-imports';
 import { OFFER_STATUS_OPTIONS, OfferStatus } from '@app/shared/models';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type { OfferResponseDto, OfferStatus as OfferStatusType } from '@app/shared/models';
 import type { OrganizationMemberResponseDto } from '@app/shared/models';
@@ -91,8 +92,8 @@ const TERMINAL_STATUSES = new Set<OfferStatusType>([
     RouterLink,
     OffersListFilterBarComponent,
     MatIconModule,
-    ...MAT_BUTTONS,
-    ...MAT_BUTTON_TOGGLES,
+    MatButtonModule,
+    MatButtonToggleModule,
     PageHeading,
   ],
   templateUrl: './offers-kanban.html',

@@ -1,13 +1,16 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { finalize } from 'rxjs';
 
 import { UsersService } from '@app/services/users.service';
-import { MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 
 export type InviteUserRoleOption = {
   value: string;
@@ -23,7 +26,15 @@ type InviteDialogResult = { invited: true };
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-invite-user-dialog',
-  imports: [ReactiveFormsModule, MatDialogModule, MatSnackBarModule, ...MAT_FORM_BUTTONS],
+  imports: [
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+  ],
   templateUrl: './invite-user-dialog.html',
   styleUrl: './invite-user-dialog.scss',
 })

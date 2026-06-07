@@ -9,17 +9,21 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { catchError, of } from 'rxjs';
 
 import { PersonsService } from '@app/services/persons.service';
-import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_MENU } from '@app/shared/material-imports';
 
 import type {
   CreatePersonRequestDto,
@@ -33,11 +37,10 @@ import type {
 } from '@app/shared/models';
 const DOC_TYPE_LABEL: Record<string, string> = {
   INTL_PASSPORT: 'Загранпаспорт',
-  NATIONAL_PASSPORT: 'Паспорт',
-  NATIONAL_ID: 'ID карта',
+  NATIONAL_PASSPORT: 'Внутренний / общегражданский паспорт',
+  NATIONAL_ID: 'Национальный ID / ID-карта',
   BIRTH_CERTIFICATE: 'Свидетельство о рождении',
-  DRIVER_LICENSE: 'Водительское удостоверение',
-  OTHER: 'Другое',
+  OTHER: 'Другой документ',
 };
 
 const ADDR_TYPE_LABEL: Record<string, string> = {
@@ -67,9 +70,11 @@ const GENDER_LABEL: Record<string, string | undefined> = {
     MatIconModule,
     MatMenuModule,
     MatProgressSpinnerModule,
-    ...MAT_BUTTONS,
-    ...MAT_FORM_BUTTONS,
-    ...MAT_MENU,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatDividerModule,
   ],
   templateUrl: './traveler-profile-section.html',
   styleUrl: './traveler-profile-section.scss',
@@ -197,7 +202,9 @@ export class TravelerProfileSectionComponent {
   });
 
   protected docExpiryClass(doc: PersonDocumentResponseDto): string {
-    if (!doc.expiryDate) {
+    const expiryAppliesTo = new Set(['INTL_PASSPORT', 'NATIONAL_PASSPORT', 'NATIONAL_ID']);
+
+    if (!doc.expiryDate || !expiryAppliesTo.has(doc.type)) {
       return '';
     }
 
@@ -216,6 +223,14 @@ export class TravelerProfileSectionComponent {
     }
 
     return '';
+  }
+
+  protected uppercaseDocField(form: FormGroup, fieldName: string): void {
+    const ctrl = form.get(fieldName);
+
+    if (ctrl) {
+      ctrl.setValue((ctrl.value as string).toUpperCase().replace(/[^A-Z0-9]/g, ''));
+    }
   }
 
   protected formatDate(iso: string | null | undefined): string {

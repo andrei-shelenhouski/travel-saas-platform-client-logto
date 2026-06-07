@@ -137,7 +137,6 @@ export const PersonDocumentType = {
   NATIONAL_PASSPORT: 'NATIONAL_PASSPORT',
   NATIONAL_ID: 'NATIONAL_ID',
   BIRTH_CERTIFICATE: 'BIRTH_CERTIFICATE',
-  DRIVER_LICENSE: 'DRIVER_LICENSE',
   OTHER: 'OTHER',
 } as const;
 export type PersonDocumentType = (typeof PersonDocumentType)[keyof typeof PersonDocumentType];
@@ -222,9 +221,12 @@ export type PersonResponseDto = {
   firstName: string;
   lastName: string;
   patronymic?: string;
+  firstNameTranslit?: string;
+  lastNameTranslit?: string;
   dateOfBirth?: string;
   gender?: PersonGender | (string & Record<never, never>);
   citizenship?: string;
+  personalNumber?: string;
   dataConsentGiven?: boolean;
   dataConsentDate?: string;
   notes?: string;
@@ -266,9 +268,12 @@ export type CreatePersonRequestDto = {
   firstName: string;
   lastName: string;
   patronymic?: string;
+  firstNameTranslit?: string;
+  lastNameTranslit?: string;
   dateOfBirth?: string;
   gender?: string;
   citizenship?: string;
+  personalNumber?: string;
   dataConsentGiven?: boolean;
   dataConsentDate?: string;
   notes?: string;
@@ -279,23 +284,19 @@ export type UpdatePersonRequestDto = {
   firstName?: string;
   lastName?: string;
   patronymic?: string;
+  firstNameTranslit?: string;
+  lastNameTranslit?: string;
   dateOfBirth?: string;
   gender?: string;
   citizenship?: string;
+  personalNumber?: string;
   dataConsentGiven?: boolean;
   dataConsentDate?: string;
   notes?: string;
 };
 
 /** OpenAPI: CreatePersonRequest. POST /api/persons body. */
-export type CreateDetachedPersonRequestDto = {
-  firstName: string;
-  lastName: string;
-  patronymic?: string;
-  dateOfBirth?: string;
-  gender?: string;
-  citizenship?: string;
-};
+export type CreateDetachedPersonRequestDto = CreatePersonRequestDto;
 
 /** OpenAPI: AddPersonRelationshipRequest. POST /api/persons/:id/relationships body. */
 export type AddPersonRelationshipRequestDto = {
@@ -335,6 +336,63 @@ export type PersonContactRequestDto = {
 /** OpenAPI: LinkPersonRequest. PUT /api/clients/:id/person body. */
 export type LinkPersonRequestDto = {
   personId: string;
+};
+
+// ----- Person list (GET /api/persons) -----
+
+export type LinkedClientSummaryDto = {
+  id: string;
+  display_name: string;
+};
+
+/** OpenAPI: PersonListItem */
+export type PersonListItemDto = {
+  id: string;
+  type: 'CLIENT' | 'DEPENDANT';
+  full_name: string;
+  date_of_birth?: string;
+  linked_client?: LinkedClientSummaryDto;
+  document_expiry_status: 'OK' | 'EXPIRING' | 'EXPIRED' | 'NONE';
+  nearest_expiry?: string;
+};
+
+/** OpenAPI: PaginatedResponsePersonListItem */
+export type PaginatedPersonListDto = {
+  items: PersonListItemDto[];
+  total: number;
+  page: number;
+  limit: number;
+};
+
+/** Query params for GET /api/persons */
+export type ListPersonsQueryDto = {
+  page?: number;
+  limit?: number;
+  type?: 'CLIENT' | 'DEPENDANT';
+  docStatus?: 'EXPIRING' | 'EXPIRED';
+  q?: string;
+};
+
+// ----- Person bookings (GET /api/persons/{id}/bookings) -----
+
+/** OpenAPI: PersonBookingItem. One booking row on a person's booking history. */
+export type PersonBookingItemDto = {
+  id: string;
+  number: string;
+  destination?: string;
+  departDate?: string;
+  returnDate?: string;
+  status: string;
+  travelerRole?: string;
+  clientName?: string;
+};
+
+/** OpenAPI: PaginatedResponsePersonBookingItem. */
+export type PaginatedPersonBookingItemDto = {
+  items: PersonBookingItemDto[];
+  total: number;
+  page: number;
+  limit: number;
 };
 
 // ----- Status option constants -----

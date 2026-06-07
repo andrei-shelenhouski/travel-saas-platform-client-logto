@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AuthService } from '@app/auth/auth.service';
-import { MAT_BUTTONS } from '@app/shared/material-imports';
 
 @Component({
   selector: 'app-login',
-  imports: [MatProgressSpinnerModule, ...MAT_BUTTONS],
+  imports: [MatProgressSpinnerModule, MatButtonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

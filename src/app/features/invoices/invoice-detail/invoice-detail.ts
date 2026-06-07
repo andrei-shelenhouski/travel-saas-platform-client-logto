@@ -9,9 +9,15 @@ import {
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
 
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -31,10 +37,8 @@ import {
   LoadingStateComponent,
   PageContentComponent,
 } from '@app/shared/components';
-import { MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { EntityType } from '@app/shared/models';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import type {
   ActivityTimelineItem,
@@ -88,8 +92,11 @@ const STATUS_LABELS: Record<string, string> = {
     LoadingStateComponent,
     PageContentComponent,
     DetailSectionComponent,
-    ...MAT_FORM_BUTTONS,
-    ...MAT_ICONS,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
   ],
   templateUrl: './invoice-detail.html',
   styleUrl: './invoice-detail.scss',

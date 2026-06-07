@@ -1,0 +1,89 @@
+<h2 mat-dialog-title>Создать туриста</h2>
+
+<mat-dialog-content>
+  <form class="dialog-form" [formGroup]="form">
+    @if (submitError()) {
+      <p class="dialog-error" role="alert">{{ submitError() }}</p>
+    }
+
+    <mat-form-field>
+      <mat-label>Фамилия</mat-label>
+      <input autocomplete="off" formControlName="lastName" matInput />
+      @if (form.controls.lastName.hasError('required') && form.controls.lastName.touched) {
+        <mat-error>Обязательное поле</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Имя</mat-label>
+      <input autocomplete="off" formControlName="firstName" matInput />
+      @if (form.controls.firstName.hasError('required') && form.controls.firstName.touched) {
+        <mat-error>Обязательное поле</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Отчество</mat-label>
+      <input formControlName="patronymic" matInput />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Фамилия (транслит.)</mat-label>
+      <input
+        autocomplete="off"
+        formControlName="lastNameTranslit"
+        matInput
+        placeholder="IVANOV"
+        (blur)="uppercaseOnBlur('lastNameTranslit')"
+      />
+      @if (form.controls.lastNameTranslit.hasError('pattern') && form.controls.lastNameTranslit.touched) {
+        <mat-error>Только латинские буквы A–Z</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Имя (транслит.)</mat-label>
+      <input
+        autocomplete="off"
+        formControlName="firstNameTranslit"
+        matInput
+        placeholder="IVAN"
+        (blur)="uppercaseOnBlur('firstNameTranslit')"
+      />
+      @if (form.controls.firstNameTranslit.hasError('pattern') && form.controls.firstNameTranslit.touched) {
+        <mat-error>Только латинские буквы A–Z</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Дата рождения</mat-label>
+      <input formControlName="dateOfBirth" matInput type="date" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Гражданство</mat-label>
+      <input formControlName="citizenship" matInput />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Личный номер</mat-label>
+      <input
+        autocomplete="off"
+        formControlName="personalNumber"
+        matInput
+        (blur)="uppercaseOnBlur('personalNumber')"
+      />
+      <mat-hint>14 символов, например: 3160887P028PB5</mat-hint>
+      @if (form.controls.personalNumber.hasError('pattern') && form.controls.personalNumber.touched) {
+        <mat-error>Только A–Z и 0–9</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()">Отмена</button>
+  <button color="primary" mat-flat-button type="button" [disabled]="saving()" (click)="save()">
+    {{ saving() ? 'Сохранение...' : 'Создать' }}
+  </button>
+</mat-dialog-actions>

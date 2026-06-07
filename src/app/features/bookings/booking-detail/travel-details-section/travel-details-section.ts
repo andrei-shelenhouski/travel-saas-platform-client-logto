@@ -9,8 +9,12 @@ import {
   signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
-import { MAT_BUTTONS, MAT_FORM_BUTTONS, MAT_ICONS } from '@app/shared/material-imports';
 import { BookingStatus } from '@app/shared/models';
 
 import type { BookingResponseDto, UpdateBookingDto } from '@app/shared/models';
@@ -18,7 +22,15 @@ import type { BookingResponseDto, UpdateBookingDto } from '@app/shared/models';
 @Component({
   selector: 'app-travel-details-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, DatePipe, ...MAT_FORM_BUTTONS, ...MAT_BUTTONS, ...MAT_ICONS],
+  imports: [
+    ReactiveFormsModule,
+    DatePipe,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './travel-details-section.html',
   styleUrl: './travel-details-section.scss',
 })
