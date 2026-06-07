@@ -15,7 +15,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { EMPTY, forkJoin } from 'rxjs';
 import { finalize, map, switchMap } from 'rxjs/operators';
 
-import { BookingsService } from '@app/services/bookings.service';
 import { ClientsService } from '@app/services/clients.service';
 import { PersonsService } from '@app/services/persons.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
@@ -29,7 +28,7 @@ import { BookingStatusChipComponent } from '@app/shared/components/booking-statu
 import { ClientType, PersonGender } from '@app/shared/models';
 
 import type {
-  BookingResponseDto,
+  PersonBookingItemDto,
   PersonDocumentResponseDto,
   PersonRelationshipResponseDto,
   PersonResponseDto,
@@ -78,7 +77,6 @@ export class PersonDetailComponent {
   private readonly router = inject(Router);
   private readonly personsService = inject(PersonsService);
   private readonly clientsService = inject(ClientsService);
-  private readonly bookingsService = inject(BookingsService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly fb = inject(FormBuilder);
 
@@ -91,7 +89,7 @@ export class PersonDetailComponent {
       person: PersonResponseDto;
       relationships: PersonRelationshipResponseDto[];
       family: PersonResponseDto[];
-      bookings: BookingResponseDto[];
+      bookings: PersonBookingItemDto[];
     },
     readonly [string | null, number]
   >({
@@ -107,8 +105,8 @@ export class PersonDetailComponent {
         person: this.personsService.getById(id),
         relationships: this.personsService.getRelationships(id),
         family: this.personsService.getFamily(id),
-        bookings: this.bookingsService
-          .getList({ page: 1, limit: 20, travelerPersonId: id })
+        bookings: this.personsService
+          .getBookings(id, { page: 1, limit: 25 })
           .pipe(map((response) => response.items)),
       });
     },
