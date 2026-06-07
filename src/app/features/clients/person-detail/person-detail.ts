@@ -111,7 +111,7 @@ const RELATIONSHIP_TYPE_LABEL: Record<string, string> = {
   styleUrl: './person-detail.scss',
 })
 export class PersonDetailComponent {
-  protected readonly route = inject(ActivatedRoute);
+  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly personsService = inject(PersonsService);
   private readonly clientsService = inject(ClientsService);
@@ -202,7 +202,13 @@ export class PersonDetailComponent {
     'actions',
   ];
   protected readonly contactColumns = ['medium', 'value', 'primary', 'actions'];
-  protected readonly relationshipColumns = ['type', 'relatedPerson', 'status', 'sinceDate', 'actions'];
+  protected readonly relationshipColumns = [
+    'type',
+    'relatedPerson',
+    'status',
+    'sinceDate',
+    'actions',
+  ];
   protected readonly bookingColumns = [
     'number',
     'destination',

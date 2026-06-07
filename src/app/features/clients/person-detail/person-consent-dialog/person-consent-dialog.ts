@@ -53,7 +53,7 @@ export class PersonConsentDialogComponent {
   protected readonly saving = signal(false);
 
   protected readonly form = this.fb.nonNullable.group({
-    consentDate: [new Date().toISOString().slice(0, 10)],
+    consentDate: [new Date().toLocaleDateString('sv')],
     confirmed: [false, Validators.requiredTrue],
   });
 

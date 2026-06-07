@@ -14,7 +14,7 @@ import { PageContentComponent } from '@app/shared/components';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 
-import type { PersonResponseDto, UpdatePersonRequestDto } from '@app/shared/models';
+import type { UpdatePersonRequestDto } from '@app/shared/models';
 
 const GENDER_LABEL: Record<string, string> = {
   MALE: 'Мужской',
@@ -45,7 +45,6 @@ export class EditPersonPageComponent implements OnInit {
   private readonly snackBar = inject(MatSnackBar);
   private readonly fb = inject(FormBuilder);
 
-  readonly person = signal<PersonResponseDto | null>(null);
   readonly loading = signal(true);
   readonly saving = signal(false);
 
@@ -109,7 +108,7 @@ export class EditPersonPageComponent implements OnInit {
       lastNameTranslit: raw.lastNameTranslit.trim() || undefined,
       firstNameTranslit: raw.firstNameTranslit.trim() || undefined,
       dateOfBirth: raw.dateOfBirth || undefined,
-      gender: raw.gender,
+      gender: raw.gender || undefined,
       citizenship: raw.citizenship.trim() || undefined,
       personalNumber: raw.personalNumber.trim() || undefined,
       notes: raw.notes.trim() || undefined,
@@ -136,7 +135,6 @@ export class EditPersonPageComponent implements OnInit {
 
     this.personsService.getById(id).subscribe({
       next: (person) => {
-        this.person.set(person);
         this.form.patchValue({
           lastName: person.lastName,
           firstName: person.firstName,
@@ -152,6 +150,7 @@ export class EditPersonPageComponent implements OnInit {
         this.loading.set(false);
       },
       error: (err) => {
+        this.loading.set(false);
         this.snackBar.open(err?.error?.message ?? 'Не удалось загрузить данные туриста', 'Close', {
           duration: 5000,
         });

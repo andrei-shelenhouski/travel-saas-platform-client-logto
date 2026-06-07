@@ -12,7 +12,6 @@
           icon="edit"
           label="Редактировать"
           mat-stroked-button
-          [relativeTo]="route"
           [routerLink]="['edit']"
         >
           Редактировать
@@ -143,9 +142,10 @@
                 <ng-container matColumnDef="status">
                   <th *matHeaderCellDef mat-header-cell>Статус</th>
                   <td *matCellDef="let doc" mat-cell>
-                    @if (docExpiryClass(doc) === 'doc-expired') {
+                    @let expiryClass = docExpiryClass(doc);
+                    @if (expiryClass === 'doc-expired') {
                       <span class="doc-status doc-status--expired">Истёк</span>
-                    } @else if (docExpiryClass(doc) === 'doc-expiring') {
+                    } @else if (expiryClass === 'doc-expiring') {
                       <span class="doc-status doc-status--expiring">Истекает</span>
                     } @else {
                       <span class="doc-status">Актуален</span>
@@ -180,8 +180,7 @@
                   *matRowDef="let row; columns: documentColumns"
                   class="table-row"
                   mat-row
-                  [class.doc-expired]="docExpiryClass(row) === 'doc-expired'"
-                  [class.doc-expiring]="docExpiryClass(row) === 'doc-expiring'"
+                  [class]="docExpiryClass(row)"
                 ></tr>
               </table>
             </div>
