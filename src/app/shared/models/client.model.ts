@@ -264,6 +264,12 @@ export type PersonRelationshipResponseDto = {
   createdAt?: string;
 };
 
+/** OpenAPI: FamilyContextResponse. GET /api/persons/:id/family-context. */
+export type FamilyContextResponseDto = {
+  relationships: PersonRelationshipResponseDto[];
+  familyMembers: PersonResponseDto[];
+};
+
 /** OpenAPI: CreatePersonRequest. POST /api/clients/:id/person body. */
 export type CreatePersonRequestDto = {
   firstName: string;

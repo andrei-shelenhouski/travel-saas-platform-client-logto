@@ -12,6 +12,7 @@ import type {
   AddPersonRelationshipRequestDto,
   CreateDetachedPersonRequestDto,
   CreatePersonRequestDto,
+  FamilyContextResponseDto,
   LinkPersonRequestDto,
   ListPersonsQueryDto,
   PaginatedPersonBookingItemDto,
@@ -119,15 +120,9 @@ export class PersonsService {
     );
   }
 
-  getRelationships(personId: string): Observable<PersonRelationshipResponseDto[]> {
+  getFamilyContext(personId: string): Observable<FamilyContextResponseDto> {
     return this.http
-      .get<PersonRelationshipResponseDto[]>(`${PERSONS_URL}/${personId}/relationships`)
-      .pipe(this.errorHandler.catch());
-  }
-
-  getFamily(personId: string): Observable<PersonResponseDto[]> {
-    return this.http
-      .get<PersonResponseDto[]>(`${PERSONS_URL}/${personId}/family`)
+      .get<FamilyContextResponseDto>(`${PERSONS_URL}/${personId}/family-context`)
       .pipe(this.errorHandler.catch());
   }
 

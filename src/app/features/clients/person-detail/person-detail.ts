@@ -46,6 +46,7 @@ import {
 } from './person-document-dialog/person-document-dialog';
 
 import type {
+  FamilyContextResponseDto,
   PersonAddressResponseDto,
   PersonBookingItemDto,
   PersonContactResponseDto,
@@ -124,8 +125,7 @@ export class PersonDetailComponent {
   private readonly personData = rxResource<
     {
       person: PersonResponseDto;
-      relationships: PersonRelationshipResponseDto[];
-      family: PersonResponseDto[];
+      familyContext: FamilyContextResponseDto;
       bookings: PersonBookingItemDto[];
     },
     readonly [string | null, number]
@@ -140,8 +140,7 @@ export class PersonDetailComponent {
 
       return forkJoin({
         person: this.personsService.getById(id),
-        relationships: this.personsService.getRelationships(id),
-        family: this.personsService.getFamily(id),
+        familyContext: this.personsService.getFamilyContext(id),
         bookings: this.personsService
           .getBookings(id, { page: 1, limit: 25 })
           .pipe(map((response) => response.items)),
@@ -150,11 +149,13 @@ export class PersonDetailComponent {
   });
 
   protected readonly person = computed(() => this.personData.value()?.person ?? null);
-  protected readonly relationships = computed(() => this.personData.value()?.relationships ?? []);
+  protected readonly relationships = computed(
+    () => this.personData.value()?.familyContext.relationships ?? [],
+  );
   protected readonly relatedClientByPersonId = computed(() => {
     const clientsMap = new Map<string, string>();
 
-    for (const person of this.personData.value()?.family ?? []) {
+    for (const person of this.personData.value()?.familyContext.familyMembers ?? []) {
       if (person.linked_client) {
         clientsMap.set(person.id, person.linked_client.id);
       }
@@ -166,7 +167,7 @@ export class PersonDetailComponent {
   protected readonly relatedPersonNameById = computed(() => {
     const nameMap = new Map<string, string>();
 
-    for (const person of this.personData.value()?.family ?? []) {
+    for (const person of this.personData.value()?.familyContext.familyMembers ?? []) {
       const name = [person.lastName, person.firstName, person.patronymic].filter(Boolean).join(' ');
 
       nameMap.set(person.id, name);

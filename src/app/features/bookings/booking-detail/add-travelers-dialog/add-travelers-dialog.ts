@@ -12,7 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
-import { forkJoin, of, Subject } from 'rxjs';
+import { of, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, finalize, switchMap } from 'rxjs/operators';
 
 import { PersonsService } from '@app/services/persons.service';
@@ -157,19 +157,17 @@ export class AddTravelersDialogComponent {
     this.loadingForPersonId.set(person.id);
     this.loadedFamily.set([]);
 
-    forkJoin({
-      family: this.personsService.getFamily(person.id),
-      relationships: this.personsService.getRelationships(person.id),
-    })
+    this.personsService
+      .getFamilyContext(person.id)
       .pipe(finalize(() => this.loadingForPersonId.set(null)))
       .subscribe({
-        next: ({ family, relationships }) => {
+        next: (ctx) => {
           const activeIds = new Set(
-            relationships.filter((r) => r.status === 'ACTIVE').map((r) => r.relatedPersonId),
+            ctx.relationships.filter((r) => r.status === 'ACTIVE').map((r) => r.relatedPersonId),
           );
           activeIds.add(person.id);
 
-          const members = family.filter((m) => m.id !== person.id);
+          const members = ctx.familyMembers.filter((m) => m.id !== person.id);
 
           this.leadPersonId.set(person.id);
           this.loadedFamily.set(members);
