@@ -1,14 +1,14 @@
 <h2 mat-dialog-title>Создать туриста</h2>
 
 <mat-dialog-content>
-  <form [formGroup]="form" class="dialog-form">
+  <form class="dialog-form" [formGroup]="form">
     @if (submitError()) {
       <p class="dialog-error" role="alert">{{ submitError() }}</p>
     }
 
     <mat-form-field>
       <mat-label>Фамилия</mat-label>
-      <input matInput formControlName="lastName" autocomplete="family-name" />
+      <input autocomplete="off" formControlName="lastName" matInput />
       @if (form.controls.lastName.hasError('required') && form.controls.lastName.touched) {
         <mat-error>Обязательное поле</mat-error>
       }
@@ -16,7 +16,7 @@
 
     <mat-form-field>
       <mat-label>Имя</mat-label>
-      <input matInput formControlName="firstName" autocomplete="given-name" />
+      <input autocomplete="off" formControlName="firstName" matInput />
       @if (form.controls.firstName.hasError('required') && form.controls.firstName.touched) {
         <mat-error>Обязательное поле</mat-error>
       }
@@ -24,30 +24,24 @@
 
     <mat-form-field>
       <mat-label>Отчество</mat-label>
-      <input matInput formControlName="patronymic" />
+      <input formControlName="patronymic" matInput />
     </mat-form-field>
 
     <mat-form-field>
       <mat-label>Дата рождения</mat-label>
-      <input matInput type="date" formControlName="dateOfBirth" />
+      <input formControlName="dateOfBirth" matInput type="date" />
     </mat-form-field>
 
     <mat-form-field>
       <mat-label>Гражданство</mat-label>
-      <input matInput formControlName="citizenship" />
+      <input formControlName="citizenship" matInput />
     </mat-form-field>
   </form>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
   <button mat-button type="button" (click)="cancel()">Отмена</button>
-  <button
-    color="primary"
-    mat-flat-button
-    type="button"
-    [disabled]="saving()"
-    (click)="save()"
-  >
+  <button color="primary" mat-flat-button type="button" [disabled]="saving()" (click)="save()">
     {{ saving() ? 'Сохранение...' : 'Создать' }}
   </button>
 </mat-dialog-actions>

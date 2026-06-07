@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 import { finalize } from 'rxjs';
 
@@ -28,8 +28,6 @@ export class CreatePersonDialogComponent {
   private readonly dialogRef = inject(
     MatDialogRef<CreatePersonDialogComponent, CreatePersonDialogResult>,
   );
-
-  protected readonly _data = inject(MAT_DIALOG_DATA, { optional: true });
 
   protected readonly saving = signal(false);
   protected readonly submitError = signal('');
@@ -68,9 +66,7 @@ export class CreatePersonDialogComponent {
           this.dialogRef.close({ created: true, person });
         },
         error: (err: HttpErrorResponse) => {
-          this.submitError.set(
-            err.error?.message ?? err.message ?? 'Не удалось создать туриста',
-          );
+          this.submitError.set(err.error?.message ?? err.message ?? 'Не удалось создать туриста');
         },
       });
   }

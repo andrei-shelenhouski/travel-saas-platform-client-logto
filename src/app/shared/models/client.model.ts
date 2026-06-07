@@ -288,14 +288,7 @@ export type UpdatePersonRequestDto = {
 };
 
 /** OpenAPI: CreatePersonRequest. POST /api/persons body. */
-export type CreateDetachedPersonRequestDto = {
-  firstName: string;
-  lastName: string;
-  patronymic?: string;
-  dateOfBirth?: string;
-  gender?: string;
-  citizenship?: string;
-};
+export type CreateDetachedPersonRequestDto = CreatePersonRequestDto;
 
 /** OpenAPI: AddPersonRelationshipRequest. POST /api/persons/:id/relationships body. */
 export type AddPersonRelationshipRequestDto = {
@@ -341,7 +334,7 @@ export type LinkPersonRequestDto = {
 
 export type LinkedClientSummaryDto = {
   id: string;
-  name: string;
+  display_name: string;
 };
 
 /** OpenAPI: PersonListItem */

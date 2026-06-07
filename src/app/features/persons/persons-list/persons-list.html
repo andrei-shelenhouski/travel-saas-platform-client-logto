@@ -1,6 +1,14 @@
 <app-page-heading subtitle="Всего: {{ totalElements() }} туристов" title="Туристы">
   @if (canCreate()) {
-    <button appPageAction color="primary" icon="add" label="Создать туриста" mat-flat-button type="button" (click)="openCreateDialog()">
+    <button
+      appPageAction
+      color="primary"
+      icon="add"
+      label="Создать туриста"
+      mat-flat-button
+      type="button"
+      (click)="openCreateDialog()"
+    >
       <mat-icon>add</mat-icon>
       <span>Создать туриста</span>
     </button>
@@ -39,11 +47,11 @@
   </div>
 
   @if (activeChips().length > 0) {
-    <mat-chip-set class="chips-row" aria-label="Активные фильтры">
+    <mat-chip-set aria-label="Активные фильтры" class="chips-row">
       @for (chip of activeChips(); track chip.label) {
         <mat-chip (removed)="chip.clear()">
           {{ chip.label }}
-          <button matChipRemove aria-label="Убрать фильтр">
+          <button aria-label="Убрать фильтр" matChipRemove type="button">
             <mat-icon>cancel</mat-icon>
           </button>
         </mat-chip>
@@ -68,9 +76,9 @@
         <th *matHeaderCellDef mat-header-cell>Тип</th>
         <td *matCellDef="let person" mat-cell>
           @if (person.type === 'CLIENT') {
-            <span class="type-badge type-badge--client">КЛИЕНТ</span>
+            <span class="type-badge type-badge--client">CLIENT</span>
           } @else {
-            <span class="type-badge type-badge--dependant">ИЖДИВЕНЕЦ</span>
+            <span class="type-badge type-badge--dependant">DEPENDANT</span>
           }
         </td>
       </ng-container>
@@ -79,11 +87,14 @@
         <th *matHeaderCellDef mat-header-cell>Клиент</th>
         <td *matCellDef="let person" mat-cell>
           @if (person.linked_client) {
-            <a
-              class="linked-client-link"
+            <button
+              matButton="text"
+              type="button"
               (click)="navigateToClient($event, person.linked_client.id)"
               (keydown.enter)="navigateToClient($event, person.linked_client.id)"
-            >{{ person.linked_client.name }}</a>
+            >
+              {{ person.linked_client.display_name }}
+            </button>
           } @else {
             —
           }
@@ -101,10 +112,9 @@
         <th *matHeaderCellDef mat-header-cell>Документы</th>
         <td *matCellDef="let person" mat-cell>
           @if (person.document_expiry_status !== 'NONE') {
-            <mat-icon
-              [class]="docStatusColor(person)"
-              [matTooltip]="docStatusTooltip(person)"
-            >{{ docStatusIcon(person) }}</mat-icon>
+            <mat-icon [class]="docStatusColor(person)" [matTooltip]="docStatusTooltip(person)">{{
+              docStatusIcon(person)
+            }}</mat-icon>
           } @else {
             —
           }
@@ -113,7 +123,7 @@
 
       <ng-container matColumnDef="actions">
         <th *matHeaderCellDef mat-header-cell></th>
-        <td *matCellDef="let person" mat-cell class="actions-cell">
+        <td *matCellDef="let person" class="actions-cell" mat-cell>
           <button
             aria-label="Действия"
             mat-icon-button
@@ -139,7 +149,7 @@
               </button>
             }
             @if (person.type === 'DEPENDANT') {
-              <button mat-menu-item disabled type="button">
+              <button disabled mat-menu-item type="button">
                 <mat-icon>person_add</mat-icon>
                 <span>Создать профиль клиента</span>
               </button>
@@ -153,6 +163,7 @@
         *matRowDef="let row; columns: displayedColumns"
         class="table-row"
         mat-row
+        tabindex="0"
         (click)="navigateToPerson(row.id)"
         (keydown.enter)="navigateToPerson(row.id)"
       ></tr>
@@ -164,7 +175,12 @@
               <mat-spinner aria-label="Загрузка туристов" diameter="36" />
             } @else if (hasActiveFilters()) {
               <p>Ничего не найдено по заданным фильтрам.</p>
-              <button color="primary" matButton="outlined" type="button" (click)="clearAllFilters()">
+              <button
+                color="primary"
+                matButton="outlined"
+                type="button"
+                (click)="clearAllFilters()"
+              >
                 Сбросить фильтры
               </button>
             } @else {

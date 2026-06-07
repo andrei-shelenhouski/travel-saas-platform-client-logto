@@ -30,7 +30,7 @@ import { PageHeadingAction } from '@app/shared/components/page-heading/page-head
 import { MAT_BUTTONS, MAT_FORM_BUTTONS } from '@app/shared/material-imports';
 import { PermissionKey } from '@app/shared/models';
 
-import type { PersonListItemDto, PersonResponseDto } from '@app/shared/models';
+import type { PersonListItemDto } from '@app/shared/models';
 
 import {
   CreatePersonDialogComponent,
@@ -215,14 +215,13 @@ export class PersonsListComponent {
   }
 
   openCreateDialog(): void {
-    const ref = this.dialog.open<
+    const ref = this.dialog.open<CreatePersonDialogComponent, undefined, CreatePersonDialogResult>(
       CreatePersonDialogComponent,
-      undefined,
-      CreatePersonDialogResult
-    >(CreatePersonDialogComponent, {
-      width: '480px',
-      disableClose: false,
-    });
+      {
+        width: '480px',
+        disableClose: false,
+      },
+    );
 
     ref.afterClosed().subscribe((result) => {
       if (result?.created) {
