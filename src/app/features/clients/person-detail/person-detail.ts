@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -11,21 +10,22 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { EMPTY, forkJoin } from 'rxjs';
 import { finalize, map, switchMap } from 'rxjs/operators';
 
 import { ClientsService } from '@app/services/clients.service';
 import { PersonsService } from '@app/services/persons.service';
-import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import {
   DetailSectionComponent,
   LoadingStateComponent,
   PageContentComponent,
 } from '@app/shared/components';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
-import { ClientType, PersonGender } from '@app/shared/models';
+import { PageHeading } from '@app/shared/components/page-heading/page-heading';
+import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
+import { ClientType } from '@app/shared/models';
 
 import type {
   PersonBookingItemDto,
@@ -275,7 +275,7 @@ export class PersonDetailComponent {
   protected uppercaseOnBlur(controlName: keyof typeof this.editForm.controls): void {
     const ctrl = this.editForm.controls[controlName];
 
-    ctrl.setValue((ctrl.value as string).toUpperCase().trim());
+    ctrl.setValue(ctrl.value.toUpperCase().trim());
   }
 
   protected saveEdit(): void {
@@ -299,7 +299,7 @@ export class PersonDetailComponent {
       lastNameTranslit: raw.lastNameTranslit.trim() || undefined,
       firstNameTranslit: raw.firstNameTranslit.trim() || undefined,
       dateOfBirth: raw.dateOfBirth || undefined,
-      gender: (raw.gender || undefined) as PersonGender | undefined,
+      gender: raw.gender,
       citizenship: raw.citizenship.trim() || undefined,
       personalNumber: raw.personalNumber.trim() || undefined,
       notes: raw.notes.trim() || undefined,
