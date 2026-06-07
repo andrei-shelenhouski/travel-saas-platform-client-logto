@@ -14,6 +14,7 @@ import type {
   CreatePersonRequestDto,
   LinkPersonRequestDto,
   ListPersonsQueryDto,
+  PaginatedPersonBookingItemDto,
   PaginatedPersonListDto,
   PersonAddressRequestDto,
   PersonAddressResponseDto,
@@ -126,6 +127,23 @@ export class PersonsService {
   getFamily(personId: string): Observable<PersonResponseDto[]> {
     return this.http
       .get<PersonResponseDto[]>(`${PERSONS_URL}/${personId}/family`)
+      .pipe(this.errorHandler.catch());
+  }
+
+  getBookings(
+    personId: string,
+    params?: { status?: string; page?: number; limit?: number },
+  ): Observable<PaginatedPersonBookingItemDto> {
+    const httpParams = new HttpParamsBuilder()
+      .set('status', params?.status)
+      .set('page', params?.page)
+      .set('limit', params?.limit)
+      .build();
+
+    return this.http
+      .get<PaginatedPersonBookingItemDto>(`${PERSONS_URL}/${personId}/bookings`, {
+        params: httpParams,
+      })
       .pipe(this.errorHandler.catch());
   }
 

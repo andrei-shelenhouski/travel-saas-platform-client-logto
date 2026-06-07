@@ -46,9 +46,18 @@ export class CreatePersonDialogComponent {
     lastName: ['', Validators.required],
     firstName: ['', Validators.required],
     patronymic: [''],
+    lastNameTranslit: ['', Validators.pattern(/^[A-Z]*$/)],
+    firstNameTranslit: ['', Validators.pattern(/^[A-Z]*$/)],
     dateOfBirth: [''],
     citizenship: [''],
+    personalNumber: ['', Validators.pattern(/^[A-Z0-9]*$/)],
   });
+
+  protected uppercaseOnBlur(controlName: keyof typeof this.form.controls): void {
+    const ctrl = this.form.controls[controlName];
+
+    ctrl.setValue((ctrl.value as string).toUpperCase().trim());
+  }
 
   protected save(): void {
     if (this.form.invalid) {
@@ -57,7 +66,16 @@ export class CreatePersonDialogComponent {
       return;
     }
 
-    const { lastName, firstName, patronymic, dateOfBirth, citizenship } = this.form.getRawValue();
+    const {
+      lastName,
+      firstName,
+      patronymic,
+      lastNameTranslit,
+      firstNameTranslit,
+      dateOfBirth,
+      citizenship,
+      personalNumber,
+    } = this.form.getRawValue();
 
     this.saving.set(true);
     this.submitError.set('');
@@ -67,8 +85,11 @@ export class CreatePersonDialogComponent {
         lastName: lastName.trim(),
         firstName: firstName.trim(),
         patronymic: patronymic.trim() || undefined,
+        lastNameTranslit: lastNameTranslit.trim() || undefined,
+        firstNameTranslit: firstNameTranslit.trim() || undefined,
         dateOfBirth: dateOfBirth || undefined,
         citizenship: citizenship.trim() || undefined,
+        personalNumber: personalNumber.trim() || undefined,
       })
       .pipe(finalize(() => this.saving.set(false)))
       .subscribe({

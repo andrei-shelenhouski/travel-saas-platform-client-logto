@@ -117,3 +117,44 @@
   font-weight: 600;
   color: #374151;
 }
+
+.create-divider {
+  margin: 12px 0;
+}
+
+.create-person-btn {
+  width: 100%;
+}
+
+.create-person-form-container {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 8px;
+}
+
+.create-person-form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.create-form-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.create-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.create-form-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}

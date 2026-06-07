@@ -137,7 +137,6 @@ export const PersonDocumentType = {
   NATIONAL_PASSPORT: 'NATIONAL_PASSPORT',
   NATIONAL_ID: 'NATIONAL_ID',
   BIRTH_CERTIFICATE: 'BIRTH_CERTIFICATE',
-  DRIVER_LICENSE: 'DRIVER_LICENSE',
   OTHER: 'OTHER',
 } as const;
 export type PersonDocumentType = (typeof PersonDocumentType)[keyof typeof PersonDocumentType];
@@ -222,9 +221,12 @@ export type PersonResponseDto = {
   firstName: string;
   lastName: string;
   patronymic?: string;
+  firstNameTranslit?: string;
+  lastNameTranslit?: string;
   dateOfBirth?: string;
   gender?: PersonGender | (string & Record<never, never>);
   citizenship?: string;
+  personalNumber?: string;
   dataConsentGiven?: boolean;
   dataConsentDate?: string;
   notes?: string;
@@ -266,9 +268,12 @@ export type CreatePersonRequestDto = {
   firstName: string;
   lastName: string;
   patronymic?: string;
+  firstNameTranslit?: string;
+  lastNameTranslit?: string;
   dateOfBirth?: string;
   gender?: string;
   citizenship?: string;
+  personalNumber?: string;
   dataConsentGiven?: boolean;
   dataConsentDate?: string;
   notes?: string;
@@ -279,9 +284,12 @@ export type UpdatePersonRequestDto = {
   firstName?: string;
   lastName?: string;
   patronymic?: string;
+  firstNameTranslit?: string;
+  lastNameTranslit?: string;
   dateOfBirth?: string;
   gender?: string;
   citizenship?: string;
+  personalNumber?: string;
   dataConsentGiven?: boolean;
   dataConsentDate?: string;
   notes?: string;
@@ -363,6 +371,28 @@ export type ListPersonsQueryDto = {
   type?: 'CLIENT' | 'DEPENDANT';
   docStatus?: 'EXPIRING' | 'EXPIRED';
   q?: string;
+};
+
+// ----- Person bookings (GET /api/persons/{id}/bookings) -----
+
+/** OpenAPI: PersonBookingItem. One booking row on a person's booking history. */
+export type PersonBookingItemDto = {
+  id: string;
+  number: string;
+  destination?: string;
+  departDate?: string;
+  returnDate?: string;
+  status: string;
+  travelerRole?: string;
+  clientName?: string;
+};
+
+/** OpenAPI: PaginatedResponsePersonBookingItem. */
+export type PaginatedPersonBookingItemDto = {
+  items: PersonBookingItemDto[];
+  total: number;
+  page: number;
+  limit: number;
 };
 
 // ----- Status option constants -----

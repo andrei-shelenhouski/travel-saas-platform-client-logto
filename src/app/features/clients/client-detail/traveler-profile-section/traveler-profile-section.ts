@@ -9,7 +9,7 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatExpansionModule } from '@angular/material/expansion';
@@ -37,11 +37,10 @@ import type {
 } from '@app/shared/models';
 const DOC_TYPE_LABEL: Record<string, string> = {
   INTL_PASSPORT: 'Загранпаспорт',
-  NATIONAL_PASSPORT: 'Паспорт',
-  NATIONAL_ID: 'ID карта',
+  NATIONAL_PASSPORT: 'Внутренний / общегражданский паспорт',
+  NATIONAL_ID: 'Национальный ID / ID-карта',
   BIRTH_CERTIFICATE: 'Свидетельство о рождении',
-  DRIVER_LICENSE: 'Водительское удостоверение',
-  OTHER: 'Другое',
+  OTHER: 'Другой документ',
 };
 
 const ADDR_TYPE_LABEL: Record<string, string> = {
@@ -75,7 +74,6 @@ const GENDER_LABEL: Record<string, string | undefined> = {
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatMenuModule,
     MatDividerModule,
   ],
   templateUrl: './traveler-profile-section.html',
@@ -204,7 +202,9 @@ export class TravelerProfileSectionComponent {
   });
 
   protected docExpiryClass(doc: PersonDocumentResponseDto): string {
-    if (!doc.expiryDate) {
+    const expiryAppliesTo = new Set(['INTL_PASSPORT', 'NATIONAL_PASSPORT', 'NATIONAL_ID']);
+
+    if (!doc.expiryDate || !expiryAppliesTo.has(doc.type)) {
       return '';
     }
 
@@ -223,6 +223,14 @@ export class TravelerProfileSectionComponent {
     }
 
     return '';
+  }
+
+  protected uppercaseDocField(form: FormGroup, fieldName: string): void {
+    const ctrl = form.get(fieldName);
+
+    if (ctrl) {
+      ctrl.setValue((ctrl.value as string).toUpperCase().replace(/[^A-Z0-9]/g, ''));
+    }
   }
 
   protected formatDate(iso: string | null | undefined): string {

@@ -217,11 +217,21 @@
                 </mat-form-field>
                 <mat-form-field>
                   <mat-label>Серия</mat-label>
-                  <input autocomplete="off" formControlName="series" matInput />
+                  <input
+                    autocomplete="off"
+                    formControlName="series"
+                    matInput
+                    (blur)="uppercaseDocField(addDocForm, 'series')"
+                  />
                 </mat-form-field>
                 <mat-form-field>
                   <mat-label>Номер</mat-label>
-                  <input autocomplete="off" formControlName="number" matInput />
+                  <input
+                    autocomplete="off"
+                    formControlName="number"
+                    matInput
+                    (blur)="uppercaseDocField(addDocForm, 'number')"
+                  />
                 </mat-form-field>
                 <mat-form-field>
                   <mat-label>Дата выдачи</mat-label>
