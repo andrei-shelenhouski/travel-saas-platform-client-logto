@@ -1,4 +1,3 @@
-import { SlicePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
@@ -93,7 +92,6 @@ const RELATIONSHIP_TYPE_LABEL: Record<string, string> = {
   selector: 'app-person-detail',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    SlicePipe,
     RouterLink,
     PageHeading,
     PageHeadingAction,
@@ -163,6 +161,18 @@ export class PersonDetailComponent {
     }
 
     return clientsMap;
+  });
+
+  protected readonly relatedPersonNameById = computed(() => {
+    const nameMap = new Map<string, string>();
+
+    for (const person of this.personData.value()?.family ?? []) {
+      const name = [person.lastName, person.firstName, person.patronymic].filter(Boolean).join(' ');
+
+      nameMap.set(person.id, name);
+    }
+
+    return nameMap;
   });
   protected readonly bookings = computed(() => this.personData.value()?.bookings ?? []);
   protected readonly loading = computed(() => this.personData.isLoading());

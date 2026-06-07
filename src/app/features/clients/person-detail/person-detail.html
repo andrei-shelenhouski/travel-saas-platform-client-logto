@@ -359,7 +359,7 @@
                   <th *matHeaderCellDef mat-header-cell>Связанное лицо</th>
                   <td *matCellDef="let item" mat-cell>
                     <a [routerLink]="['/app/persons', item.relatedPersonId]">
-                      {{ item.relatedPersonId | slice: 0 : 8 }}…
+                      {{ relatedPersonNameById().get(item.relatedPersonId) ?? item.relatedPersonId }}
                     </a>
                   </td>
                 </ng-container>
