@@ -17,8 +17,7 @@ describe('PersonDetailComponent', () => {
   let fixture: ComponentFixture<PersonDetailComponent>;
   let personsService: {
     getById: ReturnType<typeof vi.fn>;
-    getRelationships: ReturnType<typeof vi.fn>;
-    getFamily: ReturnType<typeof vi.fn>;
+    getFamilyContext: ReturnType<typeof vi.fn>;
     getBookings: ReturnType<typeof vi.fn>;
     linkToClient: ReturnType<typeof vi.fn>;
     deleteContact: ReturnType<typeof vi.fn>;
@@ -67,8 +66,7 @@ describe('PersonDetailComponent', () => {
           organizationId: 'o-1',
         }),
       ),
-      getRelationships: vi.fn(() => of([])),
-      getFamily: vi.fn(() => of([])),
+      getFamilyContext: vi.fn(() => of({ familyMembers: [], relationships: [] })),
       getBookings: vi.fn(() => of({ items: [] })),
       linkToClient: vi.fn(() => of({ id: 'p-1' })),
       deleteContact: vi.fn(() => of(void 0)),
