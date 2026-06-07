@@ -141,14 +141,14 @@
         <form [formGroup]="createForm" (ngSubmit)="submitCreateForm()">
           <div class="create-form-grid">
             <mat-form-field>
-              <mat-label>Фамилия *</mat-label>
+              <mat-label>Фамилия</mat-label>
               <input autocomplete="off" formControlName="lastName" matInput />
               @if (createForm.controls.lastName.hasError('required') && createForm.controls.lastName.touched) {
                 <mat-error>Обязательное поле</mat-error>
               }
             </mat-form-field>
             <mat-form-field>
-              <mat-label>Имя *</mat-label>
+              <mat-label>Имя</mat-label>
               <input autocomplete="off" formControlName="firstName" matInput />
               @if (createForm.controls.firstName.hasError('required') && createForm.controls.firstName.touched) {
                 <mat-error>Обязательное поле</mat-error>
