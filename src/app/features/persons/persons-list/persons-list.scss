@@ -1,0 +1,86 @@
+.persons-list-body {
+  display: grid;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.persons-list-error {
+  margin: 0 0 0.75rem;
+  font-size: 0.875rem;
+  color: #dc2626;
+}
+
+.search-field {
+  width: 100%;
+}
+
+.filter-bar {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.cell-primary {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.cell-secondary {
+  display: block;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.type-badge--client {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.type-badge--dependant {
+  background: #fce4ec;
+  color: #880e4f;
+}
+
+.linked-client-link {
+  cursor: pointer;
+  color: var(--mat-sys-primary, #6750a4);
+  text-decoration: underline;
+}
+
+.actions-cell {
+  width: 48px;
+  text-align: right;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.table-empty-state {
+  margin: 2.5rem;
+  text-align: center;
+
+  mat-spinner {
+    margin: 0 auto;
+  }
+}
+
+.persons-list-loading-text {
+  margin-bottom: 1rem;
+}

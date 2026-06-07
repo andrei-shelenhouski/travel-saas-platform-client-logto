@@ -6,12 +6,15 @@ import { map } from 'rxjs/operators';
 
 import { environment } from '@environments/environment';
 import { ApiErrorHandlerService } from '@app/shared/services/api-error-handler.service';
+import { HttpParamsBuilder } from '@app/shared/utils/http-params.builder';
 
 import type {
   AddPersonRelationshipRequestDto,
   CreateDetachedPersonRequestDto,
   CreatePersonRequestDto,
   LinkPersonRequestDto,
+  ListPersonsQueryDto,
+  PaginatedPersonListDto,
   PersonAddressRequestDto,
   PersonAddressResponseDto,
   PersonContactRequestDto,
@@ -31,6 +34,20 @@ const PERSONS_URL = `${environment.baseUrl}/api/persons`;
 export class PersonsService {
   private readonly http = inject(HttpClient);
   private readonly errorHandler = inject(ApiErrorHandlerService);
+
+  getList(params?: ListPersonsQueryDto): Observable<PaginatedPersonListDto> {
+    const httpParams = new HttpParamsBuilder()
+      .set('page', params?.page)
+      .set('limit', params?.limit)
+      .set('type', params?.type)
+      .set('docStatus', params?.docStatus)
+      .set('q', params?.q && params.q.length >= 2 ? params.q : null)
+      .build();
+
+    return this.http
+      .get<PaginatedPersonListDto>(PERSONS_URL, { params: httpParams })
+      .pipe(this.errorHandler.catch());
+  }
 
   getById(id: string): Observable<PersonResponseDto> {
     return this.http.get<PersonResponseDto>(`${PERSONS_URL}/${id}`).pipe(this.errorHandler.catch());

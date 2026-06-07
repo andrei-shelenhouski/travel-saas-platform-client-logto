@@ -164,6 +164,16 @@ export const routes: Routes = [
             (m) => m.ClientsListComponent,
           ),
       },
+      // Persons listing
+      {
+        path: 'persons',
+        canActivate: [permissionGuard],
+        data: { permission: PermissionKey.PERSONS_READ },
+        loadComponent: () =>
+          import('@app/features/persons/persons-list/persons-list').then(
+            (m) => m.PersonsListComponent,
+          ),
+      },
       // Contracts
       {
         path: 'contracts/new',

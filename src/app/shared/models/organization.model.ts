@@ -43,6 +43,8 @@ export const PermissionKey = {
   INVOICES_PUBLISH: 'invoices:publish',
   INVOICES_RECORD_PAYMENT: 'invoices:record_payment',
   INVOICES_CANCEL: 'invoices:cancel',
+  PERSONS_READ: 'persons:read',
+  PERSONS_WRITE: 'persons:write',
 } as const;
 export type Permission =
   | (typeof PermissionKey)[keyof typeof PermissionKey]

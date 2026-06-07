@@ -39,6 +39,12 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
   { path: '/app/leads', icon: 'inbox', label: 'Лиды' },
   { path: '/app/clients', icon: 'group', label: 'Клиенты' },
   {
+    path: '/app/persons',
+    icon: 'badge',
+    label: 'Туристы',
+    requiredPermission: PermissionKey.PERSONS_READ,
+  },
+  {
     path: '/app/contracts',
     icon: 'description',
     label: 'Договоры',

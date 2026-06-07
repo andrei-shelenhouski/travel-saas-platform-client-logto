@@ -337,6 +337,41 @@ export type LinkPersonRequestDto = {
   personId: string;
 };
 
+// ----- Person list (GET /api/persons) -----
+
+export type LinkedClientSummaryDto = {
+  id: string;
+  name: string;
+};
+
+/** OpenAPI: PersonListItem */
+export type PersonListItemDto = {
+  id: string;
+  type: 'CLIENT' | 'DEPENDANT';
+  full_name: string;
+  date_of_birth?: string;
+  linked_client?: LinkedClientSummaryDto;
+  document_expiry_status: 'OK' | 'EXPIRING' | 'EXPIRED' | 'NONE';
+  nearest_expiry?: string;
+};
+
+/** OpenAPI: PaginatedResponsePersonListItem */
+export type PaginatedPersonListDto = {
+  items: PersonListItemDto[];
+  total: number;
+  page: number;
+  limit: number;
+};
+
+/** Query params for GET /api/persons */
+export type ListPersonsQueryDto = {
+  page?: number;
+  limit?: number;
+  type?: 'CLIENT' | 'DEPENDANT';
+  docStatus?: 'EXPIRING' | 'EXPIRED';
+  q?: string;
+};
+
 // ----- Status option constants -----
 
 export type StatusOption<T> = { value: T; label: string };
