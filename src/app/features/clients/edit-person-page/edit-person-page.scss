@@ -1,0 +1,22 @@
+.edit-person-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 560px;
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.edit-person-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  padding-top: 8px;
+}
+
+.edit-person-loading {
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 0.875rem;
+}

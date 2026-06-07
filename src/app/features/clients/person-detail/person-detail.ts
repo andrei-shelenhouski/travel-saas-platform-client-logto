@@ -1,34 +1,50 @@
+import { SlicePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EMPTY, forkJoin } from 'rxjs';
 import { finalize, map, switchMap } from 'rxjs/operators';
 
 import { ClientsService } from '@app/services/clients.service';
 import { PersonsService } from '@app/services/persons.service';
-import { DetailSectionComponent, LoadingStateComponent, PageContentComponent } from '@app/shared/components';
+import {
+  DetailSectionComponent,
+  LoadingStateComponent,
+  PageContentComponent,
+} from '@app/shared/components';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { ClientType } from '@app/shared/models';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 
-import { PersonAddressDialogComponent, PersonAddressDialogData, PersonAddressDialogResult } from './person-address-dialog/person-address-dialog';
-import { PersonContactDialogComponent, PersonContactDialogData, PersonContactDialogResult } from './person-contact-dialog/person-contact-dialog';
-import { PersonDocumentDialogComponent, PersonDocumentDialogData, PersonDocumentDialogResult } from './person-document-dialog/person-document-dialog';
+import {
+  PersonAddressDialogComponent,
+  PersonAddressDialogData,
+  PersonAddressDialogResult,
+} from './person-address-dialog/person-address-dialog';
+import {
+  PersonConsentDialogComponent,
+  PersonConsentDialogData,
+  PersonConsentDialogResult,
+} from './person-consent-dialog/person-consent-dialog';
+import {
+  PersonContactDialogComponent,
+  PersonContactDialogData,
+  PersonContactDialogResult,
+} from './person-contact-dialog/person-contact-dialog';
+import {
+  PersonDocumentDialogComponent,
+  PersonDocumentDialogData,
+  PersonDocumentDialogResult,
+} from './person-document-dialog/person-document-dialog';
 
 import type {
   PersonAddressResponseDto,
@@ -37,7 +53,6 @@ import type {
   PersonDocumentResponseDto,
   PersonRelationshipResponseDto,
   PersonResponseDto,
-  UpdatePersonRequestDto,
 } from '@app/shared/models';
 
 const DOC_TYPE_LABEL: Record<string, string> = {
@@ -78,7 +93,8 @@ const RELATIONSHIP_TYPE_LABEL: Record<string, string> = {
   selector: 'app-person-detail',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    ReactiveFormsModule,
+    SlicePipe,
+    RouterLink,
     PageHeading,
     PageHeadingAction,
     LoadingStateComponent,
@@ -86,13 +102,8 @@ const RELATIONSHIP_TYPE_LABEL: Record<string, string> = {
     DetailSectionComponent,
     BookingStatusChipComponent,
     MatButtonModule,
-    MatCheckboxModule,
     MatDialogModule,
-    MatFormFieldModule,
     MatIconModule,
-    MatInputModule,
-    MatSelectModule,
-    MatSidenavModule,
     MatTableModule,
     MatTooltipModule,
   ],
@@ -100,14 +111,13 @@ const RELATIONSHIP_TYPE_LABEL: Record<string, string> = {
   styleUrl: './person-detail.scss',
 })
 export class PersonDetailComponent {
-  private readonly route = inject(ActivatedRoute);
+  protected readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly personsService = inject(PersonsService);
   private readonly clientsService = inject(ClientsService);
   private readonly dialog = inject(MatDialog);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly snackBar = inject(MatSnackBar);
-  private readonly fb = inject(FormBuilder);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((params) => params.get('id'))));
 
@@ -147,8 +157,8 @@ export class PersonDetailComponent {
     const clientsMap = new Map<string, string>();
 
     for (const person of this.personData.value()?.family ?? []) {
-      if (person.clientId) {
-        clientsMap.set(person.id, person.clientId);
+      if (person.linked_client) {
+        clientsMap.set(person.id, person.linked_client.id);
       }
     }
 
@@ -177,33 +187,7 @@ export class PersonDetailComponent {
     return age;
   });
 
-  protected readonly canPromote = computed(
-    () => !this.person()?.clientId && this.person()?.dataConsentGiven === true,
-  );
-
   protected readonly consentGiven = computed(() => this.person()?.dataConsentGiven === true);
-
-  // ---- Edit panel ----
-  protected readonly editPanelOpen = signal(false);
-  protected readonly editSaving = signal(false);
-
-  protected readonly editForm = this.fb.nonNullable.group({
-    lastName: ['', Validators.required],
-    firstName: ['', Validators.required],
-    patronymic: [''],
-    lastNameTranslit: ['', Validators.pattern(/^[A-Z]*$/)],
-    firstNameTranslit: ['', Validators.pattern(/^[A-Z]*$/)],
-    dateOfBirth: [''],
-    gender: [''],
-    citizenship: [''],
-    personalNumber: ['', Validators.pattern(/^[A-Z0-9]*$/)],
-    notes: [''],
-  });
-
-  protected readonly genderOptions = Object.entries(GENDER_LABEL).map(([value, label]) => ({
-    value,
-    label,
-  }));
 
   protected readonly docTypeLabel = DOC_TYPE_LABEL;
   protected readonly addressTypeLabel = ADDRESS_TYPE_LABEL;
@@ -218,7 +202,7 @@ export class PersonDetailComponent {
     'actions',
   ];
   protected readonly contactColumns = ['medium', 'value', 'primary', 'actions'];
-  protected readonly relationshipColumns = ['type', 'status', 'sinceDate', 'actions'];
+  protected readonly relationshipColumns = ['type', 'relatedPerson', 'status', 'sinceDate', 'actions'];
   protected readonly bookingColumns = [
     'number',
     'destination',
@@ -226,14 +210,6 @@ export class PersonDetailComponent {
     'travelerRole',
     'status',
   ];
-
-  // ---- Consent gate ----
-  protected readonly consentDialogOpen = signal(false);
-  protected readonly consentSaving = signal(false);
-  protected readonly consentForm = this.fb.nonNullable.group({
-    consentDate: [new Date().toISOString().slice(0, 10)],
-    confirmed: [false, Validators.requiredTrue],
-  });
 
   protected formatDate(iso: string | null | undefined): string {
     if (!iso) {
@@ -491,6 +467,36 @@ export class PersonDetailComponent {
       });
   }
 
+  protected deleteRelationship(rel: PersonRelationshipResponseDto): void {
+    const personId = this.person()?.id;
+
+    if (!personId) {
+      return;
+    }
+
+    this.confirmDialog
+      .open({
+        title: 'Удалить связь',
+        message: 'Удалить связанное лицо?',
+        confirmLabel: 'Удалить',
+        cancelLabel: 'Отмена',
+        confirmColor: 'warn',
+      })
+      .subscribe((confirmed) => {
+        if (!confirmed) {
+          return;
+        }
+
+        this.personsService.deleteRelationship(personId, rel.id).subscribe({
+          next: () => this.reloadPerson(),
+          error: (err) =>
+            this.snackBar.open(err?.error?.message ?? 'Не удалось удалить связь', 'Close', {
+              duration: 5000,
+            }),
+        });
+      });
+  }
+
   protected openBooking(bookingId: string): void {
     void this.router.navigate(['/app/bookings', bookingId]);
   }
@@ -534,129 +540,29 @@ export class PersonDetailComponent {
     return GENDER_LABEL[g] ?? g;
   }
 
-  // ---- Edit panel actions ----
-  protected openEditPanel(): void {
-    const p = this.person();
-
-    if (!p) {
-      return;
-    }
-
-    this.editForm.reset({
-      lastName: p.lastName,
-      firstName: p.firstName,
-      patronymic: p.patronymic ?? '',
-      lastNameTranslit: p.lastNameTranslit ?? '',
-      firstNameTranslit: p.firstNameTranslit ?? '',
-      dateOfBirth: p.dateOfBirth ?? '',
-      gender: p.gender ?? '',
-      citizenship: p.citizenship ?? '',
-      personalNumber: p.personalNumber ?? '',
-      notes: p.notes ?? '',
-    });
-    this.editPanelOpen.set(true);
-  }
-
-  protected closeEditPanel(): void {
-    this.editPanelOpen.set(false);
-  }
-
-  protected uppercaseOnBlur(controlName: keyof typeof this.editForm.controls): void {
-    const ctrl = this.editForm.controls[controlName];
-
-    ctrl.setValue(ctrl.value.toUpperCase().trim());
-  }
-
-  protected saveEdit(): void {
-    if (this.editForm.invalid) {
-      this.editForm.markAllAsTouched();
-
-      return;
-    }
-
-    const person = this.person();
-
-    if (!person) {
-      return;
-    }
-
-    const raw = this.editForm.getRawValue();
-    const dto: UpdatePersonRequestDto = {
-      lastName: raw.lastName.trim(),
-      firstName: raw.firstName.trim(),
-      patronymic: raw.patronymic.trim() || undefined,
-      lastNameTranslit: raw.lastNameTranslit.trim() || undefined,
-      firstNameTranslit: raw.firstNameTranslit.trim() || undefined,
-      dateOfBirth: raw.dateOfBirth || undefined,
-      gender: raw.gender,
-      citizenship: raw.citizenship.trim() || undefined,
-      personalNumber: raw.personalNumber.trim() || undefined,
-      notes: raw.notes.trim() || undefined,
-    };
-
-    this.editSaving.set(true);
-    this.personsService
-      .update(person.id, dto)
-      .pipe(finalize(() => this.editSaving.set(false)))
-      .subscribe({
-        next: () => {
-          this.snackBar.open('Данные сохранены', 'Close', { duration: 3000 });
-          this.editPanelOpen.set(false);
-          this.personVersion.update((v) => v + 1);
-        },
-        error: (err) =>
-          this.snackBar.open(err?.error?.message ?? 'Не удалось сохранить', 'Close', {
-            duration: 5000,
-          }),
-      });
-  }
-
-  // ---- Consent gate ----
   protected openConsentDialog(): void {
-    this.consentForm.reset({
-      consentDate: new Date().toISOString().slice(0, 10),
-      confirmed: false,
-    });
-    this.consentDialogOpen.set(true);
-  }
-
-  protected closeConsentDialog(): void {
-    this.consentDialogOpen.set(false);
-  }
-
-  protected saveConsent(): void {
-    if (this.consentForm.invalid) {
-      this.consentForm.markAllAsTouched();
-
-      return;
-    }
-
     const person = this.person();
 
     if (!person) {
       return;
     }
 
-    const { consentDate } = this.consentForm.getRawValue();
+    const dialogRef = this.dialog.open<
+      PersonConsentDialogComponent,
+      PersonConsentDialogData,
+      PersonConsentDialogResult
+    >(PersonConsentDialogComponent, {
+      width: '480px',
+      data: { personId: person.id },
+    });
 
-    this.consentSaving.set(true);
-    this.personsService
-      .update(person.id, { dataConsentGiven: true, dataConsentDate: consentDate })
-      .pipe(finalize(() => this.consentSaving.set(false)))
-      .subscribe({
-        next: () => {
-          this.snackBar.open('Согласие зафиксировано', 'Close', { duration: 3000 });
-          this.consentDialogOpen.set(false);
-          this.reloadPerson();
-        },
-        error: (err) =>
-          this.snackBar.open(err?.error?.message ?? 'Не удалось сохранить согласие', 'Close', {
-            duration: 5000,
-          }),
-      });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result?.saved) {
+        this.reloadPerson();
+      }
+    });
   }
 
-  // ---- Promote to client ----
   protected promoteToClient(): void {
     const person = this.person();
 

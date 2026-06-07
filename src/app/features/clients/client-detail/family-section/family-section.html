@@ -31,10 +31,10 @@
         <ng-container matColumnDef="clientProfile">
           <th *matHeaderCellDef mat-header-cell>Профиль клиента</th>
           <td *matCellDef="let row" mat-cell>
-            @if (row.clientId) {
+            @if (row.linked_client) {
               <a
                 class="link"
-                [routerLink]="['/app/clients', row.clientId]"
+                [routerLink]="['/app/clients', row.linked_client.id]"
                 (click)="$event.stopPropagation()"
               >
                 Открыть

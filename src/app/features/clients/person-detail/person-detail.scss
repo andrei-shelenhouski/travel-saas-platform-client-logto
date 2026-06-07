@@ -1,58 +1,5 @@
-:host {
+.person-detail-page {
   display: block;
-  height: 100%;
-}
-
-.person-sidenav-container {
-  height: 100%;
-}
-
-.person-edit-sidenav {
-  width: 420px;
-  padding: 0;
-}
-
-.edit-panel-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px 20px 8px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.edit-panel-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.edit-panel-body {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  overflow-y: auto;
-
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-}
-
-.edit-panel-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  padding-top: 8px;
-}
-
-.person-detail-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 16px;
-  max-width: 900px;
 }
 
 // Consent banner
@@ -78,6 +25,10 @@
 
 .consent-icon {
   flex-shrink: 0;
+}
+
+.consent-text {
+  flex: 1;
 }
 
 // Type badge
@@ -128,41 +79,8 @@
   margin: 0;
 }
 
-.person-table-wrap {
-  margin-top: 8px;
-
-  table {
-    min-width: 760px;
-  }
-
-  .mat-mdc-header-cell,
-  .mat-mdc-cell {
-    font-size: 0.875rem;
-  }
-}
-
-.person-table-wrap .table-row {
-  cursor: default;
-
-  &:hover {
-    background-color: transparent;
-  }
-}
-
-.bookings-section .table-row {
-  cursor: pointer;
-
-  &:hover {
-    background-color: var(--mat-sys-surface-container-high);
-  }
-}
-
 .table-cell-actions {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 2px;
-  min-width: 120px;
+  text-align: right;
 }
 
 .mat-column-actions {
@@ -225,39 +143,4 @@
   > .mat-mdc-cell {
     background: #fef2f2;
   }
-}
-
-// Consent dialog backdrop
-.consent-dialog-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.consent-dialog {
-  background: #fff;
-  border-radius: 12px;
-  padding: 24px;
-  width: 400px;
-  max-width: 90vw;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.consent-dialog-title {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.consent-dialog-actions {
-  display: flex;
-  gap: 8px;
-  justify-content: flex-end;
-  padding-top: 8px;
 }

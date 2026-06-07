@@ -1,0 +1,27 @@
+<h2 mat-dialog-title>Согласие на обработку данных</h2>
+
+<mat-dialog-content>
+  <form class="dialog-form" id="consent-form" [formGroup]="form" (ngSubmit)="save()">
+    <mat-form-field>
+      <mat-label>Дата согласия</mat-label>
+      <input formControlName="consentDate" matInput type="date" />
+    </mat-form-field>
+
+    <mat-checkbox formControlName="confirmed">
+      Подтверждаю, что письменное согласие получено
+    </mat-checkbox>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" [mat-dialog-close]="undefined">Отмена</button>
+  <button
+    color="primary"
+    form="consent-form"
+    mat-flat-button
+    type="submit"
+    [disabled]="saving() || form.controls.confirmed.value === false"
+  >
+    {{ saving() ? 'Сохранение...' : 'Сохранить' }}
+  </button>
+</mat-dialog-actions>

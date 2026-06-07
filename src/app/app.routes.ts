@@ -151,6 +151,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'persons/:id/edit',
+        loadComponent: () =>
+          import('@app/features/clients/edit-person-page/edit-person-page').then(
+            (m) => m.EditPersonPageComponent,
+          ),
+      },
+      {
         path: 'persons/:id',
         loadComponent: () =>
           import('@app/features/clients/person-detail/person-detail').then(
