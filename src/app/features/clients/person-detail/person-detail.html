@@ -17,7 +17,18 @@
           Редактировать
         </a>
 
-        @if (!p.linked_client) {
+        @if (p.type === 'CLIENT' && p.linked_client) {
+          <a
+            appPageAction
+            color="primary"
+            icon="open_in_new"
+            label="Перейти к клиенту"
+            mat-flat-button
+            [routerLink]="['/app/clients', p.linked_client.id]"
+          >
+            Перейти к клиенту
+          </a>
+        } @else if (p.type !== 'CLIENT') {
           <button
             appPageAction
             color="primary"
