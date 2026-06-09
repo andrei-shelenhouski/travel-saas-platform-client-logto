@@ -96,28 +96,6 @@ describe('ClientsListComponent', () => {
     expect(el.textContent).toContain('Иванов Сергей');
   });
 
-  it('displayName returns fullName for INDIVIDUAL', async () => {
-    await createComponent();
-    const name = component.displayName(
-      createClient({ fullName: 'Test Name', type: ClientType.INDIVIDUAL }),
-    );
-
-    expect(name).toBe('Test Name');
-  });
-
-  it('displayName returns companyName for COMPANY', async () => {
-    await createComponent();
-    const name = component.displayName(
-      createClient({
-        type: ClientType.COMPANY,
-        fullName: 'Contact Person',
-        companyName: 'Acme Corp',
-      }),
-    );
-
-    expect(name).toBe('Acme Corp');
-  });
-
   it('resets page to 0 on filter change', async () => {
     await createComponent();
     component.currentPage.set(2);

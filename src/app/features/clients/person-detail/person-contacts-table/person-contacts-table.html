@@ -1,0 +1,61 @@
+  <table mat-table [dataSource]="rows()">
+    <ng-container matColumnDef="medium">
+      <th *matHeaderCellDef mat-header-cell>Канал</th>
+      <td *matCellDef="let contact" class="cell-primary" mat-cell>
+        {{ mediumLabel(contact.medium) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="value">
+      <th *matHeaderCellDef mat-header-cell>Значение</th>
+      <td *matCellDef="let contact" mat-cell>{{ contact.value }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="primary">
+      <th *matHeaderCellDef mat-header-cell>Основной</th>
+      <td *matCellDef="let contact" mat-cell>
+        @if (contact.primary) {
+          <span class="primary-badge">Да</span>
+        } @else {
+          —
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th *matHeaderCellDef mat-header-cell>Действия</th>
+      <td *matCellDef="let contact" class="table-cell-actions" mat-cell>
+        <button
+          aria-label="Редактировать контакт"
+          mat-icon-button
+          type="button"
+          (click)="editRow.emit(contact)"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          aria-label="Удалить контакт"
+          mat-icon-button
+          type="button"
+          (click)="deleteRow.emit(contact)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns()" class="table-header-row" mat-header-row></tr>
+    <tr *matRowDef="let row; columns: displayedColumns()" class="table-row" mat-row></tr>
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns().length">
+        <div class="table-empty-state">
+          @if (loading()) {
+            <p class="table-empty-state-message">Загрузка...</p>
+            <mat-spinner aria-label="Загрузка" diameter="36" />
+          } @else {
+            <p>Нет данных</p>
+          }
+        </div>
+      </td>
+    </tr>
+  </table>

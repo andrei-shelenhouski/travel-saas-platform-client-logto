@@ -1,3 +1,5 @@
+@use '../../../shared/styles/table';
+
 .leads-list-body {
   display: flex;
   flex-direction: column;
@@ -22,55 +24,7 @@
   color: #dc2626;
 }
 
-.mat-column-destination {
-  max-width: 20rem;
-}
-
-.check-icon {
-  color: #16a34a;
-}
-
-.off-icon {
-  color: #73787a;
-}
-
-.cell-primary {
-  display: block;
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-.cell-secondary {
-  display: block;
-  font-size: 0.75rem;
-  color: #6b7280;
-}
-
-.cell-deleted {
-  opacity: 0.4;
-}
-
-.cell-faded {
-  opacity: 0.4;
-}
-
-.table-cell-actions {
-  text-align: right;
-}
-
-.table-row-disabled {
-  cursor: default;
-}
-
-.menu-item-danger {
-  color: #dc2626;
-}
-
-.menu-item-danger-icon {
-  color: #dc2626;
-}
-
-.table-empty-state {
+.table-loading-state {
   margin: 2.5rem;
   text-align: center;
 }
@@ -81,11 +35,4 @@
 
 .table-spinner {
   margin-inline: auto;
-}
-
-.type-cell-content {
-  display: grid;
-  gap: 0.5rem;
-  grid-template-columns: auto 1fr;
-  align-items: center;
 }

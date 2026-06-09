@@ -69,179 +69,27 @@
     <p class="leads-list-error">{{ error() }}</p>
   }
 
-  <div class="table-wrap">
-    <table mat-table [dataSource]="leads()" [multiTemplateDataRows]="true">
-      <ng-container matColumnDef="name">
-        <th *matHeaderCellDef mat-header-cell>Клиент</th>
-        <td *matCellDef="let element" mat-cell [class.cell-deleted]="isDeletedLead(element)">
-          @if (element.companyName) {
-            <div>
-              <span class="cell-primary">{{ element.companyName }}</span>
-              <span class="cell-secondary">{{
-                element.contactPersonName || element.clientName
-              }}</span>
-            </div>
-          } @else {
-            <span class="cell-primary">{{ element.clientName }}</span>
-          }
-        </td>
-      </ng-container>
+  @if (loading()) {
+    <div class="table-loading-state">
+      <p class="table-empty-loading-text">Загрузка лидов...</p>
+      <mat-spinner aria-label="Загрузка лидов" class="table-spinner" diameter="36" />
+    </div>
+  } @else if (leads().length === 0) {
+    <div class="table-empty-state">
+      <p>Упс, лиды не найдены. Попробуйте изменить фильтры.</p>
 
-      <ng-container matColumnDef="number">
-        <th *matHeaderCellDef mat-header-cell>Лид #</th>
-        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
-          <span class="cell-primary">{{ element.number }}</span>
-        </td>
-      </ng-container>
+      <span class="or-divider">или</span>
 
-      <ng-container matColumnDef="clientType">
-        <th *matHeaderCellDef mat-header-cell>Тип</th>
-        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
-          <div class="type-cell-content">
-            @if (element.clientId) {
-              <mat-icon aria-label="Клиент" class="check-icon">
-                {{ element.clientType === 'INDIVIDUAL' ? 'person_check' : 'corporate_fare' }}
-              </mat-icon>
-            } @else {
-              <mat-icon aria-label="Не клиент" class="off-icon">person_off</mat-icon>
-            }
-            <app-client-type-badge [type]="element.clientType" />
-          </div>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="destination">
-        <th *matHeaderCellDef mat-header-cell>Направление</th>
-        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
-          {{ element.destination ?? '—' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="dates">
-        <th *matHeaderCellDef mat-header-cell>Даты</th>
-        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
-          {{ getTravelDatesLabel(element) }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <th *matHeaderCellDef mat-header-cell>Статус</th>
-        <td *matCellDef="let element" mat-cell>
-          <app-status-badge
-            variant="lead"
-            [status]="isDeletedLead(element) ? 'DELETED' : element.status"
-          />
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="assignedAgentName">
-        <th *matHeaderCellDef mat-header-cell>Агент</th>
-        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
-          {{ element.assignedAgentName ?? '—' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="createdAt">
-        <th *matHeaderCellDef mat-header-cell>Создан</th>
-        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
-          {{ element.createdAt | date: 'dd MMM yyyy' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="updatedAt">
-        <th *matHeaderCellDef mat-header-cell>Дата обновления</th>
-        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
-          {{ element.updatedAt | date: 'dd MMM yyyy' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="contactEmail">
-        <th *matHeaderCellDef mat-header-cell>Электронная почта</th>
-        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
-          {{ element.contactEmail ?? '—' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="contactPhone">
-        <th *matHeaderCellDef mat-header-cell>Телефон</th>
-        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
-          {{ element.contactPhone ?? '—' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="source">
-        <th *matHeaderCellDef mat-header-cell>Источник</th>
-        <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeletedLead(element)">
-          <app-lead-source-badge [source]="element.source" />
-        </td>
-      </ng-container>
-
-      @if (canDeleteLead()) {
-        <ng-container matColumnDef="actions">
-          <th *matHeaderCellDef mat-header-cell></th>
-          <td *matCellDef="let element" class="table-cell-actions" mat-cell>
-            @if (!isDeletedLead(element)) {
-              <button
-                aria-label="Действия с заявкой"
-                mat-icon-button
-                type="button"
-                [matMenuTriggerData]="{ lead: element }"
-                [matMenuTriggerFor]="rowMenu"
-                (click)="$event.stopPropagation()"
-              >
-                <mat-icon>more_vert</mat-icon>
-              </button>
-            }
-          </td>
-        </ng-container>
-      }
-
-      <mat-menu #rowMenu="matMenu">
-        <ng-template let-lead="lead" matMenuContent>
-          <button
-            class="menu-item-danger"
-            mat-menu-item
-            type="button"
-            (click)="openDeleteDialog($event, lead)"
-          >
-            <mat-icon class="menu-item-danger-icon">delete</mat-icon>
-            Удалить заявку
-          </button>
-        </ng-template>
-      </mat-menu>
-
-      <tr *matHeaderRowDef="displayedColumns()" class="table-header-row" mat-header-row></tr>
-      <tr
-        *matRowDef="let row; columns: displayedColumns()"
-        class="table-row"
-        mat-row
-        [class.table-row-disabled]="isDeletedLead(row)"
-        (click)="isDeletedLead(row) ? null : navigateToLead(row.id)"
-        (keydown.enter)="isDeletedLead(row) ? null : navigateToLead(row.id)"
-      ></tr>
-      <tr *matNoDataRow>
-        <td [attr.colspan]="displayedColumns().length">
-          <div class="table-empty-state">
-            @if (loading()) {
-              <p class="table-empty-loading-text">Загрузка лидов...</p>
-              <mat-spinner aria-label="Загрузка лидов" class="table-spinner" diameter="36" />
-            } @else {
-              <p>Упс, лиды не найдены. Попробуйте изменить фильтры.</p>
-
-              <span class="or-divider">или</span>
-
-              <div>
-                <a matButton="filled" routerLink="/app/leads/new">
-                  <mat-icon>add</mat-icon>
-                  <span>Добавьте нового лида</span>
-                </a>
-              </div>
-            }
-          </div>
-        </td>
-      </tr>
-    </table>
-  </div>
+      <div>
+        <a matButton="filled" routerLink="/app/leads/new">
+          <mat-icon>add</mat-icon>
+          <span>Добавьте нового лида</span>
+        </a>
+      </div>
+    </div>
+  } @else {
+    <app-leads-table [leads]="leads()" (leadDeleted)="onLeadDeleted()" />
+  }
 
   <mat-paginator
     aria-label="Пагинация лидов"

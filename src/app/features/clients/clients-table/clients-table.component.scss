@@ -1,0 +1,14 @@
+@use '../../../shared/styles/table';
+
+
+.cell-primary {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.cell-secondary {
+  display: block;
+  font-size: 0.75rem;
+  color: #6b7280;
+}

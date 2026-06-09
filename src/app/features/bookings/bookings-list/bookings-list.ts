@@ -9,23 +9,21 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTableModule } from '@angular/material/table';
 
 import { BookingsService } from '@app/services/bookings.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 import { BookingStatus } from '@app/shared/models';
 
 import { BookingFilterBarComponent } from '../booking-filter-bar/booking-filter-bar';
+import { BookingRow, BookingsTableComponent } from '../bookings-table/bookings-table.component';
 
 import type { BookingResponseDto } from '@app/shared/models';
 import type { BookingListFilterValue, StaffOption } from '../booking-filter-bar/booking-filter-bar';
@@ -44,14 +42,11 @@ const BOOKING_STATUSES = new Set<BookingStatus>([
   imports: [
     MatButtonModule,
     BookingFilterBarComponent,
-    BookingStatusChipComponent,
+    BookingsTableComponent,
     MatIcon,
     MatPaginatorModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
     PageHeading,
     PageHeadingAction,
-    RouterLink,
   ],
   templateUrl: './bookings-list.html',
   styleUrl: './bookings-list.scss',
@@ -123,21 +118,14 @@ export class BookingsListComponent {
 
   readonly showCreateBookingButton = computed(() => this.permissions.canUpdateBookings());
 
-  protected readonly bookings = computed(() => this.data.value()?.items ?? []);
   protected readonly totalElements = computed(() => this.data.value()?.total ?? 0);
   protected readonly loading = computed(() => this.data.isLoading());
 
-  protected readonly displayedColumns: (keyof (BookingResponseDto & { actions: string }))[] = [
-    'number',
-    'clientId',
-    'destination',
-    'departDate',
-    'returnDate',
-    'source',
-    'expiringDocuments',
-    'status',
-    'assignedBackofficeName',
-  ];
+  protected readonly bookingRows = computed<BookingRow[]>(() =>
+    (this.data.value()?.items ?? []).map((b) => this.toBookingRow(b)),
+  );
+
+  protected readonly omitColumns = ['dates', 'leadNumber', 'offerNumber', 'total', 'createdAt'];
 
   constructor() {
     this.syncStateFromQueryParams();
@@ -166,31 +154,36 @@ export class BookingsListComponent {
     this.listState.onPageChange(event);
   }
 
-  navigateToBooking(id: string): void {
-    this.router.navigate(['/bookings', id]);
-  }
-
   navigateToCreateBooking(): void {
     this.router.navigate(['/bookings/new']);
   }
 
-  onRowKeydown(event: KeyboardEvent, id: string): void {
-    const key = event.key;
-
-    if (key !== 'Enter' && key !== ' ') {
-      return;
-    }
-
-    event.preventDefault();
-    this.navigateToBooking(id);
+  private toBookingRow(b: BookingResponseDto): BookingRow {
+    return {
+      id: b.id,
+      number: b.number,
+      clientName: this.resolveClientName(b),
+      destination: b.destination,
+      departDate: b.departDate,
+      returnDate: b.returnDate,
+      status: b.status,
+      hasExpiringDocuments: this.resolveHasExpiringDocuments(b),
+      expiringDocumentTooltip: this.resolveExpiringDocumentTooltip(b),
+      isDirectEntry: this.resolveIsDirectEntry(b),
+      assignedBackofficeName: b.assignedBackofficeName,
+    };
   }
 
-  getClientName(booking: BookingResponseDto): string {
-    const snapshot = booking.clientSnapshot;
+  private resolveClientName(b: BookingResponseDto): string {
+    const snapshot = b.clientSnapshot;
 
     if (snapshot && typeof snapshot === 'object') {
-      const map = snapshot;
-      const candidates = [map['companyName'], map['fullName'], map['name'], map['clientName']];
+      const candidates = [
+        snapshot['companyName'],
+        snapshot['fullName'],
+        snapshot['name'],
+        snapshot['clientName'],
+      ];
 
       for (const candidate of candidates) {
         if (typeof candidate === 'string' && candidate.trim().length > 0) {
@@ -202,16 +195,16 @@ export class BookingsListComponent {
     return '—';
   }
 
-  hasExpiringDocumentBadge(booking: BookingResponseDto): boolean {
-    if (booking.status === BookingStatus.CANCELLED || booking.status === BookingStatus.COMPLETED) {
+  private resolveHasExpiringDocuments(b: BookingResponseDto): boolean {
+    if (b.status === BookingStatus.CANCELLED || b.status === BookingStatus.COMPLETED) {
       return false;
     }
 
-    return booking.hasExpiringDocuments === true;
+    return b.hasExpiringDocuments === true;
   }
 
-  expiringDocumentTooltip(booking: BookingResponseDto): string {
-    const firstHint = booking.expiringDocuments?.[0];
+  private resolveExpiringDocumentTooltip(b: BookingResponseDto): string {
+    const firstHint = b.expiringDocuments?.[0];
 
     if (!firstHint) {
       return 'Документ истекает менее чем за 6 месяцев до возвращения';
@@ -224,8 +217,8 @@ export class BookingsListComponent {
     return `${label} [${person}] истекает ${expiryDate} — менее 6 месяцев до возвращения`;
   }
 
-  isDirectEntrySource(booking: BookingResponseDto): boolean {
-    const source = booking.source?.trim().toUpperCase();
+  private resolveIsDirectEntry(b: BookingResponseDto): boolean {
+    const source = b.source?.trim().toUpperCase();
 
     return source === 'DIRECT_ENTRY' || source === 'DIRECT';
   }

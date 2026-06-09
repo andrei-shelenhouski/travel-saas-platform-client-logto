@@ -1,0 +1,151 @@
+<table mat-table [dataSource]="users()" [multiTemplateDataRows]="true">
+    <ng-container matColumnDef="user">
+      <th *matHeaderCellDef mat-header-cell>Пользователь</th>
+      <td *matCellDef="let element" mat-cell>
+        <div class="users-list-user-cell">
+          <span
+            aria-hidden="true"
+            class="users-list-avatar"
+            [style.background-color]="getAvatarColor(element.id)"
+          >
+            {{ getInitials(element.fullName) }}
+          </span>
+          <div>
+            <div class="users-list-name">{{ element.fullName }}</div>
+            @if (isCurrentUser(element)) {
+              <div class="users-list-current-badge">Текущий пользователь</div>
+            }
+          </div>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th *matHeaderCellDef mat-header-cell>Email</th>
+      <td *matCellDef="let element" mat-cell>
+        <span class="users-list-email" [title]="element.email">
+          {{ element.email }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="role">
+      <th *matHeaderCellDef mat-header-cell>Роль</th>
+      <td *matCellDef="let element" mat-cell>
+        <div class="users-list-role-cell">
+          @if (canChangeRole(element)) {
+            <mat-form-field appearance="outline" class="role-field" subscriptSizing="dynamic">
+              <mat-select
+                [disabled]="isRoleUpdateInFlight()"
+                [value]="roleSelectionValue(element)"
+                (selectionChange)="onRoleChange(element, $event.value)"
+              >
+                @for (option of roleOptions(); track option.value) {
+                  <mat-option [value]="option.value">{{ option.label }}</mat-option>
+                }
+              </mat-select>
+
+              @if (updatingRoleId() === element.id) {
+                <mat-progress-spinner
+                  aria-hidden="true"
+                  diameter="16"
+                  matSuffix
+                  mode="indeterminate"
+                />
+              }
+            </mat-form-field>
+          } @else {
+            <span class="users-list-role-badge">
+              {{ roleBadgeLabel(element) }}
+            </span>
+          }
+
+          @if (roleUpdateErrorMessage(element.id); as roleError) {
+            <p class="users-list-role-error">{{ roleError }}</p>
+          }
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th *matHeaderCellDef mat-header-cell>Статус</th>
+      <td *matCellDef="let element" mat-cell>
+        <span
+          class="users-list-status-badge"
+          [class.users-list-status-badge--active]="element.isActive"
+          [class.users-list-status-badge--inactive]="!element.isActive"
+        >
+          {{ getStatusLabel(element.isActive) }}
+        </span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="joined">
+      <th *matHeaderCellDef mat-header-cell>Присоединился</th>
+      <td *matCellDef="let element" mat-cell>
+        {{ element.joinedAt | date: 'dd MMM yyyy' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th *matHeaderCellDef class="users-list-actions-header" mat-header-cell>
+        Действия
+      </th>
+      <td *matCellDef="let element" class="users-list-actions-cell" mat-cell>
+        <button
+          aria-label="Открыть меню действий"
+          mat-icon-button
+          type="button"
+          [disabled]="togglingActiveId() === element.id || isCurrentUser(element)"
+          [matMenuTriggerData]="{ user: element }"
+          [matMenuTriggerFor]="actionsMenu"
+        >
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns()" class="table-header-row" mat-header-row></tr>
+    <tr *matRowDef="let row; columns: displayedColumns()" class="table-row" mat-row></tr>
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns().length">
+        <div class="table-empty-state">
+          @if (loading()) {
+            <p class="table-empty-state-message">Загрузка пользователей...</p>
+            <mat-spinner
+              aria-label="Загрузка пользователей"
+              diameter="36"
+            />
+          } @else {
+            <p>
+              Пользователей пока нет. Пригласите первого участника.
+            </p>
+          }
+        </div>
+      </td>
+    </tr>
+  </table>
+
+<mat-menu #actionsMenu="matMenu">
+  <ng-template let-user="user" matMenuContent>
+    @if (user.isActive) {
+      @if (!isCurrentUser(user)) {
+        <button
+          mat-menu-item
+          type="button"
+          (click)="deactivateRequest.emit(user)"
+        >
+          Деактивировать
+        </button>
+      }
+    } @else {
+      <button
+        mat-menu-item
+        type="button"
+        (click)="reactivateRequest.emit(user.id)"
+      >
+        Активировать
+      </button>
+    }
+  </ng-template>
+</mat-menu>

@@ -126,75 +126,11 @@
           @if (p.documents.length === 0) {
             <p class="empty-state-text">Нет документов</p>
           } @else {
-            <div class="table-wrap">
-              <table mat-table [dataSource]="p.documents">
-                <ng-container matColumnDef="document">
-                  <th *matHeaderCellDef mat-header-cell>Документ</th>
-                  <td *matCellDef="let doc" class="cell-primary" mat-cell>
-                    <div class="cell-inline">
-                      @if (doc.primary) {
-                        <mat-icon class="doc-primary-icon" title="Основной документ">star</mat-icon>
-                      }
-                      <span>{{ docLabel(doc) }}</span>
-                    </div>
-                  </td>
-                </ng-container>
-
-                <ng-container matColumnDef="issueDate">
-                  <th *matHeaderCellDef mat-header-cell>Выдан</th>
-                  <td *matCellDef="let doc" mat-cell>{{ formatDate(doc.issueDate) }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="expiryDate">
-                  <th *matHeaderCellDef mat-header-cell>Действителен до</th>
-                  <td *matCellDef="let doc" mat-cell>{{ formatDate(doc.expiryDate) }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="status">
-                  <th *matHeaderCellDef mat-header-cell>Статус</th>
-                  <td *matCellDef="let doc" mat-cell>
-                    @let expiryClass = docExpiryClass(doc);
-                    @if (expiryClass === 'doc-expired') {
-                      <span class="doc-status doc-status--expired">Истёк</span>
-                    } @else if (expiryClass === 'doc-expiring') {
-                      <span class="doc-status doc-status--expiring">Истекает</span>
-                    } @else {
-                      <span class="doc-status">Актуален</span>
-                    }
-                  </td>
-                </ng-container>
-
-                <ng-container matColumnDef="actions">
-                  <th *matHeaderCellDef mat-header-cell>Действия</th>
-                  <td *matCellDef="let doc" class="table-cell-actions" mat-cell>
-                    <button
-                      aria-label="Редактировать документ"
-                      mat-icon-button
-                      type="button"
-                      (click)="openEditDocumentDialog(doc)"
-                    >
-                      <mat-icon>edit</mat-icon>
-                    </button>
-                    <button
-                      aria-label="Удалить документ"
-                      mat-icon-button
-                      type="button"
-                      (click)="deleteDocument(doc)"
-                    >
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </td>
-                </ng-container>
-
-                <tr *matHeaderRowDef="documentColumns" class="table-header-row" mat-header-row></tr>
-                <tr
-                  *matRowDef="let row; columns: documentColumns"
-                  class="table-row"
-                  mat-row
-                  [class]="docExpiryClass(row)"
-                ></tr>
-              </table>
-            </div>
+            <app-person-documents-table
+              [rows]="p.documents"
+              (deleteRow)="deleteDocument($event)"
+              (editRow)="openEditDocumentDialog($event)"
+            />
           }
         </app-detail-section>
 
@@ -213,61 +149,11 @@
           @if (p.addresses.length === 0) {
             <p class="empty-state-text">Нет адресов</p>
           } @else {
-            <div class="table-wrap">
-              <table mat-table [dataSource]="p.addresses">
-                <ng-container matColumnDef="type">
-                  <th *matHeaderCellDef mat-header-cell>Тип</th>
-                  <td *matCellDef="let addr" class="cell-primary" mat-cell>
-                    {{ addressLabel(addr.type) }}
-                  </td>
-                </ng-container>
-
-                <ng-container matColumnDef="country">
-                  <th *matHeaderCellDef mat-header-cell>Страна</th>
-                  <td *matCellDef="let addr" mat-cell>{{ addr.country || '—' }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="city">
-                  <th *matHeaderCellDef mat-header-cell>Город</th>
-                  <td *matCellDef="let addr" mat-cell>{{ addr.city || '—' }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="street">
-                  <th *matHeaderCellDef mat-header-cell>Адрес</th>
-                  <td *matCellDef="let addr" mat-cell>{{ addr.street || '—' }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="postalCode">
-                  <th *matHeaderCellDef mat-header-cell>Индекс</th>
-                  <td *matCellDef="let addr" mat-cell>{{ addr.postalCode || '—' }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="actions">
-                  <th *matHeaderCellDef mat-header-cell>Действия</th>
-                  <td *matCellDef="let addr" class="table-cell-actions" mat-cell>
-                    <button
-                      aria-label="Редактировать адрес"
-                      mat-icon-button
-                      type="button"
-                      (click)="openEditAddressDialog(addr)"
-                    >
-                      <mat-icon>edit</mat-icon>
-                    </button>
-                    <button
-                      aria-label="Удалить адрес"
-                      mat-icon-button
-                      type="button"
-                      (click)="deleteAddress(addr)"
-                    >
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </td>
-                </ng-container>
-
-                <tr *matHeaderRowDef="addressColumns" class="table-header-row" mat-header-row></tr>
-                <tr *matRowDef="let row; columns: addressColumns" class="table-row" mat-row></tr>
-              </table>
-            </div>
+            <app-person-addresses-table
+              [rows]="p.addresses"
+              (deleteRow)="deleteAddress($event)"
+              (editRow)="openEditAddressDialog($event)"
+            />
           }
         </app-detail-section>
 
@@ -286,57 +172,11 @@
           @if (p.contacts.length === 0) {
             <p class="empty-state-text">Нет контактов</p>
           } @else {
-            <div class="table-wrap">
-              <table mat-table [dataSource]="p.contacts">
-                <ng-container matColumnDef="medium">
-                  <th *matHeaderCellDef mat-header-cell>Канал</th>
-                  <td *matCellDef="let contact" class="cell-primary" mat-cell>
-                    {{ contactMediumLabelFor(contact.medium) }}
-                  </td>
-                </ng-container>
-
-                <ng-container matColumnDef="value">
-                  <th *matHeaderCellDef mat-header-cell>Значение</th>
-                  <td *matCellDef="let contact" mat-cell>{{ contact.value }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="primary">
-                  <th *matHeaderCellDef mat-header-cell>Основной</th>
-                  <td *matCellDef="let contact" mat-cell>
-                    @if (contact.primary) {
-                      <span class="primary-badge">Да</span>
-                    } @else {
-                      —
-                    }
-                  </td>
-                </ng-container>
-
-                <ng-container matColumnDef="actions">
-                  <th *matHeaderCellDef mat-header-cell>Действия</th>
-                  <td *matCellDef="let contact" class="table-cell-actions" mat-cell>
-                    <button
-                      aria-label="Редактировать контакт"
-                      mat-icon-button
-                      type="button"
-                      (click)="openEditContactDialog(contact)"
-                    >
-                      <mat-icon>edit</mat-icon>
-                    </button>
-                    <button
-                      aria-label="Удалить контакт"
-                      mat-icon-button
-                      type="button"
-                      (click)="deleteContact(contact)"
-                    >
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </td>
-                </ng-container>
-
-                <tr *matHeaderRowDef="contactColumns" class="table-header-row" mat-header-row></tr>
-                <tr *matRowDef="let row; columns: contactColumns" class="table-row" mat-row></tr>
-              </table>
-            </div>
+            <app-person-contacts-table
+              [rows]="p.contacts"
+              (deleteRow)="deleteContact($event)"
+              (editRow)="openEditContactDialog($event)"
+            />
           }
         </app-detail-section>
 
@@ -345,71 +185,13 @@
           @if (relationships().length === 0) {
             <p class="empty-state-text">Нет связей</p>
           } @else {
-            <div class="table-wrap">
-              <table mat-table [dataSource]="relationships()">
-                <ng-container matColumnDef="type">
-                  <th *matHeaderCellDef mat-header-cell>Тип связи</th>
-                  <td *matCellDef="let item" class="cell-primary" mat-cell>
-                    {{ relationshipTypeLabel(item.type) }}
-                  </td>
-                </ng-container>
-
-                <ng-container matColumnDef="status">
-                  <th *matHeaderCellDef mat-header-cell>Статус</th>
-                  <td *matCellDef="let item" mat-cell>
-                    {{ relationshipStatusLabel(item.status) }}
-                  </td>
-                </ng-container>
-
-                <ng-container matColumnDef="sinceDate">
-                  <th *matHeaderCellDef mat-header-cell>С</th>
-                  <td *matCellDef="let item" mat-cell>{{ formatDate(item.sinceDate) }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="relatedPerson">
-                  <th *matHeaderCellDef mat-header-cell>Связанное лицо</th>
-                  <td *matCellDef="let item" mat-cell>
-                    <a [routerLink]="['/app/persons', item.relatedPersonId]">
-                      {{ relatedPersonNameById().get(item.relatedPersonId) }}
-                    </a>
-                  </td>
-                </ng-container>
-
-                <ng-container matColumnDef="actions">
-                  <th *matHeaderCellDef mat-header-cell>Действия</th>
-                  <td *matCellDef="let item" class="table-cell-actions" mat-cell>
-                    @if (relatedClientByPersonId().get(item.relatedPersonId); as relatedClientId) {
-                      <button
-                        mat-stroked-button
-                        type="button"
-                        (click)="openClient(relatedClientId)"
-                      >
-                        Открыть клиента
-                      </button>
-                    }
-                    <button
-                      aria-label="Удалить связь"
-                      mat-icon-button
-                      type="button"
-                      (click)="deleteRelationship(item)"
-                    >
-                      <mat-icon>delete</mat-icon>
-                    </button>
-                  </td>
-                </ng-container>
-
-                <tr
-                  *matHeaderRowDef="relationshipColumns"
-                  class="table-header-row"
-                  mat-header-row
-                ></tr>
-                <tr
-                  *matRowDef="let row; columns: relationshipColumns"
-                  class="table-row"
-                  mat-row
-                ></tr>
-              </table>
-            </div>
+            <app-person-relationships-table
+              [relatedClientByPersonId]="relatedClientByPersonId()"
+              [relatedPersonNameById]="relatedPersonNameById()"
+              [rows]="relationships()"
+              (deleteRow)="deleteRelationship($event)"
+              (openClient)="openClient($event)"
+            />
           }
         </app-detail-section>
 
@@ -418,50 +200,10 @@
           @if (bookings().length === 0) {
             <p class="empty-state-text">Турист ещё не участвовал в бронированиях.</p>
           } @else {
-            <div class="table-wrap">
-              <table mat-table [dataSource]="bookings()">
-                <ng-container matColumnDef="number">
-                  <th *matHeaderCellDef mat-header-cell>Бронирование</th>
-                  <td *matCellDef="let booking" class="cell-primary" mat-cell>
-                    {{ booking.number || booking.id }}
-                  </td>
-                </ng-container>
-
-                <ng-container matColumnDef="destination">
-                  <th *matHeaderCellDef mat-header-cell>Направление</th>
-                  <td *matCellDef="let booking" mat-cell>{{ booking.destination || '—' }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="travelPeriod">
-                  <th *matHeaderCellDef mat-header-cell>Даты</th>
-                  <td *matCellDef="let booking" mat-cell>
-                    {{ formatDate(booking.departDate) }} - {{ formatDate(booking.returnDate) }}
-                  </td>
-                </ng-container>
-
-                <ng-container matColumnDef="travelerRole">
-                  <th *matHeaderCellDef mat-header-cell>Роль</th>
-                  <td *matCellDef="let booking" mat-cell>{{ booking.travelerRole || '—' }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="status">
-                  <th *matHeaderCellDef mat-header-cell>Статус</th>
-                  <td *matCellDef="let booking" mat-cell>
-                    <app-booking-status-chip [status]="booking.status" />
-                  </td>
-                </ng-container>
-
-                <tr *matHeaderRowDef="bookingColumns" class="table-header-row" mat-header-row></tr>
-                <tr
-                  *matRowDef="let row; columns: bookingColumns"
-                  class="table-row"
-                  mat-row
-                  tabindex="0"
-                  (click)="openBooking(row.id)"
-                  (keydown.enter)="openBooking(row.id)"
-                ></tr>
-              </table>
-            </div>
+            <app-person-bookings-table
+              [rows]="bookings()"
+              (rowClick)="openBooking($event)"
+            />
           }
         </app-detail-section>
       </app-page-content>

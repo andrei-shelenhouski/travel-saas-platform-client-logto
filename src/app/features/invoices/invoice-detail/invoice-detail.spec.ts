@@ -303,7 +303,7 @@ describe('InvoiceDetailComponent', () => {
     fixture.detectChanges();
 
     const lineItemsTableText = (
-      fixture.nativeElement.querySelector('mat-table') as HTMLElement | null
+      fixture.nativeElement.querySelector('table[mat-table]') as HTMLElement | null
     )?.textContent;
     const expectedFormattedAmount = `${formatNumber(10650, locale, '1.2-2')} BYN`;
     const formattedOccurrences = (lineItemsTableText ?? '').match(

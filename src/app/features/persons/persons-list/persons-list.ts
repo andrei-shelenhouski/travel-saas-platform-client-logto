@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -8,38 +7,32 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
-import { rxResource } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router } from '@angular/router';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { PersonsService } from '@app/services/persons.service';
 import { AuthService } from '@app/auth/auth.service';
+import { PersonsService } from '@app/services/persons.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { PermissionKey } from '@app/shared/models';
 
-import type { PersonListItemDto } from '@app/shared/models';
+import { CreatePersonDialogComponent } from '../create-person-dialog/create-person-dialog';
+import { PersonsTableComponent } from '../persons-table/persons-table.component';
 
-import {
-  CreatePersonDialogComponent,
-  type CreatePersonDialogResult,
-} from '../create-person-dialog/create-person-dialog';
-
+import type { PersonRow } from '../persons-table/persons-table.component';
+import type { CreatePersonDialogResult } from '../create-person-dialog/create-person-dialog';
 export const PAGE_SIZE = 25;
 
 type ActiveChip = {
@@ -52,21 +45,17 @@ type ActiveChip = {
   selector: 'app-persons-list',
   imports: [
     MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    DatePipe,
     MatChipsModule,
+    MatFormFieldModule,
     MatIcon,
-    MatMenuModule,
+    MatInputModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
-    MatTableModule,
-    MatTooltipModule,
+    MatSelectModule,
     PageHeading,
     PageHeadingAction,
+    PersonsTableComponent,
     ReactiveFormsModule,
-    RouterLink,
   ],
   templateUrl: './persons-list.html',
   styleUrl: './persons-list.scss',
@@ -124,9 +113,21 @@ export class PersonsListComponent {
     },
   });
 
-  protected readonly persons = computed(() => this.data.value()?.items ?? []);
   protected readonly totalElements = computed(() => this.data.value()?.total ?? 0);
   protected readonly loading = computed(() => this.data.isLoading());
+
+  protected readonly personRows = computed<PersonRow[]>(() =>
+    (this.data.value()?.items ?? []).map((p) => ({
+      id: p.id,
+      fullName: p.full_name,
+      type: p.type,
+      dateOfBirth: p.date_of_birth,
+      documentExpiryStatus: p.document_expiry_status,
+      nearestExpiry: p.nearest_expiry,
+      linkedClientId: p.linked_client?.id,
+      linkedClientName: p.linked_client?.display_name,
+    })),
+  );
 
   private readonly _redirectOnForbidden = effect(() => {
     const err = this.data.error();
@@ -179,15 +180,6 @@ export class PersonsListComponent {
     return chips;
   });
 
-  protected readonly displayedColumns: string[] = [
-    'name',
-    'type',
-    'linked_client',
-    'date_of_birth',
-    'documents',
-    'actions',
-  ];
-
   onTypeFilterChange(value: 'CLIENT' | 'DEPENDANT' | ''): void {
     this.typeFilter.set(value === '' ? null : value);
     this.currentPage.set(0);
@@ -210,15 +202,6 @@ export class PersonsListComponent {
     this.currentPage.set(0);
   }
 
-  navigateToPerson(id: string): void {
-    void this.router.navigate(['/app/persons', id]);
-  }
-
-  navigateToClient(event: Event, clientId: string): void {
-    event.stopPropagation();
-    void this.router.navigate(['/app/clients', clientId]);
-  }
-
   openCreateDialog(): void {
     const ref = this.dialog.open<CreatePersonDialogComponent, undefined, CreatePersonDialogResult>(
       CreatePersonDialogComponent,
@@ -233,44 +216,5 @@ export class PersonsListComponent {
         this.data.reload();
       }
     });
-  }
-
-  docStatusIcon(person: PersonListItemDto): string {
-    switch (person.document_expiry_status) {
-      case 'OK':
-        return 'check_circle';
-      case 'EXPIRING':
-        return 'warning';
-      case 'EXPIRED':
-        return 'cancel';
-      default:
-        return '';
-    }
-  }
-
-  docStatusColor(person: PersonListItemDto): string {
-    switch (person.document_expiry_status) {
-      case 'OK':
-        return 'text-green-600';
-      case 'EXPIRING':
-        return 'text-amber-500';
-      case 'EXPIRED':
-        return 'text-red-600';
-      default:
-        return '';
-    }
-  }
-
-  docStatusTooltip(person: PersonListItemDto): string {
-    switch (person.document_expiry_status) {
-      case 'OK':
-        return 'Документы в порядке';
-      case 'EXPIRING':
-        return `Истекает: ${person.nearest_expiry ?? ''}`;
-      case 'EXPIRED':
-        return `Просрочено: ${person.nearest_expiry ?? ''}`;
-      default:
-        return '';
-    }
   }
 }

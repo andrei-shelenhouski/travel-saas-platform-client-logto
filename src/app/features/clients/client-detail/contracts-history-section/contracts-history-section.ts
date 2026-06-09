@@ -4,43 +4,40 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableModule } from '@angular/material/table';
 
 import { ContractFormDialogComponent } from '@app/features/clients/contract-form-dialog/contract-form-dialog';
 import { ContractsService } from '@app/services/contracts.service';
+import { ContractsTableComponent } from '@app/features/contracts/contracts-table/contracts-table.component';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
-import { ContractStatus, SignatureMethod } from '@app/shared/models';
+import { ContractStatus } from '@app/shared/models';
 
 import type { ContractResponseDto } from '@app/shared/models';
 
-const CONTRACT_STATUS_CLASS: Record<string, string> = {
-  [ContractStatus.ACTIVE]: 'contract-status contract-status-active',
-  [ContractStatus.EXPIRED]: 'contract-status contract-status-expired',
-  [ContractStatus.TERMINATED]: 'contract-status contract-status-terminated',
-};
-
-const SIGNATURE_METHOD_LABEL: Record<string, string> = {
-  [SignatureMethod.ORIGINAL_MAIL]: 'Почта',
-  [SignatureMethod.ORIGINAL_COURIER]: 'Курьер',
-  [SignatureMethod.DIGITAL_PODPIS]: 'Podpis.by',
-  [SignatureMethod.OTHER]: 'Другое',
-};
+const HISTORY_OMIT_COLUMNS = [
+  'client',
+  'clientType',
+  'clientContacts',
+  'registrationCert',
+  'taxationType',
+  'directorName',
+  'rataMember',
+  'updatedAt',
+  'createdBy',
+];
 
 @Component({
   selector: 'app-contracts-history-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatProgressSpinnerModule,
-    MatTableModule,
     MatPaginatorModule,
     MatButtonModule,
     MatIconModule,
-    MatMenuModule,
     MatDividerModule,
+    ContractsTableComponent,
   ],
   templateUrl: './contracts-history-section.html',
   styleUrl: './contracts-history-section.scss',
@@ -85,50 +82,13 @@ export class ContractsHistorySectionComponent {
   readonly contractsTotal = computed(() => this.contractsData.value()?.total ?? 0);
   readonly loading = computed(() => this.contractsData.isLoading());
 
-  readonly columns = [
-    'contractNumber',
-    'signedAt',
-    'expiresAt',
-    'createdAt',
-    'signatureMethod',
-    'status',
-    'actions',
-  ] as const;
+  readonly omitColumns = HISTORY_OMIT_COLUMNS;
+
+  readonly canManageContract = (contract: ContractResponseDto): boolean =>
+    this.canUpdateContracts() && contract.status === ContractStatus.ACTIVE;
 
   onContractsPageChange(event: PageEvent): void {
     this.contractsPageIndex.set(event.pageIndex);
-  }
-
-  contractStatusClass(status: string | null | undefined): string {
-    if (!status) {
-      return 'contract-status contract-status-expired';
-    }
-
-    return CONTRACT_STATUS_CLASS[status] ?? 'contract-status contract-status-expired';
-  }
-
-  contractSignatureLabel(method: string | null | undefined): string {
-    if (!method) {
-      return '—';
-    }
-
-    return SIGNATURE_METHOD_LABEL[method] ?? method;
-  }
-
-  canManageContract(contract: ContractResponseDto): boolean {
-    return this.canUpdateContracts() && contract.status === ContractStatus.ACTIVE;
-  }
-
-  formatDateShort(iso: string | null | undefined): string {
-    if (!iso) {
-      return '—';
-    }
-
-    try {
-      return new Date(iso).toLocaleDateString(undefined, { dateStyle: 'medium' });
-    } catch {
-      return iso;
-    }
   }
 
   openCreateContractDialog(): void {
@@ -152,10 +112,6 @@ export class ContractsHistorySectionComponent {
   }
 
   openEditContractDialog(contract: ContractResponseDto): void {
-    if (!this.canManageContract(contract)) {
-      return;
-    }
-
     this.dialog
       .open(ContractFormDialogComponent, {
         width: '640px',
@@ -177,10 +133,6 @@ export class ContractsHistorySectionComponent {
   }
 
   terminateContract(contract: ContractResponseDto): void {
-    if (!this.canManageContract(contract)) {
-      return;
-    }
-
     this.confirmDialog
       .open({
         title: 'Расторгнуть договор',

@@ -1,0 +1,127 @@
+<table mat-table [dataSource]="persons()">
+  <ng-container matColumnDef="name">
+    <th *matHeaderCellDef mat-header-cell>Имя</th>
+    <td *matCellDef="let row" mat-cell>
+      <span class="cell-primary">{{ row.fullName }}</span>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="type">
+    <th *matHeaderCellDef mat-header-cell>Тип</th>
+    <td *matCellDef="let row" mat-cell>
+      @if (row.type === 'CLIENT') {
+        <span class="type-badge type-badge--client">CLIENT</span>
+      } @else if (row.type === 'DEPENDANT') {
+        <span class="type-badge type-badge--dependant">DEPENDANT</span>
+      } @else {
+        —
+      }
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="relation">
+    <th *matHeaderCellDef mat-header-cell>Связь</th>
+    <td *matCellDef="let row" mat-cell [class.cell-inactive]="row.relationInactive">
+      {{ row.relation || '—' }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="linkedClient">
+    <th *matHeaderCellDef mat-header-cell>Клиент</th>
+    <td *matCellDef="let row" mat-cell>
+      @if (row.linkedClientId) {
+        <button
+          matButton="text"
+          type="button"
+          (click)="navigateToClient($event, row.linkedClientId)"
+          (keydown.enter)="navigateToClient($event, row.linkedClientId)"
+        >
+          {{ row.linkedClientName }}
+        </button>
+      } @else {
+        —
+      }
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="dateOfBirth">
+    <th *matHeaderCellDef mat-header-cell>Дата рождения</th>
+    <td *matCellDef="let row" mat-cell>
+      {{ row.dateOfBirth ? (row.dateOfBirth | date: 'dd.MM.yyyy') : '—' }}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="documents">
+    <th *matHeaderCellDef mat-header-cell>Документы</th>
+    <td *matCellDef="let row" mat-cell>
+      @if (row.documentExpiryStatus && row.documentExpiryStatus !== 'NONE') {
+        <mat-icon [class]="docStatusColor(row)" [matTooltip]="docStatusTooltip(row)">
+          {{ docStatusIcon(row) }}
+        </mat-icon>
+      } @else {
+        —
+      }
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th *matHeaderCellDef mat-header-cell></th>
+    <td *matCellDef="let row" class="actions-cell" mat-cell>
+      <button
+        aria-label="Действия"
+        mat-icon-button
+        type="button"
+        [matMenuTriggerFor]="rowMenu"
+        (click)="$event.stopPropagation()"
+      >
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #rowMenu="matMenu">
+        <button mat-menu-item type="button" (click)="navigateToPerson(row.id)">
+          <mat-icon>person</mat-icon>
+          <span>Открыть профиль</span>
+        </button>
+        @if (row.linkedClientId) {
+          <button
+            mat-menu-item
+            type="button"
+            (click)="navigateToClient($event, row.linkedClientId)"
+          >
+            <mat-icon>group</mat-icon>
+            <span>Перейти к клиенту</span>
+          </button>
+        }
+        @if (row.type === 'DEPENDANT') {
+          <button disabled mat-menu-item type="button">
+            <mat-icon>person_add</mat-icon>
+            <span>Создать профиль клиента</span>
+          </button>
+        }
+      </mat-menu>
+    </td>
+  </ng-container>
+
+  <tr *matHeaderRowDef="displayedColumns()" class="table-header-row" mat-header-row></tr>
+  <tr
+    *matRowDef="let row; columns: displayedColumns()"
+    class="table-row"
+    mat-row
+    tabindex="0"
+    (click)="navigateToPerson(row.id)"
+    (keydown)="onRowKeydown($event, row.id)"
+  ></tr>
+  @if (showEmptyState()) {
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns().length">
+        <div class="table-empty-state">
+          @if (loading()) {
+            <p class="table-empty-state-message">Загрузка туристов...</p>
+            <mat-spinner aria-label="Загрузка туристов" diameter="36" />
+          } @else {
+            <p>{{ emptyMessage() }}</p>
+          }
+        </div>
+      </td>
+    </tr>
+  }
+</table>

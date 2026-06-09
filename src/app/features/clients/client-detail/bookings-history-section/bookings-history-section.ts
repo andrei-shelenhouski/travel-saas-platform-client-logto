@@ -1,28 +1,27 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTableModule } from '@angular/material/table';
 
 import { map } from 'rxjs/operators';
 
 import { ClientsService } from '@app/services/clients.service';
-import { BookingStatusChipComponent } from '@app/shared/components';
+import {
+  BookingRow,
+  BookingsTableComponent,
+} from '@app/features/bookings/bookings-table/bookings-table.component';
 
 import type { BookingSummaryDto } from '@app/shared/models';
 
 @Component({
   selector: 'app-bookings-history-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatProgressSpinnerModule, MatTableModule, BookingStatusChipComponent, MatButtonModule],
+  imports: [MatProgressSpinnerModule, BookingsTableComponent],
   templateUrl: './bookings-history-section.html',
   styleUrl: './bookings-history-section.scss',
 })
 export class BookingsHistorySectionComponent {
   readonly clientId = input.required<string>();
 
-  private readonly router = inject(Router);
   private readonly clientsService = inject(ClientsService);
 
   private readonly bookingsData = rxResource<BookingSummaryDto[], string>({
@@ -31,33 +30,34 @@ export class BookingsHistorySectionComponent {
       this.clientsService.getBookings(params, { page: 1, limit: 20 }).pipe(map((r) => r.items)),
   });
 
-  readonly bookings = computed(() => this.bookingsData.value() ?? []);
   readonly loading = computed(() => this.bookingsData.isLoading());
 
-  readonly columns = [
-    'bookingNumber',
-    'leadNumber',
-    'offerNumber',
-    'destination',
-    'dates',
-    'status',
-    'total',
-    'createdAt',
-  ] as const;
+  readonly bookingRows = computed<BookingRow[]>(() =>
+    (this.bookingsData.value() ?? []).map((b) => this.toBookingRow(b)),
+  );
 
-  formatDateShort(iso: string | null | undefined): string {
-    if (!iso) {
-      return '—';
-    }
+  readonly omitColumns = [
+    'client',
+    'departDate',
+    'returnDate',
+    'expiringDocuments',
+    'source',
+    'assignedBackoffice',
+  ];
 
-    try {
-      return new Date(iso).toLocaleDateString(undefined, { dateStyle: 'medium' });
-    } catch {
-      return iso;
-    }
-  }
-
-  goToBooking(booking: BookingSummaryDto): void {
-    this.router.navigate(['/app/bookings', booking.id]);
+  private toBookingRow(b: BookingSummaryDto): BookingRow {
+    return {
+      id: b.id,
+      number: b.bookingNumber,
+      destination: b.destination,
+      departDate: b.departDate,
+      returnDate: b.returnDate,
+      leadNumber: b.leadNumber,
+      offerNumber: b.offerNumber,
+      totalPrice: b.totalPrice,
+      currency: b.currency,
+      status: b.status,
+      createdAt: b.createdAt,
+    };
   }
 }

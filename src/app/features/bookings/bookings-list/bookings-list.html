@@ -18,113 +18,11 @@
     <p class="bookings-list-error" role="alert">{{ error() }}</p>
   }
 
-  <div class="table-wrap">
-    <table mat-table [dataSource]="bookings()">
-      <ng-container matColumnDef="number">
-        <th *matHeaderCellDef mat-header-cell>Бронь #</th>
-        <td *matCellDef="let element" mat-cell>
-          <a
-            class="link"
-            [routerLink]="['/bookings', element.id]"
-            (click)="$event.stopPropagation()"
-          >
-            {{ element.number || '—' }}
-          </a>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="clientId">
-        <th *matHeaderCellDef mat-header-cell>Клиент</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ getClientName(element) }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="destination">
-        <th *matHeaderCellDef mat-header-cell>Направление</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.destination || '—' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="departDate">
-        <th *matHeaderCellDef mat-header-cell>Выезд</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.departDate || '—' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="returnDate">
-        <th *matHeaderCellDef mat-header-cell>Возврат</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.returnDate || '—' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="expiringDocuments">
-        <th *matHeaderCellDef mat-header-cell>Документы</th>
-        <td *matCellDef="let element" mat-cell>
-          @if (hasExpiringDocumentBadge(element)) {
-            <span
-              class="status-badge status-badge--expiring"
-              [title]="expiringDocumentTooltip(element)"
-            >
-              Документ ⚠
-            </span>
-          } @else {
-            —
-          }
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="source">
-        <th *matHeaderCellDef mat-header-cell>Источник</th>
-        <td *matCellDef="let element" mat-cell>
-          @if (isDirectEntrySource(element)) {
-            <span class="status-badge status-badge--direct-entry"> Прямое бронирование </span>
-          } @else {
-            —
-          }
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <th *matHeaderCellDef mat-header-cell>Статус</th>
-        <td *matCellDef="let element" mat-cell>
-          <app-booking-status-chip [status]="element.status" />
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="assignedBackofficeName">
-        <th *matHeaderCellDef mat-header-cell>Назначенный сотрудник</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.assignedBackofficeName || '—' }}
-        </td>
-      </ng-container>
-
-      <tr *matHeaderRowDef="displayedColumns" class="table-header-row" mat-header-row></tr>
-      <tr
-        *matRowDef="let row; columns: displayedColumns"
-        class="table-row"
-        mat-row
-        tabindex="0"
-        (click)="navigateToBooking(row.id)"
-        (keydown)="onRowKeydown($event, row.id)"
-      ></tr>
-      <tr *matNoDataRow>
-        <td [attr.colspan]="displayedColumns.length">
-          <div class="table-empty-state">
-            @if (loading()) {
-              <p class="table-empty-state-message">Загрузка бронирований...</p>
-              <mat-spinner aria-label="Загрузка бронирований" diameter="36" />
-            } @else {
-              <p>Нет бронирований по текущим фильтрам</p>
-            }
-          </div>
-        </td>
-      </tr>
-    </table>
-  </div>
+  <app-bookings-table
+    [bookings]="bookingRows()"
+    [loading]="loading()"
+    [omitColumns]="omitColumns"
+  />
 
   @if (totalElements() > pageSize) {
     <mat-paginator

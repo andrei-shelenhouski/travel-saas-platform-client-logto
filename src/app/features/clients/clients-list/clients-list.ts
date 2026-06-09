@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -9,12 +8,10 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTableModule } from '@angular/material/table';
 
 import { ClientsService } from '@app/services/clients.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
@@ -25,9 +22,8 @@ import {
   ClientFilterBarComponent,
   ClientFilterValue,
 } from '../client-filter-bar/client-filter-bar';
-import { ClientTypeBadgeComponent } from '../client-type-badge/client-type-badge';
+import { ClientsTableComponent } from '../clients-table/clients-table.component';
 
-import type { ClientResponseDto } from '@app/shared/models';
 export const PAGE_SIZE = 20;
 
 @Component({
@@ -36,12 +32,9 @@ export const PAGE_SIZE = 20;
   imports: [
     MatButtonModule,
     ClientFilterBarComponent,
-    ClientTypeBadgeComponent,
-    DatePipe,
+    ClientsTableComponent,
     MatIcon,
     MatPaginatorModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
     PageHeading,
     PageHeadingAction,
   ],
@@ -54,7 +47,6 @@ export const PAGE_SIZE = 20;
 export class ClientsListComponent {
   private readonly clientsService = inject(ClientsService);
   private readonly router = inject(Router);
-  private readonly activatedRoute = inject(ActivatedRoute);
 
   protected readonly pageSize = PAGE_SIZE;
 
@@ -104,15 +96,6 @@ export class ClientsListComponent {
     return undefined;
   });
 
-  protected readonly displayedColumns: (keyof (ClientResponseDto & { name: string }))[] = [
-    'name',
-    'type',
-    'phone',
-    'email',
-    'createdAt',
-    'updatedAt',
-  ];
-
   onFilterChange(value: ClientFilterValue): void {
     this.activeFilter.set(value);
     this.currentPage.set(0);
@@ -122,29 +105,7 @@ export class ClientsListComponent {
     this.currentPage.set(event.pageIndex);
   }
 
-  // TODO: extract to a pipe
-  displayName(client: ClientResponseDto): string {
-    if (client.type === ClientType.INDIVIDUAL) {
-      return client.fullName ?? '—';
-    }
-
-    return client.companyName ?? client.fullName ?? '—';
-  }
-
-  // TODO: extract to a pipe
-  displaySubtitle(client: ClientResponseDto): string | null {
-    if (client.type === ClientType.COMPANY || client.type === ClientType.B2B_AGENT) {
-      return client.fullName ?? null;
-    }
-
-    return null;
-  }
-
-  navigateToClient(id: string): void {
-    this.router.navigate([id], { relativeTo: this.activatedRoute });
-  }
-
   navigateToCreateClient(): void {
-    this.router.navigate(['/app/clients/new']);
+    void this.router.navigate(['/app/clients/new']);
   }
 }

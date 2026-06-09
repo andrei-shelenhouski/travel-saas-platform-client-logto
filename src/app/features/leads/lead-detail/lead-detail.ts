@@ -20,14 +20,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { EMPTY, forkJoin, of } from 'rxjs';
 import { catchError, finalize, map } from 'rxjs/operators';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
-import { InvoiceStatusChipComponent } from '@app/features/invoices/invoice-status-chip/invoice-status-chip';
 import { AssignDialogComponent } from '@app/features/leads/assign-dialog/assign-dialog';
 import {
   DeleteLeadDialogComponent,
@@ -35,6 +33,7 @@ import {
 } from '@app/features/leads/delete-lead-dialog/delete-lead-dialog';
 import { LeadDetailHeaderComponent } from '@app/features/leads/lead-detail/lead-detail-header/lead-detail-header';
 import { LeadDetailOffersSectionComponent } from '@app/features/leads/lead-detail/lead-detail-offers-section/lead-detail-offers-section';
+import { LeadInvoicesTableComponent } from '@app/features/leads/lead-detail/lead-invoices-table/lead-invoices-table';
 import { LinkLeadClientDialogComponent } from '@app/features/leads/link-lead-client-dialog/link-lead-client-dialog';
 import { PromoteLeadClientDialogComponent } from '@app/features/leads/promote-lead-client-dialog/promote-lead-client-dialog';
 import { BookingsService } from '@app/services/bookings.service';
@@ -129,17 +128,6 @@ function getAgentInitials(name: string | null): string {
   return parts.map((p) => p[0]?.toUpperCase() ?? '').join('');
 }
 
-function formatCurrency(amount: number | undefined, currency: string | undefined): string {
-  if (amount === undefined || currency === undefined) {
-    return '—';
-  }
-  try {
-    return new Intl.NumberFormat('ru-RU', { style: 'currency', currency }).format(amount);
-  } catch {
-    return `${amount} ${currency}`;
-  }
-}
-
 const ACTIVITY_ICON_MAP: [string, string][] = [
   ['create', 'add_circle'],
   ['status', 'flag'],
@@ -168,7 +156,6 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     ReactiveFormsModule,
     MatDialogModule,
     MatIconModule,
-    MatTableModule,
     MatTooltipModule,
     MatButtonModule,
     MatFormFieldModule,
@@ -179,9 +166,9 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     CustomFieldsSectionComponent,
     ClientTypeBadgeComponent,
     BookingStatusChipComponent,
-    InvoiceStatusChipComponent,
     LeadDetailHeaderComponent,
     LeadDetailOffersSectionComponent,
+    LeadInvoicesTableComponent,
     MarkdownPipe,
     LoadingStateComponent,
     PageContentComponent,
@@ -372,15 +359,6 @@ export class LeadDetailComponent {
   );
   protected readonly bookingDetailLoading = computed(() => this.bookingDetailData.isLoading());
   protected readonly bookingInvoicesLoading = computed(() => this.bookingInvoicesData.isLoading());
-
-  protected readonly invoiceColumns = [
-    'number',
-    'invoiceDate',
-    'dueDate',
-    'status',
-    'total',
-    'paidAmount',
-  ] as const;
 
   protected readonly activityItems = signal<ActivityResponseDto[]>([]);
   protected readonly activityTotal = signal(0);
@@ -835,10 +813,6 @@ export class LeadDetailComponent {
     void this.router.navigate(['/app/leads']);
   }
 
-  protected navigateToInvoice(id: string): void {
-    void this.router.navigate(['/app/invoices', id]);
-  }
-
   protected getErrorStatus(): number | null {
     const err = this.error();
 
@@ -850,7 +824,6 @@ export class LeadDetailComponent {
   }
 
   protected readonly getAgentInitials = getAgentInitials;
-  protected readonly formatCurrency = formatCurrency;
   protected readonly formatDateShort = formatDateShort;
   protected readonly formatDateTime = formatDateTime;
   protected readonly formatDateRange = formatDateRange;

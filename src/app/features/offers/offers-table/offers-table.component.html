@@ -1,0 +1,59 @@
+<table mat-table [dataSource]="offers()">
+  <ng-container matColumnDef="number">
+    <th *matHeaderCellDef mat-header-cell>КП №</th>
+    <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.number ?? '—' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="destination">
+    <th *matHeaderCellDef mat-header-cell>Направление</th>
+    <td *matCellDef="let row" mat-cell>{{ row.destination ?? '—' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="leadNumber">
+    <th *matHeaderCellDef mat-header-cell>Лид №</th>
+    <td *matCellDef="let row" mat-cell>{{ row.leadNumber ?? '—' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="total">
+    <th *matHeaderCellDef mat-header-cell>Сумма</th>
+    <td *matCellDef="let row" mat-cell>
+      @if (row.total !== null && row.total !== undefined) {
+        {{ row.total }} {{ row.currency ?? '' }}
+      } @else {
+        —
+      }
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <th *matHeaderCellDef mat-header-cell>Статус</th>
+    <td *matCellDef="let row" mat-cell>
+      <app-offer-status-chip [status]="row.status" />
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="createdAt">
+    <th *matHeaderCellDef mat-header-cell>Создано</th>
+    <td *matCellDef="let row" mat-cell>{{ row.createdAt | date: 'dd MMM yyyy' }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="updatedAt">
+    <th *matHeaderCellDef mat-header-cell>Обновлено</th>
+    <td *matCellDef="let row" mat-cell>{{ row.updatedAt | date: 'dd MMM yyyy' }}</td>
+  </ng-container>
+
+  <tr *matHeaderRowDef="displayedColumns()" class="table-header-row" mat-header-row></tr>
+  <tr
+    *matRowDef="let row; columns: displayedColumns()"
+    class="table-row"
+    mat-row
+    (click)="navigateToOffer(row.id)"
+  ></tr>
+  <tr *matNoDataRow>
+    <td [attr.colspan]="displayedColumns().length">
+      <div class="table-empty-state">
+        <p>Нет предложений</p>
+      </div>
+    </td>
+  </tr>
+</table>

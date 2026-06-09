@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
@@ -18,11 +17,16 @@ import {
   LoadingStateComponent,
   PageContentComponent,
 } from '@app/shared/components';
-import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { ClientType } from '@app/shared/models';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
+
+import { PersonAddressesTableComponent } from './person-addresses-table/person-addresses-table';
+import { PersonBookingsTableComponent } from './person-bookings-table/person-bookings-table';
+import { PersonContactsTableComponent } from './person-contacts-table/person-contacts-table';
+import { PersonDocumentsTableComponent } from './person-documents-table/person-documents-table';
+import { PersonRelationshipsTableComponent } from './person-relationships-table/person-relationships-table';
 
 import {
   PersonAddressDialogComponent,
@@ -55,38 +59,10 @@ import type {
   PersonResponseDto,
 } from '@app/shared/models';
 
-const DOC_TYPE_LABEL: Record<string, string> = {
-  INTL_PASSPORT: 'Загранпаспорт',
-  NATIONAL_PASSPORT: 'Внутренний / общегражданский паспорт',
-  NATIONAL_ID: 'Национальный ID / ID-карта',
-  BIRTH_CERTIFICATE: 'Свидетельство о рождении',
-  OTHER: 'Другой документ',
-};
-
 const GENDER_LABEL: Record<string, string> = {
   MALE: 'Мужской',
   FEMALE: 'Женский',
   OTHER: 'Другой',
-};
-
-const ADDRESS_TYPE_LABEL: Record<string, string> = {
-  REGISTRATION: 'Прописка',
-  RESIDENTIAL: 'Фактический',
-  OTHER: 'Другой',
-};
-
-const CONTACT_MEDIUM_LABEL: Record<string, string> = {
-  PHONE: 'Телефон',
-  EMAIL: 'Email',
-  TELEGRAM: 'Telegram',
-};
-
-const RELATIONSHIP_TYPE_LABEL: Record<string, string> = {
-  SPOUSE_OF: 'Супруг/супруга',
-  PARENT_OF: 'Родитель/ребенок',
-  SIBLING_OF: 'Брат/сестра',
-  GRANDPARENT_OF: 'Бабушка/дедушка',
-  OTHER: 'Другое',
 };
 
 @Component({
@@ -99,12 +75,15 @@ const RELATIONSHIP_TYPE_LABEL: Record<string, string> = {
     LoadingStateComponent,
     PageContentComponent,
     DetailSectionComponent,
-    BookingStatusChipComponent,
     MatButtonModule,
     MatDialogModule,
     MatIconModule,
-    MatTableModule,
     MatTooltipModule,
+    PersonDocumentsTableComponent,
+    PersonAddressesTableComponent,
+    PersonContactsTableComponent,
+    PersonRelationshipsTableComponent,
+    PersonBookingsTableComponent,
   ],
   templateUrl: './person-detail.html',
   styleUrl: './person-detail.scss',
@@ -200,34 +179,6 @@ export class PersonDetailComponent {
 
   protected readonly consentGiven = computed(() => this.person()?.dataConsentGiven === true);
 
-  protected readonly docTypeLabel = DOC_TYPE_LABEL;
-  protected readonly addressTypeLabel = ADDRESS_TYPE_LABEL;
-  protected readonly contactMediumLabel = CONTACT_MEDIUM_LABEL;
-  protected readonly documentColumns = ['document', 'issueDate', 'expiryDate', 'status', 'actions'];
-  protected readonly addressColumns = [
-    'type',
-    'country',
-    'city',
-    'street',
-    'postalCode',
-    'actions',
-  ];
-  protected readonly contactColumns = ['medium', 'value', 'primary', 'actions'];
-  protected readonly relationshipColumns = [
-    'type',
-    'relatedPerson',
-    'status',
-    'sinceDate',
-    'actions',
-  ];
-  protected readonly bookingColumns = [
-    'number',
-    'destination',
-    'travelPeriod',
-    'travelerRole',
-    'status',
-  ];
-
   protected formatDate(iso: string | null | undefined): string {
     if (!iso) {
       return '—';
@@ -238,22 +189,6 @@ export class PersonDetailComponent {
 
   protected openClient(clientId: string): void {
     void this.router.navigate(['/app/clients', clientId]);
-  }
-
-  protected relationshipStatusLabel(status: string): string {
-    return status === 'INACTIVE' ? 'Неактивная' : 'Активная';
-  }
-
-  protected relationshipTypeLabel(type: string): string {
-    return RELATIONSHIP_TYPE_LABEL[type] ?? type;
-  }
-
-  protected addressLabel(type: string): string {
-    return this.addressTypeLabel[type] || type;
-  }
-
-  protected contactMediumLabelFor(medium: string): string {
-    return this.contactMediumLabel[medium] || medium;
   }
 
   protected openCreateDocumentDialog(): void {
@@ -516,37 +451,6 @@ export class PersonDetailComponent {
 
   protected openBooking(bookingId: string): void {
     void this.router.navigate(['/app/bookings', bookingId]);
-  }
-
-  protected docLabel(doc: PersonDocumentResponseDto): string {
-    const typeLabel = DOC_TYPE_LABEL[doc.type] ?? doc.type;
-    const series = doc.series ? `${doc.series} ` : '';
-
-    return `${typeLabel} · ${series}****${doc.numberLast4}`;
-  }
-
-  protected docExpiryClass(doc: PersonDocumentResponseDto): string {
-    const expiryAppliesTo = new Set(['INTL_PASSPORT', 'NATIONAL_PASSPORT', 'NATIONAL_ID']);
-
-    if (!doc.expiryDate || !expiryAppliesTo.has(doc.type)) {
-      return '';
-    }
-
-    const now = new Date();
-    const expiry = new Date(doc.expiryDate);
-    const sixMonths = new Date();
-
-    sixMonths.setMonth(sixMonths.getMonth() + 6);
-
-    if (expiry < now) {
-      return 'doc-expired';
-    }
-
-    if (expiry < sixMonths) {
-      return 'doc-expiring';
-    }
-
-    return '';
   }
 
   protected genderLabel(g: string | null | undefined): string {

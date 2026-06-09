@@ -1,0 +1,17 @@
+
+.cell-primary {
+  font-weight: 500;
+}
+
+.table-empty-state {
+  margin: 2.5rem;
+  text-align: center;
+
+  mat-spinner {
+    margin: 0 auto;
+  }
+}
+
+.table-empty-state-message {
+  margin-bottom: 1rem;
+}

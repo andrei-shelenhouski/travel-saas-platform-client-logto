@@ -1,0 +1,153 @@
+<table mat-table [dataSource]="leads()" [multiTemplateDataRows]="true">
+    <ng-container matColumnDef="number">
+      <th *matHeaderCellDef mat-header-cell>Лид #</th>
+      <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeleted(element)">
+        <span class="cell-primary">{{ element.number }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <th *matHeaderCellDef mat-header-cell>Клиент</th>
+      <td *matCellDef="let element" mat-cell [class.cell-deleted]="isDeleted(element)">
+        @if (element.companyName) {
+          <div>
+            <span class="cell-primary">{{ element.companyName }}</span>
+            <span class="cell-secondary">{{ element.contactPersonName || element.clientName }}</span>
+          </div>
+        } @else {
+          <span class="cell-primary">{{ element.clientName }}</span>
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="clientType">
+      <th *matHeaderCellDef mat-header-cell>Тип</th>
+      <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeleted(element)">
+        <div class="type-cell-content">
+          @if (element.clientId) {
+            <mat-icon aria-label="Клиент" class="check-icon">
+              {{ element.clientType === 'INDIVIDUAL' ? 'person_check' : 'corporate_fare' }}
+            </mat-icon>
+          } @else {
+            <mat-icon aria-label="Не клиент" class="off-icon">person_off</mat-icon>
+          }
+          <app-client-type-badge [type]="element.clientType" />
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="destination">
+      <th *matHeaderCellDef mat-header-cell>Направление</th>
+      <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeleted(element)">
+        {{ element.destination ?? '—' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="dates">
+      <th *matHeaderCellDef mat-header-cell>Даты</th>
+      <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeleted(element)">
+        {{ getTravelDatesLabel(element) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th *matHeaderCellDef mat-header-cell>Статус</th>
+      <td *matCellDef="let element" mat-cell>
+        <app-status-badge
+          variant="lead"
+          [status]="isDeleted(element) ? 'DELETED' : element.status"
+        />
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="assignedAgent">
+      <th *matHeaderCellDef mat-header-cell>Агент</th>
+      <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeleted(element)">
+        {{ element.assignedAgentName ?? '—' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="createdAt">
+      <th *matHeaderCellDef mat-header-cell>Создан</th>
+      <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeleted(element)">
+        {{ element.createdAt | date: 'dd MMM yyyy' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="updatedAt">
+      <th *matHeaderCellDef mat-header-cell>Дата обновления</th>
+      <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeleted(element)">
+        {{ element.updatedAt | date: 'dd MMM yyyy' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="source">
+      <th *matHeaderCellDef mat-header-cell>Источник</th>
+      <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeleted(element)">
+        <app-lead-source-badge [source]="element.source" />
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="contactEmail">
+      <th *matHeaderCellDef mat-header-cell>Электронная почта</th>
+      <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeleted(element)">
+        {{ element.contactEmail ?? '—' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="contactPhone">
+      <th *matHeaderCellDef mat-header-cell>Телефон</th>
+      <td *matCellDef="let element" mat-cell [class.cell-faded]="isDeleted(element)">
+        {{ element.contactPhone ?? '—' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th *matHeaderCellDef mat-header-cell></th>
+      <td *matCellDef="let element" class="table-cell-actions" mat-cell>
+        @if (!isDeleted(element)) {
+          <button
+            aria-label="Действия с заявкой"
+            mat-icon-button
+            type="button"
+            [matMenuTriggerData]="{ lead: element }"
+            [matMenuTriggerFor]="rowMenu"
+            (click)="$event.stopPropagation()"
+          >
+            <mat-icon>more_vert</mat-icon>
+          </button>
+        }
+      </td>
+    </ng-container>
+
+    <mat-menu #rowMenu="matMenu">
+      <ng-template let-lead="lead" matMenuContent>
+        <button
+          class="menu-item-danger"
+          mat-menu-item
+          type="button"
+          (click)="openDeleteDialog($event, lead)"
+        >
+          <mat-icon class="menu-item-danger-icon">delete</mat-icon>
+          Удалить заявку
+        </button>
+      </ng-template>
+    </mat-menu>
+
+    <tr *matHeaderRowDef="displayedColumns()" class="table-header-row" mat-header-row></tr>
+    <tr
+      *matRowDef="let row; columns: displayedColumns()"
+      class="table-row"
+      mat-row
+      [class.table-row-disabled]="isDeleted(row)"
+      (click)="navigateToLead(row)"
+      (keydown.enter)="navigateToLead(row)"
+    ></tr>
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns().length">
+        <div class="table-empty-state">
+          <p>Лиды не найдены.</p>
+        </div>
+      </td>
+    </tr>
+  </table>

@@ -1,0 +1,81 @@
+<table mat-table [dataSource]="clients()" [multiTemplateDataRows]="true">
+    <ng-container matColumnDef="name">
+      <th *matHeaderCellDef mat-header-cell>Имя</th>
+      <td *matCellDef="let element" mat-cell>
+        <span class="cell-primary">{{ displayName(element) }}</span>
+        @if (displaySubtitle(element); as subtitle) {
+          <span class="cell-secondary">{{ subtitle }}</span>
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <th *matHeaderCellDef mat-header-cell>Тип</th>
+      <td *matCellDef="let element" mat-cell>
+        <app-client-type-badge [type]="element.type" />
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="phone">
+      <th *matHeaderCellDef mat-header-cell>Телефон</th>
+      <td *matCellDef="let element" mat-cell>
+        {{ element.phone ?? '—' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="email">
+      <th *matHeaderCellDef mat-header-cell>Электронная почта</th>
+      <td *matCellDef="let element" mat-cell>
+        {{ element.email ?? '—' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="createdAt">
+      <th *matHeaderCellDef mat-header-cell>Дата создания</th>
+      <td *matCellDef="let element" mat-cell>
+        {{ element.createdAt | date: 'dd MMM yyyy' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="updatedAt">
+      <th *matHeaderCellDef mat-header-cell>Дата обновления</th>
+      <td *matCellDef="let element" mat-cell>
+        {{ element.updatedAt | date: 'dd MMM yyyy' }}
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns()" class="table-header-row" mat-header-row></tr>
+    <tr
+      *matRowDef="let row; columns: displayedColumns()"
+      class="table-row"
+      mat-row
+      (click)="navigateToClient(row.id)"
+      (keydown.enter)="navigateToClient(row.id)"
+    ></tr>
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns().length">
+        <div class="table-empty-state">
+          @if (loading()) {
+            <p class="table-empty-state-message">Загрузка клиентов...</p>
+            <mat-spinner aria-label="Загрузка клиентов" diameter="36" />
+          } @else {
+            <p>Упс, клиенты не найдены. Попробуйте изменить фильтры.</p>
+
+            <span class="or-divider">или</span>
+
+            <div>
+              <button
+                color="primary"
+                matButton="outlined"
+                type="button"
+                (click)="navigateToCreateClient()"
+              >
+                <mat-icon>add</mat-icon>
+                <span>Новый клиент</span>
+              </button>
+            </div>
+          }
+        </div>
+      </td>
+    </tr>
+  </table>

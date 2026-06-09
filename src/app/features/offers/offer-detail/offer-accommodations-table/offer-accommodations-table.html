@@ -1,0 +1,46 @@
+  <table mat-table [dataSource]="accommodations()">
+    <ng-container matColumnDef="hotel">
+      <th *matHeaderCellDef mat-header-cell>Отель</th>
+      <td *matCellDef="let row" mat-cell>{{ row.hotelName || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="roomType">
+      <th *matHeaderCellDef mat-header-cell>Тип номера</th>
+      <td *matCellDef="let row" mat-cell>{{ row.roomType || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="mealPlan">
+      <th *matHeaderCellDef mat-header-cell>Питание</th>
+      <td *matCellDef="let row" mat-cell>{{ row.mealPlan || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="dates">
+      <th *matHeaderCellDef mat-header-cell>Даты</th>
+      <td *matCellDef="let row" mat-cell>
+        {{ row.checkinDate ? (row.checkinDate | date: 'mediumDate') : '—' }} –
+        {{ row.checkoutDate ? (row.checkoutDate | date: 'mediumDate') : '—' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="nights">
+      <th *matHeaderCellDef mat-header-cell>Ночей</th>
+      <td *matCellDef="let row" mat-cell>{{ getNights(row.checkinDate, row.checkoutDate) }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="price">
+      <th *matHeaderCellDef class="col--right" mat-header-cell>Цена</th>
+      <td *matCellDef="let row" class="col--right" mat-cell>
+        {{ row.unitPrice ?? 0 | number: '1.0-2' }} {{ currency() }}
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns()" class="table-header-row" mat-header-row></tr>
+    <tr *matRowDef="let row; columns: displayedColumns()" class="table-row" mat-row></tr>
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns().length">
+        <div class="table-empty-state">
+          <p>Нет размещений.</p>
+        </div>
+      </td>
+    </tr>
+  </table>

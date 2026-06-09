@@ -1,0 +1,166 @@
+<table mat-table [dataSource]="contracts()">
+    <ng-container matColumnDef="number">
+      <th *matHeaderCellDef mat-header-cell>Номер</th>
+      <td *matCellDef="let element" mat-cell>
+        @if (navigateToDetail()) {
+          <button class="link" type="button" (click)="goToContract(element.id)">
+            {{ element.contractNumber }}
+          </button>
+        } @else {
+          <span class="cell-primary">{{ element.contractNumber }}</span>
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="client">
+      <th *matHeaderCellDef mat-header-cell>Клиент</th>
+      <td *matCellDef="let element" mat-cell>
+        <button class="link" type="button" (click)="goToClient(element.clientId)">
+          {{ clientLabel(element) }}
+        </button>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="clientType">
+      <th *matHeaderCellDef mat-header-cell>Тип клиента</th>
+      <td *matCellDef="let element" mat-cell>
+        {{ clientTypeLabel(element.client?.type) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="clientContacts">
+      <th *matHeaderCellDef mat-header-cell>Контакты</th>
+      <td *matCellDef="let element" mat-cell>
+        <div>Email: {{ textOrDash(element.client?.email) }}</div>
+        <div>Телефон: {{ textOrDash(element.client?.phone) }}</div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="registrationCert">
+      <th *matHeaderCellDef mat-header-cell>Рег. свид.</th>
+      <td *matCellDef="let element" mat-cell>
+        {{ textOrDash(element.client?.registrationCert) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="taxationType">
+      <th *matHeaderCellDef mat-header-cell>Налогообложение</th>
+      <td *matCellDef="let element" mat-cell>
+        {{ textOrDash(element.client?.taxationType) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="directorName">
+      <th *matHeaderCellDef mat-header-cell>Директор</th>
+      <td *matCellDef="let element" mat-cell>
+        {{ textOrDash(element.client?.directorName) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="rataMember">
+      <th *matHeaderCellDef mat-header-cell>Член RATA</th>
+      <td *matCellDef="let element" mat-cell>
+        {{ boolLabel(element.client?.rataMember) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="signedAt">
+      <th *matHeaderCellDef mat-header-cell>Дата подписания</th>
+      <td *matCellDef="let element" mat-cell>
+        {{ element.signedAt | date: 'dd MMM yyyy' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="expiresAt">
+      <th *matHeaderCellDef mat-header-cell>Действует до</th>
+      <td *matCellDef="let element" mat-cell>
+        @if (element.expiresAt) {
+          {{ element.expiresAt | date: 'dd MMM yyyy' }}
+        } @else {
+          —
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="signatureMethod">
+      <th *matHeaderCellDef mat-header-cell>Способ подписания</th>
+      <td *matCellDef="let element" mat-cell>
+        {{ signatureMethodLabel(element.signatureMethod) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th *matHeaderCellDef mat-header-cell>Статус</th>
+      <td *matCellDef="let element" mat-cell>
+        <span [class]="statusClass(element.status)">{{ element.status }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="createdAt">
+      <th *matHeaderCellDef mat-header-cell>Создан</th>
+      <td *matCellDef="let element" mat-cell>
+        {{ element.createdAt | date: 'dd MMM yyyy, HH:mm' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="updatedAt">
+      <th *matHeaderCellDef mat-header-cell>Обновлён</th>
+      <td *matCellDef="let element" mat-cell>
+        {{ element.updatedAt | date: 'dd MMM yyyy, HH:mm' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="createdBy">
+      <th *matHeaderCellDef mat-header-cell>Создал</th>
+      <td *matCellDef="let element" mat-cell>
+        {{ element.createdById }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th *matHeaderCellDef mat-header-cell>Действия</th>
+      <td *matCellDef="let element" mat-cell>
+        <button
+          aria-label="Действия с договором"
+          mat-icon-button
+          type="button"
+          [matMenuTriggerFor]="actionsMenu"
+        >
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #actionsMenu="matMenu">
+          <button
+            mat-menu-item
+            type="button"
+            [disabled]="!canManageRow()(element)"
+            (click)="editContract.emit(element)"
+          >
+            <span>Редактировать</span>
+          </button>
+          <button
+            mat-menu-item
+            type="button"
+            [disabled]="!canManageRow()(element)"
+            (click)="terminateContract.emit(element)"
+          >
+            <span>Расторгнуть</span>
+          </button>
+        </mat-menu>
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns()" class="table-header-row" mat-header-row></tr>
+    <tr *matRowDef="let row; columns: displayedColumns()" class="table-row" mat-row></tr>
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns().length">
+        <div class="table-empty-state">
+          @if (loading()) {
+            <p class="table-empty-state-message">Загрузка договоров...</p>
+            <mat-spinner aria-label="Загрузка договоров" diameter="36" />
+          } @else {
+            <p>Договоры по текущим фильтрам не найдены</p>
+          }
+        </div>
+      </td>
+    </tr>
+  </table>

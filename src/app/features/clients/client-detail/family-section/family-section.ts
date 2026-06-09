@@ -1,13 +1,15 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTableModule } from '@angular/material/table';
 
 import { PersonsService } from '@app/services/persons.service';
+import {
+  type PersonRow,
+  PersonsTableComponent,
+} from '@app/features/persons/persons-table/persons-table.component';
 
 import { AddFamilyMemberDialogComponent } from '../add-family-member-dialog/add-family-member-dialog';
 
@@ -16,6 +18,7 @@ import type {
   PersonRelationshipResponseDto,
   PersonResponseDto,
 } from '@app/shared/models';
+
 const RELATION_LABEL: Record<string, string> = {
   SPOUSE_OF: 'Супруг(а)',
   PARENT_OF: 'Родитель',
@@ -27,18 +30,15 @@ const RELATION_LABEL: Record<string, string> = {
 @Component({
   selector: 'app-family-section',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, MatTableModule, MatProgressSpinnerModule, MatIconModule, MatButtonModule],
+  imports: [MatButtonModule, MatIconModule, MatProgressSpinnerModule, PersonsTableComponent],
   templateUrl: './family-section.html',
   styleUrl: './family-section.scss',
 })
 export class FamilySectionComponent {
   readonly personId = input.required<string>();
-  readonly columns = ['name', 'dateOfBirth', 'relation', 'clientProfile'] as const;
 
   private readonly personsService = inject(PersonsService);
   private readonly dialog = inject(MatDialog);
-  private readonly router = inject(Router);
-
   private readonly familyData = rxResource<FamilyContextResponseDto, string>({
     params: () => this.personId(),
     stream: ({ params }) => this.personsService.getFamilyContext(params),
@@ -46,8 +46,8 @@ export class FamilySectionComponent {
   });
 
   protected readonly loading = computed(() => this.familyData.isLoading());
-  protected readonly family = computed(() => this.familyData.value()?.familyMembers ?? []);
-  protected readonly relationshipsByPersonId = computed(() => {
+
+  private readonly relationshipsByPersonId = computed(() => {
     const map = new Map<string, PersonRelationshipResponseDto>();
 
     for (const relationship of this.familyData.value()?.relationships ?? []) {
@@ -57,9 +57,29 @@ export class FamilySectionComponent {
     return map;
   });
 
-  protected relationLabel(member: PersonResponseDto): string {
-    const relationship = this.relationshipsByPersonId().get(member.id);
+  protected readonly personRows = computed<PersonRow[]>(() =>
+    (this.familyData.value()?.familyMembers ?? []).map((member) => {
+      const relationship = this.relationshipsByPersonId().get(member.id);
+      const relationLabel = this.buildRelationLabel(member, relationship);
+      const relationInactive = relationship?.status === 'INACTIVE';
 
+      return {
+        id: member.id,
+        fullName: [member.lastName, member.firstName, member.patronymic].filter(Boolean).join(' '),
+        type: member.type,
+        relation: relationLabel,
+        relationInactive,
+        dateOfBirth: member.dateOfBirth,
+        linkedClientId: member.linked_client?.id ?? undefined,
+        linkedClientName: member.linked_client?.display_name,
+      };
+    }),
+  );
+
+  private buildRelationLabel(
+    member: PersonResponseDto,
+    relationship: PersonRelationshipResponseDto | undefined,
+  ): string {
     if (!relationship) {
       return '—';
     }
@@ -73,14 +93,6 @@ export class FamilySectionComponent {
     return base;
   }
 
-  protected relationshipInactive(member: PersonResponseDto): boolean {
-    return this.relationshipsByPersonId().get(member.id)?.status === 'INACTIVE';
-  }
-
-  protected fullName(member: PersonResponseDto): string {
-    return [member.lastName, member.firstName, member.patronymic].filter(Boolean).join(' ');
-  }
-
   protected openAddDialog(): void {
     const dialogRef = this.dialog.open(AddFamilyMemberDialogComponent, {
       width: '720px',
@@ -92,13 +104,5 @@ export class FamilySectionComponent {
         this.familyData.reload();
       }
     });
-  }
-
-  protected openPersonCard(member: PersonResponseDto): void {
-    void this.router.navigate(['/app/persons', member.id]);
-  }
-
-  protected trackMember(_: number, member: PersonResponseDto): string {
-    return member.id;
   }
 }

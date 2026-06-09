@@ -12,12 +12,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableModule } from '@angular/material/table';
 
 import { EMPTY, of } from 'rxjs';
 import { finalize, map } from 'rxjs/operators';
 
-import { calculateNights } from '@app/features/offers/offer-builder.utils';
 import { OfferPdfPreviewModalComponent } from '@app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal';
 import { getAllowedTransitions, OfferAction } from '@app/features/offers/offer-state-machine';
 import { OfferTimelineComponent } from '@app/features/offers/offer-timeline/offer-timeline';
@@ -33,6 +31,8 @@ import {
 } from '@app/shared/components';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { OfferStatus } from '@app/shared/models';
+import { OfferAccommodationsTableComponent } from './offer-accommodations-table/offer-accommodations-table';
+import { OfferServicesTableComponent } from './offer-services-table/offer-services-table';
 
 import type {
   OfferResponseDto,
@@ -88,9 +88,10 @@ const ACTION_ICONS: Record<OfferAction, string> = {
     LoadingStateComponent,
     PageContentComponent,
     DetailSectionComponent,
-    MatTableModule,
     MatButtonModule,
     MatDialogModule,
+    OfferAccommodationsTableComponent,
+    OfferServicesTableComponent,
   ],
   templateUrl: './offer-detail.html',
   styleUrl: './offer-detail.scss',
@@ -230,9 +231,6 @@ export class OfferDetailComponent {
   protected readonly ACTION_LABELS = ACTION_LABELS;
   protected readonly ACTION_ICONS = ACTION_ICONS;
 
-  readonly accommodationColumns = ['hotel', 'roomType', 'mealPlan', 'dates', 'nights', 'price'];
-  readonly serviceColumns = ['serviceType', 'description', 'quantity', 'unitPrice', 'total'];
-
   constructor() {
     effect(() => {
       if (this.routeId() === null) {
@@ -351,14 +349,6 @@ export class OfferDetailComponent {
 
   protected isDestructiveAction(action: OfferAction): boolean {
     return action === 'ACCEPT' || action === 'REJECT' || action === 'DELETE';
-  }
-
-  protected getAccommodationNights(checkinDate?: string, checkoutDate?: string): number | string {
-    if (!checkinDate || !checkoutDate) {
-      return '-';
-    }
-
-    return calculateNights(checkinDate, checkoutDate);
   }
 
   private runStatusAction(id: string, newStatus: UpdateOfferStatusDto['status']): void {

@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -15,39 +14,29 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatChipsModule } from '@angular/material/chips';
-import { MatDialog } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
-import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
-import {
-  DeleteLeadDialogComponent,
-  DeleteLeadDialogResult,
-} from '@app/features/leads/delete-lead-dialog/delete-lead-dialog';
-import { LeadSourceBadgeComponent } from '@app/features/leads/lead-source-badge/lead-source-badge';
 import { LeadsService } from '@app/services/leads.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
-import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import { CLIENT_TYPE_OPTIONS, LEAD_STATUS_OPTIONS } from '@app/shared/models';
 import { computeAgentOptions } from '@app/shared/utils/agent-options.util';
 import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 
 import { LeadsListFilterBarComponent } from '../leads-list-filter-bar/leads-list-filter-bar';
+import { LeadsTableComponent } from '../leads-table/leads-table.component';
 
-import type { LeadResponseDto, LeadStatus } from '@app/shared/models';
+import type { LeadStatus } from '@app/shared/models';
 
 const LEADS_VIEW_STORAGE_KEY = 'leads_view';
 
@@ -81,23 +70,17 @@ const LEAD_STATUSES = new Set<LeadStatus>([
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatMenuModule,
     MatDividerModule,
-    DatePipe,
     MatChipsModule,
     MatIcon,
     MatPaginatorModule,
     MatProgressSpinnerModule,
-    MatTableModule,
-    MatTooltipModule,
     PageHeading,
     PageHeadingAction,
     ReactiveFormsModule,
     RouterLink,
-    ClientTypeBadgeComponent,
-    LeadSourceBadgeComponent,
     LeadsListFilterBarComponent,
-    StatusBadgeComponent,
+    LeadsTableComponent,
   ],
   templateUrl: './leads-list.html',
   styleUrl: './leads-list.scss',
@@ -112,7 +95,6 @@ export class LeadsListComponent {
   private readonly router = inject(Router);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly dialog = inject(MatDialog);
 
   protected readonly statusOptions = LEAD_STATUS_OPTIONS;
   protected readonly clientTypeOptions = CLIENT_TYPE_OPTIONS;
@@ -213,29 +195,6 @@ export class LeadsListComponent {
     return undefined;
   });
 
-  protected readonly displayedColumns = computed<string[]>(() => {
-    const base: string[] = [
-      'number',
-      'status',
-      'source',
-      'name',
-      'clientType',
-      'contactPhone',
-      'contactEmail',
-      'destination',
-      'dates',
-      'assignedAgentName',
-      'createdAt',
-      'updatedAt',
-    ];
-
-    if (this.canDeleteLead()) {
-      base.push('actions');
-    }
-
-    return base;
-  });
-
   constructor() {
     effect(() => {
       const err = this.data.error();
@@ -288,53 +247,13 @@ export class LeadsListComponent {
     this.listState.onPageChange(event);
   }
 
-  getTravelDatesLabel(lead: LeadResponseDto): string {
-    const from = lead.departDateFrom;
-    const to = lead.departDateTo;
-
-    if (!from && !to) {
-      return '—';
-    }
-
-    if (from && to) {
-      return `${from} - ${to}`;
-    }
-
-    return from ?? to ?? '—';
-  }
-
-  navigateToLead(id: string): void {
-    this.router.navigate(['/app/leads', id]);
-  }
-
-  protected isDeletedLead(lead: LeadResponseDto): boolean {
-    return Boolean(lead.deletedAt);
-  }
-
   protected toggleIncludeDeleted(): void {
     this.includeDeleted.update((v) => !v);
     this.currentPage.set(0);
   }
 
-  protected openDeleteDialog(event: Event, lead: LeadResponseDto): void {
-    event.stopPropagation();
-
-    const hasOffers = (lead.offers ?? []).length > 0;
-
-    const dialogRef = this.dialog.open(DeleteLeadDialogComponent, {
-      width: '480px',
-      data: {
-        leadId: lead.id,
-        leadNumber: lead.number,
-        hasOffers,
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result: DeleteLeadDialogResult | undefined) => {
-      if (result?.deleted) {
-        this.data.reload();
-      }
-    });
+  onLeadDeleted(): void {
+    this.data.reload();
   }
 
   private syncStateFromQueryParams(): void {

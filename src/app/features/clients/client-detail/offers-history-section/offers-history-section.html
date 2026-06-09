@@ -7,55 +7,14 @@
     <div class="history-section-loading">
       <mat-spinner aria-label="Загрузка предложений..." diameter="36" />
     </div>
-  } @else if (offers().length === 0) {
+  } @else if (offerRows().length === 0) {
     <div class="history-section-empty">
       <p>Нет предложений</p>
     </div>
   } @else {
-    <div class="table-wrap">
-      <table mat-table [dataSource]="offers()">
-        <ng-container matColumnDef="offerNumber">
-          <th *matHeaderCellDef mat-header-cell>Предложение №</th>
-          <td *matCellDef="let row" class="cell-primary" mat-cell>{{ row.offerNumber ?? '—' }}</td>
-        </ng-container>
-        <ng-container matColumnDef="leadNumber">
-          <th *matHeaderCellDef mat-header-cell>Лид №</th>
-          <td *matCellDef="let row" mat-cell>{{ row.leadNumber ?? '—' }}</td>
-        </ng-container>
-        <ng-container matColumnDef="destination">
-          <th *matHeaderCellDef mat-header-cell>Направление</th>
-          <td *matCellDef="let row" mat-cell>{{ row.destination ?? '—' }}</td>
-        </ng-container>
-        <ng-container matColumnDef="total">
-          <th *matHeaderCellDef mat-header-cell>Итого</th>
-          <td *matCellDef="let row" mat-cell>
-            @if (row.totalPrice !== null && row.totalPrice !== undefined) {
-              {{ row.totalPrice }} {{ row.currency ?? '' }}
-            } @else {
-              —
-            }
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="status">
-          <th *matHeaderCellDef mat-header-cell>Статус</th>
-          <td *matCellDef="let row" mat-cell>
-            <app-offer-status-chip [status]="row.status" />
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="createdAt">
-          <th *matHeaderCellDef mat-header-cell>Создано</th>
-          <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.createdAt) }}</td>
-        </ng-container>
-        <tr *matHeaderRowDef="columns" class="table-header-row" mat-header-row></tr>
-        <tr
-          *matRowDef="let row; columns: columns"
-          class="table-row"
-          mat-row
-          tabindex="0"
-          (click)="goToOffer(row)"
-          (keydown.enter)="goToOffer(row)"
-        ></tr>
-      </table>
-    </div>
+    <app-offers-table
+      [offers]="offerRows()"
+      [omitColumns]="['leadNumber', 'updatedAt']"
+    />
   }
 </section>

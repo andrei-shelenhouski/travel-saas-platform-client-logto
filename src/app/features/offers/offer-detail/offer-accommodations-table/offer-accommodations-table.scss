@@ -1,0 +1,16 @@
+
+.col--right {
+  justify-content: flex-end;
+  text-align: right;
+}
+
+.table-empty-state {
+  padding: 1.5rem 0.5rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+
+  p {
+    margin: 0;
+  }
+}
