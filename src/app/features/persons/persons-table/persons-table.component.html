@@ -119,6 +119,21 @@
             <mat-spinner aria-label="Загрузка туристов" diameter="36" />
           } @else {
             <p>{{ emptyMessage() }}</p>
+
+            @if (showClearFiltersAction()) {
+              <button
+                color="primary"
+                matButton="outlined"
+                type="button"
+                (click)="clearFiltersRequest.emit()"
+              >
+                Сбросить фильтры
+              </button>
+            }
+
+            @if (showClientsLink()) {
+              <a color="primary" mat-button routerLink="/app/clients">Перейти к клиентам</a>
+            }
           }
         </div>
       </td>

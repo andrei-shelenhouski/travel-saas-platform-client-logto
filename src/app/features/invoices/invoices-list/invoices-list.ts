@@ -10,24 +10,25 @@ import {
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute, Router } from '@angular/router';
+
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
-import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 import { ClientType, InvoiceStatus } from '@app/shared/models';
+import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 
 import { InvoiceFilterBarComponent } from '../invoice-filter-bar/invoice-filter-bar';
 import { InvoiceSummaryCardsComponent } from '../invoice-summary-cards/invoice-summary-cards';
 import { InvoicesTableComponent } from '../invoices-table/invoices-table.component';
 
-import type { InvoiceResponseDto, InvoiceSummaryResponseDto } from '@app/shared/models';
+import type { InvoiceSummaryResponseDto } from '@app/shared/models';
 
 const INVOICE_STATUSES = new Set<InvoiceStatus>(Object.values(InvoiceStatus));
 const CLIENT_TYPES = new Set<ClientType>(Object.values(ClientType));

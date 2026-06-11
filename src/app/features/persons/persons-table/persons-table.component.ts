@@ -1,12 +1,12 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 export type PersonRow = {
   id: string;
@@ -51,6 +51,7 @@ const ALL_COLUMNS: PersonColumn[] = [
     MatProgressSpinnerModule,
     MatTableModule,
     MatTooltipModule,
+    RouterLink,
   ],
   templateUrl: './persons-table.component.html',
   styleUrl: './persons-table.component.scss',
@@ -66,6 +67,10 @@ export class PersonsTableComponent {
   readonly loading = input(false);
   readonly emptyMessage = input('Туристы не найдены.');
   readonly showEmptyState = input(true);
+  readonly showClearFiltersAction = input(false);
+  readonly showClientsLink = input(false);
+
+  readonly clearFiltersRequest = output<void>();
 
   protected readonly displayedColumns = computed<PersonColumn[]>(() => {
     const omit = new Set(this.omitColumns());

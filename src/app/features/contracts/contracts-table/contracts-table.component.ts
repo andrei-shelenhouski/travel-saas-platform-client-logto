@@ -1,13 +1,14 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
-import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTableModule } from '@angular/material/table';
+import { Router } from '@angular/router';
 
 import { ContractStatus, SignatureMethod } from '@app/shared/models';
+
 import { boolLabel, clientTypeLabel, textOrDash } from '../contracts-format.utils';
 
 import type { ContractResponseDto } from '@app/shared/models';
@@ -30,8 +31,6 @@ const ALL_COLUMNS = [
   'createdBy',
   'actions',
 ] as const;
-
-type ColumnKey = (typeof ALL_COLUMNS)[number];
 
 const SIGNATURE_METHOD_LABEL: Record<string, string> = {
   [SignatureMethod.ORIGINAL_MAIL]: 'Почта',

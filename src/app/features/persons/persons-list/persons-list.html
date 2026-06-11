@@ -64,10 +64,15 @@
   }
 
   <app-persons-table
-    [emptyMessage]="hasActiveFilters() ? 'Ничего не найдено по заданным фильтрам.' : 'Туристы ещё не добавлены.'"
+    [emptyMessage]="
+      hasActiveFilters() ? 'Ничего не найдено по заданным фильтрам.' : 'Туристы ещё не добавлены.'
+    "
     [loading]="loading()"
     [omitColumns]="['relation']"
     [persons]="personRows()"
+    [showClearFiltersAction]="hasActiveFilters()"
+    [showClientsLink]="!hasActiveFilters()"
+    (clearFiltersRequest)="clearAllFilters()"
   />
 
   <mat-paginator

@@ -1,18 +1,18 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 import { AuthService } from '@app/auth/auth.service';
 import { ContractsService } from '@app/services/contracts.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
+import { ContractStatus, PermissionKey } from '@app/shared/models';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
-import { ContractStatus, PermissionKey } from '@app/shared/models';
 
 import {
   ContractsFilterBarComponent,
@@ -112,10 +112,18 @@ export class ContractsListComponent {
   }
 
   goToEditContract(contract: ContractResponseDto): void {
+    if (!this.canManageContract(contract)) {
+      return;
+    }
+
     void this.router.navigate(['/app/contracts', contract.id, 'edit']);
   }
 
   terminateContract(contract: ContractResponseDto): void {
+    if (!this.canManageContract(contract)) {
+      return;
+    }
+
     this.confirmDialog
       .open({
         title: 'Расторгнуть договор',
