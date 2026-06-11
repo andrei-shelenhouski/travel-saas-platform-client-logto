@@ -40,6 +40,7 @@ import {
   normalizePaymentTermsDays,
   todayIsoDate,
 } from '@app/shared/utils/invoice-defaults';
+import { CURRENCY_OPTIONS } from '@app/shared/utils/currencies';
 
 import {
   dueDateAfterInvoiceDateValidator,
@@ -96,7 +97,6 @@ type InvoiceFormGroup = FormGroup<{
   lineItems: FormArray<InvoiceLineItemFormGroup>;
 }>;
 
-const CURRENCY_OPTIONS = ['BYN', 'USD', 'EUR'] as const;
 const LANGUAGE_OPTIONS = ['RU', 'EN'] as const;
 
 const EMPTY_CLIENTS_PAGE: PaginatedClientResponseDto = {

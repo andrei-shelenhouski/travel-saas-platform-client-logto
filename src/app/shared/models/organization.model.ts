@@ -240,6 +240,10 @@ export const OrganizationCurrency = {
   BYN: 'BYN',
   USD: 'USD',
   EUR: 'EUR',
+  GEL: 'GEL',
+  RUB: 'RUB',
+  CZK: 'CZK',
+  PLN: 'PLN',
 } as const;
 export type OrganizationCurrency = (typeof OrganizationCurrency)[keyof typeof OrganizationCurrency];
 

@@ -1,4 +1,4 @@
-export const INVOICE_CURRENCIES = ['BYN', 'USD', 'EUR'] as const;
+import { CURRENCY_OPTIONS } from './currencies';
 
 const INVOICE_LANGUAGES = ['RU', 'EN'] as const;
 
@@ -29,7 +29,7 @@ export function normalizePaymentTermsDays(days: number | null | undefined): numb
 export function normalizeInvoiceCurrency(currency: string | null | undefined): string {
   const value = currency?.trim().toUpperCase();
 
-  if (!value || !INVOICE_CURRENCIES.includes(value as (typeof INVOICE_CURRENCIES)[number])) {
+  if (!value || !CURRENCY_OPTIONS.includes(value as (typeof CURRENCY_OPTIONS)[number])) {
     return 'EUR';
   }
 

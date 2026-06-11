@@ -50,6 +50,7 @@ import { PageHeadingAction } from '@app/shared/components/page-heading/page-head
 import { FormSectionComponent, PageContentComponent } from '@app/shared/components';
 
 import { MEAL_PLAN_OPTIONS, SERVICE_TYPE_OPTIONS } from '@app/shared/models';
+import { CURRENCY_OPTIONS } from '@app/shared/utils/currencies';
 
 import type { CreateOfferDto, LeadResponseDto, UpdateOfferDto } from '@app/shared/models';
 type AccommodationFormGroup = FormGroup<{
@@ -85,7 +86,6 @@ type OfferBuilderFormGroup = FormGroup<{
   services: FormArray<ServiceFormGroup>;
 }>;
 
-const CURRENCY_OPTIONS = ['BYN', 'USD', 'EUR'] as const;
 const LANGUAGE_OPTIONS = ['ru', 'en'] as const;
 
 @Component({

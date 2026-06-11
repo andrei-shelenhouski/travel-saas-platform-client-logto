@@ -13,6 +13,8 @@ import { finalize } from 'rxjs';
 import { OrganizationSettingsService } from '@app/services/organization-settings.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 
+import { CURRENCY_LABELS, CURRENCY_OPTIONS } from '@app/shared/utils/currencies';
+
 import type {
   OrganizationCurrency,
   OrganizationLanguage,
@@ -74,11 +76,10 @@ export class CompanyProfileComponent implements PendingChangesComponent {
     defaultCommissionPct: [10.0, [Validators.min(0), Validators.max(100)]],
   });
 
-  protected readonly currencies = [
-    { value: 'BYN' as OrganizationCurrency, label: 'BYN (Белорусский рубль)' },
-    { value: 'USD' as OrganizationCurrency, label: 'USD (Доллар США)' },
-    { value: 'EUR' as OrganizationCurrency, label: 'EUR (Евро)' },
-  ];
+  protected readonly currencies = CURRENCY_OPTIONS.map((c) => ({
+    value: c,
+    label: CURRENCY_LABELS[c],
+  }));
 
   protected readonly languages = [
     { value: 'RU' as OrganizationLanguage, label: 'Русский' },
