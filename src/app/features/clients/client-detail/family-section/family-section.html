@@ -11,50 +11,13 @@
     <div class="family-loading">
       <mat-spinner aria-label="Загрузка членов семьи..." diameter="36" />
     </div>
-  } @else if (family().length === 0) {
+  } @else if (personRows().length === 0) {
     <p class="family-empty">Связи пока не добавлены</p>
   } @else {
-    <div class="table-wrap">
-      <table mat-table [dataSource]="family()">
-        <ng-container matColumnDef="name">
-          <th *matHeaderCellDef mat-header-cell>Имя</th>
-          <td *matCellDef="let row" mat-cell>{{ fullName(row) }}</td>
-        </ng-container>
-        <ng-container matColumnDef="dateOfBirth">
-          <th *matHeaderCellDef mat-header-cell>Дата рождения</th>
-          <td *matCellDef="let row" mat-cell>{{ row.dateOfBirth || '—' }}</td>
-        </ng-container>
-        <ng-container matColumnDef="relation">
-          <th *matHeaderCellDef mat-header-cell>Связь</th>
-          <td *matCellDef="let row" mat-cell>{{ relationLabel(row) }}</td>
-        </ng-container>
-        <ng-container matColumnDef="clientProfile">
-          <th *matHeaderCellDef mat-header-cell>Профиль клиента</th>
-          <td *matCellDef="let row" mat-cell>
-            @if (row.linked_client) {
-              <a
-                class="link"
-                [routerLink]="['/app/clients', row.linked_client.id]"
-                (click)="$event.stopPropagation()"
-              >
-                Открыть
-              </a>
-            } @else {
-              —
-            }
-          </td>
-        </ng-container>
-        <tr *matHeaderRowDef="columns" class="table-header-row" mat-header-row></tr>
-        <tr
-          *matRowDef="let row; columns: columns"
-          class="table-row"
-          mat-row
-          tabindex="0"
-          [class.family-row-inactive]="relationshipInactive(row)"
-          (click)="openPersonCard(row)"
-          (keydown.enter)="openPersonCard(row)"
-        ></tr>
-      </table>
-    </div>
+    <app-persons-table
+      emptyMessage="Связи пока не добавлены"
+      [omitColumns]="['type', 'documents', 'actions']"
+      [persons]="personRows()"
+    />
   }
 </section>

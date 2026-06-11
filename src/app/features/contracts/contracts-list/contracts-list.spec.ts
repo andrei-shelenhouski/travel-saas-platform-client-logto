@@ -80,12 +80,26 @@ describe('ContractsListComponent', () => {
     });
   });
 
-  it('navigates to contract detail', () => {
+  it('navigates to edit contract page', () => {
     const navigateSpy = vi.spyOn(router, 'navigate');
 
-    component.goToContract('contract-1');
+    component.goToEditContract({
+      id: 'contract-1',
+      organizationId: 'org-1',
+      clientId: 'client-1',
+      client: null,
+      contractNumber: 'CNT-1',
+      signedAt: '2026-05-20',
+      expiresAt: null,
+      signatureMethod: null,
+      status: ContractStatus.ACTIVE,
+      notes: null,
+      createdById: 'user-1',
+      createdAt: '2026-05-20T10:00:00Z',
+      updatedAt: '2026-05-20T10:00:00Z',
+    });
 
-    expect(navigateSpy).toHaveBeenCalledWith(['/app/contracts', 'contract-1']);
+    expect(navigateSpy).toHaveBeenCalledWith(['/app/contracts', 'contract-1', 'edit']);
   });
 
   it('navigates to create with selected client in query params', () => {
@@ -135,10 +149,5 @@ describe('ContractsListComponent', () => {
         updatedAt: '2026-05-20T10:00:00Z',
       }),
     ).toBe(false);
-  });
-
-  it('formats signature labels', () => {
-    expect(component.signatureMethodLabel('DIGITAL_PODPIS')).toBe('Podpis.by');
-    expect(component.signatureMethodLabel(null)).toBe('—');
   });
 });

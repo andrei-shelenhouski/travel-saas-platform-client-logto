@@ -1,4 +1,3 @@
-import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
@@ -20,7 +19,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
@@ -28,15 +26,15 @@ import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
-import { StatusBadgeComponent } from '@app/shared/components/status-badge.component';
 import { computeAgentOptions } from '@app/shared/utils/agent-options.util';
 import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 
 import { OffersListFilterBarComponent } from '../offers-list-filter-bar/offers-list-filter-bar';
+import { OffersTableComponent } from '../offers-table/offers-table.component';
 
 import { OFFER_STATUS_OPTIONS } from '@app/shared/models';
 
-import type { OfferResponseDto, OfferStatus } from '@app/shared/models';
+import type { OfferStatus } from '@app/shared/models';
 
 const OFFERS_VIEW_STORAGE_KEY = 'offers_view';
 
@@ -58,16 +56,14 @@ const OFFER_STATUSES = new Set<OfferStatus>([
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    DatePipe,
     MatIcon,
     MatPaginatorModule,
     MatProgressSpinnerModule,
-    MatTableModule,
     PageHeading,
     ReactiveFormsModule,
     RouterLink,
     OffersListFilterBarComponent,
-    StatusBadgeComponent,
+    OffersTableComponent,
   ],
   templateUrl: './offers-list.html',
   styleUrl: './offers-list.scss',
@@ -142,7 +138,18 @@ export class OffersListComponent {
     },
   });
 
-  protected readonly offers = computed(() => this.data.value()?.items ?? []);
+  protected readonly offerRows = computed(() =>
+    (this.data.value()?.items ?? []).map((o) => ({
+      id: o.id,
+      number: o.number,
+      destination: o.destination,
+      total: o.total,
+      currency: o.currency,
+      status: o.status,
+      createdAt: o.createdAt,
+      updatedAt: o.updatedAt,
+    })),
+  );
   protected readonly totalElements = computed(() => this.data.value()?.total ?? 0);
   protected readonly loading = computed(() => this.data.isLoading());
 
@@ -159,15 +166,6 @@ export class OffersListComponent {
 
     return undefined;
   });
-
-  protected readonly displayedColumns: (keyof OfferResponseDto)[] = [
-    'number',
-    'destination',
-    'total',
-    'status',
-    'createdAt',
-    'updatedAt',
-  ];
 
   constructor() {
     this.syncStateFromQueryParams();
@@ -210,10 +208,6 @@ export class OffersListComponent {
 
   onPageChange(event: PageEvent): void {
     this.listState.onPageChange(event);
-  }
-
-  navigateToOffer(id: string): void {
-    this.router.navigate(['/app/offers', id]);
   }
 
   private syncStateFromQueryParams(): void {

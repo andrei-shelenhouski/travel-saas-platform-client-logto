@@ -27,6 +27,17 @@
       (editDetailsClicked)="startEditTravelDetails()"
     />
 
+    <app-lead-journey-stepper
+      [booking]="bookingDetail()"
+      [canCreateOffer]="permissions.canCreateOffer() && !isTerminalLead()"
+      [lead]="l"
+      [offers]="offers()"
+      [statusActionLoading]="statusActionLoading()"
+      [visibleActions]="visibleActions()"
+      (actionClicked)="applyAction($event)"
+      (createOfferClicked)="openNewOffer()"
+    />
+
     <app-page-content>
       <div class="lead-grid">
         <section class="lead-card">
@@ -438,6 +449,7 @@
         </section>
 
         <app-lead-detail-offers-section
+          id="lead-offers-section"
           [canCreateOffer]="permissions.canCreateOffer() && !isTerminalLead()"
           [offers]="offers()"
           (createOfferClicked)="openNewOffer()"
@@ -512,56 +524,11 @@
           } @else if (bookingInvoices().length === 0) {
             <p class="lead-section-empty">Счетов пока нет.</p>
           } @else {
-            <div class="table-wrap invoices-table-wrap">
-              <table mat-table [dataSource]="bookingInvoices()">
-                <ng-container matColumnDef="number">
-                  <th *matHeaderCellDef mat-header-cell>Номер</th>
-                  <td *matCellDef="let row" mat-cell>
-                    <span class="cell-primary">{{ row.number }}</span>
-                  </td>
-                </ng-container>
-
-                <ng-container matColumnDef="invoiceDate">
-                  <th *matHeaderCellDef mat-header-cell>Дата</th>
-                  <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.invoiceDate) }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="dueDate">
-                  <th *matHeaderCellDef mat-header-cell>Срок оплаты</th>
-                  <td *matCellDef="let row" mat-cell>{{ formatDateShort(row.dueDate) }}</td>
-                </ng-container>
-
-                <ng-container matColumnDef="status">
-                  <th *matHeaderCellDef mat-header-cell>Статус</th>
-                  <td *matCellDef="let row" mat-cell>
-                    <app-invoice-status-chip [status]="row.status" />
-                  </td>
-                </ng-container>
-
-                <ng-container matColumnDef="total">
-                  <th *matHeaderCellDef mat-header-cell>Сумма</th>
-                  <td *matCellDef="let row" mat-cell>
-                    {{ formatCurrency(row.total, row.currency) }}
-                  </td>
-                </ng-container>
-
-                <ng-container matColumnDef="paidAmount">
-                  <th *matHeaderCellDef mat-header-cell>Оплачено</th>
-                  <td *matCellDef="let row" mat-cell>
-                    {{ formatCurrency(row.paidAmount, row.currency) }}
-                  </td>
-                </ng-container>
-
-                <tr *matHeaderRowDef="invoiceColumns" class="table-header-row" mat-header-row></tr>
-                <tr
-                  *matRowDef="let row; columns: invoiceColumns"
-                  class="table-row"
-                  mat-row
-                  (click)="navigateToInvoice(row.id)"
-                  (keydown.enter)="navigateToInvoice(row.id)"
-                ></tr>
-              </table>
-            </div>
+            <app-lead-invoices-table
+              class="invoices-table-wrap"
+              [invoices]="bookingInvoices()"
+              [loading]="bookingInvoicesLoading()"
+            />
           }
         </section>
 

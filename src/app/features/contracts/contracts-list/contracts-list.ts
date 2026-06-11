@@ -1,28 +1,24 @@
-import { DatePipe } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableModule } from '@angular/material/table';
+import { Router } from '@angular/router';
 
 import { AuthService } from '@app/auth/auth.service';
 import { ContractsService } from '@app/services/contracts.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
+import { ContractStatus, PermissionKey } from '@app/shared/models';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
 import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
-import { ContractStatus, PermissionKey } from '@app/shared/models';
 
 import {
   ContractsFilterBarComponent,
   ContractsFilterValue,
 } from '../contracts-filter-bar/contracts-filter-bar';
-import { boolLabel, clientTypeLabel, textOrDash } from '../contracts-format.utils';
+import { ContractsTableComponent } from '../contracts-table/contracts-table.component';
 
 import type { ContractResponseDto } from '@app/shared/models';
 
@@ -32,11 +28,8 @@ import type { ContractResponseDto } from '@app/shared/models';
   imports: [
     MatButtonModule,
     ContractsFilterBarComponent,
-    DatePipe,
+    ContractsTableComponent,
     MatPaginatorModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatMenuModule,
     PageHeading,
     PageHeadingAction,
   ],
@@ -88,28 +81,6 @@ export class ContractsListComponent {
   protected readonly contracts = computed(() => this.data.value()?.items ?? []);
   protected readonly totalElements = computed(() => this.data.value()?.total ?? 0);
   protected readonly loading = computed(() => this.data.isLoading());
-  readonly clientTypeLabel = clientTypeLabel;
-  readonly boolLabel = boolLabel;
-  readonly textOrDash = textOrDash;
-
-  protected readonly displayedColumns: string[] = [
-    'contract',
-    'client',
-    'clientType',
-    'clientContacts',
-    'registrationCert',
-    'taxationType',
-    'directorName',
-    'rataMember',
-    'signedAt',
-    'expiresAt',
-    'createdAt',
-    'updatedAt',
-    'signatureMethod',
-    'status',
-    'createdBy',
-    'actions',
-  ];
 
   protected readonly error = computed(() => {
     const err = this.data.error();
@@ -121,6 +92,9 @@ export class ContractsListComponent {
     return undefined;
   });
 
+  readonly canManageContract = (contract: ContractResponseDto): boolean =>
+    this.canUpdateContracts() && contract.status === ContractStatus.ACTIVE;
+
   onPageChange(event: PageEvent): void {
     this.listState.onPageChange(event);
   }
@@ -128,14 +102,6 @@ export class ContractsListComponent {
   onFilterChange(value: ContractsFilterValue): void {
     this.activeFilter.set(value);
     this.currentPage.set(0);
-  }
-
-  goToClient(clientId: string): void {
-    void this.router.navigate(['/app/clients', clientId]);
-  }
-
-  goToContract(contractId: string): void {
-    void this.router.navigate(['/app/contracts', contractId]);
   }
 
   goToCreateContract(): void {
@@ -151,10 +117,6 @@ export class ContractsListComponent {
     }
 
     void this.router.navigate(['/app/contracts', contract.id, 'edit']);
-  }
-
-  canManageContract(contract: ContractResponseDto): boolean {
-    return this.canUpdateContracts() && contract.status === ContractStatus.ACTIVE;
   }
 
   terminateContract(contract: ContractResponseDto): void {
@@ -185,61 +147,5 @@ export class ContractsListComponent {
           },
         });
       });
-  }
-
-  clientLabel(contract: ContractResponseDto): string {
-    const companyName = contract.client?.companyName?.trim();
-    const trademark = contract.client?.trademark?.trim();
-    const fullName = contract.client?.fullName?.trim();
-
-    if (companyName) {
-      return companyName;
-    }
-
-    if (trademark) {
-      return trademark;
-    }
-
-    if (fullName) {
-      return fullName;
-    }
-
-    return contract.clientId;
-  }
-
-  statusClass(status: string): string {
-    if (status === ContractStatus.ACTIVE) {
-      return 'contract-status contract-status-active';
-    }
-
-    if (status === ContractStatus.TERMINATED) {
-      return 'contract-status contract-status-terminated';
-    }
-
-    return 'contract-status contract-status-expired';
-  }
-
-  signatureMethodLabel(method: string | null | undefined): string {
-    if (!method) {
-      return '—';
-    }
-
-    if (method === 'ORIGINAL_MAIL') {
-      return 'Почта';
-    }
-
-    if (method === 'ORIGINAL_COURIER') {
-      return 'Курьер';
-    }
-
-    if (method === 'DIGITAL_PODPIS') {
-      return 'Podpis.by';
-    }
-
-    if (method === 'OTHER') {
-      return 'Другое';
-    }
-
-    return method;
   }
 }

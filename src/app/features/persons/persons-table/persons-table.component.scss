@@ -1,0 +1,36 @@
+@use '../../../shared/styles/table';
+
+.cell-primary {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.cell-inactive {
+  color: var(--mat-sys-on-surface-variant);
+  font-style: italic;
+}
+
+.type-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+.type-badge--client {
+  background: #e3f2fd;
+  color: #1565c0;
+}
+
+.type-badge--dependant {
+  background: #fce4ec;
+  color: #880e4f;
+}
+
+.actions-cell {
+  width: 48px;
+  text-align: right;
+}

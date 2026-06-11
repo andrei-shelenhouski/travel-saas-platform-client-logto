@@ -1,17 +1,8 @@
-import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTableModule } from '@angular/material/table';
 
 import { catchError, finalize, forkJoin, of } from 'rxjs';
 
@@ -24,6 +15,7 @@ import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.servic
 import { OrgRole } from '@app/shared/models';
 
 import { InviteUserDialogComponent } from './invite-user-dialog/invite-user-dialog';
+import { UsersTableComponent } from './users-table/users-table.component';
 
 import type { InviteUserRoleOption } from './invite-user-dialog/invite-user-dialog';
 
@@ -46,21 +38,13 @@ const SYSTEM_ROLE_ORDER: Record<OrgRole, number> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-users-management',
   imports: [
-    DatePipe,
-    ReactiveFormsModule,
     MatDialogModule,
     MatSnackBarModule,
     MatIconModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
+    MatButtonModule,
     PageHeading,
     PageHeadingAction,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatDividerModule,
+    UsersTableComponent,
   ],
   templateUrl: './users-management.html',
   styleUrl: './users-management.scss',
@@ -84,7 +68,6 @@ export class UsersManagementComponent {
   protected readonly error = signal<string | null>(null);
   protected readonly roleUpdateErrors = signal<Record<string, string>>({});
   protected readonly updatingRoleId = signal<string | null>(null);
-  protected readonly isRoleUpdateInFlight = computed(() => this.updatingRoleId() !== null);
   protected readonly togglingActiveId = signal<string | null>(null);
   protected readonly canInviteMembers = computed(() => this.permissions.canInviteMembers());
   protected readonly canUpdateMembers = computed(() => this.permissions.canUpdateMembers());
@@ -103,11 +86,6 @@ export class UsersManagementComponent {
 
     return `Всего: ${totalUsers} пользователей`;
   });
-  protected readonly activeStatusLabel = 'Активен';
-  protected readonly inactiveStatusLabel = 'Неактивен';
-
-  protected readonly displayedColumns = ['user', 'email', 'role', 'status', 'joined', 'actions'];
-
   private readonly okLabel = 'OK';
   private readonly closeLabel = 'Закрыть';
   private readonly cancelLabel = 'Отмена';
@@ -148,84 +126,7 @@ export class UsersManagementComponent {
       });
   }
 
-  protected isCurrentUser(user: OrgUserResponseDto): boolean {
-    const currentUserId = this.currentUserId();
-
-    return currentUserId !== null && user.appUserId === currentUserId;
-  }
-
-  protected canChangeRole(user: OrgUserResponseDto): boolean {
-    return (
-      this.canUpdateMembers() && !this.isCurrentUser(user) && user.isActive && this.hasRoleOptions()
-    );
-  }
-
-  protected roleBadgeLabel(user: OrgUserResponseDto): string {
-    const roleValue = this.roleSelectionValue(user);
-    const roleByValue = this.roleOptions().find((option) => option.value === roleValue);
-
-    if (roleByValue) {
-      return roleByValue.label;
-    }
-
-    const roleName = user.roleName?.trim();
-
-    if (roleName) {
-      return roleName;
-    }
-
-    const systemRole = this.resolveSystemRoleName(user.role);
-
-    if (systemRole) {
-      return this.systemRoleLabel(systemRole);
-    }
-
-    return user.role;
-  }
-
-  protected roleUpdateErrorMessage(userId: string): string | null {
-    return this.roleUpdateErrors()[userId] ?? null;
-  }
-
-  protected roleSelectionValue(user: OrgUserResponseDto): string {
-    const roleOptions = this.roleOptions();
-    const roleId = user.roleId?.trim();
-
-    if (roleId) {
-      return roleId;
-    }
-
-    const roleName = user.roleName?.trim();
-
-    if (roleName) {
-      const roleByName = roleOptions.find((option) => option.label === roleName);
-
-      if (roleByName) {
-        return roleByName.value;
-      }
-    }
-
-    const roleBySystemRole = roleOptions.find((option) => option.systemRole === user.role);
-
-    if (roleBySystemRole) {
-      return roleBySystemRole.value;
-    }
-
-    return user.role;
-  }
-
-  protected onRoleChange(user: OrgUserResponseDto, roleValue: string | null): void {
-    if (!roleValue) {
-      return;
-    }
-
-    const isUnchanged = this.roleSelectionValue(user) === roleValue;
-    const isRoleUpdateInFlight = this.isRoleUpdateInFlight();
-
-    if (isRoleUpdateInFlight || isUnchanged || !this.canChangeRole(user)) {
-      return;
-    }
-
+  protected onRoleChange(user: OrgUserResponseDto, roleValue: string): void {
     const roleLabel = this.resolveRoleLabel(roleValue);
     const roleChangeMessage =
       `Изменить роль пользователя ${user.fullName} на ${roleLabel}? ` +
@@ -286,27 +187,6 @@ export class UsersManagementComponent {
           this.snackBar.open(message, this.closeLabel, { duration: 5000 });
         },
       });
-  }
-
-  protected getStatusLabel(isActive: boolean): string {
-    return isActive ? this.activeStatusLabel : this.inactiveStatusLabel;
-  }
-
-  protected getInitials(fullName: string): string {
-    const words = fullName.trim().split(/\s+/).filter(Boolean);
-
-    return words
-      .slice(0, 2)
-      .map((word) => word.charAt(0))
-      .join('')
-      .toUpperCase();
-  }
-
-  protected getAvatarColor(userId: string): string {
-    const colors = ['#2b9db8', '#784d90', '#d97706', '#41636e', '#16a34a', '#73787a'];
-    const hash = userId.charCodeAt(0) % colors.length;
-
-    return colors[hash];
   }
 
   private deactivateUser(userId: string): void {

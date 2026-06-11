@@ -10,28 +10,25 @@ import {
 } from '@angular/core';
 import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIcon, MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTableModule } from '@angular/material/table';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs';
 
-import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
 import { InvoicesService } from '@app/services/invoices.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
-import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 import { ClientType, InvoiceStatus } from '@app/shared/models';
+import { createListState, PAGE_SIZE } from '@app/shared/utils/list-state';
 
 import { InvoiceFilterBarComponent } from '../invoice-filter-bar/invoice-filter-bar';
-import { InvoiceStatusChipComponent } from '../invoice-status-chip/invoice-status-chip';
 import { InvoiceSummaryCardsComponent } from '../invoice-summary-cards/invoice-summary-cards';
+import { InvoicesTableComponent } from '../invoices-table/invoices-table.component';
 
-import type { InvoiceResponseDto, InvoiceSummaryResponseDto } from '@app/shared/models';
+import type { InvoiceSummaryResponseDto } from '@app/shared/models';
 
 const INVOICE_STATUSES = new Set<InvoiceStatus>(Object.values(InvoiceStatus));
 const CLIENT_TYPES = new Set<ClientType>(Object.values(ClientType));
@@ -42,18 +39,14 @@ const CLIENT_TYPES = new Set<ClientType>(Object.values(ClientType));
   imports: [
     MatButtonModule,
     MatIconModule,
-    ClientTypeBadgeComponent,
     InvoiceFilterBarComponent,
-    InvoiceStatusChipComponent,
     InvoiceSummaryCardsComponent,
+    InvoicesTableComponent,
     MatIcon,
     MatPaginatorModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
     PageHeading,
     PageHeadingAction,
     ReactiveFormsModule,
-    RouterLink,
   ],
   templateUrl: './invoices-list.html',
   styleUrl: './invoices-list.scss',
@@ -156,17 +149,6 @@ export class InvoicesListComponent {
     return undefined;
   });
 
-  protected readonly displayedColumns: string[] = [
-    'number',
-    'client',
-    'type',
-    'invoiceDate',
-    'dueDate',
-    'total',
-    'status',
-    'paidAmount',
-  ];
-
   constructor() {
     this.syncStateFromQueryParams();
     this.syncSearchDebounce();
@@ -209,43 +191,6 @@ export class InvoicesListComponent {
 
   navigateToCreateInvoice(): void {
     this.router.navigate(['/app/invoices/new']);
-  }
-
-  navigateToInvoice(id: string): void {
-    this.router.navigate(['/app/invoices', id]);
-  }
-
-  formatDate(value: string): string {
-    try {
-      return new Date(value).toLocaleDateString(undefined, { dateStyle: 'medium' });
-    } catch {
-      return value;
-    }
-  }
-
-  formatAmount(value: number | undefined, currency: string): string {
-    const amount = value ?? 0;
-
-    return `${new Intl.NumberFormat(undefined, {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    }).format(amount)} ${currency}`;
-  }
-
-  paidAmountLabel(invoice: InvoiceResponseDto): string {
-    const paid = invoice.paidAmount ?? 0;
-    const total = invoice.total ?? 0;
-
-    return `${this.formatAmount(paid, invoice.currency)} / ${this.formatAmount(total, invoice.currency)}`;
-  }
-
-  onInvoiceNumberClick(event: MouseEvent): void {
-    event.stopPropagation();
-  }
-
-  onActionClick(event: MouseEvent, id: string): void {
-    event.stopPropagation();
-    this.navigateToInvoice(id);
   }
 
   private syncStateFromQueryParams(): void {

@@ -1,0 +1,106 @@
+<div class="table-wrap">
+  <table class="invoice-line-items-table" mat-table [dataSource]="items()">
+    <ng-container matColumnDef="description">
+      <th *matHeaderCellDef class="invoice-col-header" mat-header-cell>Описание</th>
+      <td *matCellDef="let row" class="invoice-col-cell" mat-cell>{{ row.description || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="serviceDates">
+      <th *matHeaderCellDef class="invoice-col-header" mat-header-cell>Даты услуги</th>
+      <td *matCellDef="let row" class="invoice-col-cell" mat-cell>
+        {{ formatServiceDates(row.serviceDateFrom, row.serviceDateTo) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="travelers">
+      <th *matHeaderCellDef class="invoice-col-header" mat-header-cell>Туристы</th>
+      <td *matCellDef="let row" class="invoice-col-cell" mat-cell>{{ row.travelers || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="unitPrice">
+      <th *matHeaderCellDef class="invoice-col-header" mat-header-cell>Цена за ед.</th>
+      <td *matCellDef="let row" class="invoice-col-cell" mat-cell>
+        @if (row.unitPrice !== null && row.unitPrice !== undefined) {
+          {{ row.unitPrice | number: '1.2-2' }} {{ currency() }}
+        } @else {
+          —
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+      <th *matHeaderCellDef class="invoice-col-header" mat-header-cell>Кол-во</th>
+      <td *matCellDef="let row" class="invoice-col-cell" mat-cell>{{ row.quantity ?? '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="total">
+      <th *matHeaderCellDef class="invoice-col-header" mat-header-cell>Итого</th>
+      <td *matCellDef="let row" class="invoice-col-cell invoice-col-cell--medium" mat-cell>
+        @if (row.total !== null && row.total !== undefined) {
+          {{ row.total | number: '1.2-2' }} {{ currency() }}
+        } @else {
+          —
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="tourCost">
+      <th *matHeaderCellDef class="invoice-col-header" mat-header-cell>Стоимость тура</th>
+      <td *matCellDef="let row" class="invoice-col-cell" mat-cell>
+        @if (row.tourCost !== null && row.tourCost !== undefined) {
+          {{ row.tourCost | number: '1.2-2' }} {{ currency() }}
+        } @else {
+          —
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="commissionAmount">
+      <th *matHeaderCellDef class="invoice-col-header" mat-header-cell>Комиссия</th>
+      <td *matCellDef="let row" class="invoice-col-cell" mat-cell>
+        @if (row.commissionAmount !== null && row.commissionAmount !== undefined) {
+          {{ row.commissionAmount | number: '1.2-2' }} {{ currency() }}
+        } @else {
+          —
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="commissionVat">
+      <th *matHeaderCellDef class="invoice-col-header" mat-header-cell>НДС комиссии</th>
+      <td *matCellDef="let row" class="invoice-col-cell" mat-cell>
+        @if (row.commissionVat !== null && row.commissionVat !== undefined) {
+          {{ row.commissionVat | number: '1.2-2' }} {{ currency() }}
+        } @else {
+          —
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="netToPay">
+      <th *matHeaderCellDef class="invoice-col-header" mat-header-cell>К оплате</th>
+      <td *matCellDef="let row" class="invoice-col-cell invoice-col-cell--medium" mat-cell>
+        @if (row.total !== null && row.total !== undefined) {
+          {{ row.total | number: '1.2-2' }} {{ currency() }}
+        } @else {
+          —
+        }
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns()" mat-header-row></tr>
+    <tr *matRowDef="let row; columns: displayedColumns()" mat-row></tr>
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns().length">
+        <div class="table-empty-state">
+          @if (loading()) {
+            <p class="table-empty-state-message">Загрузка...</p>
+            <mat-spinner aria-label="Загрузка" diameter="36" />
+          } @else {
+            <p>Нет данных</p>
+          }
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>

@@ -1,0 +1,65 @@
+  <table mat-table [dataSource]="rows()">
+    <ng-container matColumnDef="type">
+      <th *matHeaderCellDef mat-header-cell>Тип</th>
+      <td *matCellDef="let addr" class="cell-primary" mat-cell>
+        {{ addressLabel(addr.type) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="country">
+      <th *matHeaderCellDef mat-header-cell>Страна</th>
+      <td *matCellDef="let addr" mat-cell>{{ addr.country || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="city">
+      <th *matHeaderCellDef mat-header-cell>Город</th>
+      <td *matCellDef="let addr" mat-cell>{{ addr.city || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="street">
+      <th *matHeaderCellDef mat-header-cell>Адрес</th>
+      <td *matCellDef="let addr" mat-cell>{{ addr.street || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="postalCode">
+      <th *matHeaderCellDef mat-header-cell>Индекс</th>
+      <td *matCellDef="let addr" mat-cell>{{ addr.postalCode || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th *matHeaderCellDef mat-header-cell>Действия</th>
+      <td *matCellDef="let addr" class="table-cell-actions" mat-cell>
+        <button
+          aria-label="Редактировать адрес"
+          mat-icon-button
+          type="button"
+          (click)="editRow.emit(addr)"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          aria-label="Удалить адрес"
+          mat-icon-button
+          type="button"
+          (click)="deleteRow.emit(addr)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns()" class="table-header-row" mat-header-row></tr>
+    <tr *matRowDef="let row; columns: displayedColumns()" class="table-row" mat-row></tr>
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns().length">
+        <div class="table-empty-state">
+          @if (loading()) {
+            <p class="table-empty-state-message">Загрузка...</p>
+            <mat-spinner aria-label="Загрузка" diameter="36" />
+          } @else {
+            <p>Нет данных</p>
+          }
+        </div>
+      </td>
+    </tr>
+  </table>

@@ -53,12 +53,7 @@ describe('FamilySectionComponent', () => {
             open: () => ({ afterClosed: () => of({ saved: false }) }),
           },
         },
-        {
-          provide: Router,
-          useValue: {
-            navigate: () => Promise.resolve(true),
-          },
-        },
+        { provide: Router, useValue: { navigate: () => Promise.resolve(true) } },
       ],
     }).compileComponents();
 

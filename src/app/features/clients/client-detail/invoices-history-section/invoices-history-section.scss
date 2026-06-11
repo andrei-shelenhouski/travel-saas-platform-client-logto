@@ -23,20 +23,3 @@
   font-weight: 600;
   color: var(--mat-sys-on-surface);
 }
-
-.history-section-loading {
-  display: flex;
-  justify-content: center;
-  padding: 3rem 0;
-}
-
-.history-section-empty {
-  padding: 2rem;
-  text-align: center;
-  color: var(--mat-sys-on-surface-variant);
-  font-size: 0.875rem;
-}
-
-.cell-primary {
-  font-weight: 500;
-}

@@ -1,0 +1,185 @@
+<div class="journey-stepper">
+  <div class="stepper-track">
+    @for (step of JOURNEY_STEPS; track step; let i = $index) {
+      <div class="stepper-step" [class]="'step--' + getStepState(i)">
+        <div class="step-node" [attr.aria-label]="STEP_STATUS_LABELS[step]">
+          @if (getStepState(i) === 'completed') {
+            <mat-icon class="step-icon">check_circle</mat-icon>
+          } @else if (getStepState(i) === 'active') {
+            <mat-icon class="step-icon">radio_button_checked</mat-icon>
+          } @else {
+            <mat-icon class="step-icon">radio_button_unchecked</mat-icon>
+          }
+        </div>
+        <span class="step-label">{{ STEP_STATUS_LABELS[step] }}</span>
+      </div>
+
+      @if (i < JOURNEY_STEPS.length - 1) {
+        <div class="stepper-connector" [class.connector--filled]="getStepState(i) === 'completed'"></div>
+      }
+    }
+    @if (isTerminal() && terminalLabel()) {
+      <div class="terminal-chip-wrapper">
+        <div class="terminal-chip" [class]="terminalClass()">
+          <mat-icon class="terminal-icon">
+            @if (lead().status === 'LOST') { cancel }
+            @else if (lead().status === 'EXPIRED') { schedule }
+            @else { swap_horiz }
+          </mat-icon>
+          <span>{{ terminalLabel() }}</span>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="journey-card">
+    @switch (lead().status) {
+      @case ('NEW') {
+        <div class="journey-card-body">
+          <p class="journey-card-text">Лид ещё не назначен.</p>
+          @if (isActionVisible('assign')) {
+            <button
+              color="primary"
+              mat-flat-button
+              type="button"
+              [disabled]="isActionLoading('assign')"
+              (click)="actionClicked.emit('assign')"
+            >
+              <mat-icon>person_add</mat-icon>
+              Назначить агента
+            </button>
+          }
+          @if (isActionVisible('to_in_progress')) {
+            <button
+              mat-stroked-button
+              type="button"
+              [disabled]="isActionLoading('to_in_progress')"
+              (click)="actionClicked.emit('to_in_progress')"
+            >
+              Взять в работу
+            </button>
+          }
+        </div>
+      }
+
+      @case ('ASSIGNED') {
+        <div class="journey-card-body">
+          @if (lead().assignedAgentName) {
+            <div class="journey-agent-row">
+              <mat-icon class="journey-agent-icon">person</mat-icon>
+              <span class="journey-agent-name">{{ lead().assignedAgentName }}</span>
+            </div>
+          }
+          @if (isActionVisible('to_in_progress')) {
+            <button
+              color="primary"
+              mat-flat-button
+              type="button"
+              [disabled]="isActionLoading('to_in_progress')"
+              (click)="actionClicked.emit('to_in_progress')"
+            >
+              <mat-icon>play_arrow</mat-icon>
+              Взять в работу
+            </button>
+          }
+        </div>
+      }
+
+      @case ('IN_PROGRESS') {
+        <div class="journey-card-body">
+          <p class="journey-card-text">Создайте коммерческое предложение для клиента.</p>
+          @if (offers().length > 0) {
+            <p class="journey-card-meta">Уже создано КП: {{ offers().length }}</p>
+          }
+          @if (canCreateOffer()) {
+            <button
+              color="primary"
+              mat-flat-button
+              type="button"
+              (click)="createOfferClicked.emit()"
+            >
+              <mat-icon>description</mat-icon>
+              Создать КП
+            </button>
+          }
+        </div>
+      }
+
+      @case ('OFFER_SENT') {
+        <div class="journey-card-body">
+          @if (previewOffers().length > 0) {
+            <ul class="offer-preview-list">
+              @for (offer of previewOffers(); track offer.id) {
+                <li class="offer-preview-row">
+                  <span class="offer-preview-number">{{ offer.number ?? offer.id }}</span>
+                  <app-status-chip [config]="OFFER_STATUS_CONFIG" [status]="offer.status" />
+                </li>
+              }
+            </ul>
+            <button
+              class="scroll-offers-btn"
+              mat-stroked-button
+              type="button"
+              (click)="scrollToOffers()"
+            >
+              Все предложения
+              <mat-icon iconPositionEnd>expand_more</mat-icon>
+            </button>
+          }
+          @if (!booking()) {
+            <p class="journey-card-hint">
+              Бронирование не создано — перейдите в КП для подтверждения.
+            </p>
+          }
+        </div>
+      }
+
+      @case ('WON') {
+        <div class="journey-card-body journey-card-body--won">
+          <div class="won-header">
+            <mat-icon class="won-icon">emoji_events</mat-icon>
+            <span class="won-title">Лид выигран!</span>
+          </div>
+          @if (booking(); as bd) {
+            <div class="booking-summary-row">
+              <a class="journey-booking-link" [routerLink]="['/app/bookings', bd.id]">
+                {{ bd.number ?? 'Бронирование' }}
+              </a>
+              <app-booking-status-chip [status]="bd.status" />
+            </div>
+            @if ((bd.invoicesCount ?? 0) > 0) {
+              <p class="journey-card-meta">Счетов: {{ bd.invoicesCount }}</p>
+            }
+          }
+        </div>
+      }
+
+      @case ('LOST') {
+        <div class="journey-card-body journey-card-body--lost">
+          <div class="terminal-header">
+            <mat-icon class="terminal-header-icon">cancel</mat-icon>
+            <span class="terminal-header-title">Лид проигран</span>
+          </div>
+        </div>
+      }
+
+      @case ('EXPIRED') {
+        <div class="journey-card-body journey-card-body--expired">
+          <div class="terminal-header">
+            <mat-icon class="terminal-header-icon">schedule</mat-icon>
+            <span class="terminal-header-title">Лид истёк</span>
+          </div>
+        </div>
+      }
+
+      @case ('CONVERTED') {
+        <div class="journey-card-body">
+          <div class="terminal-header">
+            <mat-icon class="terminal-header-icon">swap_horiz</mat-icon>
+            <span class="terminal-header-title">Лид конвертирован</span>
+          </div>
+        </div>
+      }
+    }
+  </div>
+</div>

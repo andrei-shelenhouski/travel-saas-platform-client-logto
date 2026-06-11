@@ -42,74 +42,17 @@
     <p class="offers-list-error">{{ error() }}</p>
   }
 
-  <div class="table-wrap">
-    <table mat-table [dataSource]="offers()" [multiTemplateDataRows]="true">
-      <ng-container matColumnDef="number">
-        <th *matHeaderCellDef mat-header-cell>КП #</th>
-        <td *matCellDef="let element" mat-cell>
-          <span class="offers-list-number">
-            {{ element.number }}
-          </span>
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="destination">
-        <th *matHeaderCellDef mat-header-cell>Направление</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.destination ?? '—' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="total">
-        <th *matHeaderCellDef mat-header-cell>Всего</th>
-        <td *matCellDef="let element" mat-cell>{{ element.total }} {{ element.currency }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="status">
-        <th *matHeaderCellDef mat-header-cell>Статус</th>
-        <td *matCellDef="let element" mat-cell>
-          <app-status-badge variant="offer" [status]="element.status" />
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="createdAt">
-        <th *matHeaderCellDef mat-header-cell>Создано</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.createdAt | date: 'dd MMM yyyy' }}
-        </td>
-      </ng-container>
-
-      <ng-container matColumnDef="updatedAt">
-        <th *matHeaderCellDef mat-header-cell>Обновлено</th>
-        <td *matCellDef="let element" mat-cell>
-          {{ element.updatedAt | date: 'dd MMM yyyy' }}
-        </td>
-      </ng-container>
-
-      <tr *matHeaderRowDef="displayedColumns" class="table-header-row" mat-header-row></tr>
-      <tr
-        *matRowDef="let row; columns: displayedColumns"
-        class="table-row"
-        mat-row
-        (click)="navigateToOffer(row.id)"
-      ></tr>
-      <tr *matNoDataRow>
-        <td [attr.colspan]="displayedColumns.length">
-          <div class="offers-list-empty">
-            @if (loading()) {
-              <p class="offers-list-empty-text">Загрузка предложений...</p>
-              <mat-spinner
-                aria-label="Загрузка предложений"
-                diameter="36"
-              />
-            } @else {
-              <p>Нет предложений по текущим фильтрам</p>
-            }
-          </div>
-        </td>
-      </tr>
-    </table>
-  </div>
+  @if (loading()) {
+    <div class="offers-list-empty">
+      <p class="offers-list-empty-text">Загрузка предложений...</p>
+      <mat-spinner aria-label="Загрузка предложений" diameter="36" />
+    </div>
+  } @else {
+    <app-offers-table
+      [offers]="offerRows()"
+      [omitColumns]="['leadNumber']"
+    />
+  }
 
   @if (totalElements() > pageSize) {
     <mat-paginator

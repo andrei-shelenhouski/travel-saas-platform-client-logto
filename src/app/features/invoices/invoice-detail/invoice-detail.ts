@@ -1,4 +1,3 @@
-import { DecimalPipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -9,6 +8,7 @@ import {
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { DecimalPipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,11 +17,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableModule } from '@angular/material/table';
 
 import { EMPTY } from 'rxjs';
 import { map } from 'rxjs/operators';
 
+import { InvoiceLineItemsTableComponent } from '@app/features/invoices/invoice-detail/invoice-line-items-table';
 import { InvoicePdfPreviewModalComponent } from '@app/features/invoices/invoice-pdf-preview-modal';
 import { PublishInvoiceDialogComponent } from '@app/features/invoices/publish-invoice-dialog/publish-invoice-dialog';
 import { RecordPaymentModalComponent } from '@app/features/invoices/record-payment-modal/record-payment-modal';
@@ -82,11 +82,11 @@ const STATUS_LABELS: Record<string, string> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-invoice-detail',
   imports: [
+    DecimalPipe,
     RouterLink,
     ReactiveFormsModule,
-    MatTableModule,
-    DecimalPipe,
     ActivityTimelineComponent,
+    InvoiceLineItemsTableComponent,
     PageHeading,
     PageHeadingAction,
     LoadingStateComponent,
@@ -213,20 +213,12 @@ export class InvoiceDetailComponent {
 
   readonly isB2bAgent = computed(() => this.invoice()?.clientType === 'B2B_AGENT');
 
-  readonly displayedColumns = computed<string[]>(() => {
+  readonly omitLineItemColumns = computed<string[]>(() => {
     if (this.isB2bAgent()) {
-      return [
-        'description',
-        'serviceDates',
-        'travelers',
-        'tourCost',
-        'commissionAmount',
-        'commissionVat',
-        'netToPay',
-      ];
+      return ['unitPrice', 'quantity', 'total'];
     }
 
-    return ['description', 'serviceDates', 'travelers', 'unitPrice', 'quantity', 'total'];
+    return ['tourCost', 'commissionAmount', 'commissionVat', 'netToPay'];
   });
 
   readonly lineItems = computed(() => this.invoice()?.lineItems ?? []);
@@ -317,18 +309,6 @@ export class InvoiceDetailComponent {
     }
 
     return iso.slice(0, 10);
-  }
-
-  formatServiceDates(from?: string | null, to?: string | null): string {
-    if (!from && !to) {
-      return '—';
-    }
-
-    if (from && to) {
-      return `${this.formatDateOnly(from)} – ${this.formatDateOnly(to)}`;
-    }
-
-    return this.formatDateOnly(from ?? to);
   }
 
   // ---- Edit ----

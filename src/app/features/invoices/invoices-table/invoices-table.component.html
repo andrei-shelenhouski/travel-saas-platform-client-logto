@@ -1,0 +1,82 @@
+<table mat-table [dataSource]="invoices()">
+    <ng-container matColumnDef="number">
+      <th *matHeaderCellDef mat-header-cell>Счёт №</th>
+      <td *matCellDef="let row" class="cell-primary" mat-cell>
+        <a
+          class="link"
+          [routerLink]="['/app/invoices', row.id]"
+          (click)="onNumberClick($event)"
+        >
+          {{ row.number }}
+        </a>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="client">
+      <th *matHeaderCellDef mat-header-cell>Клиент</th>
+      <td *matCellDef="let row" mat-cell>
+        {{ row.clientName || row.clientSnapshot || '—' }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <th *matHeaderCellDef mat-header-cell>Тип</th>
+      <td *matCellDef="let row" mat-cell>
+        <app-client-type-badge [type]="row.clientType ?? ''" />
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="invoiceDate">
+      <th *matHeaderCellDef mat-header-cell>Дата счёта</th>
+      <td *matCellDef="let row" mat-cell>{{ formatDate(row.invoiceDate) }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="dueDate">
+      <th *matHeaderCellDef mat-header-cell>Срок оплаты</th>
+      <td *matCellDef="let row" mat-cell>{{ formatDate(row.dueDate) }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="total">
+      <th *matHeaderCellDef mat-header-cell>Сумма</th>
+      <td *matCellDef="let row" mat-cell>
+        {{ formatAmount(row.total ?? row.subtotal, row.currency) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th *matHeaderCellDef mat-header-cell>Статус</th>
+      <td *matCellDef="let row" mat-cell>
+        <app-invoice-status-chip [status]="row.status" />
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="paidAmount">
+      <th *matHeaderCellDef mat-header-cell>Оплачено</th>
+      <td *matCellDef="let row" mat-cell>{{ paidAmountLabel(row) }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="createdAt">
+      <th *matHeaderCellDef mat-header-cell>Создано</th>
+      <td *matCellDef="let row" mat-cell>{{ formatDate(row.createdAt) }}</td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns()" class="table-header-row" mat-header-row></tr>
+    <tr
+      *matRowDef="let row; columns: displayedColumns()"
+      class="table-row"
+      mat-row
+      (click)="navigateToInvoice(row.id)"
+    ></tr>
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns().length">
+        <div class="table-empty-state">
+          @if (loading()) {
+            <p class="table-empty-state-message">Загрузка счетов...</p>
+            <mat-spinner aria-label="Загрузка счетов" diameter="36" />
+          } @else {
+            <p>Нет счетов</p>
+          }
+        </div>
+      </td>
+    </tr>
+  </table>

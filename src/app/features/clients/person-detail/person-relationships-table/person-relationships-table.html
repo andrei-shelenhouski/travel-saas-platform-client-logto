@@ -1,0 +1,63 @@
+  <table mat-table [dataSource]="rows()">
+    <ng-container matColumnDef="type">
+      <th *matHeaderCellDef mat-header-cell>Тип связи</th>
+      <td *matCellDef="let item" class="cell-primary" mat-cell>
+        {{ typeLabel(item.type) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="relatedPerson">
+      <th *matHeaderCellDef mat-header-cell>Связанное лицо</th>
+      <td *matCellDef="let item" mat-cell>
+        <a [routerLink]="['/app/persons', item.relatedPersonId]">
+          {{ relatedPersonNameById().get(item.relatedPersonId) }}
+        </a>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th *matHeaderCellDef mat-header-cell>Статус</th>
+      <td *matCellDef="let item" mat-cell>
+        {{ statusLabel(item.status) }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="sinceDate">
+      <th *matHeaderCellDef mat-header-cell>С</th>
+      <td *matCellDef="let item" mat-cell>{{ formatDate(item.sinceDate) }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th *matHeaderCellDef mat-header-cell>Действия</th>
+      <td *matCellDef="let item" class="table-cell-actions" mat-cell>
+        @if (relatedClientByPersonId().get(item.relatedPersonId); as relatedClientId) {
+          <button mat-stroked-button type="button" (click)="openClient.emit(relatedClientId)">
+            Открыть клиента
+          </button>
+        }
+        <button
+          aria-label="Удалить связь"
+          mat-icon-button
+          type="button"
+          (click)="deleteRow.emit(item)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns()" class="table-header-row" mat-header-row></tr>
+    <tr *matRowDef="let row; columns: displayedColumns()" class="table-row" mat-row></tr>
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns().length">
+        <div class="table-empty-state">
+          @if (loading()) {
+            <p class="table-empty-state-message">Загрузка...</p>
+            <mat-spinner aria-label="Загрузка" diameter="36" />
+          } @else {
+            <p>Нет данных</p>
+          }
+        </div>
+      </td>
+    </tr>
+  </table>

@@ -86,6 +86,10 @@ html {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+
+      &.amount-value {
+        text-align: right;
+      }
     }
   }
 
@@ -103,6 +107,7 @@ html {
   }
 
   .table-wrap {
+    display: block;
     width: 100%;
     overflow-x: auto;
     border: 1px solid var(--mat-sys-outline-variant);

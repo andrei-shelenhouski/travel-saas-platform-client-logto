@@ -1,0 +1,57 @@
+  <table mat-table [dataSource]="invoices()">
+    <ng-container matColumnDef="number">
+      <th *matHeaderCellDef mat-header-cell>Номер</th>
+      <td *matCellDef="let row" mat-cell>
+        <span class="cell-primary">{{ row.number }}</span>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="invoiceDate">
+      <th *matHeaderCellDef mat-header-cell>Дата</th>
+      <td *matCellDef="let row" mat-cell>{{ formatDate(row.invoiceDate) }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="dueDate">
+      <th *matHeaderCellDef mat-header-cell>Срок оплаты</th>
+      <td *matCellDef="let row" mat-cell>{{ formatDate(row.dueDate) }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th *matHeaderCellDef mat-header-cell>Статус</th>
+      <td *matCellDef="let row" mat-cell>
+        <app-invoice-status-chip [status]="row.status" />
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="total">
+      <th *matHeaderCellDef mat-header-cell>Сумма</th>
+      <td *matCellDef="let row" mat-cell>{{ formatCurrency(row.total, row.currency) }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="paidAmount">
+      <th *matHeaderCellDef mat-header-cell>Оплачено</th>
+      <td *matCellDef="let row" mat-cell>{{ formatCurrency(row.paidAmount, row.currency) }}</td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns()" class="table-header-row" mat-header-row></tr>
+    <tr
+      *matRowDef="let row; columns: displayedColumns()"
+      class="table-row"
+      mat-row
+      (click)="onRowClick(row.id)"
+      (keydown.enter)="onRowClick(row.id)"
+    ></tr>
+
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns().length">
+        <div class="table-empty-state">
+          @if (loading()) {
+            <p class="table-empty-state-message">Загрузка счетов...</p>
+            <mat-spinner aria-label="Загрузка счетов" diameter="36" />
+          } @else {
+            <p>Счетов пока нет.</p>
+          }
+        </div>
+      </td>
+    </tr>
+  </table>

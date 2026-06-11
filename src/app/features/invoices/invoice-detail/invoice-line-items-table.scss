@@ -1,0 +1,30 @@
+.invoice-line-items-table {
+  width: 100%;
+  min-width: 600px;
+}
+
+.invoice-col-header {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.invoice-col-cell {
+  font-size: 0.875rem;
+  color: #111827;
+
+  &--medium {
+    font-weight: 500;
+  }
+}
+
+.table-empty-state {
+  margin: 2.5rem;
+  text-align: center;
+}
+
+.table-empty-state-message {
+  margin-bottom: 1rem;
+}

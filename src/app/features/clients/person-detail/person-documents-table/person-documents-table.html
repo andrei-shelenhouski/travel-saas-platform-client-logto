@@ -1,0 +1,79 @@
+  <table mat-table [dataSource]="rows()">
+    <ng-container matColumnDef="document">
+      <th *matHeaderCellDef mat-header-cell>Документ</th>
+      <td *matCellDef="let doc" class="cell-primary" mat-cell>
+        <div class="cell-inline">
+          @if (doc.primary) {
+            <mat-icon class="doc-primary-icon" title="Основной документ">star</mat-icon>
+          }
+          <span>{{ docLabel(doc) }}</span>
+        </div>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="issueDate">
+      <th *matHeaderCellDef mat-header-cell>Выдан</th>
+      <td *matCellDef="let doc" mat-cell>{{ formatDate(doc.issueDate) }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="expiryDate">
+      <th *matHeaderCellDef mat-header-cell>Действителен до</th>
+      <td *matCellDef="let doc" mat-cell>{{ formatDate(doc.expiryDate) }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="status">
+      <th *matHeaderCellDef mat-header-cell>Статус</th>
+      <td *matCellDef="let doc" mat-cell>
+        @let expiryClass = docExpiryClass(doc);
+        @if (expiryClass === 'doc-expired') {
+          <span class="doc-status doc-status--expired">Истёк</span>
+        } @else if (expiryClass === 'doc-expiring') {
+          <span class="doc-status doc-status--expiring">Истекает</span>
+        } @else {
+          <span class="doc-status">Актуален</span>
+        }
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <th *matHeaderCellDef mat-header-cell>Действия</th>
+      <td *matCellDef="let doc" class="table-cell-actions" mat-cell>
+        <button
+          aria-label="Редактировать документ"
+          mat-icon-button
+          type="button"
+          (click)="editRow.emit(doc)"
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          aria-label="Удалить документ"
+          mat-icon-button
+          type="button"
+          (click)="deleteRow.emit(doc)"
+        >
+          <mat-icon>delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns()" class="table-header-row" mat-header-row></tr>
+    <tr
+      *matRowDef="let row; columns: displayedColumns()"
+      class="table-row"
+      mat-row
+      [class]="docExpiryClass(row)"
+    ></tr>
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns().length">
+        <div class="table-empty-state">
+          @if (loading()) {
+            <p class="table-empty-state-message">Загрузка...</p>
+            <mat-spinner aria-label="Загрузка" diameter="36" />
+          } @else {
+            <p>Нет данных</p>
+          }
+        </div>
+      </td>
+    </tr>
+  </table>

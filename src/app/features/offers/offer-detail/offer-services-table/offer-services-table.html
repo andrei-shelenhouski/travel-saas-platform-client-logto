@@ -1,0 +1,45 @@
+  <table mat-table [dataSource]="services()">
+    <ng-container matColumnDef="serviceType">
+      <th *matHeaderCellDef mat-header-cell>Тип</th>
+      <td *matCellDef="let row" mat-cell>{{ row.serviceType || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="description">
+      <th *matHeaderCellDef mat-header-cell>Описание</th>
+      <td *matCellDef="let row" mat-cell>{{ row.description || '—' }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="quantity">
+      <th *matHeaderCellDef mat-header-cell>Количество</th>
+      <td *matCellDef="let row" mat-cell>{{ row.quantity ?? 0 }}</td>
+    </ng-container>
+
+    <ng-container matColumnDef="unitPrice">
+      <th *matHeaderCellDef class="col--right" mat-header-cell>Цена за ед.</th>
+      <td *matCellDef="let row" class="col--right" mat-cell>
+        {{ row.unitPrice ?? 0 | number: '1.0-2' }} {{ currency() }}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="total">
+      <th *matHeaderCellDef class="col--right" mat-header-cell>Итого</th>
+      <td *matCellDef="let row" class="col--right" mat-cell>
+        {{ (row.quantity ?? 0) * (row.unitPrice ?? 0) | number: '1.0-2' }} {{ currency() }}
+      </td>
+    </ng-container>
+
+    <tr *matHeaderRowDef="displayedColumns()" class="table-header-row" mat-header-row></tr>
+    <tr *matRowDef="let row; columns: displayedColumns()" class="table-row" mat-row></tr>
+    <tr *matNoDataRow>
+      <td [attr.colspan]="displayedColumns().length">
+        <div class="table-empty-state">
+          @if (loading()) {
+            <p class="table-empty-state-message">Загрузка...</p>
+            <mat-spinner aria-label="Загрузка" diameter="36" />
+          } @else {
+            <p>Нет данных</p>
+          }
+        </div>
+      </td>
+    </tr>
+  </table>

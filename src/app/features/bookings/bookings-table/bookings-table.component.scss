@@ -1,0 +1,30 @@
+@use '../../../shared/styles/table';
+
+.link {
+  color: var(--color-primary);
+  font-weight: 600;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.125rem 0.625rem;
+
+  &--expiring {
+    background: #fef3c7;
+    color: #92400e;
+  }
+
+  &--direct-entry {
+    background: #e0e7ff;
+    color: #3730a3;
+  }
+}

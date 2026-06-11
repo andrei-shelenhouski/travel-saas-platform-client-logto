@@ -72,17 +72,6 @@
   text-decoration: underline;
 }
 
-.table-empty-state {
-  padding: 1.5rem 0.5rem;
-  text-align: center;
-  font-size: 0.875rem;
-  color: #6b7280;
-
-  p {
-    margin: 0;
-  }
-}
-
 .offer-pricing-total {
   border-top: 1px solid #e5e7eb;
   padding-top: 0.5rem;
@@ -127,11 +116,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.offer-col--right {
-  justify-content: flex-end;
-  text-align: right;
 }
 
 .offer-pricing-total-label {
