@@ -31,6 +31,17 @@ html {
   --color-primary-hover: var(--color-primary-600);
   --color-primary-muted: var(--color-primary-50);
   --color-primary-foreground: #ffffff;
+
+  /* Neutral surface & text tokens */
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f9fafb;
+  --color-surface-muted: #f3f4f6;
+  --color-border: #e5e7eb;
+  --color-border-subtle: #d1d5db;
+  --color-text-primary: #111827;
+  --color-text-strong: #374151;
+  --color-text-secondary: #4b5563;
+  --color-text-muted: #6b7280;
 }
 
 .or-divider {

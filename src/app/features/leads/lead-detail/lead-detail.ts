@@ -18,6 +18,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -163,6 +164,7 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     MatInputModule,
     MatSelectModule,
     MatMenuModule,
+    MatProgressSpinnerModule,
     MatDividerModule,
     CustomFieldsSectionComponent,
     ClientTypeBadgeComponent,
@@ -377,25 +379,25 @@ export class LeadDetailComponent {
   protected readonly savingTravelDetails = signal(false);
   protected readonly editingTravelDetails = signal(false);
 
-  protected readonly travelForm = this.formBuilder.group(
+  protected readonly travelForm = this.formBuilder.nonNullable.group(
     {
-      contactPhone: this.formBuilder.control<string>('', {
+      contactPhone: this.formBuilder.nonNullable.control('', {
         validators: [Validators.pattern(/^\+?\d{10,15}$/)],
       }),
-      contactEmail: this.formBuilder.control<string>('', {
+      contactEmail: this.formBuilder.nonNullable.control('', {
         validators: [Validators.email],
       }),
-      contactTelegram: this.formBuilder.control<string>('', {
+      contactTelegram: this.formBuilder.nonNullable.control('', {
         validators: [Validators.maxLength(60)],
       }),
-      destination: this.formBuilder.control<string>(''),
-      departDateFrom: this.formBuilder.control<string>(''),
-      departDateTo: this.formBuilder.control<string>(''),
-      returnDateFrom: this.formBuilder.control<string>(''),
-      returnDateTo: this.formBuilder.control<string>(''),
+      destination: this.formBuilder.nonNullable.control(''),
+      departDateFrom: this.formBuilder.nonNullable.control(''),
+      departDateTo: this.formBuilder.nonNullable.control(''),
+      returnDateFrom: this.formBuilder.nonNullable.control(''),
+      returnDateTo: this.formBuilder.nonNullable.control(''),
       adults: this.formBuilder.control<number | null>(null),
       children: this.formBuilder.control<number | null>(null),
-      notes: this.formBuilder.control<string>(''),
+      notes: this.formBuilder.nonNullable.control(''),
     },
     { validators: [atLeastOneContactValidator] },
   );
@@ -702,9 +704,9 @@ export class LeadDetailComponent {
     this.savingTravelDetails.set(true);
     this.leadsService
       .update(lead.id, {
-        contactPhone: (this.travelForm.controls.contactPhone.value ?? '').trim() || null,
-        contactEmail: (this.travelForm.controls.contactEmail.value ?? '').trim() || null,
-        contactTelegram: (this.travelForm.controls.contactTelegram.value ?? '').trim() || null,
+        contactPhone: this.travelForm.controls.contactPhone.value.trim() || null,
+        contactEmail: this.travelForm.controls.contactEmail.value.trim() || null,
+        contactTelegram: this.travelForm.controls.contactTelegram.value.trim() || null,
         destination: this.normalizeText(this.travelForm.controls.destination.value),
         departDateFrom: this.normalizeText(this.travelForm.controls.departDateFrom.value),
         departDateTo: this.normalizeText(this.travelForm.controls.departDateTo.value),

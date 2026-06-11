@@ -138,12 +138,7 @@
                 </dd>
               </div>
               <div class="lead-data-row">
-                <dt>
-                  <span class="dt-icon-label">
-                    <mat-icon class="dt-icon">send</mat-icon>
-                    <span>Telegram</span>
-                  </span>
-                </dt>
+                <dt>Telegram</dt>
                 <dd>{{ l.contactTelegram ?? '—' }}</dd>
               </div>
 
@@ -263,12 +258,7 @@
                   <dd>{{ l.contactEmail ?? '—' }}</dd>
                 </div>
                 <div class="lead-data-row">
-                  <dt>
-                    <span class="dt-icon-label">
-                      <mat-icon class="dt-icon">send</mat-icon>
-                      <span>Telegram</span>
-                    </span>
-                  </dt>
+                  <dt>Telegram</dt>
                   <dd>{{ l.contactTelegram ?? '—' }}</dd>
                 </div>
               </dl>
@@ -349,7 +339,7 @@
               </mat-form-field>
 
               @if (showTravelContactGroupError()) {
-                <p class="travel-form-contact-error">
+                <p aria-live="polite" class="travel-form-contact-error" role="alert">
                   Укажите хотя бы один контакт: телефон, email или Telegram.
                 </p>
               }
@@ -460,18 +450,21 @@
             <h2 class="lead-card-title">Бронирование</h2>
             @if (bookingDetail(); as bd) {
               <a class="lead-link" [routerLink]="['/app/bookings', bd.id]">
-                <mat-icon style="vertical-align: middle; font-size: 1rem; width: 1rem; height: 1rem"
-                  >open_in_new</mat-icon
-                >
+                <mat-icon class="booking-open-icon">open_in_new</mat-icon>
                 Открыть
               </a>
             }
           </div>
 
           @if (!linkedBooking()) {
-            <p class="lead-section-empty">Бронирование не найдено.</p>
+            <div class="lead-empty-state">
+              <mat-icon aria-hidden="true" class="lead-empty-icon">calendar_today</mat-icon>
+              <p class="lead-section-empty">Бронирование не найдено.</p>
+            </div>
           } @else if (bookingDetailLoading()) {
-            <p class="lead-section-loading">Загрузка...</p>
+            <div class="lead-section-loading">
+              <mat-spinner diameter="20" />
+            </div>
           } @else if (bookingDetail(); as bd) {
             <dl class="lead-data-list">
               <div class="lead-data-row">
@@ -508,7 +501,10 @@
               }
             </dl>
           } @else {
-            <p class="lead-section-empty">Не удалось загрузить бронирование.</p>
+            <div class="lead-empty-state">
+              <mat-icon aria-hidden="true" class="lead-empty-icon">error_outline</mat-icon>
+              <p class="lead-section-empty">Не удалось загрузить бронирование.</p>
+            </div>
           }
         </section>
 
@@ -518,11 +514,19 @@
           </div>
 
           @if (!linkedBooking()) {
-            <p class="lead-section-empty">Счета доступны после создания бронирования.</p>
+            <div class="lead-empty-state">
+              <mat-icon aria-hidden="true" class="lead-empty-icon">receipt_long</mat-icon>
+              <p class="lead-section-empty">Счета доступны после создания бронирования.</p>
+            </div>
           } @else if (bookingInvoicesLoading()) {
-            <p class="lead-section-loading">Загрузка...</p>
+            <div class="lead-section-loading">
+              <mat-spinner diameter="20" />
+            </div>
           } @else if (bookingInvoices().length === 0) {
-            <p class="lead-section-empty">Счетов пока нет.</p>
+            <div class="lead-empty-state">
+              <mat-icon aria-hidden="true" class="lead-empty-icon">receipt</mat-icon>
+              <p class="lead-section-empty">Счетов пока нет.</p>
+            </div>
           } @else {
             <app-lead-invoices-table
               class="invoices-table-wrap"
@@ -579,7 +583,5 @@
         </section>
       }
     </app-page-content>
-  } @else {
-    <p class="lead-not-found">Лид не найден.</p>
   }
 </app-loading-state>
