@@ -156,3 +156,10 @@ Issues are auto-added to the **TravelOps v1** project board (#6) when opened. Wh
 ### Translations
 
 - Use "Связанное лицо" instead of "Иждивенец"
+
+## Working Style
+
+- **State assumptions explicitly** — if the task is ambiguous (e.g., dialog vs. page, signal vs. observable), name the interpretation chosen and why before writing code. If the ambiguity is material, ask first.
+- **Surgical changes only** — touch only what the task requires. No drive-by refactoring, renaming, or "while I'm here" cleanups unless explicitly requested.
+- **No speculative abstractions** — don't extract a shared component, service, or utility unless it is used in two or more places right now.
+- **Stop when confused** — if the BA spec and the existing code contradict each other, surface the conflict instead of picking silently and running with it.
