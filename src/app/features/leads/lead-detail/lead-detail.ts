@@ -33,6 +33,7 @@ import {
 } from '@app/features/leads/delete-lead-dialog/delete-lead-dialog';
 import { LeadDetailHeaderComponent } from '@app/features/leads/lead-detail/lead-detail-header/lead-detail-header';
 import { LeadDetailOffersSectionComponent } from '@app/features/leads/lead-detail/lead-detail-offers-section/lead-detail-offers-section';
+import { LeadJourneyStepperComponent } from '@app/features/leads/lead-detail/lead-journey-stepper/lead-journey-stepper';
 import { LeadInvoicesTableComponent } from '@app/features/leads/lead-detail/lead-invoices-table/lead-invoices-table';
 import { LinkLeadClientDialogComponent } from '@app/features/leads/link-lead-client-dialog/link-lead-client-dialog';
 import { PromoteLeadClientDialogComponent } from '@app/features/leads/promote-lead-client-dialog/promote-lead-client-dialog';
@@ -168,6 +169,7 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     BookingStatusChipComponent,
     LeadDetailHeaderComponent,
     LeadDetailOffersSectionComponent,
+    LeadJourneyStepperComponent,
     LeadInvoicesTableComponent,
     MarkdownPipe,
     LoadingStateComponent,

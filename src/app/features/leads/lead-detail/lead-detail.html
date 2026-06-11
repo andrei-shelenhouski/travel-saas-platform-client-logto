@@ -27,6 +27,17 @@
       (editDetailsClicked)="startEditTravelDetails()"
     />
 
+    <app-lead-journey-stepper
+      [booking]="bookingDetail()"
+      [canCreateOffer]="permissions.canCreateOffer() && !isTerminalLead()"
+      [lead]="l"
+      [offers]="offers()"
+      [statusActionLoading]="statusActionLoading()"
+      [visibleActions]="visibleActions()"
+      (actionClicked)="applyAction($event)"
+      (createOfferClicked)="openNewOffer()"
+    />
+
     <app-page-content>
       <div class="lead-grid">
         <section class="lead-card">
@@ -438,6 +449,7 @@
         </section>
 
         <app-lead-detail-offers-section
+          id="lead-offers-section"
           [canCreateOffer]="permissions.canCreateOffer() && !isTerminalLead()"
           [offers]="offers()"
           (createOfferClicked)="openNewOffer()"
