@@ -16,17 +16,28 @@
 </app-page-heading>
 
 <div class="persons-list-body">
-  <mat-form-field class="search-field" subscriptSizing="dynamic">
-    <mat-label>Поиск</mat-label>
-    <input
-      matInput
-      placeholder="Поиск по имени, телефону, номеру паспорта…"
-      [formControl]="searchControl"
-    />
-    <mat-icon matSuffix>search</mat-icon>
-  </mat-form-field>
-
   <div class="filter-bar">
+    <mat-form-field class="search-field" subscriptSizing="dynamic">
+      <mat-label>Поиск</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        autocomplete="off"
+        matInput
+        placeholder="Имя, телефон, номер паспорта…"
+        [formControl]="searchControl"
+      />
+      @if (searchControl.value) {
+        <button
+          aria-label="Очистить поиск"
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="searchControl.setValue('')"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
     <mat-form-field subscriptSizing="dynamic">
       <mat-label>Тип</mat-label>
       <mat-select [value]="typeFilter() ?? ''" (valueChange)="onTypeFilterChange($event)">
