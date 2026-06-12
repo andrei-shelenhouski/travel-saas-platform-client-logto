@@ -1,13 +1,6 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import {
-  Auth,
-  signOut as firebaseSignOut,
-  getIdTokenResult,
-  GoogleAuthProvider,
-  signInWithPopup,
-  user,
-} from '@angular/fire/auth';
+import { Auth, getIdTokenResult, GoogleAuthProvider, signInWithRedirect, signOut as firebaseSignOut, user } from '@angular/fire/auth';
 
 import { catchError, from, of, switchMap } from 'rxjs';
 
@@ -50,7 +43,7 @@ export class AuthService {
 
   async signIn(): Promise<void> {
     this.provider.setCustomParameters({ prompt: 'select_account' });
-    await signInWithPopup(this.auth, this.provider);
+    await signInWithRedirect(this.auth, this.provider);
   }
 
   signOut(): Promise<void> {
