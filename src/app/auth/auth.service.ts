@@ -8,7 +8,7 @@ import {
   isSignInWithEmailLink,
   sendSignInLinkToEmail,
   signInWithEmailLink,
-  signInWithPopup,
+  signInWithRedirect,
   user,
 } from '@angular/fire/auth';
 
@@ -54,7 +54,7 @@ export class AuthService {
   async signIn(): Promise<void> {
     this.provider.setCustomParameters({ prompt: 'select_account' });
 
-    await signInWithPopup(this.auth, this.provider);
+    await signInWithRedirect(this.auth, this.provider);
   }
 
   async sendSignInLink(email: string): Promise<void> {
