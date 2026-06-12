@@ -27,9 +27,10 @@ import {
 } from '@angular/fire/auth';
 import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_FORM_FIELD_DEFAULT_OPTIONS } from '@angular/material/form-field';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import { provideRouter, TitleStrategy, withComponentInputBinding } from '@angular/router';
 
 import { routes } from '@app/app.routes';
+import { NavioTitleStrategy } from '@app/core/navio-title.strategy';
 import { errorHandlerInterceptor, orgAuthInterceptor } from '@app/interceptors/index';
 import { environment } from '@environments/environment';
 
@@ -70,6 +71,7 @@ export const appConfig: ApplicationConfig = {
         appearance: 'outline',
       },
     },
+    { provide: TitleStrategy, useClass: NavioTitleStrategy },
     {
       provide: LOCALE_ID,
       useValue: 'ru-BY',

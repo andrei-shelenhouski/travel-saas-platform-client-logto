@@ -9,6 +9,7 @@ import {
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -110,6 +111,7 @@ export class InvoiceDetailComponent {
   private readonly dialog = inject(MatDialog);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly titleService = inject(Title);
   readonly permissions = inject(PermissionService);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
@@ -150,6 +152,15 @@ export class InvoiceDetailComponent {
   // ---- Derived state ----
 
   readonly invoice = computed(() => this.data.value() ?? null);
+
+  private readonly _titleEffect = effect(() => {
+    const inv = this.invoice();
+
+    if (inv?.number) {
+      this.titleService.setTitle(`Счёт ${inv.number} — Navio`);
+    }
+  });
+
   readonly loading = computed(() => this.data.isLoading());
   readonly timelineItems = computed(() => this.activitiesData.value() ?? []);
 

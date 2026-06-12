@@ -1,10 +1,18 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EMPTY, forkJoin } from 'rxjs';
@@ -96,6 +104,7 @@ export class PersonDetailComponent {
   private readonly dialog = inject(MatDialog);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly titleService = inject(Title);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((params) => params.get('id'))));
 
@@ -128,6 +137,16 @@ export class PersonDetailComponent {
   });
 
   protected readonly person = computed(() => this.personData.value()?.person ?? null);
+
+  private readonly _titleEffect = effect(() => {
+    const p = this.person();
+    const name = [p?.lastName, p?.firstName].filter(Boolean).join(' ');
+
+    if (name) {
+      this.titleService.setTitle(`${name} — Navio`);
+    }
+  });
+
   protected readonly relationships = computed(
     () => this.personData.value()?.familyContext.relationships ?? [],
   );

@@ -3,10 +3,12 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   OnInit,
   signal,
 } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -43,8 +45,17 @@ export class ContractViewPageComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly titleService = inject(Title);
 
   readonly contract = signal<ContractResponseDto | null>(null);
+
+  private readonly _titleEffect = effect(() => {
+    const c = this.contract();
+
+    if (c?.contractNumber) {
+      this.titleService.setTitle(`Договор ${c.contractNumber} — Navio`);
+    }
+  });
   readonly loading = signal(true);
   readonly error = signal('');
 

@@ -7,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -81,6 +82,7 @@ export class ClientDetailComponent {
   private readonly commentsService = inject(CommentsService);
   private readonly tagsService = inject(TagsService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly titleService = inject(Title);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
 
@@ -130,6 +132,15 @@ export class ClientDetailComponent {
 
   readonly typeLabel = TYPE_LABEL;
   readonly client = computed(() => this.data.value() ?? null);
+
+  private readonly _titleEffect = effect(() => {
+    const c = this.client();
+
+    if (c?.fullName) {
+      this.titleService.setTitle(`${c.fullName} — Navio`);
+    }
+  });
+
   readonly loading = computed(() => this.data.isLoading());
   readonly tagsLoading = computed(() => this.entityTagsData.isLoading());
   readonly tagsSaveLoading = signal(false);

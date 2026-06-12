@@ -1,14 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AuthService } from '@app/auth/auth.service';
 
 @Component({
   selector: 'app-login',
-  imports: [MatProgressSpinnerModule, MatButtonModule],
+  imports: [MatProgressSpinnerModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,15 +14,11 @@ import { AuthService } from '@app/auth/auth.service';
 export class LoginComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly router = inject(Router);
-  private readonly title = inject(Title);
 
   readonly isLoading = signal(false);
-
   readonly errorMessage = signal<string | null>(null);
 
   async ngOnInit(): Promise<void> {
-    this.title.setTitle('Sign In — TravelOps');
-
     if (await this.authService.hasAuthenticatedUser()) {
       void this.router.navigate(['/onboarding/check']);
     }
@@ -41,11 +35,11 @@ export class LoginComponent implements OnInit {
       const code = (error as { code?: string }).code;
 
       if (code === 'auth/popup-blocked') {
-        this.errorMessage.set('Please allow popups for this site and try again.');
+        this.errorMessage.set('Разрешите всплывающие окна для этого сайта и попробуйте снова.');
       } else if (code === 'auth/popup-closed-by-user' || code === 'auth/cancelled-popup-request') {
         this.errorMessage.set(null);
       } else {
-        this.errorMessage.set('Sign-in failed. Please try again.');
+        this.errorMessage.set('Ошибка входа. Попробуйте ещё раз.');
       }
     } finally {
       this.isLoading.set(false);

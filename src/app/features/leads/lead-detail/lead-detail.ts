@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -192,6 +193,7 @@ export class LeadDetailComponent {
   private readonly clientsService = inject(ClientsService);
   private readonly bookingsService = inject(BookingsService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly titleService = inject(Title);
 
   protected readonly permissions = inject(PermissionService);
 
@@ -283,6 +285,15 @@ export class LeadDetailComponent {
   protected readonly lead = computed(
     () => this.travelDetailsData() ?? this.data.value()?.lead ?? null,
   );
+
+  private readonly _titleEffect = effect(() => {
+    const lead = this.lead();
+
+    if (lead?.number) {
+      this.titleService.setTitle(`Заявка ${lead.number} — Navio`);
+    }
+  });
+
   protected readonly clientContacts = computed(() => this.clientContactsData.value() ?? []);
   protected readonly contactPerson = computed(() => {
     const cpId = this.lead()?.contactPersonId;

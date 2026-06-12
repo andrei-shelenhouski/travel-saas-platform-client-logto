@@ -9,6 +9,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
@@ -94,6 +95,7 @@ export class BookingDetailComponent {
   private readonly permissions = inject(PermissionService);
   private readonly personsService = inject(PersonsService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly titleService = inject(Title);
   private readonly dialog = inject(MatDialog);
 
   readonly BookingStatus = BookingStatus;
@@ -137,6 +139,15 @@ export class BookingDetailComponent {
   });
 
   readonly booking = computed(() => this.allData.value()?.booking ?? null);
+
+  private readonly _titleEffect = effect(() => {
+    const b = this.booking();
+
+    if (b?.number) {
+      this.titleService.setTitle(`Бронирование ${b.number} — Navio`);
+    }
+  });
+
   readonly invoices = computed(() => this.allData.value()?.invoices ?? []);
   readonly documents = computed(() => this.allData.value()?.documents ?? []);
   readonly travelers = computed(() => this.allData.value()?.travelers ?? []);

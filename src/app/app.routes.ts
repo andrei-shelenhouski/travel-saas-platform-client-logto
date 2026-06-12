@@ -10,12 +10,7 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    loadComponent: () =>
-      import('@app/pages/landing/landing.component').then((m) => m.LandingComponent),
-  },
-  {
-    path: 'home',
-    loadComponent: () => import('@app/pages/home/home.component').then((m) => m.HomeComponent),
+    redirectTo: 'login',
   },
   {
     path: 'callback',
@@ -28,6 +23,7 @@ export const routes: Routes = [
     children: [
       {
         path: 'check',
+        title: 'Подключение',
         loadComponent: () =>
           import('@app/features/onboarding/onboarding-check/onboarding-check').then(
             (m) => m.OnboardingCheckComponent,
@@ -35,6 +31,7 @@ export const routes: Routes = [
       },
       {
         path: 'create-organization',
+        title: 'Создание организации',
         loadComponent: () =>
           import('@app/features/onboarding/create-organization/create-organization').then(
             (m) => m.CreateOrganizationComponent,
@@ -42,6 +39,7 @@ export const routes: Routes = [
       },
       {
         path: 'select-organization',
+        title: 'Выбор организации',
         loadComponent: () =>
           import('@app/features/onboarding/select-organization/select-organization').then(
             (m) => m.SelectOrganizationComponent,
@@ -56,6 +54,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
+        title: 'Выбор организации',
         loadComponent: () =>
           import('@app/features/onboarding/select-organization/select-organization').then(
             (m) => m.SelectOrganizationComponent,
@@ -100,12 +99,14 @@ export const routes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
         path: 'dashboard',
+        title: 'Главная',
         loadComponent: () =>
           import('@app/features/dashboard/dashboard').then((m) => m.DashboardComponent),
       },
       // Leads
       {
         path: 'leads/new',
+        title: 'Новая заявка',
         canActivate: [permissionGuard],
         data: { permission: PermissionKey.LEADS_CREATE },
         loadComponent: () =>
@@ -113,6 +114,7 @@ export const routes: Routes = [
       },
       {
         path: 'leads/kanban',
+        title: 'Заявки — Канбан',
         loadComponent: () =>
           import('@app/features/leads/leads-kanban/leads-kanban').then(
             (m) => m.LeadsKanbanComponent,
@@ -120,17 +122,20 @@ export const routes: Routes = [
       },
       {
         path: 'leads/:id',
+        title: 'Заявка',
         loadComponent: () =>
           import('@app/features/leads/lead-detail/lead-detail').then((m) => m.LeadDetailComponent),
       },
       {
         path: 'leads',
+        title: 'Заявки',
         loadComponent: () =>
           import('@app/features/leads/leads-list/leads-list').then((m) => m.LeadsListComponent),
       },
-      // Clients: /app/clients/:id
+      // Clients
       {
         path: 'clients/new',
+        title: 'Новый клиент',
         loadComponent: () =>
           import('@app/features/clients/create-client-page/create-client-page').then(
             (m) => m.CreateClientPageComponent,
@@ -138,6 +143,7 @@ export const routes: Routes = [
       },
       {
         path: 'clients/:id/edit',
+        title: 'Редактирование клиента',
         loadComponent: () =>
           import('@app/features/clients/edit-client-page/edit-client-page').then(
             (m) => m.EditClientPageComponent,
@@ -145,6 +151,7 @@ export const routes: Routes = [
       },
       {
         path: 'clients/:id',
+        title: 'Клиент',
         loadComponent: () =>
           import('@app/features/clients/client-detail/client-detail').then(
             (m) => m.ClientDetailComponent,
@@ -152,6 +159,7 @@ export const routes: Routes = [
       },
       {
         path: 'persons/:id/edit',
+        title: 'Редактирование контакта',
         loadComponent: () =>
           import('@app/features/clients/edit-person-page/edit-person-page').then(
             (m) => m.EditPersonPageComponent,
@@ -159,6 +167,7 @@ export const routes: Routes = [
       },
       {
         path: 'persons/:id',
+        title: 'Контакт',
         loadComponent: () =>
           import('@app/features/clients/person-detail/person-detail').then(
             (m) => m.PersonDetailComponent,
@@ -166,6 +175,7 @@ export const routes: Routes = [
       },
       {
         path: 'clients',
+        title: 'Клиенты',
         loadComponent: () =>
           import('@app/features/clients/clients-list/clients-list').then(
             (m) => m.ClientsListComponent,
@@ -174,6 +184,7 @@ export const routes: Routes = [
       // Persons listing
       {
         path: 'persons',
+        title: 'Контакты',
         canActivate: [permissionGuard],
         data: { permission: PermissionKey.PERSONS_READ },
         loadComponent: () =>
@@ -184,6 +195,7 @@ export const routes: Routes = [
       // Contracts
       {
         path: 'contracts/new',
+        title: 'Новый договор',
         canActivate: [permissionGuard],
         data: { permission: PermissionKey.CONTRACTS_CREATE },
         loadComponent: () =>
@@ -193,6 +205,7 @@ export const routes: Routes = [
       },
       {
         path: 'contracts/:id/edit',
+        title: 'Редактирование договора',
         canActivate: [permissionGuard],
         data: { permission: PermissionKey.CONTRACTS_UPDATE },
         loadComponent: () =>
@@ -202,6 +215,7 @@ export const routes: Routes = [
       },
       {
         path: 'contracts/:id',
+        title: 'Договор',
         canActivate: [permissionGuard],
         data: { permission: PermissionKey.CONTRACTS_VIEW },
         loadComponent: () =>
@@ -211,6 +225,7 @@ export const routes: Routes = [
       },
       {
         path: 'contracts',
+        title: 'Договоры',
         canActivate: [permissionGuard],
         data: { permission: PermissionKey.CONTRACTS_VIEW },
         loadComponent: () =>
@@ -218,9 +233,10 @@ export const routes: Routes = [
             (m) => m.ContractsListComponent,
           ),
       },
-      // Offers: /app/offers/:id (more specific first)
+      // Offers
       {
         path: 'offers/new',
+        title: 'Новое предложение',
         canActivate: [permissionGuard],
         data: { permission: PermissionKey.OFFERS_CREATE },
         canDeactivate: [pendingChangesGuard],
@@ -231,6 +247,7 @@ export const routes: Routes = [
       },
       {
         path: 'offers/kanban',
+        title: 'Предложения — Канбан',
         loadComponent: () =>
           import('@app/features/offers/offers-kanban/offers-kanban').then(
             (m) => m.OffersKanbanComponent,
@@ -238,12 +255,14 @@ export const routes: Routes = [
       },
       {
         path: 'offers/:id/edit',
+        title: 'Редактирование предложения',
         canDeactivate: [pendingChangesGuard],
         loadComponent: () =>
           import('@app/features/offers/offer-edit/offer-edit').then((m) => m.OfferEditComponent),
       },
       {
         path: 'offers/:id',
+        title: 'Предложение',
         loadComponent: () =>
           import('@app/features/offers/offer-detail/offer-detail').then(
             (m) => m.OfferDetailComponent,
@@ -251,12 +270,14 @@ export const routes: Routes = [
       },
       {
         path: 'offers',
+        title: 'Предложения',
         loadComponent: () =>
           import('@app/features/offers/offers-list/offers-list').then((m) => m.OffersListComponent),
       },
-      // Bookings: /app/bookings/:id
+      // Bookings
       {
         path: 'bookings/new',
+        title: 'Новое бронирование',
         canActivate: [permissionGuard],
         data: { permission: PermissionKey.BOOKINGS_UPDATE },
         loadComponent: () =>
@@ -266,6 +287,7 @@ export const routes: Routes = [
       },
       {
         path: 'bookings/:id',
+        title: 'Бронирование',
         loadComponent: () =>
           import('@app/features/bookings/booking-detail/booking-detail').then(
             (m) => m.BookingDetailComponent,
@@ -273,6 +295,7 @@ export const routes: Routes = [
       },
       {
         path: 'bookings',
+        title: 'Бронирования',
         loadComponent: () =>
           import('@app/features/bookings/bookings-list/bookings-list').then(
             (m) => m.BookingsListComponent,
@@ -281,6 +304,7 @@ export const routes: Routes = [
       // Invoices
       {
         path: 'invoices/new',
+        title: 'Новый счёт',
         canActivate: [permissionGuard],
         data: { permission: PermissionKey.INVOICES_CREATE },
         canDeactivate: [pendingChangesGuard],
@@ -291,6 +315,7 @@ export const routes: Routes = [
       },
       {
         path: 'invoices/:id/edit',
+        title: 'Редактирование счёта',
         canActivate: [permissionGuard],
         data: { permission: PermissionKey.INVOICES_CREATE },
         canDeactivate: [pendingChangesGuard],
@@ -301,6 +326,7 @@ export const routes: Routes = [
       },
       {
         path: 'invoices/:id',
+        title: 'Счёт',
         canActivate: [permissionGuard],
         data: { permission: PermissionKey.INVOICES_VIEW },
         loadComponent: () =>
@@ -310,6 +336,7 @@ export const routes: Routes = [
       },
       {
         path: 'invoices',
+        title: 'Счета',
         canActivate: [permissionGuard],
         data: { permission: PermissionKey.INVOICES_VIEW },
         loadComponent: () =>
@@ -317,8 +344,10 @@ export const routes: Routes = [
             (m) => m.InvoicesListComponent,
           ),
       },
+      // Settings
       {
         path: 'settings',
+        title: 'Настройки компании',
         loadComponent: () =>
           import('@app/features/settings/company-profile/company-profile').then(
             (m) => m.CompanyProfileComponent,
@@ -329,6 +358,7 @@ export const routes: Routes = [
       },
       {
         path: 'settings/users',
+        title: 'Пользователи',
         loadComponent: () =>
           import('@app/features/admin/users-management/users-management').then(
             (m) => m.UsersManagementComponent,
@@ -338,6 +368,7 @@ export const routes: Routes = [
       },
       {
         path: 'settings/integrations',
+        title: 'Интеграции',
         loadComponent: () =>
           import('@app/features/settings/tourvisor-integration-card/tourvisor-integration-card').then(
             (m) => m.TourvisorIntegrationCardComponent,
@@ -347,6 +378,7 @@ export const routes: Routes = [
       },
       {
         path: 'settings/custom-fields',
+        title: 'Настраиваемые поля',
         loadComponent: () =>
           import('@app/features/settings/custom-fields/custom-fields').then(
             (m) => m.CustomFieldsSettingsComponent,
@@ -356,6 +388,7 @@ export const routes: Routes = [
       },
       {
         path: 'settings/roles',
+        title: 'Роли и права',
         loadComponent: () =>
           import('@app/features/settings/roles-permissions/roles-permissions').then(
             (m) => m.RolesPermissionsComponent,
@@ -365,6 +398,7 @@ export const routes: Routes = [
       },
       {
         path: 'organizations/new',
+        title: 'Создание организации',
         loadComponent: () =>
           import('@app/features/onboarding/create-organization/create-organization').then(
             (m) => m.CreateOrganizationComponent,
@@ -379,7 +413,8 @@ export const routes: Routes = [
   },
   {
     path: 'login',
+    title: 'Вход',
     loadComponent: () => import('@app/pages/login/login.component').then((m) => m.LoginComponent),
   },
-  { path: '**', redirectTo: '' },
+  { path: '**', redirectTo: 'login' },
 ];

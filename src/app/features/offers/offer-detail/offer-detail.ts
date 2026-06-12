@@ -8,6 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
@@ -104,6 +105,7 @@ export class OfferDetailComponent {
   private readonly dialog = inject(MatDialog);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly titleService = inject(Title);
   private readonly permissions = inject(PermissionService);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
@@ -152,6 +154,14 @@ export class OfferDetailComponent {
   );
   protected readonly pageTitle = computed(() => `Предложение ${this.displayOfferNumber()}`);
   protected readonly pageSubtitle = 'Детали предложения';
+
+  private readonly _titleEffect = effect(() => {
+    const title = this.pageTitle();
+
+    if (this.offer()) {
+      this.titleService.setTitle(`${title} — Navio`);
+    }
+  });
   protected readonly displayVersion = computed(() => `v${this.offer()?.version ?? 1}`);
   protected readonly canSeeInternalNotes = computed(() => this.permissions.canViewAllOffers());
   protected readonly hasVersionHistory = computed(() => !!this.offer()?.previousVersionId);
