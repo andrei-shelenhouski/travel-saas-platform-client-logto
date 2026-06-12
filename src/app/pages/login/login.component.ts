@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
-import { Router } from '@angular/router';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { Router } from '@angular/router';
 
 import { AuthService } from '@app/auth/auth.service';
 
@@ -32,6 +32,7 @@ export class LoginComponent implements OnInit {
       await this.authService.signIn();
       await this.router.navigate(['/onboarding/check']);
     } catch (error: unknown) {
+      console.log('Login error:', { error });
       const code = (error as { code?: string }).code;
 
       if (code === 'auth/popup-blocked') {
