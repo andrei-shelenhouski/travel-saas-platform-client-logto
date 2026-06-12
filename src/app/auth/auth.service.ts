@@ -1,6 +1,16 @@
 import { computed, inject, Injectable } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { Auth, getIdTokenResult, GoogleAuthProvider, signInWithRedirect, signOut as firebaseSignOut, user } from '@angular/fire/auth';
+import {
+  Auth,
+  signOut as firebaseSignOut,
+  getIdTokenResult,
+  GoogleAuthProvider,
+  isSignInWithEmailLink,
+  sendSignInLinkToEmail,
+  signInWithEmailLink,
+  signInWithRedirect,
+  user,
+} from '@angular/fire/auth';
 
 import { catchError, from, of, switchMap } from 'rxjs';
 
@@ -43,7 +53,31 @@ export class AuthService {
 
   async signIn(): Promise<void> {
     this.provider.setCustomParameters({ prompt: 'select_account' });
+
     await signInWithRedirect(this.auth, this.provider);
+  }
+
+  async sendSignInLink(email: string): Promise<void> {
+    await sendSignInLinkToEmail(this.auth, email, {
+      url: `${window.location.origin}/callback`,
+      handleCodeInApp: true,
+    });
+    localStorage.setItem('emailForSignIn', email);
+  }
+
+  async completeEmailLinkSignIn(): Promise<boolean> {
+    if (!isSignInWithEmailLink(this.auth, window.location.href)) {
+      return false;
+    }
+    const email = localStorage.getItem('emailForSignIn');
+
+    if (!email) {
+      return false;
+    }
+    await signInWithEmailLink(this.auth, email, window.location.href);
+    localStorage.removeItem('emailForSignIn');
+
+    return true;
   }
 
   signOut(): Promise<void> {

@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 
 import { EMPTY, switchMap, take } from 'rxjs';
 
+import { AuthService } from '@app/auth/auth.service';
 import { MeService } from '@app/services/me.service';
 
 @Component({
@@ -14,10 +15,18 @@ import { MeService } from '@app/services/me.service';
 })
 export class CallbackComponent implements OnInit {
   private readonly auth = inject(Auth);
+  private readonly authService = inject(AuthService);
   private readonly meService = inject(MeService);
   private readonly router = inject(Router);
 
   ngOnInit(): void {
+    this.authService
+      .completeEmailLinkSignIn()
+      .catch(() => false)
+      .then(() => this.proceedWithAuthCheck());
+  }
+
+  private proceedWithAuthCheck(): void {
     authState(this.auth)
       .pipe(
         take(1),
