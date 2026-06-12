@@ -8,7 +8,7 @@ import {
   isSignInWithEmailLink,
   sendSignInLinkToEmail,
   signInWithEmailLink,
-  signInWithRedirect,
+  signInWithPopup,
   user,
 } from '@angular/fire/auth';
 
@@ -54,19 +54,19 @@ export class AuthService {
   async signIn(): Promise<void> {
     this.provider.setCustomParameters({ prompt: 'select_account' });
 
-    await signInWithRedirect(this.auth, this.provider);
+    await signInWithPopup(this.auth, this.provider);
   }
 
   async sendSignInLink(email: string): Promise<void> {
     await sendSignInLinkToEmail(this.auth, email, {
-      url: `${window.location.origin}/callback`,
+      url: `${globalThis.location.origin}/callback`,
       handleCodeInApp: true,
     });
     localStorage.setItem('emailForSignIn', email);
   }
 
   async completeEmailLinkSignIn(): Promise<boolean> {
-    if (!isSignInWithEmailLink(this.auth, window.location.href)) {
+    if (!isSignInWithEmailLink(this.auth, globalThis.location.href)) {
       return false;
     }
     const email = localStorage.getItem('emailForSignIn');
@@ -74,7 +74,7 @@ export class AuthService {
     if (!email) {
       return false;
     }
-    await signInWithEmailLink(this.auth, email, window.location.href);
+    await signInWithEmailLink(this.auth, email, globalThis.location.href);
     localStorage.removeItem('emailForSignIn');
 
     return true;
