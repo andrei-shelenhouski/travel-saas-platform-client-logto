@@ -5,11 +5,23 @@
 // custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 @use 'sass:map';
-@use 'theme-colors' as theme-colors;
+@use 'cobalt-theme-colors' as theme-colors;
 
 html {
   height: 100%;
   font-family: 'Montserrat', sans-serif;
+
+  // Primary color scale — derived from the Material palette at Sass build time.
+  --color-primary-50: #{map.get(theme-colors.$primary-palette, 95)};
+  --color-primary-100: #{map.get(theme-colors.$primary-palette, 90)};
+  --color-primary-200: #{map.get(theme-colors.$primary-palette, 80)};
+  --color-primary-300: #{map.get(theme-colors.$primary-palette, 70)};
+  --color-primary-400: #{map.get(theme-colors.$primary-palette, 60)};
+  --color-primary-500: #{map.get(theme-colors.$primary-palette, 40)};
+  --color-primary-600: #{map.get(theme-colors.$primary-palette, 30)};
+  --color-primary-700: #{map.get(theme-colors.$primary-palette, 20)};
+  --color-primary-800: #{map.get(theme-colors.$primary-palette, 10)};
+  --color-primary-900: #{map.get(theme-colors.$primary-palette, 0)};
 
   @include mat.theme(
     (

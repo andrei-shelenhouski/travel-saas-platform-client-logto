@@ -1,132 +1,131 @@
-<mat-drawer-container class="layout-container">
-  <mat-drawer
-    class="sidebar"
-    [mode]="isMobile() ? 'over' : 'side'"
-    [opened]="isMobile() ? mobileDrawerOpen() : true"
-    (closedStart)="mobileDrawerOpen.set(false)"
-  >
-    <div class="logo">
-      <img alt="Logo" class="logo-image" src="/assets/logo-dark.png" />
+<div class="app-shell">
+  <mat-toolbar class="app-toolbar">
+    <div class="toolbar-start">
+      <button
+        aria-label="Открыть меню"
+        class="hamburger-btn"
+        mat-icon-button
+        type="button"
+        (click)="toggleDrawer()"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      <span class="logo-text">Navio ◆</span>
+
+      <button
+        #orgMenuTrigger="matMenuTrigger"
+        mat-button
+        type="button"
+        [matMenuTriggerFor]="orgMenu"
+        (menuOpened)="onOrgMenuOpened()"
+      >
+        <mat-icon>business</mat-icon>
+        <span class="org-name-label">{{ activeOrgName }}</span>
+        <mat-icon iconPositionEnd>expand_more</mat-icon>
+      </button>
+      <mat-menu #orgMenu="matMenu">
+        @if (orgSwitcherLoading()) {
+          <button disabled mat-menu-item type="button">
+            <span class="org-menu-loading">
+              <span aria-hidden="true" class="material-icons org-menu-spinner">sync</span>
+              <span>Загрузка организаций…</span>
+            </span>
+          </button>
+        } @else {
+          @for (org of organizations(); track org.organizationId) {
+            <button
+              mat-menu-item
+              type="button"
+              [class.org-item-active]="org.organizationId === activeOrgId"
+              (click)="switchOrganization(org)"
+            >
+              <mat-icon>business</mat-icon>
+              <span class="org-item-content">
+                <span class="org-item-info">
+                  <span class="org-item-name">{{ org.organizationName }}</span>
+                  <span class="org-item-role">{{ orgRoleLabel(org) }}</span>
+                </span>
+                @if (org.organizationId === activeOrgId) {
+                  <mat-icon class="org-item-check" fontSet="material-icons">check</mat-icon>
+                }
+              </span>
+            </button>
+          }
+          @if (organizations().length === 0) {
+            <button disabled mat-menu-item type="button">
+              <span>Нет других организаций</span>
+            </button>
+          }
+        }
+        <mat-divider />
+        <a mat-menu-item routerLink="/app/organizations/new">
+          <mat-icon fontSet="material-icons">add</mat-icon>
+          <span>Добавить организацию</span>
+        </a>
+      </mat-menu>
     </div>
 
-    <!-- Navigation links -->
-    <mat-nav-list class="sidebar-nav">
-      @for (link of navLinks(); track link.path) {
-        <a
-          #rla="routerLinkActive"
-          mat-list-item
-          routerLinkActive
-          [activated]="rla.isActive"
-          [class.nav-item-section-margin]="link.sectionMargin"
-          [routerLink]="link.path"
-          [routerLinkActiveOptions]="{ exact: true }"
-        >
-          <mat-icon fontSet="material-icons" matListItemIcon>{{ link.icon }}</mat-icon>
-          <span matListItemTitle>{{ link.label }}</span>
-        </a>
+    <div class="toolbar-end">
+      @if (userPicture(); as userPicture) {
+        <img
+          class="user-avatar"
+          [alt]="userDisplay()"
+          [src]="userPicture"
+        />
+      } @else {
+        <div class="user-avatar-initials">
+          {{ userInitial() }}
+        </div>
       }
-    </mat-nav-list>
-  </mat-drawer>
+      <span class="user-display-name">{{ userDisplay() }}</span>
+      <span
+        class="role-badge"
+        [class.role-badge--admin]="permissions.roleLabel() === 'Admin'"
+        [class.role-badge--agent]="permissions.roleLabel() === 'Agent'"
+        [class.role-badge--viewer]="permissions.roleLabel() !== 'Admin' && permissions.roleLabel() !== 'Agent'"
+      >
+        {{ permissions.roleLabel() }}
+      </span>
+      <button class="logout-button" mat-button type="button" (click)="logout()">
+        <span aria-hidden="true" class="material-icons logout-icon">logout</span>
+        <span class="logout-label">Выйти</span>
+      </button>
+    </div>
+  </mat-toolbar>
 
-  <mat-drawer-content>
-    <div class="drawer-content-wrap">
-      <header class="app-header">
-        <div class="header-start">
-          <button
-            aria-label="Открыть меню"
-            class="hamburger-btn"
-            mat-icon-button
-            type="button"
-            (click)="toggleDrawer()"
+  <mat-drawer-container class="layout-container">
+    <mat-drawer
+      class="sidebar"
+      [mode]="isMobile() ? 'over' : 'side'"
+      [opened]="isMobile() ? mobileDrawerOpen() : true"
+      (closedStart)="mobileDrawerOpen.set(false)"
+    >
+      <!-- Navigation links -->
+      <mat-nav-list class="sidebar-nav">
+        @for (link of navLinks(); track link.path) {
+          <a
+            #rla="routerLinkActive"
+            mat-list-item
+            routerLinkActive
+            [activated]="rla.isActive"
+            [class.nav-item-section-margin]="link.sectionMargin"
+            [routerLink]="link.path"
+            [routerLinkActiveOptions]="{ exact: true }"
           >
-            <mat-icon>menu</mat-icon>
-          </button>
+            <mat-icon fontSet="material-icons" matListItemIcon>{{ link.icon }}</mat-icon>
+            <span matListItemTitle>{{ link.label }}</span>
+          </a>
+        }
+      </mat-nav-list>
+    </mat-drawer>
 
-          <button
-            #orgMenuTrigger="matMenuTrigger"
-            mat-button
-            type="button"
-            [matMenuTriggerFor]="orgMenu"
-            (menuOpened)="onOrgMenuOpened()"
-          >
-            <mat-icon>business</mat-icon>
-            <span class="org-name-label">{{ activeOrgName }}</span>
-            <mat-icon iconPositionEnd>expand_more</mat-icon>
-          </button>
-          <mat-menu #orgMenu="matMenu">
-            @if (orgSwitcherLoading()) {
-              <button disabled mat-menu-item type="button">
-                <span class="org-menu-loading">
-                  <span aria-hidden="true" class="material-icons org-menu-spinner">sync</span>
-                  <span>Загрузка организаций…</span>
-                </span>
-              </button>
-            } @else {
-              @for (org of organizations(); track org.organizationId) {
-                <button
-                  mat-menu-item
-                  type="button"
-                  [class.org-item-active]="org.organizationId === activeOrgId"
-                  (click)="switchOrganization(org)"
-                >
-                  <mat-icon>business</mat-icon>
-                  <span class="org-item-content">
-                    <span class="org-item-info">
-                      <span class="org-item-name">{{ org.organizationName }}</span>
-                      <span class="org-item-role">{{ orgRoleLabel(org) }}</span>
-                    </span>
-                    @if (org.organizationId === activeOrgId) {
-                      <mat-icon class="org-item-check" fontSet="material-icons">check</mat-icon>
-                    }
-                  </span>
-                </button>
-              }
-              @if (organizations().length === 0) {
-                <button disabled mat-menu-item type="button">
-                  <span>Нет других организаций</span>
-                </button>
-              }
-            }
-            <mat-divider />
-            <a mat-menu-item routerLink="/app/organizations/new">
-              <mat-icon fontSet="material-icons">add</mat-icon>
-              <span>Добавить организацию</span>
-            </a>
-          </mat-menu>
-        </div>
-
-        <div class="header-user">
-          @if (userPicture(); as userPicture) {
-            <img
-              class="user-avatar"
-              [alt]="userDisplay()"
-              [src]="userPicture"
-            />
-          } @else {
-            <div class="user-avatar-initials">
-              {{ userInitial() }}
-            </div>
-          }
-          <span class="user-display-name">{{ userDisplay() }}</span>
-          <span
-            class="role-badge"
-            [class.role-badge--admin]="permissions.roleLabel() === 'Admin'"
-            [class.role-badge--agent]="permissions.roleLabel() === 'Agent'"
-            [class.role-badge--viewer]="permissions.roleLabel() !== 'Admin' && permissions.roleLabel() !== 'Agent'"
-          >
-            {{ permissions.roleLabel() }}
-          </span>
-          <button class="logout-button" mat-button type="button" (click)="logout()">
-            <span aria-hidden="true" class="material-icons logout-icon">logout</span>
-            <span class="logout-label">Выйти</span>
-          </button>
-        </div>
-      </header>
+    <mat-drawer-content>
       <main class="app-main">
         @for (reloadKey of [outletReloadKey()]; track reloadKey) {
           <router-outlet />
         }
       </main>
-    </div>
-  </mat-drawer-content>
-</mat-drawer-container>
+    </mat-drawer-content>
+  </mat-drawer-container>
+</div>

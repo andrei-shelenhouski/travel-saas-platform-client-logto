@@ -17,6 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatMenuModule, MatMenuTrigger } from '@angular/material/menu';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { filter, map, take } from 'rxjs';
 
@@ -107,6 +108,7 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
     MatListModule,
     MatIconModule,
     MatSidenavModule,
+    MatToolbarModule,
   ],
   templateUrl: './main-layout.component.html',
   styleUrl: './main-layout.component.scss',

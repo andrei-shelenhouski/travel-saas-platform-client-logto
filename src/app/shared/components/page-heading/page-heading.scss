@@ -1,60 +1,46 @@
 @use '@angular/material' as mat;
 
-.title-and-type {
-  position: relative;
+:host {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
-  overflow: hidden;
-  padding: 0.75rem 10rem 0.75rem 1rem;
-  clip-path: polygon(0 0, 85% 0, 100% 100%, 0 100%);
-  background: linear-gradient(
-    135deg,
-    var(--mat-sys-primary) 0%,
-    color-mix(in oklab, var(--mat-sys-primary) 72%, black) 100%
-  );
+  padding: 1.25rem 1rem 1rem;
+  background-color: var(--color-surface-subtle);
+}
 
-  @include mat.icon-button-overrides(
-    (
-      icon-color: #ffffff,
-      hover-state-layer-opacity: 0.4,
-    )
-  );
+.title-and-type {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+}
 
-  @media (max-width: 767px) {
-    padding: 0.75rem 3rem 0.75rem 1rem;
-    clip-path: none;
-  }
+.title-and-type__content {
+  min-width: 0;
 }
 
 .page-heading-title {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 600;
-  color: color-mix(in oklab, white 94%, var(--mat-sys-primary));
+  color: var(--color-text-primary);
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .page-heading-subtitle {
-  font-size: 0.875rem;
-  color: color-mix(in oklab, white 78%, var(--mat-sys-primary));
-  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  margin: 0.125rem 0 0;
 }
 
 .actions {
-  border-bottom: 1px solid var(--mat-sys-outline-variant);
-  height: 100%;
-  align-items: center;
-  justify-content: flex-end;
   display: flex;
-  padding-right: 1rem;
-  padding-block: 1rem;
-  gap: 1rem;
-}
-
-:host {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  background-color: #ffffff;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 0.5rem;
 }
 
 .bottom-toolbar {
@@ -91,10 +77,6 @@
 }
 
 @media (max-width: 767px) {
-  :host {
-    grid-template-columns: 1fr;
-  }
-
   .actions {
     display: none;
   }
