@@ -64,6 +64,10 @@ html {
     )
   );
 
+  button[mat-stroked-button] {
+    background-color: white;
+  }
+
   @include mat.button-toggle-overrides(
     (
       shape: 0.25rem,
