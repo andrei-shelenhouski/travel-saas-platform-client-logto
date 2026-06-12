@@ -92,7 +92,7 @@ All issues in this repo follow the TravelOps cross-repo workflow. Read this sect
 
 ### Before starting an issue
 
-- The issue **must** be labeled `spec-linked` — never start an issue labeled `needs-spec`
+- The issue **must** be labeled `spec-linked` — never start an issue labeled `needs-spec`. **Exception:** issues labeled `bug` need no spec — they may be started as-is.
 - Read the BA spec linked in the issue body under `## Spec`: `andrei-shelenhouski/travel-saas-platform-ba#N`
 - Check `## Depends on` in the issue body — the BE endpoint(s) listed there must be merged and deployed before FE work begins
 - If the BE issue is still open, label this issue `blocked` and wait
