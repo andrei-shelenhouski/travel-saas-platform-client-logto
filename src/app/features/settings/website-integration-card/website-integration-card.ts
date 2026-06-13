@@ -122,7 +122,7 @@ export class WebsiteIntegrationCardComponent {
   protected readonly pageSubtitle =
     'Сайт и API — управляйте ключами доступа для интеграции формы заявки на ваш сайт.';
 
-  protected readonly isAdmin = this.permissions.isAdmin;
+  protected readonly canManageIntegrations = this.permissions.canUpdateSettings;
 
   protected readonly loading = signal(true);
   protected readonly keys = signal<IntegrationApiKeyResponseDto[]>([]);
@@ -323,11 +323,11 @@ export class WebsiteIntegrationCardComponent {
       successAction,
       successMessage:
         successAction === 'message'
-          ? (this.widgetForm.controls.successMessage.value ?? undefined)
+          ? (this.widgetForm.controls.successMessage.value || undefined)
           : undefined,
       successRedirectUrl:
         successAction === 'redirect'
-          ? (this.widgetForm.controls.successRedirectUrl.value ?? undefined)
+          ? (this.widgetForm.controls.successRedirectUrl.value || undefined)
           : undefined,
     };
 

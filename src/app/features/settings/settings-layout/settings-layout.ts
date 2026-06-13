@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatIconModule } from '@angular/material/icon';
 
@@ -14,4 +14,15 @@ import { PermissionService } from '@app/services/permission.service';
 })
 export class SettingsLayoutComponent {
   protected readonly permissions = inject(PermissionService);
+
+  constructor() {
+    const router = inject(Router);
+    const route = inject(ActivatedRoute);
+
+    // Redirect the bare /settings URL to the first page the user can access.
+    if (router.url === '/app/settings') {
+      const target = this.permissions.canUpdateSettings() ? 'company' : 'users';
+      void router.navigate([target], { relativeTo: route, replaceUrl: true });
+    }
+  }
 }

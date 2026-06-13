@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
@@ -86,6 +86,7 @@ export class ApiKeyCreatedDialogComponent implements OnInit {
   protected readonly data = inject<ApiKeyCreatedDialogData>(MAT_DIALOG_DATA);
   private readonly dialogRef = inject(MatDialogRef<ApiKeyCreatedDialogComponent>);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected readonly canClose = signal(false);
   protected readonly countdown = signal(2);
@@ -101,6 +102,8 @@ export class ApiKeyCreatedDialogComponent implements OnInit {
         this.canClose.set(true);
       }
     }, 1000);
+
+    this.destroyRef.onDestroy(() => clearInterval(interval));
   }
 
   protected copyKey(): void {

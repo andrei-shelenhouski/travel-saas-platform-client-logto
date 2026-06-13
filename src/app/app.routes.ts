@@ -352,7 +352,6 @@ export const routes: Routes = [
             (m) => m.SettingsLayoutComponent,
           ),
         children: [
-          { path: '', pathMatch: 'full', redirectTo: 'company' },
           {
             path: 'profile',
             title: 'Профиль',

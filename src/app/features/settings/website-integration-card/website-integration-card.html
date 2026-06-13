@@ -2,9 +2,9 @@
   <app-page-heading [subtitle]="pageSubtitle" [title]="pageTitle" />
 
   <section class="content">
-    @if (!isAdmin()) {
+    @if (!canManageIntegrations()) {
       <section aria-live="polite" class="state-card">
-        <p>Только администраторы могут управлять интеграциями.</p>
+        <p>Недостаточно прав для управления интеграциями.</p>
       </section>
     } @else if (loading()) {
       <section aria-live="polite" class="state-card">
