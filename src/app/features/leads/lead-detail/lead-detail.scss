@@ -11,7 +11,7 @@
 
 .detail-history {
   position: sticky;
-  top: 72px;
+  top: 8px;
   max-height: calc(100vh - 80px);
   overflow: hidden;
   display: flex;
@@ -214,72 +214,6 @@
   color: var(--color-text-muted);
 }
 
-.activity-list {
-  list-style: none;
-  margin: 0.75rem 0 0;
-  padding: 0;
-  display: grid;
-  gap: 0.65rem;
-}
-
-.activity-item {
-  display: flex;
-  gap: 0.7rem;
-  align-items: flex-start;
-}
-
-.activity-item-system {
-  .activity-icon-wrap {
-    background: #fef3c7;
-  }
-
-  .activity-icon {
-    color: #92400e;
-  }
-
-  .activity-label {
-    font-style: italic;
-    color: var(--color-text-muted);
-  }
-}
-
-.activity-icon-wrap {
-  width: 1.8rem;
-  height: 1.8rem;
-  border-radius: 9999px;
-  background: var(--color-surface-muted);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.activity-icon {
-  font-size: 1rem;
-  width: 1rem;
-  height: 1rem;
-  color: var(--color-text-strong);
-}
-
-.activity-content {
-  min-width: 0;
-}
-
-.activity-label,
-.activity-meta {
-  margin: 0;
-}
-
-.activity-label {
-  color: var(--color-text-primary);
-  font-size: 0.875rem;
-  font-weight: 600;
-}
-
-.activity-meta {
-  color: var(--color-text-muted);
-  font-size: 0.75rem;
-}
-
 .travel-form {
   display: grid;
   gap: 0.5rem;
@@ -343,12 +277,6 @@
   color: #dc2626;
 }
 
-.activity-empty-message {
-  margin: 0.5rem 0 0;
-  font-size: 0.875rem;
-  color: var(--color-text-muted);
-}
-
 .contact-person-info {
   display: grid;
   gap: 0.25rem;
@@ -394,10 +322,6 @@
   margin-top: 0.625rem;
 }
 
-.activity-load-more {
-  margin-top: 1rem;
-}
-
 .booking-open-icon {
   vertical-align: middle;
   font-size: 1rem;
@@ -419,7 +343,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .lead-activity-card,
   .lead-full-width-card {
     grid-column: 1 / -1;
   }

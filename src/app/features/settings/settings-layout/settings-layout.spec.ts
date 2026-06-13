@@ -46,12 +46,18 @@ describe('SettingsLayoutComponent', () => {
 
   it('redirects to company when url is /app/settings and user can update settings', async () => {
     await setup(true, '/app/settings');
-    expect(navigateSpy).toHaveBeenCalledWith(['company'], expect.objectContaining({ replaceUrl: true }));
+    expect(navigateSpy).toHaveBeenCalledWith(
+      ['company'],
+      expect.objectContaining({ replaceUrl: true }),
+    );
   });
 
   it('redirects to users when url is /app/settings and user cannot update settings', async () => {
     await setup(false, '/app/settings');
-    expect(navigateSpy).toHaveBeenCalledWith(['users'], expect.objectContaining({ replaceUrl: true }));
+    expect(navigateSpy).toHaveBeenCalledWith(
+      ['users'],
+      expect.objectContaining({ replaceUrl: true }),
+    );
   });
 
   it('does not redirect when url is not /app/settings', async () => {

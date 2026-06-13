@@ -26,7 +26,11 @@ import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { MeService } from '@app/services/me.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PersonsService } from '@app/services/persons.service';
-import { HistoryPanelComponent, LoadingStateComponent, PageContentComponent } from '@app/shared/components';
+import {
+  HistoryPanelComponent,
+  LoadingStateComponent,
+  PageContentComponent,
+} from '@app/shared/components';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';

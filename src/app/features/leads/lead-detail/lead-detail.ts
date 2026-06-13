@@ -25,7 +25,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { EMPTY, forkJoin, of } from 'rxjs';
-import { catchError, finalize, map } from 'rxjs/operators';
+import { finalize, map } from 'rxjs/operators';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
 import { AssignDialogComponent } from '@app/features/leads/assign-dialog/assign-dialog';
@@ -47,7 +47,11 @@ import { MeService } from '@app/services/me.service';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { HistoryPanelComponent, LoadingStateComponent, PageContentComponent } from '@app/shared/components';
+import {
+  HistoryPanelComponent,
+  LoadingStateComponent,
+  PageContentComponent,
+} from '@app/shared/components';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
 import { LeadStatus } from '@app/shared/models';
@@ -56,8 +60,6 @@ import { MarkdownPipe } from '@app/shared/pipes/markdown-pipe';
 import { atLeastOneContactValidator } from '../leads.validators';
 
 import type {
-  ActivityListResponseDto,
-  ActivityResponseDto,
   BookingResponseDto,
   ContactResponseDto,
   CustomFieldValueDto,
@@ -71,30 +73,16 @@ import type { LeadAction } from './lead-detail-header/lead-detail-header';
 type LeadDetailLoadData = {
   lead: LeadResponseDto;
   offers: OfferResponseDto[];
-  activities: ActivityListResponseDto;
 };
 
 const SALES_ROLES = new Set(['AGENT', 'SALES_AGENT', 'ADMIN', 'MANAGER']);
 const TERMINAL_STATUSES = new Set<string>([LeadStatus.WON, LeadStatus.LOST, LeadStatus.EXPIRED]);
-const ACTIVITY_PAGE_SIZE = 20;
-
 function formatDateShort(iso: string | null): string {
   if (!iso) {
     return '—';
   }
   try {
     return new Date(iso).toLocaleDateString(undefined, { dateStyle: 'medium' });
-  } catch {
-    return iso;
-  }
-}
-
-function formatDateTime(iso: string | null): string {
-  if (!iso) {
-    return '—';
-  }
-  try {
-    return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
   } catch {
     return iso;
   }
@@ -130,20 +118,6 @@ function getAgentInitials(name: string | null): string {
   }
 
   return parts.map((p) => p[0]?.toUpperCase() ?? '').join('');
-}
-
-const ACTIVITY_ICON_MAP: [string, string][] = [
-  ['create', 'add_circle'],
-  ['status', 'flag'],
-  ['assign', 'person_add'],
-  ['offer', 'description'],
-  ['contact', 'person'],
-];
-
-function getActivityIcon(type: string): string {
-  const n = type.toLowerCase();
-
-  return ACTIVITY_ICON_MAP.find(([k]) => n.includes(k))?.[1] ?? 'history';
 }
 
 const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
@@ -219,10 +193,6 @@ export class LeadDetailComponent {
         offers: this.offersService
           .getList({ leadId: id, limit: 100 })
           .pipe(map((res) => res.items)),
-        activities: this.leadsService.getActivity(id, {
-          page: 1,
-          limit: ACTIVITY_PAGE_SIZE,
-        }),
       });
     },
   });
@@ -380,15 +350,7 @@ export class LeadDetailComponent {
   protected readonly bookingDetailLoading = computed(() => this.bookingDetailData.isLoading());
   protected readonly bookingInvoicesLoading = computed(() => this.bookingInvoicesData.isLoading());
 
-  protected readonly activityItems = signal<ActivityResponseDto[]>([]);
-  protected readonly activityTotal = signal(0);
-  protected readonly activityPage = signal(1);
-  protected readonly loadingMoreActivity = signal(false);
   protected readonly savingCustomFields = signal(false);
-
-  protected readonly canLoadMoreActivity = computed(() => {
-    return this.activityItems().length < this.activityTotal();
-  });
 
   protected readonly statusActionLoading = signal<LeadAction | null>(null);
   protected readonly assignLoading = signal(false);
@@ -424,23 +386,6 @@ export class LeadDetailComponent {
     });
   });
 
-  private readonly activityActorNameByUserId = computed(() => {
-    const actorNameByUserId = new Map<string, string>();
-
-    for (const member of this.membersData.value() ?? []) {
-      const userId = member.userId.trim();
-      const displayName = member.name.trim();
-
-      if (!userId || !displayName) {
-        continue;
-      }
-
-      actorNameByUserId.set(userId, displayName);
-    }
-
-    return actorNameByUserId;
-  });
-
   constructor() {
     effect(() => {
       if (this.routeId() === null) {
@@ -456,14 +401,6 @@ export class LeadDetailComponent {
       }
 
       this.travelDetailsData.set(value.lead);
-      this.activityPage.set(1);
-      this.activityTotal.set(value.activities.total ?? value.activities.items.length);
-
-      const ordered = [...value.activities.items].sort((left, right) => {
-        return new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime();
-      });
-
-      this.activityItems.set(ordered);
       this.patchTravelForm(value.lead);
       this.editingTravelDetails.set(false);
     });
@@ -761,49 +698,6 @@ export class LeadDetailComponent {
     });
   }
 
-  protected loadMoreActivity(): void {
-    const lead = this.lead();
-
-    if (!lead || this.loadingMoreActivity() || !this.canLoadMoreActivity()) {
-      return;
-    }
-
-    const nextPage = this.activityPage() + 1;
-
-    this.loadingMoreActivity.set(true);
-    this.leadsService
-      .getActivity(lead.id, {
-        page: nextPage,
-        limit: ACTIVITY_PAGE_SIZE,
-      })
-      .pipe(
-        catchError((err) => {
-          // prettier-ignore
-          this.snackBar.open(this.getErrorMessage(err, 'Не удалось загрузить активность'), 'Close', { duration: 5000 });
-
-          return of({
-            items: [],
-            total: this.activityTotal(),
-            page: nextPage,
-            limit: ACTIVITY_PAGE_SIZE,
-          });
-        }),
-      )
-      .subscribe((res) => {
-        this.activityPage.set(nextPage);
-        this.activityTotal.set(res.total ?? this.activityTotal());
-
-        const merged = [...this.activityItems(), ...res.items];
-        // NOSONAR — sort on a fresh copy, not the original array
-        const ordered = [...merged].sort(
-          (left, right) => new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime(),
-        );
-
-        this.activityItems.set(ordered);
-        this.loadingMoreActivity.set(false);
-      });
-  }
-
   protected openDeleteDialog(): void {
     const lead = this.lead();
 
@@ -845,60 +739,7 @@ export class LeadDetailComponent {
 
   protected readonly getAgentInitials = getAgentInitials;
   protected readonly formatDateShort = formatDateShort;
-  protected readonly formatDateTime = formatDateTime;
   protected readonly formatDateRange = formatDateRange;
-
-  protected readonly getActivityIcon = getActivityIcon;
-
-  protected getActivityLabel(type: string): string {
-    if (type === 'contact_person_selected') {
-      return 'Контактное лицо изменено';
-    }
-
-    return type
-      .replaceAll('_', ' ')
-      .toLowerCase()
-      .replace(/\b\w/g, (value) => value.toUpperCase());
-  }
-
-  protected getActivityActor(item: ActivityResponseDto): string {
-    const payload = item.payload;
-    const actorName =
-      payload && typeof payload['actorName'] === 'string' ? payload['actorName'] : null;
-
-    if (actorName) {
-      return actorName;
-    }
-
-    const createdBy = item.createdBy?.trim() ?? '';
-    const normalizedCreatedBy = this.normalizeActivityActor(createdBy);
-
-    if (normalizedCreatedBy === 'system' || normalizedCreatedBy === 'system action') {
-      return 'Системное действие';
-    }
-
-    const resolvedActorName = this.activityActorNameByUserId().get(createdBy);
-
-    if (resolvedActorName) {
-      return resolvedActorName;
-    }
-
-    if (createdBy) {
-      return createdBy;
-    }
-
-    return 'Системное действие';
-  }
-
-  protected isSystemEvent(item: ActivityResponseDto): boolean {
-    const createdBy = this.normalizeActivityActor(item.createdBy);
-
-    return createdBy === 'system' || createdBy === 'system action';
-  }
-
-  private normalizeActivityActor(value: string | null | undefined): string {
-    return value?.trim().toLowerCase() ?? '';
-  }
 
   private isTerminalStatus(status: string): boolean {
     return TERMINAL_STATUSES.has(status);

@@ -90,7 +90,10 @@
       } @else {
         <ul aria-label="История событий" class="history-list">
           @for (item of items; track item.id; let last = $last) {
-            <li class="history-item" [class.history-item--deleting]="deletingCommentId() === item.id">
+            <li
+              class="history-item"
+              [class.history-item--deleting]="deletingCommentId() === item.id"
+            >
               @if (item.type === 'comment') {
                 <!-- Comment -->
                 <div class="history-connector">
@@ -109,7 +112,9 @@
 
                 <div class="history-content history-content--comment">
                   <div class="history-comment-header">
-                    <span class="history-comment-author">{{ item.author?.fullName ?? 'Неизвестный' }}</span>
+                    <span class="history-comment-author">{{
+                      item.author?.fullName ?? 'Неизвестный'
+                    }}</span>
                     <span
                       class="history-timestamp"
                       [matTooltip]="formatAbsoluteTime(item.createdAt)"
@@ -117,11 +122,15 @@
                       {{ formatRelativeTime(item.createdAt) }}
                     </span>
 
-                    @if (canEditOrDelete(item) && editingCommentId() !== item.id && deletingCommentId() !== item.id) {
+                    @if (
+                      canEditOrDelete(item) &&
+                      editingCommentId() !== item.id &&
+                      deletingCommentId() !== item.id
+                    ) {
                       <div class="history-comment-actions">
                         <button
                           aria-label="Редактировать заметку"
-                          mat-icon-button
+                          matIconButton
                           type="button"
                           (click)="startEdit(item)"
                         >
@@ -129,7 +138,7 @@
                         </button>
                         <button
                           aria-label="Удалить заметку"
-                          mat-icon-button
+                          matIconButton
                           type="button"
                           (click)="startDelete(item.id)"
                         >
@@ -202,7 +211,9 @@
                 <!-- System event -->
                 <div class="history-connector">
                   <div aria-hidden="true" class="history-dot history-dot--event">
-                    <mat-icon class="history-event-icon">{{ getSystemEventIcon(item.action) }}</mat-icon>
+                    <mat-icon class="history-event-icon">{{
+                      getSystemEventIcon(item.action)
+                    }}</mat-icon>
                   </div>
                   @if (!last) {
                     <div class="history-line"></div>
@@ -213,10 +224,7 @@
                   <p class="history-event-label">
                     {{ getSystemEventLabel(item.action, item.details) }}
                   </p>
-                  <span
-                    class="history-timestamp"
-                    [matTooltip]="formatAbsoluteTime(item.createdAt)"
-                  >
+                  <span class="history-timestamp" [matTooltip]="formatAbsoluteTime(item.createdAt)">
                     @if (item.actor?.fullName) {
                       {{ item.actor?.fullName }} &middot;
                     }
@@ -246,11 +254,9 @@
           [maxlength]="maxCommentLength"
           (keydown)="submitComment($event)"
         ></textarea>
+        <mat-hint align="end"> {{ composeCharCount() }} / {{ maxCommentLength }} </mat-hint>
       </mat-form-field>
       <div class="history-compose-footer">
-        <span class="history-char-count" [class]="composeCharCountClass()">
-          {{ composeCharCount() }} / {{ maxCommentLength }}
-        </span>
         <button
           aria-label="Отправить заметку"
           class="history-compose-submit"

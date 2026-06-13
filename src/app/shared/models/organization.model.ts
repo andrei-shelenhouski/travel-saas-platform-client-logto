@@ -526,29 +526,6 @@ export type ActivityResponseDto = {
 
 export type ActivityListResponseDto = PaginatedDto<ActivityResponseDto>;
 
-// ----- Comments -----
-
-export type CreateCommentDto = {
-  commentableType: EntityType;
-  commentableId: string;
-  body: string;
-};
-
-export type CommentResponseDto = {
-  id: string;
-  organizationId: string;
-  commentableType: string;
-  commentableId: string;
-  body: string;
-  createdAt: string;
-  updatedAt: string;
-  deletedAt: string | null;
-  createdBy: string;
-  updatedBy: string;
-};
-
-export type CommentListResponseDto = PaginatedDto<CommentResponseDto>;
-
 // ----- Contracts -----
 
 export const ContractStatus = {

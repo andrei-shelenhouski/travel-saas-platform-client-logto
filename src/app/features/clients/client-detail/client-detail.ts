@@ -7,10 +7,10 @@ import {
   signal,
 } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
-import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Title } from '@angular/platform-browser';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { EMPTY } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
@@ -18,7 +18,6 @@ import { map, switchMap } from 'rxjs/operators';
 import { AuthService } from '@app/auth/auth.service';
 import { ActivitiesService } from '@app/services/activities.service';
 import { ClientsService } from '@app/services/clients.service';
-import { CommentsService } from '@app/services/comments.service';
 import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { TagsService } from '@app/services/tags.service';
 import {
@@ -79,7 +78,6 @@ export class ClientDetailComponent {
   private readonly clientsService = inject(ClientsService);
   private readonly customFieldsService = inject(CustomFieldsService);
   private readonly activitiesService = inject(ActivitiesService);
-  private readonly commentsService = inject(CommentsService);
   private readonly tagsService = inject(TagsService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly titleService = inject(Title);

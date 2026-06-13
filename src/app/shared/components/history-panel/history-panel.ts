@@ -1,32 +1,22 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  effect,
-  ElementRef,
-  inject,
-  input,
-  signal,
-  viewChild,
-} from '@angular/core';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, input, signal, viewChild } from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatAccordion } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { of } from 'rxjs';
 
-import { TimelineService } from '@app/services/timeline.service';
 import { PermissionService } from '@app/services/permission.service';
+import { TimelineService } from '@app/services/timeline.service';
 
 import type { TimelineEntity } from '@app/services/timeline.service';
 import type { TimelineItemResponse } from '@app/shared/models';
-
 export type HistoryFilter = 'all' | 'comments' | 'events';
 
 const PAGE_SIZE = 50;
@@ -74,20 +64,85 @@ export function getInitials(fullName: string): string {
 
 type LabelBuilder = (d: Record<string, unknown>) => string;
 
+const LEAD_STATUS_LABELS: Record<string, string> = {
+  NEW: 'Новый',
+  ASSIGNED: 'Назначен',
+  IN_PROGRESS: 'В работе',
+  OFFER_SENT: 'КП отправлено',
+  WON: 'Выигран',
+  LOST: 'Проигран',
+  EXPIRED: 'Истёк',
+  PENDING_CONFIRMATION: 'Ожидает подтверждения',
+  CONFIRMED: 'Подтверждено',
+  CANCELLED: 'Отменено',
+  COMPLETED: 'Завершено',
+};
+
+function translateStatus(raw: unknown): string {
+  if (typeof raw !== 'string') {
+    return '?';
+  }
+
+  return LEAD_STATUS_LABELS[raw] ?? raw;
+}
+
+function strVal(v: unknown): string {
+  return typeof v === 'string' ? v : '';
+}
+
 const SYSTEM_EVENT_LABEL_MAP: Record<string, LabelBuilder> = {
   lead_created: () => 'Заявка создана',
-  status_changed: (d) => `Статус: ${d['from'] ?? '?'} → ${d['to'] ?? '?'}`,
-  agent_assigned: (d) => `Менеджер назначен: ${d['agentName'] ?? '?'}`,
-  client_linked: (d) => `Клиент привязан: ${d['clientName'] ?? '?'}`,
+
+  lead_ingested: (d) => {
+    const src = strVal(d['source']);
+
+    return src ? `Заявка получена из ${src}` : 'Заявка получена';
+  },
+
+  status_changed: (d) => {
+    const to = translateStatus(d['to']);
+    const from = d['from'] ? translateStatus(d['from']) : null;
+
+    return from ? `Статус: ${from} → ${to}` : `Статус установлен: ${to}`;
+  },
+
+  agent_assigned: (d) => `Менеджер назначен: ${strVal(d['agentName']) || '?'}`,
+
+  client_linked: (d) => `Клиент привязан: ${strVal(d['clientName']) || '?'}`,
+
+  contact_person_selected: (d) => {
+    const name = strVal(d['contactName']);
+
+    return name ? `Контактное лицо: ${name}` : 'Контактное лицо выбрано';
+  },
+
   request_created: () => 'Запрос на тур добавлен',
-  offer_created: (d) => `Предложение ${d['offerNumber'] ?? ''} создано`,
+
+  offer_created: (d) => `Предложение ${strVal(d['offerNumber'])} создано`,
+
   offer_revised: (d) =>
-    `Предложение ${d['offerNumber'] ?? ''}: версия ${d['previousVersion'] ?? '?'} → ${d['newVersion'] ?? '?'}`,
-  booking_created: (d) => `Бронирование ${d['bookingNumber'] ?? ''} создано`,
-  document_uploaded: (d) => `Документ загружен: ${d['filename'] ?? '?'}`,
-  invoice_created: (d) => `Счёт ${d['invoiceNumber'] ?? ''} создан`,
+    `Предложение ${strVal(d['offerNumber'])}: версия ${strVal(d['previousVersion']) || '?'} → ${strVal(d['newVersion']) || '?'}`,
+
+  booking_created: (d) => `Бронирование ${strVal(d['bookingNumber'])} создано`,
+
+  backoffice_assigned: (d) => {
+    const name = strVal(d['backofficeName']) || strVal(d['agentName']) || strVal(d['name']);
+
+    return name ? `Менеджер бэк-офиса: ${name}` : 'Менеджер бэк-офиса назначен';
+  },
+
+  confirmation_number_set: (d) => {
+    const num = strVal(d['confirmationNumber']) || strVal(d['number']) || strVal(d['value']);
+
+    return num ? `Номер подтверждения: ${num}` : 'Номер подтверждения установлен';
+  },
+
+  document_uploaded: (d) => `Документ загружен: ${strVal(d['filename']) || '?'}`,
+
+  invoice_created: (d) => `Счёт ${strVal(d['invoiceNumber'])} создан`,
+
   payment_recorded: (d) =>
-    `Оплата записана: ${d['amount'] ?? '?'} ${d['currency'] ?? ''} (${d['method'] ?? '?'})`,
+    `Оплата записана: ${strVal(d['amount']) || '?'} ${strVal(d['currency'])} (${strVal(d['method']) || '?'})`,
 };
 
 export function getSystemEventLabel(
@@ -106,6 +161,7 @@ export function getSystemEventLabel(
 export function getSystemEventIcon(action: string | undefined): string {
   switch (action) {
     case 'lead_created':
+    case 'lead_ingested':
     case 'offer_created':
     case 'booking_created':
     case 'invoice_created':
@@ -115,8 +171,12 @@ export function getSystemEventIcon(action: string | undefined): string {
     case 'status_changed':
       return 'flag';
     case 'agent_assigned':
+    case 'backoffice_assigned':
       return 'person_add';
+    case 'confirmation_number_set':
+      return 'tag';
     case 'client_linked':
+    case 'contact_person_selected':
       return 'person';
     case 'offer_revised':
       return 'edit_note';
@@ -185,6 +245,7 @@ export function formatAbsoluteTime(isoDate: string): string {
     MatFormFieldModule,
     MatInputModule,
     CdkTextareaAutosize,
+    MatAccordion,
   ],
   templateUrl: './history-panel.html',
   styleUrl: './history-panel.scss',
@@ -276,20 +337,6 @@ export class HistoryPanelComponent {
 
   protected readonly composeCharCount = computed(() => this.composeValue().length);
 
-  protected readonly composeCharCountClass = computed(() => {
-    const count = this.composeCharCount();
-
-    if (count >= MAX_COMMENT_LENGTH) {
-      return 'char-count--error';
-    }
-
-    if (count >= WARN_COMMENT_LENGTH) {
-      return 'char-count--warn';
-    }
-
-    return '';
-  });
-
   protected readonly composeSubmitDisabled = computed(
     () =>
       this.composeValue().trim().length === 0 ||
@@ -361,10 +408,10 @@ export class HistoryPanelComponent {
 
     this.submitting.set(true);
     this.timelineService.addComment(this.entity(), this.entityId(), body).subscribe({
-      next: (newItem) => {
-        this.allItems.update((items) => [...items, newItem]);
+      next: () => {
         this.composeControl.reset('');
         this.submitting.set(false);
+        this.timelineData.reload();
         this.scrollFeedToBottom();
       },
       error: () => {

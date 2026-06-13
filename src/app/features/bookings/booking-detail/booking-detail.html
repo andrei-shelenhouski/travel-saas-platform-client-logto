@@ -52,8 +52,6 @@
       </app-page-heading>
 
       <app-page-content>
-        <div class="detail-with-history">
-        <div class="detail-main">
         <section class="booking-header-card">
           <div class="booking-header-main">
             <div>
@@ -151,6 +149,12 @@
               (deleteDocument)="onDeleteDocument($event)"
               (uploadFiles)="onUploadFiles($event)"
             />
+
+            <app-history-panel
+              entity="bookings"
+              [currentUserId]="currentUserId()"
+              [entityId]="b.id"
+            />
           </div>
         </div>
 
@@ -163,15 +167,6 @@
             />
           </section>
         }
-        </div><!-- /detail-main -->
-
-        <app-history-panel
-          class="detail-history"
-          entity="bookings"
-          [currentUserId]="currentUserId()"
-          [entityId]="b.id"
-        />
-        </div><!-- /detail-with-history -->
       </app-page-content>
     } @else {
       <section class="booking-not-found-card">

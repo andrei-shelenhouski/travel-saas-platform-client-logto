@@ -1,14 +1,16 @@
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { signal } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 
 import { of } from 'rxjs';
 import { beforeEach, describe, expect, it } from 'vitest';
 
+import { PermissionService } from '@app/services/permission.service';
 import { TimelineService } from '@app/services/timeline.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
 
 import {
   avatarColor,
@@ -172,9 +174,16 @@ describe('formatAbsoluteTime', () => {
   });
 });
 
+type HistoryPanelInternals = {
+  allItems: () => TimelineItemResponse[];
+  filteredItems: () => TimelineItemResponse[];
+  setFilter: (filter: 'all' | 'comments' | 'events') => void;
+};
+
 describe('HistoryPanelComponent', () => {
   let fixture: ComponentFixture<HistoryPanelComponent>;
   let component: HistoryPanelComponent;
+  let internals: HistoryPanelInternals;
   let timelineService: { getTimeline: ReturnType<typeof vi.fn> };
 
   beforeEach(async () => {
@@ -190,12 +199,14 @@ describe('HistoryPanelComponent', () => {
         provideHttpClientTesting(),
         provideNoopAnimations(),
         { provide: TimelineService, useValue: timelineService },
+        { provide: PermissionService, useValue: { canModerateComments: signal(true) } },
         { provide: MatSnackBar, useValue: { open: vi.fn() } },
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(HistoryPanelComponent);
     component = fixture.componentInstance;
+    internals = component as unknown as HistoryPanelInternals;
     fixture.componentRef.setInput('entity', 'leads');
     fixture.componentRef.setInput('entityId', 'lead-1');
     fixture.componentRef.setInput('currentUserId', 'u-1');
@@ -217,22 +228,22 @@ describe('HistoryPanelComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(component.allItems().length).toBe(2);
+    expect(internals.allItems().length).toBe(2);
   });
 
   it('shows all items with "all" filter by default', async () => {
     await fixture.whenStable();
     fixture.detectChanges();
 
-    expect(component.filteredItems().length).toBe(2);
+    expect(internals.filteredItems().length).toBe(2);
   });
 
   it('filters to comments only when filter set to "comments"', async () => {
     await fixture.whenStable();
-    component.setFilter('comments');
+    internals.setFilter('comments');
     fixture.detectChanges();
 
-    const comments = component.filteredItems();
+    const comments = internals.filteredItems();
 
     expect(comments.every((i) => i.type === 'comment')).toBe(true);
     expect(comments.length).toBe(1);
@@ -240,10 +251,10 @@ describe('HistoryPanelComponent', () => {
 
   it('filters to system events only when filter set to "events"', async () => {
     await fixture.whenStable();
-    component.setFilter('events');
+    internals.setFilter('events');
     fixture.detectChanges();
 
-    const events = component.filteredItems();
+    const events = internals.filteredItems();
 
     expect(events.every((i) => i.type === 'system_event')).toBe(true);
     expect(events.length).toBe(1);

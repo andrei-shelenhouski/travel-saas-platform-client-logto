@@ -50,6 +50,7 @@ describe('ApiKeyCreatedDialogComponent', () => {
 
   it('enables close after countdown elapses', () => {
     vi.useFakeTimers();
+
     try {
       fixture.detectChanges();
       const api = component as unknown as { canClose: () => boolean };
@@ -70,6 +71,7 @@ describe('ApiKeyCreatedDialogComponent', () => {
 
   it('closes dialog after canClose becomes true', () => {
     vi.useFakeTimers();
+
     try {
       fixture.detectChanges();
       vi.advanceTimersByTime(2000);
