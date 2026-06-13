@@ -1,0 +1,70 @@
+:host {
+  display: block;
+  height: 100%;
+}
+
+.settings-layout {
+  display: flex;
+  height: 100%;
+}
+
+.settings-subnav {
+  width: 220px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--mat-sys-outline-variant);
+  padding: 16px 0;
+}
+
+.settings-content {
+  flex: 1;
+  min-width: 0;
+  overflow: auto;
+}
+
+.subnav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  text-decoration: none;
+  color: var(--mat-sys-on-surface);
+  border-radius: 0 24px 24px 0;
+  margin-right: 12px;
+  font-size: 14px;
+  transition: background-color 0.15s ease;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    color: var(--mat-sys-on-surface-variant);
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background-color: var(--mat-sys-surface-container-highest);
+  }
+
+  &--active {
+    background-color: var(--mat-sys-secondary-container);
+    color: var(--mat-sys-on-secondary-container);
+
+    mat-icon {
+      color: var(--mat-sys-on-secondary-container);
+    }
+  }
+}
+
+.subnav-divider {
+  margin: 8px 0 !important;
+}
+
+.subnav-group-label {
+  display: block;
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mat-sys-on-surface-variant);
+}

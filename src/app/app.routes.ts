@@ -347,54 +347,81 @@ export const routes: Routes = [
       // Settings
       {
         path: 'settings',
-        title: 'Настройки компании',
         loadComponent: () =>
-          import('@app/features/settings/company-profile/company-profile').then(
-            (m) => m.CompanyProfileComponent,
+          import('@app/features/settings/settings-layout/settings-layout').then(
+            (m) => m.SettingsLayoutComponent,
           ),
-        canActivate: [permissionGuard],
-        data: { permission: PermissionKey.SETTINGS_UPDATE },
-        canDeactivate: [pendingChangesGuard],
-      },
-      {
-        path: 'settings/users',
-        title: 'Пользователи',
-        loadComponent: () =>
-          import('@app/features/admin/users-management/users-management').then(
-            (m) => m.UsersManagementComponent,
-          ),
-        canActivate: [permissionGuard],
-        data: { permission: PermissionKey.ROLES_VIEW },
-      },
-      {
-        path: 'settings/integrations',
-        title: 'Интеграции',
-        loadComponent: () =>
-          import('@app/features/settings/tourvisor-integration-card/tourvisor-integration-card').then(
-            (m) => m.TourvisorIntegrationCardComponent,
-          ),
-        canActivate: [permissionGuard],
-        data: { permission: PermissionKey.ROLES_VIEW },
-      },
-      {
-        path: 'settings/custom-fields',
-        title: 'Настраиваемые поля',
-        loadComponent: () =>
-          import('@app/features/settings/custom-fields/custom-fields').then(
-            (m) => m.CustomFieldsSettingsComponent,
-          ),
-        canActivate: [permissionGuard],
-        data: { permission: PermissionKey.ROLES_VIEW },
-      },
-      {
-        path: 'settings/roles',
-        title: 'Роли и права',
-        loadComponent: () =>
-          import('@app/features/settings/roles-permissions/roles-permissions').then(
-            (m) => m.RolesPermissionsComponent,
-          ),
-        canActivate: [permissionGuard],
-        data: { permission: PermissionKey.ROLES_VIEW },
+        children: [
+          {
+            path: 'profile',
+            title: 'Профиль',
+            loadComponent: () =>
+              import('@app/features/settings/my-profile/my-profile').then(
+                (m) => m.MyProfileComponent,
+              ),
+          },
+          {
+            path: 'company',
+            title: 'Настройки компании',
+            canActivate: [permissionGuard],
+            data: { permission: PermissionKey.SETTINGS_UPDATE },
+            canDeactivate: [pendingChangesGuard],
+            loadComponent: () =>
+              import('@app/features/settings/company-profile/company-profile').then(
+                (m) => m.CompanyProfileComponent,
+              ),
+          },
+          {
+            path: 'users',
+            title: 'Пользователи',
+            canActivate: [permissionGuard],
+            data: { permission: PermissionKey.ROLES_VIEW },
+            loadComponent: () =>
+              import('@app/features/admin/users-management/users-management').then(
+                (m) => m.UsersManagementComponent,
+              ),
+          },
+          {
+            path: 'roles',
+            title: 'Роли и права',
+            canActivate: [permissionGuard],
+            data: { permission: PermissionKey.ROLES_VIEW },
+            loadComponent: () =>
+              import('@app/features/settings/roles-permissions/roles-permissions').then(
+                (m) => m.RolesPermissionsComponent,
+              ),
+          },
+          {
+            path: 'integrations',
+            title: 'TourVisor',
+            canActivate: [permissionGuard],
+            data: { permission: PermissionKey.ROLES_VIEW },
+            loadComponent: () =>
+              import('@app/features/settings/tourvisor-integration-card/tourvisor-integration-card').then(
+                (m) => m.TourvisorIntegrationCardComponent,
+              ),
+          },
+          {
+            path: 'integrations/website',
+            title: 'Сайт & API',
+            canActivate: [permissionGuard],
+            data: { permission: PermissionKey.SETTINGS_UPDATE },
+            loadComponent: () =>
+              import('@app/features/settings/website-integration-card/website-integration-card').then(
+                (m) => m.WebsiteIntegrationCardComponent,
+              ),
+          },
+          {
+            path: 'custom-fields',
+            title: 'Пользовательские поля',
+            canActivate: [permissionGuard],
+            data: { permission: PermissionKey.ROLES_VIEW },
+            loadComponent: () =>
+              import('@app/features/settings/custom-fields/custom-fields').then(
+                (m) => m.CustomFieldsSettingsComponent,
+              ),
+          },
+        ],
       },
       {
         path: 'organizations/new',

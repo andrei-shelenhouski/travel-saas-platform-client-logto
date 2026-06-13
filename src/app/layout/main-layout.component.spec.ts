@@ -107,59 +107,8 @@ describe('MainLayoutComponent', () => {
     expect(component.activeOrgRoleLabel()).toBe('Admin');
   });
 
-  it('should show Roles & Permissions nav link when roles:view is allowed', () => {
-    expect(component.navLinks().some((link) => link.path === '/app/settings/roles')).toBe(true);
-  });
-
-  it('should show Integrations nav link when roles:view is allowed', () => {
-    expect(component.navLinks().some((link) => link.path === '/app/settings/integrations')).toBe(
-      true,
-    );
-  });
-
-  it('should show Custom Fields nav link when roles:view is allowed', () => {
-    expect(component.navLinks().some((link) => link.path === '/app/settings/custom-fields')).toBe(
-      true,
-    );
-  });
-
-  it('should hide Roles & Permissions nav link when roles:view is missing', () => {
-    rolesViewAllowed = false;
-
-    const restrictedFixture = TestBed.createComponent(MainLayoutComponent);
-    const restrictedComponent = restrictedFixture.componentInstance;
-
-    restrictedFixture.detectChanges();
-
-    expect(restrictedComponent.navLinks().some((link) => link.path === '/app/settings/roles')).toBe(
-      false,
-    );
-  });
-
-  it('should hide Integrations nav link when roles:view is missing', () => {
-    rolesViewAllowed = false;
-
-    const restrictedFixture = TestBed.createComponent(MainLayoutComponent);
-    const restrictedComponent = restrictedFixture.componentInstance;
-
-    restrictedFixture.detectChanges();
-
-    expect(
-      restrictedComponent.navLinks().some((link) => link.path === '/app/settings/integrations'),
-    ).toBe(false);
-  });
-
-  it('should hide Custom Fields nav link when roles:view is missing', () => {
-    rolesViewAllowed = false;
-
-    const restrictedFixture = TestBed.createComponent(MainLayoutComponent);
-    const restrictedComponent = restrictedFixture.componentInstance;
-
-    restrictedFixture.detectChanges();
-
-    expect(
-      restrictedComponent.navLinks().some((link) => link.path === '/app/settings/custom-fields'),
-    ).toBe(false);
+  it('should always show the Settings nav link regardless of roles:view', () => {
+    expect(component.navLinks().some((link) => link.path === '/app/settings')).toBe(true);
   });
 
   it('should show Contracts nav link when contracts:view is allowed', () => {

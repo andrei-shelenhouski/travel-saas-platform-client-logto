@@ -68,11 +68,7 @@
 
     <div class="toolbar-end">
       @if (userPicture(); as userPicture) {
-        <img
-          class="user-avatar"
-          [alt]="userDisplay()"
-          [src]="userPicture"
-        />
+        <img class="user-avatar" [alt]="userDisplay()" [src]="userPicture" />
       } @else {
         <div class="user-avatar-initials">
           {{ userInitial() }}
@@ -83,7 +79,9 @@
         class="role-badge"
         [class.role-badge--admin]="permissions.roleLabel() === 'Admin'"
         [class.role-badge--agent]="permissions.roleLabel() === 'Agent'"
-        [class.role-badge--viewer]="permissions.roleLabel() !== 'Admin' && permissions.roleLabel() !== 'Agent'"
+        [class.role-badge--viewer]="
+          permissions.roleLabel() !== 'Admin' && permissions.roleLabel() !== 'Agent'
+        "
       >
         {{ permissions.roleLabel() }}
       </span>
@@ -111,7 +109,7 @@
             [activated]="rla.isActive"
             [class.nav-item-section-margin]="link.sectionMargin"
             [routerLink]="link.path"
-            [routerLinkActiveOptions]="{ exact: true }"
+            [routerLinkActiveOptions]="{ exact: false }"
           >
             <mat-icon fontSet="material-icons" matListItemIcon>{{ link.icon }}</mat-icon>
             <span matListItemTitle>{{ link.label }}</span>

@@ -49,6 +49,12 @@ const SOURCE_BADGE_CONFIG: Record<string, LeadSourceBadgeConfig> = {
     backgroundColor: '#ffedd5',
     icon: 'cloud_done',
   },
+  WEBSITE: {
+    label: 'Сайт',
+    color: '#0057b7',
+    backgroundColor: '#dbeafe',
+    icon: 'language',
+  },
 };
 
 @Component({

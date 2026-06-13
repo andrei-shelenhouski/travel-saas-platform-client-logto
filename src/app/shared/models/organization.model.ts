@@ -470,6 +470,39 @@ export type OrganizationApiKey = {
   createdBy: string;
 };
 
+/** OpenAPI: IntegrationApiKeyResponse. GET /api/settings/integrations/api-keys item. */
+export type IntegrationApiKeyResponseDto = {
+  id: string;
+  name: string;
+  keyPrefix: string;
+  widgetConfig: Record<string, unknown> | null;
+  lastUsedAt: string | null;
+  createdAt: string;
+  revokedAt: string | null;
+};
+
+/** OpenAPI: IntegrationApiKeyCreateResponse. POST /api/settings/integrations/api-keys 201 body (contains rawKey). */
+export type IntegrationApiKeyCreateResponseDto = {
+  id: string;
+  name: string;
+  keyPrefix: string;
+  rawKey: string;
+  widgetConfig: Record<string, unknown> | null;
+  lastUsedAt: string | null;
+  createdAt: string;
+};
+
+/** OpenAPI: CreateIntegrationApiKeyRequest. POST /api/settings/integrations/api-keys body. */
+export type CreateIntegrationApiKeyRequestDto = {
+  name: string;
+};
+
+/** OpenAPI: UpdateIntegrationApiKeyRequest. PUT /api/settings/integrations/api-keys/{id} body. */
+export type UpdateIntegrationApiKeyRequestDto = {
+  name?: string;
+  widgetConfig?: Record<string, unknown> | null;
+};
+
 // ----- Activities -----
 
 export type CreateActivityDto = {
