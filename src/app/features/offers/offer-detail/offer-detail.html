@@ -27,6 +27,8 @@
       </app-page-heading>
 
       <app-page-content>
+        <div class="detail-with-history">
+        <div class="detail-main">
         @if (hasVersionHistory() || o.leadId) {
           <section class="offer-header-card">
             @if (hasVersionHistory()) {
@@ -135,10 +137,16 @@
             </app-detail-section>
           }
 
-          <section class="offer-card">
-            <app-offer-timeline [offer]="o" />
-          </section>
         </div>
+        </div><!-- /detail-main -->
+
+        <app-history-panel
+          class="detail-history"
+          entity="offers"
+          [currentUserId]="currentUserId()"
+          [entityId]="o.id"
+        />
+        </div><!-- /detail-with-history -->
       </app-page-content>
     } @else {
       <p class="offer-not-found">Предложение не найдено.</p>

@@ -1,3 +1,23 @@
+.detail-with-history {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 24px;
+  align-items: start;
+}
+
+.detail-main {
+  min-width: 0;
+}
+
+.detail-history {
+  position: sticky;
+  top: 72px;
+  max-height: calc(100vh - 80px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
 .lead-card,
 .lead-custom-fields-card {
   border: 1px solid var(--color-border);

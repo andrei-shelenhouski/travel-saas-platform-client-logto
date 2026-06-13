@@ -4,10 +4,13 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
 
 import { BookingsService } from '@app/services/bookings.service';
+import { ClientsService } from '@app/services/clients.service';
 import { CustomFieldsService } from '@app/services/custom-fields.service';
+import { MeService } from '@app/services/me.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PersonsService } from '@app/services/persons.service';
+import { TimelineService } from '@app/services/timeline.service';
 import { BookingStatus } from '@app/shared/models';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
@@ -112,6 +115,18 @@ describe('BookingDetailComponent', () => {
         {
           provide: MatSnackBar,
           useValue: { open: vi.fn() },
+        },
+        {
+          provide: ClientsService,
+          useValue: { listContacts: vi.fn(() => of([])) },
+        },
+        {
+          provide: MeService,
+          useValue: { getMeData: vi.fn(() => null) },
+        },
+        {
+          provide: TimelineService,
+          useValue: { getTimeline: vi.fn(() => of([])) },
         },
       ],
     }).compileComponents();

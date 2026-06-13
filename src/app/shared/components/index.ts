@@ -18,3 +18,4 @@ export { PageContentComponent } from './page-content/page-content';
 export { LoadingStateComponent } from './loading-state/loading-state';
 export { DetailSectionComponent } from './detail-section/detail-section';
 export { FormSectionComponent } from './form-section/form-section';
+export { HistoryPanelComponent } from './history-panel/history-panel';

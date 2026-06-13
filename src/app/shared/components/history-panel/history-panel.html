@@ -1,0 +1,201 @@
+<div class="history-panel">
+  <!-- Header -->
+  <div class="history-header">
+    <div class="history-header-title-row">
+      <h3 class="history-title">История</h3>
+      @if (allItems().length > 0) {
+        <span class="history-badge">{{ allItems().length }}</span>
+      }
+    </div>
+
+    <!-- Filter tabs -->
+    <div aria-label="Фильтр истории" class="history-filter-tabs" role="tablist">
+      <button
+        [attr.aria-selected]="activeFilter() === 'all'"
+        class="history-tab"
+        role="tab"
+        type="button"
+        [class.history-tab--active]="activeFilter() === 'all'"
+        (click)="setFilter('all')"
+      >
+        Все
+      </button>
+      <button
+        [attr.aria-selected]="activeFilter() === 'comments'"
+        class="history-tab"
+        role="tab"
+        type="button"
+        [class.history-tab--active]="activeFilter() === 'comments'"
+        (click)="setFilter('comments')"
+      >
+        Заметки
+      </button>
+      <button
+        [attr.aria-selected]="activeFilter() === 'events'"
+        class="history-tab"
+        role="tab"
+        type="button"
+        [class.history-tab--active]="activeFilter() === 'events'"
+        (click)="setFilter('events')"
+      >
+        События
+      </button>
+    </div>
+  </div>
+
+  <!-- Feed -->
+  <div aria-label="Лента событий" aria-live="polite" class="history-feed" role="log">
+    <!-- Load more (older entries at top) -->
+    @if (canLoadMore()) {
+      <div class="history-load-more-wrap">
+        <button
+          class="history-load-more-btn"
+          mat-stroked-button
+          type="button"
+          [disabled]="loadingMore()"
+          (click)="loadMore()"
+        >
+          @if (loadingMore()) {
+            <mat-icon class="history-spinner-icon">refresh</mat-icon>
+          }
+          Загрузить ещё
+        </button>
+      </div>
+    }
+
+    <!-- Loading skeleton -->
+    @if (loading()) {
+      <ul aria-label="Загрузка истории" class="history-list">
+        @for (sk of [1, 2, 3]; track sk) {
+          <li class="history-item history-item--skeleton">
+            <div class="history-connector">
+              <div class="history-dot history-dot--skeleton"></div>
+              <div class="history-line"></div>
+            </div>
+            <div class="history-content">
+              <div class="skeleton skeleton--text skeleton--wide"></div>
+              <div class="skeleton skeleton--text skeleton--narrow"></div>
+            </div>
+          </li>
+        }
+      </ul>
+    } @else {
+      @let items = filteredItems();
+      @if (items.length === 0) {
+        <!-- Empty state -->
+        <div class="history-empty" role="status">
+          <mat-icon class="history-empty-icon">history</mat-icon>
+          <p class="history-empty-text">История пуста</p>
+        </div>
+      } @else {
+        <ul aria-label="История событий" class="history-list">
+          @for (item of items; track item.id; let last = $last) {
+            <li class="history-item">
+              @if (item.type === 'comment') {
+                <!-- Comment -->
+                <div class="history-connector">
+                  <div
+                    aria-hidden="true"
+                    class="history-avatar"
+                    [attr.title]="item.author?.fullName ?? ''"
+                    [style.background-color]="avatarColor(item.author?.id ?? item.id)"
+                  >
+                    {{ getInitials(item.author?.fullName ?? '?') }}
+                  </div>
+                  @if (!last) {
+                    <div class="history-line"></div>
+                  }
+                </div>
+
+                <div class="history-content history-content--comment">
+                  <div class="history-comment-header">
+                    <span class="history-comment-author">{{ item.author?.fullName ?? 'Неизвестный' }}</span>
+                    <span
+                      class="history-timestamp"
+                      [matTooltip]="formatAbsoluteTime(item.createdAt)"
+                    >
+                      {{ formatRelativeTime(item.createdAt) }}
+                    </span>
+                    <!-- Edit/delete buttons — wired in issue #111 -->
+                    <div class="history-comment-actions" style="display: none">
+                      <button
+                        aria-label="Редактировать заметку"
+                        disabled
+                        mat-icon-button
+                        type="button"
+                      >
+                        <mat-icon>edit</mat-icon>
+                      </button>
+                      <button
+                        aria-label="Удалить заметку"
+                        disabled
+                        mat-icon-button
+                        type="button"
+                      >
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                  <p class="history-comment-body">{{ item.body }}</p>
+                  @if (item.isEdited) {
+                    <span class="history-edited-tag">изменено</span>
+                  }
+                </div>
+              } @else {
+                <!-- System event -->
+                <div class="history-connector">
+                  <div aria-hidden="true" class="history-dot history-dot--event">
+                    <mat-icon class="history-event-icon">{{ getSystemEventIcon(item.action) }}</mat-icon>
+                  </div>
+                  @if (!last) {
+                    <div class="history-line"></div>
+                  }
+                </div>
+
+                <div class="history-content history-content--event">
+                  <p class="history-event-label">
+                    {{ getSystemEventLabel(item.action, item.details) }}
+                  </p>
+                  <span
+                    class="history-timestamp"
+                    [matTooltip]="formatAbsoluteTime(item.createdAt)"
+                  >
+                    @if (item.actor?.fullName) {
+                      {{ item.actor?.fullName }} &middot;
+                    }
+                    {{ formatRelativeTime(item.createdAt) }}
+                  </span>
+                </div>
+              }
+            </li>
+          }
+        </ul>
+      }
+    }
+  </div>
+
+  <!-- Compose box — TODO: #111 (submit, validation, and optimistic update are deferred) -->
+  <div class="history-compose">
+    <form [formGroup]="composeForm">
+      <mat-form-field appearance="outline" class="history-compose-field">
+        <mat-label>Добавить заметку…</mat-label>
+        <textarea
+          aria-label="Добавить заметку"
+          formControlName="body"
+          matInput
+          rows="2"
+          [attr.disabled]="true"
+        ></textarea>
+      </mat-form-field>
+      <button
+        aria-label="Отправить заметку"
+        class="history-compose-submit"
+        mat-flat-button
+        type="submit"
+        [disabled]="true"
+      >
+        Отправить
+      </button>
+    </form>
+  </div>
+</div>

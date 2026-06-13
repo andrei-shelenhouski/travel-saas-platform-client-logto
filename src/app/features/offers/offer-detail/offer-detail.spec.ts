@@ -8,8 +8,10 @@ import { vi } from 'vitest';
 
 import { OfferPdfPreviewModalComponent } from '@app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal';
 import { BookingsService } from '@app/services/bookings.service';
+import { MeService } from '@app/services/me.service';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
+import { TimelineService } from '@app/services/timeline.service';
 
 import { OfferDetailComponent } from './offer-detail';
 
@@ -59,6 +61,8 @@ describe('OfferDetailComponent', () => {
         { provide: BookingsService, useValue: bookingsServiceMock },
         { provide: PermissionService, useValue: permissionServiceMock },
         { provide: MatSnackBar, useValue: snackBarMock },
+        { provide: MeService, useValue: { getMeData: vi.fn(() => null) } },
+        { provide: TimelineService, useValue: { getTimeline: vi.fn(() => of([])) } },
       ],
     }).compileComponents();
 

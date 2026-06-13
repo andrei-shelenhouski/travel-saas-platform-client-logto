@@ -43,10 +43,11 @@ import { BookingsService } from '@app/services/bookings.service';
 import { ClientsService } from '@app/services/clients.service';
 import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { LeadsService } from '@app/services/leads.service';
+import { MeService } from '@app/services/me.service';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
-import { LoadingStateComponent, PageContentComponent } from '@app/shared/components';
+import { HistoryPanelComponent, LoadingStateComponent, PageContentComponent } from '@app/shared/components';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
 import { LeadStatus } from '@app/shared/models';
@@ -177,6 +178,7 @@ const ACTION_TARGET_STATUS: Partial<Record<LeadAction, LeadStatus>> = {
     MarkdownPipe,
     LoadingStateComponent,
     PageContentComponent,
+    HistoryPanelComponent,
   ],
   templateUrl: './lead-detail.html',
   styleUrl: './lead-detail.scss',
@@ -194,8 +196,11 @@ export class LeadDetailComponent {
   private readonly bookingsService = inject(BookingsService);
   private readonly snackBar = inject(MatSnackBar);
   private readonly titleService = inject(Title);
+  private readonly meService = inject(MeService);
 
   protected readonly permissions = inject(PermissionService);
+
+  protected readonly currentUserId = computed(() => this.meService.getMeData()?.id ?? null);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
   private readonly travelDetailsData = signal<LeadResponseDto | null>(null);

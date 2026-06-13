@@ -39,6 +39,8 @@
     />
 
     <app-page-content>
+      <div class="detail-with-history">
+      <div class="detail-main">
       <div class="lead-grid">
         <section class="lead-card">
           <div class="lead-card-header">
@@ -582,6 +584,15 @@
           />
         </section>
       }
+      </div><!-- /detail-main -->
+
+      <app-history-panel
+        class="detail-history"
+        entity="leads"
+        [currentUserId]="currentUserId()"
+        [entityId]="l.id"
+      />
+      </div><!-- /detail-with-history -->
     </app-page-content>
   }
 </app-loading-state>
