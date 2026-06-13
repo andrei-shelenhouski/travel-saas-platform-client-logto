@@ -58,6 +58,10 @@
 
 .client-form-body {
   padding: 1rem;
+
+  @media (max-width: 767px) {
+    padding-bottom: calc(5rem + env(safe-area-inset-bottom, 0px));
+  }
 }
 
 .client-form-loading {
