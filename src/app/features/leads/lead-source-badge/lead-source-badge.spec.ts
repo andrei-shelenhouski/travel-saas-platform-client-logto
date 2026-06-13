@@ -22,6 +22,15 @@ describe('LeadSourceBadgeComponent', () => {
     expect(text).toContain('TourVisor');
   });
 
+  it('renders WEBSITE badge with "Сайт" label', () => {
+    fixture.componentRef.setInput('source', 'WEBSITE');
+    fixture.detectChanges();
+
+    const text = fixture.nativeElement.textContent as string;
+
+    expect(text).toContain('Сайт');
+  });
+
   it('renders fallback label for unknown source values', () => {
     fixture.componentRef.setInput('source', 'CUSTOM_IMPORT');
     fixture.detectChanges();

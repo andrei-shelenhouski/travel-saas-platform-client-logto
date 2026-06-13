@@ -5,7 +5,8 @@ import { PermissionKey } from '@app/shared/models';
 describe('app.routes', () => {
   it('guards settings/roles with roles:view permission', () => {
     const appRoute = routes.find((route) => route.path === 'app');
-    const settingsRolesRoute = appRoute?.children?.find((route) => route.path === 'settings/roles');
+    const settingsRoute = appRoute?.children?.find((route) => route.path === 'settings');
+    const settingsRolesRoute = settingsRoute?.children?.find((route) => route.path === 'roles');
 
     expect(settingsRolesRoute).toBeTruthy();
     expect(settingsRolesRoute?.canActivate).toContain(permissionGuard);
@@ -14,8 +15,9 @@ describe('app.routes', () => {
 
   it('guards settings/integrations with roles:view permission', () => {
     const appRoute = routes.find((route) => route.path === 'app');
-    const integrationsRoute = appRoute?.children?.find(
-      (route) => route.path === 'settings/integrations',
+    const settingsRoute = appRoute?.children?.find((route) => route.path === 'settings');
+    const integrationsRoute = settingsRoute?.children?.find(
+      (route) => route.path === 'integrations',
     );
 
     expect(integrationsRoute).toBeTruthy();
@@ -25,13 +27,26 @@ describe('app.routes', () => {
 
   it('guards settings/custom-fields with roles:view permission', () => {
     const appRoute = routes.find((route) => route.path === 'app');
-    const customFieldsRoute = appRoute?.children?.find(
-      (route) => route.path === 'settings/custom-fields',
+    const settingsRoute = appRoute?.children?.find((route) => route.path === 'settings');
+    const customFieldsRoute = settingsRoute?.children?.find(
+      (route) => route.path === 'custom-fields',
     );
 
     expect(customFieldsRoute).toBeTruthy();
     expect(customFieldsRoute?.canActivate).toContain(permissionGuard);
     expect(customFieldsRoute?.data?.['permission']).toBe(PermissionKey.ROLES_VIEW);
+  });
+
+  it('guards settings/integrations/website with settings:update permission', () => {
+    const appRoute = routes.find((route) => route.path === 'app');
+    const settingsRoute = appRoute?.children?.find((route) => route.path === 'settings');
+    const websiteRoute = settingsRoute?.children?.find(
+      (route) => route.path === 'integrations/website',
+    );
+
+    expect(websiteRoute).toBeTruthy();
+    expect(websiteRoute?.canActivate).toContain(permissionGuard);
+    expect(websiteRoute?.data?.['permission']).toBe(PermissionKey.SETTINGS_UPDATE);
   });
 
   it('guards contracts with contracts:view permission', () => {

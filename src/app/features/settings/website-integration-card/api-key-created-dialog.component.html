@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>Ключ создан</h2>
+<mat-dialog-content>
+  <p class="warning-text">
+    <mat-icon class="warn-icon">warning</mat-icon>
+    Скопируйте ключ сейчас. Он больше не будет показан.
+  </p>
+  <div class="key-display-row">
+    <pre class="raw-key">{{ data.rawKey }}</pre>
+    <button mat-icon-button matTooltip="Скопировать ключ" type="button" (click)="copyKey()">
+      <mat-icon>content_copy</mat-icon>
+    </button>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+    color="primary"
+    mat-flat-button
+    type="button"
+    [disabled]="!canClose()"
+    (click)="close()"
+  >
+    @if (!canClose()) {
+      <span>Закрыть ({{ countdown() }}с)</span>
+    } @else {
+      <span>Закрыть</span>
+    }
+  </button>
+</mat-dialog-actions>
