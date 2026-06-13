@@ -44,7 +44,7 @@
 
   @include mat.sidenav-overrides(
     (
-      content-background-color: var(--color-surface-subtle),
+      content-background-color: var(--mat-sys-surface),
     )
   );
 }
@@ -64,7 +64,6 @@
 .sidebar-nav {
   min-height: 0;
   flex: 1;
-  padding-inline: 0.5rem;
 }
 
 .nav-item-section-margin {
@@ -190,7 +189,7 @@
   flex-direction: column;
   overflow: auto;
   height: 100%;
-  background-color: var(--color-surface-subtle);
+  background-color: var(--mat-sys-surface);
 }
 
 .hamburger-btn {
