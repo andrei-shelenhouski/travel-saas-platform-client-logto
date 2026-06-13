@@ -204,6 +204,7 @@ export class BookingDetailComponent {
   readonly cancellationDialogOpen = signal(false);
 
   readonly customFieldsSection = viewChild(CustomFieldsSectionComponent);
+  readonly operationsSection = viewChild(OperationsSectionComponent);
 
   private readonly customFieldsData = rxResource<CustomFieldValueDto[], string | null>({
     params: (): string | null => this.routeId() ?? null,
@@ -259,12 +260,22 @@ export class BookingDetailComponent {
       .pipe(finalize(() => this.actionLoading.set(false)))
       .subscribe({
         next: (updated) => this.patchBooking(updated),
-        error: (err) =>
-          this.snackBar.open(
-            err.error?.message ?? 'Не удалось обновить статус бронирования',
-            'Close',
-            { duration: 5000 },
-          ),
+        error: (err) => {
+          if (err instanceof HttpErrorResponse && err.status === 400) {
+            this.snackBar.open(
+              'Укажите номер подтверждения поставщика перед подтверждением бронирования',
+              'Close',
+              { duration: 7000 },
+            );
+            this.operationsSection()?.startEdit();
+          } else {
+            this.snackBar.open(
+              err?.error?.message ?? 'Не удалось обновить статус бронирования',
+              'Close',
+              { duration: 5000 },
+            );
+          }
+        },
       });
   }
 

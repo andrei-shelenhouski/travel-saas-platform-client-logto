@@ -155,7 +155,7 @@ export class BookingsListComponent {
   }
 
   navigateToCreateBooking(): void {
-    this.router.navigate(['/bookings/new']);
+    this.router.navigate(['/app/bookings/new']);
   }
 
   private toBookingRow(b: BookingResponseDto): BookingRow {
