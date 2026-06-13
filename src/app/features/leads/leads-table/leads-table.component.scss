@@ -5,11 +5,11 @@
 }
 
 .check-icon {
-  color: #16a34a;
+  color: var(--mat-sys-primary);
 }
 
 .off-icon {
-  color: #73787a;
+  color: var(--mat-sys-on-surface-variant);
 }
 
 .cell-primary {
@@ -21,7 +21,7 @@
 .cell-secondary {
   display: block;
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--mat-sys-on-surface-variant);
 }
 
 .cell-deleted {
@@ -41,11 +41,11 @@
 }
 
 .menu-item-danger {
-  color: #dc2626;
+  color: var(--mat-sys-error);
 }
 
 .menu-item-danger-icon {
-  color: #dc2626;
+  color: var(--mat-sys-error);
 }
 
 .type-cell-content {
