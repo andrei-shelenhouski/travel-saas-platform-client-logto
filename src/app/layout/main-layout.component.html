@@ -107,6 +107,7 @@
             mat-list-item
             routerLinkActive
             [activated]="rla.isActive"
+            [class.nav-item-active]="rla.isActive"
             [class.nav-item-section-margin]="link.sectionMargin"
             [routerLink]="link.path"
             [routerLinkActiveOptions]="{ exact: false }"
