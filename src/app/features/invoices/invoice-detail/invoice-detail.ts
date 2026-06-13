@@ -149,6 +149,17 @@ export class InvoiceDetailComponent {
     },
   });
 
+  private readonly paymentsData = rxResource<PaymentResponseDto[], string | null>({
+    params: (): string | null => this.routeId() ?? null,
+    stream: ({ params }) => {
+      if (params === null) {
+        return EMPTY;
+      }
+
+      return this.invoicesService.listPayments(params);
+    },
+  });
+
   // ---- Derived state ----
 
   readonly invoice = computed(() => this.data.value() ?? null);
@@ -234,11 +245,7 @@ export class InvoiceDetailComponent {
 
   readonly lineItems = computed(() => this.invoice()?.lineItems ?? []);
 
-  readonly payments = computed<PaymentResponseDto[]>(() => {
-    const inv = this.invoice();
-
-    return (inv?.payments ?? []) as PaymentResponseDto[];
-  });
+  readonly payments = computed<PaymentResponseDto[]>(() => this.paymentsData.value() ?? []);
 
   readonly paidAmount = computed(() =>
     this.payments().reduce((sum, p) => sum + (p.amount ?? 0), 0),
@@ -468,6 +475,7 @@ export class InvoiceDetailComponent {
       }
 
       this.data.reload();
+      this.paymentsData.reload();
       this.activitiesData.reload();
     });
   }
@@ -495,6 +503,7 @@ export class InvoiceDetailComponent {
         this.invoicesService.deletePayment(inv.id, payment.id).subscribe({
           next: () => {
             this.data.reload();
+            this.paymentsData.reload();
             this.activitiesData.reload();
             this.snackBar.open('Платёж удалён', 'Close', { duration: 4000 });
           },
