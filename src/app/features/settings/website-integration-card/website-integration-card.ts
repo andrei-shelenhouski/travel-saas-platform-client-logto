@@ -323,11 +323,11 @@ export class WebsiteIntegrationCardComponent {
       successAction,
       successMessage:
         successAction === 'message'
-          ? (this.widgetForm.controls.successMessage.value || undefined)
+          ? this.widgetForm.controls.successMessage.value || undefined
           : undefined,
       successRedirectUrl:
         successAction === 'redirect'
-          ? (this.widgetForm.controls.successRedirectUrl.value || undefined)
+          ? this.widgetForm.controls.successRedirectUrl.value || undefined
           : undefined,
     };
 
