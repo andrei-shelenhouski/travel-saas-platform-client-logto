@@ -249,7 +249,7 @@
 
 .history-comment-actions {
   margin-left: auto;
-  display: flex;
+  display: none;
   gap: 0;
 
   button {
@@ -263,6 +263,10 @@
       height: 1rem;
     }
   }
+}
+
+.history-content--comment:hover .history-comment-actions {
+  display: flex;
 }
 
 .history-event-label {
@@ -328,30 +332,98 @@
   }
 }
 
+// ---- Inline edit ----
+
+.history-edit-textarea {
+  width: 100%;
+  padding: 0.375rem 0.5rem;
+  border: 1px solid var(--mat-sys-primary, #0ea5e9);
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: var(--color-text-primary, #374151);
+  background: var(--color-surface, #ffffff);
+  resize: none;
+  outline: none;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: var(--mat-sys-primary, #0ea5e9);
+    box-shadow: 0 0 0 2px color-mix(in srgb, var(--mat-sys-primary, #0ea5e9) 20%, transparent);
+  }
+}
+
+.history-edit-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.375rem;
+}
+
+// ---- Inline delete confirmation ----
+
+.history-delete-confirm {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0;
+}
+
+.history-delete-confirm-text {
+  font-size: 0.8125rem;
+  color: var(--color-text-primary, #374151);
+  font-weight: 500;
+}
+
+.history-item--deleting .history-content--comment {
+  background: color-mix(in srgb, var(--mat-sys-error, #ef4444) 6%, transparent);
+  border-radius: 0.375rem;
+  padding-left: 0.5rem;
+}
+
 // ---- Compose box ----
 
 .history-compose {
   flex-shrink: 0;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 1rem 0.5rem;
   border-top: 1px solid var(--color-border, #e5e7eb);
   background: var(--color-surface, #ffffff);
+}
 
-  form {
-    display: flex;
-    gap: 0.5rem;
-    align-items: flex-end;
-  }
+.history-compose-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .history-compose-field {
-  flex: 1;
+  width: 100%;
 
   textarea {
     resize: none;
   }
 }
 
+.history-compose-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.375rem;
+}
+
+.history-char-count {
+  font-size: 0.75rem;
+  color: var(--color-text-muted, #9ca3af);
+
+  &.char-count--warn {
+    color: var(--mat-sys-tertiary, #d97706);
+  }
+
+  &.char-count--error {
+    color: var(--mat-sys-error, #ef4444);
+    font-weight: 600;
+  }
+}
+
 .history-compose-submit {
   flex-shrink: 0;
-  margin-bottom: 1.125rem; // align with mat-form-field bottom
 }

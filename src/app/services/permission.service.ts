@@ -89,6 +89,10 @@ export class PermissionService {
     this.authService.hasPermission(PermissionKey.INVOICES_CANCEL),
   );
 
+  readonly canModerateComments = computed(() =>
+    this.authService.hasPermission('comments:moderate'),
+  );
+
   /** Whether to filter lists to current user's records (e.g. requests by managerId). */
   readonly filterToOwnRecords = computed(() => !this.canViewAllRequests());
 

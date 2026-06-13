@@ -11,30 +11,30 @@
     <!-- Filter tabs -->
     <div aria-label="Фильтр истории" class="history-filter-tabs" role="tablist">
       <button
-        [attr.aria-selected]="activeFilter() === 'all'"
         class="history-tab"
         role="tab"
         type="button"
+        [attr.aria-selected]="activeFilter() === 'all'"
         [class.history-tab--active]="activeFilter() === 'all'"
         (click)="setFilter('all')"
       >
         Все
       </button>
       <button
-        [attr.aria-selected]="activeFilter() === 'comments'"
         class="history-tab"
         role="tab"
         type="button"
+        [attr.aria-selected]="activeFilter() === 'comments'"
         [class.history-tab--active]="activeFilter() === 'comments'"
         (click)="setFilter('comments')"
       >
         Заметки
       </button>
       <button
-        [attr.aria-selected]="activeFilter() === 'events'"
         class="history-tab"
         role="tab"
         type="button"
+        [attr.aria-selected]="activeFilter() === 'events'"
         [class.history-tab--active]="activeFilter() === 'events'"
         (click)="setFilter('events')"
       >
@@ -44,7 +44,7 @@
   </div>
 
   <!-- Feed -->
-  <div aria-label="Лента событий" aria-live="polite" class="history-feed" role="log">
+  <div #historyFeed aria-label="Лента событий" aria-live="polite" class="history-feed" role="log">
     <!-- Load more (older entries at top) -->
     @if (canLoadMore()) {
       <div class="history-load-more-wrap">
@@ -90,7 +90,7 @@
       } @else {
         <ul aria-label="История событий" class="history-list">
           @for (item of items; track item.id; let last = $last) {
-            <li class="history-item">
+            <li class="history-item" [class.history-item--deleting]="deletingCommentId() === item.id">
               @if (item.type === 'comment') {
                 <!-- Comment -->
                 <div class="history-connector">
@@ -116,29 +116,86 @@
                     >
                       {{ formatRelativeTime(item.createdAt) }}
                     </span>
-                    <!-- Edit/delete buttons — wired in issue #111 -->
-                    <div class="history-comment-actions" style="display: none">
+
+                    @if (canEditOrDelete(item) && editingCommentId() !== item.id && deletingCommentId() !== item.id) {
+                      <div class="history-comment-actions">
+                        <button
+                          aria-label="Редактировать заметку"
+                          mat-icon-button
+                          type="button"
+                          (click)="startEdit(item)"
+                        >
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                        <button
+                          aria-label="Удалить заметку"
+                          mat-icon-button
+                          type="button"
+                          (click)="startDelete(item.id)"
+                        >
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </div>
+                    }
+                  </div>
+
+                  @if (editingCommentId() === item.id) {
+                    <!-- Inline edit -->
+                    <textarea
+                      cdkTextareaAutosize
+                      class="history-edit-textarea"
+                      [attr.data-id]="item.id"
+                      [cdkAutosizeMaxRows]="5"
+                      [cdkAutosizeMinRows]="1"
+                      [value]="editBody()"
+                      (input)="editBody.set($any($event.target).value)"
+                    ></textarea>
+                    <div class="history-edit-actions">
                       <button
-                        aria-label="Редактировать заметку"
-                        disabled
-                        mat-icon-button
+                        color="primary"
+                        mat-flat-button
                         type="button"
+                        [disabled]="editSaving() || editBody().trim().length === 0"
+                        (click)="saveEdit(item.id)"
                       >
-                        <mat-icon>edit</mat-icon>
+                        Сохранить
                       </button>
                       <button
-                        aria-label="Удалить заметку"
-                        disabled
-                        mat-icon-button
+                        mat-button
                         type="button"
+                        [disabled]="editSaving()"
+                        (click)="cancelEdit()"
                       >
-                        <mat-icon>delete</mat-icon>
+                        Отмена
                       </button>
                     </div>
-                  </div>
-                  <p class="history-comment-body">{{ item.body }}</p>
-                  @if (item.isEdited) {
-                    <span class="history-edited-tag">изменено</span>
+                  } @else if (deletingCommentId() === item.id) {
+                    <!-- Inline delete confirmation -->
+                    <div class="history-delete-confirm">
+                      <span class="history-delete-confirm-text">Удалить заметку?</span>
+                      <button
+                        color="warn"
+                        mat-flat-button
+                        type="button"
+                        [disabled]="deletingInProgress()"
+                        (click)="confirmDelete(item.id)"
+                      >
+                        Да
+                      </button>
+                      <button
+                        mat-button
+                        type="button"
+                        [disabled]="deletingInProgress()"
+                        (click)="cancelDelete()"
+                      >
+                        Нет
+                      </button>
+                    </div>
+                  } @else {
+                    <p class="history-comment-body">{{ item.body }}</p>
+                    @if (item.isEdited) {
+                      <span class="history-edited-tag">изменено</span>
+                    }
                   }
                 </div>
               } @else {
@@ -174,28 +231,38 @@
     }
   </div>
 
-  <!-- Compose box — TODO: #111 (submit, validation, and optimistic update are deferred) -->
+  <!-- Compose box -->
   <div class="history-compose">
-    <form [formGroup]="composeForm">
+    <div class="history-compose-inner">
       <mat-form-field appearance="outline" class="history-compose-field">
         <mat-label>Добавить заметку…</mat-label>
         <textarea
           aria-label="Добавить заметку"
-          formControlName="body"
+          cdkTextareaAutosize
           matInput
-          rows="2"
-          [attr.disabled]="true"
+          [cdkAutosizeMaxRows]="5"
+          [cdkAutosizeMinRows]="1"
+          [formControl]="composeControl"
+          [maxlength]="maxCommentLength"
+          (keydown)="submitComment($event)"
         ></textarea>
       </mat-form-field>
-      <button
-        aria-label="Отправить заметку"
-        class="history-compose-submit"
-        mat-flat-button
-        type="submit"
-        [disabled]="true"
-      >
-        Отправить
-      </button>
-    </form>
+      <div class="history-compose-footer">
+        <span class="history-char-count" [class]="composeCharCountClass()">
+          {{ composeCharCount() }} / {{ maxCommentLength }}
+        </span>
+        <button
+          aria-label="Отправить заметку"
+          class="history-compose-submit"
+          color="primary"
+          mat-flat-button
+          type="button"
+          [disabled]="composeSubmitDisabled()"
+          (click)="submitComment()"
+        >
+          Отправить
+        </button>
+      </div>
+    </div>
   </div>
 </div>

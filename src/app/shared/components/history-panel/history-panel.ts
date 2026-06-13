@@ -3,9 +3,11 @@ import {
   Component,
   computed,
   effect,
+  ElementRef,
   inject,
   input,
   signal,
+  viewChild,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
@@ -14,10 +16,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 
 import { of } from 'rxjs';
 
 import { TimelineService } from '@app/services/timeline.service';
+import { PermissionService } from '@app/services/permission.service';
 
 import type { TimelineEntity } from '@app/services/timeline.service';
 import type { TimelineItemResponse } from '@app/shared/models';
@@ -25,6 +30,8 @@ import type { TimelineItemResponse } from '@app/shared/models';
 export type HistoryFilter = 'all' | 'comments' | 'events';
 
 const PAGE_SIZE = 50;
+const MAX_COMMENT_LENGTH = 2000;
+const WARN_COMMENT_LENGTH = 1800;
 
 const AVATAR_COLORS = [
   '#0d9488', // teal-600
@@ -177,6 +184,7 @@ export function formatAbsoluteTime(isoDate: string): string {
     MatTooltipModule,
     MatFormFieldModule,
     MatInputModule,
+    CdkTextareaAutosize,
   ],
   templateUrl: './history-panel.html',
   styleUrl: './history-panel.scss',
@@ -187,7 +195,11 @@ export class HistoryPanelComponent {
   readonly currentUserId = input.required<string | null>();
 
   private readonly timelineService = inject(TimelineService);
+  private readonly permissionService = inject(PermissionService);
   private readonly fb = inject(FormBuilder);
+  private readonly snackBar = inject(MatSnackBar);
+
+  private readonly feedRef = viewChild<ElementRef<HTMLElement>>('historyFeed');
 
   protected readonly activeFilter = signal<HistoryFilter>('all');
 
@@ -196,6 +208,21 @@ export class HistoryPanelComponent {
 
   /** Accumulated items across pagination loads */
   protected readonly allItems = signal<TimelineItemResponse[]>([]);
+
+  // Compose state
+  protected readonly submitting = signal(false);
+  protected readonly composeControl = this.fb.nonNullable.control('');
+
+  // Edit state
+  protected readonly editingCommentId = signal<string | null>(null);
+  protected readonly editBody = signal('');
+  protected readonly editSaving = signal(false);
+
+  // Delete state
+  protected readonly deletingCommentId = signal<string | null>(null);
+  protected readonly deletingInProgress = signal(false);
+
+  protected readonly canModerateComments = this.permissionService.canModerateComments;
 
   private readonly timelineData = rxResource<
     TimelineItemResponse[],
@@ -246,10 +273,30 @@ export class HistoryPanelComponent {
 
   protected readonly loadingMore = signal(false);
 
-  // TODO: #111 — compose form
-  protected readonly composeForm = this.fb.nonNullable.group({
-    body: this.fb.nonNullable.control(''),
+  protected readonly composeCharCount = computed(() => this.composeControl.value.length);
+
+  protected readonly composeCharCountClass = computed(() => {
+    const count = this.composeCharCount();
+
+    if (count >= MAX_COMMENT_LENGTH) {
+      return 'char-count--error';
+    }
+
+    if (count >= WARN_COMMENT_LENGTH) {
+      return 'char-count--warn';
+    }
+
+    return '';
   });
+
+  protected readonly composeSubmitDisabled = computed(
+    () =>
+      this.composeControl.value.trim().length === 0 ||
+      this.composeCharCount() > MAX_COMMENT_LENGTH ||
+      this.submitting(),
+  );
+
+  protected readonly maxCommentLength = MAX_COMMENT_LENGTH;
 
   protected setFilter(filter: HistoryFilter): void {
     this.activeFilter.set(filter);
@@ -294,6 +341,126 @@ export class HistoryPanelComponent {
           this.loadingMore.set(false);
         },
       });
+  }
+
+  protected submitComment(event?: KeyboardEvent): void {
+    if (event) {
+      if (!event.ctrlKey || event.key !== 'Enter') {
+        return;
+      }
+
+      event.preventDefault();
+    }
+
+    const body = this.composeControl.value.trim();
+
+    if (!body || body.length > MAX_COMMENT_LENGTH || this.submitting()) {
+      return;
+    }
+
+    this.submitting.set(true);
+    this.timelineService.addComment(this.entity(), this.entityId(), body).subscribe({
+      next: (newItem) => {
+        this.allItems.update((items) => [...items, newItem]);
+        this.composeControl.reset('');
+        this.submitting.set(false);
+        this.scrollFeedToBottom();
+      },
+      error: () => {
+        this.submitting.set(false);
+        this.snackBar.open('Не удалось добавить заметку', 'Закрыть', { duration: 4000 });
+      },
+    });
+  }
+
+  protected startEdit(item: TimelineItemResponse): void {
+    this.editingCommentId.set(item.id);
+    this.editBody.set(item.body ?? '');
+    this.deletingCommentId.set(null);
+
+    queueMicrotask(() => {
+      const el = document.querySelector<HTMLTextAreaElement>(
+        `.history-edit-textarea[data-id="${item.id}"]`,
+      );
+
+      if (el) {
+        el.focus();
+        el.setSelectionRange(el.value.length, el.value.length);
+      }
+    });
+  }
+
+  protected cancelEdit(): void {
+    this.editingCommentId.set(null);
+    this.editBody.set('');
+  }
+
+  protected saveEdit(commentId: string): void {
+    const body = this.editBody().trim();
+
+    if (!body || this.editSaving()) {
+      return;
+    }
+
+    this.editSaving.set(true);
+    this.timelineService.editComment(this.entity(), this.entityId(), commentId, body).subscribe({
+      next: (updated) => {
+        this.allItems.update((items) => items.map((i) => (i.id === commentId ? updated : i)));
+        this.editingCommentId.set(null);
+        this.editBody.set('');
+        this.editSaving.set(false);
+      },
+      error: () => {
+        this.editSaving.set(false);
+        this.snackBar.open('Не удалось сохранить заметку', 'Закрыть', { duration: 4000 });
+      },
+    });
+  }
+
+  protected startDelete(commentId: string): void {
+    this.deletingCommentId.set(commentId);
+    this.editingCommentId.set(null);
+  }
+
+  protected cancelDelete(): void {
+    this.deletingCommentId.set(null);
+  }
+
+  protected confirmDelete(commentId: string): void {
+    if (this.deletingInProgress()) {
+      return;
+    }
+
+    this.deletingInProgress.set(true);
+    this.timelineService.deleteComment(this.entity(), this.entityId(), commentId).subscribe({
+      next: () => {
+        this.allItems.update((items) => items.filter((i) => i.id !== commentId));
+        this.deletingCommentId.set(null);
+        this.deletingInProgress.set(false);
+      },
+      error: () => {
+        this.deletingInProgress.set(false);
+        this.snackBar.open('Не удалось удалить заметку', 'Закрыть', { duration: 4000 });
+      },
+    });
+  }
+
+  protected canEditOrDelete(item: TimelineItemResponse): boolean {
+    if (item.type === 'system_event') {
+      return false;
+    }
+
+    const userId = this.currentUserId();
+
+    return (userId !== null && item.author?.id === userId) || this.canModerateComments();
+  }
+
+  private scrollFeedToBottom(): void {
+    const feed = this.feedRef();
+
+    if (feed) {
+      feed.nativeElement.scrollTop = feed.nativeElement.scrollHeight;
+    }
   }
 
   // Exposed pure helpers for the template
