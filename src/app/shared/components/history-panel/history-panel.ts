@@ -9,7 +9,7 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -212,6 +212,7 @@ export class HistoryPanelComponent {
   // Compose state
   protected readonly submitting = signal(false);
   protected readonly composeControl = this.fb.nonNullable.control('');
+  private readonly composeValue = toSignal(this.composeControl.valueChanges, { initialValue: '' });
 
   // Edit state
   protected readonly editingCommentId = signal<string | null>(null);
@@ -273,7 +274,7 @@ export class HistoryPanelComponent {
 
   protected readonly loadingMore = signal(false);
 
-  protected readonly composeCharCount = computed(() => this.composeControl.value.length);
+  protected readonly composeCharCount = computed(() => this.composeValue().length);
 
   protected readonly composeCharCountClass = computed(() => {
     const count = this.composeCharCount();
@@ -291,7 +292,7 @@ export class HistoryPanelComponent {
 
   protected readonly composeSubmitDisabled = computed(
     () =>
-      this.composeControl.value.trim().length === 0 ||
+      this.composeValue().trim().length === 0 ||
       this.composeCharCount() > MAX_COMMENT_LENGTH ||
       this.submitting(),
   );
