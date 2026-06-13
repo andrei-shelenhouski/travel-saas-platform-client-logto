@@ -1,0 +1,51 @@
+.my-profile-container {
+  padding: 1.5rem;
+  max-width: 560px;
+
+  mat-card {
+    margin-top: 0;
+  }
+}
+
+.loading-state {
+  display: flex;
+  justify-content: center;
+  padding: 3rem 0;
+}
+
+.inline-error {
+  color: var(--mat-sys-error);
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.role-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0 0.75rem;
+  font-size: 0.875rem;
+}
+
+.role-label {
+  color: var(--mat-sys-on-surface-variant);
+  font-weight: 500;
+}
+
+.role-value {
+  color: var(--mat-sys-on-surface);
+}
+
+.form-actions {
+  margin-top: 1.5rem;
+}

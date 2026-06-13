@@ -63,35 +63,10 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
     requiredPermission: PermissionKey.INVOICES_VIEW,
   },
   {
-    path: '/app/settings/roles',
-    icon: 'admin_panel_settings',
-    label: 'Роли и права',
-    requiredPermission: PermissionKey.ROLES_VIEW,
-    sectionMargin: true,
-  },
-  {
-    path: '/app/settings/users',
-    icon: 'manage_accounts',
-    label: 'Пользователи',
-    requiredPermission: PermissionKey.ROLES_VIEW,
-  },
-  {
-    path: '/app/settings/integrations',
-    icon: 'hub',
-    label: 'Интеграции',
-    requiredPermission: PermissionKey.ROLES_VIEW,
-  },
-  {
-    path: '/app/settings/custom-fields',
-    icon: 'tune',
-    label: 'Пользовательские поля',
-    requiredPermission: PermissionKey.ROLES_VIEW,
-  },
-  {
     path: '/app/settings',
     icon: 'settings',
     label: 'Настройки',
-    requiredPermission: PermissionKey.SETTINGS_UPDATE,
+    sectionMargin: true,
   },
 ];
 

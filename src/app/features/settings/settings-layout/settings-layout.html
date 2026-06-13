@@ -1,0 +1,74 @@
+<div class="settings-layout">
+  <aside class="settings-subnav">
+    <nav>
+      <!-- Temporarily disabled profile editing -->
+      @if (false) {
+        <a class="subnav-link" routerLink="profile" routerLinkActive="subnav-link--active">
+          <mat-icon>person</mat-icon>
+          <span>Профиль</span>
+        </a>
+
+        <mat-divider class="subnav-divider" />
+      }
+
+      @if (permissions.canUpdateSettings()) {
+        <a class="subnav-link" routerLink="company" routerLinkActive="subnav-link--active">
+          <mat-icon>business</mat-icon>
+          <span>Компания</span>
+        </a>
+      }
+
+      @if (permissions.canViewRoles()) {
+        <a class="subnav-link" routerLink="users" routerLinkActive="subnav-link--active">
+          <mat-icon>manage_accounts</mat-icon>
+          <span>Пользователи</span>
+        </a>
+
+        <a class="subnav-link" routerLink="roles" routerLinkActive="subnav-link--active">
+          <mat-icon>admin_panel_settings</mat-icon>
+          <span>Роли и права</span>
+        </a>
+      }
+
+      <mat-divider class="subnav-divider" />
+
+      <span class="subnav-group-label">Интеграции</span>
+
+      @if (permissions.canViewRoles()) {
+        <a
+          class="subnav-link"
+          routerLink="integrations"
+          routerLinkActive="subnav-link--active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <mat-icon>hub</mat-icon>
+          <span>TourVisor</span>
+        </a>
+      }
+
+      @if (permissions.canUpdateSettings()) {
+        <a
+          class="subnav-link"
+          routerLink="integrations/website"
+          routerLinkActive="subnav-link--active"
+        >
+          <mat-icon>language</mat-icon>
+          <span>Сайт &amp; API</span>
+        </a>
+      }
+
+      <mat-divider class="subnav-divider" />
+
+      @if (permissions.canViewRoles()) {
+        <a class="subnav-link" routerLink="custom-fields" routerLinkActive="subnav-link--active">
+          <mat-icon>tune</mat-icon>
+          <span>Пользовательские поля</span>
+        </a>
+      }
+    </nav>
+  </aside>
+
+  <div class="settings-content">
+    <router-outlet />
+  </div>
+</div>

@@ -1,0 +1,51 @@
+<app-page-heading subtitle="Ваши личные данные в системе." title="Профиль">
+</app-page-heading>
+
+<div class="my-profile-container">
+  @if (loading()) {
+    <div class="loading-state">
+      <mat-spinner diameter="40" />
+    </div>
+  } @else {
+    @if (inlineError()) {
+      <p class="inline-error">{{ inlineError() }}</p>
+    }
+
+    <mat-card appearance="outlined">
+      <mat-card-content>
+        <form [formGroup]="form" (ngSubmit)="saveProfile()">
+          <div class="form-fields">
+            <mat-form-field>
+              <mat-label>Имя</mat-label>
+              <input formControlName="fullName" matInput required />
+              @if (form.controls.fullName.hasError('required')) {
+                <mat-error>Обязательное поле</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Email</mat-label>
+              <input [value]="email()" matInput readonly />
+            </mat-form-field>
+
+            <div class="role-row">
+              <span class="role-label">Роль:</span>
+              <span class="role-value">{{ roleName() }}</span>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button
+              mat-flat-button
+              color="primary"
+              type="submit"
+              [disabled]="saving()"
+            >
+              Сохранить
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>
