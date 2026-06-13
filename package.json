@@ -1,6 +1,6 @@
 {
   "name": "tsp-client-app",
-  "version": "0.1.16-alpha.8",
+  "version": "0.1.16-alpha.9",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 8081 --open",
