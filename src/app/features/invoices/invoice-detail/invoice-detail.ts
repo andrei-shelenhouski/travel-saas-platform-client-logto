@@ -39,6 +39,7 @@ import {
   PageContentComponent,
 } from '@app/shared/components';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
+import { PAYMENT_METHOD_LABELS } from '@app/shared/utils/payment-method-labels';
 import { CLIENT_TYPE_OPTIONS, EntityType } from '@app/shared/models';
 
 import type {
@@ -79,13 +80,6 @@ function invoiceActivityType(type: string): 'created' | 'updated' | 'status' {
 
   return 'status';
 }
-
-const PAYMENT_METHOD_LABELS: Record<string, string> = {
-  BANK_TRANSFER: 'Банковский перевод',
-  CASH: 'Наличные',
-  CARD: 'Карта',
-  OTHER: 'Другое',
-};
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
   DRAFT: 'bg-gray-100 text-gray-800',

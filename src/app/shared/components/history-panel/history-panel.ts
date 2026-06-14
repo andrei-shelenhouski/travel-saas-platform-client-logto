@@ -23,6 +23,7 @@ import { of } from 'rxjs';
 
 import { PermissionService } from '@app/services/permission.service';
 import { TimelineService } from '@app/services/timeline.service';
+import { PAYMENT_METHOD_LABELS } from '@app/shared/utils/payment-method-labels';
 
 import type { TimelineEntity } from '@app/services/timeline.service';
 import type { TimelineItemResponse } from '@app/shared/models';
@@ -97,13 +98,6 @@ function translateStatus(raw: unknown): string {
 function strVal(v: unknown): string {
   return typeof v === 'string' ? v : '';
 }
-
-const PAYMENT_METHOD_LABELS: Record<string, string> = {
-  BANK_TRANSFER: 'Банковский перевод',
-  CASH: 'Наличные',
-  CARD: 'Карта',
-  OTHER: 'Другое',
-};
 
 const SYSTEM_EVENT_LABEL_MAP: Record<string, LabelBuilder> = {
   lead_created: () => 'Заявка создана',
@@ -239,7 +233,9 @@ export function formatRelativeTime(isoDate: string): string {
   }
 
   if (diffDay < 7) {
-    return `${diffDay} дня назад`;
+    const dayForm = diffDay >= 5 ? 'дней' : 'дня';
+
+    return `${diffDay} ${dayForm} назад`;
   }
 
   return new Date(isoDate).toLocaleDateString('ru-RU', {
@@ -279,6 +275,7 @@ export class HistoryPanelComponent {
   private readonly permissionService = inject(PermissionService);
   private readonly fb = inject(FormBuilder);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly hostRef = inject<ElementRef<HTMLElement>>(ElementRef);
 
   private readonly feedRef = viewChild<ElementRef<HTMLElement>>('historyFeed');
 
@@ -322,14 +319,18 @@ export class HistoryPanelComponent {
     },
   });
 
+  /** False once a loadMore call returns fewer than PAGE_SIZE items (no more pages exist) */
+  private readonly hasMore = signal(true);
+
   constructor() {
-    // When fresh data loads (entity/id change), reset accumulated items
+    // When fresh data loads (entity/id change), reset accumulated items and pagination state
     effect(() => {
       const value = this.timelineData.value();
 
       if (value !== undefined) {
         this.allItems.set(value);
         this.beforeCursor.set(undefined);
+        this.hasMore.set(value.length >= PAGE_SIZE);
       }
     });
   }
@@ -351,7 +352,7 @@ export class HistoryPanelComponent {
     return items;
   });
 
-  protected readonly canLoadMore = computed(() => this.allItems().length >= PAGE_SIZE);
+  protected readonly canLoadMore = computed(() => this.hasMore());
 
   protected readonly loadingMore = signal(false);
 
@@ -389,8 +390,19 @@ export class HistoryPanelComponent {
       })
       .subscribe({
         next: (older) => {
-          const merged = [...older, ...items];
-          // Deduplicate by id, sort oldest-first for display
+          if (older.length === 0) {
+            this.hasMore.set(false);
+            this.loadingMore.set(false);
+
+            return;
+          }
+
+          if (older.length < PAGE_SIZE) {
+            this.hasMore.set(false);
+          }
+
+          // Current items take precedence over older page (preserves local edits)
+          const merged = [...items, ...older];
           const seen = new Set<string>();
           const unique = merged.filter((item) => {
             if (seen.has(item.id)) {
@@ -401,6 +413,9 @@ export class HistoryPanelComponent {
 
             return true;
           });
+
+          // Sort oldest-first for display
+          unique.sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
 
           this.allItems.set(unique);
           this.loadingMore.set(false);
@@ -447,7 +462,7 @@ export class HistoryPanelComponent {
     this.deletingCommentId.set(null);
 
     queueMicrotask(() => {
-      const el = document.querySelector<HTMLTextAreaElement>(
+      const el = this.hostRef.nativeElement.querySelector<HTMLTextAreaElement>(
         `.history-edit-textarea[data-id="${item.id}"]`,
       );
 
