@@ -140,7 +140,7 @@ export class PersonDetailComponent {
 
   private readonly _titleEffect = effect(() => {
     const p = this.person();
-    const name = [p?.lastName, p?.firstName].filter(Boolean).join(' ');
+    const name = [p?.lastName, p?.firstName, p?.patronymic].filter(Boolean).join(' ');
 
     if (name) {
       this.titleService.setTitle(`${name} — Navio`);

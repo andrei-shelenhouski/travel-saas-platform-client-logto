@@ -11,6 +11,7 @@ import { finalize } from 'rxjs/operators';
 
 import { PersonsService } from '@app/services/persons.service';
 import { PageContentComponent } from '@app/shared/components';
+import { FormSectionComponent } from '@app/shared/components/form-section/form-section';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 
@@ -34,6 +35,7 @@ const GENDER_LABEL: Record<string, string> = {
     PageHeading,
     PageHeadingAction,
     PageContentComponent,
+    FormSectionComponent,
   ],
   templateUrl: './edit-person-page.html',
   styleUrl: './edit-person-page.scss',

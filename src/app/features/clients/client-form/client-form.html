@@ -5,7 +5,7 @@
   </button>
 </app-page-heading>
 
-<div class="client-form-body">
+<app-page-content>
   @if (loading()) {
     <div class="client-form-loading">
       <div aria-hidden="true" class="client-form-spinner"></div>
@@ -16,179 +16,200 @@
     }
 
     <form class="client-form" [formGroup]="form" (ngSubmit)="submit()">
-      <p class="client-form-type-label">
-        Выберите тип клиента:
-      </p>
-      <div class="client-type-grid">
-        @for (opt of typeOptions; track opt.value) {
-          <button
-            class="type-card"
-            type="button"
-            [class.selected]="selectedType() === opt.value"
-            [disabled]="isEditMode()"
-            (click)="selectType(opt.value)"
-          >
-            <mat-icon>{{ opt.icon }}</mat-icon>
-            <span class="type-card-label">{{ opt.label }}</span>
-            <span class="type-card-sublabel">{{ opt.subLabel }}</span>
-          </button>
-        }
-      </div>
+      <app-form-section title="Тип клиента">
+        <div class="client-form-section-body">
+          <div class="client-type-grid">
+            @for (opt of typeOptions; track opt.value) {
+              <button
+                class="type-card"
+                type="button"
+                [class.selected]="selectedType() === opt.value"
+                [disabled]="isEditMode()"
+                (click)="selectType(opt.value)"
+              >
+                <mat-icon>{{ opt.icon }}</mat-icon>
+                <span class="type-card-label">{{ opt.label }}</span>
+                <span class="type-card-sublabel">{{ opt.subLabel }}</span>
+              </button>
+            }
+          </div>
+        </div>
+      </app-form-section>
 
       @if (selectedType(); as type) {
         @if (type === ClientType.INDIVIDUAL) {
-          <mat-form-field subscriptSizing="dynamic">
-            <mat-label>Полное имя</mat-label>
-            <input formControlName="fullName" matInput type="text" />
-            @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
-              <mat-error>Требуется указать полное имя</mat-error>
-            }
-          </mat-form-field>
+          <app-form-section title="Основная информация">
+            <div class="client-form-section-body">
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Полное имя</mat-label>
+                <input formControlName="fullName" matInput type="text" />
+                @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
+                  <mat-error>Требуется указать полное имя</mat-error>
+                }
+              </mat-form-field>
+            </div>
+          </app-form-section>
         }
 
         @if (type === ClientType.COMPANY || type === ClientType.B2B_AGENT) {
-          <mat-form-field subscriptSizing="dynamic">
-            <mat-label>Название компании</mat-label>
-            <input formControlName="companyName" matInput type="text" />
-            @if (
-              form.controls.companyName.hasError('required') && form.controls.companyName.touched
-            ) {
-              <mat-error>Требуется указать название компании</mat-error>
-            }
-          </mat-form-field>
-
-          <mat-form-field subscriptSizing="dynamic">
-            <mat-label>Юридический адрес</mat-label>
-            <input formControlName="legalAddress" matInput type="text" />
-            @if (
-              form.controls.legalAddress.hasError('required') && form.controls.legalAddress.touched
-            ) {
-              <mat-error>Требуется указать юридический адрес</mat-error>
-            }
-          </mat-form-field>
-
-          <mat-form-field subscriptSizing="dynamic">
-            <mat-label>Контактное лицо</mat-label>
-            <input formControlName="fullName" matInput type="text" />
-            @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
-              <mat-error>Требуется указать контактное лицо</mat-error>
-            }
-          </mat-form-field>
-
-          <div class="client-form-two-col">
-            <mat-form-field>
-              <mat-label>УНП</mat-label>
-              <input formControlName="unp" matInput type="text" />
-              <mat-hint>9 цифр</mat-hint>
-              @if (form.controls.unp.hasError('pattern') && form.controls.unp.touched) {
-                <mat-error>УНП должен состоять из 9 цифр</mat-error>
-              }
-            </mat-form-field>
-            <mat-form-field>
-              <mat-label>ОКПО</mat-label>
-              <input formControlName="okpo" matInput type="text" />
-            </mat-form-field>
-          </div>
-
-          <div class="client-form-two-col">
-            <mat-form-field subscriptSizing="dynamic">
-              <mat-label>IBAN</mat-label>
-              <input formControlName="iban" matInput type="text" />
-            </mat-form-field>
-            <mat-form-field subscriptSizing="dynamic">
-              <mat-label>Название банка</mat-label>
-              <input formControlName="bankName" matInput type="text" />
-            </mat-form-field>
-          </div>
-
-          <mat-form-field subscriptSizing="dynamic">
-            <mat-label>БИК</mat-label>
-            <input formControlName="bik" matInput type="text" />
-          </mat-form-field>
-        }
-
-        @if (type === ClientType.B2B_AGENT) {
-          <section class="agent-requisites-section">
-            <h3 class="agent-requisites-title">
-              Реквизиты агента
-            </h3>
-
-            <div class="client-form-two-col">
+          <app-form-section title="Основная информация">
+            <div class="client-form-section-body">
               <mat-form-field subscriptSizing="dynamic">
-                <mat-label>Торговая марка</mat-label>
-                <input formControlName="trademark" matInput maxlength="200" type="text" />
+                <mat-label>Название компании</mat-label>
+                <input formControlName="companyName" matInput type="text" />
+                @if (
+                  form.controls.companyName.hasError('required') && form.controls.companyName.touched
+                ) {
+                  <mat-error>Требуется указать название компании</mat-error>
+                }
               </mat-form-field>
 
               <mat-form-field subscriptSizing="dynamic">
-                <mat-label>Свидетельство о регистрации</mat-label>
-                <input formControlName="registrationCert" matInput maxlength="100" type="text" />
+                <mat-label>Юридический адрес</mat-label>
+                <input formControlName="legalAddress" matInput type="text" />
+                @if (
+                  form.controls.legalAddress.hasError('required') && form.controls.legalAddress.touched
+                ) {
+                  <mat-error>Требуется указать юридический адрес</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Контактное лицо</mat-label>
+                <input formControlName="fullName" matInput type="text" />
+                @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
+                  <mat-error>Требуется указать контактное лицо</mat-error>
+                }
+              </mat-form-field>
+            </div>
+          </app-form-section>
+
+          <app-form-section title="Реквизиты">
+            <div class="client-form-section-body">
+              <div class="client-form-two-col">
+                <mat-form-field>
+                  <mat-label>УНП</mat-label>
+                  <input formControlName="unp" matInput type="text" />
+                  <mat-hint>9 цифр</mat-hint>
+                  @if (form.controls.unp.hasError('pattern') && form.controls.unp.touched) {
+                    <mat-error>УНП должен состоять из 9 цифр</mat-error>
+                  }
+                </mat-form-field>
+                <mat-form-field subscriptSizing="dynamic">
+                  <mat-label>ОКПО</mat-label>
+                  <input formControlName="okpo" matInput type="text" />
+                </mat-form-field>
+              </div>
+
+              <div class="client-form-two-col">
+                <mat-form-field subscriptSizing="dynamic">
+                  <mat-label>IBAN</mat-label>
+                  <input formControlName="iban" matInput type="text" />
+                </mat-form-field>
+                <mat-form-field subscriptSizing="dynamic">
+                  <mat-label>Название банка</mat-label>
+                  <input formControlName="bankName" matInput type="text" />
+                </mat-form-field>
+              </div>
+
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>БИК</mat-label>
+                <input formControlName="bik" matInput type="text" />
+              </mat-form-field>
+            </div>
+          </app-form-section>
+        }
+
+        @if (type === ClientType.B2B_AGENT) {
+          <app-form-section title="Реквизиты агента">
+            <div class="client-form-section-body">
+              <div class="client-form-two-col">
+                <mat-form-field subscriptSizing="dynamic">
+                  <mat-label>Торговая марка</mat-label>
+                  <input formControlName="trademark" matInput maxlength="200" type="text" />
+                </mat-form-field>
+
+                <mat-form-field subscriptSizing="dynamic">
+                  <mat-label>Свидетельство о регистрации</mat-label>
+                  <input formControlName="registrationCert" matInput maxlength="100" type="text" />
+                </mat-form-field>
+              </div>
+
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Система налогообложения</mat-label>
+                <input formControlName="taxationType" matInput maxlength="60" type="text" />
+              </mat-form-field>
+
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>ФИО директора</mat-label>
+                <input formControlName="directorName" matInput maxlength="200" type="text" />
+                <mat-hint>Законный представитель</mat-hint>
+              </mat-form-field>
+
+              <mat-checkbox formControlName="rataMember">
+                <span>Действительный член РАТА</span>
+              </mat-checkbox>
+
+              <mat-form-field class="client-form-commission-field" subscriptSizing="dynamic">
+                <mat-label>Агентская комиссия, %</mat-label>
+                <input matInput type="number" [formControl]="commissionPctCtrl" />
+                <mat-hint>Справочное значение</mat-hint>
+              </mat-form-field>
+            </div>
+          </app-form-section>
+        }
+
+        <app-form-section title="Контакты">
+          <div class="client-form-section-body">
+            <div class="client-form-two-col">
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Телефон</mat-label>
+                <input formControlName="phone" matInput type="tel" />
+              </mat-form-field>
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Электронная почта</mat-label>
+                <input formControlName="email" matInput type="email" />
+                @if (form.controls.email.hasError('email') && form.controls.email.touched) {
+                  <mat-error>Введите корректный адрес электронной почты</mat-error>
+                }
               </mat-form-field>
             </div>
 
             <mat-form-field subscriptSizing="dynamic">
-              <mat-label>Система налогообложения</mat-label>
-              <input formControlName="taxationType" matInput maxlength="60" type="text" />
+              <mat-label>Telegram</mat-label>
+              <input
+                formControlName="telegramHandle"
+                matInput
+                placeholder="@username"
+                type="text"
+              />
             </mat-form-field>
+          </div>
+        </app-form-section>
 
+        <app-form-section title="Заметки">
+          <div class="client-form-section-body">
             <mat-form-field subscriptSizing="dynamic">
-              <mat-label>ФИО директора</mat-label>
-              <input formControlName="directorName" matInput maxlength="200" type="text" />
-              <mat-hint>Законный представитель</mat-hint>
+              <mat-label>Заметки</mat-label>
+              <textarea formControlName="notes" matInput rows="3"></textarea>
             </mat-form-field>
-
-            <mat-checkbox formControlName="rataMember">
-              <span>Действительный член РАТА</span>
-            </mat-checkbox>
-          </section>
-
-          <mat-form-field class="client-form-commission-field" subscriptSizing="dynamic">
-            <mat-label>Агентская комиссия, %</mat-label>
-            <input matInput type="number" [formControl]="commissionPctCtrl" />
-            <mat-hint>Справочное значение</mat-hint>
-          </mat-form-field>
-        }
-
-        <div class="client-form-two-col">
-          <mat-form-field subscriptSizing="dynamic">
-            <mat-label>Телефон</mat-label>
-            <input formControlName="phone" matInput type="tel" />
-          </mat-form-field>
-          <mat-form-field subscriptSizing="dynamic">
-            <mat-label>Электронная почта</mat-label>
-            <input formControlName="email" matInput type="email" />
-            @if (form.controls.email.hasError('email') && form.controls.email.touched) {
-              <mat-error>Введите корректный адрес электронной почты</mat-error>
-            }
-          </mat-form-field>
-        </div>
-
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>Telegram</mat-label>
-          <input
-            formControlName="telegramHandle"
-            matInput
-            placeholder="@username"
-            type="text"
-          />
-        </mat-form-field>
-
-        <mat-form-field subscriptSizing="dynamic">
-          <mat-label>Заметки</mat-label>
-          <textarea formControlName="notes" matInput rows="3"></textarea>
-        </mat-form-field>
+          </div>
+        </app-form-section>
 
         @if (!isEditMode()) {
-          <div class="client-form-consent-block">
-            <mat-checkbox formControlName="dataConsentGiven">
-              <span>Согласие на обработку персональных данных</span>
-            </mat-checkbox>
-            @if (consentGiven()) {
-              <mat-form-field class="client-form-consent-date" subscriptSizing="dynamic">
-                <mat-label>Дата согласия</mat-label>
-                <input formControlName="dataConsentDate" matInput type="date" />
-              </mat-form-field>
-            }
-          </div>
+          <app-form-section title="Согласие">
+            <div class="client-form-section-body">
+              <mat-checkbox formControlName="dataConsentGiven">
+                <span>Согласие на обработку персональных данных</span>
+              </mat-checkbox>
+              @if (consentGiven()) {
+                <mat-form-field class="client-form-consent-date" subscriptSizing="dynamic">
+                  <mat-label>Дата согласия</mat-label>
+                  <input formControlName="dataConsentDate" matInput type="date" />
+                </mat-form-field>
+              }
+            </div>
+          </app-form-section>
         }
       }
 
@@ -197,8 +218,8 @@
           <span>Отмена</span>
         </button>
         <button
-          cdkFocusInitial
-          matButton="filled"
+          color="primary"
+          mat-flat-button
           type="submit"
           [disabled]="saving() || !selectedType()"
         >
@@ -211,4 +232,4 @@
       </div>
     </form>
   }
-</div>
+</app-page-content>

@@ -1,6 +1,20 @@
 <section class="traveler-profile-section">
   <div class="traveler-profile-header">
-    <h2 class="traveler-profile-title">Профиль туриста</h2>
+    <div class="traveler-profile-header-left">
+      <h2 class="traveler-profile-title">Профиль туриста</h2>
+      @if (personFullName()) {
+        <span class="traveler-profile-name">{{ personFullName() }}</span>
+      }
+    </div>
+    @if (hasPerson()) {
+      <a
+        mat-stroked-button
+        [routerLink]="['/app/persons', person()!.id]"
+      >
+        <mat-icon>open_in_new</mat-icon>
+        Открыть карточку туриста
+      </a>
+    }
   </div>
 
   @if (loading()) {
@@ -18,7 +32,6 @@
         </button>
       } @else {
         <form class="traveler-create-form" [formGroup]="createForm" (ngSubmit)="submitCreatePerson()">
-          <p class="form-hint">Введите имя и фамилию туриста</p>
           <div class="traveler-create-fields">
             <mat-form-field>
               <mat-label>Фамилия</mat-label>
@@ -27,6 +40,35 @@
             <mat-form-field>
               <mat-label>Имя</mat-label>
               <input autocomplete="off" formControlName="firstName" matInput />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Отчество</mat-label>
+              <input autocomplete="off" formControlName="patronymic" matInput />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Дата рождения</mat-label>
+              <input formControlName="dateOfBirth" matInput type="date" />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Пол</mat-label>
+              <mat-select formControlName="gender">
+                <mat-option value="">—</mat-option>
+                @for (opt of genderOptions; track opt.value) {
+                  <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Гражданство</mat-label>
+              <input autocomplete="off" formControlName="citizenship" matInput />
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Личный номер</mat-label>
+              <input autocomplete="off" formControlName="personalNumber" matInput />
+            </mat-form-field>
+            <mat-form-field class="traveler-create-notes">
+              <mat-label>Заметки</mat-label>
+              <textarea formControlName="notes" matInput rows="2"></textarea>
             </mat-form-field>
           </div>
           <div class="form-actions">

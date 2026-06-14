@@ -65,7 +65,11 @@ describe('getSystemEventLabel', () => {
 
   it('interpolates payment_recorded details', () => {
     expect(
-      getSystemEventLabel('payment_recorded', { amount: 1000, currency: 'USD', paymentMethod: 'CASH' }),
+      getSystemEventLabel('payment_recorded', {
+        amount: 1000,
+        currency: 'USD',
+        paymentMethod: 'CASH',
+      }),
     ).toBe('Оплата записана: 1000 USD (Наличные)');
   });
 
