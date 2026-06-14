@@ -47,7 +47,7 @@ describe('getSystemEventLabel', () => {
 
   it('interpolates status_changed details', () => {
     expect(getSystemEventLabel('status_changed', { from: 'NEW', to: 'IN_PROGRESS' })).toBe(
-      'Статус: NEW → IN_PROGRESS',
+      'Статус: Новый → В работе',
     );
   });
 
@@ -65,8 +65,8 @@ describe('getSystemEventLabel', () => {
 
   it('interpolates payment_recorded details', () => {
     expect(
-      getSystemEventLabel('payment_recorded', { amount: 1000, currency: 'USD', method: 'cash' }),
-    ).toBe('Оплата записана: 1000 USD (cash)');
+      getSystemEventLabel('payment_recorded', { amount: 1000, currency: 'USD', paymentMethod: 'CASH' }),
+    ).toBe('Оплата записана: 1000 USD (Наличные)');
   });
 
   it('returns action key as-is for unknown action', () => {

@@ -334,7 +334,10 @@ export class InvoiceDetailComponent {
   }
 
   getClientTypeLabel(type: string | undefined): string {
-    if (!type) return '—';
+    if (!type) {
+      return '—';
+    }
+
     return CLIENT_TYPE_LABELS[type] ?? type;
   }
 

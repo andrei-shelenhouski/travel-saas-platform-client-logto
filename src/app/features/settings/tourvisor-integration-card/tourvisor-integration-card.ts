@@ -75,7 +75,7 @@ export class TourvisorIntegrationCardComponent {
 
   private refreshTimerId: ReturnType<typeof setTimeout> | null = null;
 
-  protected readonly pageTitle = 'Интеграции';
+  protected readonly pageTitle = 'TourVisor';
   protected readonly pageSubtitle = 'Подключайте и управляйте внешними провайдерами лидов.';
   protected readonly authkeyHelpText =
     'Откройте настройки аккаунта TourVisor и скопируйте authkey из настроек интеграционного доступа.';

@@ -1,9 +1,18 @@
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { ChangeDetectionStrategy, Component, computed, effect, ElementRef, inject, input, signal, viewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  ElementRef,
+  inject,
+  input,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { rxResource, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatAccordion } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -21,7 +30,6 @@ export type HistoryFilter = 'all' | 'comments' | 'events';
 
 const PAGE_SIZE = 50;
 const MAX_COMMENT_LENGTH = 2000;
-const WARN_COMMENT_LENGTH = 1800;
 
 const AVATAR_COLORS = [
   '#0d9488', // teal-600
@@ -90,6 +98,13 @@ function strVal(v: unknown): string {
   return typeof v === 'string' ? v : '';
 }
 
+const PAYMENT_METHOD_LABELS: Record<string, string> = {
+  BANK_TRANSFER: 'Банковский перевод',
+  CASH: 'Наличные',
+  CARD: 'Карта',
+  OTHER: 'Другое',
+};
+
 const SYSTEM_EVENT_LABEL_MAP: Record<string, LabelBuilder> = {
   lead_created: () => 'Заявка создана',
 
@@ -141,8 +156,14 @@ const SYSTEM_EVENT_LABEL_MAP: Record<string, LabelBuilder> = {
 
   invoice_created: (d) => `Счёт ${strVal(d['invoiceNumber'])} создан`,
 
-  payment_recorded: (d) =>
-    `Оплата записана: ${strVal(d['amount']) || '?'} ${strVal(d['currency'])} (${strVal(d['method']) || '?'})`,
+  payment_recorded: (d) => {
+    const amount = d['amount'] !== null && d['amount'] !== undefined ? String(d['amount']) : '?';
+    const currency = strVal(d['currency']);
+    const rawMethod = strVal(d['paymentMethod']);
+    const method = (PAYMENT_METHOD_LABELS[rawMethod] ?? rawMethod) || '?';
+
+    return `Оплата записана: ${amount} ${currency} (${method})`;
+  },
 };
 
 export function getSystemEventLabel(
@@ -238,14 +259,13 @@ export function formatAbsoluteTime(isoDate: string): string {
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-history-panel',
   imports: [
-    ReactiveFormsModule,
-    MatButtonModule,
-    MatIconModule,
-    MatTooltipModule,
-    MatFormFieldModule,
-    MatInputModule,
     CdkTextareaAutosize,
-    MatAccordion,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    MatTooltipModule,
+    ReactiveFormsModule,
   ],
   templateUrl: './history-panel.html',
   styleUrl: './history-panel.scss',
