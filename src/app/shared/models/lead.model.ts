@@ -134,6 +134,8 @@ export type UpdateLeadStatusDto = {
 /** OpenAPI: LinkLeadClientRequest. PATCH /api/leads/{id}/client body. */
 export type LinkLeadClientDto = {
   clientId: string;
+  contactPersonId?: string;
+  clearContactPerson?: boolean;
 };
 
 /** OpenAPI: PromoteLeadToClientRequest. POST /api/leads/{id}/promote-client body. */

@@ -1,11 +1,11 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
-import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
+import { Router } from '@angular/router';
 
 import { ClientTypeBadgeComponent } from '@app/features/clients/client-type-badge/client-type-badge';
 import {
@@ -20,6 +20,7 @@ import type { LeadResponseDto } from '@app/shared/models';
 
 const ALL_COLUMNS = [
   'number',
+  'source',
   'name',
   'clientType',
   'destination',
@@ -28,7 +29,6 @@ const ALL_COLUMNS = [
   'assignedAgent',
   'createdAt',
   'updatedAt',
-  'source',
   'contactEmail',
   'contactPhone',
   'actions',

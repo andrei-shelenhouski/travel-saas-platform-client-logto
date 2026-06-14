@@ -14,7 +14,9 @@ import { WebsiteIntegrationCardComponent } from './website-integration-card';
 
 import type { IntegrationApiKeyResponseDto } from '@app/shared/models/organization.model';
 
-function makeKey(overrides: Partial<IntegrationApiKeyResponseDto> = {}): IntegrationApiKeyResponseDto {
+function makeKey(
+  overrides: Partial<IntegrationApiKeyResponseDto> = {},
+): IntegrationApiKeyResponseDto {
   return {
     id: 'key-1',
     name: 'Test Key',
@@ -45,7 +47,17 @@ describe('WebsiteIntegrationCardComponent', () => {
   beforeEach(async () => {
     apiKeysService = {
       list: vi.fn(() => of([makeKey()])),
-      create: vi.fn(() => of({ id: 'key-new', name: 'New Key', keyPrefix: 'nv_new', rawKey: 'raw-secret', widgetConfig: null, lastUsedAt: null, createdAt: '2026-01-01T00:00:00Z' })),
+      create: vi.fn(() =>
+        of({
+          id: 'key-new',
+          name: 'New Key',
+          keyPrefix: 'nv_new',
+          rawKey: 'raw-secret',
+          widgetConfig: null,
+          lastUsedAt: null,
+          createdAt: '2026-01-01T00:00:00Z',
+        }),
+      ),
       update: vi.fn((id: string, dto: object) => of({ ...makeKey(), ...dto, id })),
       revoke: vi.fn(() => of(undefined)),
     };
@@ -77,11 +89,15 @@ describe('WebsiteIntegrationCardComponent', () => {
 
   it('creates and loads keys on init', () => {
     expect(apiKeysService.list).toHaveBeenCalled();
-    expect((component as unknown as { keys: () => IntegrationApiKeyResponseDto[] }).keys()).toHaveLength(1);
+    expect(
+      (component as unknown as { keys: () => IntegrationApiKeyResponseDto[] }).keys(),
+    ).toHaveLength(1);
   });
 
   it('keyDisplayPrefix returns prefix with mask', () => {
-    const api = component as unknown as { keyDisplayPrefix: (key: IntegrationApiKeyResponseDto) => string };
+    const api = component as unknown as {
+      keyDisplayPrefix: (key: IntegrationApiKeyResponseDto) => string;
+    };
     expect(api.keyDisplayPrefix(makeKey())).toBe('nv_test••••');
   });
 
@@ -147,14 +163,25 @@ describe('WebsiteIntegrationCardComponent', () => {
   it('saveWidgetConfig rejects when both phone and email are hidden', () => {
     const api = component as unknown as {
       toggleWidgetPanel: (key: IntegrationApiKeyResponseDto) => void;
-      widgetForm: { controls: { fields: { controls: { phone: { controls: { visible: { setValue: (v: boolean) => void } } }; email: { controls: { visible: { setValue: (v: boolean) => void } } } } } } };
+      widgetForm: {
+        controls: {
+          fields: {
+            controls: {
+              phone: { controls: { visible: { setValue: (v: boolean) => void } } };
+              email: { controls: { visible: { setValue: (v: boolean) => void } } };
+            };
+          };
+        };
+      };
       saveWidgetConfig: (key: IntegrationApiKeyResponseDto) => void;
     };
     api.toggleWidgetPanel(makeKey());
     api.widgetForm.controls.fields.controls.phone.controls.visible.setValue(false);
     api.widgetForm.controls.fields.controls.email.controls.visible.setValue(false);
     api.saveWidgetConfig(makeKey());
-    expect(snackBar.open).toHaveBeenCalledWith('Телефон или Email должен быть видимым.', 'Close', { duration: 4000 });
+    expect(snackBar.open).toHaveBeenCalledWith('Телефон или Email должен быть видимым.', 'Close', {
+      duration: 4000,
+    });
     expect(apiKeysService.update).not.toHaveBeenCalled();
   });
 

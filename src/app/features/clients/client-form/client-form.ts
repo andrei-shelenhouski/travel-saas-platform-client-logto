@@ -18,6 +18,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
+import { PageContentComponent } from '@app/shared/components';
+import { FormSectionComponent } from '@app/shared/components/form-section/form-section';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import { ClientType, CreateClientDto, UpdateClientDto } from '@app/shared/models';
@@ -63,6 +65,8 @@ const TYPE_OPTIONS: TypeOption[] = [
     MatInputModule,
     MatSelectModule,
     MatButtonModule,
+    PageContentComponent,
+    FormSectionComponent,
     PageHeading,
     PageHeadingAction,
   ],

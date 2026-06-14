@@ -5,7 +5,7 @@
       <app-page-heading
         subtitle="Карточка туриста"
         [showBackButton]="true"
-        [title]="p.lastName + ' ' + p.firstName"
+        [title]="p.lastName + ' ' + p.firstName + (p.patronymic ? ' ' + p.patronymic : '')"
       >
         <a
           appPageAction
@@ -200,10 +200,7 @@
           @if (bookings().length === 0) {
             <p class="empty-state-text">Турист ещё не участвовал в бронированиях.</p>
           } @else {
-            <app-person-bookings-table
-              [rows]="bookings()"
-              (rowClick)="openBooking($event)"
-            />
+            <app-person-bookings-table [rows]="bookings()" (rowClick)="openBooking($event)" />
           }
         </app-detail-section>
       </app-page-content>

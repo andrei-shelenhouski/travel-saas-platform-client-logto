@@ -137,6 +137,7 @@ export const PersonDocumentType = {
   NATIONAL_PASSPORT: 'NATIONAL_PASSPORT',
   NATIONAL_ID: 'NATIONAL_ID',
   BIRTH_CERTIFICATE: 'BIRTH_CERTIFICATE',
+  DRIVER_LICENSE: 'DRIVER_LICENSE',
   OTHER: 'OTHER',
 } as const;
 export type PersonDocumentType = (typeof PersonDocumentType)[keyof typeof PersonDocumentType];
@@ -305,7 +306,7 @@ export type UpdatePersonRequestDto = {
 /** OpenAPI: CreatePersonRequest. POST /api/persons body. */
 export type CreateDetachedPersonRequestDto = CreatePersonRequestDto;
 
-/** OpenAPI: AddPersonRelationshipRequest. POST /api/persons/:id/relationships body. */
+/** OpenAPI: CreateRelationshipRequest. POST /api/persons/:id/relationships body. */
 export type AddPersonRelationshipRequestDto = {
   toPersonId: string;
   type: PersonRelationshipType | (string & Record<never, never>);

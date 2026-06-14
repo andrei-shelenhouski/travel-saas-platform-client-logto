@@ -7,13 +7,31 @@
 
 .traveler-profile-header {
   padding: 1rem 1rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.traveler-profile-header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
 }
 
 .traveler-profile-title {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.traveler-profile-name {
   font-size: 1rem;
   font-weight: 600;
   color: #111827;
-  margin: 0;
 }
 
 .traveler-profile-loading {
@@ -51,6 +69,10 @@
 
   mat-form-field {
     flex: 1 1 180px;
+  }
+
+  .traveler-create-notes {
+    flex: 1 1 100%;
   }
 }
 

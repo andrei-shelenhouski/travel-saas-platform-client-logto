@@ -39,7 +39,8 @@ import {
   PageContentComponent,
 } from '@app/shared/components';
 import { ConfirmDialogService } from '@app/shared/services/confirm-dialog.service';
-import { EntityType } from '@app/shared/models';
+import { PAYMENT_METHOD_LABELS } from '@app/shared/utils/payment-method-labels';
+import { CLIENT_TYPE_OPTIONS, EntityType } from '@app/shared/models';
 
 import type {
   ActivityTimelineItem,
@@ -48,18 +49,37 @@ import type {
   PaymentResponseDto,
 } from '@app/shared/models';
 
+const CLIENT_TYPE_LABELS: Record<string, string> = Object.fromEntries(
+  CLIENT_TYPE_OPTIONS.map((o) => [o.value, o.label]),
+);
+
 type LoadError = {
   status?: number;
   error?: { message?: string };
   message?: string;
 };
 
-const PAYMENT_METHOD_LABELS: Record<string, string> = {
-  BANK_TRANSFER: 'Банковский перевод',
-  CASH: 'Наличные',
-  CARD: 'Карта',
-  OTHER: 'Другое',
+const INVOICE_ACTIVITY_LABELS: Record<string, string> = {
+  invoice_created: 'Счёт создан',
+  invoice_updated: 'Счёт обновлён',
+  status_changed: 'Статус изменён',
+  payment_recorded: 'Платёж записан',
+  payment_deleted: 'Платёж удалён',
+  invoice_cancelled: 'Счёт отменён',
+  invoice_published: 'Счёт опубликован',
 };
+
+function invoiceActivityType(type: string): 'created' | 'updated' | 'status' {
+  if (type.endsWith('_created')) {
+    return 'created';
+  }
+
+  if (type.endsWith('_updated') || type.endsWith('_published')) {
+    return 'updated';
+  }
+
+  return 'status';
+}
 
 const STATUS_BADGE_CLASS: Record<string, string> = {
   DRAFT: 'bg-gray-100 text-gray-800',
@@ -140,9 +160,9 @@ export class InvoiceDetailComponent {
           map((r) =>
             r.items.map<ActivityTimelineItem>((a) => ({
               id: a.id,
-              label: a.type,
+              label: INVOICE_ACTIVITY_LABELS[a.type] ?? a.type.replaceAll('_', ' '),
               date: a.createdAt,
-              type: a.type === 'CREATED' ? 'created' : a.type === 'UPDATED' ? 'updated' : 'status',
+              type: invoiceActivityType(a.type),
             })),
           ),
         );
@@ -305,6 +325,14 @@ export class InvoiceDetailComponent {
 
   getStatusLabel(status: string): string {
     return STATUS_LABELS[status] ?? status;
+  }
+
+  getClientTypeLabel(type: string | undefined): string {
+    if (!type) {
+      return '—';
+    }
+
+    return CLIENT_TYPE_LABELS[type] ?? type;
   }
 
   getPaymentMethodLabel(method: string): string {

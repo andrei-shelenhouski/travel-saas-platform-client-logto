@@ -118,7 +118,7 @@ export class WebsiteIntegrationCardComponent {
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
 
-  protected readonly pageTitle = 'Интеграции';
+  protected readonly pageTitle = 'Сайт & API';
   protected readonly pageSubtitle =
     'Сайт и API — управляйте ключами доступа для интеграции формы заявки на ваш сайт.';
 

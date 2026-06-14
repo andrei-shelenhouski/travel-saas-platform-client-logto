@@ -107,6 +107,11 @@
   gap: 1rem;
 }
 
+.booking-grid-right app-history-panel {
+  min-height: 420px;
+  max-height: 70vh;
+}
+
 @media (min-width: 1024px) {
   .booking-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));

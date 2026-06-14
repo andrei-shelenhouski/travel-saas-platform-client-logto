@@ -24,6 +24,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { catchError, of } from 'rxjs';
 
 import { PersonsService } from '@app/services/persons.service';
+import { RouterLink } from '@angular/router';
 
 import type {
   CreatePersonRequestDto,
@@ -65,6 +66,7 @@ const GENDER_LABEL: Record<string, string | undefined> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-traveler-profile-section',
   imports: [
+    RouterLink,
     ReactiveFormsModule,
     MatExpansionModule,
     MatIconModule,
@@ -134,6 +136,15 @@ export class TravelerProfileSectionComponent {
   protected readonly person = computed(() => this.personResource.value() ?? null);
   protected readonly loading = computed(() => this.personResource.isLoading());
   protected readonly hasPerson = computed(() => this.person() !== null);
+  protected readonly personFullName = computed(() => {
+    const p = this.person();
+
+    if (!p) {
+      return null;
+    }
+
+    return [p.lastName, p.firstName, p.patronymic].filter(Boolean).join(' ') || null;
+  });
 
   constructor() {
     effect(() => {
@@ -151,6 +162,12 @@ export class TravelerProfileSectionComponent {
   protected readonly createForm = this.fb.nonNullable.group({
     firstName: [''],
     lastName: [''],
+    patronymic: [''],
+    dateOfBirth: [''],
+    gender: [''],
+    citizenship: [''],
+    personalNumber: [''],
+    notes: [''],
   });
 
   // ---- Core fields inline edit ----
@@ -272,7 +289,16 @@ export class TravelerProfileSectionComponent {
 
   protected startCreatePerson(): void {
     this.showCreateForm.set(true);
-    this.createForm.reset({ firstName: '', lastName: '' });
+    this.createForm.reset({
+      firstName: '',
+      lastName: '',
+      patronymic: '',
+      dateOfBirth: '',
+      gender: '',
+      citizenship: '',
+      personalNumber: '',
+      notes: '',
+    });
   }
 
   protected cancelCreatePerson(): void {
@@ -280,13 +306,22 @@ export class TravelerProfileSectionComponent {
   }
 
   protected submitCreatePerson(): void {
-    const { firstName, lastName } = this.createForm.getRawValue();
+    const raw = this.createForm.getRawValue();
 
-    if (!firstName.trim() || !lastName.trim()) {
+    if (!raw.firstName.trim() || !raw.lastName.trim()) {
       return;
     }
 
-    const dto: CreatePersonRequestDto = { firstName: firstName.trim(), lastName: lastName.trim() };
+    const dto: CreatePersonRequestDto = {
+      firstName: raw.firstName.trim(),
+      lastName: raw.lastName.trim(),
+      patronymic: raw.patronymic.trim() || undefined,
+      dateOfBirth: raw.dateOfBirth || undefined,
+      gender: raw.gender || undefined,
+      citizenship: raw.citizenship.trim() || undefined,
+      personalNumber: raw.personalNumber.trim() || undefined,
+      notes: raw.notes.trim() || undefined,
+    };
 
     this.createLoading.set(true);
     this.personsService.createForClient(this.clientId(), dto).subscribe({

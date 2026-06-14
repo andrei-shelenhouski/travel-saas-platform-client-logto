@@ -13,7 +13,14 @@
         [subtitle]="getStatusLabel(inv.status)"
         [title]="'Счёт ' + inv.number"
       >
-        <button appPageAction icon="preview" label="Предпросмотр" mat-stroked-button type="button" (click)="openPdfPreview()">
+        <button
+          appPageAction
+          icon="preview"
+          label="Предпросмотр"
+          mat-stroked-button
+          type="button"
+          (click)="openPdfPreview()"
+        >
           <mat-icon>preview</mat-icon>
           Предпросмотр
         </button>
@@ -139,7 +146,7 @@
             </div>
             <div>
               <dt class="invoice-detail-label">Тип клиента</dt>
-              <dd class="invoice-detail-value">{{ inv.clientType ?? '—' }}</dd>
+              <dd class="invoice-detail-value">{{ getClientTypeLabel(inv.clientType) }}</dd>
             </div>
             <div>
               <dt class="invoice-detail-label">Дата счёта</dt>
@@ -163,10 +170,11 @@
             </div>
             <div>
               <dt class="invoice-detail-label">Бронирование</dt>
-              <dd>
+              <dd class="invoice-detail-value">
                 @if (inv.bookingId) {
                   <a class="invoice-detail-link" [routerLink]="['/app/bookings', inv.bookingId]">
-                    {{ inv.bookingId }}
+                    <mat-icon class="invoice-detail-link-icon">open_in_new</mat-icon>
+                    Открыть
                   </a>
                 } @else {
                   <span class="invoice-detail-value">—</span>

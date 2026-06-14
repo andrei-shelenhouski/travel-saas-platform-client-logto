@@ -149,6 +149,12 @@
               (deleteDocument)="onDeleteDocument($event)"
               (uploadFiles)="onUploadFiles($event)"
             />
+
+            <app-history-panel
+              entity="bookings"
+              [currentUserId]="currentUserId()"
+              [entityId]="b.id"
+            />
           </div>
         </div>
 

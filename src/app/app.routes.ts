@@ -99,14 +99,14 @@ export const routes: Routes = [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
         path: 'dashboard',
-        title: 'Главная',
+        title: 'Рабочий стол',
         loadComponent: () =>
           import('@app/features/dashboard/dashboard').then((m) => m.DashboardComponent),
       },
       // Leads
       {
         path: 'leads/new',
-        title: 'Новая заявка',
+        title: 'Новый лид',
         canActivate: [permissionGuard],
         data: { permission: PermissionKey.LEADS_CREATE },
         loadComponent: () =>
@@ -114,7 +114,7 @@ export const routes: Routes = [
       },
       {
         path: 'leads/kanban',
-        title: 'Заявки — Канбан',
+        title: 'Лиды · Канбан',
         loadComponent: () =>
           import('@app/features/leads/leads-kanban/leads-kanban').then(
             (m) => m.LeadsKanbanComponent,
@@ -122,13 +122,13 @@ export const routes: Routes = [
       },
       {
         path: 'leads/:id',
-        title: 'Заявка',
+        title: 'Лид',
         loadComponent: () =>
           import('@app/features/leads/lead-detail/lead-detail').then((m) => m.LeadDetailComponent),
       },
       {
         path: 'leads',
-        title: 'Заявки',
+        title: 'Лиды',
         loadComponent: () =>
           import('@app/features/leads/leads-list/leads-list').then((m) => m.LeadsListComponent),
       },
@@ -362,7 +362,7 @@ export const routes: Routes = [
           },
           {
             path: 'company',
-            title: 'Настройки компании',
+            title: 'Профиль компании',
             canActivate: [permissionGuard],
             data: { permission: PermissionKey.SETTINGS_UPDATE },
             canDeactivate: [pendingChangesGuard],

@@ -1,0 +1,274 @@
+<div class="history-panel">
+  <!-- Header -->
+  <div class="history-header">
+    <div class="history-header-title-row">
+      <h3 class="history-title">История</h3>
+      @if (allItems().length > 0) {
+        <span class="history-badge">{{ allItems().length }}</span>
+      }
+    </div>
+
+    <!-- Filter tabs -->
+    <div aria-label="Фильтр истории" class="history-filter-tabs" role="tablist">
+      <button
+        class="history-tab"
+        role="tab"
+        type="button"
+        [attr.aria-selected]="activeFilter() === 'all'"
+        [class.history-tab--active]="activeFilter() === 'all'"
+        (click)="setFilter('all')"
+      >
+        Все
+      </button>
+      <button
+        class="history-tab"
+        role="tab"
+        type="button"
+        [attr.aria-selected]="activeFilter() === 'comments'"
+        [class.history-tab--active]="activeFilter() === 'comments'"
+        (click)="setFilter('comments')"
+      >
+        Заметки
+      </button>
+      <button
+        class="history-tab"
+        role="tab"
+        type="button"
+        [attr.aria-selected]="activeFilter() === 'events'"
+        [class.history-tab--active]="activeFilter() === 'events'"
+        (click)="setFilter('events')"
+      >
+        События
+      </button>
+    </div>
+  </div>
+
+  <!-- Feed -->
+  <div #historyFeed aria-label="Лента событий" aria-live="polite" class="history-feed" role="log">
+    <!-- Load more (older entries at top) -->
+    @if (canLoadMore()) {
+      <div class="history-load-more-wrap">
+        <button
+          class="history-load-more-btn"
+          mat-stroked-button
+          type="button"
+          [disabled]="loadingMore()"
+          (click)="loadMore()"
+        >
+          @if (loadingMore()) {
+            <mat-icon class="history-spinner-icon">refresh</mat-icon>
+          }
+          Загрузить ещё
+        </button>
+      </div>
+    }
+
+    <!-- Loading skeleton -->
+    @if (loading()) {
+      <ul aria-label="Загрузка истории" class="history-list">
+        @for (sk of [1, 2, 3]; track sk) {
+          <li class="history-item history-item--skeleton">
+            <div class="history-connector">
+              <div class="history-dot history-dot--skeleton"></div>
+              <div class="history-line"></div>
+            </div>
+            <div class="history-content">
+              <div class="skeleton skeleton--text skeleton--wide"></div>
+              <div class="skeleton skeleton--text skeleton--narrow"></div>
+            </div>
+          </li>
+        }
+      </ul>
+    } @else {
+      @let items = filteredItems();
+      @if (items.length === 0) {
+        <!-- Empty state -->
+        <div class="history-empty" role="status">
+          <mat-icon class="history-empty-icon">history</mat-icon>
+          <p class="history-empty-text">История пуста</p>
+        </div>
+      } @else {
+        <ul aria-label="История событий" class="history-list">
+          @for (item of items; track item.id; let last = $last) {
+            <li
+              class="history-item"
+              [class.history-item--deleting]="deletingCommentId() === item.id"
+            >
+              @if (item.type === 'comment') {
+                <!-- Comment -->
+                <div class="history-connector">
+                  <div
+                    aria-hidden="true"
+                    class="history-avatar"
+                    [attr.title]="item.author?.fullName ?? ''"
+                    [style.background-color]="avatarColor(item.author?.id ?? item.id)"
+                  >
+                    {{ getInitials(item.author?.fullName ?? '?') }}
+                  </div>
+                  @if (!last) {
+                    <div class="history-line"></div>
+                  }
+                </div>
+
+                <div class="history-content history-content--comment">
+                  <div class="history-comment-header">
+                    <span class="history-comment-author">{{
+                      item.author?.fullName ?? 'Неизвестный'
+                    }}</span>
+                    <span
+                      class="history-timestamp"
+                      [matTooltip]="formatAbsoluteTime(item.createdAt)"
+                    >
+                      {{ formatRelativeTime(item.createdAt) }}
+                    </span>
+
+                    @if (
+                      canEditOrDelete(item) &&
+                      editingCommentId() !== item.id &&
+                      deletingCommentId() !== item.id
+                    ) {
+                      <div class="history-comment-actions">
+                        <button
+                          aria-label="Редактировать заметку"
+                          matIconButton
+                          type="button"
+                          (click)="startEdit(item)"
+                        >
+                          <mat-icon>edit</mat-icon>
+                        </button>
+                        <button
+                          aria-label="Удалить заметку"
+                          matIconButton
+                          type="button"
+                          (click)="startDelete(item.id)"
+                        >
+                          <mat-icon>delete</mat-icon>
+                        </button>
+                      </div>
+                    }
+                  </div>
+
+                  @if (editingCommentId() === item.id) {
+                    <!-- Inline edit -->
+                    <textarea
+                      cdkTextareaAutosize
+                      class="history-edit-textarea"
+                      [attr.data-id]="item.id"
+                      [cdkAutosizeMaxRows]="5"
+                      [cdkAutosizeMinRows]="1"
+                      [value]="editBody()"
+                      (input)="editBody.set($any($event.target).value)"
+                    ></textarea>
+                    <div class="history-edit-actions">
+                      <button
+                        color="primary"
+                        mat-flat-button
+                        type="button"
+                        [disabled]="editSaving() || editBody().trim().length === 0"
+                        (click)="saveEdit(item.id)"
+                      >
+                        Сохранить
+                      </button>
+                      <button
+                        mat-button
+                        type="button"
+                        [disabled]="editSaving()"
+                        (click)="cancelEdit()"
+                      >
+                        Отмена
+                      </button>
+                    </div>
+                  } @else if (deletingCommentId() === item.id) {
+                    <!-- Inline delete confirmation -->
+                    <div class="history-delete-confirm">
+                      <span class="history-delete-confirm-text">Удалить заметку?</span>
+                      <button
+                        color="warn"
+                        mat-flat-button
+                        type="button"
+                        [disabled]="deletingInProgress()"
+                        (click)="confirmDelete(item.id)"
+                      >
+                        Да
+                      </button>
+                      <button
+                        mat-button
+                        type="button"
+                        [disabled]="deletingInProgress()"
+                        (click)="cancelDelete()"
+                      >
+                        Нет
+                      </button>
+                    </div>
+                  } @else {
+                    <p class="history-comment-body">{{ item.body }}</p>
+                    @if (item.isEdited) {
+                      <span class="history-edited-tag">изменено</span>
+                    }
+                  }
+                </div>
+              } @else {
+                <!-- System event -->
+                <div class="history-connector">
+                  <div aria-hidden="true" class="history-dot history-dot--event">
+                    <mat-icon class="history-event-icon">{{
+                      getSystemEventIcon(item.action)
+                    }}</mat-icon>
+                  </div>
+                  @if (!last) {
+                    <div class="history-line"></div>
+                  }
+                </div>
+
+                <div class="history-content history-content--event">
+                  <p class="history-event-label">
+                    {{ getSystemEventLabel(item.action, item.details) }}
+                  </p>
+                  <span class="history-timestamp" [matTooltip]="formatAbsoluteTime(item.createdAt)">
+                    @if (item.actor?.fullName) {
+                      {{ item.actor?.fullName }} &middot;
+                    }
+                    {{ formatRelativeTime(item.createdAt) }}
+                  </span>
+                </div>
+              }
+            </li>
+          }
+        </ul>
+      }
+    }
+  </div>
+
+  <!-- Compose box -->
+  <div class="history-compose">
+    <div class="history-compose-inner">
+      <mat-form-field appearance="outline" class="history-compose-field">
+        <mat-label>Добавить заметку…</mat-label>
+        <textarea
+          aria-label="Добавить заметку"
+          cdkTextareaAutosize
+          matInput
+          [cdkAutosizeMaxRows]="5"
+          [cdkAutosizeMinRows]="1"
+          [formControl]="composeControl"
+          [maxlength]="maxCommentLength"
+          (keydown)="submitComment($event)"
+        ></textarea>
+        <mat-hint align="end"> {{ composeCharCount() }} / {{ maxCommentLength }} </mat-hint>
+      </mat-form-field>
+      <div class="history-compose-footer">
+        <button
+          aria-label="Отправить заметку"
+          class="history-compose-submit"
+          color="primary"
+          mat-flat-button
+          type="button"
+          [disabled]="composeSubmitDisabled()"
+          (click)="submitComment()"
+        >
+          Отправить
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

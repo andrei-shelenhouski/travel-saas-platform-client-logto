@@ -111,7 +111,17 @@
     color: #0f172a;
     letter-spacing: -0.025em;
     line-height: 1;
+
+    .logo-diamond {
+      display: inline-block;
+      animation: diamond-pulse 2s ease-in-out infinite;
+    }
   }
+}
+
+@keyframes diamond-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
 }
 
 // ─── Body ─────────────────────────────────────────────────────────────────────

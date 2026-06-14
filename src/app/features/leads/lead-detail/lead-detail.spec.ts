@@ -4,11 +4,15 @@ import { ActivatedRoute, convertToParamMap, provideRouter, Router } from '@angul
 import { of } from 'rxjs';
 import { vi } from 'vitest';
 
+import { BookingsService } from '@app/services/bookings.service';
+import { ClientsService } from '@app/services/clients.service';
 import { CustomFieldsService } from '@app/services/custom-fields.service';
 import { LeadsService } from '@app/services/leads.service';
+import { MeService } from '@app/services/me.service';
 import { OffersService } from '@app/services/offers.service';
 import { OrganizationMembersService } from '@app/services/organization-members.service';
 import { PermissionService } from '@app/services/permission.service';
+import { TimelineService } from '@app/services/timeline.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { LeadDetailComponent } from './lead-detail';
@@ -83,6 +87,25 @@ describe('LeadDetailComponent', () => {
         {
           provide: MatSnackBar,
           useValue: { open: vi.fn() },
+        },
+        {
+          provide: BookingsService,
+          useValue: {
+            getById: vi.fn(() => of(null)),
+            listInvoices: vi.fn(() => of({ items: [], total: 0, page: 1, limit: 50 })),
+          },
+        },
+        {
+          provide: ClientsService,
+          useValue: { listContacts: vi.fn(() => of([])) },
+        },
+        {
+          provide: MeService,
+          useValue: { getMeData: vi.fn(() => null) },
+        },
+        {
+          provide: TimelineService,
+          useValue: { getTimeline: vi.fn(() => of([])) },
         },
       ],
     }).compileComponents();
@@ -192,90 +215,6 @@ describe('LeadDetailComponent', () => {
     expect(navigateSpy).toHaveBeenCalledWith(['/app/offers/new'], {
       queryParams: { leadId: 'lead-1' },
     });
-  });
-
-  it('shows resolved actor full name for user-triggered activity', () => {
-    const api = component as unknown as {
-      getActivityActor: (item: {
-        payload: Record<string, unknown> | null;
-        createdBy: string;
-      }) => string;
-    };
-
-    const actor = api.getActivityActor({
-      payload: null,
-      createdBy: 'user-1',
-    });
-
-    expect(actor).toBe('Andrei Shelenhouski');
-  });
-
-  it('falls back to createdBy value when actor cannot be resolved', () => {
-    const api = component as unknown as {
-      getActivityActor: (item: {
-        payload: Record<string, unknown> | null;
-        createdBy: string;
-      }) => string;
-    };
-
-    const actor = api.getActivityActor({
-      payload: null,
-      createdBy: 'be2ac944-f4a5-401e-b84f-a5acf01cdea3',
-    });
-
-    expect(actor).toBe('be2ac944-f4a5-401e-b84f-a5acf01cdea3');
-  });
-
-  it('keeps system actor label unchanged', () => {
-    const api = component as unknown as {
-      getActivityActor: (item: {
-        payload: Record<string, unknown> | null;
-        createdBy: string;
-      }) => string;
-    };
-
-    const actor = api.getActivityActor({
-      payload: null,
-      createdBy: 'system',
-    });
-
-    expect(actor).toBe('Системное действие');
-  });
-
-  it('defaults to system actor label when createdBy is empty', () => {
-    const api = component as unknown as {
-      getActivityActor: (item: {
-        payload: Record<string, unknown> | null;
-        createdBy: string;
-      }) => string;
-    };
-
-    const actor = api.getActivityActor({
-      payload: null,
-      createdBy: '',
-    });
-
-    expect(actor).toBe('Системное действие');
-  });
-
-  it('treats createdBy with surrounding whitespace as system action', () => {
-    const api = component as unknown as {
-      getActivityActor: (item: {
-        payload: Record<string, unknown> | null;
-        createdBy: string;
-      }) => string;
-      isSystemEvent: (item: { createdBy: string }) => boolean;
-    };
-
-    const actor = api.getActivityActor({
-      payload: null,
-      createdBy: ' system ',
-    });
-
-    const isSystem = api.isSystemEvent({ createdBy: ' system ' });
-
-    expect(actor).toBe('Системное действие');
-    expect(isSystem).toBe(true);
   });
 
   it('travel form fails validation when all contact fields are blank', async () => {

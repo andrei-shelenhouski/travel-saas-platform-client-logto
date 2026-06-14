@@ -88,6 +88,9 @@
 }
 
 .invoice-detail-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
   font-size: 0.875rem;
   color: var(--color-primary, #4f46e5);
   text-decoration: none;
@@ -95,6 +98,12 @@
   &:hover {
     text-decoration: underline;
   }
+}
+
+.invoice-detail-link-icon {
+  font-size: 1rem;
+  width: 1rem;
+  height: 1rem;
 }
 
 .invoice-detail-empty {

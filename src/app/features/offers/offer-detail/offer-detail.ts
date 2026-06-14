@@ -19,14 +19,15 @@ import { finalize, map } from 'rxjs/operators';
 
 import { OfferPdfPreviewModalComponent } from '@app/features/offers/offer-pdf-preview-modal/offer-pdf-preview-modal';
 import { getAllowedTransitions, OfferAction } from '@app/features/offers/offer-state-machine';
-import { OfferTimelineComponent } from '@app/features/offers/offer-timeline/offer-timeline';
 import { BookingsService } from '@app/services/bookings.service';
+import { MeService } from '@app/services/me.service';
 import { OffersService } from '@app/services/offers.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
 import {
   DetailSectionComponent,
+  HistoryPanelComponent,
   LoadingStateComponent,
   PageContentComponent,
 } from '@app/shared/components';
@@ -83,12 +84,12 @@ const ACTION_ICONS: Record<OfferAction, string> = {
     DatePipe,
     DecimalPipe,
     RouterLink,
-    OfferTimelineComponent,
     PageHeading,
     PageHeadingAction,
     LoadingStateComponent,
     PageContentComponent,
     DetailSectionComponent,
+    HistoryPanelComponent,
     MatButtonModule,
     MatDialogModule,
     OfferAccommodationsTableComponent,
@@ -107,6 +108,9 @@ export class OfferDetailComponent {
   private readonly snackBar = inject(MatSnackBar);
   private readonly titleService = inject(Title);
   private readonly permissions = inject(PermissionService);
+  private readonly meService = inject(MeService);
+
+  protected readonly currentUserId = computed(() => this.meService.getMeData()?.id ?? null);
 
   private readonly routeId = toSignal(this.route.paramMap.pipe(map((p) => p.get('id'))));
 

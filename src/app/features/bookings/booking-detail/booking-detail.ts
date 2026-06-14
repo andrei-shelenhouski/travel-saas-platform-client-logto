@@ -23,9 +23,14 @@ import { finalize, map, switchMap } from 'rxjs/operators';
 import { BookingsService } from '@app/services/bookings.service';
 import { ClientsService } from '@app/services/clients.service';
 import { CustomFieldsService } from '@app/services/custom-fields.service';
+import { MeService } from '@app/services/me.service';
 import { PermissionService } from '@app/services/permission.service';
 import { PersonsService } from '@app/services/persons.service';
-import { LoadingStateComponent, PageContentComponent } from '@app/shared/components';
+import {
+  HistoryPanelComponent,
+  LoadingStateComponent,
+  PageContentComponent,
+} from '@app/shared/components';
 import { BookingStatusChipComponent } from '@app/shared/components/booking-status-chip/booking-status-chip';
 import { CustomFieldsSectionComponent } from '@app/shared/components/custom-fields-section/custom-fields-section';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
@@ -79,6 +84,7 @@ import type {
     TravelDetailsSectionComponent,
     BookingTravelersSectionComponent,
     CustomFieldsSectionComponent,
+    HistoryPanelComponent,
     MatButtonModule,
     MatMenuModule,
     MatDividerModule,
@@ -97,6 +103,9 @@ export class BookingDetailComponent {
   private readonly snackBar = inject(MatSnackBar);
   private readonly titleService = inject(Title);
   private readonly dialog = inject(MatDialog);
+  private readonly meService = inject(MeService);
+
+  protected readonly currentUserId = computed(() => this.meService.getMeData()?.id ?? null);
 
   readonly BookingStatus = BookingStatus;
 

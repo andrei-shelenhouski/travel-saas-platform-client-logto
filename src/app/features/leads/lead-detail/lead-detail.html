@@ -39,549 +39,538 @@
     />
 
     <app-page-content>
-      <div class="lead-grid">
-        <section class="lead-card">
-          <div class="lead-card-header">
-            <div>
-              <h2 class="lead-card-title">Клиент</h2>
-              <p class="lead-card-subtitle">Профиль, контакты и связанный представитель</p>
-            </div>
+      <div class="detail-with-history">
+        <div class="detail-main">
+          <div class="lead-grid">
+            <section class="lead-card lead-full-width-card">
+              <div class="lead-card-header">
+                <div>
+                  <h2 class="lead-card-title">Клиент</h2>
+                  <p class="lead-card-subtitle">Профиль, контакты и связанный представитель</p>
+                </div>
 
-            @if (l.clientId && canManageLeadClient()) {
-              <button
-                aria-label="Действия с клиентом"
-                mat-icon-button
-                type="button"
-                [matMenuTriggerFor]="clientActionsMenu"
-              >
-                <mat-icon>more_vert</mat-icon>
-              </button>
+                @if (l.clientId && canManageLeadClient()) {
+                  <button
+                    aria-label="Действия с клиентом"
+                    mat-icon-button
+                    type="button"
+                    [matMenuTriggerFor]="clientActionsMenu"
+                  >
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
 
-              <mat-menu #clientActionsMenu="matMenu">
-                <button mat-menu-item type="button" (click)="openLinkClientDialog()">
-                  Изменить клиента
-                </button>
-              </mat-menu>
-            }
-          </div>
-
-          @if (l.clientId) {
-            <div class="client-hero">
-              <span
-                class="client-hero-avatar"
-                [attr.aria-label]="l.clientName ?? l.companyName ?? 'Клиент'"
-              >
-                {{ getAgentInitials(l.clientName ?? l.companyName ?? 'Клиент') }}
-              </span>
-
-              <div class="client-hero-content">
-                @if (l.clientType === 'COMPANY' || l.clientType === 'B2B_AGENT') {
-                  <p class="client-hero-title">{{ l.companyName ?? 'Без названия компании' }}</p>
-                  <p class="client-hero-meta">{{ l.clientName ?? 'Представитель не указан' }}</p>
-                } @else {
-                  <p class="client-hero-title">{{ l.clientName ?? 'Имя не указано' }}</p>
-                  <p class="client-hero-meta">Частный клиент</p>
+                  <mat-menu #clientActionsMenu="matMenu">
+                    <button mat-menu-item type="button" (click)="openLinkClientDialog()">
+                      Изменить клиента
+                    </button>
+                  </mat-menu>
                 }
               </div>
 
-              <a class="lead-link client-hero-link" [routerLink]="['/app/clients', l.clientId]">
-                Открыть клиента
-              </a>
-            </div>
+              @if (l.clientId) {
+                <div class="client-hero">
+                  <span
+                    class="client-hero-avatar"
+                    [attr.aria-label]="l.clientName ?? l.companyName ?? 'Клиент'"
+                  >
+                    {{ getAgentInitials(l.clientName ?? l.companyName ?? 'Клиент') }}
+                  </span>
 
-            <dl class="lead-data-list">
-              @if (l.clientType === 'COMPANY' || l.clientType === 'B2B_AGENT') {
-                <div class="lead-data-row">
-                  <dt>Компания</dt>
-                  <dd>{{ l.companyName ?? '—' }}</dd>
+                  <div class="client-hero-content">
+                    @if (l.clientType === 'COMPANY' || l.clientType === 'B2B_AGENT') {
+                      <p class="client-hero-title">
+                        {{ l.companyName ?? 'Без названия компании' }}
+                      </p>
+                      <p class="client-hero-meta">
+                        {{ l.clientName ?? 'Представитель не указан' }}
+                      </p>
+                    } @else {
+                      <p class="client-hero-title">{{ l.clientName ?? 'Имя не указано' }}</p>
+                      <p class="client-hero-meta">Частный клиент</p>
+                    }
+                  </div>
+
+                  <a class="lead-link client-hero-link" [routerLink]="['/app/clients', l.clientId]">
+                    Открыть клиента
+                  </a>
                 </div>
-                <div class="lead-data-row">
-                  <dt>Представитель</dt>
-                  <dd>{{ l.clientName ?? '—' }}</dd>
-                </div>
+
+                <dl class="lead-data-list">
+                  @if (l.clientType === 'COMPANY' || l.clientType === 'B2B_AGENT') {
+                    <div class="lead-data-row">
+                      <dt>Компания</dt>
+                      <dd>{{ l.companyName ?? '—' }}</dd>
+                    </div>
+                    <div class="lead-data-row">
+                      <dt>Представитель</dt>
+                      <dd>{{ l.clientName ?? '—' }}</dd>
+                    </div>
+                  } @else {
+                    <div class="lead-data-row">
+                      <dt>Имя</dt>
+                      <dd>{{ l.clientName ?? '—' }}</dd>
+                    </div>
+                  }
+                  <div class="lead-data-row">
+                    <dt>Тип</dt>
+                    <dd>
+                      @if (l.clientType) {
+                        <app-client-type-badge [type]="l.clientType" />
+                      } @else {
+                        —
+                      }
+                    </dd>
+                  </div>
+                  <div class="lead-data-row">
+                    <dt>Телефон</dt>
+                    <dd>
+                      @if (l.contactPhone) {
+                        <a class="lead-link" [href]="'tel:' + l.contactPhone">{{
+                          l.contactPhone
+                        }}</a>
+                      } @else {
+                        —
+                      }
+                    </dd>
+                  </div>
+                  <div class="lead-data-row">
+                    <dt>Email</dt>
+                    <dd>
+                      @if (l.contactEmail) {
+                        <a class="lead-link" [href]="'mailto:' + l.contactEmail">{{
+                          l.contactEmail
+                        }}</a>
+                      } @else {
+                        —
+                      }
+                    </dd>
+                  </div>
+                  <div class="lead-data-row">
+                    <dt>Telegram</dt>
+                    <dd>{{ l.contactTelegram ?? '—' }}</dd>
+                  </div>
+
+                  @if (l.clientType === 'COMPANY' || l.clientType === 'B2B_AGENT') {
+                    <div class="lead-data-row">
+                      <dt>Контактное лицо</dt>
+                      <dd>
+                        @if (contactPerson(); as cp) {
+                          <div class="contact-person-info">
+                            <p class="contact-person-name">{{ cp.fullName }}</p>
+                            @if (cp.role) {
+                              <p class="contact-person-role">{{ cp.role }}</p>
+                            }
+
+                            @if (cp.phone) {
+                              <p class="contact-person-meta-row">
+                                <mat-icon aria-hidden="true" class="contact-person-meta-icon"
+                                  >phone</mat-icon
+                                >
+                                <a class="lead-link" [href]="'tel:' + cp.phone">{{ cp.phone }}</a>
+                              </p>
+                            }
+
+                            @if (cp.email) {
+                              <p class="contact-person-meta-row">
+                                <mat-icon aria-hidden="true" class="contact-person-meta-icon"
+                                  >alternate_email</mat-icon
+                                >
+                                <a class="lead-link" [href]="'mailto:' + cp.email">{{
+                                  cp.email
+                                }}</a>
+                              </p>
+                            }
+
+                            @if (cp.telegramHandle) {
+                              <p class="contact-person-meta-row">
+                                <mat-icon aria-hidden="true" class="contact-person-meta-icon"
+                                  >send</mat-icon
+                                >
+                                <span>{{ cp.telegramHandle }}</span>
+                              </p>
+                            }
+                          </div>
+                        } @else {
+                          <div>Не выбрано</div>
+                        }
+
+                        @if (canManageLeadClient() && clientContacts().length > 0) {
+                          <button
+                            class="contact-person-change-btn"
+                            mat-stroked-button
+                            type="button"
+                            [matMenuTriggerFor]="contactPersonMenu"
+                          >
+                            {{ contactPerson() ? 'Изменить контакт' : 'Выбрать контактное лицо' }}
+                          </button>
+                          <mat-menu #contactPersonMenu="matMenu">
+                            @for (contact of clientContacts(); track contact.id) {
+                              <button
+                                mat-menu-item
+                                type="button"
+                                (click)="changeContactPerson(contact)"
+                              >
+                                {{ contact.fullName }}{{ contact.role ? ' — ' + contact.role : '' }}
+                                @if (contact.primary) {
+                                  <span> (Основной)</span>
+                                }
+                              </button>
+                            }
+                          </mat-menu>
+                        }
+                      </dd>
+                    </div>
+                  }
+                </dl>
               } @else {
-                <div class="lead-data-row">
-                  <dt>Имя</dt>
-                  <dd>{{ l.clientName ?? '—' }}</dd>
-                </div>
-              }
-              <div class="lead-data-row">
-                <dt>Тип</dt>
-                <dd>
-                  @if (l.clientType) {
-                    <app-client-type-badge [type]="l.clientType" />
-                  } @else {
-                    —
-                  }
-                </dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Телефон</dt>
-                <dd>
-                  @if (l.contactPhone) {
-                    <a class="lead-link" [href]="'tel:' + l.contactPhone">{{ l.contactPhone }}</a>
-                  } @else {
-                    —
-                  }
-                </dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Email</dt>
-                <dd>
-                  @if (l.contactEmail) {
-                    <a class="lead-link" [href]="'mailto:' + l.contactEmail">{{
-                      l.contactEmail
-                    }}</a>
-                  } @else {
-                    —
-                  }
-                </dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Telegram</dt>
-                <dd>{{ l.contactTelegram ?? '—' }}</dd>
-              </div>
+                <div class="client-placeholder-card">
+                  <div class="client-placeholder-header">
+                    <mat-icon aria-hidden="true" class="client-placeholder-icon"
+                      >person_off</mat-icon
+                    >
+                    <p class="client-placeholder-title">Клиент не привязан</p>
+                  </div>
+                  <p class="client-placeholder-text">
+                    Этот лид ещё не привязан к клиенту. Привяжите существующего клиента или
+                    сохраните лид как новый профиль клиента.
+                  </p>
 
-              @if (l.clientType === 'COMPANY' || l.clientType === 'B2B_AGENT') {
-                <div class="lead-data-row">
-                  <dt>Контактное лицо</dt>
-                  <dd>
-                    @if (contactPerson(); as cp) {
-                      <div class="contact-person-info">
-                        <p class="contact-person-name">{{ cp.fullName }}</p>
-                        @if (cp.role) {
-                          <p class="contact-person-role">{{ cp.role }}</p>
-                        }
-
-                        @if (cp.phone) {
-                          <p class="contact-person-meta-row">
-                            <mat-icon aria-hidden="true" class="contact-person-meta-icon"
-                              >phone</mat-icon
-                            >
-                            <a class="lead-link" [href]="'tel:' + cp.phone">{{ cp.phone }}</a>
-                          </p>
-                        }
-
-                        @if (cp.email) {
-                          <p class="contact-person-meta-row">
-                            <mat-icon aria-hidden="true" class="contact-person-meta-icon"
-                              >alternate_email</mat-icon
-                            >
-                            <a class="lead-link" [href]="'mailto:' + cp.email">{{ cp.email }}</a>
-                          </p>
-                        }
-
-                        @if (cp.telegramHandle) {
-                          <p class="contact-person-meta-row">
-                            <mat-icon aria-hidden="true" class="contact-person-meta-icon"
-                              >send</mat-icon
-                            >
-                            <span>{{ cp.telegramHandle }}</span>
-                          </p>
-                        }
+                  <dl class="lead-data-list">
+                    @if (l.clientType === 'COMPANY' || l.clientType === 'B2B_AGENT') {
+                      <div class="lead-data-row">
+                        <dt>Компания</dt>
+                        <dd>{{ l.companyName ?? '—' }}</dd>
+                      </div>
+                      <div class="lead-data-row">
+                        <dt>Представитель</dt>
+                        <dd>{{ l.clientName ?? '—' }}</dd>
                       </div>
                     } @else {
-                      <div>Не выбрано</div>
+                      <div class="lead-data-row">
+                        <dt>Имя</dt>
+                        <dd>{{ l.clientName ?? '—' }}</dd>
+                      </div>
                     }
-
-                    @if (canManageLeadClient() && clientContacts().length > 0) {
-                      <button
-                        class="contact-person-change-btn"
-                        mat-stroked-button
-                        type="button"
-                        [matMenuTriggerFor]="contactPersonMenu"
-                      >
-                        {{ contactPerson() ? 'Изменить контакт' : 'Выбрать контактное лицо' }}
-                      </button>
-                      <mat-menu #contactPersonMenu="matMenu">
-                        @for (contact of clientContacts(); track contact.id) {
-                          <button
-                            mat-menu-item
-                            type="button"
-                            (click)="changeContactPerson(contact)"
-                          >
-                            {{ contact.fullName }}{{ contact.role ? ' — ' + contact.role : '' }}
-                            @if (contact.primary) {
-                              <span> (Основной)</span>
-                            }
-                          </button>
+                    <div class="lead-data-row">
+                      <dt>Тип</dt>
+                      <dd>
+                        @if (l.clientType) {
+                          <app-client-type-badge [type]="l.clientType" />
+                        } @else {
+                          —
                         }
-                      </mat-menu>
+                      </dd>
+                    </div>
+                    <div class="lead-data-row">
+                      <dt>Телефон</dt>
+                      <dd>{{ l.contactPhone ?? '—' }}</dd>
+                    </div>
+                    <div class="lead-data-row">
+                      <dt>Email</dt>
+                      <dd>{{ l.contactEmail ?? '—' }}</dd>
+                    </div>
+                    <div class="lead-data-row">
+                      <dt>Telegram</dt>
+                      <dd>{{ l.contactTelegram ?? '—' }}</dd>
+                    </div>
+                  </dl>
+
+                  @if (canManageLeadClient()) {
+                    <div class="client-placeholder-actions">
+                      <button mat-stroked-button type="button" (click)="openLinkClientDialog()">
+                        Привязать существующего клиента
+                      </button>
+                      <button
+                        color="primary"
+                        mat-flat-button
+                        type="button"
+                        (click)="openPromoteClientDialog()"
+                      >
+                        Сохранить как нового клиента
+                      </button>
+                    </div>
+                  }
+                </div>
+              }
+            </section>
+
+            <section class="lead-card lead-full-width-card">
+              <div class="lead-card-header">
+                <h2 class="lead-card-title">Детали тура</h2>
+              </div>
+
+              @if (editingTravelDetails()) {
+                <form class="travel-form" [formGroup]="travelForm" (ngSubmit)="saveTravelDetails()">
+                  <mat-form-field appearance="outline">
+                    <mat-label>Телефон</mat-label>
+                    <input
+                      formControlName="contactPhone"
+                      matInput
+                      placeholder="+375291234567"
+                      type="tel"
+                    />
+                    @if (
+                      travelForm.controls.contactPhone.hasError('pattern') &&
+                      travelForm.controls.contactPhone.touched
+                    ) {
+                      <mat-error>Введите корректный номер телефона</mat-error>
                     }
-                  </dd>
-                </div>
-              }
-            </dl>
-          } @else {
-            <div class="client-placeholder-card">
-              <div class="client-placeholder-header">
-                <mat-icon aria-hidden="true" class="client-placeholder-icon">person_off</mat-icon>
-                <p class="client-placeholder-title">Клиент не привязан</p>
-              </div>
-              <p class="client-placeholder-text">
-                Этот лид ещё не привязан к клиенту. Привяжите существующего клиента или сохраните
-                лид как новый профиль клиента.
-              </p>
+                  </mat-form-field>
 
-              <dl class="lead-data-list">
-                @if (l.clientType === 'COMPANY' || l.clientType === 'B2B_AGENT') {
-                  <div class="lead-data-row">
-                    <dt>Компания</dt>
-                    <dd>{{ l.companyName ?? '—' }}</dd>
-                  </div>
-                  <div class="lead-data-row">
-                    <dt>Представитель</dt>
-                    <dd>{{ l.clientName ?? '—' }}</dd>
-                  </div>
-                } @else {
-                  <div class="lead-data-row">
-                    <dt>Имя</dt>
-                    <dd>{{ l.clientName ?? '—' }}</dd>
-                  </div>
-                }
-                <div class="lead-data-row">
-                  <dt>Тип</dt>
-                  <dd>
-                    @if (l.clientType) {
-                      <app-client-type-badge [type]="l.clientType" />
-                    } @else {
-                      —
+                  <mat-form-field appearance="outline">
+                    <mat-label>Email</mat-label>
+                    <input
+                      formControlName="contactEmail"
+                      matInput
+                      placeholder="client@example.com"
+                      type="email"
+                    />
+                    @if (
+                      travelForm.controls.contactEmail.hasError('email') &&
+                      travelForm.controls.contactEmail.touched
+                    ) {
+                      <mat-error>Введите корректный email</mat-error>
                     }
-                  </dd>
-                </div>
-                <div class="lead-data-row">
-                  <dt>Телефон</dt>
-                  <dd>{{ l.contactPhone ?? '—' }}</dd>
-                </div>
-                <div class="lead-data-row">
-                  <dt>Email</dt>
-                  <dd>{{ l.contactEmail ?? '—' }}</dd>
-                </div>
-                <div class="lead-data-row">
-                  <dt>Telegram</dt>
-                  <dd>{{ l.contactTelegram ?? '—' }}</dd>
-                </div>
-              </dl>
+                  </mat-form-field>
 
-              @if (canManageLeadClient()) {
-                <div class="client-placeholder-actions">
-                  <button mat-stroked-button type="button" (click)="openLinkClientDialog()">
-                    Привязать существующего клиента
-                  </button>
-                  <button
-                    color="primary"
-                    mat-flat-button
-                    type="button"
-                    (click)="openPromoteClientDialog()"
-                  >
-                    Сохранить как нового клиента
-                  </button>
-                </div>
-              }
-            </div>
-          }
-        </section>
+                  <mat-form-field appearance="outline">
+                    <mat-label>Telegram</mat-label>
+                    <mat-icon matPrefix>send</mat-icon>
+                    <input
+                      formControlName="contactTelegram"
+                      matInput
+                      maxlength="60"
+                      placeholder="@handle or t.me/..."
+                    />
+                    @if (
+                      travelForm.controls.contactTelegram.hasError('maxlength') &&
+                      travelForm.controls.contactTelegram.touched
+                    ) {
+                      <mat-error>Telegram username не должен превышать 60 символов</mat-error>
+                    }
+                  </mat-form-field>
 
-        <section class="lead-card">
-          <div class="lead-card-header">
-            <h2 class="lead-card-title">Детали тура</h2>
-          </div>
-
-          @if (editingTravelDetails()) {
-            <form class="travel-form" [formGroup]="travelForm" (ngSubmit)="saveTravelDetails()">
-              <mat-form-field appearance="outline">
-                <mat-label>Телефон</mat-label>
-                <input
-                  formControlName="contactPhone"
-                  matInput
-                  placeholder="+375291234567"
-                  type="tel"
-                />
-                @if (
-                  travelForm.controls.contactPhone.hasError('pattern') &&
-                  travelForm.controls.contactPhone.touched
-                ) {
-                  <mat-error>Введите корректный номер телефона</mat-error>
-                }
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Email</mat-label>
-                <input
-                  formControlName="contactEmail"
-                  matInput
-                  placeholder="client@example.com"
-                  type="email"
-                />
-                @if (
-                  travelForm.controls.contactEmail.hasError('email') &&
-                  travelForm.controls.contactEmail.touched
-                ) {
-                  <mat-error>Введите корректный email</mat-error>
-                }
-              </mat-form-field>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Telegram</mat-label>
-                <mat-icon matPrefix>send</mat-icon>
-                <input
-                  formControlName="contactTelegram"
-                  matInput
-                  maxlength="60"
-                  placeholder="@handle or t.me/..."
-                />
-                @if (
-                  travelForm.controls.contactTelegram.hasError('maxlength') &&
-                  travelForm.controls.contactTelegram.touched
-                ) {
-                  <mat-error>Telegram username не должен превышать 60 символов</mat-error>
-                }
-              </mat-form-field>
-
-              @if (showTravelContactGroupError()) {
-                <p aria-live="polite" class="travel-form-contact-error" role="alert">
-                  Укажите хотя бы один контакт: телефон, email или Telegram.
-                </p>
-              }
-
-              <mat-form-field appearance="outline">
-                <mat-label>Направление</mat-label>
-                <input formControlName="destination" matInput />
-              </mat-form-field>
-
-              <div class="travel-date-grid">
-                <mat-form-field appearance="outline">
-                  <mat-label>Выезд с</mat-label>
-                  <input formControlName="departDateFrom" matInput type="date" />
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                  <mat-label>Выезд по</mat-label>
-                  <input formControlName="departDateTo" matInput type="date" />
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                  <mat-label>Возвращение с</mat-label>
-                  <input formControlName="returnDateFrom" matInput type="date" />
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                  <mat-label>Возвращение по</mat-label>
-                  <input formControlName="returnDateTo" matInput type="date" />
-                </mat-form-field>
-              </div>
-
-              <div class="travel-count-grid">
-                <mat-form-field appearance="outline">
-                  <mat-label>Взрослые</mat-label>
-                  <input formControlName="adults" matInput min="0" type="number" />
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                  <mat-label>Дети</mat-label>
-                  <input formControlName="children" matInput min="0" type="number" />
-                </mat-form-field>
-              </div>
-
-              <mat-form-field appearance="outline">
-                <mat-label>Заметки</mat-label>
-                <textarea formControlName="notes" matInput rows="3"></textarea>
-              </mat-form-field>
-
-              <div class="travel-form-actions">
-                <button mat-button type="button" (click)="cancelEditTravelDetails()">Отмена</button>
-                <button
-                  color="primary"
-                  mat-flat-button
-                  type="submit"
-                  [disabled]="savingTravelDetails()"
-                >
-                  Сохранить
-                </button>
-              </div>
-            </form>
-          } @else {
-            <dl class="lead-data-list">
-              <div class="lead-data-row">
-                <dt>Направление</dt>
-                <dd>{{ l.destination ?? '—' }}</dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Даты</dt>
-                <dd>{{ formatDateRange(l.departDateFrom, l.returnDateTo) }}</dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Взрослые / дети</dt>
-                <dd>{{ l.adults ?? 0 }} / {{ l.children ?? 0 }}</dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Заметки</dt>
-                <dd class="lead-notes-cell markdown-body">
-                  <div [innerHTML]="l.notes ?? '—' | markdown"></div>
-                </dd>
-              </div>
-            </dl>
-          }
-        </section>
-
-        <section class="lead-card">
-          <h2 class="lead-card-title">Агент</h2>
-          <div class="agent-row">
-            <span class="agent-avatar" [attr.aria-label]="l.assignedAgentName || 'Не назначен'">
-              {{ getAgentInitials(l.assignedAgentName) }}
-            </span>
-            <div class="agent-info">
-              <p class="agent-name">{{ l.assignedAgentName ?? 'Не назначен' }}</p>
-              <p class="agent-meta">Назначенный агент</p>
-            </div>
-            @if (canReassign()) {
-              <button mat-stroked-button type="button" (click)="openAssignDialog()">
-                Переназначить
-              </button>
-            }
-          </div>
-        </section>
-
-        <app-lead-detail-offers-section
-          id="lead-offers-section"
-          [canCreateOffer]="permissions.canCreateOffer() && !isTerminalLead()"
-          [offers]="offers()"
-          (createOfferClicked)="openNewOffer()"
-        />
-
-        <section class="lead-card lead-full-width-card">
-          <div class="lead-card-header">
-            <h2 class="lead-card-title">Бронирование</h2>
-            @if (bookingDetail(); as bd) {
-              <a class="lead-link" [routerLink]="['/app/bookings', bd.id]">
-                <mat-icon class="booking-open-icon">open_in_new</mat-icon>
-                Открыть
-              </a>
-            }
-          </div>
-
-          @if (!linkedBooking()) {
-            <div class="lead-empty-state">
-              <mat-icon aria-hidden="true" class="lead-empty-icon">calendar_today</mat-icon>
-              <p class="lead-section-empty">Бронирование не найдено.</p>
-            </div>
-          } @else if (bookingDetailLoading()) {
-            <div class="lead-section-loading">
-              <mat-spinner diameter="20" />
-            </div>
-          } @else if (bookingDetail(); as bd) {
-            <dl class="lead-data-list">
-              <div class="lead-data-row">
-                <dt>Номер</dt>
-                <dd>
-                  <a class="lead-link" [routerLink]="['/app/bookings', bd.id]">
-                    {{ bd.number ?? linkedBooking()!.number }}
-                  </a>
-                </dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Статус</dt>
-                <dd><app-booking-status-chip [status]="bd.status" /></dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Направление</dt>
-                <dd>{{ bd.destination ?? '—' }}</dd>
-              </div>
-              <div class="lead-data-row">
-                <dt>Даты</dt>
-                <dd>{{ formatDateRange(bd.departDate, bd.returnDate) }}</dd>
-              </div>
-              @if (bd.assignedBackofficeName) {
-                <div class="lead-data-row">
-                  <dt>Менеджер</dt>
-                  <dd>{{ bd.assignedBackofficeName }}</dd>
-                </div>
-              }
-              @if (bd.supplierConfirmationNumber) {
-                <div class="lead-data-row">
-                  <dt>Подтверждение</dt>
-                  <dd>{{ bd.supplierConfirmationNumber }}</dd>
-                </div>
-              }
-            </dl>
-          } @else {
-            <div class="lead-empty-state">
-              <mat-icon aria-hidden="true" class="lead-empty-icon">error_outline</mat-icon>
-              <p class="lead-section-empty">Не удалось загрузить бронирование.</p>
-            </div>
-          }
-        </section>
-
-        <section class="lead-card lead-full-width-card">
-          <div class="lead-card-header">
-            <h2 class="lead-card-title">Счета</h2>
-          </div>
-
-          @if (!linkedBooking()) {
-            <div class="lead-empty-state">
-              <mat-icon aria-hidden="true" class="lead-empty-icon">receipt_long</mat-icon>
-              <p class="lead-section-empty">Счета доступны после создания бронирования.</p>
-            </div>
-          } @else if (bookingInvoicesLoading()) {
-            <div class="lead-section-loading">
-              <mat-spinner diameter="20" />
-            </div>
-          } @else if (bookingInvoices().length === 0) {
-            <div class="lead-empty-state">
-              <mat-icon aria-hidden="true" class="lead-empty-icon">receipt</mat-icon>
-              <p class="lead-section-empty">Счетов пока нет.</p>
-            </div>
-          } @else {
-            <app-lead-invoices-table
-              class="invoices-table-wrap"
-              [invoices]="bookingInvoices()"
-              [loading]="bookingInvoicesLoading()"
-            />
-          }
-        </section>
-
-        <section class="lead-card lead-activity-card">
-          <h2 class="lead-card-title">Журнал активности</h2>
-
-          @if (activityItems().length === 0) {
-            <p class="activity-empty-message">Активности пока нет.</p>
-          } @else {
-            <ul class="activity-list">
-              @for (item of activityItems(); track item.id) {
-                <li class="activity-item" [class.activity-item-system]="isSystemEvent(item)">
-                  <span aria-hidden="true" class="activity-icon-wrap">
-                    <mat-icon class="activity-icon">{{ getActivityIcon(item.type) }}</mat-icon>
-                  </span>
-                  <div class="activity-content">
-                    <p class="activity-label">{{ getActivityLabel(item.type) }}</p>
-                    <p class="activity-meta">
-                      {{ getActivityActor(item) }} · {{ formatDateTime(item.createdAt) }}
+                  @if (showTravelContactGroupError()) {
+                    <p aria-live="polite" class="travel-form-contact-error" role="alert">
+                      Укажите хотя бы один контакт: телефон, email или Telegram.
                     </p>
+                  }
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Направление</mat-label>
+                    <input formControlName="destination" matInput />
+                  </mat-form-field>
+
+                  <div class="travel-date-grid">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Выезд с</mat-label>
+                      <input formControlName="departDateFrom" matInput type="date" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Выезд по</mat-label>
+                      <input formControlName="departDateTo" matInput type="date" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Возвращение с</mat-label>
+                      <input formControlName="returnDateFrom" matInput type="date" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Возвращение по</mat-label>
+                      <input formControlName="returnDateTo" matInput type="date" />
+                    </mat-form-field>
                   </div>
-                </li>
+
+                  <div class="travel-count-grid">
+                    <mat-form-field appearance="outline">
+                      <mat-label>Взрослые</mat-label>
+                      <input formControlName="adults" matInput min="0" type="number" />
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                      <mat-label>Дети</mat-label>
+                      <input formControlName="children" matInput min="0" type="number" />
+                    </mat-form-field>
+                  </div>
+
+                  <mat-form-field appearance="outline">
+                    <mat-label>Заметки</mat-label>
+                    <textarea formControlName="notes" matInput rows="3"></textarea>
+                  </mat-form-field>
+
+                  <div class="travel-form-actions">
+                    <button mat-button type="button" (click)="cancelEditTravelDetails()">
+                      Отмена
+                    </button>
+                    <button
+                      color="primary"
+                      mat-flat-button
+                      type="submit"
+                      [disabled]="savingTravelDetails()"
+                    >
+                      Сохранить
+                    </button>
+                  </div>
+                </form>
+              } @else {
+                <dl class="lead-data-list">
+                  <div class="lead-data-row">
+                    <dt>Направление</dt>
+                    <dd>{{ l.destination ?? '—' }}</dd>
+                  </div>
+                  <div class="lead-data-row">
+                    <dt>Даты</dt>
+                    <dd>{{ formatDateRange(l.departDateFrom, l.returnDateTo) }}</dd>
+                  </div>
+                  <div class="lead-data-row">
+                    <dt>Взрослые / дети</dt>
+                    <dd>{{ l.adults ?? 0 }} / {{ l.children ?? 0 }}</dd>
+                  </div>
+                  <div class="lead-data-row">
+                    <dt>Заметки</dt>
+                    <dd class="lead-notes-cell markdown-body">
+                      <div [innerHTML]="l.notes ?? '—' | markdown"></div>
+                    </dd>
+                  </div>
+                </dl>
               }
-            </ul>
+            </section>
 
-            @if (canLoadMoreActivity()) {
-              <button
-                class="activity-load-more"
-                mat-stroked-button
-                type="button"
-                [disabled]="loadingMoreActivity()"
-                (click)="loadMoreActivity()"
-              >
-                Загрузить ещё
-              </button>
-            }
+            <section class="lead-card lead-full-width-card">
+              <h2 class="lead-card-title">Агент</h2>
+              <div class="agent-row">
+                <span class="agent-avatar" [attr.aria-label]="l.assignedAgentName || 'Не назначен'">
+                  {{ getAgentInitials(l.assignedAgentName) }}
+                </span>
+                <div class="agent-info">
+                  <p class="agent-name">{{ l.assignedAgentName ?? 'Не назначен' }}</p>
+                  <p class="agent-meta">Назначенный агент</p>
+                </div>
+                @if (canReassign()) {
+                  <button mat-stroked-button type="button" (click)="openAssignDialog()">
+                    Переназначить
+                  </button>
+                }
+              </div>
+            </section>
+
+            <app-lead-detail-offers-section
+              id="lead-offers-section"
+              [canCreateOffer]="permissions.canCreateOffer() && !isTerminalLead()"
+              [offers]="offers()"
+              (createOfferClicked)="openNewOffer()"
+            />
+
+            <section class="lead-card lead-full-width-card">
+              <div class="lead-card-header">
+                <h2 class="lead-card-title">Бронирование</h2>
+                @if (bookingDetail(); as bd) {
+                  <a class="lead-link" [routerLink]="['/app/bookings', bd.id]">
+                    <mat-icon class="booking-open-icon">open_in_new</mat-icon>
+                    Открыть
+                  </a>
+                }
+              </div>
+
+              @if (!linkedBooking()) {
+                <div class="lead-empty-state">
+                  <mat-icon aria-hidden="true" class="lead-empty-icon">calendar_today</mat-icon>
+                  <p class="lead-section-empty">Бронирование не найдено.</p>
+                </div>
+              } @else if (bookingDetailLoading()) {
+                <div class="lead-section-loading">
+                  <mat-spinner diameter="20" />
+                </div>
+              } @else if (bookingDetail(); as bd) {
+                <dl class="lead-data-list">
+                  <div class="lead-data-row">
+                    <dt>Номер</dt>
+                    <dd>
+                      <a class="lead-link" [routerLink]="['/app/bookings', bd.id]">
+                        {{ bd.number ?? linkedBooking()!.number }}
+                      </a>
+                    </dd>
+                  </div>
+                  <div class="lead-data-row">
+                    <dt>Статус</dt>
+                    <dd><app-booking-status-chip [status]="bd.status" /></dd>
+                  </div>
+                  <div class="lead-data-row">
+                    <dt>Направление</dt>
+                    <dd>{{ bd.destination ?? '—' }}</dd>
+                  </div>
+                  <div class="lead-data-row">
+                    <dt>Даты</dt>
+                    <dd>{{ formatDateRange(bd.departDate, bd.returnDate) }}</dd>
+                  </div>
+                  @if (bd.assignedBackofficeName) {
+                    <div class="lead-data-row">
+                      <dt>Менеджер</dt>
+                      <dd>{{ bd.assignedBackofficeName }}</dd>
+                    </div>
+                  }
+                  @if (bd.supplierConfirmationNumber) {
+                    <div class="lead-data-row">
+                      <dt>Подтверждение</dt>
+                      <dd>{{ bd.supplierConfirmationNumber }}</dd>
+                    </div>
+                  }
+                </dl>
+              } @else {
+                <div class="lead-empty-state">
+                  <mat-icon aria-hidden="true" class="lead-empty-icon">error_outline</mat-icon>
+                  <p class="lead-section-empty">Не удалось загрузить бронирование.</p>
+                </div>
+              }
+            </section>
+
+            <section class="lead-card lead-full-width-card">
+              <div class="lead-card-header">
+                <h2 class="lead-card-title">Счета</h2>
+              </div>
+
+              @if (!linkedBooking()) {
+                <div class="lead-empty-state">
+                  <mat-icon aria-hidden="true" class="lead-empty-icon">receipt_long</mat-icon>
+                  <p class="lead-section-empty">Счета доступны после создания бронирования.</p>
+                </div>
+              } @else if (bookingInvoicesLoading()) {
+                <div class="lead-section-loading">
+                  <mat-spinner diameter="20" />
+                </div>
+              } @else if (bookingInvoices().length === 0) {
+                <div class="lead-empty-state">
+                  <mat-icon aria-hidden="true" class="lead-empty-icon">receipt</mat-icon>
+                  <p class="lead-section-empty">Счетов пока нет.</p>
+                </div>
+              } @else {
+                <app-lead-invoices-table
+                  class="invoices-table-wrap"
+                  [invoices]="bookingInvoices()"
+                  [loading]="bookingInvoicesLoading()"
+                />
+              }
+            </section>
+          </div>
+
+          @if (customFields().length > 0) {
+            <section class="lead-custom-fields-card">
+              <app-custom-fields-section
+                [fields]="customFields()"
+                [saving]="savingCustomFields()"
+                (saveRequested)="saveCustomFields($event)"
+              />
+            </section>
           }
-        </section>
-      </div>
+        </div>
+        <!-- /detail-main -->
 
-      @if (customFields().length > 0) {
-        <section class="lead-custom-fields-card">
-          <app-custom-fields-section
-            [fields]="customFields()"
-            [saving]="savingCustomFields()"
-            (saveRequested)="saveCustomFields($event)"
-          />
-        </section>
-      }
+        <app-history-panel
+          class="detail-history"
+          entity="leads"
+          [currentUserId]="currentUserId()"
+          [entityId]="l.id"
+        />
+      </div>
+      <!-- /detail-with-history -->
     </app-page-content>
   }
 </app-loading-state>
