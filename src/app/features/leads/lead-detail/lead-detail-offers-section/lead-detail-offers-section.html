@@ -4,13 +4,10 @@
     @if (canCreateOffer()) {
       <button color="primary" mat-flat-button type="button" (click)="createOfferClicked.emit()">
         <mat-icon>add</mat-icon>
-        Создать предложение
+        Добавить
       </button>
     }
   </div>
 
-  <app-offers-table
-    [offers]="offerRows()"
-    [omitColumns]="['leadNumber', 'updatedAt']"
-  />
+  <app-offers-table [offers]="offerRows()" [omitColumns]="['leadNumber', 'updatedAt']" />
 </section>
