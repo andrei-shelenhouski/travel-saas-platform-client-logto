@@ -1,0 +1,60 @@
+<h2 mat-dialog-title>
+  {{ data.mode === 'create' ? 'Добавить контакт' : 'Редактировать контакт' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="dialog-form-grid">
+      <mat-form-field appearance="outline" class="col-span-2">
+        <mat-label>Имя</mat-label>
+        <input formControlName="fullName" matInput required type="text" />
+        @if (form.controls.fullName.hasError('required') && form.controls.fullName.touched) {
+          <mat-error>Обязательное поле</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-span-2">
+        <mat-label>Роль</mat-label>
+        <input formControlName="role" matInput placeholder="Например: менеджер по продажам" type="text" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Телефон</mat-label>
+        <input formControlName="phone" matInput type="tel" />
+        @if (form.controls.phone.hasError('pattern') && form.controls.phone.touched) {
+          <mat-error>Некорректный формат телефона</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input formControlName="email" matInput type="email" />
+        @if (form.controls.email.hasError('email') && form.controls.email.touched) {
+          <mat-error>Некорректный email</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="col-span-2">
+        <mat-label>Telegram</mat-label>
+        <input formControlName="telegramHandle" matInput placeholder="@username" type="text" />
+      </mat-form-field>
+
+      <div class="col-span-2">
+        <mat-checkbox formControlName="isPrimary">Основной контакт</mat-checkbox>
+      </div>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="cancel()">Отмена</button>
+  <button
+    color="primary"
+    mat-flat-button
+    type="button"
+    [disabled]="submitting()"
+    (click)="submit()"
+  >
+    {{ submitting() ? 'Сохранение...' : 'Сохранить' }}
+  </button>
+</mat-dialog-actions>

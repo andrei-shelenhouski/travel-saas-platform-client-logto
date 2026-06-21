@@ -66,6 +66,7 @@ export class ClientsListComponent {
         search: filter.search || undefined,
         page: page + 1,
         limit: PAGE_SIZE,
+        role: filter.role || undefined,
       });
     },
   });

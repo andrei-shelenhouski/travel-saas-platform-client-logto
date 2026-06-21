@@ -43,6 +43,12 @@ const MAIN_NAV_LINKS: MainNavLink[] = [
   { path: '/app/leads', icon: 'inbox', label: 'Лиды' },
   { path: '/app/clients', icon: 'group', label: 'Клиенты' },
   {
+    path: '/app/suppliers',
+    icon: 'storefront',
+    label: 'Поставщики',
+    requiredPermission: PermissionKey.SUPPLIERS_VIEW,
+  },
+  {
     path: '/app/persons',
     icon: 'badge',
     label: 'Туристы',

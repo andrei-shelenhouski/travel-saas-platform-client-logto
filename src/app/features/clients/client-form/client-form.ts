@@ -22,7 +22,13 @@ import { PageContentComponent } from '@app/shared/components';
 import { FormSectionComponent } from '@app/shared/components/form-section/form-section';
 import { PageHeading } from '@app/shared/components/page-heading/page-heading';
 import { PageHeadingAction } from '@app/shared/components/page-heading/page-heading-action.directive';
-import { ClientType, CreateClientDto, UpdateClientDto } from '@app/shared/models';
+import {
+  CLIENT_ROLE_LABELS,
+  ClientRole,
+  ClientType,
+  CreateClientDto,
+  UpdateClientDto,
+} from '@app/shared/models';
 
 import type { ClientResponseDto } from '@app/shared/models';
 
@@ -41,6 +47,12 @@ const TYPE_OPTIONS: TypeOption[] = [
     icon: 'person',
   },
   {
+    value: ClientType.ORGANIZATION,
+    label: 'Организация',
+    subLabel: 'Юридическое лицо / компания',
+    icon: 'business_center',
+  },
+  {
     value: ClientType.COMPANY,
     label: 'Компания',
     subLabel: 'Юридическое лицо',
@@ -53,6 +65,11 @@ const TYPE_OPTIONS: TypeOption[] = [
     icon: 'work',
   },
 ];
+
+const CLIENT_ROLE_OPTIONS = Object.entries(CLIENT_ROLE_LABELS).map(([value, label]) => ({
+  value: value as ClientRole,
+  label,
+}));
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -89,11 +106,14 @@ export class ClientFormComponent {
   readonly isEditMode = computed(() => this.mode() === 'edit');
 
   readonly ClientType = ClientType;
+  readonly ClientRole = ClientRole;
   readonly typeOptions = TYPE_OPTIONS;
+  readonly clientRoleOptions = CLIENT_ROLE_OPTIONS;
   readonly selectedType = signal<ClientType | null>(null);
 
   readonly form = this.fb.nonNullable.group({
     fullName: ['', Validators.required],
+    clientRoles: [[] as string[]],
     phone: [''],
     email: ['', Validators.email],
     telegramHandle: [''],
@@ -115,6 +135,28 @@ export class ClientFormComponent {
   });
 
   readonly commissionPctCtrl = this.fb.control<number | null>({ value: null, disabled: true });
+
+  readonly showClientRoles = computed(() => this.selectedType() === ClientType.ORGANIZATION);
+
+  readonly showLegalFields = computed(
+    () =>
+      this.selectedType() === ClientType.ORGANIZATION ||
+      this.selectedType() === ClientType.COMPANY ||
+      this.selectedType() === ClientType.B2B_AGENT,
+  );
+
+  readonly showAgencyFields = computed(() => {
+    const type = this.selectedType();
+    const roles = this.form.controls.clientRoles.value ?? [];
+
+    return (
+      type === ClientType.B2B_AGENT ||
+      (type === ClientType.ORGANIZATION &&
+        (roles.includes(ClientRole.AGENCY) ||
+          roles.includes(ClientRole.OPERATOR) ||
+          roles.includes(ClientRole.DMC)))
+    );
+  });
 
   readonly consentGiven = toSignal(this.form.controls.dataConsentGiven.valueChanges, {
     initialValue: false,
@@ -188,7 +230,10 @@ export class ClientFormComponent {
 
   private updateCompanyValidators(type: ClientType): void {
     const { companyName, legalAddress } = this.form.controls;
-    const isCompanyType = type === ClientType.COMPANY || type === ClientType.B2B_AGENT;
+    const isCompanyType =
+      type === ClientType.COMPANY ||
+      type === ClientType.B2B_AGENT ||
+      type === ClientType.ORGANIZATION;
 
     if (isCompanyType) {
       companyName.setValidators(Validators.required);
@@ -233,6 +278,7 @@ export class ClientFormComponent {
     this.commissionPctCtrl.setValue(client.commissionPct);
     this.form.patchValue({
       fullName: client.fullName ?? '',
+      clientRoles: client.clientRoles ?? [],
       phone: client.phone ?? '',
       email: client.email ?? '',
       telegramHandle: client.telegramHandle ?? '',
@@ -258,7 +304,9 @@ export class ClientFormComponent {
     if (
       type === ClientType.INDIVIDUAL ||
       type === ClientType.COMPANY ||
-      type === ClientType.B2B_AGENT
+      type === ClientType.B2B_AGENT ||
+      type === ClientType.AGENT ||
+      type === ClientType.ORGANIZATION
     ) {
       return type;
     }
@@ -266,16 +314,24 @@ export class ClientFormComponent {
     return ClientType.INDIVIDUAL;
   }
 
+  // eslint-disable-next-line complexity
   private buildCreateDto(
     value: ReturnType<ClientFormComponent['form']['getRawValue']>,
     type: ClientType,
   ): CreateClientDto {
-    const isCompanyType = type === ClientType.COMPANY || type === ClientType.B2B_AGENT;
+    const isCompanyType =
+      type === ClientType.COMPANY ||
+      type === ClientType.B2B_AGENT ||
+      type === ClientType.ORGANIZATION;
     const dto: CreateClientDto = {
       type,
       fullName: value.fullName.trim(),
       dataConsentGiven: value.dataConsentGiven,
     };
+
+    if (type === ClientType.ORGANIZATION && value.clientRoles && value.clientRoles.length > 0) {
+      dto.clientRoles = value.clientRoles;
+    }
 
     if (value.phone.trim()) {
       dto.phone = value.phone.trim();
@@ -345,10 +401,17 @@ export class ClientFormComponent {
     value: ReturnType<ClientFormComponent['form']['getRawValue']>,
     type: ClientType,
   ): UpdateClientDto {
-    const isCompanyType = type === ClientType.COMPANY || type === ClientType.B2B_AGENT;
+    const isCompanyType =
+      type === ClientType.COMPANY ||
+      type === ClientType.B2B_AGENT ||
+      type === ClientType.ORGANIZATION;
     const dto: UpdateClientDto = {
       fullName: value.fullName.trim(),
     };
+
+    if (type === ClientType.ORGANIZATION) {
+      dto.clientRoles = value.clientRoles ?? [];
+    }
 
     if (value.phone.trim()) {
       dto.phone = value.phone.trim();

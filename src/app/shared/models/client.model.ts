@@ -9,8 +9,24 @@ export const ClientType = {
   COMPANY: 'COMPANY',
   B2B_AGENT: 'B2B_AGENT',
   AGENT: 'AGENT',
+  ORGANIZATION: 'ORGANIZATION',
 } as const;
 export type ClientType = (typeof ClientType)[keyof typeof ClientType];
+
+export const ClientRole = {
+  AGENCY: 'AGENCY',
+  OPERATOR: 'OPERATOR',
+  DMC: 'DMC',
+  CORPORATE: 'CORPORATE',
+} as const;
+export type ClientRole = (typeof ClientRole)[keyof typeof ClientRole];
+
+export const CLIENT_ROLE_LABELS: Record<ClientRole, string> = {
+  [ClientRole.AGENCY]: 'Агентство',
+  [ClientRole.OPERATOR]: 'Оператор',
+  [ClientRole.DMC]: 'ДМК',
+  [ClientRole.CORPORATE]: 'Корпоратив',
+};
 
 // ----- Contacts -----
 
@@ -54,6 +70,7 @@ export type UpdateContactDto = {
 export type CreateClientDto = {
   type: ClientType;
   fullName: string;
+  clientRoles?: string[];
   email?: string;
   phone?: string;
   telegramHandle?: string;
@@ -80,6 +97,7 @@ export type ClientResponseDto = {
   id: string;
   organizationId: string;
   type: ClientType;
+  clientRoles?: string[] | null;
   fullName: string | null;
   email: string | null;
   phone: string | null;
@@ -112,6 +130,7 @@ export type PaginatedClientResponseDto = PaginatedDto<ClientResponseDto>;
 /** OpenAPI: UpdateClientRequest. PUT /api/clients/{id} body. */
 export type UpdateClientDto = {
   fullName?: string;
+  clientRoles?: string[];
   email?: string;
   phone?: string;
   telegramHandle?: string;
@@ -421,6 +440,7 @@ export type StatusOption<T> = { value: T; label: string };
 
 export const CLIENT_TYPE_OPTIONS: StatusOption<ClientType>[] = [
   { value: ClientType.INDIVIDUAL, label: 'Физ. лицо' },
+  { value: ClientType.ORGANIZATION, label: 'Организация' },
   { value: ClientType.COMPANY, label: 'Компания' },
   { value: ClientType.B2B_AGENT, label: 'B2B агент' },
   { value: ClientType.AGENT, label: 'Агент' },

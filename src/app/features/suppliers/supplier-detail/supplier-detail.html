@@ -1,0 +1,326 @@
+@if (loading()) {
+  <div class="loading-center">
+    <mat-spinner diameter="40" />
+  </div>
+} @else if (supplier()) {
+  <app-page-heading [title]="supplier()!.name">
+    <button appPageAction icon="edit" label="Редактировать" mat-stroked-button type="button" [routerLink]="['/app/suppliers', supplier()!.id, 'edit']">
+      <mat-icon>edit</mat-icon>
+      Редактировать
+    </button>
+    @if (supplier()!.active) {
+      <button
+        appPageAction
+        color="warn"
+        icon="block"
+        label="Деактивировать"
+        mat-stroked-button
+        type="button"
+        [disabled]="deactivating()"
+        (click)="deactivate()"
+      >
+        <mat-icon>block</mat-icon>
+        Деактивировать
+      </button>
+    } @else {
+      <button
+        appPageAction
+        color="primary"
+        icon="check_circle"
+        label="Активировать"
+        mat-stroked-button
+        type="button"
+        [disabled]="deactivating()"
+        (click)="reactivate()"
+      >
+        <mat-icon>check_circle</mat-icon>
+        Активировать
+      </button>
+    }
+  </app-page-heading>
+
+  <app-page-content>
+    <!-- Header info row -->
+    <div class="supplier-header-row">
+      <span class="category-chip inline-block rounded-full px-2.5 py-0.5 text-xs font-medium" [class]="getCategoryClasses(supplier()!.supplierCategory)">
+        {{ categoryLabels[supplier()!.supplierCategory] ?? supplier()!.supplierCategory }}
+      </span>
+
+      <div class="service-chips">
+        @for (st of supplier()!.serviceTypes; track st) {
+          <span class="service-chip inline-block rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700">
+            {{ serviceTypeLabels[st] ?? st }}
+          </span>
+        }
+      </div>
+
+      @if (supplier()!.active) {
+        <span class="status-badge status-active">Активен</span>
+      } @else {
+        <span class="status-badge status-inactive">Неактивен</span>
+      }
+
+      <span class="primary-contact">{{ getPrimaryContact(supplier()!) }}</span>
+    </div>
+
+    <!-- Tabs -->
+    <mat-tab-group animationDuration="200ms" class="supplier-tabs">
+
+      <!-- Tab: Info -->
+      <mat-tab label="Инфо">
+        <div class="info-grid">
+          <div class="info-row">
+            <span class="info-label">Юридическое название</span>
+            <span class="info-value">{{ supplier()!.legalName || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Категория</span>
+            <span class="info-value">{{ categoryLabels[supplier()!.supplierCategory] ?? supplier()!.supplierCategory }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Типы услуг</span>
+            <span class="info-value">
+              {{ supplier()!.serviceTypes.map(st => serviceTypeLabels[st] ?? st).join(', ') || '—' }}
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Интеграция</span>
+            <span class="info-value">{{ supplier()!.integrationType || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Внешняя система</span>
+            <span class="info-value">{{ supplier()!.externalSystem || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Направление / регион</span>
+            <span class="info-value">{{ supplier()!.destinationNotes || '—' }}</span>
+          </div>
+          <mat-divider class="info-divider" />
+          <div class="info-row">
+            <span class="info-label">Телефон</span>
+            <span class="info-value">{{ supplier()!.phone || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Email</span>
+            <span class="info-value">{{ supplier()!.email || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Веб-сайт</span>
+            <span class="info-value">
+              @if (supplier()!.website) {
+                <a target="_blank" [href]="supplier()!.website!">{{ supplier()!.website }}</a>
+              } @else {
+                —
+              }
+            </span>
+          </div>
+          <mat-divider class="info-divider" />
+          <div class="info-row">
+            <span class="info-label">Юридический адрес</span>
+            <span class="info-value">{{ supplier()!.legalAddress || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">УНП</span>
+            <span class="info-value">{{ supplier()!.unp || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">IBAN</span>
+            <span class="info-value">{{ supplier()!.iban || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Банк</span>
+            <span class="info-value">{{ supplier()!.bankName || '—' }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">БИК</span>
+            <span class="info-value">{{ supplier()!.bik || '—' }}</span>
+          </div>
+          <mat-divider class="info-divider" />
+          <div class="info-row">
+            <span class="info-label">Примечания</span>
+            <span class="info-value">{{ supplier()!.notes || '—' }}</span>
+          </div>
+        </div>
+      </mat-tab>
+
+      <!-- Tab: Contacts -->
+      <mat-tab label="Контакты">
+        <div class="tab-content">
+          <div class="tab-header">
+            <h3 class="tab-title">Контактные лица</h3>
+            <button mat-stroked-button type="button" (click)="openAddContactDialog()">
+              <mat-icon>add</mat-icon>
+              Добавить контакт
+            </button>
+          </div>
+
+          @if (contactsLoading()) {
+            <div class="spinner-wrap">
+              <mat-spinner aria-label="Загрузка контактов..." diameter="36" />
+            </div>
+          } @else if (contacts().length === 0) {
+            <p class="empty-message">Контакты пока не добавлены</p>
+          } @else {
+            <table mat-table [dataSource]="contacts()">
+              <ng-container matColumnDef="name">
+                <th *matHeaderCellDef mat-header-cell>Имя</th>
+                <td *matCellDef="let c" mat-cell>{{ c.fullName ?? '—' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="role">
+                <th *matHeaderCellDef mat-header-cell>Роль</th>
+                <td *matCellDef="let c" mat-cell>{{ c.role ?? '—' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="phone">
+                <th *matHeaderCellDef mat-header-cell>Телефон</th>
+                <td *matCellDef="let c" mat-cell>{{ c.phone ?? '—' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="email">
+                <th *matHeaderCellDef mat-header-cell>Email</th>
+                <td *matCellDef="let c" mat-cell>{{ c.email ?? '—' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="telegram">
+                <th *matHeaderCellDef mat-header-cell>Telegram</th>
+                <td *matCellDef="let c" mat-cell>{{ c.telegramHandle ?? '—' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="primary">
+                <th *matHeaderCellDef mat-header-cell>Основной</th>
+                <td *matCellDef="let c" mat-cell>
+                  @if (c.primary) {
+                    <span class="primary-badge">Да</span>
+                  } @else {
+                    —
+                  }
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="actions">
+                <th *matHeaderCellDef mat-header-cell></th>
+                <td *matCellDef="let c" mat-cell>
+                  <button
+                    aria-label="Действия"
+                    mat-icon-button
+                    type="button"
+                    [matMenuTriggerFor]="contactMenu"
+                  >
+                    <mat-icon>more_vert</mat-icon>
+                  </button>
+                  <mat-menu #contactMenu="matMenu">
+                    @if (!c.primary) {
+                      <button mat-menu-item type="button" (click)="makePrimary(c)">
+                        <mat-icon>star</mat-icon>
+                        Сделать основным
+                      </button>
+                    }
+                    <button mat-menu-item type="button" (click)="openEditContactDialog(c)">
+                      <mat-icon>edit</mat-icon>
+                      Редактировать
+                    </button>
+                    <button class="menu-item-warn" mat-menu-item type="button" (click)="deleteContact(c)">
+                      <mat-icon>delete</mat-icon>
+                      Удалить
+                    </button>
+                  </mat-menu>
+                </td>
+              </ng-container>
+
+              <tr *matHeaderRowDef="contactsColumns" mat-header-row></tr>
+              <tr *matRowDef="let row; columns: contactsColumns" mat-row></tr>
+            </table>
+          }
+        </div>
+      </mat-tab>
+
+      <!-- Tab: Bookings -->
+      <mat-tab label="Бронирования">
+        <div class="tab-content">
+          @if (bookings().length === 0) {
+            <p class="empty-message">Бронирований нет</p>
+          } @else {
+            <table mat-table [dataSource]="bookings()">
+              <ng-container matColumnDef="number">
+                <th *matHeaderCellDef mat-header-cell>Номер</th>
+                <td *matCellDef="let b" mat-cell>{{ $any(b).number ?? '—' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="client">
+                <th *matHeaderCellDef mat-header-cell>Клиент</th>
+                <td *matCellDef="let b" mat-cell>{{ $any(b).clientName ?? '—' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="departDate">
+                <th *matHeaderCellDef mat-header-cell>Дата вылета</th>
+                <td *matCellDef="let b" mat-cell>{{ $any(b).departDate ?? '—' }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="status">
+                <th *matHeaderCellDef mat-header-cell>Статус</th>
+                <td *matCellDef="let b" mat-cell>{{ $any(b).status ?? '—' }}</td>
+              </ng-container>
+
+              <tr *matHeaderRowDef="bookingsColumns" mat-header-row></tr>
+              <tr *matRowDef="let row; columns: bookingsColumns" mat-row></tr>
+            </table>
+
+            <mat-paginator
+              aria-label="Пагинация бронирований"
+              [length]="bookingsTotal()"
+              [pageIndex]="bookingsPage()"
+              [pageSize]="pageSize"
+              (page)="onBookingsPageChange($event)"
+            />
+          }
+        </div>
+      </mat-tab>
+
+      <!-- Tab: Contracts -->
+      <mat-tab label="Договоры">
+        <div class="tab-content">
+          @if (contracts().length === 0) {
+            <p class="empty-message">Договоров нет</p>
+          } @else {
+            <table mat-table [dataSource]="contracts()">
+              <ng-container matColumnDef="number">
+                <th *matHeaderCellDef mat-header-cell>Номер</th>
+                <td *matCellDef="let c" mat-cell>{{ c.contractNumber }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="status">
+                <th *matHeaderCellDef mat-header-cell>Статус</th>
+                <td *matCellDef="let c" mat-cell>{{ c.status }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="signedAt">
+                <th *matHeaderCellDef mat-header-cell>Дата подписания</th>
+                <td *matCellDef="let c" mat-cell>{{ c.signedAt }}</td>
+              </ng-container>
+
+              <ng-container matColumnDef="expiresAt">
+                <th *matHeaderCellDef mat-header-cell>Истекает</th>
+                <td *matCellDef="let c" mat-cell>{{ c.expiresAt ?? '—' }}</td>
+              </ng-container>
+
+              <tr *matHeaderRowDef="contractsColumns" mat-header-row></tr>
+              <tr *matRowDef="let row; columns: contractsColumns" mat-row></tr>
+            </table>
+
+            <mat-paginator
+              aria-label="Пагинация договоров"
+              [length]="contractsTotal()"
+              [pageIndex]="contractsPage()"
+              [pageSize]="pageSize"
+              (page)="onContractsPageChange($event)"
+            />
+          }
+        </div>
+      </mat-tab>
+
+    </mat-tab-group>
+  </app-page-content>
+} @else {
+  <p class="empty-message">Поставщик не найден</p>
+}

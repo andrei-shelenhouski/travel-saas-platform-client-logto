@@ -83,7 +83,7 @@ export class ContractsTableComponent {
     const trademark = contract.client?.trademark?.trim();
     const fullName = contract.client?.fullName?.trim();
 
-    return companyName ?? trademark ?? fullName ?? contract.clientId;
+    return companyName ?? trademark ?? fullName ?? contract.clientId ?? '';
   }
 
   statusClass(status: string): string {

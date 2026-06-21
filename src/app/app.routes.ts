@@ -181,6 +181,39 @@ export const routes: Routes = [
             (m) => m.ClientsListComponent,
           ),
       },
+      // Suppliers
+      {
+        path: 'suppliers/new',
+        title: 'Новый поставщик',
+        loadComponent: () =>
+          import('@app/features/suppliers/create-supplier-page/create-supplier-page').then(
+            (m) => m.CreateSupplierPageComponent,
+          ),
+      },
+      {
+        path: 'suppliers/:id/edit',
+        title: 'Редактирование поставщика',
+        loadComponent: () =>
+          import('@app/features/suppliers/edit-supplier-page/edit-supplier-page').then(
+            (m) => m.EditSupplierPageComponent,
+          ),
+      },
+      {
+        path: 'suppliers/:id',
+        title: 'Поставщик',
+        loadComponent: () =>
+          import('@app/features/suppliers/supplier-detail/supplier-detail').then(
+            (m) => m.SupplierDetailComponent,
+          ),
+      },
+      {
+        path: 'suppliers',
+        title: 'Поставщики',
+        loadComponent: () =>
+          import('@app/features/suppliers/suppliers-list/suppliers-list').then(
+            (m) => m.SuppliersListComponent,
+          ),
+      },
       // Persons listing
       {
         path: 'persons',

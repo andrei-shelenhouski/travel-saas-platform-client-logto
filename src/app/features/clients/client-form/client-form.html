@@ -120,6 +120,77 @@
           </app-form-section>
         }
 
+        @if (type === ClientType.ORGANIZATION) {
+          <app-form-section title="Основная информация">
+            <div class="client-form-section-body">
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Название организации</mat-label>
+                <input formControlName="companyName" matInput type="text" />
+                @if (form.controls.companyName.hasError('required') && form.controls.companyName.touched) {
+                  <mat-error>Требуется указать название организации</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Юридический адрес</mat-label>
+                <input formControlName="legalAddress" matInput type="text" />
+                @if (form.controls.legalAddress.hasError('required') && form.controls.legalAddress.touched) {
+                  <mat-error>Требуется указать юридический адрес</mat-error>
+                }
+              </mat-form-field>
+
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Контактное лицо</mat-label>
+                <input formControlName="fullName" matInput type="text" />
+              </mat-form-field>
+
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>Роли организации</mat-label>
+                <mat-select formControlName="clientRoles" multiple>
+                  @for (opt of clientRoleOptions; track opt.value) {
+                    <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </app-form-section>
+
+          <app-form-section title="Реквизиты">
+            <div class="client-form-section-body">
+              <div class="client-form-two-col">
+                <mat-form-field>
+                  <mat-label>УНП</mat-label>
+                  <input formControlName="unp" matInput type="text" />
+                  <mat-hint>9 цифр</mat-hint>
+                  @if (form.controls.unp.hasError('pattern') && form.controls.unp.touched) {
+                    <mat-error>УНП должен состоять из 9 цифр</mat-error>
+                  }
+                </mat-form-field>
+                <mat-form-field subscriptSizing="dynamic">
+                  <mat-label>ОКПО</mat-label>
+                  <input formControlName="okpo" matInput type="text" />
+                </mat-form-field>
+              </div>
+
+              <div class="client-form-two-col">
+                <mat-form-field subscriptSizing="dynamic">
+                  <mat-label>IBAN</mat-label>
+                  <input formControlName="iban" matInput type="text" />
+                </mat-form-field>
+                <mat-form-field subscriptSizing="dynamic">
+                  <mat-label>Название банка</mat-label>
+                  <input formControlName="bankName" matInput type="text" />
+                </mat-form-field>
+              </div>
+
+              <mat-form-field subscriptSizing="dynamic">
+                <mat-label>БИК</mat-label>
+                <input formControlName="bik" matInput type="text" />
+              </mat-form-field>
+            </div>
+          </app-form-section>
+        }
+
         @if (type === ClientType.B2B_AGENT) {
           <app-form-section title="Реквизиты агента">
             <div class="client-form-section-body">

@@ -34,12 +34,14 @@ export class ClientsService {
     search?: string;
     page?: number;
     limit?: number;
+    role?: string;
   }): Observable<PaginatedClientResponseDto> {
     const httpParams = new HttpParamsBuilder()
       .set('type', params?.type)
       .set('search', params?.search && params.search.length >= 2 ? params.search : null)
       .set('page', params?.page)
       .set('limit', params?.limit)
+      .set('role', params?.role || null)
       .build();
 
     return this.http

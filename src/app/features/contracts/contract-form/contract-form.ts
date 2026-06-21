@@ -6,19 +6,23 @@ import {
   inject,
   input,
   output,
+  signal,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
+import { SupplierPickerComponent } from '@app/shared/components/supplier-picker/supplier-picker';
 import { SignatureMethod } from '@app/shared/models';
 
 import type {
   ContractResponseDto,
   CreateContractDto,
   SignatureMethod as SignatureMethodType,
+  SupplierResponse,
   UpdateContractDto,
 } from '@app/shared/models';
 
@@ -45,10 +49,12 @@ const SIGNATURE_METHOD_OPTIONS: SignatureMethodOption[] = [
   selector: 'app-contract-form',
   imports: [
     ReactiveFormsModule,
+    MatButtonModule,
+    MatButtonToggleModule,
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatButtonModule,
+    SupplierPickerComponent,
   ],
   templateUrl: './contract-form.html',
   styleUrl: './contract-form.scss',
@@ -70,6 +76,10 @@ export class ContractFormComponent {
   readonly isEditMode = computed(() => this.mode() === 'edit');
   readonly signatureMethodOptions = SIGNATURE_METHOD_OPTIONS;
 
+  /** 'client' | 'supplier' — counterparty type for create mode */
+  readonly counterpartyType = signal<'client' | 'supplier'>('client');
+  readonly selectedSupplierId = signal<string | null>(null);
+
   readonly form = this.fb.nonNullable.group({
     clientId: [''],
     contractNumber: ['', [Validators.required, Validators.maxLength(100)]],
@@ -89,7 +99,7 @@ export class ContractFormComponent {
       if (mode === 'edit' && contract) {
         this.form.patchValue(
           {
-            clientId: contract.clientId,
+            clientId: contract.clientId ?? '',
             contractNumber: contract.contractNumber,
             signedAt: contract.signedAt,
             expiresAt: contract.expiresAt ?? '',
@@ -120,6 +130,15 @@ export class ContractFormComponent {
     this.cancelled.emit();
   }
 
+  onSupplierSelected(supplier: SupplierResponse | null): void {
+    this.selectedSupplierId.set(supplier?.id ?? null);
+  }
+
+  setCounterpartyType(type: 'client' | 'supplier'): void {
+    this.counterpartyType.set(type);
+    this.selectedSupplierId.set(null);
+  }
+
   submit(): void {
     if (this.form.invalid || this.saving()) {
       this.form.markAllAsTouched();
@@ -144,6 +163,27 @@ export class ContractFormComponent {
 
     if (this.isEditMode()) {
       this.updateSubmitted.emit(basePayload);
+
+      return;
+    }
+
+    if (this.counterpartyType() === 'supplier') {
+      const supplierId = this.selectedSupplierId();
+
+      if (!supplierId) {
+        return;
+      }
+
+      const createPayload: CreateContractDto = {
+        supplierId,
+        contractNumber: basePayload.contractNumber ?? '',
+        signedAt: basePayload.signedAt ?? '',
+        expiresAt: basePayload.expiresAt,
+        signatureMethod: basePayload.signatureMethod,
+        notes: basePayload.notes,
+      };
+
+      this.createSubmitted.emit(createPayload);
 
       return;
     }
