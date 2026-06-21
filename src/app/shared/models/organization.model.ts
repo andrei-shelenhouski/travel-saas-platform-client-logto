@@ -45,6 +45,7 @@ export const PermissionKey = {
   INVOICES_CANCEL: 'invoices:cancel',
   PERSONS_READ: 'persons:read',
   PERSONS_WRITE: 'persons:write',
+  SUPPLIERS_VIEW: 'suppliers:view',
 } as const;
 export type Permission =
   | (typeof PermissionKey)[keyof typeof PermissionKey]
@@ -560,7 +561,8 @@ export type ContractClientSummaryDto = {
 export type ContractResponseDto = {
   id: string;
   organizationId: string;
-  clientId: string;
+  clientId: string | null;
+  supplierId?: string | null;
   client?: ContractClientSummaryDto | null;
   contractNumber: string;
   signedAt: string;
@@ -579,13 +581,15 @@ export type ListContractsQueryDto = {
   page?: number;
   limit?: number;
   clientId?: string;
+  supplierId?: string;
   status?: ContractStatus;
   /** Compatibility with backend pageable binding; preferred field is limit. */
   size?: number;
 };
 
 export type CreateContractDto = {
-  clientId: string;
+  clientId?: string | null;
+  supplierId?: string | null;
   contractNumber: string;
   signedAt: string;
   expiresAt?: string;

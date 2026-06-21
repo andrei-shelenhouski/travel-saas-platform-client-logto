@@ -13,3 +13,4 @@ export * from './dashboard.model';
 export * from './activity.model';
 export * from './comment.model';
 export * from './timeline.model';
+export * from './supplier.model';

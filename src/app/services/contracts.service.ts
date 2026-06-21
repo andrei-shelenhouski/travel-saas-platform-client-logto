@@ -27,6 +27,7 @@ export class ContractsService {
   getList(params?: ListContractsQueryDto): Observable<PaginatedContractResponseDto> {
     const httpParams = new HttpParamsBuilder()
       .set('clientId', params?.clientId || null)
+      .set('supplierId', params?.supplierId || null)
       .set('status', params?.status || null)
       .set('page', params?.page)
       .set('limit', params?.limit)

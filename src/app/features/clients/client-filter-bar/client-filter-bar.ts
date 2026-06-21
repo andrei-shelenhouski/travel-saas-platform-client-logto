@@ -9,18 +9,21 @@ import { MatSelectModule } from '@angular/material/select';
 
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
-import { ClientType } from '@app/shared/models';
+import { CLIENT_ROLE_LABELS, ClientRole, ClientType } from '@app/shared/models';
 
 export type ClientFilterValue = {
   type: ClientType | 'ALL';
   search: string;
+  role?: string;
 };
 
 const TYPE_OPTIONS: { value: ClientType | 'ALL'; label: string }[] = [
   { value: 'ALL', label: 'Все' },
   { value: ClientType.INDIVIDUAL, label: 'Физ. лицо' },
+  { value: ClientType.ORGANIZATION, label: 'Организация' },
   { value: ClientType.COMPANY, label: 'Компания' },
   { value: ClientType.B2B_AGENT, label: 'B2B агент' },
+  { value: ClientType.AGENT, label: 'Агент' },
 ];
 
 @Component({
@@ -43,15 +46,21 @@ export class ClientFilterBarComponent {
   readonly filterChange = output<ClientFilterValue>();
 
   readonly typeOptions = TYPE_OPTIONS;
+  readonly roleOptions = Object.entries(CLIENT_ROLE_LABELS).map(([value, label]) => ({
+    value: value as ClientRole,
+    label,
+  }));
+  readonly ClientType = ClientType;
 
   readonly form = this.fb.nonNullable.group({
     type: this.fb.nonNullable.control<ClientType | 'ALL'>('ALL'),
     search: this.fb.nonNullable.control(''),
+    role: this.fb.nonNullable.control<string | ''>(''),
   });
 
   private readonly formValueChanges$ = this.form.valueChanges.pipe(
     debounceTime(300),
-    distinctUntilChanged((a, b) => a.type === b.type && a.search === b.search),
+    distinctUntilChanged((a, b) => a.type === b.type && a.search === b.search && a.role === b.role),
   );
 
   private readonly formValue = toSignal(this.formValueChanges$, {
@@ -68,6 +77,7 @@ export class ClientFilterBarComponent {
       this.filterChange.emit({
         type: formValue.type ?? 'ALL',
         search,
+        role: formValue.role || undefined,
       });
     });
   }

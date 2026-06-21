@@ -24,4 +24,16 @@
       }
     </mat-select>
   </mat-form-field>
+
+  @if (form.controls.type.value === ClientType.ORGANIZATION) {
+    <mat-form-field subscriptSizing="dynamic">
+      <mat-label>Роль</mat-label>
+      <mat-select formControlName="role">
+        <mat-option value="">Все</mat-option>
+        @for (opt of roleOptions; track opt.value) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
 </form>

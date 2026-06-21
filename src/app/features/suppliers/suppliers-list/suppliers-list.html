@@ -1,0 +1,152 @@
+<app-page-heading title="Поставщики" [subtitle]="'Всего: ' + totalElements() + ' поставщиков'">
+  <button appPageAction color="primary" icon="add" label="Новый поставщик" mat-flat-button type="button" (click)="navigateToCreate()">
+    <mat-icon>add</mat-icon>
+    <span>Новый поставщик</span>
+  </button>
+</app-page-heading>
+
+<div class="suppliers-list-body">
+  <!-- Filter bar -->
+  <div class="filter-bar" [formGroup]="filterForm">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Поиск</mat-label>
+      <mat-icon matPrefix>search</mat-icon>
+      <input formControlName="search" matInput placeholder="Название поставщика..." type="text" />
+      @if (filterForm.controls.search.value) {
+        <button aria-label="Очистить поиск" mat-icon-button matSuffix type="button" (click)="clearSearch()">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="category-field">
+      <mat-label>Категория</mat-label>
+      <mat-select formControlName="category">
+        <mat-option value="">Все</mat-option>
+        @for (opt of categoryOptions; track opt.value) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="service-type-field">
+      <mat-label>Тип услуги</mat-label>
+      <mat-select formControlName="serviceType">
+        <mat-option value="">Все</mat-option>
+        @for (opt of serviceTypeOptions; track opt.value) {
+          <mat-option [value]="opt.value">{{ opt.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-slide-toggle class="active-toggle" color="primary" formControlName="isActive">
+      Только активные
+    </mat-slide-toggle>
+  </div>
+
+  @if (error()) {
+    <p class="error-message" role="alert">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <div class="loading-row">
+      <span>Загрузка...</span>
+    </div>
+  }
+
+  <div class="table-wrap">
+    <table mat-table [dataSource]="suppliers()">
+      <ng-container matColumnDef="name">
+        <th *matHeaderCellDef mat-header-cell>Название</th>
+        <td *matCellDef="let s" class="cell-primary" mat-cell>
+          <a class="supplier-link" [routerLink]="['/app/suppliers', s.id]">{{ s.name }}</a>
+          @if (s.legalName) {
+            <span class="supplier-legal-name">{{ s.legalName }}</span>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="category">
+        <th *matHeaderCellDef mat-header-cell>Категория</th>
+        <td *matCellDef="let s" mat-cell>
+          <span class="category-chip inline-block rounded-full px-2.5 py-0.5 text-xs font-medium" [class]="getCategoryClasses(s.supplierCategory)">
+            {{ categoryLabels[s.supplierCategory] ?? s.supplierCategory }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="serviceTypes">
+        <th *matHeaderCellDef mat-header-cell>Услуги</th>
+        <td *matCellDef="let s" mat-cell>
+          <div class="service-chips">
+            @for (st of s.serviceTypes; track st) {
+              <span class="service-chip inline-block rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-700">
+                {{ serviceTypeLabels[st] ?? st }}
+              </span>
+            }
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="destination">
+        <th *matHeaderCellDef mat-header-cell>Направление</th>
+        <td *matCellDef="let s" mat-cell>
+          <span [matTooltip]="s.destinationNotes ?? ''">
+            {{ s.destinationNotes ? (s.destinationNotes.length > 40 ? s.destinationNotes.slice(0, 40) + '...' : s.destinationNotes) : '—' }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="contact">
+        <th *matHeaderCellDef mat-header-cell>Контакт</th>
+        <td *matCellDef="let s" mat-cell>{{ getPrimaryContact(s) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="active">
+        <th *matHeaderCellDef mat-header-cell>Статус</th>
+        <td *matCellDef="let s" mat-cell>
+          @if (s.active) {
+            <span class="status-badge status-active">Активен</span>
+          } @else {
+            <span class="status-badge status-inactive">Неактивен</span>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th *matHeaderCellDef mat-header-cell></th>
+        <td *matCellDef="let s" mat-cell>
+          <button
+            aria-label="Открыть поставщика"
+            mat-icon-button
+            type="button"
+            (click)="navigateToDetail(s)"
+          >
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+      <tr
+        *matRowDef="let row; columns: displayedColumns"
+        class="table-row clickable"
+        mat-row
+        (click)="navigateToDetail(row)"
+      ></tr>
+    </table>
+  </div>
+
+  @if (!loading() && suppliers().length === 0 && !error()) {
+    <p class="empty-message">Поставщики не найдены</p>
+  }
+
+  <mat-paginator
+    aria-label="Пагинация поставщиков"
+    [length]="totalElements()"
+    [pageIndex]="currentPage()"
+    [pageSize]="pageSize"
+    [showFirstLastButtons]="true"
+    (page)="onPageChange($event)"
+  />
+</div>

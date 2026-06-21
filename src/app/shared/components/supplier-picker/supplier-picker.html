@@ -1,0 +1,37 @@
+<mat-form-field appearance="outline" class="w-full">
+  <mat-label>{{ label() }}</mat-label>
+  <mat-icon matPrefix>storefront</mat-icon>
+  <input
+    matInput
+    type="text"
+    [formControl]="searchControl"
+    [matAutocomplete]="supplierAuto"
+    [required]="required()"
+    (blur)="onBlur()"
+  />
+  @if (loading()) {
+    <mat-spinner diameter="18" matSuffix />
+  }
+  @if (selectedSupplier()) {
+    <button aria-label="Очистить" mat-icon-button matSuffix type="button" (click)="clearSelection()">
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+  <mat-autocomplete
+    #supplierAuto="matAutocomplete"
+    [displayWith]="displayFn"
+    (optionSelected)="onOptionSelected($event.option.value)"
+  >
+    @for (opt of options(); track opt.id) {
+      <mat-option [value]="opt">
+        <span class="font-medium">{{ opt.name }}</span>
+        @if (opt.legalName) {
+          <span class="ml-2 text-xs text-gray-500">{{ opt.legalName }}</span>
+        }
+      </mat-option>
+    }
+    @if (!loading() && options().length === 0) {
+      <mat-option disabled>Нет результатов</mat-option>
+    }
+  </mat-autocomplete>
+</mat-form-field>

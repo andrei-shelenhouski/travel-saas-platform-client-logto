@@ -3,14 +3,35 @@
     <p class="contract-form-error" role="alert">{{ submitError() }}</p>
   }
 
-  @if (allowClientIdEdit() && !isEditMode()) {
-    <mat-form-field class="contract-form-field" subscriptSizing="dynamic">
-      <mat-label>ID клиента</mat-label>
-      <input formControlName="clientId" matInput type="text" />
-      @if (form.controls.clientId.hasError('required') && form.controls.clientId.touched) {
-        <mat-error>ID клиента обязателен</mat-error>
-      }
-    </mat-form-field>
+  @if (!isEditMode()) {
+    <div class="counterparty-toggle">
+      <mat-button-toggle-group
+        aria-label="Контрагент"
+        [value]="counterpartyType()"
+        (change)="setCounterpartyType($event.value)"
+      >
+        <mat-button-toggle value="client">Клиент</mat-button-toggle>
+        <mat-button-toggle value="supplier">Поставщик</mat-button-toggle>
+      </mat-button-toggle-group>
+    </div>
+
+    @if (counterpartyType() === 'client' && allowClientIdEdit()) {
+      <mat-form-field class="contract-form-field" subscriptSizing="dynamic">
+        <mat-label>ID клиента</mat-label>
+        <input formControlName="clientId" matInput type="text" />
+        @if (form.controls.clientId.hasError('required') && form.controls.clientId.touched) {
+          <mat-error>ID клиента обязателен</mat-error>
+        }
+      </mat-form-field>
+    }
+
+    @if (counterpartyType() === 'supplier') {
+      <app-supplier-picker
+        label="Поставщик"
+        [required]="true"
+        (supplierSelected)="onSupplierSelected($event)"
+      />
+    }
   }
 
   <mat-form-field class="contract-form-field" subscriptSizing="dynamic">
