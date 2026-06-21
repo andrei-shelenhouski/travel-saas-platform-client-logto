@@ -7,7 +7,15 @@
         [subtitle]="typeLabel[c.type]"
         [title]="c.companyName ?? c.fullName"
       >
-        <a appPageAction icon="edit" label="Редактировать клиента" mat-stroked-button [relativeTo]="route" [routerLink]="['edit']">Редактировать клиента</a>
+        <a
+          appPageAction
+          icon="edit"
+          label="Редактировать клиента"
+          mat-stroked-button
+          [relativeTo]="route"
+          [routerLink]="['edit']"
+          >Редактировать клиента</a
+        >
       </app-page-heading>
 
       <app-page-content>
